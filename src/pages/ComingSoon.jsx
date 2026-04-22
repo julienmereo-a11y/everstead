@@ -38,7 +38,7 @@ export default function ComingSoon() {
     <div style={{
       minHeight: '100vh',
       background: '#0d1628',
-      fontFamily: 'Georgia, "Times New Roman", serif',
+      fontFamily: "'Cormorant Garamond', Georgia, serif",
       color: '#fff',
       overflow: 'hidden',
     }}>
@@ -74,7 +74,7 @@ export default function ComingSoon() {
           borderRadius: 999,
           padding: '5px 14px',
           fontSize: 11,
-          fontFamily: '-apple-system, sans-serif',
+          fontFamily: "'DM Sans', system-ui, sans-serif",
           color: '#86b382',
           letterSpacing: '0.06em',
           fontWeight: 500,
@@ -93,7 +93,7 @@ export default function ComingSoon() {
 
         <p style={{
           fontSize: 12,
-          fontFamily: '-apple-system, sans-serif',
+          fontFamily: "'DM Sans', system-ui, sans-serif",
           letterSpacing: '0.16em',
           color: '#4c7d47',
           fontWeight: 600,
@@ -117,7 +117,7 @@ export default function ComingSoon() {
 
         <p style={{
           fontSize: 18,
-          fontFamily: '-apple-system, sans-serif',
+          fontFamily: "'DM Sans', system-ui, sans-serif",
           fontWeight: 400,
           color: 'rgba(255,255,255,0.6)',
           lineHeight: 1.7,
@@ -140,7 +140,7 @@ export default function ComingSoon() {
               background: '#ffffff',
               color: '#0d1628',
               fontSize: 15,
-              fontFamily: '-apple-system, sans-serif',
+              fontFamily: "'DM Sans', system-ui, sans-serif",
               fontWeight: 700,
               padding: '16px 36px',
               borderRadius: 12,
@@ -156,7 +156,7 @@ export default function ComingSoon() {
           </a>
           <p style={{
             fontSize: 12,
-            fontFamily: '-apple-system, sans-serif',
+            fontFamily: "'DM Sans', system-ui, sans-serif",
             color: 'rgba(255,255,255,0.35)',
           }}>
             {count}+ families already on the list · Free to join
@@ -186,7 +186,7 @@ export default function ComingSoon() {
               borderRight: '1px solid rgba(255,255,255,0.06)',
             }}>
               <p style={{ fontSize: 22, fontWeight: 400, color: '#fff', marginBottom: 4 }}>{value}</p>
-              <p style={{ fontSize: 11, fontFamily: '-apple-system, sans-serif', color: 'rgba(255,255,255,0.4)', letterSpacing: '0.06em', textTransform: 'uppercase' }}>{label}</p>
+              <p style={{ fontSize: 11, fontFamily: "'DM Sans', system-ui, sans-serif", color: 'rgba(255,255,255,0.4)', letterSpacing: '0.06em', textTransform: 'uppercase' }}>{label}</p>
             </div>
           ))}
         </div>
@@ -201,7 +201,7 @@ export default function ComingSoon() {
         <p style={{
           textAlign: 'center',
           fontSize: 11,
-          fontFamily: '-apple-system, sans-serif',
+          fontFamily: "'DM Sans', system-ui, sans-serif",
           letterSpacing: '0.16em',
           color: 'rgba(255,255,255,0.35)',
           textTransform: 'uppercase',
@@ -226,14 +226,14 @@ export default function ComingSoon() {
               <div style={{ fontSize: 22, marginBottom: 10 }}>{icon}</div>
               <p style={{
                 fontSize: 13,
-                fontFamily: '-apple-system, sans-serif',
+                fontFamily: "'DM Sans', system-ui, sans-serif",
                 fontWeight: 600,
                 color: '#fff',
                 marginBottom: 6,
               }}>{label}</p>
               <p style={{
                 fontSize: 12,
-                fontFamily: '-apple-system, sans-serif',
+                fontFamily: "'DM Sans', system-ui, sans-serif",
                 color: 'rgba(255,255,255,0.45)',
                 lineHeight: 1.5,
               }}>{desc}</p>
@@ -266,7 +266,7 @@ export default function ComingSoon() {
         </blockquote>
         <p style={{
           fontSize: 12,
-          fontFamily: '-apple-system, sans-serif',
+          fontFamily: "'DM Sans', system-ui, sans-serif",
           color: 'rgba(255,255,255,0.3)',
           letterSpacing: '0.06em',
         }}>
@@ -298,7 +298,7 @@ export default function ComingSoon() {
           </h2>
           <p style={{
             fontSize: 15,
-            fontFamily: '-apple-system, sans-serif',
+            fontFamily: "'DM Sans', system-ui, sans-serif",
             color: 'rgba(255,255,255,0.5)',
             marginBottom: 32,
             lineHeight: 1.6,
@@ -316,7 +316,7 @@ export default function ComingSoon() {
               background: '#4c7d47',
               color: '#fff',
               fontSize: 14,
-              fontFamily: '-apple-system, sans-serif',
+              fontFamily: "'DM Sans', system-ui, sans-serif",
               fontWeight: 700,
               padding: '14px 32px',
               borderRadius: 10,
@@ -328,7 +328,7 @@ export default function ComingSoon() {
           </a>
           <p style={{
             fontSize: 11,
-            fontFamily: '-apple-system, sans-serif',
+            fontFamily: "'DM Sans', system-ui, sans-serif",
             color: 'rgba(255,255,255,0.25)',
             marginTop: 16,
           }}>
@@ -350,14 +350,14 @@ export default function ComingSoon() {
       }}>
         <p style={{
           fontSize: 12,
-          fontFamily: '-apple-system, sans-serif',
+          fontFamily: "'DM Sans', system-ui, sans-serif",
           color: 'rgba(255,255,255,0.2)',
         }}>
           © 2026 Everstead Ltd · Registered in England & Wales
         </p>
         <p style={{
           fontSize: 12,
-          fontFamily: '-apple-system, sans-serif',
+          fontFamily: "'DM Sans', system-ui, sans-serif",
           color: 'rgba(255,255,255,0.2)',
         }}>
           hello@everstead.care
