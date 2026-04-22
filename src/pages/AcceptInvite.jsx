@@ -38,7 +38,7 @@ export default function AcceptInvite() {
     if (age > 7)  { setState('expired'); return }
 
     setInvite(person)
-    setOwner((person as any).profiles)
+    setOwner(person.profiles)
     setState('found')
   }
 
