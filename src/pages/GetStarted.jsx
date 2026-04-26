@@ -132,7 +132,7 @@ export default function GetStarted() {
         fullName: form.fullName,
       })
 
-      // 2. Update profile with extra fields
+     // 2. Update profile with extra fields
       await updateProfile({
         full_name:   form.fullName,
         phone:       `${form.dialCode} ${form.phone}`.trim(),
@@ -142,7 +142,17 @@ export default function GetStarted() {
         billing_cycle: annualBilling ? 'yearly' : 'monthly',
       }, authData?.user?.id)
 
-      // 3. Show "redirecting to payment" state
+      // 3. Send welcome email
+      await fetch('/api/emails/send-welcome', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: form.email,
+          firstName: form.fullName.split(' ')[0],
+        }),
+      }).catch(console.error)
+
+      // 4. Show "redirecting to payment" state
       setStep(3)
 
       // 4. Redirect to Stripe Checkout
