@@ -8,42 +8,15 @@ export function AuthProvider({ children }) {
   const [profile, setProfile] = useState(null)
   const [loading, setLoading] = useState(true)
 
-  // ── Fetch profile (auto-creates on first login after email confirmation) ──
+  // ── Fetch profile ────────────────────────────────────────────
+  // Profile is created automatically by the handle_new_user DB trigger on signup.
   const fetchProfile = useCallback(async (userId) => {
-    const { data, error } = await supabase
+    const { data } = await supabase
       .from('profiles')
       .select('*')
       .eq('id', userId)
       .single()
-
-    if (data) { setProfile(data); return }
-
-    // PGRST116 = no rows — new user just confirmed their email
-    if (error?.code === 'PGRST116') {
-      const { data: { user: authUser } } = await supabase.auth.getUser()
-      const meta = authUser?.user_metadata || {}
-      const trialEndsAt = meta.trial_ends_at
-        || new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString()
-
-      const { data: newProfile } = await supabase
-        .from('profiles')
-        .insert({
-          id:                  userId,
-          email:               authUser.email,
-          full_name:           meta.full_name  || '',
-          plan:                meta.plan        || 'essential',
-          billing_cycle:       meta.billing_cycle || 'monthly',
-          subscription_status: 'trialing',
-          trial_ends_at:       trialEndsAt,
-          phone:               meta.phone       || null,
-          country:             meta.country     || null,
-          nationality:         meta.nationality || null,
-        })
-        .select()
-        .single()
-
-      if (newProfile) setProfile(newProfile)
-    }
+    if (data) setProfile(data)
   }, [])
 
   // ── Bootstrap session ────────────────────────────────────────
