@@ -6,7 +6,7 @@ import {
   CreditCard, Zap, Star,
 } from 'lucide-react'
 import { useAuth } from '../contexts/AuthContext'
-import { redirectToCheckout, PLANS } from '../lib/stripe'
+import { PLANS } from '../lib/stripe'
 
 // ─────────────────────────────────────────────────────────────
 // CONSTANTS
@@ -81,7 +81,7 @@ function getPasswordStrength(pw) {
 // ─────────────────────────────────────────────────────────────
 
 export default function GetStarted() {
-  const { signUp, updateProfile } = useAuth()
+  const { signUp } = useAuth()
   const [searchParams] = useSearchParams()
   const navigate       = useNavigate()
 
@@ -119,61 +119,41 @@ export default function GetStarted() {
     /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email) &&
     form.password.length >= 8
 
-  // ── SUBMIT: create account → Stripe Checkout ──────────────
+  // ── SUBMIT: create account → check your email ────────────
   const handleSubmit = async (e) => {
     e.preventDefault()
     setError(null)
     setLoading(true)
 
     try {
-      // 1. Create Supabase user (profile auto-created via DB trigger)
-      const authData = await signUp({
+      const trialEndsAt = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString()
+
+      // Sign up — all plan/billing data stored in user_metadata so AuthContext
+      // can auto-create the profile after email confirmation
+      await signUp({
         email:    form.email,
         password: form.password,
         fullName: form.fullName,
+        metadata: {
+          plan:          selectedPlan,
+          billing_cycle: annualBilling ? 'yearly' : 'monthly',
+          trial_ends_at: trialEndsAt,
+          phone:         `${form.dialCode} ${form.phone}`.trim(),
+          country:       form.country,
+          nationality:   form.nationality,
+        },
       })
 
-      // 2. Update profile with extra fields + trial end date (14 days from now)
-      const trialEndsAt = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString()
-      await updateProfile({
-        full_name:        form.fullName,
-        phone:            `${form.dialCode} ${form.phone}`.trim(),
-        country:          form.country,
-        nationality:      form.nationality,
-        plan:             selectedPlan,
-        billing_cycle:    annualBilling ? 'yearly' : 'monthly',
-        subscription_status: 'trialing',
-        trial_ends_at:    trialEndsAt,
-      }, authData?.user?.id)
-
-      // 3. Fire welcome email (fire-and-forget)
+      // Fire welcome email (fire-and-forget)
       fetch('/api/emails/send-welcome', {
         method:  'POST',
         headers: { 'Content-Type': 'application/json' },
-        body:    JSON.stringify({ name: form.name, email: form.email, plan: selectedPlan }),
+        body:    JSON.stringify({ name: form.fullName, email: form.email, plan: selectedPlan }),
       }).catch(() => {})
 
-      // 4. Show "redirecting to payment" state
-      setStep(3)
-
-      // 5. Redirect to Stripe Checkout
-      await redirectToCheckout({
-        plan:         selectedPlan,
-        billingCycle: annualBilling ? 'yearly' : 'monthly',
-        userEmail:    form.email,
-      })
-
-      // If Stripe redirect fails (e.g. no price IDs configured yet in dev),
-      // fall through to dashboard with a banner
+      setStep(3) // show "check your email"
     } catch (err) {
-      // Stripe not configured → go straight to dashboard (dev/staging)
-      if (err.message?.includes('No price ID') || err.message?.includes('Stripe not initialised')) {
-        navigate('/dashboard?checkout=success&trial=true')
-        return
-      }
-      // Auth errors (user already exists, weak password, etc.) — reset to account form
       setError(err.message ?? 'Something went wrong. Please try again.')
-      if (step === 3) setStep(2)
     } finally {
       setLoading(false)
     }
@@ -511,20 +491,20 @@ export default function GetStarted() {
           {/* ── STEP 3: Redirecting to Stripe ─────────────── */}
           {step === 3 && (
             <div className="max-w-sm mx-auto text-center py-16">
-              <div className="w-16 h-16 rounded-full bg-navy-50 flex items-center justify-center mx-auto mb-6">
-                <CreditCard size={28} className="text-navy-600" />
+              <div className="w-16 h-16 rounded-full bg-sage-50 flex items-center justify-center mx-auto mb-6">
+                <CheckCheck size={28} className="text-sage-600" />
               </div>
               <h2 className="font-display text-2xl font-light text-navy-950 mb-3">
-                Account created!
+                Check your inbox
               </h2>
-              <p className="text-stone-500 text-sm leading-relaxed mb-6">
-                Redirecting you to our payment partner to complete setup.
-                Your 14-day trial starts now — no charge until it ends.
+              <p className="text-stone-500 text-sm leading-relaxed mb-2">
+                We've sent a confirmation link to
               </p>
-              <div className="flex items-center justify-center gap-2 text-sm text-stone-400">
-                <Loader2 size={16} className="animate-spin" />
-                Connecting to Stripe…
-              </div>
+              <p className="text-navy-800 font-medium text-sm mb-6">{form.email}</p>
+              <p className="text-stone-400 text-xs leading-relaxed">
+                Click the link in that email to confirm your account and access your dashboard.
+                Your 14-day free trial starts the moment you confirm.
+              </p>
             </div>
           )}
 

@@ -10,6 +10,7 @@ import {
   Filter, CheckCheck, MessageSquare, Video, Play, FileEdit, Send, Menu
 } from 'lucide-react'
 import { useAuth }          from '../contexts/AuthContext'
+import { redirectToCheckout } from '../lib/stripe'
 import { useAccounts }      from '../hooks/useData'
 import { useDocuments }     from '../hooks/useData'
 import { usePeople }        from '../hooks/useData'
@@ -359,10 +360,23 @@ export default function Dashboard() {
 
   const planLimits = getPlanLimits(activeProfile.plan)
 
-  const handleUpgrade = (planId) => {
-    if (planId) {
-      navigate(`/get-started?plan=${planId}&billing=monthly`)
-    } else {
+  const handleUpgrade = async (planId) => {
+    if (isDemo) { navigate('/get-started'); return }
+    const targetPlan    = planId || activeProfile.plan || 'essential'
+    const billingCycle  = activeProfile.billing_cycle || 'monthly'
+    const trialEnd      = activeProfile.trial_ends_at
+      ? new Date(activeProfile.trial_ends_at).getTime()
+      : null
+    try {
+      await redirectToCheckout({
+        plan:       targetPlan,
+        billingCycle,
+        userEmail:  user.email,
+        customerId: activeProfile.stripe_customer_id || undefined,
+        trialEnd,
+      })
+    } catch {
+      // price IDs not configured — fall back to settings
       setActiveSection('settings')
     }
   }

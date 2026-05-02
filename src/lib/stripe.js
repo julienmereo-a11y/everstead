@@ -62,14 +62,14 @@ export const PLANS = {
 // ─────────────────────────────────────────────────────────────
 // CHECKOUT — redirect to Stripe Checkout
 // ─────────────────────────────────────────────────────────────
-export async function redirectToCheckout({ plan, billingCycle, userEmail, customerId }) {
+export async function redirectToCheckout({ plan, billingCycle, userEmail, customerId, trialEnd }) {
   const priceId = PLANS[plan]?.priceIds?.[billingCycle]
   if (!priceId) throw new Error(`No price ID for plan=${plan} cycle=${billingCycle}`)
 
   const res = await fetch('/api/stripe/create-checkout', {
     method:  'POST',
     headers: { 'Content-Type': 'application/json' },
-    body:    JSON.stringify({ priceId, userEmail, customerId }),
+    body:    JSON.stringify({ priceId, userEmail, customerId, trialEnd }),
   })
 
   if (!res.ok) {
