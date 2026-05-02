@@ -1,0 +1,2937 @@
+import React, { useState } from 'react'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
+import {
+  Shield, FileText, Users, Bell, Settings, LogOut,
+  ChevronRight, AlertCircle, CheckCircle2, Clock, Lock, HeartCrack,
+  Folder, CreditCard, Heart, BookOpen, Home, BarChart2,
+  Plus, Eye, Upload, Search, X, Info, AlertTriangle, ArrowRight,
+  Landmark, Building2, Wallet, Key, Activity, MoreHorizontal,
+  Pencil, Trash2, Star, Crown, Zap, RefreshCw, ExternalLink, Download,
+  Filter, CheckCheck, MessageSquare, Video, Play, FileEdit, Send, Menu
+} from 'lucide-react'
+import { useAuth }          from '../contexts/AuthContext'
+import { useAccounts }      from '../hooks/useData'
+import { useDocuments }     from '../hooks/useData'
+import { usePeople }        from '../hooks/useData'
+import { CheckoutSuccessBanner, OnboardingChecklist } from '../components/Onboarding'
+import { SkeletonStats } from '../components/Skeleton'
+import { useInstructions }  from '../hooks/useData'
+import { useSubscriptions } from '../hooks/useData'
+import { useAlerts }        from '../hooks/useData'
+import { useActivityLog }   from '../hooks/useData'
+import {
+  DEMO_PROFILE, DEMO_ACCOUNTS, DEMO_DOCUMENTS, DEMO_PEOPLE,
+  DEMO_INSTRUCTIONS, DEMO_SUBSCRIPTIONS, DEMO_ALERTS, DEMO_ACTIVITY, DEMO_MESSAGES,
+  getOwnerStatus,
+} from '../lib/demoData'
+
+// ─────────────────────────────────────────────────────────────
+// PLAN LIMITS
+// ─────────────────────────────────────────────────────────────
+const PLAN_LIMITS = {
+  essential: { trustedContacts: 2,  storageGB: 5,  messages: false },
+  family:    { trustedContacts: 10, storageGB: 25, messages: true  },
+  advisor:   { trustedContacts: 10, storageGB: 25, messages: true  },
+}
+function getPlanLimits(plan) {
+  // Unknown or missing plans fall back to family (not essential) to avoid
+  // silently restricting users who have a paid plan with a stale/unknown slug.
+  return PLAN_LIMITS[plan] ?? PLAN_LIMITS.family
+}
+
+// ─────────────────────────────────────────────────────────────
+// CONSTANTS
+// ─────────────────────────────────────────────────────────────
+const NAV_ITEMS = [
+  { id: 'overview',       label: 'Overview',         icon: Home },
+  { id: 'accounts',       label: 'Accounts',         icon: Landmark },
+  { id: 'documents',      label: 'Documents',        icon: FileText },
+  { id: 'people',         label: 'People',           icon: Users },
+  { id: 'messages',       label: 'Personal Messages',icon: MessageSquare },
+  { id: 'instructions',   label: 'Instructions',     icon: BookOpen },
+  { id: 'subscriptions',  label: 'Subscriptions',    icon: CreditCard },
+  { id: 'alerts',         label: 'Alerts',           icon: Bell },
+  { id: 'activity',       label: 'Activity',         icon: Activity },
+  { id: 'resources',      label: 'Help & Resources',  icon: BookOpen },
+]
+
+const CATEGORY_ICONS = {
+  Banking: Landmark, Retirement: BarChart2, Investment: BarChart2,
+  Insurance: Shield, Digital: Key, Property: Home, Other: Folder,
+}
+
+const STATUS_STYLES = {
+  current:  'bg-emerald-50 text-emerald-700 border-emerald-200',
+  expiring: 'bg-amber-50  text-amber-700  border-amber-200',
+  missing:  'bg-red-50    text-red-700    border-red-200',
+  expired:  'bg-stone-100 text-stone-500  border-stone-200',
+}
+
+const SEVERITY_STYLES = {
+  critical: { bar: 'bg-red-500',    badge: 'bg-red-50 text-red-700 border-red-200',    icon: AlertCircle },
+  warning:  { bar: 'bg-amber-500',  badge: 'bg-amber-50 text-amber-700 border-amber-200', icon: AlertTriangle },
+  info:     { bar: 'bg-sky-400',    badge: 'bg-sky-50  text-sky-700  border-sky-200',   icon: Info },
+}
+
+// ─────────────────────────────────────────────────────────────
+// TRIAL HELPERS
+// ─────────────────────────────────────────────────────────────
+function getTrialDaysLeft(trialEndsAt) {
+  if (!trialEndsAt) return null
+  const ms = new Date(trialEndsAt) - Date.now()
+  if (ms <= 0) return 0
+  // Always show at least 1 day while any time remains today
+  return Math.max(1, Math.ceil(ms / 86400000))
+}
+
+function TrialBanner({ daysLeft, onUpgrade }) {
+  const expired = daysLeft <= 0
+  if (expired) return null // expired users see the modal instead
+  const urgent = daysLeft <= 3
+  return (
+    <div className={`flex items-center justify-between gap-4 px-6 py-3 text-sm ${urgent ? 'bg-red-50 border-b border-red-200' : 'bg-amber-50 border-b border-amber-200'}`}>
+      <div className="flex items-center gap-2">
+        <Clock size={15} className={urgent ? 'text-red-500' : 'text-amber-600'} />
+        <span className={urgent ? 'text-red-700 font-medium' : 'text-amber-700'}>
+          {daysLeft === 1
+            ? 'Your free trial ends tomorrow.'
+            : `Your free trial ends in ${daysLeft} days.`}
+          {' '}After that, you'll need a paid plan to keep access.
+        </span>
+      </div>
+      <button
+        onClick={onUpgrade}
+        className={`shrink-0 text-xs font-semibold px-4 py-1.5 rounded-lg transition-colors ${urgent ? 'bg-red-600 text-white hover:bg-red-700' : 'bg-amber-500 text-white hover:bg-amber-600'}`}
+      >
+        Upgrade now
+      </button>
+    </div>
+  )
+}
+
+function TrialExpiredModal({ profile, onUpgrade }) {
+  return (
+    <div className="fixed inset-0 z-50 bg-navy-950/90 backdrop-blur-sm flex items-center justify-center p-6">
+      <div className="bg-white rounded-3xl shadow-2xl max-w-md w-full p-10 text-center">
+        <div className="w-16 h-16 rounded-2xl bg-red-50 flex items-center justify-center mx-auto mb-6">
+          <Lock size={28} className="text-red-500" />
+        </div>
+        <h2 className="font-display text-3xl font-light text-navy-950 mb-3">Your trial has ended</h2>
+        <p className="text-stone-500 text-sm leading-relaxed mb-8">
+          Your 14-day free trial has expired. Choose a plan to keep your vault, trusted contacts, and everything you've set up — all your data is safely saved.
+        </p>
+        <div className="space-y-3 mb-8">
+          {[
+            { name: 'Essential', price: '£7/mo', note: 'or £5/mo yearly · Launch offer', id: 'essential' },
+            { name: 'Family', price: '£15/mo', note: 'or £12/mo yearly — all household members', id: 'family', highlight: true },
+          ].map(plan => (
+            <button
+              key={plan.id}
+              onClick={() => onUpgrade(plan.id)}
+              className={`w-full flex items-center justify-between px-5 py-4 rounded-2xl border-2 transition-all text-left ${plan.highlight ? 'border-navy-700 bg-navy-50 hover:bg-navy-100' : 'border-stone-200 hover:border-navy-300'}`}
+            >
+              <div>
+                <p className="font-semibold text-navy-900 text-sm">{plan.name}</p>
+                <p className="text-stone-400 text-xs mt-0.5">{plan.note}</p>
+              </div>
+              <p className="font-display text-xl font-light text-navy-900">{plan.price}</p>
+            </button>
+          ))}
+        </div>
+        <p className="text-stone-400 text-xs">
+          Questions? Email us at{' '}
+          <a href="mailto:support@everstead.care" className="underline hover:text-navy-700">support@everstead.care</a>
+        </p>
+      </div>
+    </div>
+  )
+}
+
+// ─────────────────────────────────────────────────────────────
+// ADVISOR CANCELLATION HELPERS
+// ─────────────────────────────────────────────────────────────
+function getAdvisorDaysLeft(cancelledAt) {
+  if (!cancelledAt) return null
+  const deadline = new Date(cancelledAt).getTime() + 30 * 86400000
+  return Math.ceil((deadline - Date.now()) / 86400000)
+}
+
+function AdvisorCancelledBanner({ daysLeft, advisorName, onAddPayment }) {
+  const urgent = daysLeft <= 7
+  return (
+    <div className={`flex items-start justify-between gap-4 px-6 py-4 text-sm ${urgent ? 'bg-red-50 border-b border-red-200' : 'bg-orange-50 border-b border-orange-200'}`}>
+      <div className="flex items-start gap-3">
+        <AlertTriangle size={16} className={`mt-0.5 shrink-0 ${urgent ? 'text-red-500' : 'text-orange-500'}`} />
+        <div>
+          <p className={`font-semibold ${urgent ? 'text-red-800' : 'text-orange-800'}`}>
+            {advisorName ? `${advisorName} has cancelled their advisor plan.` : 'Your advisor has cancelled their plan.'}
+          </p>
+          <p className={`text-xs mt-0.5 leading-relaxed ${urgent ? 'text-red-700' : 'text-orange-700'}`}>
+            {daysLeft === 1
+              ? 'Your account will be locked tomorrow unless you add a payment method.'
+              : `You have ${daysLeft} days to add a payment method and continue with your own paid plan. Your data is safe.`}
+          </p>
+        </div>
+      </div>
+      <button
+        onClick={onAddPayment}
+        className={`shrink-0 text-xs font-semibold px-4 py-2 rounded-lg transition-colors whitespace-nowrap ${urgent ? 'bg-red-600 text-white hover:bg-red-700' : 'bg-orange-500 text-white hover:bg-orange-600'}`}
+      >
+        Add payment method
+      </button>
+    </div>
+  )
+}
+
+function AdvisorCancelledModal({ advisorName, onAddPayment }) {
+  return (
+    <div className="fixed inset-0 z-50 bg-navy-950/90 backdrop-blur-sm flex items-center justify-center p-6">
+      <div className="bg-white rounded-3xl shadow-2xl max-w-md w-full p-10 text-center">
+        <div className="w-16 h-16 rounded-2xl bg-orange-50 flex items-center justify-center mx-auto mb-6">
+          <CreditCard size={28} className="text-orange-500" />
+        </div>
+        <h2 className="font-display text-3xl font-light text-navy-950 mb-3">Payment required</h2>
+        <p className="text-stone-500 text-sm leading-relaxed mb-2">
+          {advisorName
+            ? <><strong>{advisorName}</strong> has cancelled their Everstead advisor plan.</>
+            : <>Your advisor has cancelled their Everstead plan.</>}
+        </p>
+        <p className="text-stone-500 text-sm leading-relaxed mb-8">
+          The 30-day grace period has ended. Add a payment method to continue — all your accounts, documents, and instructions are saved and waiting for you.
+        </p>
+        <div className="space-y-3 mb-8">
+          {[
+            { name: 'Essential', price: '£7/mo', note: 'or £5/mo yearly · Launch offer', id: 'essential' },
+            { name: 'Family', price: '£15/mo', note: 'or £12/mo yearly — all household members', id: 'family', highlight: true },
+          ].map(plan => (
+            <button
+              key={plan.id}
+              onClick={() => onAddPayment(plan.id)}
+              className={`w-full flex items-center justify-between px-5 py-4 rounded-2xl border-2 transition-all text-left ${plan.highlight ? 'border-navy-700 bg-navy-50 hover:bg-navy-100' : 'border-stone-200 hover:border-navy-300'}`}
+            >
+              <div>
+                <p className="font-semibold text-navy-900 text-sm">{plan.name}</p>
+                <p className="text-stone-400 text-xs mt-0.5">{plan.note}</p>
+              </div>
+              <p className="font-display text-xl font-light text-navy-900">{plan.price}</p>
+            </button>
+          ))}
+        </div>
+        <p className="text-stone-400 text-xs">
+          Questions? Email us at{' '}
+          <a href="mailto:support@everstead.care" className="underline hover:text-navy-700">support@everstead.care</a>
+        </p>
+      </div>
+    </div>
+  )
+}
+
+// ─────────────────────────────────────────────────────────────
+// DASHBOARD ROOT
+// ─────────────────────────────────────────────────────────────
+export default function Dashboard() {
+  const { user, profile, signOut, updateProfile } = useAuth()
+  const [searchParams] = useSearchParams()
+  const isDemo = searchParams.get('demo') === 'true'
+
+  const [activeSection, setActiveSection] = useState('overview')
+  const [sidebarOpen, setSidebarOpen]     = useState(false)
+  const [trialDismissed, setTrialDismissed] = useState(false)
+  // Demo-mode mutable people state (so invite/edit/remove reflect in UI)
+  const [demoPeople, setDemoPeople] = useState(DEMO_PEOPLE)
+
+  // Real data hooks — only used when not in demo mode
+  const realAccounts      = useAccounts()
+  const realDocuments     = useDocuments()
+  const realPeople        = usePeople()
+  const realInstructions  = useInstructions()
+  const realSubscriptions = useSubscriptions()
+  const realAlerts        = useAlerts()
+  const realActivity      = useActivityLog()
+
+  const navigate = useNavigate()
+
+  const handleSignOut = async () => {
+    await signOut()
+    navigate('/login')
+  }
+
+  // In demo mode, use seed data; otherwise require a real profile
+  const activeProfile = isDemo ? DEMO_PROFILE : profile
+
+  const accounts      = isDemo ? DEMO_ACCOUNTS      : realAccounts.data
+  const loadingAccounts = isDemo ? false             : realAccounts.loading
+  const addAccount    = isDemo ? () => {}            : realAccounts.add
+  const updateAccount = isDemo ? () => {}            : realAccounts.update
+  const removeAccount = isDemo ? () => {}            : realAccounts.remove
+
+  const documents     = isDemo ? DEMO_DOCUMENTS     : realDocuments.data
+  const loadingDocs   = isDemo ? false               : realDocuments.loading
+  const uploadFile    = isDemo ? () => {}            : realDocuments.uploadFile
+  const updateDocument = isDemo ? () => {}           : realDocuments.update
+  const removeDocument = isDemo ? () => {}           : realDocuments.remove
+
+  const people        = isDemo ? demoPeople          : realPeople.data
+  const loadingPeople = isDemo ? false               : realPeople.loading
+  const invite        = isDemo
+    ? (payload) => setDemoPeople(prev => [...prev, {
+        id: String(Date.now()), user_id: 'demo-user',
+        name: payload.name, email: payload.email, role: payload.role,
+        invite_status: 'pending',
+        access_grants: {
+          accessAreas: payload.accessAreas ?? [],
+          accountCategories: payload.accountCategories ?? [],
+          documentTypes: payload.documentTypes ?? [],
+          accessTiming: payload.accessTiming ?? 'always',
+        },
+      }])
+    : realPeople.invite
+  const resendInvite  = isDemo ? () => {}            : realPeople.resendInvite
+  const updatePerson  = isDemo
+    ? (id, payload) => setDemoPeople(prev => prev.map(p => p.id !== id ? p : {
+        ...p, role: payload.role,
+        access_grants: {
+          accessAreas: payload.accessAreas ?? [],
+          accountCategories: payload.accountCategories ?? [],
+          documentTypes: payload.documentTypes ?? [],
+          accessTiming: payload.accessTiming ?? 'always',
+        },
+      }))
+    : realPeople.update
+  const removePerson  = isDemo
+    ? (id) => setDemoPeople(prev => prev.filter(p => p.id !== id))
+    : realPeople.remove
+
+  const instructions     = isDemo ? DEMO_INSTRUCTIONS  : realInstructions.data
+  const loadingInstructions = isDemo ? false            : realInstructions.loading
+  const addInstruction   = isDemo ? () => {}            : realInstructions.addWithSteps
+  const updateInstruction = isDemo ? () => {}           : realInstructions.updateWithSteps
+  const removeInstruction = isDemo ? () => {}           : realInstructions.removeWithSteps
+
+  const subscriptions  = isDemo ? DEMO_SUBSCRIPTIONS : realSubscriptions.data
+  const loadingSubs    = isDemo ? false               : realSubscriptions.loading
+  const addSubscription    = isDemo ? () => {}        : realSubscriptions.add
+  const updateSubscription = isDemo ? () => {}        : realSubscriptions.update
+  const removeSubscription = isDemo ? () => {}        : realSubscriptions.remove
+
+  const [demoAlerts, setDemoAlerts] = useState(DEMO_ALERTS)
+  const alerts      = isDemo ? demoAlerts  : realAlerts.data
+  const markRead    = isDemo
+    ? (id) => setDemoAlerts(prev => prev.map(a => a.id === id ? { ...a, is_read: true } : a))
+    : realAlerts.markRead
+  const markAllRead = isDemo
+    ? () => setDemoAlerts(prev => prev.map(a => ({ ...a, is_read: true })))
+    : realAlerts.markAllRead
+  const unreadCount = isDemo
+    ? demoAlerts.filter(a => !a.is_read).length
+    : realAlerts.unreadCount
+
+  const activity        = isDemo ? DEMO_ACTIVITY : realActivity.data
+  const loadingActivity = isDemo ? false          : realActivity.loading
+
+  const messages        = isDemo ? DEMO_MESSAGES : []
+  const loadingMessages = false
+
+  if (!activeProfile) {
+    return (
+      <div className="min-h-screen bg-stone-50 flex items-center justify-center">
+        <div className="w-8 h-8 border-2 border-navy-200 border-t-navy-700 rounded-full animate-spin" />
+      </div>
+    )
+  }
+
+  const isTrialing = activeProfile.subscription_status === 'trialing'
+  const trialDaysLeft = isTrialing ? getTrialDaysLeft(activeProfile.trial_ends_at) : null
+  const trialExpired = trialDaysLeft !== null && trialDaysLeft <= 0
+
+  const advisorCancelledAt = activeProfile.advisor_cancelled_at ?? null
+  const advisorDaysLeft    = getAdvisorDaysLeft(advisorCancelledAt)
+  const advisorGraceExpired = advisorDaysLeft !== null && advisorDaysLeft <= 0
+  const advisorGraceActive  = advisorDaysLeft !== null && advisorDaysLeft > 0
+
+  // Owner suspension — set by admin when a death/incident report is verified
+  const ownerStatus    = isDemo
+    ? getOwnerStatus(activeProfile.email)
+    : (activeProfile.owner_status ?? 'active')
+  const isSuspended    = ownerStatus === 'deceased' || ownerStatus === 'incapacitated'
+  const isDeceased     = ownerStatus === 'deceased'
+
+  const planLimits = getPlanLimits(activeProfile.plan)
+
+  const handleUpgrade = (planId) => {
+    if (planId) {
+      navigate(`/get-started?plan=${planId}&billing=monthly`)
+    } else {
+      setActiveSection('settings')
+    }
+  }
+
+  return (
+    <div className="min-h-screen bg-stone-50 flex flex-col">
+      {/* Trial expired overlay */}
+      {trialExpired && <TrialExpiredModal profile={activeProfile} onUpgrade={handleUpgrade} />}
+      {/* Advisor grace period expired overlay */}
+      {!trialExpired && advisorGraceExpired && (
+        <AdvisorCancelledModal advisorName={activeProfile.advisor_name} onAddPayment={handleUpgrade} />
+      )}
+
+      {/* Demo banner */}
+      {isDemo && (
+        <div className="bg-amber-500 text-white text-xs font-semibold text-center py-2 px-4 flex items-center justify-center gap-3 z-50">
+          <span>Demo mode — data is fictional and no changes are saved.</span>
+          <Link to="/get-started" className="underline hover:no-underline">Start your real plan →</Link>
+        </div>
+      )}
+
+      {/* Suspended / deceased banner */}
+      {isSuspended && (
+        <div className={`px-6 py-4 flex items-start gap-4 z-40 ${isDeceased ? 'bg-stone-900 text-white' : 'bg-amber-700 text-white'}`}>
+          <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 mt-0.5 ${isDeceased ? 'bg-white/10' : 'bg-white/15'}`}>
+            {isDeceased ? <HeartCrack size={16} className="text-red-300" /> : <Lock size={16} className="text-amber-200" />}
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="font-semibold text-sm">
+              {isDeceased
+                ? 'This account has been suspended following a verified death report.'
+                : 'This account has been suspended following a verified incapacity report.'}
+            </p>
+            <p className={`text-xs mt-1 ${isDeceased ? 'text-stone-400' : 'text-amber-200'}`}>
+              This plan is now read-only. Trusted people with after-death access permissions have been notified and their access has been unlocked. No changes can be made to this account. Contact{' '}
+              <a href="mailto:support@everstead.care" className="underline font-medium">support@everstead.care</a> if you believe this is an error.
+            </p>
+          </div>
+        </div>
+      )}
+
+      {/* Read-only overlay when suspended */}
+      {isSuspended && (
+        <div className="fixed inset-0 z-30 pointer-events-none" style={{ background: 'rgba(0,0,0,0.08)' }} />
+      )}
+
+      <div className="flex flex-1 overflow-hidden" style={isSuspended ? { filter: 'grayscale(0.35)', pointerEvents: 'none' } : undefined}>
+
+      {/* ── MOBILE SIDEBAR BACKDROP ─────────────────────────── */}
+      {sidebarOpen && (
+        <div
+          className="fixed inset-0 z-30 bg-black/50 lg:hidden"
+          onClick={() => setSidebarOpen(false)}
+          aria-hidden="true"
+        />
+      )}
+
+      {/* ── SIDEBAR ─────────────────────────────────────────── */}
+      <aside
+        className={`fixed inset-y-0 left-0 z-40 w-64 bg-navy-950 border-r border-navy-800 flex flex-col shrink-0 transition-transform duration-300 lg:static lg:translate-x-0 lg:z-auto ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}
+        aria-label="Sidebar"
+      >
+
+        {/* Logo */}
+        <div className="px-6 py-5 border-b border-navy-800 flex items-center justify-between">
+          <Link to="/">
+            <img src="/logo-v2-white.png" alt="Everstead" className="h-10 w-auto" />
+          </Link>
+          <button
+            onClick={() => setSidebarOpen(false)}
+            className="lg:hidden text-stone-400 hover:text-white p-1.5 rounded-lg hover:bg-white/10 transition-colors"
+            aria-label="Close menu"
+          >
+            <X size={18} />
+          </button>
+        </div>
+
+        {/* Nav */}
+        <nav className="flex-1 px-3 py-4 space-y-0.5 overflow-y-auto" aria-label="Dashboard navigation">
+          {NAV_ITEMS.map(({ id, label, icon: Icon }) => {
+            const isActive = activeSection === id
+            const badge    = id === 'alerts' ? unreadCount : 0
+            const locked   = id === 'messages' && !planLimits.messages
+            return (
+              <button
+                key={id}
+                onClick={() => { setActiveSection(id); setSidebarOpen(false) }}
+                title={locked ? 'Personal Messages — Family plan & above. Click to see upgrade options.' : undefined}
+                aria-current={isActive && !locked ? 'page' : undefined}
+                className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40 ${
+                  isActive && !locked
+                    ? 'bg-white/10 text-white'
+                    : locked
+                    ? 'text-stone-600 cursor-pointer hover:text-stone-400 hover:bg-white/5'
+                    : 'text-stone-400 hover:text-white hover:bg-white/5'
+                }`}
+              >
+                <Icon size={16} />
+                <span className="flex-1 text-left">{label}</span>
+                {locked && <Lock size={12} className="text-stone-600" />}
+                {!locked && badge > 0 && (
+                  <span className="bg-red-500 text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center">
+                    {badge}
+                  </span>
+                )}
+              </button>
+            )
+          })}
+        </nav>
+
+        {/* User footer */}
+        <div className="px-3 py-4 border-t border-navy-800 space-y-1">
+          <div className="px-3 py-2.5 flex items-center gap-3">
+            <div className="w-8 h-8 rounded-full bg-navy-700 flex items-center justify-center text-xs font-bold text-white uppercase">
+              {activeProfile.full_name?.[0] ?? activeProfile.email[0]}
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-medium text-white truncate">{activeProfile.full_name ?? 'Your Account'}</p>
+              <p className="text-xs text-stone-500 truncate capitalize">{activeProfile.plan} plan</p>
+            </div>
+          </div>
+          <button
+            onClick={() => { setActiveSection('settings'); setSidebarOpen(false) }}
+            className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-stone-400 hover:text-white hover:bg-white/5 text-sm transition-colors"
+          >
+            <Settings size={15} /> Settings
+          </button>
+          <button
+            onClick={handleSignOut}
+            className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-stone-400 hover:text-red-400 hover:bg-white/5 text-sm transition-colors"
+          >
+            <LogOut size={15} /> Sign out
+          </button>
+        </div>
+      </aside>
+
+      {/* ── MAIN CONTENT ────────────────────────────────────── */}
+      <main className="flex-1 overflow-auto flex flex-col min-w-0" aria-label="Main content">
+
+        {/* Mobile top bar */}
+        <div className="lg:hidden sticky top-0 z-20 bg-navy-950 border-b border-navy-800 px-4 py-3 flex items-center gap-3">
+          <button
+            onClick={() => setSidebarOpen(true)}
+            className="text-stone-400 hover:text-white p-1.5 rounded-lg hover:bg-white/10 transition-colors"
+            aria-label="Open menu"
+          >
+            <Menu size={20} />
+          </button>
+          <Link to="/">
+            <img src="/logo-v2-white.png" alt="Everstead" className="h-8 w-auto" />
+          </Link>
+          <div className="flex-1" />
+          {unreadCount > 0 && (
+            <button
+              onClick={() => { setActiveSection('alerts'); setSidebarOpen(false) }}
+              className="relative text-stone-400 hover:text-white p-1.5 rounded-lg hover:bg-white/10 transition-colors"
+              aria-label={`${unreadCount} unread alerts`}
+            >
+              <Bell size={18} />
+              <span className="absolute -top-0.5 -right-0.5 bg-red-500 text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
+                {unreadCount}
+              </span>
+            </button>
+          )}
+        </div>
+        {!isDemo && <CheckoutSuccessBanner userName={activeProfile.full_name} />}
+        {isTrialing && !trialExpired && (
+          <TrialBanner daysLeft={trialDaysLeft} onUpgrade={() => handleUpgrade()} />
+        )}
+        {advisorGraceActive && (
+          <AdvisorCancelledBanner
+            daysLeft={advisorDaysLeft}
+            advisorName={activeProfile.advisor_name}
+            onAddPayment={() => handleUpgrade()}
+          />
+        )}
+        {activeSection === 'overview'      && <OverviewSection  profile={activeProfile} accounts={accounts} documents={documents} people={people} instructions={instructions} alerts={alerts} markRead={markRead} onNavigate={setActiveSection} planLimits={planLimits} loading={loadingAccounts || loadingDocs} />}
+        {activeSection === 'accounts'      && <AccountsSection  accounts={accounts} loading={loadingAccounts} add={addAccount} update={updateAccount} remove={removeAccount} />}
+        {activeSection === 'documents'     && <DocumentsSection documents={documents} loading={loadingDocs} uploadFile={uploadFile} update={updateDocument} remove={removeDocument} planLimits={planLimits} />}
+        {activeSection === 'people'        && <PeopleSection    people={people} loading={loadingPeople} invite={invite} resendInvite={resendInvite} updatePerson={updatePerson} removePerson={removePerson} planLimits={planLimits} onUpgrade={() => handleUpgrade()} />}
+        {activeSection === 'messages'      && <MessagesSection  messages={messages} loading={loadingMessages} people={people} isDemo={isDemo} planLimits={planLimits} onUpgrade={() => handleUpgrade()} />}
+        {activeSection === 'instructions'  && <InstructionsSection instructions={instructions} loading={loadingInstructions} add={addInstruction} update={updateInstruction} remove={removeInstruction} />}
+        {activeSection === 'subscriptions' && <SubscriptionsSection subscriptions={subscriptions} loading={loadingSubs} add={addSubscription} update={updateSubscription} remove={removeSubscription} />}
+        {activeSection === 'alerts'        && <AlertsSection    alerts={alerts} markRead={markRead} markAllRead={markAllRead} />}
+        {activeSection === 'activity'      && <ActivitySection  activity={activity} loading={loadingActivity} />}
+        {activeSection === 'resources'     && <ResourcesSection />}
+        {activeSection === 'settings'      && <SettingsSection  profile={activeProfile} isDemo={isDemo} updateProfile={updateProfile} />}
+      </main>
+      </div>
+    </div>
+  )
+}
+
+// ─────────────────────────────────────────────────────────────
+// OVERVIEW SECTION
+// ─────────────────────────────────────────────────────────────
+const PLAN_BADGE = {
+  essential: { label: 'Essential', cls: 'bg-stone-100 text-stone-600 border-stone-200' },
+  family:    { label: 'Family',    cls: 'bg-navy-50  text-navy-700  border-navy-200'  },
+  advisor:   { label: 'Advisor',   cls: 'bg-sage-50  text-sage-700  border-sage-200'  },
+}
+
+function OverviewSection({ profile, accounts, documents, people, instructions, alerts, markRead, onNavigate, planLimits, loading }) {
+  const criticalAlerts = alerts.filter(a => a.severity === 'critical' && !a.is_read)
+  const isFamilyPlus = planLimits?.messages ?? false // family and advisor have messages
+
+  const vaultStats = [
+    { label: 'Accounts documented', value: accounts.length, icon: Landmark, target: 5 },
+    { label: 'Documents uploaded', value: documents.filter(d => d.status !== 'missing').length, icon: FileText, target: 5 },
+    { label: `Trusted ${isFamilyPlus ? 'people' : 'contacts'}`, value: people.length, icon: Users, target: isFamilyPlus ? 5 : 2 },
+    { label: 'Instructions written', value: instructions.length, icon: BookOpen, target: 3 },
+  ]
+
+  const scoreBase = vaultStats.reduce((total, stat) => total + Math.min(stat.value / stat.target, 1), 0) / vaultStats.length
+  const alertPenalty = Math.min(criticalAlerts.length * 5, 15)
+  const score = Math.max(0, Math.round(scoreBase * 100) - alertPenalty)
+
+  const planBadge = PLAN_BADGE[profile.plan] ?? PLAN_BADGE.essential
+  const scoreLabel = isFamilyPlus ? 'Family readiness' : 'Plan readiness'
+
+  return (
+    <div className="p-8 max-w-5xl mx-auto">
+      {/* Header */}
+      <div className="mb-8 flex items-start justify-between gap-4 flex-wrap">
+        <div>
+          <h1 className="font-display text-3xl font-light text-navy-950">
+            {(() => { const h = new Date().getHours(); return h < 12 ? 'Good morning' : h < 18 ? 'Good afternoon' : 'Good evening' })()}, {profile.full_name?.split(' ')[0] ?? 'there'}.
+          </h1>
+          <p className="text-stone-500 mt-1 text-sm">Here's the state of your plan.</p>
+        </div>
+        <span className={`text-xs font-semibold px-3 py-1 rounded-full border capitalize ${planBadge.cls}`}>
+          {planBadge.label} plan
+        </span>
+      </div>
+
+      {/* Critical alerts banner */}
+      {criticalAlerts.length > 0 && (
+        <div className="mb-6 bg-red-50 border border-red-200 rounded-xl p-4">
+          <div className="flex items-start gap-3">
+            <AlertCircle size={18} className="text-red-500 mt-0.5 shrink-0" />
+            <div>
+              <p className="font-semibold text-red-800 text-sm">
+                {criticalAlerts.length} critical {criticalAlerts.length === 1 ? 'item needs' : 'items need'} your attention
+              </p>
+              <ul className="mt-1 space-y-0.5">
+                {criticalAlerts.slice(0, 3).map(a => (
+                  <li key={a.id} className="text-sm text-red-700">• {a.title}</li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Onboarding checklist — hidden once all steps done + dismissed */}
+      <OnboardingChecklist
+        accounts={accounts}
+        documents={documents}
+        people={people}
+        instructions={instructions}
+        onNavigate={onNavigate}
+        userId={profile.id}
+      />
+
+      {/* Readiness score + stats */}
+      <div className="grid lg:grid-cols-[1fr_2fr] gap-6 mb-6">
+        {/* Score ring */}
+        <div className="bg-white border border-stone-200 rounded-2xl p-6 flex flex-col items-center justify-center text-center">
+          <p className="text-xs font-semibold uppercase tracking-widest text-stone-400 mb-4">{scoreLabel}</p>
+          <div className="relative w-28 h-28">
+            <svg viewBox="0 0 100 100" className="w-full h-full -rotate-90">
+              <circle cx="50" cy="50" r="40" fill="none" stroke="#e7e5e4" strokeWidth="8" />
+              <circle
+                cx="50" cy="50" r="40" fill="none"
+                stroke={score >= 70 ? '#4c7d47' : score >= 40 ? '#d97706' : '#ef4444'}
+                strokeWidth="8"
+                strokeDasharray={`${2 * Math.PI * 40 * score / 100} ${2 * Math.PI * 40 * (1 - score / 100)}`}
+                strokeLinecap="round"
+              />
+            </svg>
+            <div className="absolute inset-0 flex flex-col items-center justify-center">
+              <span className="font-display text-3xl font-light text-navy-950">{score}%</span>
+            </div>
+          </div>
+          <p className="text-xs text-stone-500 mt-3">
+            {score >= 80 ? 'Excellent — your family is well prepared.' :
+             score >= 50 ? 'Good progress — a few items remaining.' :
+             'Getting started — keep building your plan.'}
+          </p>
+        </div>
+
+        {/* Vault stats */}
+        {loading ? (
+          <SkeletonStats count={4} />
+        ) : (
+          <div className="grid grid-cols-2 gap-4">
+            {vaultStats.map(({ label, value, icon: Icon, target }) => (
+              <div key={label} className="bg-white border border-stone-200 rounded-xl p-5">
+                <div className="flex items-center justify-between mb-3">
+                  <div className="w-8 h-8 rounded-lg bg-navy-50 flex items-center justify-center">
+                    <Icon size={15} className="text-navy-700" />
+                  </div>
+                  <span className="text-xs text-stone-400">{value}/{target}+ recommended</span>
+                </div>
+                <p className="font-display text-3xl font-light text-navy-950">{value}</p>
+                <p className="text-xs text-stone-500 mt-1">{label}</p>
+                <div className="mt-3 h-1 bg-stone-100 rounded-full overflow-hidden">
+                  <div
+                    className="h-full bg-sage-500 rounded-full transition-all"
+                    style={{ width: `${Math.min(100, (value / target) * 100)}%` }}
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Recent documents + alerts */}
+      <div className="grid lg:grid-cols-2 gap-6">
+        <div className="bg-white border border-stone-200 rounded-xl p-5">
+          <div className="flex items-center justify-between mb-4">
+            <p className="font-semibold text-navy-900 text-sm">Recent documents</p>
+            <span className="text-xs text-stone-400">{documents.length} total</span>
+          </div>
+          {documents.length === 0 ? (
+            <EmptyState icon={FileText} label="No documents yet" action="Upload your first document" />
+          ) : (
+            <div className="space-y-2">
+              {documents.slice(0, 5).map(doc => (
+                <div key={doc.id} className="flex items-center gap-3 py-2 border-b border-stone-50 last:border-0">
+                  <div className={`text-xs font-medium px-2 py-0.5 rounded-full border ${STATUS_STYLES[doc.status] ?? STATUS_STYLES.current}`}>
+                    {doc.status}
+                  </div>
+                  <span className="text-sm text-navy-800 truncate flex-1">{doc.name}</span>
+                  <span className="text-xs text-stone-400 shrink-0">{doc.doc_type}</span>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        <div className="bg-white border border-stone-200 rounded-xl p-5">
+          <div className="flex items-center justify-between mb-4">
+            <p className="font-semibold text-navy-900 text-sm">Recent alerts</p>
+            {alerts.filter(a => !a.is_read).length > 0 && (
+              <span className="text-xs bg-red-100 text-red-700 px-2 py-0.5 rounded-full font-medium">
+                {alerts.filter(a => !a.is_read).length} unread
+              </span>
+            )}
+          </div>
+          {alerts.length === 0 ? (
+            <EmptyState icon={Bell} label="No alerts" action="You're all caught up" />
+          ) : (
+            <div className="space-y-2">
+              {alerts.slice(0, 5).map(alert => {
+                const { icon: Icon, bar } = SEVERITY_STYLES[alert.severity]
+                return (
+                  <div
+                    key={alert.id}
+                    onClick={() => markRead(alert.id)}
+                    className={`flex items-start gap-3 py-2 border-b border-stone-50 last:border-0 cursor-pointer ${alert.is_read ? 'opacity-50' : ''}`}
+                  >
+                    <div className={`w-1.5 h-1.5 rounded-full mt-2 shrink-0 ${bar}`} />
+                    <p className="text-sm text-navy-800 leading-snug">{alert.title}</p>
+                  </div>
+                )
+              })}
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  )
+}
+
+// ─────────────────────────────────────────────────────────────
+// ACCOUNTS SECTION
+// ─────────────────────────────────────────────────────────────
+function AccountsSection({ accounts, loading, add, update, remove }) {
+  const emptyForm = { institution: '', account_type: '', category: 'Banking', account_number_hint: '', balance_display: '', notes: '' }
+  const [showAdd, setShowAdd] = useState(false)
+  const [editingAccount, setEditingAccount] = useState(null)
+  const [form, setForm] = useState(emptyForm)
+  const [saving, setSaving] = useState(false)
+
+  const grouped = accounts.reduce((acc, a) => {
+    const key = a.category || 'Other'
+    if (!acc[key]) acc[key] = []
+    acc[key].push(a)
+    return acc
+  }, {})
+
+  const closeModal = () => {
+    setShowAdd(false)
+    setEditingAccount(null)
+    setForm(emptyForm)
+  }
+
+  const openAdd = () => {
+    setEditingAccount(null)
+    setForm(emptyForm)
+    setShowAdd(true)
+  }
+
+  const openEdit = (account) => {
+    setShowAdd(false)
+    setEditingAccount(account)
+    setForm({
+      institution: account.institution || '',
+      account_type: account.account_type || '',
+      category: account.category || 'Banking',
+      account_number_hint: account.account_number_hint || '',
+      balance_display: account.balance_display || '',
+      notes: account.notes || '',
+    })
+  }
+
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    setSaving(true)
+    try {
+      const payload = {
+        ...form,
+        account_number_hint: form.account_number_hint.replace(/\D/g, '').slice(-4),
+      }
+      if (editingAccount) await update(editingAccount.id, payload)
+      else await add(payload)
+      closeModal()
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  return (
+    <SectionShell
+      title="Accounts & Assets"
+      subtitle={`${accounts.length} account${accounts.length !== 1 ? 's' : ''} documented`}
+      action={<button onClick={openAdd} className={primaryBtn}><Plus size={15} />Add account</button>}
+    >
+      {loading ? <LoadingSpinner /> : accounts.length === 0 ? (
+        <EmptyState icon={Landmark} label="No accounts yet" action="Add your first account to start organizing your financial life." />
+      ) : (
+        Object.entries(grouped).map(([category, items]) => {
+          const CatIcon = CATEGORY_ICONS[category] ?? Folder
+          return (
+            <div key={category} className="mb-6">
+              <div className="flex items-center gap-2 mb-3">
+                <CatIcon size={15} className="text-navy-600" />
+                <p className="text-sm font-semibold text-navy-800">{category}</p>
+                <span className="text-xs text-stone-400">({items.length})</span>
+              </div>
+              <div className="space-y-2">
+                {items.map(acc => (
+                  <div key={acc.id} className="bg-white border border-stone-200 rounded-xl px-5 py-4 flex items-center gap-3">
+                    <div className="w-9 h-9 rounded-lg bg-navy-50 flex items-center justify-center shrink-0">
+                      <Landmark size={16} className="text-navy-600" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="font-semibold text-navy-900 text-sm">{acc.institution}</p>
+                      <p className="text-xs text-stone-400 mt-0.5">
+                        {acc.account_type}
+                        {acc.account_number_hint ? <span className="ml-1 font-mono tracking-wide">•••• {acc.account_number_hint}</span> : ''}
+                      </p>
+                      {acc.notes && <p className="text-xs text-stone-400 mt-0.5 truncate">{acc.notes}</p>}
+                    </div>
+                    {acc.balance_display && (
+                      <span className="shrink-0 text-xs font-semibold bg-emerald-50 text-emerald-700 px-2.5 py-1 rounded-full border border-emerald-100">
+                        {acc.balance_display}
+                      </span>
+                    )}
+                    <div className="flex items-center gap-1 shrink-0">
+                      <button onClick={() => openEdit(acc)} className="p-1.5 text-stone-300 hover:text-navy-600 transition-colors rounded-lg hover:bg-navy-50" aria-label={`Edit ${acc.institution}`}>
+                        <Pencil size={14} />
+                      </button>
+                      <button onClick={() => remove(acc.id)} className="p-1.5 text-stone-300 hover:text-red-500 transition-colors rounded-lg hover:bg-red-50" aria-label={`Delete ${acc.institution}`}>
+                        <Trash2 size={14} />
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )
+        })
+      )}
+
+      {(showAdd || editingAccount) && (
+        <Modal title={editingAccount ? 'Edit account' : 'Add account'} onClose={closeModal}>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <Field label="Institution" required>
+              <input className={input} value={form.institution} onChange={e => setForm(p => ({ ...p, institution: e.target.value }))} placeholder="e.g. Barclays, Vanguard" required />
+            </Field>
+            <Field label="Account type" required>
+              <input className={input} value={form.account_type} onChange={e => setForm(p => ({ ...p, account_type: e.target.value }))} placeholder="e.g. Current Account, ISA" required />
+            </Field>
+            <Field label="Category">
+              <select className={input} value={form.category} onChange={e => setForm(p => ({ ...p, category: e.target.value }))}>
+                {['Banking', 'Retirement', 'Investment', 'Insurance', 'Digital', 'Property', 'Other'].map(c => <option key={c}>{c}</option>)}
+              </select>
+            </Field>
+            <div className="grid grid-cols-2 gap-4">
+              <Field label="Last 4 digits (optional)">
+                <input
+                  className={input}
+                  value={form.account_number_hint}
+                  onChange={e => setForm(p => ({ ...p, account_number_hint: e.target.value.replace(/\D/g, '').slice(-4) }))}
+                  maxLength={4}
+                  inputMode="numeric"
+                  placeholder="4821"
+                />
+              </Field>
+              <Field label="Balance / status (display only)">
+                <input className={input} value={form.balance_display} onChange={e => setForm(p => ({ ...p, balance_display: e.target.value }))} placeholder="e.g. £12,000 or Active" />
+              </Field>
+            </div>
+            <Field label="Notes / instructions">
+              <textarea className={input} rows={3} value={form.notes} onChange={e => setForm(p => ({ ...p, notes: e.target.value }))} placeholder="Add helpful details, access notes, or instructions for this account…" />
+            </Field>
+            <div className="flex gap-3 pt-2">
+              <button type="submit" disabled={saving} className={`${primaryBtn} flex-1`}>
+                {saving ? 'Saving…' : editingAccount ? 'Save changes' : 'Add account'}
+              </button>
+              <button type="button" onClick={closeModal} className={secondaryBtn}>Cancel</button>
+            </div>
+          </form>
+        </Modal>
+      )}
+    </SectionShell>
+  )
+}
+
+// ─────────────────────────────────────────────────────────────
+// DOCUMENT VIEWER MODAL (owner dashboard)
+// ─────────────────────────────────────────────────────────────
+function OwnerDocViewerModal({ doc, onClose }) {
+  if (!doc) return null
+  const url = doc.file_url || null
+  return (
+    <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4" onClick={onClose}>
+      <div
+        className="relative bg-white rounded-[2rem] shadow-2xl flex flex-col w-full max-w-4xl"
+        style={{ height: '90vh' }}
+        onClick={e => e.stopPropagation()}
+      >
+        <div className="flex items-center justify-between px-6 py-4 border-b border-stone-200 shrink-0">
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-xl bg-navy-50 text-navy-600 flex items-center justify-center">
+              <FileText size={16} />
+            </div>
+            <div>
+              <p className="font-semibold text-navy-900 text-sm">{doc.name}</p>
+              <p className="text-xs text-stone-400">{doc.doc_type} · {doc.status}</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-2">
+            {url && (
+              <>
+                <a href={url} target="_blank" rel="noopener noreferrer"
+                  className="flex items-center gap-1.5 text-xs font-medium text-navy-700 bg-navy-50 hover:bg-navy-100 px-3 py-2 rounded-xl transition-colors">
+                  <ExternalLink size={13} /> Open in tab
+                </a>
+                <a href={url} download={doc.name}
+                  className="flex items-center gap-1.5 text-xs font-medium text-white bg-navy-800 hover:bg-navy-900 px-3 py-2 rounded-xl transition-colors">
+                  <Download size={13} /> Download
+                </a>
+              </>
+            )}
+            <button onClick={onClose} className="ml-2 w-8 h-8 flex items-center justify-center rounded-xl text-stone-400 hover:text-stone-700 hover:bg-stone-100 transition-colors">
+              <X size={16} />
+            </button>
+          </div>
+        </div>
+        <div className="flex-1 overflow-hidden rounded-b-[2rem]">
+          {url ? (
+            <iframe src={url} title={doc.name} className="w-full h-full border-0" />
+          ) : (
+            <div className="flex flex-col items-center justify-center h-full text-stone-400 gap-3">
+              <FileText size={40} />
+              <p className="text-sm">No file available for this document.</p>
+              <p className="text-xs text-stone-300">Upload a file to enable previewing.</p>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  )
+}
+
+// ─────────────────────────────────────────────────────────────
+// DOCUMENTS SECTION
+// ─────────────────────────────────────────────────────────────
+function DocumentsSection({ documents, loading, uploadFile, update, remove, planLimits }) {
+  const emptyForm = { name: '', doc_type: 'Legal', status: 'current', expires_at: '', notes: '' }
+  const [showUpload, setShowUpload] = useState(false)
+  const [editingDocument, setEditingDocument] = useState(null)
+  const [viewingDoc, setViewingDoc] = useState(null)
+  const [file, setFile] = useState(null)
+  const [form, setForm] = useState(emptyForm)
+  const [saving, setSaving] = useState(false)
+  const [dragOver, setDragOver] = useState(false)
+  const [formError, setFormError] = useState(null)
+
+  const closeModal = () => {
+    setShowUpload(false)
+    setEditingDocument(null)
+    setFile(null)
+    setForm(emptyForm)
+    setFormError(null)
+  }
+
+  const openUpload = () => {
+    setEditingDocument(null)
+    setFile(null)
+    setForm(emptyForm)
+    setShowUpload(true)
+  }
+
+  const openEdit = (doc) => {
+    setShowUpload(false)
+    setEditingDocument(doc)
+    setFile(null)
+    setForm({
+      name: doc.name || '',
+      doc_type: doc.doc_type || 'Legal',
+      status: doc.status || 'current',
+      expires_at: doc.expires_at || '',
+      notes: doc.notes || '',
+    })
+  }
+
+  const handleUpload = async (e) => {
+    e.preventDefault()
+    if (!file) return
+    setSaving(true)
+    setFormError(null)
+    try {
+      await uploadFile(form, file)
+      closeModal()
+    } catch (err) {
+      setFormError(err.message ?? 'Upload failed. Please try again.')
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  const handleEdit = async (e) => {
+    e.preventDefault()
+    setSaving(true)
+    setFormError(null)
+    try {
+      await update(editingDocument.id, {
+        name: form.name,
+        doc_type: form.doc_type,
+        status: form.status,
+        expires_at: form.expires_at || null,
+        notes: form.notes,
+      })
+      closeModal()
+    } catch (err) {
+      setFormError(err.message ?? 'Save failed. Please try again.')
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  return (
+    <SectionShell
+      title="Document Vault"
+      subtitle={`${documents.filter(d => d.status !== 'missing').length} documents uploaded`}
+      action={<button onClick={openUpload} className={primaryBtn}><Upload size={15} />Upload document</button>}
+    >
+      {/* Storage usage bar */}
+      {planLimits && (() => {
+        const limitGB = planLimits.storageGB
+        // Demo: estimate ~0.5 MB per uploaded doc; real mode: sum storage_size fields
+        const usedMB = documents.filter(d => d.file_url || d.storage_path).length * 0.5
+        const usedGB = usedMB / 1024
+        const pct    = Math.min(100, (usedGB / limitGB) * 100)
+        const warn   = pct >= 80
+        return (
+          <div className="mb-5 bg-white border border-stone-200 rounded-xl px-5 py-4">
+            <div className="flex items-center justify-between mb-2">
+              <p className="text-xs font-semibold text-stone-600">Storage</p>
+              <p className={`text-xs font-medium ${warn ? 'text-amber-600' : 'text-stone-400'}`}>
+                {usedMB < 1 ? `${(usedMB * 1024).toFixed(0)} KB` : `${usedMB.toFixed(1)} MB`} of {limitGB} GB used
+              </p>
+            </div>
+            <div className="h-1.5 bg-stone-100 rounded-full overflow-hidden">
+              <div
+                className={`h-full rounded-full transition-all ${warn ? 'bg-amber-400' : 'bg-navy-600'}`}
+                style={{ width: `${Math.max(pct, pct > 0 ? 2 : 0)}%` }}
+              />
+            </div>
+            {warn && (
+              <p className="text-xs text-amber-600 mt-1.5">Storage almost full — consider upgrading your plan.</p>
+            )}
+          </div>
+        )
+      })()}
+      {loading ? <LoadingSpinner /> : documents.length === 0 ? (
+        <EmptyState icon={FileText} label="No documents yet" action="Upload your first document — will, insurance policies, property deeds, and more." />
+      ) : (
+        <div className="bg-white border border-stone-200 rounded-xl overflow-hidden overflow-x-auto">
+          <table className="w-full text-sm min-w-[640px]">
+            <thead>
+              <tr className="border-b border-stone-100">
+                {['Document','Type','Status','Last updated','Access',''].map(h => (
+                  <th key={h} scope="col" className="text-left text-xs font-semibold text-stone-400 uppercase tracking-wider px-5 py-3">{h}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-stone-50">
+              {documents.map(doc => (
+                <tr key={doc.id} className="hover:bg-stone-50 transition-colors">
+                  <td className="px-5 py-3.5">
+                    <div className="flex items-center gap-2.5">
+                      <FileText size={15} className="text-stone-400 shrink-0" />
+                      <div>
+                        <span className="font-medium text-navy-800 block">{doc.name}</span>
+                        {doc.notes && <span className="text-xs text-stone-400 block mt-0.5 truncate max-w-xs">{doc.notes}</span>}
+                      </div>
+                    </div>
+                  </td>
+                  <td className="px-5 py-3.5 text-stone-500">{doc.doc_type}</td>
+                  <td className="px-5 py-3.5">
+                    <span className={`text-xs font-medium px-2 py-0.5 rounded-full border ${STATUS_STYLES[doc.status] ?? STATUS_STYLES.current}`}>
+                      {doc.status}
+                    </span>
+                  </td>
+                  <td className="px-5 py-3.5 text-stone-400 text-xs">
+                    {doc.updated_at ? new Date(doc.updated_at).toLocaleDateString('en-GB', { day:'numeric', month:'short', year:'numeric' }) : '—'}
+                  </td>
+                  <td className="px-5 py-3.5 text-stone-400 text-xs">Owner</td>
+                  <td className="px-5 py-3.5">
+                    <div className="flex items-center gap-1.5">
+                      <button
+                        onClick={() => setViewingDoc(doc)}
+                        className={`p-1.5 transition-colors rounded hover:bg-navy-50 ${doc.file_url || doc.storage_path ? 'text-stone-400 hover:text-navy-600' : 'text-stone-200 cursor-default'}`}
+                        aria-label={`Preview ${doc.name}`}
+                        title={doc.file_url || doc.storage_path ? 'Preview / download' : 'No file uploaded yet'}
+                      >
+                        <Eye size={14} />
+                      </button>
+                      {doc.file_url && (
+                        <a
+                          href={doc.file_url}
+                          download={doc.name}
+                          className="p-1.5 text-stone-400 hover:text-navy-600 transition-colors rounded hover:bg-navy-50"
+                          aria-label={`Download ${doc.name}`}
+                          title="Download"
+                        >
+                          <Download size={14} />
+                        </a>
+                      )}
+                      <button onClick={() => openEdit(doc)} className="p-1.5 text-stone-300 hover:text-navy-600 transition-colors rounded hover:bg-navy-50" aria-label={`Edit ${doc.name}`}>
+                        <Pencil size={14} />
+                      </button>
+                      <button onClick={() => remove(doc.id)} className="p-1.5 text-stone-300 hover:text-red-500 transition-colors rounded hover:bg-red-50" aria-label={`Delete ${doc.name}`}>
+                        <Trash2 size={14} />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+
+      {viewingDoc && <OwnerDocViewerModal doc={viewingDoc} onClose={() => setViewingDoc(null)} />}
+
+      {showUpload && (
+        <Modal title="Upload document" onClose={closeModal}>
+          <form onSubmit={handleUpload} className="space-y-4">
+            <div
+              onDragOver={e => { e.preventDefault(); setDragOver(true) }}
+              onDragLeave={() => setDragOver(false)}
+              onDrop={e => { e.preventDefault(); setDragOver(false); const f = e.dataTransfer.files[0]; if (f) { setFile(f); setForm(p => ({ ...p, name: p.name || f.name.replace(/\.[^.]+$/,'') })) } }}
+              onClick={() => document.getElementById('doc-file').click()}
+              className={`border-2 border-dashed rounded-xl p-8 text-center cursor-pointer transition-colors ${dragOver ? 'border-navy-400 bg-navy-50' : 'border-stone-200 hover:border-navy-300'}`}
+            >
+              <Upload size={22} className="text-stone-300 mx-auto mb-2" />
+              {file ? (
+                <p className="text-sm text-navy-700 font-medium">{file.name} ({(file.size / 1024).toFixed(0)} KB)</p>
+              ) : (
+                <p className="text-sm text-stone-400">Drop file here or click to browse<br /><span className="text-xs">PDF, Word, JPG, PNG up to 50MB</span></p>
+              )}
+              <input id="doc-file" type="file" className="hidden" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.txt" onChange={e => { const f = e.target.files[0]; if (f) { setFile(f); setForm(p => ({ ...p, name: p.name || f.name.replace(/\.[^.]+$/,'') })) } }} />
+            </div>
+            <Field label="Document name" required>
+              <input className={input} value={form.name} onChange={e => setForm(p => ({ ...p, name: e.target.value }))} placeholder="e.g. Last Will & Testament" required />
+            </Field>
+            <Field label="Type">
+              <select className={input} value={form.doc_type} onChange={e => setForm(p => ({ ...p, doc_type: e.target.value }))}>
+                {['Legal','Finance','Insurance','Property','Personal','Medical','Other'].map(t => <option key={t}>{t}</option>)}
+              </select>
+            </Field>
+            <Field label="Notes">
+              <textarea className={input} rows={3} value={form.notes} onChange={e => setForm(p => ({ ...p, notes: e.target.value }))} placeholder="Add context, what this document covers, or where the original is kept…" />
+            </Field>
+            <Field label="Expiry date (optional)">
+              <input type="date" className={input} value={form.expires_at} onChange={e => setForm(p => ({ ...p, expires_at: e.target.value }))} />
+            </Field>
+            {formError && <p className="text-xs text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2">{formError}</p>}
+            <div className="flex gap-3 pt-2">
+              <button type="submit" disabled={saving || !file} className={`${primaryBtn} flex-1 disabled:opacity-50`}>
+                {saving ? 'Uploading…' : 'Upload'}
+              </button>
+              <button type="button" onClick={closeModal} className={secondaryBtn}>Cancel</button>
+            </div>
+          </form>
+        </Modal>
+      )}
+
+      {editingDocument && (
+        <Modal title="Edit document" onClose={closeModal}>
+          <form onSubmit={handleEdit} className="space-y-4">
+            <Field label="Document name" required>
+              <input className={input} value={form.name} onChange={e => setForm(p => ({ ...p, name: e.target.value }))} required />
+            </Field>
+            <div className="grid grid-cols-2 gap-4">
+              <Field label="Type">
+                <select className={input} value={form.doc_type} onChange={e => setForm(p => ({ ...p, doc_type: e.target.value }))}>
+                  {['Legal','Finance','Insurance','Property','Personal','Medical','Other'].map(t => <option key={t}>{t}</option>)}
+                </select>
+              </Field>
+              <Field label="Status">
+                <select className={input} value={form.status} onChange={e => setForm(p => ({ ...p, status: e.target.value }))}>
+                  {['current', 'expiring', 'missing', 'archived'].map(option => <option key={option}>{option}</option>)}
+                </select>
+              </Field>
+            </div>
+            <Field label="Notes">
+              <textarea className={input} rows={3} value={form.notes} onChange={e => setForm(p => ({ ...p, notes: e.target.value }))} />
+            </Field>
+            <Field label="Expiry date (optional)">
+              <input type="date" className={input} value={form.expires_at} onChange={e => setForm(p => ({ ...p, expires_at: e.target.value }))} />
+            </Field>
+            {formError && <p className="text-xs text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2">{formError}</p>}
+            <div className="flex gap-3 pt-2">
+              <button type="submit" disabled={saving} className={`${primaryBtn} flex-1`}>
+                {saving ? 'Saving…' : 'Save changes'}
+              </button>
+              <button type="button" onClick={closeModal} className={secondaryBtn}>Cancel</button>
+            </div>
+          </form>
+        </Modal>
+      )}
+    </SectionShell>
+  )
+}
+// ─────────────────────────────────────────────────────────────
+// PERSONAL MESSAGES SECTION
+// ─────────────────────────────────────────────────────────────
+function MessagesSection({ messages: initialMessages, loading, people, isDemo, planLimits, onUpgrade }) {
+  const [showCompose, setShowCompose]   = useState(false)
+  const [expanded, setExpanded]         = useState(null)
+  const [confirmRelease, setConfirmRelease] = useState(null)  // message id to confirm
+  const [confirmReleaseAll, setConfirmReleaseAll] = useState(false)
+  const [releasing, setReleasing]       = useState(null)  // id or 'all'
+  const [releasedIds, setReleasedIds]   = useState(
+    () => new Set(initialMessages.filter(m => m.released).map(m => m.id))
+  )
+  const [form, setForm] = useState({ recipient_name: '', recipient_role: '', title: '', type: 'note', content: '' })
+  const [saving, setSaving] = useState(false)
+
+  // Merge server state with local optimistic released state
+  const messages = initialMessages.map(m => ({
+    ...m,
+    released: releasedIds.has(m.id),
+    released_at: releasedIds.has(m.id) ? (m.released_at ?? new Date().toISOString()) : null,
+  }))
+
+  const sealedCount   = messages.filter(m => !m.released).length
+  const releasedCount = messages.filter(m => m.released).length
+
+  const doRelease = async (id) => {
+    setReleasing(id)
+    try {
+      if (!isDemo) { /* wire to Supabase update */ }
+      await new Promise(r => setTimeout(r, 700))
+      setReleasedIds(prev => new Set([...prev, id]))
+    } finally {
+      setReleasing(null)
+      setConfirmRelease(null)
+    }
+  }
+
+  const doReleaseAll = async () => {
+    setReleasing('all')
+    try {
+      if (!isDemo) { /* wire to Supabase batch update */ }
+      await new Promise(r => setTimeout(r, 900))
+      setReleasedIds(new Set(messages.map(m => m.id)))
+    } finally {
+      setReleasing(null)
+      setConfirmReleaseAll(false)
+    }
+  }
+
+  const handleSave = async (e) => {
+    e.preventDefault()
+    setSaving(true)
+    try {
+      await new Promise(r => setTimeout(r, 600))
+      setShowCompose(false)
+      setForm({ recipient_name: '', recipient_role: '', title: '', type: 'note', content: '' })
+      if (isDemo) { /* demo: message not persisted */ }
+    } finally { setSaving(false) }
+  }
+
+  const fmtDate = (iso) => {
+    try { return new Intl.DateTimeFormat('en-GB', { dateStyle: 'medium' }).format(new Date(iso)) } catch { return '—' }
+  }
+
+  const unreleased = messages.filter(m => !m.released)
+
+  // Feature gate: messages require Family plan or above
+  if (planLimits && !planLimits.messages) {
+    return (
+      <SectionShell title="Personal Messages" subtitle="Family plan feature">
+        <div className="flex flex-col items-center justify-center py-16 text-center gap-4 max-w-sm mx-auto">
+          <div className="w-14 h-14 rounded-2xl bg-navy-100 flex items-center justify-center">
+            <Lock size={24} className="text-navy-600" />
+          </div>
+          <div>
+            <p className="font-semibold text-navy-900 text-base mb-2">Personal Messages require the Family plan</p>
+            <p className="text-sm text-stone-500 leading-relaxed">
+              Write sealed messages for loved ones — released automatically after your passing, or on demand. Available on the Family and Advisor plans.
+            </p>
+          </div>
+          <button
+            onClick={onUpgrade}
+            className="inline-flex items-center gap-2 bg-navy-800 text-white text-sm font-semibold px-5 py-3 rounded-xl hover:bg-navy-700 transition-colors"
+          >
+            Upgrade to Family <ArrowRight size={15} />
+          </button>
+        </div>
+      </SectionShell>
+    )
+  }
+
+  return (
+    <SectionShell
+      title="Personal Messages"
+      subtitle={`${releasedCount} released · ${sealedCount} sealed`}
+      action={
+        <div className="flex items-center gap-2">
+          {unreleased.length > 1 && (
+            <button
+              onClick={() => setConfirmReleaseAll(true)}
+              className="inline-flex items-center gap-2 text-xs font-semibold bg-amber-100 text-amber-800 border border-amber-200 px-3 py-2 rounded-lg hover:bg-amber-200 transition-colors"
+            >
+              <Send size={13} /> Release all
+            </button>
+          )}
+          <button onClick={() => setShowCompose(true)} className={primaryBtn}><Plus size={15} />New message</button>
+        </div>
+      }
+    >
+      {/* Info banner */}
+      <div className="flex items-start gap-3 bg-navy-50 border border-navy-100 rounded-xl px-4 py-3.5 mb-5">
+        <Lock size={15} className="text-navy-600 mt-0.5 shrink-0" />
+        <p className="text-xs text-navy-700 leading-relaxed">
+          Messages are <strong>sealed</strong> by default — recipients cannot see them until you release them manually, or they are released automatically when Everstead verifies your passing. You can release a message at any time using the button on each card.
+        </p>
+      </div>
+
+      {loading ? <LoadingSpinner /> : messages.length === 0 ? (
+        <EmptyState icon={MessageSquare} label="No messages yet" action="Leave a personal note or video message for someone important — your spouse, children, attorney, or anyone you choose." />
+      ) : (
+        <div className="space-y-3">
+          {messages.map(msg => {
+            const isOpen     = expanded === msg.id
+            const isReleased = msg.released
+            const isReleasingThis = releasing === msg.id
+            const isPendingConfirm = confirmRelease === msg.id
+
+            return (
+              <div
+                key={msg.id}
+                className={`rounded-xl border overflow-hidden transition-colors ${isReleased ? 'border-emerald-200 bg-emerald-50/40' : 'border-stone-200 bg-white'}`}
+              >
+                {/* Row header */}
+                <div className="flex items-center gap-4 px-5 py-4">
+                  {/* Type icon */}
+                  <button
+                    className="shrink-0"
+                    onClick={() => setExpanded(isOpen ? null : msg.id)}
+                  >
+                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${msg.type === 'video' ? 'bg-purple-50 text-purple-600' : 'bg-navy-50 text-navy-600'}`}>
+                      {msg.type === 'video' ? <Video size={17} /> : <FileEdit size={17} />}
+                    </div>
+                  </button>
+
+                  {/* Info — clickable to expand */}
+                  <button className="flex-1 min-w-0 text-left" onClick={() => setExpanded(isOpen ? null : msg.id)}>
+                    <p className="font-semibold text-navy-900 text-sm truncate">{msg.title}</p>
+                    <p className="text-xs text-stone-500 mt-0.5">
+                      For <span className="font-medium text-navy-700">{msg.recipient_name}</span>
+                      {msg.recipient_role ? ` · ${msg.recipient_role}` : ''}
+                    </p>
+                  </button>
+
+                  {/* Status + release button */}
+                  <div className="flex items-center gap-2 shrink-0">
+                    {isReleased ? (
+                      <span className="inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-full border bg-emerald-50 text-emerald-700 border-emerald-200">
+                        <CheckCircle2 size={11} /> Released {msg.released_at ? fmtDate(msg.released_at) : ''}
+                      </span>
+                    ) : (
+                      <button
+                        onClick={() => setConfirmRelease(msg.id)}
+                        disabled={isReleasingThis}
+                        className="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg border border-navy-200 bg-navy-50 text-navy-700 hover:bg-navy-100 transition-colors disabled:opacity-50"
+                      >
+                        {isReleasingThis ? <RefreshCw size={12} className="animate-spin" /> : <Send size={12} />}
+                        {isReleasingThis ? 'Releasing…' : 'Release now'}
+                      </button>
+                    )}
+                    <button onClick={() => setExpanded(isOpen ? null : msg.id)}>
+                      <ChevronRight size={15} className={`text-stone-400 transition-transform ${isOpen ? 'rotate-90' : ''}`} />
+                    </button>
+                  </div>
+                </div>
+
+                {/* Inline release confirmation */}
+                {isPendingConfirm && (
+                  <div className="border-t border-amber-200 bg-amber-50 px-5 py-4 flex items-center gap-4 flex-wrap">
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-semibold text-amber-900">Release this message now?</p>
+                      <p className="text-xs text-amber-700 mt-0.5">
+                        Once released, <strong>{msg.recipient_name}</strong> will be able to see this message immediately on their delegate dashboard. This cannot be undone.
+                      </p>
+                    </div>
+                    <div className="flex gap-2 shrink-0">
+                      <button
+                        onClick={() => doRelease(msg.id)}
+                        disabled={isReleasingThis}
+                        className="inline-flex items-center gap-1.5 bg-navy-800 text-white text-xs font-semibold px-4 py-2 rounded-lg hover:bg-navy-700 transition-colors disabled:opacity-50"
+                      >
+                        {isReleasingThis ? 'Releasing…' : 'Yes, release'}
+                      </button>
+                      <button
+                        onClick={() => setConfirmRelease(null)}
+                        className="text-xs font-semibold text-stone-600 border border-stone-200 px-3 py-2 rounded-lg hover:bg-stone-100 transition-colors"
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                {/* Expanded body */}
+                {isOpen && (
+                  <div className="border-t border-stone-100 px-5 py-4 bg-stone-50 space-y-4">
+                    {msg.type === 'video' ? (
+                      <div className="flex flex-col items-center justify-center gap-3 py-8 bg-navy-950 rounded-xl text-white">
+                        <div className="w-14 h-14 rounded-full bg-white/10 flex items-center justify-center">
+                          <Play size={24} className="text-white ml-0.5" />
+                        </div>
+                        <p className="text-sm text-stone-300">
+                          {isDemo ? 'Video message stored securely — playback available in your real plan.' : 'No video uploaded yet.'}
+                        </p>
+                        {!isDemo && (
+                          <label className="cursor-pointer mt-2 inline-flex items-center gap-2 bg-white text-navy-900 text-xs font-semibold px-4 py-2 rounded-lg hover:bg-stone-100 transition-colors">
+                            <Upload size={13} /> Upload video
+                            <input type="file" accept="video/*" className="sr-only" />
+                          </label>
+                        )}
+                      </div>
+                    ) : (
+                      <div>
+                        <p className="text-xs font-semibold text-stone-500 mb-2 uppercase tracking-wide">Message content</p>
+                        <p className="text-sm text-navy-900 leading-relaxed whitespace-pre-wrap bg-white border border-stone-200 rounded-xl px-4 py-3.5">
+                          {msg.content || <span className="text-stone-400 italic">No content written yet.</span>}
+                        </p>
+                      </div>
+                    )}
+                    {!isReleased && (
+                      <div className="flex gap-3">
+                        <button onClick={() => {}} disabled={isDemo} className={`${secondaryBtn} disabled:opacity-40 disabled:cursor-not-allowed`} title={isDemo ? 'Not available in demo' : undefined}>
+                          <Pencil size={13} /> Edit
+                        </button>
+                        <button
+                          onClick={() => {}}
+                          disabled={isDemo}
+                          title={isDemo ? 'Not available in demo' : undefined}
+                          className="inline-flex items-center gap-2 text-xs font-semibold text-red-600 border border-red-200 bg-red-50 px-3 py-2 rounded-lg hover:bg-red-100 transition-colors"
+                        >
+                          <Trash2 size={13} /> Delete
+                        </button>
+                      </div>
+                    )}
+                    {isReleased && (
+                      <p className="text-xs text-emerald-700 flex items-center gap-1.5">
+                        <CheckCircle2 size={13} /> This message has been released and is visible to {msg.recipient_name}.
+                      </p>
+                    )}
+                  </div>
+                )}
+              </div>
+            )
+          })}
+        </div>
+      )}
+
+      {/* Release all confirmation modal */}
+      {confirmReleaseAll && (
+        <Modal title="Release all messages?" onClose={() => setConfirmReleaseAll(false)}>
+          <div className="space-y-4">
+            <p className="text-sm text-stone-700 leading-relaxed">
+              This will immediately release <strong>{unreleased.length} sealed message{unreleased.length !== 1 ? 's' : ''}</strong> to their named recipients. Each person will be able to see their message on their delegate dashboard straight away.
+            </p>
+            <p className="text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded-xl px-4 py-3">
+              This cannot be undone. Released messages are permanently visible to their recipients.
+            </p>
+            <div className="flex gap-3 pt-1">
+              <button
+                onClick={doReleaseAll}
+                disabled={releasing === 'all'}
+                className={`${primaryBtn} flex-1`}
+              >
+                {releasing === 'all' ? 'Releasing…' : `Release ${unreleased.length} message${unreleased.length !== 1 ? 's' : ''}`}
+              </button>
+              <button onClick={() => setConfirmReleaseAll(false)} className={secondaryBtn}>Cancel</button>
+            </div>
+          </div>
+        </Modal>
+      )}
+
+      {/* Compose modal */}
+      {showCompose && (
+        <Modal title="New personal message" onClose={() => setShowCompose(false)}>
+          <form onSubmit={handleSave} className="space-y-4">
+            <div>
+              <label className="block text-xs font-semibold text-stone-600 mb-2">Message type</label>
+              <div className="grid grid-cols-1 gap-3">
+                {[
+                  { value: 'note',  label: 'Written note',  icon: FileEdit, desc: 'A personal letter or written message' },
+                ].map(opt => (
+                  <button
+                    key={opt.value}
+                    type="button"
+                    onClick={() => setForm(p => ({ ...p, type: opt.value }))}
+                    className={`flex flex-col gap-1.5 items-start p-4 rounded-xl border text-left transition-colors ${
+                      form.type === opt.value ? 'border-navy-300 bg-navy-50 ring-1 ring-navy-300' : 'border-stone-200 hover:border-stone-300'
+                    }`}
+                  >
+                    <opt.icon size={17} className={form.type === opt.value ? 'text-navy-700' : 'text-stone-400'} />
+                    <p className="text-sm font-semibold text-navy-900">{opt.label}</p>
+                    <p className="text-xs text-stone-400 leading-snug">{opt.desc}</p>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <Field label="Message title" required>
+              <input
+                className={input}
+                placeholder={form.type === 'video' ? 'e.g. A video for Emily' : 'e.g. To my son Thomas'}
+                value={form.title}
+                onChange={e => setForm(p => ({ ...p, title: e.target.value }))}
+                required
+              />
+            </Field>
+
+            <Field label="Recipient" required>
+              <select
+                className={input}
+                value={form.recipient_name}
+                onChange={e => {
+                  const person = people.find(p => p.name === e.target.value)
+                  setForm(p => ({ ...p, recipient_name: e.target.value, recipient_role: person?.role || '' }))
+                }}
+                required
+              >
+                <option value="" disabled>Select a person…</option>
+                {people.length > 0
+                  ? people.map(p => <option key={p.id} value={p.name}>{p.name} — {p.role}</option>)
+                  : <option disabled>No trusted people yet — add someone in People first</option>
+                }
+              </select>
+            </Field>
+
+            {form.type === 'note' && (
+              <Field label="Message" required>
+                <textarea
+                  className={`${input} min-h-[140px] resize-y`}
+                  placeholder="Write your personal message here. It will be encrypted and only released to the recipient when needed."
+                  value={form.content}
+                  onChange={e => setForm(p => ({ ...p, content: e.target.value }))}
+                  required
+                />
+              </Field>
+            )}
+
+            {form.type === 'video' && (
+              <div className="border-2 border-dashed border-stone-200 rounded-xl p-6 text-center hidden">
+                <Video size={28} className="mx-auto text-stone-300 mb-2" />
+                <p className="text-sm text-stone-500">Video messages coming soon.</p>
+                <p className="text-xs text-stone-400 mt-1">Supported formats: mp4, mov, webm — up to 2 GB</p>
+              </div>
+            )}
+
+            <div className="flex gap-3 pt-2">
+              <button type="submit" disabled={saving} className={`${primaryBtn} flex-1`}>
+                {saving ? 'Saving…' : 'Save message'}
+              </button>
+              <button type="button" onClick={() => setShowCompose(false)} className={secondaryBtn}>Cancel</button>
+            </div>
+          </form>
+        </Modal>
+      )}
+    </SectionShell>
+  )
+}
+
+// ─────────────────────────────────────────────────────────────
+// PEOPLE SECTION
+// ─────────────────────────────────────────────────────────────
+
+// Must mirror NAV_ITEMS exactly (minus 'overview', 'people', 'alerts', 'activity')
+const ACCESS_AREAS = [
+  {
+    key: 'accounts', label: 'Accounts & Assets', icon: Landmark,
+    desc: 'Bank accounts, investments, pensions',
+    subKey: 'accountCategories',
+    subLabel: 'Which account categories?',
+    subOptions: ['Banking', 'Retirement', 'Investment', 'Insurance', 'Digital', 'Property', 'Other'],
+  },
+  {
+    key: 'documents', label: 'Documents', icon: FileText,
+    desc: 'Wills, insurance policies, deeds',
+    subKey: 'documentTypes',
+    subLabel: 'Which document types?',
+    subOptions: ['Legal', 'Insurance', 'Property', 'Medical', 'Personal', 'Financial', 'Other'],
+  },
+  {
+    key: 'messages', label: 'Personal Messages', icon: MessageSquare,
+    desc: 'Private letters and video messages',
+  },
+  {
+    key: 'instructions', label: 'Instructions', icon: BookOpen,
+    desc: 'Step-by-step guidance and wishes',
+  },
+  {
+    key: 'subscriptions', label: 'Subscriptions', icon: CreditCard,
+    desc: 'Recurring services and memberships',
+  },
+]
+
+const ALL_AREA_KEYS = ACCESS_AREAS.map(a => a.key)
+
+// Checkbox with tick mark
+function Checkbox({ checked }) {
+  return (
+    <div className={`w-4 h-4 rounded border-2 flex items-center justify-center shrink-0 transition-colors ${
+      checked ? 'bg-navy-800 border-navy-800' : 'border-stone-300 bg-white'
+    }`}>
+      {checked && (
+        <svg width="10" height="8" viewBox="0 0 10 8" fill="none">
+          <path d="M1 4l2.5 2.5L9 1" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+        </svg>
+      )}
+    </div>
+  )
+}
+
+// The invite / edit form — shared by both invite modal and edit modal
+function PersonAccessForm({ initial, onSave, onCancel, saving, submitLabel }) {
+  const emptyForm = {
+    name: '', email: '', role: '',
+    accessAreas: [],
+    accountCategories: [],
+    documentTypes: [],
+    accessTiming: 'always', // 'always' | 'after_death'
+  }
+  const [form, setForm] = useState(initial ?? emptyForm)
+  const [accessError, setAccessError] = useState(null)
+
+  const isFullAccess = form.role === 'Spouse / Partner'
+
+  const toggleArea = (key) => {
+    setForm(p => {
+      const next = p.accessAreas.includes(key)
+        ? p.accessAreas.filter(k => k !== key)
+        : [...p.accessAreas, key]
+      // Clear sub-selections when unchecking parent
+      const area = ACCESS_AREAS.find(a => a.key === key)
+      const patch = { accessAreas: next }
+      if (area?.subKey && !next.includes(key)) patch[area.subKey] = []
+      return { ...p, ...patch }
+    })
+  }
+
+  const toggleSub = (subKey, val) => {
+    setForm(p => ({
+      ...p,
+      [subKey]: p[subKey].includes(val)
+        ? p[subKey].filter(v => v !== val)
+        : [...p[subKey], val],
+    }))
+  }
+
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    if (!isFullAccess && form.accessAreas.length === 0) {
+      setAccessError('Please select at least one access area.')
+      return
+    }
+    setAccessError(null)
+    const payload = {
+      ...form,
+      accessAreas: isFullAccess ? ALL_AREA_KEYS : form.accessAreas,
+    }
+    onSave(payload)
+  }
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-5">
+      {/* Name + Email — only shown when inviting (no initial.id) */}
+      {!initial?.id && (
+        <>
+          <Field label="Full name" required>
+            <input className={input} value={form.name} onChange={e => setForm(p => ({...p, name: e.target.value}))} placeholder="Jane Smith" required />
+          </Field>
+          <Field label="Email address" required>
+            <input type="email" className={input} value={form.email} onChange={e => setForm(p => ({...p, email: e.target.value}))} placeholder="jane@example.com" required />
+          </Field>
+        </>
+      )}
+
+      <Field label="Role" required>
+        <select
+          className={input}
+          value={form.role}
+          onChange={e => setForm(p => ({...p, role: e.target.value, accessAreas: [], accountCategories: [], documentTypes: []}))}
+          required
+        >
+          <option value="" disabled>Select a role…</option>
+          <optgroup label="Full access">
+            <option>Spouse / Partner</option>
+          </optgroup>
+          <optgroup label="Estate &amp; legal">
+            <option>Primary Executor</option>
+            <option>Secondary Executor</option>
+            <option>Estate Attorney</option>
+          </optgroup>
+          <optgroup label="Family">
+            <option>Family Member</option>
+            <option>Family Caretaker</option>
+          </optgroup>
+          <optgroup label="Professional">
+            <option>Financial Advisor</option>
+            <option>Healthcare Proxy</option>
+          </optgroup>
+        </select>
+      </Field>
+
+      {form.role && (
+        <>
+          {/* ── Access areas ── */}
+          {isFullAccess ? (
+            <div className="flex items-start gap-2.5 bg-emerald-50 border border-emerald-200 rounded-xl px-3.5 py-3">
+              <CheckCircle2 size={14} className="text-emerald-600 mt-0.5 shrink-0" />
+              <p className="text-xs text-emerald-800 leading-relaxed">
+                <span className="font-semibold">Full access role</span> — Spouse / Partner can view all sections of your plan.
+              </p>
+            </div>
+          ) : (
+            <div>
+              <p className="text-xs font-semibold text-stone-600 mb-1">Access areas <span className="text-red-500">*</span></p>
+              <p className="text-xs text-stone-400 mb-3">Choose which sections of your plan this person can view.</p>
+              <div className="space-y-2">
+                {ACCESS_AREAS.map(area => {
+                  const checked = form.accessAreas.includes(area.key)
+                  const Icon = area.icon
+                  return (
+                    <div key={area.key}>
+                      <button
+                        type="button"
+                        onClick={() => toggleArea(area.key)}
+                        className={`w-full flex items-center gap-3 px-3.5 py-3 rounded-xl border text-left transition-colors ${
+                          checked ? 'border-navy-300 bg-navy-50 ring-1 ring-navy-200' : 'border-stone-200 hover:border-stone-300 hover:bg-stone-50'
+                        }`}
+                      >
+                        <Checkbox checked={checked} />
+                        <Icon size={14} className={checked ? 'text-navy-600' : 'text-stone-400'} />
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-medium text-navy-900">{area.label}</p>
+                          <p className="text-xs text-stone-400">{area.desc}</p>
+                        </div>
+                      </button>
+
+                      {/* Sub-selector: shown when area is checked and has sub-options */}
+                      {checked && area.subOptions && (
+                        <div className="ml-7 mt-1.5 pl-3 border-l-2 border-navy-100 space-y-1.5 pb-1">
+                          <p className="text-xs text-stone-500 font-medium mb-1">{area.subLabel}</p>
+                          <div className="flex flex-wrap gap-1.5">
+                            {area.subOptions.map(opt => {
+                              const subChecked = form[area.subKey].includes(opt)
+                              return (
+                                <button
+                                  key={opt}
+                                  type="button"
+                                  onClick={() => toggleSub(area.subKey, opt)}
+                                  className={`text-xs px-2.5 py-1 rounded-full border font-medium transition-colors ${
+                                    subChecked
+                                      ? 'bg-navy-800 text-white border-navy-800'
+                                      : 'bg-white text-stone-600 border-stone-300 hover:border-navy-300 hover:text-navy-700'
+                                  }`}
+                                >
+                                  {opt}
+                                </button>
+                              )
+                            })}
+                          </div>
+                          {form[area.subKey].length === 0 && (
+                            <p className="text-xs text-stone-400 italic">All types (no filter)</p>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  )
+                })}
+              </div>
+            </div>
+          )}
+
+          {/* ── Access timing ── */}
+          <div>
+            <p className="text-xs font-semibold text-stone-600 mb-1">When can they access this?</p>
+            <p className="text-xs text-stone-400 mb-3">Control whether access is immediate or only unlocked after you pass away or are reported incapacitated.</p>
+            <div className="grid grid-cols-2 gap-2">
+              {[
+                { value: 'always', label: 'While I\'m alive', desc: 'Access granted now, upon acceptance' },
+                { value: 'after_death', label: 'After death / incapacity', desc: 'Locked until you are reported by a trusted contact' },
+              ].map(opt => {
+                const sel = form.accessTiming === opt.value
+                return (
+                  <button
+                    key={opt.value}
+                    type="button"
+                    onClick={() => setForm(p => ({...p, accessTiming: opt.value}))}
+                    className={`flex flex-col items-start gap-1 px-3.5 py-3 rounded-xl border text-left transition-colors ${
+                      sel ? 'border-navy-300 bg-navy-50 ring-1 ring-navy-200' : 'border-stone-200 hover:border-stone-300 hover:bg-stone-50'
+                    }`}
+                  >
+                    <div className="flex items-center gap-2 w-full">
+                      <Checkbox checked={sel} />
+                      <span className="text-sm font-medium text-navy-900">{opt.label}</span>
+                    </div>
+                    <p className="text-xs text-stone-400 pl-6">{opt.desc}</p>
+                  </button>
+                )
+              })}
+            </div>
+          </div>
+        </>
+      )}
+
+      {accessError && <p className="text-xs text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2">{accessError}</p>}
+      <div className="flex gap-3 pt-1">
+        <button type="submit" disabled={saving} className={`${primaryBtn} flex-1`}>
+          {saving ? 'Saving…' : submitLabel}
+        </button>
+        <button type="button" onClick={onCancel} className={secondaryBtn}>Cancel</button>
+      </div>
+    </form>
+  )
+}
+
+function PeopleSection({ people, loading, invite, resendInvite, updatePerson, removePerson, planLimits, onUpgrade }) {
+  const [showInvite, setShowInvite] = useState(false)
+  const [editingPerson, setEditingPerson] = useState(null)
+  const [saving, setSaving] = useState(false)
+  const [sectionError, setSectionError] = useState(null)
+
+  const handleInvite = async (payload) => {
+    setSaving(true)
+    try {
+      await invite(payload)
+      setShowInvite(false)
+    } catch (err) { setSectionError(err.message ?? 'Could not send invite. Please try again.') }
+    finally { setSaving(false) }
+  }
+
+  const handleEdit = async (payload) => {
+    setSaving(true)
+    try {
+      await updatePerson(editingPerson.id, payload)
+      setEditingPerson(null)
+    } catch (err) { setSectionError(err.message ?? 'Could not save changes.') }
+    finally { setSaving(false) }
+  }
+
+  const handleRemove = async (person) => {
+    if (!window.confirm(`Remove ${person.name ?? 'this person'} from your trusted people? They will lose all access.`)) return
+    try { await removePerson(person.id) }
+    catch (err) { setSectionError(err.message ?? 'Could not remove person.') }
+  }
+
+  // Build a readable access summary for each person card
+  const accessSummary = (person) => {
+    const areas = person.access_grants?.accessAreas ?? []
+    if (!areas.length) return 'No areas selected'
+    if (areas.length === ALL_AREA_KEYS.length) return 'Full access'
+    return areas.map(k => ACCESS_AREAS.find(a => a.key === k)?.label ?? k).join(', ')
+  }
+
+  const timingLabel = (person) => {
+    const t = person.access_grants?.accessTiming
+    return t === 'after_death' ? 'After death / incapacity' : 'While alive'
+  }
+
+  const contactLimit = planLimits?.trustedContacts ?? 10
+  const atLimit = people.length >= contactLimit
+
+  return (
+    <SectionShell
+      title="Trusted People"
+      subtitle={`${people.length} / ${contactLimit} trusted contacts`}
+      action={
+        atLimit
+          ? (
+            <button
+              onClick={onUpgrade}
+              className="inline-flex items-center gap-2 rounded-xl bg-amber-50 border border-amber-200 text-amber-700 text-sm font-semibold px-4 py-2 hover:bg-amber-100 transition-colors"
+            >
+              <Lock size={14} /> Limit reached — upgrade
+            </button>
+          )
+          : <button onClick={() => setShowInvite(true)} className={primaryBtn}><Plus size={15} />Invite person</button>
+      }
+    >
+      {sectionError && (
+        <div className="mb-4 flex items-start gap-3 bg-red-50 border border-red-200 rounded-xl px-4 py-3">
+          <AlertCircle size={15} className="text-red-500 mt-0.5 shrink-0" />
+          <p className="text-sm text-red-700 flex-1">{sectionError}</p>
+          <button onClick={() => setSectionError(null)} className="text-red-400 hover:text-red-600"><X size={14} /></button>
+        </div>
+      )}
+      {atLimit && (
+        <div className="mb-4 flex items-start gap-3 bg-amber-50 border border-amber-200 rounded-xl px-4 py-3">
+          <AlertTriangle size={15} className="text-amber-600 mt-0.5 shrink-0" />
+          <div className="flex-1">
+            <p className="text-sm font-semibold text-amber-800">Trusted contact limit reached</p>
+            <p className="text-xs text-amber-700 mt-0.5 leading-relaxed">
+              Your current plan allows up to {contactLimit} trusted contacts.{' '}
+              <button onClick={onUpgrade} className="underline font-semibold hover:no-underline">Upgrade to add more.</button>
+            </p>
+          </div>
+        </div>
+      )}
+      {loading ? <LoadingSpinner /> : people.length === 0 ? (
+        <EmptyState icon={Users} label="No trusted people yet" action="Invite an executor, healthcare proxy, or family member to your plan." />
+      ) : (
+        <div className="space-y-3">
+          {people.map(person => (
+            <div key={person.id} className="bg-white border border-stone-200 rounded-xl px-5 py-4 flex items-start gap-4">
+              <div className="w-10 h-10 rounded-full bg-navy-100 flex items-center justify-center text-sm font-bold text-navy-700 uppercase shrink-0 mt-0.5">
+                {person.name?.[0] ?? '?'}
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <p className="font-medium text-navy-900 text-sm">{person.name}</p>
+                  <span className="text-xs text-stone-400">{person.role}</span>
+                  <div className={`text-xs font-medium px-2 py-0.5 rounded-full border ${
+                    person.invite_status === 'accepted' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' :
+                    person.invite_status === 'declined' ? 'bg-red-50 text-red-700 border-red-200' :
+                    'bg-amber-50 text-amber-700 border-amber-200'
+                  }`}>
+                    {person.invite_status}
+                  </div>
+                </div>
+                <p className="text-xs text-stone-400 mt-0.5">{person.email}</p>
+                <div className="flex flex-wrap gap-x-3 gap-y-0.5 mt-1.5">
+                  <span className="text-xs text-stone-500"><span className="font-medium text-stone-600">Access:</span> {accessSummary(person)}</span>
+                  <span className="text-xs text-stone-500"><span className="font-medium text-stone-600">Timing:</span> {timingLabel(person)}</span>
+                </div>
+              </div>
+              <div className="flex items-center gap-1 shrink-0">
+                {person.invite_status === 'pending' && (
+                  <button onClick={() => resendInvite(person.id)} className="text-xs text-navy-600 hover:text-navy-900 font-medium px-2 py-1 rounded-lg hover:bg-navy-50 transition-colors">
+                    Resend
+                  </button>
+                )}
+                <button
+                  onClick={() => setEditingPerson(person)}
+                  className="p-1.5 text-stone-300 hover:text-navy-600 transition-colors rounded-lg hover:bg-navy-50"
+                  title="Edit access"
+                  aria-label={`Edit access for ${person.name}`}
+                >
+                  <Pencil size={14} />
+                </button>
+                <button
+                  onClick={() => handleRemove(person)}
+                  className="p-1.5 text-stone-300 hover:text-red-500 transition-colors rounded-lg hover:bg-red-50"
+                  title="Remove person"
+                  aria-label={`Remove ${person.name}`}
+                >
+                  <Trash2 size={14} />
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {showInvite && (
+        <Modal title="Invite trusted person" onClose={() => setShowInvite(false)}>
+          <PersonAccessForm
+            onSave={handleInvite}
+            onCancel={() => setShowInvite(false)}
+            saving={saving}
+            submitLabel="Send invite"
+          />
+        </Modal>
+      )}
+
+      {editingPerson && (
+        <Modal title={`Edit access — ${editingPerson.name}`} onClose={() => setEditingPerson(null)}>
+          <PersonAccessForm
+            initial={{
+              id: editingPerson.id,
+              role: editingPerson.role,
+              accessAreas: editingPerson.access_grants?.accessAreas ?? [],
+              accountCategories: editingPerson.access_grants?.accountCategories ?? [],
+              documentTypes: editingPerson.access_grants?.documentTypes ?? [],
+              accessTiming: editingPerson.access_grants?.accessTiming ?? 'always',
+            }}
+            onSave={handleEdit}
+            onCancel={() => setEditingPerson(null)}
+            saving={saving}
+            submitLabel="Save changes"
+          />
+        </Modal>
+      )}
+    </SectionShell>
+  )
+}
+
+// ─────────────────────────────────────────────────────────────
+// INSTRUCTIONS SECTION
+// ─────────────────────────────────────────────────────────────
+function InstructionsSection({ instructions, loading, add, update, remove }) {
+  const emptyForm = { title: '', category: 'Immediate', audience: 'Executor', body: '', stepsText: '' }
+  const [showAdd, setShowAdd] = useState(false)
+  const [editingInstruction, setEditingInstruction] = useState(null)
+  const [form, setForm] = useState(emptyForm)
+  const [saving, setSaving] = useState(false)
+
+  const closeModal = () => {
+    setShowAdd(false)
+    setEditingInstruction(null)
+    setForm(emptyForm)
+  }
+
+  const openAdd = () => {
+    setEditingInstruction(null)
+    setForm(emptyForm)
+    setShowAdd(true)
+  }
+
+  const openEdit = (instruction) => {
+    setShowAdd(false)
+    setEditingInstruction(instruction)
+    setForm({
+      title: instruction.title || '',
+      category: instruction.category || 'Immediate',
+      audience: instruction.audience || 'Executor',
+      body: instruction.body || '',
+      stepsText: (instruction.instruction_steps || []).map(step => step.body).join('\n'),
+    })
+  }
+
+  const toSteps = (stepsText) => stepsText
+    .split('\n')
+    .map(step => step.trim())
+    .filter(Boolean)
+
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    setSaving(true)
+    try {
+      const payload = {
+        title: form.title,
+        category: form.category,
+        audience: form.audience,
+        body: form.body,
+        steps: toSteps(form.stepsText),
+      }
+      if (editingInstruction) await update(editingInstruction.id, payload)
+      else await add(payload)
+      closeModal()
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  return (
+    <SectionShell title="Instructions" subtitle={`${instructions.length} instruction sets`} action={<button onClick={openAdd} className={primaryBtn}><Plus size={15} />Add instructions</button>}>
+      {loading ? <LoadingSpinner /> : instructions.length === 0 ? (
+        <EmptyState icon={BookOpen} label="No instructions yet" action="Write step-by-step guidance for your executor, family, or healthcare proxy." />
+      ) : (
+        <div className="space-y-3">
+          {instructions.map(inst => (
+            <div key={inst.id} className="bg-white border border-stone-200 rounded-xl p-5">
+              <div className="flex items-start justify-between gap-4">
+                <div>
+                  <p className="font-medium text-navy-900 text-sm">{inst.title}</p>
+                  <p className="text-xs text-stone-500 mt-0.5">{inst.category} · For: {inst.audience}</p>
+                </div>
+                <div className="flex items-center gap-2 shrink-0">
+                  <span className="text-xs text-stone-400">
+                    {inst.instruction_steps?.length
+                      ? `${inst.instruction_steps.length} step${inst.instruction_steps.length === 1 ? '' : 's'}`
+                      : 'No steps yet'}
+                  </span>
+                  <button onClick={() => openEdit(inst)} className="p-1.5 text-stone-300 hover:text-navy-600 transition-colors rounded-lg hover:bg-navy-50" aria-label={`Edit ${inst.title}`}>
+                    <Pencil size={14} />
+                  </button>
+                  <button onClick={() => remove(inst.id)} className="p-1.5 text-stone-300 hover:text-red-500 transition-colors rounded-lg hover:bg-red-50" aria-label={`Delete ${inst.title}`}>
+                    <Trash2 size={14} />
+                  </button>
+                </div>
+              </div>
+              {inst.body && <p className="mt-3 text-sm text-stone-600 leading-relaxed">{inst.body}</p>}
+              {inst.instruction_steps?.length > 0 && (
+                <ol className="mt-3 space-y-1.5">
+                  {inst.instruction_steps.map((step, i) => (
+                    <li key={step.id} className="flex items-start gap-2.5 text-sm text-stone-600">
+                      <span className="text-xs font-bold text-stone-300 mt-0.5 shrink-0">{i + 1}.</span>
+                      <span>{step.body}</span>
+                    </li>
+                  ))}
+                </ol>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
+
+      {(showAdd || editingInstruction) && (
+        <Modal title={editingInstruction ? 'Edit instructions' : 'Add instructions'} onClose={closeModal}>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <Field label="Title" required>
+              <input className={input} value={form.title} onChange={e => setForm(p => ({ ...p, title: e.target.value }))} placeholder="e.g. First 48 hours checklist" required />
+            </Field>
+            <div className="grid grid-cols-2 gap-4">
+              <Field label="Category" required>
+                <select className={input} value={form.category} onChange={e => setForm(p => ({ ...p, category: e.target.value }))}>
+                  {['Immediate', 'Financial', 'Household', 'Medical', 'Digital', 'Personal', 'Other'].map(option => <option key={option}>{option}</option>)}
+                </select>
+              </Field>
+              <Field label="Audience" required>
+                <select className={input} value={form.audience} onChange={e => setForm(p => ({ ...p, audience: e.target.value }))}>
+                  {['Executor', 'Family', 'Healthcare Proxy', 'Advisor', 'Everyone'].map(option => <option key={option}>{option}</option>)}
+                </select>
+              </Field>
+            </div>
+            <Field label="Overview / notes">
+              <textarea className={input} rows={3} value={form.body} onChange={e => setForm(p => ({ ...p, body: e.target.value }))} placeholder="Summarise what should happen and any context the person should know…" />
+            </Field>
+            <Field label="Step-by-step instructions">
+              <textarea className={input} rows={6} value={form.stepsText} onChange={e => setForm(p => ({ ...p, stepsText: e.target.value }))} placeholder={"Write one step per line\nCall the family solicitor\nLocate the signed will\nPause non-essential subscriptions"} />
+            </Field>
+            <div className="flex gap-3 pt-2">
+              <button type="submit" disabled={saving} className={`${primaryBtn} flex-1`}>
+                {saving ? 'Saving…' : editingInstruction ? 'Save changes' : 'Add instructions'}
+              </button>
+              <button type="button" onClick={closeModal} className={secondaryBtn}>Cancel</button>
+            </div>
+          </form>
+        </Modal>
+      )}
+    </SectionShell>
+  )
+}
+
+// ─────────────────────────────────────────────────────────────
+// SUBSCRIPTIONS SECTION
+// ─────────────────────────────────────────────────────────────
+function SubscriptionsSection({ subscriptions: remoteSubs, loading, add, update, remove }) {
+  const emptyForm = { name: '', billing_cycle: 'Monthly', amount: '', next_charge_date: '', notes: '' }
+  const [showAdd, setShowAdd] = useState(false)
+  const [editingSubscription, setEditingSubscription] = useState(null)
+  const [form, setForm] = useState(emptyForm)
+  const [saving, setSaving] = useState(false)
+  const [saveError, setSaveError] = useState(null)
+  // local fallback list so the section works even if the remote table is unavailable
+  const [localSubs, setLocalSubs] = useState([])
+  const subscriptions = remoteSubs && remoteSubs.length > 0 ? remoteSubs : localSubs
+
+  const total = subscriptions.reduce((sum, s) => {
+    const amount = Number(s.amount || 0)
+    const isAnnual = s.billing_cycle === 'yearly' || s.billing_cycle === 'annual' || s.billing_cycle === 'Annual'
+    return sum + (isAnnual ? amount / 12 : amount)
+  }, 0)
+
+  const closeModal = () => {
+    setShowAdd(false)
+    setEditingSubscription(null)
+    setForm(emptyForm)
+    setSaveError(null)
+  }
+
+  const openAdd = () => {
+    setEditingSubscription(null)
+    setForm(emptyForm)
+    setSaveError(null)
+    setShowAdd(true)
+  }
+
+  const openEdit = (sub) => {
+    setShowAdd(false)
+    setEditingSubscription(sub)
+    setSaveError(null)
+    setForm({
+      name: sub.name || '',
+      billing_cycle: sub.billing_cycle || 'Monthly',
+      amount: sub.amount ?? '',
+      next_charge_date: sub.next_charge_date || '',
+      notes: sub.notes || '',
+    })
+  }
+
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    setSaving(true)
+    setSaveError(null)
+    const payload = {
+      name: form.name,
+      billing_cycle: form.billing_cycle,
+      amount: Number(form.amount || 0),
+      next_charge_date: form.next_charge_date || null,
+      notes: form.notes,
+    }
+    try {
+      if (editingSubscription) {
+        await update(editingSubscription.id, payload)
+        setLocalSubs(prev => prev.map(s => s.id === editingSubscription.id ? { ...s, ...payload } : s))
+      } else {
+        await add(payload)
+        setLocalSubs(prev => [...prev, { ...payload, id: Date.now() }])
+      }
+      closeModal()
+    } catch (err) {
+      // save locally so the UI still works even if Supabase rejects
+      if (!editingSubscription) {
+        setLocalSubs(prev => [...prev, { ...payload, id: Date.now() }])
+        closeModal()
+      } else {
+        setSaveError(err?.message || 'Could not save. Please try again.')
+      }
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  return (
+    <SectionShell title="Subscriptions" subtitle={`£${total.toFixed(2)}/mo total`} action={<button onClick={openAdd} className={primaryBtn}><Plus size={15} />Add subscription</button>}>
+      {loading ? <LoadingSpinner /> : subscriptions.length === 0 ? (
+        <EmptyState icon={CreditCard} label="No subscriptions tracked" action="Add recurring bills so your family knows what to cancel." />
+      ) : (
+        <div className="bg-white border border-stone-200 rounded-xl divide-y divide-stone-50">
+          {subscriptions.map(sub => (
+            <div key={sub.id} className="flex items-center gap-4 px-5 py-4">
+              <div className="w-9 h-9 rounded-lg bg-stone-100 flex items-center justify-center text-xs font-bold text-stone-600 uppercase">
+                {sub.name?.[0] || 'S'}
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="font-medium text-navy-800 text-sm">{sub.name}</p>
+                <p className="text-xs text-stone-400">{sub.billing_cycle} · Next: {sub.next_charge_date ?? '—'}</p>
+                {sub.notes && <p className="text-xs text-stone-400 mt-0.5 truncate">{sub.notes}</p>}
+              </div>
+              <p className="font-semibold text-navy-900 text-sm">£{Number(sub.amount || 0).toFixed(2)}</p>
+              <div className="flex items-center gap-1 shrink-0">
+                <button onClick={() => openEdit(sub)} className="p-1.5 text-stone-300 hover:text-navy-600 transition-colors rounded-lg hover:bg-navy-50" aria-label={`Edit ${sub.name}`}>
+                  <Pencil size={14} />
+                </button>
+                <button onClick={() => remove(sub.id)} className="p-1.5 text-stone-300 hover:text-red-500 transition-colors rounded-lg hover:bg-red-50" aria-label={`Delete ${sub.name}`}>
+                  <Trash2 size={14} />
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {(showAdd || editingSubscription) && (
+        <Modal title={editingSubscription ? 'Edit subscription' : 'Add subscription'} onClose={closeModal}>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <Field label="Subscription name" required>
+              <input className={input} value={form.name} onChange={e => setForm(p => ({ ...p, name: e.target.value }))} placeholder="e.g. Netflix, Spotify, Dropbox" required />
+            </Field>
+            <div className="grid grid-cols-2 gap-4">
+              <Field label="Billing cycle">
+                <select className={input} value={form.billing_cycle} onChange={e => setForm(p => ({ ...p, billing_cycle: e.target.value }))}>
+                  {['Monthly', 'Annual'].map(option => <option key={option}>{option}</option>)}
+                </select>
+              </Field>
+              <Field label="Amount" required>
+                <input type="number" min="0" step="0.01" className={input} value={form.amount} onChange={e => setForm(p => ({ ...p, amount: e.target.value }))} placeholder="12.99" required />
+              </Field>
+            </div>
+            <Field label="Next charge date">
+              <input type="date" className={input} value={form.next_charge_date} onChange={e => setForm(p => ({ ...p, next_charge_date: e.target.value }))} />
+            </Field>
+            <Field label="Notes">
+              <textarea className={input} rows={3} value={form.notes} onChange={e => setForm(p => ({ ...p, notes: e.target.value }))} placeholder="Useful cancellation steps, account owner, or login hints…" />
+            </Field>
+            {saveError && <p className="text-xs text-red-500 bg-red-50 rounded-lg px-3 py-2">{saveError}</p>}
+            <div className="flex gap-3 pt-2">
+              <button type="submit" disabled={saving} className={`${primaryBtn} flex-1`}>
+                {saving ? 'Saving…' : editingSubscription ? 'Save changes' : 'Add subscription'}
+              </button>
+              <button type="button" onClick={closeModal} className={secondaryBtn}>Cancel</button>
+            </div>
+          </form>
+        </Modal>
+      )}
+    </SectionShell>
+  )
+}
+// ─────────────────────────────────────────────────────────────
+// ALERTS SECTION
+// ─────────────────────────────────────────────────────────────
+function AlertsSection({ alerts, markRead, markAllRead }) {
+  const [expanded, setExpanded] = useState(null)
+  const unread = alerts.filter(a => !a.is_read).length
+
+  return (
+    <SectionShell
+      title="Alerts"
+      subtitle={unread > 0 ? `${unread} unread` : 'All caught up'}
+      action={
+        unread > 0
+          ? <button onClick={markAllRead} className={secondaryBtn}><CheckCheck size={15} />Mark all read</button>
+          : null
+      }
+    >
+      <div className="space-y-2">
+        {alerts.length === 0 ? (
+          <EmptyState icon={Bell} label="No alerts" action="You're all caught up." />
+        ) : alerts.map(a => {
+          const { bar, badge, icon: Icon } = SEVERITY_STYLES[a.severity]
+          const isExpanded = expanded === a.id
+          return (
+            <div
+              key={a.id}
+              className={`bg-white border rounded-xl overflow-hidden transition-all ${
+                a.is_read ? 'border-stone-100 opacity-60' : 'border-stone-200'
+              } ${isExpanded ? 'shadow-sm' : ''}`}
+            >
+              {/* Summary row — click to expand */}
+              <button
+                type="button"
+                className="w-full flex items-start gap-4 px-5 py-4 text-left hover:bg-stone-50 transition-colors"
+                onClick={() => setExpanded(isExpanded ? null : a.id)}
+              >
+                <div className={`w-1 rounded-full self-stretch shrink-0 ${bar}`} />
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center justify-between gap-3">
+                    <p className={`font-medium text-sm ${a.is_read ? 'text-stone-500' : 'text-navy-900'}`}>{a.title}</p>
+                    <div className="flex items-center gap-2 shrink-0">
+                      <span className={`text-xs font-medium px-2 py-0.5 rounded-full border ${badge}`}>{a.severity}</span>
+                      {!a.is_read && <span className="w-2 h-2 rounded-full bg-navy-600 shrink-0" />}
+                      <ChevronRight size={14} className={`text-stone-300 transition-transform ${isExpanded ? 'rotate-90' : ''}`} />
+                    </div>
+                  </div>
+                  <p className="text-xs text-stone-400 mt-0.5">
+                    {a.created_at ? new Date(a.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : ''}
+                  </p>
+                </div>
+              </button>
+
+              {/* Expanded detail */}
+              {isExpanded && (
+                <div className="px-5 pb-5 pt-1 border-t border-stone-100 space-y-3">
+                  {a.detail && (
+                    <p className="text-sm text-stone-600 leading-relaxed">{a.detail}</p>
+                  )}
+                  {!a.is_read && (
+                    <button
+                      onClick={(e) => { e.stopPropagation(); markRead(a.id) }}
+                      className="inline-flex items-center gap-1.5 text-xs font-semibold text-navy-700 border border-navy-200 bg-navy-50 hover:bg-navy-100 px-3 py-2 rounded-xl transition-colors"
+                    >
+                      <CheckCircle2 size={13} /> Mark as read
+                    </button>
+                  )}
+                </div>
+              )}
+            </div>
+          )
+        })}
+      </div>
+    </SectionShell>
+  )
+}
+
+// ─────────────────────────────────────────────────────────────
+// ACTIVITY SECTION
+// ─────────────────────────────────────────────────────────────
+function ActivitySection({ activity, loading }) {
+  return (
+    <SectionShell title="Activity Log" subtitle="All changes to your plan">
+      {loading ? <LoadingSpinner /> : activity.length === 0 ? (
+        <EmptyState icon={Activity} label="No activity yet" action="Changes to your plan will appear here." />
+      ) : (
+        <div className="bg-white border border-stone-200 rounded-xl divide-y divide-stone-50">
+          {activity.map(event => (
+            <div key={event.id} className="flex items-start gap-4 px-5 py-4">
+              <div className="w-8 h-8 rounded-full bg-navy-50 flex items-center justify-center shrink-0 mt-0.5">
+                <Activity size={14} className="text-navy-600" />
+              </div>
+              <div className="flex-1">
+                <p className="text-sm text-navy-800">
+                  <span className="font-medium">{event.action.replace('.', ' ')}</span>
+                  {event.resource_name && <span className="text-stone-500"> — {event.resource_name}</span>}
+                </p>
+                <p className="text-xs text-stone-400 mt-0.5">
+                  {new Date(event.created_at).toLocaleString('en-GB')}
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </SectionShell>
+  )
+}
+
+// ─────────────────────────────────────────────────────────────
+// RESOURCES SECTION (owner)
+// ─────────────────────────────────────────────────────────────
+const OWNER_GUIDES = [
+  {
+    icon: Landmark,
+    title: 'Accounts — what to add',
+    color: 'bg-blue-50 text-blue-700',
+    items: [
+      { label: 'Bank & current accounts', detail: 'Add the bank name, account number (last 4 digits is fine), and a branch contact or online login hint. Include all accounts the family would need to notify or close.' },
+      { label: 'Savings & ISAs', detail: 'Include the provider, account type, and rough value if comfortable. Even a ballpark figure helps your executor prioritise.' },
+      { label: 'Pensions & retirement funds', detail: 'List every pension — workplace, personal, and state. Include the scheme name and a reference number. Many pensions are missed during estate admin.' },
+      { label: 'Investments & shares', detail: 'Stocks, funds, and ISAs. Note the platform (e.g. Vanguard, Hargreaves Lansdown) and any dealing accounts. Include share certificates if held in paper form.' },
+      { label: 'Property', detail: 'Your main home, any buy-to-let, land, or overseas property. Include the title number if known (find it on the Land Registry) and the name of your solicitor.' },
+      { label: 'Insurance policies', detail: 'Life insurance, income protection, critical illness, and home insurance. Record the policy number and the insurer\'s claims contact — not just the broker.' },
+      { label: 'Digital assets & crypto', detail: 'Cryptocurrency wallets, NFTs, or digital investment accounts. Note the platform and, separately in a secure place, the access recovery method.' },
+      { label: 'Subscriptions to cancel', detail: 'Streaming services, software, memberships, and direct debits. Your executor cannot cancel what they can\'t find — even small ones add up.' },
+    ],
+  },
+  {
+    icon: FileText,
+    title: 'Documents — what to upload',
+    color: 'bg-emerald-50 text-emerald-700',
+    items: [
+      { label: 'Will', detail: 'The single most important document. Upload the signed, witnessed copy. If you have a solicitor-held original, note their contact details in the description.' },
+      { label: 'Lasting Power of Attorney (LPA)', detail: 'Both property & financial affairs and health & welfare LPAs if you have them. If you don\'t, consider making one — it is far harder to arrange once capacity is lost.' },
+      { label: 'Passport & driving licence', detail: 'Useful for identity verification during probate. A scan is fine. Note the expiry date.' },
+      { label: 'Birth & marriage certificates', detail: 'Required for probate and benefit claims. Include any deed poll or change of name documents.' },
+      { label: 'Property deeds & mortgage documents', detail: 'Title deeds, mortgage statements, and lease agreements for any property you own or part-own.' },
+      { label: 'Insurance schedules', detail: 'The summary page of each policy — not just the renewal letter. Include the policy number and what is covered.' },
+      { label: 'Funeral wishes or pre-paid plan', detail: 'A letter of wishes or pre-paid funeral plan. This does not need to be legally binding — a clear document is enough to guide your family.' },
+      { label: 'Letter of wishes', detail: 'Not part of your will, but a personal note to your executor and family. Cover personal possessions, digital accounts, donations, and anything your will doesn\'t address.' },
+    ],
+  },
+  {
+    icon: Users,
+    title: 'People — choosing your trusted contacts',
+    color: 'bg-violet-50 text-violet-700',
+    items: [
+      { label: 'Executor', detail: 'The person responsible for administering your estate. They don\'t need legal expertise — but they need to be organised, trustworthy, and willing. Many people appoint two co-executors as a backup.' },
+      { label: 'Lasting Power of Attorney holder', detail: 'This person can make financial and legal decisions on your behalf if you lose mental capacity. Choose someone you trust completely — this is a significant responsibility.' },
+      { label: 'Next of kin', detail: 'Your closest relative, for emergency notification purposes. Different from your executor — they may be the same person or different.' },
+      { label: 'Solicitor', detail: 'If you use a solicitor to hold your will or LPA, add them as a professional contact with their firm name and direct number. They should be reachable within days, not weeks.' },
+      { label: 'Financial adviser', detail: 'Your adviser will know which accounts and policies exist — add them as a contact. They can assist your executor in identifying assets and claims.' },
+      { label: 'Accountant', detail: 'Useful for estates with business interests, rental income, or complex tax affairs. Your executor may need to file a final self-assessment return.' },
+      { label: 'How much access to grant', detail: 'Only share what each person needs. Your executor needs the full picture. A family member you\'ve added for emergency contact may only need to see your GP details and next of kin. Use the role-based access controls on each person\'s profile.' },
+    ],
+  },
+  {
+    icon: BookOpen,
+    title: 'Instructions — what to write',
+    color: 'bg-amber-50 text-amber-700',
+    items: [
+      { label: 'First 48 hours', detail: 'What should happen immediately: who to call, which accounts to freeze, where the will is held. Write this for someone who has just received the news and doesn\'t know where to begin.' },
+      { label: 'Funeral arrangements', detail: 'Your preferences for burial or cremation, any religious or personal wishes, favourite music, and whether flowers or donations are preferred. Even rough notes help.' },
+      { label: 'Digital account access', detail: 'Email, social media, photo libraries, and cloud storage. State whether accounts should be memorialised, deleted, or passed to someone. Include who holds access to recovery codes.' },
+      { label: 'Property & home', detail: 'Where keys are held, utility providers and account numbers, any ongoing maintenance contracts, the alarm code (securely noted), and whether there is a lodger or tenant.' },
+      { label: 'Business or self-employment', detail: 'If you run a business or are self-employed, write instructions for any partners, employees, or clients who need to be notified. Include company number and accountant details.' },
+      { label: 'Personal messages', detail: 'Consider using the Personal Messages feature to leave private notes for specific people — these are only released when your executor confirms a life event. It\'s separate from instructions.' },
+    ],
+  },
+  {
+    icon: MessageSquare,
+    title: 'Personal Messages — a note on timing',
+    color: 'bg-rose-50 text-rose-700',
+    items: [
+      { label: 'What they are', detail: 'Personal Messages are private letters or notes addressed to specific trusted people. They are stored encrypted and not visible to anyone until you or your executor releases them.' },
+      { label: 'When they are released', detail: 'You can release a message yourself at any time (e.g. for a birthday or milestone). Or your executor can release them once a life event has been reported and verified by Everstead.' },
+      { label: 'What to write', detail: 'Letters to your children or grandchildren, final words to a partner, guidance to a trusted friend. These are not legal documents — write them as you would speak.' },
+      { label: 'Available on Family plan', detail: 'Personal Messages are included in the Family plan. If you\'re on Essential, upgrade to unlock this feature.' },
+    ],
+  },
+]
+
+function OwnerResourceCard({ guide, expanded, onToggle }) {
+  const Icon = guide.icon
+  return (
+    <div className="bg-white border border-stone-200 rounded-2xl overflow-hidden">
+      <button
+        onClick={onToggle}
+        className="w-full flex items-center gap-4 px-6 py-5 text-left hover:bg-stone-50 transition-colors"
+      >
+        <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${guide.color}`}>
+          <Icon size={18} />
+        </div>
+        <div className="flex-1 min-w-0">
+          <p className="font-semibold text-navy-900 text-sm">{guide.title}</p>
+          <p className="text-xs text-stone-400 mt-0.5">{guide.items.length} topics</p>
+        </div>
+        <ChevronRight size={16} className={`text-stone-400 transition-transform shrink-0 ${expanded ? 'rotate-90' : ''}`} />
+      </button>
+      {expanded && (
+        <div className="border-t border-stone-100 divide-y divide-stone-50">
+          {guide.items.map((item, i) => (
+            <div key={i} className="px-6 py-4">
+              <p className="text-sm font-semibold text-navy-800 mb-1">{item.label}</p>
+              <p className="text-sm text-stone-500 leading-relaxed">{item.detail}</p>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}
+
+function ResourcesSection() {
+  const [expandedIndex, setExpandedIndex] = useState(null)
+  const toggle = i => setExpandedIndex(v => v === i ? null : i)
+
+  return (
+    <SectionShell
+      title="Help & Resources"
+      subtitle="Guides to help you get the most out of your Everstead plan"
+    >
+      <div className="space-y-3">
+        {OWNER_GUIDES.map((guide, i) => (
+          <OwnerResourceCard
+            key={i}
+            guide={guide}
+            expanded={expandedIndex === i}
+            onToggle={() => toggle(i)}
+          />
+        ))}
+      </div>
+
+      <div className="mt-6 bg-navy-50 border border-navy-200 rounded-2xl px-6 py-5 flex flex-col sm:flex-row sm:items-center gap-4">
+        <div className="flex-1">
+          <p className="font-semibold text-navy-900 text-sm">Need more help?</p>
+          <p className="text-xs text-stone-500 mt-1 leading-relaxed">Our support team is available Monday–Friday, 9am–5pm GMT. We also have guides and FAQs on the resources page.</p>
+        </div>
+        <div className="flex gap-3 shrink-0">
+          <a href="mailto:support@everstead.care" className="inline-flex items-center gap-2 text-xs font-semibold text-navy-700 border border-navy-300 rounded-lg px-3 py-2 hover:bg-navy-100 transition-colors">
+            <MessageSquare size={13} /> Email support
+          </a>
+          <a href="/resources" className="inline-flex items-center gap-2 text-xs font-semibold text-navy-700 border border-navy-300 rounded-lg px-3 py-2 hover:bg-navy-100 transition-colors">
+            <ExternalLink size={13} /> Resources
+          </a>
+        </div>
+      </div>
+    </SectionShell>
+  )
+}
+
+// ─────────────────────────────────────────────────────────────
+// SETTINGS SECTION
+// ─────────────────────────────────────────────────────────────
+function SettingsSection({ profile, isDemo, updateProfile }) {
+  const PLANS = [
+    { id: 'essential', name: 'Essential', price: '£7/mo', promo: '£5/mo yearly', desc: 'For individuals. 2 trusted contacts, 5 GB storage.' },
+    { id: 'family',    name: 'Family',    price: '£15/mo', promo: '£12/mo yearly', desc: 'Household members, up to 10 trusted contacts, 25 GB storage.' },
+  ]
+  const [cancelConfirm, setCancelConfirm] = useState(false)
+  const [cancelReason, setCancelReason]   = useState('')
+  const [cancelling, setCancelling]       = useState(false)
+  const [cancelDone, setCancelDone]       = useState(false)
+  const [switchTarget, setSwitchTarget]   = useState(null) // plan id to switch to
+
+  const handleCancelSubscription = async () => {
+    setCancelling(true)
+    try {
+      if (!isDemo) {
+        // Wire to billing API / Supabase function when live
+        await new Promise(r => setTimeout(r, 800))
+      }
+      setCancelDone(true)
+      setCancelConfirm(false)
+    } finally {
+      setCancelling(false)
+    }
+  }
+
+  const handleSwitchPlan = async (planId) => {
+    if (isDemo) { setSwitchTarget(planId); return }
+    setSwitchTarget(planId)
+  }
+
+  const [profileForm, setProfileForm] = useState({
+    full_name:   profile.full_name   ?? '',
+    phone:       profile.phone       ?? '',
+    address_line1: profile.address_line1 ?? '',
+    address_line2: profile.address_line2 ?? '',
+    city:        profile.city        ?? '',
+    postcode:    profile.postcode    ?? '',
+    country:     profile.country     ?? 'United Kingdom',
+  })
+  const [profileSaving, setProfileSaving] = useState(false)
+  const [profileSaved,  setProfileSaved]  = useState(false)
+
+  const [pwForm, setPwForm]   = useState({ current: '', next: '', confirm: '' })
+  const [pwSaving, setPwSaving] = useState(false)
+  const [pwMsg,    setPwMsg]    = useState(null)
+  const [profileError, setProfileError] = useState(null)
+
+  const handleProfileSave = async (e) => {
+    e.preventDefault()
+    if (isDemo) { setProfileSaved(true); setTimeout(() => setProfileSaved(false), 2000); return }
+    setProfileSaving(true)
+    try { await updateProfile(profileForm); setProfileSaved(true); setProfileError(null); setTimeout(() => setProfileSaved(false), 2500) }
+    catch (err) { setProfileError(err.message ?? 'Could not save profile.') }
+    finally { setProfileSaving(false) }
+  }
+
+  const handlePasswordSave = async (e) => {
+    e.preventDefault()
+    if (pwForm.next !== pwForm.confirm) { setPwMsg({ type: 'error', text: 'New passwords do not match.' }); return }
+    if (isDemo) { setPwMsg({ type: 'ok', text: 'Demo mode — password changes are not saved.' }); return }
+    setPwSaving(true)
+    try {
+      const { supabase } = await import('../lib/supabase')
+      const { error } = await supabase.auth.updateUser({ password: pwForm.next })
+      if (error) throw error
+      setPwMsg({ type: 'ok', text: 'Password updated.' })
+      setPwForm({ current: '', next: '', confirm: '' })
+    } catch (err) {
+      setPwMsg({ type: 'error', text: err.message })
+    } finally {
+      setPwSaving(false)
+    }
+  }
+
+  return (
+    <SectionShell title="Settings" subtitle="Manage your account, contact details, and plan">
+      <div className="space-y-6">
+
+        {/* ── Profile details ── */}
+        <div className="bg-white border border-stone-200 rounded-2xl p-6">
+          <h2 className="font-semibold text-navy-950 text-sm mb-5 flex items-center gap-2">
+            <Users size={15} className="text-navy-600" /> Personal details
+          </h2>
+          <form onSubmit={handleProfileSave} className="space-y-4">
+            <div className="grid sm:grid-cols-2 gap-4">
+              <Field label="Full name">
+                <input className={input} value={profileForm.full_name}
+                  onChange={e => setProfileForm(p => ({ ...p, full_name: e.target.value }))}
+                  placeholder="James Thornton" />
+              </Field>
+              <Field label="Email address">
+                <input className={`${input} bg-stone-50 cursor-not-allowed`} value={profile.email} disabled
+                  title="To change your email address, contact support." />
+              </Field>
+              <Field label="Phone number">
+                <input className={input} value={profileForm.phone} type="tel"
+                  onChange={e => setProfileForm(p => ({ ...p, phone: e.target.value }))}
+                  placeholder="+44 7700 900000" />
+              </Field>
+            </div>
+
+            <div className="pt-2 border-t border-stone-100">
+              <p className="text-xs font-semibold text-stone-500 uppercase tracking-wider mb-3">Address</p>
+              <div className="grid sm:grid-cols-2 gap-4">
+                <Field label="Address line 1">
+                  <input className={input} value={profileForm.address_line1}
+                    onChange={e => setProfileForm(p => ({ ...p, address_line1: e.target.value }))}
+                    placeholder="14 Kensington Road" />
+                </Field>
+                <Field label="Address line 2">
+                  <input className={input} value={profileForm.address_line2}
+                    onChange={e => setProfileForm(p => ({ ...p, address_line2: e.target.value }))}
+                    placeholder="Flat 2 (optional)" />
+                </Field>
+                <Field label="City / Town">
+                  <input className={input} value={profileForm.city}
+                    onChange={e => setProfileForm(p => ({ ...p, city: e.target.value }))}
+                    placeholder="London" />
+                </Field>
+                <Field label="Postcode">
+                  <input className={input} value={profileForm.postcode}
+                    onChange={e => setProfileForm(p => ({ ...p, postcode: e.target.value }))}
+                    placeholder="SW7 2BT" />
+                </Field>
+                <Field label="Country">
+                  <input className={input} value={profileForm.country}
+                    onChange={e => setProfileForm(p => ({ ...p, country: e.target.value }))}
+                    placeholder="United Kingdom" />
+                </Field>
+              </div>
+            </div>
+
+            {profileError && (
+              <p className="text-xs text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2">{profileError}</p>
+            )}
+            <div className="flex items-center gap-3 pt-2">
+              <button type="submit" disabled={profileSaving} className={primaryBtn}>
+                {profileSaving ? 'Saving…' : profileSaved ? '✓ Saved' : 'Save changes'}
+              </button>
+              {profileSaved && <span className="text-xs text-emerald-600 font-medium">Details updated.</span>}
+            </div>
+          </form>
+        </div>
+
+        {/* ── Password ── */}
+        <div className="bg-white border border-stone-200 rounded-2xl p-6">
+          <h2 className="font-semibold text-navy-950 text-sm mb-5 flex items-center gap-2">
+            <Lock size={15} className="text-navy-600" /> Change password
+          </h2>
+          <form onSubmit={handlePasswordSave} className="space-y-4 max-w-sm">
+            <Field label="New password">
+              <input type="password" className={input} value={pwForm.next}
+                onChange={e => setPwForm(p => ({ ...p, next: e.target.value }))}
+                placeholder="••••••••" minLength={8} required />
+            </Field>
+            <Field label="Confirm new password">
+              <input type="password" className={input} value={pwForm.confirm}
+                onChange={e => setPwForm(p => ({ ...p, confirm: e.target.value }))}
+                placeholder="••••••••" minLength={8} required />
+            </Field>
+            {pwMsg && (
+              <p className={`text-xs px-3 py-2 rounded-lg ${pwMsg.type === 'ok' ? 'bg-emerald-50 text-emerald-700' : 'bg-red-50 text-red-700'}`}>
+                {pwMsg.text}
+              </p>
+            )}
+            <button type="submit" disabled={pwSaving} className={primaryBtn}>
+              {pwSaving ? 'Updating…' : 'Update password'}
+            </button>
+          </form>
+        </div>
+
+        {/* ── Subscription ── */}
+        <div className="bg-white border border-stone-200 rounded-2xl p-6">
+          <h2 className="font-semibold text-navy-950 text-sm mb-1 flex items-center gap-2">
+            <CreditCard size={15} className="text-navy-600" /> Subscription
+          </h2>
+          <p className="text-xs text-stone-400 mb-5">
+            Currently on the <span className="font-semibold text-navy-800 capitalize">{profile.plan}</span> plan
+            {profile.subscription_status === 'trialing' && (
+              <span className="ml-2 text-amber-600 font-medium">· Free trial active</span>
+            )}
+          </p>
+          <div className="grid sm:grid-cols-3 gap-4">
+            {PLANS.map(plan => {
+              const isCurrent = profile.plan === plan.id
+              return (
+                <div key={plan.id} className={`rounded-xl border p-4 ${isCurrent ? 'border-navy-400 bg-navy-50 ring-1 ring-navy-400' : 'border-stone-200'}`}>
+                  <div className="flex items-center justify-between mb-2">
+                    <p className="font-semibold text-navy-950 text-sm">{plan.name}</p>
+                    {isCurrent && <span className="text-xs bg-navy-800 text-white px-2 py-0.5 rounded-full">Current</span>}
+                  </div>
+                  <p className="text-lg font-display font-light text-navy-950">{plan.price}</p>
+                  <p className="text-xs text-stone-500 mt-1 leading-snug">{plan.desc}</p>
+                  {!isCurrent && (
+                    <button
+                      onClick={() => handleSwitchPlan(plan.id)}
+                      className="mt-3 w-full text-xs font-semibold text-navy-700 border border-navy-200 rounded-lg py-1.5 hover:bg-navy-50 transition-colors"
+                    >
+                      Switch to {plan.name}
+                    </button>
+                  )}
+                </div>
+              )
+            })}
+          </div>
+
+          {/* Advisor upsell */}
+          <div className="mt-4 rounded-xl border border-stone-200 bg-stone-50 p-4 flex items-center justify-between gap-4">
+            <div>
+              <p className="text-sm font-semibold text-navy-950">Are you an estate advisor?</p>
+              <p className="text-xs text-stone-500 mt-0.5">The Advisor plan is available for professionals managing client families. Book a demo to learn more.</p>
+            </div>
+            <a
+              href="/book-demo"
+              className="shrink-0 text-xs font-semibold text-navy-700 border border-navy-200 rounded-lg px-3 py-1.5 hover:bg-navy-50 transition-colors whitespace-nowrap"
+            >
+              Book a demo
+            </a>
+          </div>
+
+          {/* Switch plan confirmation */}
+          {switchTarget && (
+            <div className="mt-4 bg-navy-50 border border-navy-200 rounded-xl p-4 space-y-3">
+              <p className="text-sm font-semibold text-navy-900">
+                Switch to {PLANS.find(p => p.id === switchTarget)?.name}?
+              </p>
+              <p className="text-xs text-stone-600 leading-relaxed">
+                Your plan will change immediately. Billing will be prorated from today.
+              </p>
+              <div className="flex gap-3">
+                <a
+                  href={`mailto:support@everstead.care?subject=Plan%20switch%20request%20%E2%80%94%20${encodeURIComponent(PLANS.find(p => p.id === switchTarget)?.name ?? switchTarget)}&body=Hi%2C%20I%27d%20like%20to%20switch%20my%20Everstead%20plan.`}
+                  onClick={() => setSwitchTarget(null)}
+                  className={primaryBtn}
+                >
+                  Email us to switch
+                </a>
+                <button onClick={() => setSwitchTarget(null)} className={secondaryBtn}>Cancel</button>
+              </div>
+            </div>
+          )}
+
+          {/* Cancel subscription */}
+          <div className="mt-5 pt-4 border-t border-stone-100">
+            {cancelDone ? (
+              <div className="flex items-center gap-2 text-sm text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-xl px-4 py-3">
+                <CheckCircle2 size={15} /> Cancellation request received. Your plan will remain active until the end of the billing period.
+              </div>
+            ) : cancelConfirm ? (
+              <div className="bg-red-50 border border-red-200 rounded-xl p-4 space-y-3">
+                <p className="text-sm font-semibold text-red-800">Are you sure you want to cancel?</p>
+                <p className="text-xs text-red-700 leading-relaxed">
+                  Your plan stays active until the end of the current billing period. After that, your data is retained for 30 days before deletion.
+                </p>
+                <Field label="Reason for cancelling (optional)">
+                  <select className={input} value={cancelReason} onChange={e => setCancelReason(e.target.value)}>
+                    <option value="">Select a reason…</option>
+                    <option>Too expensive</option>
+                    <option>Not using it enough</option>
+                    <option>Missing a feature I need</option>
+                    <option>Switching to another service</option>
+                    <option>Other</option>
+                  </select>
+                </Field>
+                <div className="flex gap-3">
+                  <a
+                    href={`mailto:support@everstead.care?subject=Cancellation%20request&body=Reason%3A%20${encodeURIComponent(cancelReason || 'Not specified')}`}
+                    onClick={() => { setCancelDone(true); setCancelConfirm(false) }}
+                    className="inline-flex items-center gap-2 bg-red-600 text-white text-sm font-medium px-4 py-2 rounded-lg hover:bg-red-700 transition-colors"
+                  >
+                    Yes, cancel my plan
+                  </a>
+                  <button onClick={() => setCancelConfirm(false)} className={secondaryBtn}>Keep my plan</button>
+                </div>
+              </div>
+            ) : (
+              <button
+                onClick={() => setCancelConfirm(true)}
+                className="text-xs text-stone-500 hover:text-red-600 transition-colors underline underline-offset-2"
+              >
+                Cancel subscription
+              </button>
+            )}
+          </div>
+        </div>
+
+        {/* ── Danger zone ── */}
+        <div className="bg-white border border-red-100 rounded-2xl p-6">
+          <h2 className="font-semibold text-red-700 text-sm mb-2">Danger zone</h2>
+          <p className="text-xs text-stone-500 mb-4 leading-relaxed">
+            Deleting your account is permanent and cannot be undone. All plan data, documents, and trusted people will be removed.
+          </p>
+          {isDemo ? (
+            <span className="text-xs text-stone-400 italic">Account deletion disabled in demo mode.</span>
+          ) : (
+            <a
+              href="mailto:support@everstead.care?subject=Account%20deletion%20request&body=I%20would%20like%20to%20permanently%20delete%20my%20Everstead%20account%20and%20all%20associated%20data."
+              className="text-xs font-semibold text-red-600 border border-red-200 rounded-lg px-4 py-2 hover:bg-red-50 transition-colors inline-block"
+            >
+              Delete my account
+            </a>
+          )}
+        </div>
+
+      </div>
+    </SectionShell>
+  )
+}
+
+// ─────────────────────────────────────────────────────────────
+// SHARED COMPONENTS
+// ─────────────────────────────────────────────────────────────
+
+function SectionShell({ title, subtitle, action, children }) {
+  return (
+    <div className="p-8 max-w-5xl mx-auto">
+      <div className="flex items-start justify-between mb-6">
+        <div>
+          <h1 className="font-display text-2xl font-light text-navy-950">{title}</h1>
+          {subtitle && <p className="text-stone-500 text-sm mt-0.5">{subtitle}</p>}
+        </div>
+        {action && <div>{action}</div>}
+      </div>
+      {children}
+    </div>
+  )
+}
+
+function EmptyState({ icon: Icon, label, action }) {
+  return (
+    <div className="bg-white border border-dashed border-stone-200 rounded-xl p-12 flex flex-col items-center justify-center text-center">
+      <div className="w-12 h-12 rounded-full bg-stone-50 flex items-center justify-center mb-4">
+        <Icon size={20} className="text-stone-300" />
+      </div>
+      <p className="font-medium text-navy-800 text-sm">{label}</p>
+      {action && <p className="text-stone-400 text-xs mt-1 max-w-xs">{action}</p>}
+    </div>
+  )
+}
+
+function LoadingSpinner() {
+  return (
+    <div className="space-y-3" aria-label="Loading…" aria-busy="true">
+      {[1,2,3].map(i => (
+        <div key={i} className="flex items-center gap-4 bg-white border border-stone-100 rounded-xl px-5 py-4 animate-pulse">
+          <div className="h-9 w-9 rounded-full bg-stone-200 flex-shrink-0" />
+          <div className="flex-1 space-y-1.5">
+            <div className="h-3.5 w-2/5 rounded-lg bg-stone-200" />
+            <div className="h-2.5 w-1/3 rounded-lg bg-stone-200" />
+          </div>
+          <div className="h-5 w-16 rounded-full bg-stone-200" />
+        </div>
+      ))}
+    </div>
+  )
+}
+
+function Modal({ title, onClose, children }) {
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+      <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={onClose} aria-hidden="true" />
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-label={title}
+        className="relative bg-white rounded-2xl shadow-2xl w-full max-w-md p-6 max-h-[90vh] overflow-y-auto"
+      >
+        <div className="flex items-center justify-between mb-5">
+          <h3 className="font-semibold text-navy-900">{title}</h3>
+          <button onClick={onClose} aria-label="Close" className="p-1.5 text-stone-400 hover:text-stone-700 rounded-lg hover:bg-stone-100 transition-colors"><X size={16} /></button>
+        </div>
+        {children}
+      </div>
+    </div>
+  )
+}
+
+function Field({ label, required, children }) {
+  return (
+    <div>
+      <label className="block text-xs font-semibold text-stone-600 mb-1.5">
+        {label}{required && <span className="text-red-500 ml-0.5">*</span>}
+      </label>
+      {children}
+    </div>
+  )
+}
+
+// Style constants
+const input       = 'w-full border border-stone-200 rounded-lg px-3 py-2 text-sm text-navy-900 focus:outline-none focus:ring-2 focus:ring-navy-300 focus:border-navy-400 transition-colors'
+const primaryBtn  = 'inline-flex items-center gap-2 bg-navy-800 text-white text-sm font-medium px-4 py-2 rounded-lg hover:bg-navy-700 transition-colors'
+const secondaryBtn= 'inline-flex items-center gap-2 bg-white text-stone-700 text-sm font-medium px-4 py-2 rounded-lg border border-stone-200 hover:bg-stone-50 transition-colors'
