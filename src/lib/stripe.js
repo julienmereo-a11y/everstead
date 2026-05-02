@@ -1,6 +1,6 @@
 import { loadStripe } from '@stripe/stripe-js'
 
-const stripePublicKey = import.meta.env.VITE_STRIPE_PUBLIC_KEY
+const stripePublicKey = import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY
 
 export const getStripe = (() => {
   let stripePromise = null
@@ -66,20 +66,19 @@ export async function redirectToCheckout({ plan, billingCycle, userEmail, custom
   const priceId = PLANS[plan]?.priceIds?.[billingCycle]
   if (!priceId) throw new Error(`No price ID for plan=${plan} cycle=${billingCycle}`)
 
-  const stripe = await getStripe()
-  if (!stripe) throw new Error('Stripe not initialised')
-
-  const { error } = await stripe.redirectToCheckout({
-    lineItems: [{ price: priceId, quantity: 1 }],
-    mode: 'subscription',
-    successUrl: `${window.location.origin}/dashboard?checkout=success`,
-    cancelUrl:  `${window.location.origin}/pricing`,
-    customerEmail: customerId ? undefined : userEmail,
-    customer: customerId || undefined,
-    trialPeriodDays: 14,
+  const res = await fetch('/api/stripe/create-checkout', {
+    method:  'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body:    JSON.stringify({ priceId, userEmail, customerId }),
   })
 
-  if (error) throw error
+  if (!res.ok) {
+    const { error } = await res.json().catch(() => ({}))
+    throw new Error(error || 'Failed to create checkout session')
+  }
+
+  const { url } = await res.json()
+  window.location.href = url
 }
 
 // ─────────────────────────────────────────────────────────────

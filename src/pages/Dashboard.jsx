@@ -231,8 +231,9 @@ function AdvisorCancelledModal({ advisorName, onAddPayment }) {
 // ─────────────────────────────────────────────────────────────
 export default function Dashboard() {
   const { user, profile, signOut, updateProfile } = useAuth()
-  const [searchParams] = useSearchParams()
-  const isDemo = searchParams.get('demo') === 'true'
+  const [searchParams, setSearchParams] = useSearchParams()
+  const isDemo          = searchParams.get('demo') === 'true'
+  const checkoutSuccess = searchParams.get('checkout') === 'success'
 
   const [activeSection, setActiveSection] = useState('overview')
   const [sidebarOpen, setSidebarOpen]     = useState(false)
@@ -380,6 +381,22 @@ export default function Dashboard() {
         <div className="bg-amber-500 text-white text-xs font-semibold text-center py-2 px-4 flex items-center justify-center gap-3 z-50">
           <span>Demo mode — data is fictional and no changes are saved.</span>
           <Link to="/get-started" className="underline hover:no-underline">Start your real plan →</Link>
+        </div>
+      )}
+
+      {/* Checkout success banner */}
+      {checkoutSuccess && (
+        <div className="bg-sage-600 text-white text-sm text-center py-3 px-4 flex items-center justify-center gap-3 z-50">
+          <span>Your trial has started — welcome to Everstead. You won't be charged for 14 days.</span>
+          <button
+            onClick={() => {
+              const p = new URLSearchParams(searchParams)
+              p.delete('checkout')
+              setSearchParams(p, { replace: true })
+            }}
+            className="ml-2 opacity-70 hover:opacity-100 text-white font-bold leading-none"
+            aria-label="Dismiss"
+          >×</button>
         </div>
       )}
 

@@ -146,10 +146,17 @@ export default function GetStarted() {
         trial_ends_at:    trialEndsAt,
       }, authData?.user?.id)
 
-      // 3. Show "redirecting to payment" state
+      // 3. Fire welcome email (fire-and-forget)
+      fetch('/api/emails/send-welcome', {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify({ name: form.name, email: form.email, plan: selectedPlan }),
+      }).catch(() => {})
+
+      // 4. Show "redirecting to payment" state
       setStep(3)
 
-      // 4. Redirect to Stripe Checkout
+      // 5. Redirect to Stripe Checkout
       await redirectToCheckout({
         plan:         selectedPlan,
         billingCycle: annualBilling ? 'yearly' : 'monthly',
