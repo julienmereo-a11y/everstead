@@ -86,25 +86,36 @@ function getTrialDaysLeft(trialEndsAt) {
 }
 
 function TrialBanner({ daysLeft, onUpgrade }) {
-  const expired = daysLeft <= 0
-  if (expired) return null // expired users see the modal instead
-  const urgent = daysLeft <= 3
+  if (daysLeft <= 0 || daysLeft > 7) return null
+  const critical = daysLeft <= 1
+  const urgent   = daysLeft <= 3
+  const cls = critical
+    ? 'bg-red-50 border-b border-red-200'
+    : urgent
+    ? 'bg-amber-50 border-b border-amber-200'
+    : 'bg-stone-100 border-b border-stone-200'
+  const textCls = critical ? 'text-red-700 font-medium' : urgent ? 'text-amber-700' : 'text-stone-600'
+  const iconCls = critical ? 'text-red-500' : urgent ? 'text-amber-600' : 'text-stone-400'
+  const btnCls  = critical
+    ? 'bg-red-600 text-white hover:bg-red-700'
+    : urgent
+    ? 'bg-amber-500 text-white hover:bg-amber-600'
+    : 'bg-stone-700 text-white hover:bg-stone-800'
   return (
-    <div className={`flex items-center justify-between gap-4 px-6 py-3 text-sm ${urgent ? 'bg-red-50 border-b border-red-200' : 'bg-amber-50 border-b border-amber-200'}`}>
+    <div className={`flex items-center justify-between gap-4 px-6 py-3 text-sm ${cls}`}>
       <div className="flex items-center gap-2">
-        <Clock size={15} className={urgent ? 'text-red-500' : 'text-amber-600'} />
-        <span className={urgent ? 'text-red-700 font-medium' : 'text-amber-700'}>
+        <Clock size={15} className={iconCls} />
+        <span className={textCls}>
           {daysLeft === 1
-            ? 'Your free trial ends tomorrow.'
-            : `Your free trial ends in ${daysLeft} days.`}
-          {' '}After that, you'll need a paid plan to keep access.
+            ? "Your free trial ends tomorrow — add your card to keep access."
+            : `Your free trial ends in ${daysLeft} days. Add payment details to continue.`}
         </span>
       </div>
       <button
         onClick={onUpgrade}
-        className={`shrink-0 text-xs font-semibold px-4 py-1.5 rounded-lg transition-colors ${urgent ? 'bg-red-600 text-white hover:bg-red-700' : 'bg-amber-500 text-white hover:bg-amber-600'}`}
+        className={`shrink-0 text-xs font-semibold px-4 py-1.5 rounded-lg transition-colors ${btnCls}`}
       >
-        Upgrade now
+        Add payment details →
       </button>
     </div>
   )

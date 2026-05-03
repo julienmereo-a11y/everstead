@@ -34,6 +34,7 @@ import AdminPanel from './pages/AdminPanel'
 import AcceptAdminInvite from './pages/AcceptAdminInvite'
 import DelegateRegister from './pages/DelegateRegister'
 import ChooseAccount from './pages/ChooseAccount'
+import TrialEnded from './pages/TrialEnded'
 
 function ScrollToTop() {
   const { pathname } = useLocation()
@@ -79,6 +80,14 @@ export default function App() {
           <Route path="/accept-invite" element={<AcceptInvite />} />
           <Route path="/delegate-register" element={<DelegateRegister />} />
           <Route path="/choose-account" element={<ChooseAccount />} />
+          <Route
+            path="/trial-ended"
+            element={
+              <ProtectedRoute>
+                <TrialEnded />
+              </ProtectedRoute>
+            }
+          />
           <Route path="/accept-admin-invite" element={<AcceptAdminInvite />} />
           <Route
             path="/admin"
