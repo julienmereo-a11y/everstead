@@ -17,7 +17,8 @@ export default async function handler(req, res) {
       method:  'POST',
       headers: {
         'Content-Type': 'application/json',
-        'apikey': process.env.VITE_SUPABASE_ANON_KEY,
+        'apikey':        process.env.SUPABASE_SERVICE_ROLE_KEY,
+        'Authorization': `Bearer ${process.env.SUPABASE_SERVICE_ROLE_KEY}`,
       },
       body: JSON.stringify({ email, password }),
     }
