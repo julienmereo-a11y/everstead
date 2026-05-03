@@ -4,9 +4,10 @@ import { supabase } from '../lib/supabase'
 const AuthContext = createContext(null)
 
 export function AuthProvider({ children }) {
-  const [user,    setUser]    = useState(null)
-  const [profile, setProfile] = useState(null)
-  const [loading, setLoading] = useState(true)
+  const [user,            setUser]            = useState(null)
+  const [profile,         setProfile]         = useState(null)
+  const [loading,         setLoading]         = useState(true)
+  const [delegateInvites, setDelegateInvites] = useState([])
 
   // ── Fetch profile ────────────────────────────────────────────
   // Profile is created automatically by the handle_new_user DB trigger on signup.
@@ -19,11 +20,23 @@ export function AuthProvider({ children }) {
     if (data) setProfile(data)
   }, [])
 
+  const fetchDelegateInvites = useCallback(async (email) => {
+    const { data } = await supabase
+      .from('trusted_people')
+      .select('id, invite_token, role, invite_status, profiles!trusted_people_user_id_fkey(full_name)')
+      .eq('email', email)
+      .eq('invite_status', 'accepted')
+    setDelegateInvites(data ?? [])
+  }, [])
+
   // ── Bootstrap session ────────────────────────────────────────
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null)
-      if (session?.user) fetchProfile(session.user.id)
+      if (session?.user) {
+        fetchProfile(session.user.id)
+        fetchDelegateInvites(session.user.email)
+      }
       setLoading(false)
     })
 
@@ -31,6 +44,7 @@ export function AuthProvider({ children }) {
       setUser(session?.user ?? null)
       if (session?.user) {
         fetchProfile(session.user.id)
+        fetchDelegateInvites(session.user.email)
 
         // Fire welcome email exactly once: on the first SIGNED_IN event after signup.
         // This fires when the user confirms their email (or immediately if auto-confirmed).
@@ -61,11 +75,12 @@ export function AuthProvider({ children }) {
         }
       } else {
         setProfile(null)
+        setDelegateInvites([])
       }
     })
 
     return () => subscription.unsubscribe()
-  }, [fetchProfile])
+  }, [fetchProfile, fetchDelegateInvites])
 
   // ── Auth actions ─────────────────────────────────────────────
   const signUp = async ({ email, password, fullName, metadata = {} }) => {
@@ -125,6 +140,7 @@ export function AuthProvider({ children }) {
   return (
     <AuthContext.Provider value={{
       user, profile, loading,
+      delegateInvites, fetchDelegateInvites,
       signUp, signIn, signInWithMagicLink, signOut,
       updateProfile, refreshProfile,
       isTrialing, isActive, trialDaysLeft,

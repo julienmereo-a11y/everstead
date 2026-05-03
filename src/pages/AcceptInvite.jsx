@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from 'react'
-import { useSearchParams, Link } from 'react-router-dom'
+import { useSearchParams, useNavigate, Link } from 'react-router-dom'
 import { Shield, CheckCircle2, XCircle, Loader2, ArrowRight } from 'lucide-react'
 import { supabase } from '../lib/supabase'
+import { useAuth } from '../contexts/AuthContext'
 
 export default function AcceptInvite() {
   const [searchParams]          = useSearchParams()
+  const navigate                = useNavigate()
   const token                   = searchParams.get('token')
+  const { user }                = useAuth()
   const [state, setState]       = useState('loading')
   const [invite, setInvite]     = useState(null)
   const [owner, setOwner]       = useState(null)
@@ -23,19 +26,14 @@ export default function AcceptInvite() {
       .eq('invite_token', token)
       .single()
 
-    if (error || !person) {
-      setState('expired')
-      return
-    }
+    if (error || !person) { setState('expired'); return }
 
-    // Check if already responded
     if (person.invite_status === 'accepted') { setState('accepted'); setInvite(person); return }
     if (person.invite_status === 'declined') { setState('declined'); setInvite(person); return }
 
-    // Check expiry (7 days)
     const invited = new Date(person.invited_at)
     const age     = (Date.now() - invited.getTime()) / 86400000
-    if (age > 7)  { setState('expired'); return }
+    if (age > 7) { setState('expired'); return }
 
     setInvite(person)
     setOwner(person.profiles)
@@ -44,33 +42,39 @@ export default function AcceptInvite() {
 
   const handleAccept = async () => {
     setState('accepting')
-    const { error } = await supabase
-      .from('trusted_people')
-      .update({
-        invite_status: 'accepted',
-        accepted_at:   new Date().toISOString(),
-      })
-      .eq('invite_token', token)
 
-    if (error) {
-      setState('error')
-      setErrorMsg(error.message)
+    if (!user) {
+      // Not logged in — preserve token and send to delegate registration
+      navigate(`/delegate-register?token=${token}`)
       return
     }
 
-    // Notify the owner (fire-and-forget)
+    // Logged in — check email matches invite
+    if (user.email !== invite.email) {
+      setState('error')
+      setErrorMsg(`This invitation was sent to ${invite.email}. You're logged in as ${user.email}. Please sign in with the correct account.`)
+      return
+    }
+
+    const { error } = await supabase
+      .from('trusted_people')
+      .update({ invite_status: 'accepted', accepted_at: new Date().toISOString() })
+      .eq('invite_token', token)
+
+    if (error) { setState('error'); setErrorMsg(error.message); return }
+
     fetch('/api/emails/send-invite-accepted', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        ownerName:    owner?.full_name,
-        ownerEmail:   owner?.email,
-        inviteeName:  invite.name,
-        role:         invite.role,
+        ownerName:   owner?.full_name,
+        ownerEmail:  owner?.email,
+        inviteeName: invite.name,
+        role:        invite.role,
       }),
     }).catch(console.error)
 
-    setState('accepted')
+    navigate(`/delegate-dashboard?token=${token}`)
   }
 
   const handleDecline = async () => {
@@ -79,11 +83,7 @@ export default function AcceptInvite() {
       .from('trusted_people')
       .update({ invite_status: 'declined' })
       .eq('invite_token', token)
-    if (error) {
-      setState('error')
-      setErrorMsg(error.message)
-      return
-    }
+    if (error) { setState('error'); setErrorMsg(error.message); return }
     setState('declined')
   }
 
@@ -91,7 +91,6 @@ export default function AcceptInvite() {
     <div className="min-h-screen bg-stone-50 flex items-center justify-center p-6">
       <div className="w-full max-w-md">
 
-        {/* Logo */}
         <div className="flex items-center gap-2.5 justify-center mb-10">
           <div className="w-8 h-8 rounded-xl bg-sage-500 flex items-center justify-center">
             <Shield size={16} className="text-white" />
@@ -101,7 +100,6 @@ export default function AcceptInvite() {
 
         <div className="bg-white border border-stone-200 rounded-2xl shadow-sm overflow-hidden">
 
-          {/* ── Loading ── */}
           {state === 'loading' && (
             <div className="p-10 flex flex-col items-center text-center gap-4">
               <Loader2 size={28} className="text-navy-400 animate-spin" />
@@ -109,7 +107,6 @@ export default function AcceptInvite() {
             </div>
           )}
 
-          {/* ── Found — show details ── */}
           {state === 'found' && invite && (
             <>
               <div className="bg-navy-950 p-7">
@@ -139,6 +136,12 @@ export default function AcceptInvite() {
                   ))}
                 </div>
 
+                {user && user.email !== invite.email && (
+                  <div className="mb-5 px-4 py-3 bg-amber-50 border border-amber-200 rounded-xl text-xs text-amber-800 leading-relaxed">
+                    <strong>Heads up:</strong> This invite is for <strong>{invite.email}</strong>. You're signed in as <strong>{user.email}</strong>. Sign out first if you want to accept with a different account.
+                  </div>
+                )}
+
                 <button
                   onClick={handleAccept}
                   className="w-full bg-navy-800 text-white font-semibold text-sm py-3.5 rounded-lg hover:bg-navy-700 transition-colors flex items-center justify-center gap-2 mb-3"
@@ -155,7 +158,6 @@ export default function AcceptInvite() {
             </>
           )}
 
-          {/* ── Accepting ── */}
           {state === 'accepting' && (
             <div className="p-10 flex flex-col items-center text-center gap-4">
               <Loader2 size={28} className="text-navy-400 animate-spin" />
@@ -163,7 +165,6 @@ export default function AcceptInvite() {
             </div>
           )}
 
-          {/* ── Accepted ── */}
           {state === 'accepted' && (
             <div className="p-10 flex flex-col items-center text-center">
               <div className="w-14 h-14 rounded-full bg-sage-50 flex items-center justify-center mb-5">
@@ -171,26 +172,17 @@ export default function AcceptInvite() {
               </div>
               <h2 className="font-display text-2xl font-light text-navy-950 mb-3">You're confirmed.</h2>
               <p className="text-stone-500 text-sm leading-relaxed mb-8 max-w-xs">
-                You're now part of {invite?.name ? `${owner?.full_name}'s` : 'the'} Everstead plan as <strong>{invite?.role}</strong>. You'll be notified when access is needed.
+                You're now part of {owner?.full_name ? `${owner.full_name}'s` : 'the'} Everstead plan as <strong>{invite?.role}</strong>.
               </p>
-              <div className="flex flex-col items-center gap-3">
-                <Link
-                  to={`/delegate-dashboard?token=${token}`}
-                  className="inline-flex items-center gap-2 rounded-lg bg-navy-800 px-5 py-3 text-sm text-white font-medium hover:bg-navy-700 transition-colors"
-                >
-                  Open delegate dashboard <ArrowRight size={14} />
-                </Link>
-                <Link
-                  to="/"
-                  className="inline-flex items-center gap-2 text-sm text-navy-700 font-medium hover:text-navy-900 transition-colors"
-                >
-                  Learn about Everstead <ArrowRight size={14} />
-                </Link>
-              </div>
+              <Link
+                to={`/delegate-dashboard?token=${token}`}
+                className="inline-flex items-center gap-2 rounded-lg bg-navy-800 px-5 py-3 text-sm text-white font-medium hover:bg-navy-700 transition-colors"
+              >
+                Open delegate dashboard <ArrowRight size={14} />
+              </Link>
             </div>
           )}
 
-          {/* ── Declined ── */}
           {state === 'declined' && (
             <div className="p-10 flex flex-col items-center text-center">
               <div className="w-14 h-14 rounded-full bg-stone-100 flex items-center justify-center mb-5">
@@ -203,7 +195,6 @@ export default function AcceptInvite() {
             </div>
           )}
 
-          {/* ── Expired ── */}
           {state === 'expired' && (
             <div className="p-10 flex flex-col items-center text-center">
               <div className="w-14 h-14 rounded-full bg-amber-50 flex items-center justify-center mb-5">
@@ -216,7 +207,6 @@ export default function AcceptInvite() {
             </div>
           )}
 
-          {/* ── Error ── */}
           {state === 'error' && (
             <div className="p-10 flex flex-col items-center text-center">
               <div className="w-14 h-14 rounded-full bg-red-50 flex items-center justify-center mb-5">

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
-import { Menu, X } from 'lucide-react'
+import { Menu, X, ChevronDown, Users } from 'lucide-react'
 import { useAuth } from '../contexts/AuthContext'
 
 const navLinks = [
@@ -22,7 +22,11 @@ export default function Nav() {
   const location = useLocation()
   const navigate  = useNavigate()
   const menuRef = useRef(null)
-  const { user, signOut } = useAuth()
+  const { user, signOut, delegateInvites } = useAuth()
+  const [switcherOpen, setSwitcherOpen] = useState(false)
+  const switcherRef = useRef(null)
+  const isOwner = !!user && (delegateInvites.length === 0 || true) // always has own plan if logged in
+  const isDualRole = user && delegateInvites.length > 0
 
   const handleSignOut = async () => {
     await signOut()
@@ -39,7 +43,17 @@ export default function Nav() {
   }, [])
 
   // Close on route change
-  useEffect(() => setOpen(false), [location])
+  useEffect(() => { setOpen(false); setSwitcherOpen(false) }, [location])
+
+  // Close switcher on outside click
+  useEffect(() => {
+    if (!switcherOpen) return
+    const handler = (e) => {
+      if (switcherRef.current && !switcherRef.current.contains(e.target)) setSwitcherOpen(false)
+    }
+    document.addEventListener('mousedown', handler)
+    return () => document.removeEventListener('mousedown', handler)
+  }, [switcherOpen])
 
   // Close on outside click
   useEffect(() => {
@@ -104,12 +118,48 @@ export default function Nav() {
           <div className="hidden lg:flex items-center gap-3">
             {user ? (
               <>
-                <Link
-                  to="/dashboard"
-                  className={`text-sm font-medium transition-colors px-3 py-1.5 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy-400 ${useDarkStyle ? 'text-stone-600 hover:text-navy-800' : 'text-white/90 hover:text-white'}`}
-                >
-                  My Account
-                </Link>
+                {isDualRole ? (
+                  /* Role switcher dropdown */
+                  <div className="relative" ref={switcherRef}>
+                    <button
+                      onClick={() => setSwitcherOpen(v => !v)}
+                      className={`flex items-center gap-1.5 text-sm font-medium px-3 py-1.5 rounded-md transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy-400 ${useDarkStyle ? 'text-stone-600 hover:text-navy-800' : 'text-white/90 hover:text-white'}`}
+                    >
+                      <Users size={14} />
+                      My plans
+                      <ChevronDown size={13} className={`transition-transform ${switcherOpen ? 'rotate-180' : ''}`} />
+                    </button>
+                    {switcherOpen && (
+                      <div className="absolute right-0 top-full mt-2 w-56 bg-white border border-stone-200 rounded-xl shadow-lg py-1.5 z-50">
+                        <p className="px-3 py-1 text-xs text-stone-400 font-medium uppercase tracking-wide">Switch plan</p>
+                        <Link
+                          to="/dashboard"
+                          className="flex items-center gap-2 px-3 py-2 text-sm text-navy-800 hover:bg-stone-50 transition-colors"
+                        >
+                          <div className="w-2 h-2 rounded-full bg-sage-500" />
+                          My plan
+                        </Link>
+                        {delegateInvites.map(inv => (
+                          <Link
+                            key={inv.id}
+                            to={`/delegate-dashboard?token=${inv.invite_token}`}
+                            className="flex items-center gap-2 px-3 py-2 text-sm text-navy-800 hover:bg-stone-50 transition-colors"
+                          >
+                            <div className="w-2 h-2 rounded-full bg-navy-300" />
+                            {inv.profiles?.full_name ?? 'Shared plan'}
+                          </Link>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <Link
+                    to="/dashboard"
+                    className={`text-sm font-medium transition-colors px-3 py-1.5 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy-400 ${useDarkStyle ? 'text-stone-600 hover:text-navy-800' : 'text-white/90 hover:text-white'}`}
+                  >
+                    My Account
+                  </Link>
+                )}
                 <button
                   onClick={handleSignOut}
                   className={`text-sm font-medium px-4 py-2 rounded-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-navy-400 ${useDarkStyle ? 'bg-navy-800 text-white hover:bg-navy-700' : 'bg-white/20 text-white border border-white/30 hover:bg-white/30'}`}
@@ -178,8 +228,17 @@ export default function Nav() {
                     to="/dashboard"
                     className="flex items-center justify-center px-4 py-3 text-sm font-semibold text-navy-800 border border-stone-200 rounded-xl hover:bg-stone-50 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy-400"
                   >
-                    My Account
+                    My plan
                   </Link>
+                  {delegateInvites.map(inv => (
+                    <Link
+                      key={inv.id}
+                      to={`/delegate-dashboard?token=${inv.invite_token}`}
+                      className="flex items-center justify-center px-4 py-3 text-sm font-semibold text-navy-800 border border-stone-200 rounded-xl hover:bg-stone-50 transition-colors"
+                    >
+                      {inv.profiles?.full_name ?? 'Shared plan'}
+                    </Link>
+                  ))}
                   <button
                     onClick={handleSignOut}
                     className="flex items-center justify-center bg-navy-800 text-white text-sm font-semibold px-4 py-3 rounded-xl hover:bg-navy-700 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-navy-400"

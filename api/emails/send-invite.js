@@ -5,7 +5,7 @@ const resend = new Resend(process.env.RESEND_API_KEY)
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).end()
 
-  const { inviteeName, inviteeEmail, role, ownerName } = req.body
+  const { inviteeName, inviteeEmail, role, ownerName, inviteToken } = req.body
   if (!inviteeEmail) return res.status(400).json({ error: 'Missing inviteeEmail' })
 
   try {
@@ -13,7 +13,7 @@ export default async function handler(req, res) {
       from:    'Everstead <hello@everstead.care>',
       to:      inviteeEmail,
       subject: `${ownerName || 'Someone'} has invited you to their Everstead plan`,
-      html:    inviteHtml(inviteeName, ownerName, role),
+      html:    inviteHtml(inviteeName, ownerName, role, inviteToken),
     })
     res.status(200).json({ sent: true })
   } catch (err) {
@@ -22,8 +22,10 @@ export default async function handler(req, res) {
   }
 }
 
-function inviteHtml(inviteeName, ownerName, role) {
-  const signupUrl = `${process.env.VITE_APP_URL}/get-started`
+function inviteHtml(inviteeName, ownerName, role, inviteToken) {
+  const signupUrl = inviteToken
+    ? `${process.env.VITE_APP_URL}/accept-invite?token=${inviteToken}`
+    : `${process.env.VITE_APP_URL}/accept-invite`
   return `<!DOCTYPE html>
 <html>
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>

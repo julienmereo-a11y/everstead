@@ -32,6 +32,7 @@ import AcceptInvite from './pages/AcceptInvite'
 import AdvisorPortal from './pages/AdvisorPortal'
 import AdminPanel from './pages/AdminPanel'
 import AcceptAdminInvite from './pages/AcceptAdminInvite'
+import DelegateRegister from './pages/DelegateRegister'
 
 function ScrollToTop() {
   const { pathname } = useLocation()
@@ -75,6 +76,7 @@ export default function App() {
             }
           />
           <Route path="/accept-invite" element={<AcceptInvite />} />
+          <Route path="/delegate-register" element={<DelegateRegister />} />
           <Route path="/accept-admin-invite" element={<AcceptAdminInvite />} />
           <Route
             path="/admin"

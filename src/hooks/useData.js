@@ -126,10 +126,11 @@ export function usePeople() {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        inviteeName: name,
+        inviteeName:  name,
         inviteeEmail: email,
         role,
-        ownerName: profile?.full_name ?? 'Someone',
+        ownerName:    profile?.full_name ?? 'Someone',
+        inviteToken:  person.invite_token,
       }),
     }).catch(console.error)
 
