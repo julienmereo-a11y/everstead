@@ -20,23 +20,19 @@ export default function AcceptInvite() {
   }, [token])
 
   const loadInvite = async () => {
-    const { data: person, error } = await supabase
-      .from('trusted_people')
-      .select('*, profiles!trusted_people_user_id_fkey(full_name, email)')
-      .eq('invite_token', token)
-      .single()
+    const { data, error } = await supabase.rpc('get_invite_details', { p_token: token })
+    const person = data?.[0]
 
     if (error || !person) { setState('expired'); return }
 
     if (person.invite_status === 'accepted') { setState('accepted'); setInvite(person); return }
     if (person.invite_status === 'declined') { setState('declined'); setInvite(person); return }
 
-    const invited = new Date(person.invited_at)
-    const age     = (Date.now() - invited.getTime()) / 86400000
+    const age = (Date.now() - new Date(person.invited_at).getTime()) / 86400000
     if (age > 7) { setState('expired'); return }
 
     setInvite(person)
-    setOwner(person.profiles)
+    setOwner({ full_name: person.owner_name, email: person.owner_email })
     setState('found')
   }
 
@@ -91,11 +87,8 @@ export default function AcceptInvite() {
     <div className="min-h-screen bg-stone-50 flex items-center justify-center p-6">
       <div className="w-full max-w-md">
 
-        <div className="flex items-center gap-2.5 justify-center mb-10">
-          <div className="w-8 h-8 rounded-xl bg-sage-500 flex items-center justify-center">
-            <Shield size={16} className="text-white" />
-          </div>
-          <span className="font-display text-xl font-semibold text-navy-900">Everstead</span>
+        <div className="flex justify-center mb-10">
+          <img src="/everstead-logo-dark.png" alt="Everstead" className="h-10 w-auto" />
         </div>
 
         <div className="bg-white border border-stone-200 rounded-2xl shadow-sm overflow-hidden">
