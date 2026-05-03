@@ -1,23 +1,27 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Loader2, CheckCircle2, ArrowLeft } from 'lucide-react'
-import { supabase } from '../lib/supabase'
 
 export default function ForgotPassword() {
-  const [email, setEmail]         = useState('')
+  const [email, setEmail]           = useState('')
   const [submitting, setSubmitting] = useState(false)
-  const [sent, setSent]           = useState(false)
-  const [error, setError]         = useState(null)
+  const [sent, setSent]             = useState(false)
+  const [error, setError]           = useState(null)
 
   const handleSubmit = async (e) => {
     e.preventDefault()
     setError(null)
     setSubmitting(true)
     try {
-      const { error: supaError } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: `${window.location.origin}/reset-password`,
+      const res = await fetch('/api/auth/forgot-password', {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify({ email }),
       })
-      if (supaError) throw supaError
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}))
+        throw new Error(data.error || 'Something went wrong. Please try again.')
+      }
       setSent(true)
     } catch (err) {
       setError(err.message ?? 'Something went wrong. Please try again.')

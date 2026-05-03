@@ -14,7 +14,7 @@ const navLinks = [
 ]
 
 // Pages that have a light background at the top — nav should always use dark style on these
-const lightBgPages = ['/pricing', '/security', '/features', '/how-it-works', '/use-cases', '/login', '/get-started', '/resources', '/about', '/contact', '/book-demo', '/privacy', '/terms']
+const lightBgPages = ['/pricing', '/security', '/features', '/how-it-works', '/use-cases', '/login', '/get-started', '/resources', '/about', '/contact', '/book-demo', '/privacy', '/terms', '/forgot-password', '/reset-password']
 
 export default function Nav() {
   const [scrolled, setScrolled] = useState(false)
