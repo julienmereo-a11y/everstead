@@ -147,6 +147,26 @@ export function usePeople() {
   const resendInvite = async (personId) => {
     const person = base.data?.find(p => p.id === personId)
     if (!person) return
+
+    // Generate a fresh 64-char hex token identical in format to the DB default
+    const newToken = Array.from(crypto.getRandomValues(new Uint8Array(32)))
+      .map(b => b.toString(16).padStart(2, '0')).join('')
+
+    const { error } = await supabase
+      .from('trusted_people')
+      .update({
+        invite_token:  newToken,
+        invited_at:    new Date().toISOString(),
+        invite_status: 'pending',
+      })
+      .eq('id', personId)
+      .eq('user_id', user.id)
+
+    if (error) throw error
+
+    // Refresh local state so the new token is available
+    base.refetch()
+
     fetch('/api/emails/send-invite', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -155,7 +175,7 @@ export function usePeople() {
         inviteeEmail: person.email,
         role:         person.role,
         ownerName:    profile?.full_name ?? 'Someone',
-        inviteToken:  person.invite_token,
+        inviteToken:  newToken,
       }),
     }).catch(console.error)
   }
