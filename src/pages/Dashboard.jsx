@@ -405,8 +405,31 @@ export default function Dashboard() {
         trialEnd,
       })
     } catch {
-      // price IDs not configured — fall back to settings
       setActiveSection('settings')
+    }
+  }
+
+  const handleDeleteAccount = async () => {
+    if (isDemo) return
+    try {
+      const { supabase: sb } = await import('../lib/supabase')
+      const { data: { session } } = await sb.auth.getSession()
+      const res = await fetch('/api/auth/delete-account', {
+        method:  'POST',
+        headers: {
+          'Content-Type':  'application/json',
+          'Authorization': `Bearer ${session.access_token}`,
+        },
+        body: JSON.stringify({ userId: user.id }),
+      })
+      if (!res.ok) {
+        const d = await res.json().catch(() => ({}))
+        throw new Error(d.error || 'Deletion failed. Please contact support.')
+      }
+      await signOut()
+      navigate('/')
+    } catch (err) {
+      throw err
     }
   }
 
@@ -608,7 +631,7 @@ export default function Dashboard() {
         {activeSection === 'alerts'        && <AlertsSection    alerts={alerts} markRead={markRead} markAllRead={markAllRead} />}
         {activeSection === 'activity'      && <ActivitySection  activity={activity} loading={loadingActivity} />}
         {activeSection === 'resources'     && <ResourcesSection />}
-        {activeSection === 'settings'      && <SettingsSection  profile={activeProfile} isDemo={isDemo} updateProfile={updateProfile} onUpgrade={handleUpgrade} />}
+        {activeSection === 'settings'      && <SettingsSection  profile={activeProfile} isDemo={isDemo} updateProfile={updateProfile} onUpgrade={handleUpgrade} onDeleteAccount={handleDeleteAccount} />}
       </main>
       </div>
     </div>
@@ -2603,10 +2626,11 @@ function ResourcesSection() {
 // ─────────────────────────────────────────────────────────────
 // SETTINGS SECTION
 // ─────────────────────────────────────────────────────────────
-function SettingsSection({ profile, isDemo, updateProfile, onUpgrade }) {
+function SettingsSection({ profile, isDemo, updateProfile, onUpgrade, onDeleteAccount }) {
   const PLANS = [
-    { id: 'essential', name: 'Essential', tier: 1, price: '£7/mo',  promo: '£5/mo yearly',  desc: 'For individuals. 2 trusted contacts, 5 GB storage.' },
-    { id: 'family',    name: 'Family',    tier: 2, price: '£15/mo', promo: '£12/mo yearly', desc: 'Household members, up to 10 trusted contacts, 25 GB storage.' },
+    { id: 'essential', name: 'Essential', tier: 1, price: '£7/mo',  desc: 'For individuals. 2 trusted contacts, 5 GB storage.' },
+    { id: 'family',    name: 'Family',    tier: 2, price: '£15/mo', desc: 'Household members, up to 10 trusted contacts, 25 GB storage.' },
+    { id: 'advisor',   name: 'Advisor',   tier: 3, price: '£60/mo', desc: 'For professionals managing multiple client families. 100 GB storage.' },
   ]
   const PLAN_TIERS = { essential: 1, family: 2, advisor: 3 }
   const currentTier = PLAN_TIERS[profile.plan] ?? 1
@@ -2616,14 +2640,17 @@ function SettingsSection({ profile, isDemo, updateProfile, onUpgrade }) {
   const [cancelReason, setCancelReason]   = useState('')
   const [cancelling, setCancelling]       = useState(false)
   const [cancelDone, setCancelDone]       = useState(false)
-  const [switchTarget, setSwitchTarget]   = useState(null)
+
+  // Account deletion
+  const [deleteStep, setDeleteStep]       = useState(0) // 0=idle, 1=confirm
+  const [deleteChecks, setDeleteChecks]   = useState({ data: false, confirm: false })
+  const [deleting, setDeleting]           = useState(false)
+  const [deleteError, setDeleteError]     = useState(null)
 
   const handleCancelSubscription = async () => {
     setCancelling(true)
     try {
-      if (!isDemo) {
-        await new Promise(r => setTimeout(r, 800))
-      }
+      if (!isDemo) await new Promise(r => setTimeout(r, 800))
       setCancelDone(true)
       setCancelConfirm(false)
     } finally {
@@ -2631,8 +2658,15 @@ function SettingsSection({ profile, isDemo, updateProfile, onUpgrade }) {
     }
   }
 
-  const handleSwitchPlan = (planId) => {
-    setSwitchTarget(planId)
+  const handleConfirmDelete = async () => {
+    setDeleting(true)
+    setDeleteError(null)
+    try {
+      await onDeleteAccount()
+    } catch (err) {
+      setDeleteError(err.message)
+      setDeleting(false)
+    }
   }
 
   const [profileForm, setProfileForm] = useState({
@@ -2790,15 +2824,17 @@ function SettingsSection({ profile, isDemo, updateProfile, onUpgrade }) {
           <div className="grid sm:grid-cols-3 gap-4">
             {PLANS.map(plan => {
               const isCurrent = profile.plan === plan.id
+              const isHigher  = plan.tier > currentTier
+              const isLower   = plan.tier < currentTier
               return (
-                <div key={plan.id} className={`rounded-xl border p-4 ${isCurrent ? 'border-navy-400 bg-navy-50 ring-1 ring-navy-400' : 'border-stone-200'}`}>
+                <div key={plan.id} className={`rounded-xl border p-4 flex flex-col ${isCurrent ? 'border-navy-400 bg-navy-50 ring-1 ring-navy-400' : 'border-stone-200'}`}>
                   <div className="flex items-center justify-between mb-2">
                     <p className="font-semibold text-navy-950 text-sm">{plan.name}</p>
                     {isCurrent && <span className="text-xs bg-navy-800 text-white px-2 py-0.5 rounded-full">Current</span>}
                   </div>
                   <p className="text-lg font-display font-light text-navy-950">{plan.price}</p>
-                  <p className="text-xs text-stone-500 mt-1 leading-snug">{plan.desc}</p>
-                  {!isCurrent && plan.tier > currentTier && (
+                  <p className="text-xs text-stone-500 mt-1 leading-snug flex-1">{plan.desc}</p>
+                  {isHigher && (
                     <button
                       onClick={() => onUpgrade(plan.id)}
                       className="mt-3 w-full text-xs font-semibold bg-navy-800 text-white rounded-lg py-1.5 hover:bg-navy-700 transition-colors"
@@ -2806,54 +2842,18 @@ function SettingsSection({ profile, isDemo, updateProfile, onUpgrade }) {
                       {isTrialing ? `Start ${plan.name} trial` : `Upgrade to ${plan.name}`}
                     </button>
                   )}
-                  {!isCurrent && plan.tier < currentTier && (
+                  {isLower && (
                     <button
-                      onClick={() => handleSwitchPlan(plan.id)}
+                      onClick={() => onUpgrade(plan.id)}
                       className="mt-3 w-full text-xs font-semibold text-stone-500 border border-stone-200 rounded-lg py-1.5 hover:bg-stone-50 transition-colors"
                     >
-                      Downgrade to {plan.name}
+                      Switch to {plan.name}
                     </button>
                   )}
                 </div>
               )
             })}
           </div>
-
-          {/* Advisor upsell */}
-          <div className="mt-4 rounded-xl border border-stone-200 bg-stone-50 p-4 flex items-center justify-between gap-4">
-            <div>
-              <p className="text-sm font-semibold text-navy-950">Are you an estate advisor?</p>
-              <p className="text-xs text-stone-500 mt-0.5">The Advisor plan is available for professionals managing client families. Book a demo to learn more.</p>
-            </div>
-            <a
-              href="/book-demo"
-              className="shrink-0 text-xs font-semibold text-navy-700 border border-navy-200 rounded-lg px-3 py-1.5 hover:bg-navy-50 transition-colors whitespace-nowrap"
-            >
-              Book a demo
-            </a>
-          </div>
-
-          {/* Downgrade confirmation */}
-          {switchTarget && (
-            <div className="mt-4 bg-amber-50 border border-amber-200 rounded-xl p-4 space-y-3">
-              <p className="text-sm font-semibold text-amber-900">
-                Downgrade to {PLANS.find(p => p.id === switchTarget)?.name}?
-              </p>
-              <p className="text-xs text-amber-800 leading-relaxed">
-                Your plan will change at the end of your current billing period. Some features may become unavailable.
-              </p>
-              <div className="flex gap-3">
-                <a
-                  href={`mailto:support@everstead.care?subject=Plan%20switch%20request%20%E2%80%94%20${encodeURIComponent(PLANS.find(p => p.id === switchTarget)?.name ?? switchTarget)}&body=Hi%2C%20I%27d%20like%20to%20switch%20my%20Everstead%20plan.`}
-                  onClick={() => setSwitchTarget(null)}
-                  className={primaryBtn}
-                >
-                  Email us to switch
-                </a>
-                <button onClick={() => setSwitchTarget(null)} className={secondaryBtn}>Cancel</button>
-              </div>
-            </div>
-          )}
 
           {/* Cancel subscription */}
           <div className="mt-5 pt-4 border-t border-stone-100">
@@ -2902,18 +2902,69 @@ function SettingsSection({ profile, isDemo, updateProfile, onUpgrade }) {
         {/* ── Danger zone ── */}
         <div className="bg-white border border-red-100 rounded-2xl p-6">
           <h2 className="font-semibold text-red-700 text-sm mb-2">Danger zone</h2>
-          <p className="text-xs text-stone-500 mb-4 leading-relaxed">
-            Deleting your account is permanent and cannot be undone. All plan data, documents, and trusted people will be removed.
-          </p>
+
           {isDemo ? (
-            <span className="text-xs text-stone-400 italic">Account deletion disabled in demo mode.</span>
+            <p className="text-xs text-stone-400 italic">Account deletion disabled in demo mode.</p>
+          ) : deleteStep === 0 ? (
+            <>
+              <p className="text-xs text-stone-500 mb-4 leading-relaxed">
+                Permanently delete your account and all associated data — documents, contacts, instructions, and settings. This cannot be undone.
+              </p>
+              <button
+                onClick={() => setDeleteStep(1)}
+                className="text-xs font-semibold text-red-600 border border-red-200 rounded-lg px-4 py-2 hover:bg-red-50 transition-colors"
+              >
+                Delete my account
+              </button>
+            </>
           ) : (
-            <a
-              href="mailto:support@everstead.care?subject=Account%20deletion%20request&body=I%20would%20like%20to%20permanently%20delete%20my%20Everstead%20account%20and%20all%20associated%20data."
-              className="text-xs font-semibold text-red-600 border border-red-200 rounded-lg px-4 py-2 hover:bg-red-50 transition-colors inline-block"
-            >
-              Delete my account
-            </a>
+            <div className="space-y-4">
+              <p className="text-sm font-semibold text-red-800">Before you go — please confirm:</p>
+
+              <label className="flex items-start gap-3 cursor-pointer group">
+                <input
+                  type="checkbox"
+                  checked={deleteChecks.data}
+                  onChange={e => setDeleteChecks(p => ({ ...p, data: e.target.checked }))}
+                  className="mt-0.5 accent-red-600"
+                />
+                <span className="text-xs text-stone-700 leading-relaxed">
+                  I have downloaded or noted all documents and information I need. I understand that once deleted, my files cannot be recovered.
+                </span>
+              </label>
+
+              <label className="flex items-start gap-3 cursor-pointer group">
+                <input
+                  type="checkbox"
+                  checked={deleteChecks.confirm}
+                  onChange={e => setDeleteChecks(p => ({ ...p, confirm: e.target.checked }))}
+                  className="mt-0.5 accent-red-600"
+                />
+                <span className="text-xs text-stone-700 leading-relaxed">
+                  I understand this is <strong>permanent and irreversible</strong>. My account, all data, and any active subscription will be deleted immediately.
+                </span>
+              </label>
+
+              {deleteError && (
+                <p className="text-xs text-red-700 bg-red-50 border border-red-200 rounded-lg px-3 py-2">{deleteError}</p>
+              )}
+
+              <div className="flex gap-3 pt-1">
+                <button
+                  onClick={handleConfirmDelete}
+                  disabled={!deleteChecks.data || !deleteChecks.confirm || deleting}
+                  className="text-xs font-semibold bg-red-600 text-white rounded-lg px-4 py-2 hover:bg-red-700 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                >
+                  {deleting ? 'Deleting…' : 'Permanently delete my account'}
+                </button>
+                <button
+                  onClick={() => { setDeleteStep(0); setDeleteChecks({ data: false, confirm: false }); setDeleteError(null) }}
+                  className={secondaryBtn}
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
           )}
         </div>
 
