@@ -81,29 +81,17 @@ export default function DelegateRegister() {
     setSubmitting(true)
 
     try {
-      if (mode === 'register') {
-        const { error: signUpErr } = await supabase.auth.signUp({
-          email:    invite.email,
-          password,
-          options: {
-            data: { full_name: name, role: 'delegate' },
-            emailRedirectTo: `${window.location.origin}/delegate-dashboard?token=${token}`,
-          },
-        })
-        if (signUpErr) throw signUpErr
+      // Route through server-side API to bypass Supabase captcha protection
+      const res = await fetch('/api/auth/delegate-register', {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify({ email: invite.email, password, name, mode }),
+      })
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.error || 'Something went wrong. Please try again.')
 
-        // Update profile role to delegate (trigger creates it as 'user' by default)
-        // We do this after auth state settles — the useEffect on [user, invite] handles the redirect
-        // For email-confirmed flows, we also update via the supabase admin on first sign-in
-        // For auto-confirm, the onAuthStateChange fires immediately and acceptAndRedirect runs
-      } else {
-        const { error: signInErr } = await supabase.auth.signInWithPassword({
-          email:    invite.email,
-          password,
-        })
-        if (signInErr) throw signInErr
-        // onAuthStateChange fires → useEffect [user, invite] → acceptAndRedirect
-      }
+      // Set the session on the client — triggers onAuthStateChange → acceptAndRedirect
+      await supabase.auth.setSession({ access_token: data.access_token, refresh_token: data.refresh_token })
     } catch (err) {
       setError(err.message ?? 'Something went wrong. Please try again.')
     } finally {
