@@ -2630,7 +2630,6 @@ function SettingsSection({ profile, isDemo, updateProfile, onUpgrade, onDeleteAc
   const PLANS = [
     { id: 'essential', name: 'Essential', tier: 1, price: '£7/mo',  desc: 'For individuals. 2 trusted contacts, 5 GB storage.' },
     { id: 'family',    name: 'Family',    tier: 2, price: '£15/mo', desc: 'Household members, up to 10 trusted contacts, 25 GB storage.' },
-    { id: 'advisor',   name: 'Advisor',   tier: 3, price: '£60/mo', desc: 'For professionals managing multiple client families. 100 GB storage.' },
   ]
   const PLAN_TIERS = { essential: 1, family: 2, advisor: 3 }
   const currentTier = PLAN_TIERS[profile.plan] ?? 1
@@ -2821,7 +2820,7 @@ function SettingsSection({ profile, isDemo, updateProfile, onUpgrade, onDeleteAc
               <span className="ml-2 text-amber-600 font-medium">· Free trial active</span>
             )}
           </p>
-          <div className="grid sm:grid-cols-3 gap-4">
+          <div className="grid sm:grid-cols-2 gap-4">
             {PLANS.map(plan => {
               const isCurrent = profile.plan === plan.id
               const isHigher  = plan.tier > currentTier
@@ -2834,20 +2833,14 @@ function SettingsSection({ profile, isDemo, updateProfile, onUpgrade, onDeleteAc
                   </div>
                   <p className="text-lg font-display font-light text-navy-950">{plan.price}</p>
                   <p className="text-xs text-stone-500 mt-1 leading-snug flex-1">{plan.desc}</p>
-                  {isHigher && (
+                  {(isHigher || isLower) && (
                     <button
                       onClick={() => onUpgrade(plan.id)}
-                      className="mt-3 w-full text-xs font-semibold bg-navy-800 text-white rounded-lg py-1.5 hover:bg-navy-700 transition-colors"
+                      className="mt-3 w-full text-xs font-semibold text-navy-700 border border-navy-200 rounded-lg py-1.5 hover:bg-navy-50 transition-colors"
                     >
-                      {isTrialing ? `Start ${plan.name} trial` : `Upgrade to ${plan.name}`}
-                    </button>
-                  )}
-                  {isLower && (
-                    <button
-                      onClick={() => onUpgrade(plan.id)}
-                      className="mt-3 w-full text-xs font-semibold text-stone-500 border border-stone-200 rounded-lg py-1.5 hover:bg-stone-50 transition-colors"
-                    >
-                      Switch to {plan.name}
+                      {isHigher
+                        ? (isTrialing ? `Upgrade to ${plan.name}` : `Upgrade to ${plan.name}`)
+                        : `Switch to ${plan.name}`}
                     </button>
                   )}
                 </div>
