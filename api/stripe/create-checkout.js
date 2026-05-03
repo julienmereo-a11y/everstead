@@ -5,7 +5,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY)
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' })
 
-  const { priceId, userEmail, customerId, trialEnd } = req.body
+  const { priceId, userEmail, customerId, trialEnd, cancelUrl } = req.body
 
   if (!priceId) return res.status(400).json({ error: 'Missing priceId' })
 
@@ -23,7 +23,7 @@ export default async function handler(req, res) {
       line_items: [{ price: priceId, quantity: 1 }],
       subscription_data: subscriptionData,
       success_url: `${process.env.VITE_APP_URL}/dashboard?checkout=success`,
-      cancel_url:  `${process.env.VITE_APP_URL}/pricing`,
+      cancel_url:  cancelUrl ? `${process.env.VITE_APP_URL}${cancelUrl}` : `${process.env.VITE_APP_URL}/pricing`,
       ...(customerId
         ? { customer: customerId }
         : { customer_email: userEmail }),

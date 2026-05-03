@@ -14,12 +14,13 @@ export default function DelegateRegister() {
   const [invite, setInvite]       = useState(null)
   const [owner, setOwner]         = useState(null)
 
-  const [mode, setMode]     = useState('register') // register | login
-  const [name, setName]     = useState('')
+  const [mode, setMode]       = useState('register') // register | login
+  const [name, setName]       = useState('')
   const [password, setPassword] = useState('')
-  const [showPw, setShowPw] = useState(false)
+  const [showPw, setShowPw]   = useState(false)
+  const [wantsTrial, setWantsTrial] = useState(false)
   const [submitting, setSubmitting] = useState(false)
-  const [error, setError]   = useState(null)
+  const [error, setError]     = useState(null)
 
   useEffect(() => {
     if (!token) { setLoadState('error'); return }
@@ -29,7 +30,7 @@ export default function DelegateRegister() {
   // If the user is already logged in and email matches, accept immediately
   useEffect(() => {
     if (user && invite && user.email === invite.email) {
-      acceptAndRedirect()
+      acceptAndRedirect(wantsTrial)
     }
   }, [user, invite])
 
@@ -52,7 +53,7 @@ export default function DelegateRegister() {
     setLoadState('ready')
   }
 
-  const acceptAndRedirect = async () => {
+  const acceptAndRedirect = async (trialRequested = false) => {
     await supabase
       .from('trusted_people')
       .update({ invite_status: 'accepted', accepted_at: new Date().toISOString() })
@@ -69,6 +70,20 @@ export default function DelegateRegister() {
       }),
     }).catch(console.error)
 
+    if (trialRequested) {
+      const checkoutRes = await fetch('/api/stripe/create-checkout', {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          priceId:   import.meta.env.VITE_STRIPE_FAMILY_YEARLY,
+          userEmail: invite?.email,
+          cancelUrl: `/delegate-dashboard?token=${token}`,
+        }),
+      })
+      const { url } = await checkoutRes.json()
+      if (url) { window.location.href = url; return }
+    }
+
     navigate(`/delegate-dashboard?token=${token}`, { replace: true })
   }
 
@@ -82,7 +97,7 @@ export default function DelegateRegister() {
       const res = await fetch('/api/auth/delegate-register', {
         method:  'POST',
         headers: { 'Content-Type': 'application/json' },
-        body:    JSON.stringify({ email: invite.email, password, name, mode }),
+        body:    JSON.stringify({ email: invite.email, password, name, mode, wantsTrial: mode === 'register' && wantsTrial }),
       })
       const data = await res.json()
       if (!res.ok) throw new Error(data.error || 'Something went wrong. Please try again.')
@@ -211,6 +226,28 @@ export default function DelegateRegister() {
             </div>
           </div>
 
+          {/* Trial upsell — only shown on register mode */}
+          {mode === 'register' && (
+            <label className="flex items-start gap-3 cursor-pointer group mt-1">
+              <div className="mt-0.5 shrink-0">
+                <input
+                  type="checkbox"
+                  checked={wantsTrial}
+                  onChange={e => setWantsTrial(e.target.checked)}
+                  className="w-4 h-4 rounded border-stone-300 text-navy-700 focus:ring-navy-400 accent-navy-800"
+                />
+              </div>
+              <div>
+                <p className="text-sm font-medium text-navy-900 leading-snug group-hover:text-navy-700 transition-colors">
+                  Start my own 14-day free trial — no credit card required
+                </p>
+                <p className="text-xs text-stone-500 mt-0.5 leading-relaxed">
+                  Protect your own family the same way {owner?.full_name} is protecting theirs.
+                </p>
+              </div>
+            </label>
+          )}
+
           <button
             type="submit"
             disabled={submitting || !password}
@@ -223,7 +260,7 @@ export default function DelegateRegister() {
           </button>
         </form>
 
-        {mode === 'register' && (
+        {mode === 'register' && !wantsTrial && (
           <div className="mt-5 flex items-start gap-2.5 bg-sage-50 border border-sage-200 rounded-xl px-3.5 py-3">
             <CheckCircle2 size={14} className="text-sage-600 mt-0.5 shrink-0" />
             <p className="text-xs text-sage-800 leading-relaxed">

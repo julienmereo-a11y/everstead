@@ -5,23 +5,22 @@ const supabase = createClient(process.env.VITE_SUPABASE_URL, process.env.SUPABAS
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).end()
 
-  const { email, password, name, mode } = req.body
+  const { email, password, name, mode, wantsTrial } = req.body
   if (!email || !password) return res.status(400).json({ error: 'Missing fields' })
 
   if (mode === 'register') {
-    // Create user server-side (bypasses captcha). Auto-confirm email — delegates
-    // don't go through the normal email confirmation flow.
+    const profileRole = wantsTrial ? 'owner' : 'delegate'
+    // Create user server-side (bypasses captcha). Auto-confirm email.
     const { data: created, error: createErr } = await supabase.auth.admin.createUser({
       email,
       password,
-      user_metadata: { full_name: name ?? email, role: 'delegate' },
+      user_metadata: { full_name: name ?? email, role: profileRole },
       email_confirm: true,
     })
     if (createErr) return res.status(400).json({ error: createErr.message })
 
-    // Mark profile as delegate (trigger creates it as 'user' by default)
     if (created?.user?.id) {
-      await supabase.from('profiles').update({ role: 'delegate' }).eq('id', created.user.id)
+      await supabase.from('profiles').update({ role: profileRole }).eq('id', created.user.id)
     }
   }
 

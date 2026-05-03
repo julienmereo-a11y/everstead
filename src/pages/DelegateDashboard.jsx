@@ -90,6 +90,7 @@ export default function DelegateDashboard() {
   const [error, setError] = useState('')
   const [invite, setInvite] = useState(null)
   const [owner, setOwner] = useState(null)
+  const [myRole, setMyRole] = useState(null)
   const [documents, setDocuments] = useState([])
   const [accounts, setAccounts] = useState([])
   const [instructions, setInstructions] = useState([])
@@ -134,15 +135,15 @@ export default function DelegateDashboard() {
       setLoading(true)
       setError('')
 
-      const { data: trustedPerson, error: inviteError } = await supabase
-        .from('trusted_people')
-        .select(`
-          *,
-          access_grants (*),
-          profiles!trusted_people_user_id_fkey(full_name, email, plan)
-        `)
-        .eq('invite_token', token)
-        .single()
+      // Use SECURITY DEFINER RPC for owner info (profiles are RLS-protected)
+      const [{ data: trustedPerson, error: inviteError }, { data: inviteDetails }] = await Promise.all([
+        supabase
+          .from('trusted_people')
+          .select('*, access_grants (*)')
+          .eq('invite_token', token)
+          .single(),
+        supabase.rpc('get_invite_details', { p_token: token }),
+      ])
 
       if (inviteError || !trustedPerson) {
         setError('We could not find a valid delegate invitation for this link.')
@@ -150,8 +151,25 @@ export default function DelegateDashboard() {
         return
       }
 
+      const ownerInfo = inviteDetails?.[0]
       setInvite(trustedPerson)
-      setOwner(trustedPerson.profiles ?? null)
+      setOwner({
+        full_name:    ownerInfo?.owner_name  ?? null,
+        email:        ownerInfo?.owner_email ?? null,
+        owner_status: trustedPerson.owner_status ?? null,
+        plan:         null,
+      })
+
+      // Fetch the logged-in delegate's own profile role
+      const { data: { user: authUser } } = await supabase.auth.getUser()
+      if (authUser) {
+        const { data: myProfile } = await supabase
+          .from('profiles')
+          .select('role')
+          .eq('id', authUser.id)
+          .single()
+        setMyRole(myProfile?.role ?? null)
+      }
 
       if (trustedPerson.invite_status !== 'accepted') {
         setLoading(false)
@@ -275,6 +293,19 @@ export default function DelegateDashboard() {
         <div className="bg-amber-500 text-white text-xs font-semibold text-center py-2 px-4 flex items-center justify-center gap-3">
           <span>Demo mode — showing Carol Thornton's executor view. Data is fictional.</span>
           <Link to="/get-started" className="underline hover:no-underline">Create your own plan →</Link>
+        </div>
+      )}
+      {!isDemo && myRole === 'delegate' && (
+        <div className="bg-navy-950 border-b border-navy-900 px-6 py-3 flex flex-wrap items-center justify-between gap-3">
+          <p className="text-xs text-stone-400">
+            Want to protect your own family the same way {owner?.full_name} is protecting theirs?
+          </p>
+          <Link
+            to="/get-started"
+            className="text-xs font-semibold text-sage-400 hover:text-sage-300 transition-colors whitespace-nowrap flex items-center gap-1"
+          >
+            Start a free 14-day trial <ArrowRight size={12} />
+          </Link>
         </div>
       )}
       {ownerDeceased && (
