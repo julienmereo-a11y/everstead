@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { Link, useLocation } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { Menu, X } from 'lucide-react'
+import { useAuth } from '../contexts/AuthContext'
 
 const navLinks = [
   { label: 'How It Works', href: '/how-it-works' },
@@ -19,7 +20,14 @@ export default function Nav() {
   const [scrolled, setScrolled] = useState(false)
   const [open, setOpen] = useState(false)
   const location = useLocation()
+  const navigate  = useNavigate()
   const menuRef = useRef(null)
+  const { user, signOut } = useAuth()
+
+  const handleSignOut = async () => {
+    await signOut()
+    navigate('/login')
+  }
 
   const isLightPage = lightBgPages.some(p => location.pathname.startsWith(p))
   const useDarkStyle = scrolled || isLightPage
@@ -94,18 +102,37 @@ export default function Nav() {
 
           {/* CTA */}
           <div className="hidden lg:flex items-center gap-3">
-            <Link
-              to="/login"
-              className={`text-sm font-medium transition-colors px-3 py-1.5 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy-400 ${useDarkStyle ? 'text-stone-600 hover:text-navy-800' : 'text-white/90 hover:text-white'}`}
-            >
-              Login
-            </Link>
-            <Link
-              to="/get-started"
-              className={`text-sm font-medium px-4 py-2 rounded-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-navy-400 ${useDarkStyle ? 'bg-navy-800 text-white hover:bg-navy-700' : 'bg-white/20 text-white border border-white/30 hover:bg-white/30'}`}
-            >
-              Get Started
-            </Link>
+            {user ? (
+              <>
+                <Link
+                  to="/dashboard"
+                  className={`text-sm font-medium transition-colors px-3 py-1.5 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy-400 ${useDarkStyle ? 'text-stone-600 hover:text-navy-800' : 'text-white/90 hover:text-white'}`}
+                >
+                  My Account
+                </Link>
+                <button
+                  onClick={handleSignOut}
+                  className={`text-sm font-medium px-4 py-2 rounded-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-navy-400 ${useDarkStyle ? 'bg-navy-800 text-white hover:bg-navy-700' : 'bg-white/20 text-white border border-white/30 hover:bg-white/30'}`}
+                >
+                  Log Out
+                </button>
+              </>
+            ) : (
+              <>
+                <Link
+                  to="/login"
+                  className={`text-sm font-medium transition-colors px-3 py-1.5 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy-400 ${useDarkStyle ? 'text-stone-600 hover:text-navy-800' : 'text-white/90 hover:text-white'}`}
+                >
+                  Login
+                </Link>
+                <Link
+                  to="/get-started"
+                  className={`text-sm font-medium px-4 py-2 rounded-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-navy-400 ${useDarkStyle ? 'bg-navy-800 text-white hover:bg-navy-700' : 'bg-white/20 text-white border border-white/30 hover:bg-white/30'}`}
+                >
+                  Get Started
+                </Link>
+              </>
+            )}
           </div>
 
           {/* Mobile toggle */}
@@ -145,18 +172,37 @@ export default function Nav() {
               </Link>
             ))}
             <div className="pt-4 mt-2 border-t border-stone-100 flex flex-col gap-2.5">
-              <Link
-                to="/login"
-                className="flex items-center justify-center px-4 py-3 text-sm font-semibold text-navy-800 border border-stone-200 rounded-xl hover:bg-stone-50 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy-400"
-              >
-                Login
-              </Link>
-              <Link
-                to="/get-started"
-                className="flex items-center justify-center bg-navy-800 text-white text-sm font-semibold px-4 py-3 rounded-xl hover:bg-navy-700 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-navy-400"
-              >
-                Get Started
-              </Link>
+              {user ? (
+                <>
+                  <Link
+                    to="/dashboard"
+                    className="flex items-center justify-center px-4 py-3 text-sm font-semibold text-navy-800 border border-stone-200 rounded-xl hover:bg-stone-50 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy-400"
+                  >
+                    My Account
+                  </Link>
+                  <button
+                    onClick={handleSignOut}
+                    className="flex items-center justify-center bg-navy-800 text-white text-sm font-semibold px-4 py-3 rounded-xl hover:bg-navy-700 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-navy-400"
+                  >
+                    Log Out
+                  </button>
+                </>
+              ) : (
+                <>
+                  <Link
+                    to="/login"
+                    className="flex items-center justify-center px-4 py-3 text-sm font-semibold text-navy-800 border border-stone-200 rounded-xl hover:bg-stone-50 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy-400"
+                  >
+                    Login
+                  </Link>
+                  <Link
+                    to="/get-started"
+                    className="flex items-center justify-center bg-navy-800 text-white text-sm font-semibold px-4 py-3 rounded-xl hover:bg-navy-700 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-navy-400"
+                  >
+                    Get Started
+                  </Link>
+                </>
+              )}
             </div>
           </div>
         </div>

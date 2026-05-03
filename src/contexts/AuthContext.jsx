@@ -29,8 +29,39 @@ export function AuthProvider({ children }) {
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null)
-      if (session?.user) fetchProfile(session.user.id)
-      else setProfile(null)
+      if (session?.user) {
+        fetchProfile(session.user.id)
+
+        // Fire welcome email exactly once: on the first SIGNED_IN event after signup.
+        // This fires when the user confirms their email (or immediately if auto-confirmed).
+        // GetStarted stores plan data in localStorage; we read it here, then leave it
+        // in place so Dashboard can still sync the plan.
+        if (_event === 'SIGNED_IN') {
+          const raw = localStorage.getItem('everstead_pending_signup')
+          if (raw) {
+            try {
+              const pending = JSON.parse(raw)
+              if (pending.email === session.user.email) {
+                const welcomeKey = `everstead_welcome_sent_${session.user.id}`
+                if (!localStorage.getItem(welcomeKey)) {
+                  localStorage.setItem(welcomeKey, '1')
+                  fetch('/api/emails/send-welcome', {
+                    method:  'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body:    JSON.stringify({
+                      name:  pending.full_name,
+                      email: session.user.email,
+                      plan:  pending.plan,
+                    }),
+                  }).catch(() => {})
+                }
+              }
+            } catch {}
+          }
+        }
+      } else {
+        setProfile(null)
+      }
     })
 
     return () => subscription.unsubscribe()

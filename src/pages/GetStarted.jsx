@@ -130,6 +130,16 @@ export default function GetStarted() {
 
       // Sign up — all plan/billing data stored in user_metadata so AuthContext
       // can auto-create the profile after email confirmation
+      // Persist plan selection so Dashboard can sync it after email confirmation
+      // (Supabase doesn't always propagate custom metadata keys to the DB trigger)
+      localStorage.setItem('everstead_pending_signup', JSON.stringify({
+        email:         form.email,
+        plan:          selectedPlan,
+        billing_cycle: annualBilling ? 'yearly' : 'monthly',
+        trial_ends_at: trialEndsAt,
+        full_name:     form.fullName,
+      }))
+
       await signUp({
         email:    form.email,
         password: form.password,
@@ -144,14 +154,7 @@ export default function GetStarted() {
         },
       })
 
-      // Fire welcome email (fire-and-forget)
-      fetch('/api/emails/send-welcome', {
-        method:  'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body:    JSON.stringify({ name: form.fullName, email: form.email, plan: selectedPlan }),
-      }).catch(() => {})
-
-      setStep(3) // show "check your email"
+      setStep(3) // show "check your email" — welcome email fires after confirmation
     } catch (err) {
       setError(err.message ?? 'Something went wrong. Please try again.')
     } finally {

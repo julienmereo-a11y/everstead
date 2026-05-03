@@ -253,6 +253,35 @@ export default function Dashboard() {
 
   const navigate = useNavigate()
 
+  // ── Sync plan from localStorage after email confirmation ───
+  // The DB trigger may have used default values if Supabase didn't propagate
+  // custom metadata. GetStarted stored the real plan in localStorage; we read
+  // and apply it here, then clear the entry.
+  React.useEffect(() => {
+    if (!user || !profile) return
+
+    const raw = localStorage.getItem('everstead_pending_signup')
+    if (!raw) return
+    try {
+      const pending = JSON.parse(raw)
+      if (pending.email !== user.email) return
+
+      const needsSync =
+        (pending.plan          && profile.plan          !== pending.plan) ||
+        (pending.billing_cycle && profile.billing_cycle !== pending.billing_cycle)
+
+      if (needsSync) {
+        updateProfile({
+          plan:          pending.plan,
+          billing_cycle: pending.billing_cycle,
+          trial_ends_at: pending.trial_ends_at,
+        }).catch(() => {})
+      }
+
+      localStorage.removeItem('everstead_pending_signup')
+    } catch {}
+  }, [user, profile])
+
   const handleSignOut = async () => {
     await signOut()
     navigate('/login')
