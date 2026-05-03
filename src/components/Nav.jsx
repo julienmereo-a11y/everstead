@@ -25,8 +25,10 @@ export default function Nav() {
   const { user, signOut, delegateInvites } = useAuth()
   const [switcherOpen, setSwitcherOpen] = useState(false)
   const switcherRef = useRef(null)
-  const isOwner = !!user && (delegateInvites.length === 0 || true) // always has own plan if logged in
   const isDualRole = user && delegateInvites.length > 0
+  const currentToken = new URLSearchParams(location.search).get('token')
+  const isOnOwnerDashboard = location.pathname === '/dashboard'
+  const isOnDelegateDashboard = location.pathname === '/delegate-dashboard'
 
   const handleSignOut = async () => {
     await signOut()
@@ -134,21 +136,24 @@ export default function Nav() {
                         <p className="px-3 py-1 text-xs text-stone-400 font-medium uppercase tracking-wide">Switch plan</p>
                         <Link
                           to="/dashboard"
-                          className="flex items-center gap-2 px-3 py-2 text-sm text-navy-800 hover:bg-stone-50 transition-colors"
+                          className={`flex items-center gap-2 px-3 py-2 text-sm transition-colors ${isOnOwnerDashboard ? 'text-navy-900 font-semibold bg-stone-50' : 'text-navy-800 hover:bg-stone-50'}`}
                         >
-                          <div className="w-2 h-2 rounded-full bg-sage-500" />
+                          <div className={`w-2 h-2 rounded-full ${isOnOwnerDashboard ? 'bg-sage-500' : 'bg-stone-300'}`} />
                           My plan
                         </Link>
-                        {delegateInvites.map(inv => (
-                          <Link
-                            key={inv.id}
-                            to={`/delegate-dashboard?token=${inv.invite_token}`}
-                            className="flex items-center gap-2 px-3 py-2 text-sm text-navy-800 hover:bg-stone-50 transition-colors"
-                          >
-                            <div className="w-2 h-2 rounded-full bg-navy-300" />
-                            {inv.profiles?.full_name ?? 'Shared plan'}
-                          </Link>
-                        ))}
+                        {delegateInvites.map(inv => {
+                          const isActive = isOnDelegateDashboard && currentToken === inv.invite_token
+                          return (
+                            <Link
+                              key={inv.id}
+                              to={`/delegate-dashboard?token=${inv.invite_token}`}
+                              className={`flex items-center gap-2 px-3 py-2 text-sm transition-colors ${isActive ? 'text-navy-900 font-semibold bg-stone-50' : 'text-navy-800 hover:bg-stone-50'}`}
+                            >
+                              <div className={`w-2 h-2 rounded-full ${isActive ? 'bg-navy-500' : 'bg-stone-300'}`} />
+                              {inv.ownerName ?? 'Shared plan'}
+                            </Link>
+                          )
+                        })}
                       </div>
                     )}
                   </div>
@@ -236,7 +241,7 @@ export default function Nav() {
                       to={`/delegate-dashboard?token=${inv.invite_token}`}
                       className="flex items-center justify-center px-4 py-3 text-sm font-semibold text-navy-800 border border-stone-200 rounded-xl hover:bg-stone-50 transition-colors"
                     >
-                      {inv.profiles?.full_name ?? 'Shared plan'}
+                      {inv.ownerName ?? 'Shared plan'}
                     </Link>
                   ))}
                   <button

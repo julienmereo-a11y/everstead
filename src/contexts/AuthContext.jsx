@@ -21,12 +21,22 @@ export function AuthProvider({ children }) {
   }, [])
 
   const fetchDelegateInvites = useCallback(async (email) => {
-    const { data } = await supabase
+    const { data: rows } = await supabase
       .from('trusted_people')
-      .select('id, invite_token, role, invite_status, profiles!trusted_people_user_id_fkey(full_name)')
+      .select('id, invite_token, role, invite_status')
       .eq('email', email)
       .eq('invite_status', 'accepted')
-    setDelegateInvites(data ?? [])
+
+    if (!rows?.length) { setDelegateInvites([]); return }
+
+    // Profiles are RLS-protected — use SECURITY DEFINER RPC to get owner names
+    const withOwners = await Promise.all(
+      rows.map(async (inv) => {
+        const { data: details } = await supabase.rpc('get_invite_details', { p_token: inv.invite_token })
+        return { ...inv, ownerName: details?.[0]?.owner_name ?? null }
+      })
+    )
+    setDelegateInvites(withOwners)
   }, [])
 
   // ── Bootstrap session ────────────────────────────────────────

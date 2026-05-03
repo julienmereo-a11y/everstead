@@ -87,14 +87,30 @@ export default function Login() {
       })
       if (sessionErr) throw sessionErr
 
-      // Route advisor to their portal
-      const userId = sessionData?.user?.id
-      let destination = from ?? '/dashboard'
-      if (userId && !from) {
-        const { data: prof } = await supabase.from('profiles').select('plan').eq('id', userId).single()
-        if (prof?.plan === 'advisor') destination = '/advisor-portal'
+      // If user was redirected here from a protected page, honour that destination
+      if (from) { navigate(from, { replace: true }); return }
+
+      const userId    = sessionData?.user?.id
+      const userEmail = sessionData?.user?.email
+
+      const [{ data: prof }, { data: delegateRows }] = await Promise.all([
+        supabase.from('profiles').select('plan, role, subscription_status').eq('id', userId).single(),
+        supabase.from('trusted_people').select('id, invite_token').eq('email', userEmail).eq('invite_status', 'accepted'),
+      ])
+
+      if (prof?.plan === 'advisor') { navigate('/advisor-portal', { replace: true }); return }
+
+      const isOwner    = prof?.role !== 'delegate'
+      const isDelegate = !!delegateRows?.length
+      const isDualRole = isOwner && isDelegate
+
+      if (isDualRole) {
+        navigate('/choose-account', { replace: true })
+      } else if (isDelegate && !isOwner) {
+        navigate(`/delegate-dashboard?token=${delegateRows[0].invite_token}`, { replace: true })
+      } else {
+        navigate('/dashboard', { replace: true })
       }
-      navigate(destination, { replace: true })
     } catch (err) {
       setError(err.message)
     } finally {
