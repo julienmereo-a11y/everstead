@@ -2833,14 +2833,20 @@ function SettingsSection({ profile, isDemo, updateProfile, onUpgrade, onDeleteAc
                   </div>
                   <p className="text-lg font-display font-light text-navy-950">{plan.price}</p>
                   <p className="text-xs text-stone-500 mt-1 leading-snug flex-1">{plan.desc}</p>
-                  {(isHigher || isLower) && (
+                  {isCurrent && isTrialing && (
+                    <button
+                      onClick={() => onUpgrade(plan.id)}
+                      className="mt-3 w-full text-xs font-semibold bg-navy-800 text-white rounded-lg py-1.5 hover:bg-navy-700 transition-colors"
+                    >
+                      Activate {plan.name} plan
+                    </button>
+                  )}
+                  {!isCurrent && (
                     <button
                       onClick={() => onUpgrade(plan.id)}
                       className="mt-3 w-full text-xs font-semibold text-navy-700 border border-navy-200 rounded-lg py-1.5 hover:bg-navy-50 transition-colors"
                     >
-                      {isHigher
-                        ? (isTrialing ? `Upgrade to ${plan.name}` : `Upgrade to ${plan.name}`)
-                        : `Switch to ${plan.name}`}
+                      {isHigher ? `Upgrade to ${plan.name}` : `Switch to ${plan.name}`}
                     </button>
                   )}
                 </div>
