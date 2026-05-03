@@ -608,7 +608,7 @@ export default function Dashboard() {
         {activeSection === 'alerts'        && <AlertsSection    alerts={alerts} markRead={markRead} markAllRead={markAllRead} />}
         {activeSection === 'activity'      && <ActivitySection  activity={activity} loading={loadingActivity} />}
         {activeSection === 'resources'     && <ResourcesSection />}
-        {activeSection === 'settings'      && <SettingsSection  profile={activeProfile} isDemo={isDemo} updateProfile={updateProfile} />}
+        {activeSection === 'settings'      && <SettingsSection  profile={activeProfile} isDemo={isDemo} updateProfile={updateProfile} onUpgrade={handleUpgrade} />}
       </main>
       </div>
     </div>
@@ -2603,22 +2603,25 @@ function ResourcesSection() {
 // ─────────────────────────────────────────────────────────────
 // SETTINGS SECTION
 // ─────────────────────────────────────────────────────────────
-function SettingsSection({ profile, isDemo, updateProfile }) {
+function SettingsSection({ profile, isDemo, updateProfile, onUpgrade }) {
   const PLANS = [
-    { id: 'essential', name: 'Essential', price: '£7/mo', promo: '£5/mo yearly', desc: 'For individuals. 2 trusted contacts, 5 GB storage.' },
-    { id: 'family',    name: 'Family',    price: '£15/mo', promo: '£12/mo yearly', desc: 'Household members, up to 10 trusted contacts, 25 GB storage.' },
+    { id: 'essential', name: 'Essential', tier: 1, price: '£7/mo',  promo: '£5/mo yearly',  desc: 'For individuals. 2 trusted contacts, 5 GB storage.' },
+    { id: 'family',    name: 'Family',    tier: 2, price: '£15/mo', promo: '£12/mo yearly', desc: 'Household members, up to 10 trusted contacts, 25 GB storage.' },
   ]
+  const PLAN_TIERS = { essential: 1, family: 2, advisor: 3 }
+  const currentTier = PLAN_TIERS[profile.plan] ?? 1
+  const isTrialing  = profile.subscription_status === 'trialing'
+
   const [cancelConfirm, setCancelConfirm] = useState(false)
   const [cancelReason, setCancelReason]   = useState('')
   const [cancelling, setCancelling]       = useState(false)
   const [cancelDone, setCancelDone]       = useState(false)
-  const [switchTarget, setSwitchTarget]   = useState(null) // plan id to switch to
+  const [switchTarget, setSwitchTarget]   = useState(null)
 
   const handleCancelSubscription = async () => {
     setCancelling(true)
     try {
       if (!isDemo) {
-        // Wire to billing API / Supabase function when live
         await new Promise(r => setTimeout(r, 800))
       }
       setCancelDone(true)
@@ -2628,8 +2631,7 @@ function SettingsSection({ profile, isDemo, updateProfile }) {
     }
   }
 
-  const handleSwitchPlan = async (planId) => {
-    if (isDemo) { setSwitchTarget(planId); return }
+  const handleSwitchPlan = (planId) => {
     setSwitchTarget(planId)
   }
 
@@ -2796,12 +2798,20 @@ function SettingsSection({ profile, isDemo, updateProfile }) {
                   </div>
                   <p className="text-lg font-display font-light text-navy-950">{plan.price}</p>
                   <p className="text-xs text-stone-500 mt-1 leading-snug">{plan.desc}</p>
-                  {!isCurrent && (
+                  {!isCurrent && plan.tier > currentTier && (
+                    <button
+                      onClick={() => onUpgrade(plan.id)}
+                      className="mt-3 w-full text-xs font-semibold bg-navy-800 text-white rounded-lg py-1.5 hover:bg-navy-700 transition-colors"
+                    >
+                      {isTrialing ? `Start ${plan.name} trial` : `Upgrade to ${plan.name}`}
+                    </button>
+                  )}
+                  {!isCurrent && plan.tier < currentTier && (
                     <button
                       onClick={() => handleSwitchPlan(plan.id)}
-                      className="mt-3 w-full text-xs font-semibold text-navy-700 border border-navy-200 rounded-lg py-1.5 hover:bg-navy-50 transition-colors"
+                      className="mt-3 w-full text-xs font-semibold text-stone-500 border border-stone-200 rounded-lg py-1.5 hover:bg-stone-50 transition-colors"
                     >
-                      Switch to {plan.name}
+                      Downgrade to {plan.name}
                     </button>
                   )}
                 </div>
@@ -2823,14 +2833,14 @@ function SettingsSection({ profile, isDemo, updateProfile }) {
             </a>
           </div>
 
-          {/* Switch plan confirmation */}
+          {/* Downgrade confirmation */}
           {switchTarget && (
-            <div className="mt-4 bg-navy-50 border border-navy-200 rounded-xl p-4 space-y-3">
-              <p className="text-sm font-semibold text-navy-900">
-                Switch to {PLANS.find(p => p.id === switchTarget)?.name}?
+            <div className="mt-4 bg-amber-50 border border-amber-200 rounded-xl p-4 space-y-3">
+              <p className="text-sm font-semibold text-amber-900">
+                Downgrade to {PLANS.find(p => p.id === switchTarget)?.name}?
               </p>
-              <p className="text-xs text-stone-600 leading-relaxed">
-                Your plan will change immediately. Billing will be prorated from today.
+              <p className="text-xs text-amber-800 leading-relaxed">
+                Your plan will change at the end of your current billing period. Some features may become unavailable.
               </p>
               <div className="flex gap-3">
                 <a
