@@ -59,8 +59,15 @@ export default function AcceptInvite() {
     }
 
     // Notify the owner (fire-and-forget)
-    await supabase.functions.invoke('send-invite-accepted-email', {
-      body: { personId: invite.id, ownerUserId: invite.user_id },
+    fetch('/api/emails/send-invite-accepted', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        ownerName:    owner?.full_name,
+        ownerEmail:   owner?.email,
+        inviteeName:  invite.name,
+        role:         invite.role,
+      }),
     }).catch(console.error)
 
     setState('accepted')

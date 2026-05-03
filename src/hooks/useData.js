@@ -115,44 +115,50 @@ export function useDocuments() {
 // TRUSTED PEOPLE (with access grants)
 // ─────────────────────────────────────────────────────────────
 export function usePeople() {
-  const { user } = useAuth()
-  const base = useTable('trusted_people', `
-    *,
-    access_grants (*)
-  `, 'created_at')
+  const { user, profile } = useAuth()
+  const base = useTable('trusted_people', '*', 'created_at')
 
-  const invite = async ({ name, email, role, accessGrants = [] }) => {
-    // 1. Create the trusted person record
-    const person = await base.add({ name, email, role })
+  const invite = async ({ name, email, role, accessAreas = [], accountCategories = [], documentTypes = [], accessTiming = 'always' }) => {
+    const access_grants = { accessAreas, accountCategories, documentTypes, accessTiming }
+    const person = await base.add({ name, email, role, access_grants })
 
-    // 2. Create access grants
-    if (accessGrants.length > 0) {
-      const grants = accessGrants.map(g => ({
-        trusted_person_id: person.id,
-        user_id: user.id,
-        resource_type: g.resource_type,
-        resource_category: g.resource_category ?? null,
-      }))
-      await supabase.from('access_grants').insert(grants)
-    }
-
-    // 3. Send invite email via Supabase Edge Function
-    await supabase.functions.invoke('send-invite-email', {
-      body: { personId: person.id, ownerUserId: user.id },
-    }).catch(console.error) // non-blocking
+    fetch('/api/emails/send-invite', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        inviteeName: name,
+        inviteeEmail: email,
+        role,
+        ownerName: profile?.full_name ?? 'Someone',
+      }),
+    }).catch(console.error)
 
     logActivity(user.id, 'person.invited', 'trusted_people', person.id, name)
     base.refetch()
     return person
   }
 
-  const resendInvite = async (personId) => {
-    await supabase.functions.invoke('send-invite-email', {
-      body: { personId, ownerUserId: user.id },
-    })
+  const update = async (id, { role, accessAreas = [], accountCategories = [], documentTypes = [], accessTiming = 'always' }) => {
+    const access_grants = { accessAreas, accountCategories, documentTypes, accessTiming }
+    return base.update(id, { role, access_grants })
   }
 
-  return { ...base, invite, resendInvite }
+  const resendInvite = async (personId) => {
+    const person = base.data?.find(p => p.id === personId)
+    if (!person) return
+    fetch('/api/emails/send-invite', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        inviteeName: person.name,
+        inviteeEmail: person.email,
+        role: person.role,
+        ownerName: profile?.full_name ?? 'Someone',
+      }),
+    }).catch(console.error)
+  }
+
+  return { ...base, invite, update, resendInvite }
 }
 
 // ─────────────────────────────────────────────────────────────
