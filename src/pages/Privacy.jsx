@@ -86,6 +86,80 @@ export default function Privacy() {
                 ))}
               </div>
             ))}
+
+            <div id="cookies" className="reveal space-y-6">
+              <h2 className="font-display text-xl font-medium text-navy-950">Cookie Policy</h2>
+
+              <div className="space-y-3">
+                <h3 className="font-semibold text-navy-900 text-sm">What are cookies?</h3>
+                <p className="text-stone-600 text-sm leading-relaxed">
+                  Cookies are small text files placed on your device when you visit a website.
+                  They help websites function correctly and provide information to website owners.
+                </p>
+              </div>
+
+              <div className="space-y-3">
+                <h3 className="font-semibold text-navy-900 text-sm">How we use cookies</h3>
+                <p className="text-stone-600 text-sm leading-relaxed">Everstead uses two types of cookies:</p>
+
+                <div className="space-y-2">
+                  <h4 className="font-semibold text-navy-800 text-sm">Essential cookies (always active)</h4>
+                  <p className="text-stone-600 text-sm leading-relaxed">
+                    These cookies are strictly necessary for Everstead to function. They keep you
+                    securely logged in, protect your session against fraud, and ensure the platform
+                    operates correctly. These cookies cannot be disabled as the service cannot work
+                    without them. No consent is required for these cookies under UK PECR.
+                  </p>
+                  <p className="text-stone-600 text-sm leading-relaxed">
+                    Examples include: authentication session cookies, security tokens, user preference cookies.
+                  </p>
+                </div>
+
+                <div className="space-y-2">
+                  <h4 className="font-semibold text-navy-800 text-sm">Analytics cookies (require your consent)</h4>
+                  <p className="text-stone-600 text-sm leading-relaxed">
+                    We use Google Analytics to understand how visitors use our website — which pages
+                    are visited, how long people spend on them, and where they come from. This helps
+                    us improve Everstead. These cookies are only placed on your device after you give
+                    your consent. No personally identifiable information is collected through analytics cookies.
+                  </p>
+                  <p className="text-stone-600 text-sm leading-relaxed">
+                    Provider: Google Analytics (Google LLC). Data may be processed in the USA under standard contractual clauses.
+                  </p>
+                </div>
+              </div>
+
+              <div className="space-y-3">
+                <h3 className="font-semibold text-navy-900 text-sm">What we do not use</h3>
+                <p className="text-stone-600 text-sm leading-relaxed">
+                  Everstead does not use advertising cookies, marketing tracking pixels, social media
+                  cookies, or any third-party tracking technologies beyond Google Analytics. We never
+                  sell your data.
+                </p>
+              </div>
+
+              <div className="space-y-3">
+                <h3 className="font-semibold text-navy-900 text-sm">Managing your cookie preferences</h3>
+                <p className="text-stone-600 text-sm leading-relaxed">
+                  You can change or withdraw your cookie consent at any time by clicking
+                  "Cookie settings" in the footer of our website. You can also control cookies
+                  through your browser settings — please note that disabling essential cookies
+                  may affect the functionality of the platform.
+                </p>
+              </div>
+
+              <div className="space-y-3">
+                <h3 className="font-semibold text-navy-900 text-sm">Contact</h3>
+                <p className="text-stone-600 text-sm leading-relaxed">
+                  If you have any questions about our use of cookies, please contact us at{' '}
+                  <a href="mailto:hello@everstead.care" className="text-navy-700 hover:text-navy-900 underline">hello@everstead.care</a>.
+                </p>
+              </div>
+
+              <p className="text-stone-500 text-xs leading-relaxed italic">
+                Last updated: May 2026. Everstead Digital Ltd, registered in England &amp; Wales, No. 17166825.
+              </p>
+            </div>
           </div>
         </div>
       </section>
