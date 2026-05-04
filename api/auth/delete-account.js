@@ -25,10 +25,11 @@ export default async function handler(req, res) {
     .eq('id', userId)
     .single()
 
-  // Mark as pending_deletion — actual data removed within 30 days by scheduled job
+  // Mark as pending_deletion — actual data removed within 24 hours by scheduled job
+  const deletionAt = new Date(Date.now() + 24 * 3600000).toISOString()
   const { error } = await supabase
     .from('profiles')
-    .update({ subscription_status: 'pending_deletion' })
+    .update({ subscription_status: 'pending_deletion', scheduled_deletion_at: deletionAt })
     .eq('id', userId)
 
   if (error) {

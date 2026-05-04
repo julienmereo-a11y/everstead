@@ -40,8 +40,19 @@ export default function TrialEnded() {
   const planConfig   = PLANS[plan] ?? PLANS.essential
   const firstName    = profile.full_name?.split(' ')[0] ?? 'there'
   const canDowngrade = plan === 'family' || plan === 'advisor'
-  const pricePerYear = planConfig.yearly
   const priceLabel   = `${planConfig.name} plan — £${planConfig.monthly}/mo or £${planConfig.yearly}/mo yearly`
+
+  // Deletion imminence
+  const scheduledDeletionAt = profile.scheduled_deletion_at
+    ? new Date(profile.scheduled_deletion_at)
+    : null
+  const daysUntilDeletion = scheduledDeletionAt
+    ? Math.ceil((scheduledDeletionAt.getTime() - Date.now()) / 86400000)
+    : null
+  const deletionImminent  = daysUntilDeletion !== null && daysUntilDeletion <= 7
+  const deletionDateStr   = scheduledDeletionAt
+    ? scheduledDeletionAt.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
+    : null
 
   const handleContinue = async () => {
     setError(null)
@@ -112,11 +123,21 @@ export default function TrialEnded() {
 
         {step === 'choose' && (
           <>
+            {deletionImminent && (
+              <div className="mb-6 px-4 py-3 bg-red-50 border border-red-200 rounded-xl text-sm text-red-800 text-center leading-relaxed">
+                <strong>Your account will be permanently deleted on {deletionDateStr}.</strong>
+                {' '}This is your last chance to save your plan.
+              </div>
+            )}
+
             <h1 className="font-display text-2xl font-light text-navy-950 text-center mb-2">
               Your free trial has ended, {firstName}.
             </h1>
             <p className="text-stone-500 text-sm text-center mb-8 leading-relaxed">
-              We've kept your plan safe. Choose how you'd like to continue.
+              {deletionImminent
+                ? `Your account and all your data will be deleted on ${deletionDateStr}. Subscribe now to keep everything.`
+                : "We've kept your plan safe. Choose how you'd like to continue."
+              }
             </p>
 
             {error && (
