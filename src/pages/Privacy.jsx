@@ -1,4 +1,5 @@
 import React from 'react'
+import { Helmet } from 'react-helmet-async'
 import { useReveal } from '../components/useReveal'
 
 const sections = [
@@ -55,6 +56,12 @@ Data controller: EVERSTEAD DIGITAL LTD (company number 17166825), London, Englan
 export default function Privacy() {
   useReveal()
   return (
+    <>
+    <Helmet>
+      <title>Privacy Policy — Everstead</title>
+      <meta name="description" content="How Everstead collects, uses, and protects your personal information. Your data is encrypted, never sold, and always under your control." />
+      <link rel="canonical" href="https://www.everstead.care/privacy" />
+    </Helmet>
     <div className="bg-stone-50 pt-24 min-h-screen">
       {/* Header */}
       <section className="py-16 lg:py-20 grain relative overflow-hidden">
@@ -83,5 +90,6 @@ export default function Privacy() {
         </div>
       </section>
     </div>
+    </>
   )
 }

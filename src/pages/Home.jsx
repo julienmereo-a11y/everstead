@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import { Helmet } from 'react-helmet-async'
 import { Link } from 'react-router-dom'
 import { useReveal } from '../components/useReveal'
 import {
@@ -109,6 +110,12 @@ export default function Home() {
   const [annualPricing, setAnnualPricing] = useState(true)
 
   return (
+    <>
+    <Helmet>
+      <title>Everstead — Digital Estate Planning for UK Families</title>
+      <meta name="description" content="Everstead helps UK families securely organise accounts, documents, instructions, and final wishes — so loved ones know what to do when it matters most." />
+      <link rel="canonical" href="https://www.everstead.care" />
+    </Helmet>
     <div className="bg-stone-50">
 
       {/* ── HERO ─────────────────────────────────────────────────── */}
@@ -728,5 +735,6 @@ function FaqItem({ q, a, delay }) {
         <div className="px-6 pb-5 text-stone-600 text-sm leading-relaxed border-t border-stone-100 pt-4">{a}</div>
       )}
     </div>
+    </>
   )
 }

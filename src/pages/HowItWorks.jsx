@@ -1,4 +1,5 @@
 import React from 'react'
+import { Helmet } from 'react-helmet-async'
 import { Link } from 'react-router-dom'
 import { ArrowRight } from 'lucide-react'
 import { useReveal } from '../components/useReveal'
@@ -29,6 +30,12 @@ const steps = [
 export default function HowItWorks() {
   useReveal()
   return (
+    <>
+    <Helmet>
+      <title>How It Works — Everstead</title>
+      <meta name="description" content="See how Everstead helps you organise your accounts, documents, and wishes so your family is never left guessing. Takes under an hour to set up." />
+      <link rel="canonical" href="https://www.everstead.care/how-it-works" />
+    </Helmet>
     <div className="bg-stone-50 pt-24">
 
       {/* Hero */}
@@ -142,5 +149,6 @@ export default function HowItWorks() {
         </div>
       </section>
     </div>
+    </>
   )
 }

@@ -1,4 +1,5 @@
 import React from 'react'
+import { Helmet } from 'react-helmet-async'
 import { useReveal } from '../components/useReveal'
 
 const sections = [
@@ -75,6 +76,12 @@ Legal entity: EVERSTEAD DIGITAL LTD (company number 17166825), London, England, 
 export default function Terms() {
   useReveal()
   return (
+    <>
+    <Helmet>
+      <title>Terms of Service — Everstead</title>
+      <meta name="description" content="The terms that govern your use of Everstead — including subscription billing, your content rights, acceptable use, and how disputes are resolved." />
+      <link rel="canonical" href="https://www.everstead.care/terms" />
+    </Helmet>
     <div className="bg-stone-50 pt-24 min-h-screen">
       {/* Header */}
       <section className="py-16 lg:py-20 grain relative overflow-hidden">
@@ -103,5 +110,6 @@ export default function Terms() {
         </div>
       </section>
     </div>
+    </>
   )
 }

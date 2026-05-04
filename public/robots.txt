@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+Disallow: /dashboard
+Disallow: /delegate-dashboard
+Disallow: /accept-invite
+Disallow: /choose-account
+
+Sitemap: https://www.everstead.care/sitemap.xml

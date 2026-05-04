@@ -1,4 +1,5 @@
 import React, { useState, useRef } from 'react'
+import { Helmet } from 'react-helmet-async'
 import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { Mail, Lock, Eye, EyeOff, ArrowRight, ShieldCheck } from 'lucide-react'
 import { supabase } from '../lib/supabase'
@@ -156,6 +157,11 @@ export default function Login() {
   )
 
   return (
+    <>
+    <Helmet>
+      <title>Sign In — Everstead</title>
+      <meta name="robots" content="noindex, nofollow" />
+    </Helmet>
     <div className="min-h-screen bg-stone-50 flex">
       <LeftPanel />
 
@@ -295,5 +301,6 @@ export default function Login() {
         </div>
       </div>
     </div>
+    </>
   )
 }

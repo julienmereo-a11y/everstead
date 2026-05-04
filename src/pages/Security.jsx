@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { Helmet } from 'react-helmet-async'
 import { Link } from 'react-router-dom'
 import { useReveal } from '../components/useReveal'
 import {
@@ -121,6 +122,12 @@ export default function Security() {
   const [openFaq, setOpenFaq] = useState(null)
 
   return (
+    <>
+    <Helmet>
+      <title>Security — Everstead</title>
+      <meta name="description" content="Everstead is built on bank-equivalent security standards. AES-256 encryption at rest, TLS 1.3 in transit, granular access controls, and a full audit trail." />
+      <link rel="canonical" href="https://www.everstead.care/security" />
+    </Helmet>
     <div className="bg-stone-50 pt-24">
 
       {/* ── HERO ─────────────────────────────────────────────── */}
@@ -338,5 +345,6 @@ export default function Security() {
       </section>
 
     </div>
+    </>
   )
 }

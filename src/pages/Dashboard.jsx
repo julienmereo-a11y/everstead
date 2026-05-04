@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { Helmet } from 'react-helmet-async'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import {
   Shield, FileText, Users, Bell, Settings, LogOut,
@@ -445,6 +446,11 @@ export default function Dashboard() {
   }
 
   return (
+    <>
+    <Helmet>
+      <title>My Plan — Everstead</title>
+      <meta name="robots" content="noindex, nofollow" />
+    </Helmet>
     <div className="min-h-screen bg-stone-50 flex flex-col">
       {/* Trial expired overlay */}
       {trialExpired && <TrialExpiredModal profile={activeProfile} onUpgrade={handleUpgrade} />}
@@ -646,6 +652,7 @@ export default function Dashboard() {
       </main>
       </div>
     </div>
+    </>
   )
 }
 

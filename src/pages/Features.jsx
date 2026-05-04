@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { Helmet } from 'react-helmet-async'
 import { Link } from 'react-router-dom'
 import { useReveal } from '../components/useReveal'
 import {
@@ -214,6 +215,12 @@ export default function Features() {
   const [openFeature, setOpenFeature] = useState(null)
 
   return (
+    <>
+    <Helmet>
+      <title>Features — Everstead</title>
+      <meta name="description" content="Explore everything Everstead offers — account vault, document storage, trusted people, step-by-step instructions, and a readiness score to keep you on track." />
+      <link rel="canonical" href="https://www.everstead.care/features" />
+    </Helmet>
     <div className="bg-stone-50 pt-24">
 
       {/* ── Hero ───────────────────────────────────────────────────────── */}
@@ -565,5 +572,6 @@ export default function Features() {
       </section>
 
     </div>
+    </>
   )
 }

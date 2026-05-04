@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from 'react'
+import { Helmet } from 'react-helmet-async'
 import { Link } from 'react-router-dom'
 import { useReveal } from '../components/useReveal'
 import { ArrowRight, Briefcase, CheckCircle2, ShieldCheck } from 'lucide-react'
@@ -62,6 +63,12 @@ export default function Pricing() {
   )
 
   return (
+    <>
+    <Helmet>
+      <title>Pricing — Everstead</title>
+      <meta name="description" content="Simple, transparent pricing for individuals, families, and professional advisors. Start your 14-day free trial — no credit card required." />
+      <link rel="canonical" href="https://www.everstead.care/pricing" />
+    </Helmet>
     <div className="bg-stone-50 pt-24">
       <section className="py-20 lg:py-28 grain relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-navy-950 via-navy-900 to-navy-800" />
@@ -227,5 +234,6 @@ export default function Pricing() {
         </div>
       </section>
     </div>
+  </>
   )
 }
