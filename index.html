@@ -17,18 +17,25 @@
       data-blockingmode="auto"
       type="text/javascript"></script>
 
-    <!-- 2. Google Consent Mode defaults — denied until Cookiebot grants consent -->
-    <script>
+    <!-- 2. Google Consent Mode defaults — data-cookieconsent="ignore" so Cookiebot never blocks this -->
+    <script data-cookieconsent="ignore">
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('consent', 'default', {
-        analytics_storage: 'denied',
-        ad_storage:        'denied',
-        wait_for_update:   500,
+        ad_personalization:      'denied',
+        ad_storage:              'denied',
+        ad_user_data:            'denied',
+        analytics_storage:       'denied',
+        functionality_storage:   'denied',
+        personalization_storage: 'denied',
+        security_storage:        'granted',
+        wait_for_update:         500,
       });
+      gtag('set', 'ads_data_redaction', true);
+      gtag('set', 'url_passthrough', false);
     </script>
 
-    <!-- 3. Google Analytics — blocked by Cookiebot until consent -->
+    <!-- 3. Google Analytics — blocked by Cookiebot until statistics consent granted -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-13REH65WX1"
       type="text/plain" data-cookieconsent="statistics"></script>
     <script type="text/plain" data-cookieconsent="statistics">
