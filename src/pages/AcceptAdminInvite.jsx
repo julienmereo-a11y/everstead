@@ -74,18 +74,10 @@ export default function AcceptAdminInvite() {
       }
 
       try {
-        // Mark invite used
-        await supabase
-          .from('admin_invites')
-          .update({ status: 'accepted', accepted_at: new Date().toISOString(), accepted_by: user.id })
-          .eq('token', token)
-
-        // Grant admin role on profile
-        await supabase
-          .from('profiles')
-          .update({ role: 'admin' })
-          .eq('id', user.id)
-
+        const { data, error } = await supabase.rpc('accept_admin_invite', { p_token: token })
+        if (error) throw error
+        if (data?.error === 'invalid_or_used') throw new Error('This invite link is invalid or has already been used.')
+        if (data?.error === 'not_authenticated') throw new Error('You must be signed in to accept this invite.')
         await refreshProfile()
         setStage('done')
       } catch (err) {
