@@ -717,6 +717,7 @@ export default function Home() {
         </div>
       </section>
     </div>
+    </>
   )
 }
 
@@ -735,6 +736,5 @@ function FaqItem({ q, a, delay }) {
         <div className="px-6 pb-5 text-stone-600 text-sm leading-relaxed border-t border-stone-100 pt-4">{a}</div>
       )}
     </div>
-    </>
   )
 }
