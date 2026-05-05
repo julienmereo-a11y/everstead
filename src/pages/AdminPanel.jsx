@@ -429,14 +429,20 @@ function TeamSection({ isDemo, currentUserEmail }) {
         .insert({ email: trimmed, token, invited_by: currentUserEmail, status: 'pending' })
       if (insertErr) throw insertErr
 
-      // 2. Send invite email via Edge Function
-      const { error: fnErr } = await supabase.functions.invoke('send-admin-invite', {
-        body: {
-          email: trimmed,
+      // 2. Send invite email
+      const emailRes = await fetch('/api/emails/send-invite', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          type: 'admin',
+          inviteeEmail: trimmed,
           inviteUrl: `${window.location.origin}/accept-admin-invite?token=${token}`,
-        },
+        }),
       })
-      if (fnErr) throw fnErr
+      if (!emailRes.ok) {
+        const emailErr = await emailRes.json().catch(() => ({}))
+        throw new Error(emailErr.error || 'Invite inserted but email failed to send.')
+      }
 
       setSentTo(trimmed)
       setEmail('')
