@@ -31,6 +31,7 @@ import DelegateDashboard from './pages/DelegateDashboard'
 import AcceptInvite from './pages/AcceptInvite'
 import AdvisorPortal from './pages/AdvisorPortal'
 import AdminPanel from './pages/AdminPanel'
+import AdminLogin from './pages/AdminLogin'
 import AcceptAdminInvite from './pages/AcceptAdminInvite'
 import DelegateRegister from './pages/DelegateRegister'
 import ChooseAccount from './pages/ChooseAccount'
@@ -89,6 +90,7 @@ export default function App() {
             }
           />
           <Route path="/accept-admin-invite" element={<AcceptAdminInvite />} />
+          <Route path="/admin-login" element={<AdminLogin />} />
           <Route
             path="/admin"
             element={

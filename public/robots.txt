@@ -4,5 +4,8 @@ Disallow: /dashboard
 Disallow: /delegate-dashboard
 Disallow: /accept-invite
 Disallow: /choose-account
+Disallow: /admin
+Disallow: /admin-login
+Disallow: /accept-admin-invite
 
 Sitemap: https://www.everstead.care/sitemap.xml
