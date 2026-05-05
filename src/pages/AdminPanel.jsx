@@ -1,11 +1,12 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useSearchParams, Link, useNavigate } from 'react-router-dom'
 import {
   HeartCrack, ShieldAlert, Clock, CheckCircle2, XCircle,
   AlertCircle, ChevronRight, X, Send, RotateCcw, UserRound,
   FileText, Phone, Mail, Calendar, MapPin, Hash, MessageSquare,
   LogOut, Filter, ExternalLink, Shield, Users, Copy, Check,
-  Loader2, Trash2, LayoutDashboard,
+  Loader2, Trash2, LayoutDashboard, Folder, BookOpen, Heart,
+  CreditCard, ChevronDown, ChevronUp, Search,
 } from 'lucide-react'
 import { getLiveReports, updateReportStatus, verifyReport, setOwnerStatus } from '../lib/demoData'
 import { supabase } from '../lib/supabase'
@@ -590,6 +591,220 @@ function TeamSection({ isDemo, currentUserEmail }) {
 }
 
 // ─────────────────────────────────────────────────────────────
+// DEMO USERS
+// ─────────────────────────────────────────────────────────────
+const DEMO_USERS = [
+  { id: 'u1', full_name: 'James Thornton',   email: 'james@example.com',   phone: '+44 7700 900111', plan: 'family',    subscription_status: 'active',   readiness_score: 72, created_at: '2026-04-15T10:00:00Z', trial_ends_at: null,                  accounts_count: 6, documents_count: 4, people_count: 3, instructions_count: 5, wishes_count: 2 },
+  { id: 'u2', full_name: 'Sarah Okafor',     email: 'sarah@example.com',   phone: '+44 7700 900222', plan: 'essential', subscription_status: 'trialing',  readiness_score: 35, created_at: '2026-04-22T14:30:00Z', trial_ends_at: '2026-05-06T14:30:00Z', accounts_count: 2, documents_count: 0, people_count: 1, instructions_count: 0, wishes_count: 0 },
+  { id: 'u3', full_name: 'Marcus Webb',      email: 'marcus@example.com',  phone: null,              plan: 'essential', subscription_status: 'trialing',  readiness_score: 10, created_at: '2026-05-01T09:00:00Z', trial_ends_at: '2026-05-15T09:00:00Z', accounts_count: 1, documents_count: 0, people_count: 0, instructions_count: 0, wishes_count: 0 },
+  { id: 'u4', full_name: 'Priya Sharma',     email: 'priya@example.com',   phone: '+44 7700 900444', plan: 'advisor',   subscription_status: 'active',   readiness_score: 91, created_at: '2026-04-10T08:00:00Z', trial_ends_at: null,                  accounts_count: 12, documents_count: 8, people_count: 5, instructions_count: 9, wishes_count: 4 },
+  { id: 'u5', full_name: 'Tom Blackwell',    email: 'tom@example.com',     phone: '+44 7700 900555', plan: 'family',    subscription_status: 'canceled', readiness_score: 55, created_at: '2026-03-28T16:00:00Z', trial_ends_at: null,                  accounts_count: 4, documents_count: 3, people_count: 2, instructions_count: 3, wishes_count: 1 },
+]
+
+// ─────────────────────────────────────────────────────────────
+// USERS SECTION
+// ─────────────────────────────────────────────────────────────
+const PLAN_BADGE = {
+  essential: 'bg-stone-100 text-stone-600 border-stone-200',
+  family:    'bg-blue-50 text-blue-700 border-blue-200',
+  advisor:   'bg-purple-50 text-purple-700 border-purple-200',
+}
+const STATUS_COLOR = {
+  active:        'text-emerald-700 bg-emerald-50 border-emerald-200',
+  trialing:      'text-sky-700 bg-sky-50 border-sky-200',
+  canceled:      'text-stone-500 bg-stone-100 border-stone-200',
+  past_due:      'text-red-700 bg-red-50 border-red-200',
+  trial_expired: 'text-amber-700 bg-amber-50 border-amber-200',
+  incomplete:    'text-stone-500 bg-stone-100 border-stone-200',
+}
+
+function ReadinessBar({ score }) {
+  const color = score >= 70 ? 'bg-emerald-500' : score >= 40 ? 'bg-amber-400' : 'bg-red-400'
+  return (
+    <div className="flex items-center gap-2">
+      <div className="flex-1 bg-stone-100 rounded-full h-1.5 overflow-hidden">
+        <div className={`h-full rounded-full transition-all ${color}`} style={{ width: `${score}%` }} />
+      </div>
+      <span className="text-xs font-semibold text-stone-600 w-8 text-right">{score}%</span>
+    </div>
+  )
+}
+
+function TodoList({ u }) {
+  const items = [
+    { done: u.accounts_count > 0,      label: 'Add accounts' },
+    { done: u.documents_count > 0,     label: 'Upload documents' },
+    { done: u.people_count > 0,        label: 'Add trusted contacts' },
+    { done: u.instructions_count > 0,  label: 'Write instructions' },
+    { done: u.wishes_count > 0,        label: 'Record wishes' },
+  ]
+  const remaining = items.filter(i => !i.done)
+  if (remaining.length === 0) return <span className="text-xs text-emerald-600 font-medium">All categories complete</span>
+  return (
+    <div className="flex flex-wrap gap-1.5 mt-1">
+      {remaining.map(i => (
+        <span key={i.label} className="text-xs bg-amber-50 text-amber-700 border border-amber-200 px-2 py-0.5 rounded-full">{i.label}</span>
+      ))}
+    </div>
+  )
+}
+
+function UserRow({ u }) {
+  const [open, setOpen] = useState(false)
+  const statusCls = STATUS_COLOR[u.subscription_status] ?? STATUS_COLOR.incomplete
+  const planCls   = PLAN_BADGE[u.plan] ?? PLAN_BADGE.essential
+  const daysLeft  = u.trial_ends_at ? Math.ceil((new Date(u.trial_ends_at) - Date.now()) / 86400000) : null
+
+  return (
+    <div className="bg-white border border-stone-200 rounded-2xl overflow-hidden">
+      <button
+        onClick={() => setOpen(v => !v)}
+        className="w-full px-5 py-4 flex items-center gap-4 text-left hover:bg-stone-50 transition-colors"
+      >
+        <div className="w-9 h-9 rounded-full bg-navy-100 text-navy-700 flex items-center justify-center text-sm font-semibold shrink-0">
+          {u.full_name?.[0]?.toUpperCase() ?? '?'}
+        </div>
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2 flex-wrap">
+            <p className="text-sm font-semibold text-navy-900 truncate">{u.full_name ?? '—'}</p>
+            <span className={`text-xs font-medium px-2 py-0.5 rounded-full border capitalize ${planCls}`}>{u.plan}</span>
+            <span className={`text-xs font-medium px-2 py-0.5 rounded-full border capitalize ${statusCls}`}>
+              {u.subscription_status?.replace('_', ' ')}
+              {daysLeft !== null && daysLeft > 0 && ` · ${daysLeft}d left`}
+            </span>
+          </div>
+          <p className="text-xs text-stone-400 mt-0.5 truncate">{u.email}</p>
+        </div>
+        <div className="shrink-0 w-28 hidden sm:block">
+          <ReadinessBar score={u.readiness_score ?? 0} />
+        </div>
+        <div className="shrink-0 text-stone-300">
+          {open ? <ChevronUp size={15} /> : <ChevronDown size={15} />}
+        </div>
+      </button>
+
+      {open && (
+        <div className="border-t border-stone-100 px-5 py-4 grid sm:grid-cols-2 gap-6">
+          {/* Contact details */}
+          <div className="space-y-2">
+            <p className="text-xs font-semibold text-stone-400 uppercase tracking-widest mb-2">Contact</p>
+            {[
+              [Mail,     'Email',  u.email],
+              [Phone,    'Phone',  u.phone],
+              [Calendar, 'Joined', fmtDate(u.created_at)],
+            ].map(([Icon, label, val]) => val ? (
+              <div key={label} className="flex items-start gap-2 text-sm">
+                <Icon size={13} className="text-stone-400 mt-0.5 shrink-0" />
+                <span className="text-stone-500 w-16 shrink-0 text-xs">{label}</span>
+                <span className="text-navy-900 font-medium text-xs">{val}</span>
+              </div>
+            ) : null)}
+          </div>
+
+          {/* Completion */}
+          <div className="space-y-2">
+            <p className="text-xs font-semibold text-stone-400 uppercase tracking-widest mb-2">Completion</p>
+            <div className="sm:hidden mb-2"><ReadinessBar score={u.readiness_score ?? 0} /></div>
+            <div className="grid grid-cols-3 gap-2">
+              {[
+                [Folder,   'Accounts',     u.accounts_count],
+                [FileText, 'Documents',    u.documents_count],
+                [Users,    'Contacts',     u.people_count],
+                [BookOpen, 'Instructions', u.instructions_count],
+                [Heart,    'Wishes',       u.wishes_count],
+              ].map(([Icon, label, count]) => (
+                <div key={label} className="bg-stone-50 rounded-xl px-3 py-2 text-center">
+                  <p className="text-lg font-semibold text-navy-950">{count}</p>
+                  <p className="text-xs text-stone-400">{label}</p>
+                </div>
+              ))}
+            </div>
+            <div className="mt-1">
+              <p className="text-xs text-stone-400 mb-1">Still to do</p>
+              <TodoList u={u} />
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
+
+function UsersSection({ isDemo }) {
+  const [users, setUsers]       = useState(isDemo ? DEMO_USERS : [])
+  const [loading, setLoading]   = useState(!isDemo)
+  const [search, setSearch]     = useState('')
+  const [planFilter, setPlan]   = useState('all')
+
+  useEffect(() => {
+    if (isDemo) return
+    supabase.rpc('get_user_stats_for_admin').then(({ data, error }) => {
+      if (!error && data) setUsers(data)
+      setLoading(false)
+    })
+  }, [isDemo])
+
+  const visible = users.filter(u => {
+    if (planFilter !== 'all' && u.plan !== planFilter) return false
+    if (search) {
+      const q = search.toLowerCase()
+      return (u.full_name ?? '').toLowerCase().includes(q) || (u.email ?? '').toLowerCase().includes(q)
+    }
+    return true
+  })
+
+  const avgScore = users.length ? Math.round(users.reduce((s, u) => s + (u.readiness_score ?? 0), 0) / users.length) : 0
+
+  return (
+    <div className="space-y-6">
+      {/* Summary stats */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <StatCard label="Total users"    value={users.length}                                                  Icon={Users}        color="bg-navy-100 text-navy-700" />
+        <StatCard label="Active / trial" value={users.filter(u => ['active','trialing'].includes(u.subscription_status)).length} Icon={CheckCircle2} color="bg-emerald-100 text-emerald-700" />
+        <StatCard label="Avg readiness"  value={`${avgScore}%`}                                               Icon={LayoutDashboard} color="bg-blue-100 text-blue-700" />
+        <StatCard label="Churned"        value={users.filter(u => u.subscription_status === 'canceled').length} Icon={XCircle}      color="bg-red-100 text-red-600" />
+      </div>
+
+      {/* Filters */}
+      <div className="flex flex-wrap gap-3 items-center">
+        <div className="relative flex-1 min-w-48">
+          <Search size={13} className="absolute left-3 top-1/2 -translate-y-1/2 text-stone-400" />
+          <input
+            type="text"
+            placeholder="Search by name or email…"
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+            className="w-full pl-8 pr-3 py-2 text-sm border border-stone-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-navy-300"
+          />
+        </div>
+        <div className="flex rounded-xl border border-stone-200 bg-white overflow-hidden text-xs font-medium">
+          {[['all','All plans'],['essential','Essential'],['family','Family'],['advisor','Advisor']].map(([v,l]) => (
+            <button key={v} onClick={() => setPlan(v)}
+              className={`px-3 py-2 transition-colors ${planFilter === v ? 'bg-navy-900 text-white' : 'text-stone-500 hover:bg-stone-50'}`}
+            >{l}</button>
+          ))}
+        </div>
+      </div>
+
+      {/* User list */}
+      {loading ? (
+        <div className="flex items-center justify-center py-16">
+          <Loader2 size={24} className="animate-spin text-stone-400" />
+        </div>
+      ) : visible.length === 0 ? (
+        <div className="bg-white border border-stone-200 rounded-2xl p-12 text-center">
+          <p className="text-stone-400 text-sm">No users match the current filter.</p>
+        </div>
+      ) : (
+        <div className="space-y-3">
+          {visible.map(u => <UserRow key={u.id} u={u} />)}
+        </div>
+      )}
+    </div>
+  )
+}
+
+// ─────────────────────────────────────────────────────────────
 // MAIN ADMIN PANEL
 // ─────────────────────────────────────────────────────────────
 export default function AdminPanel() {
@@ -629,8 +844,9 @@ export default function AdminPanel() {
   const actionedCount = reports.filter(r => r.status === 'actioned').length
 
   const NAV = [
-    { id: 'reports', label: 'Reports',     Icon: LayoutDashboard },
-    { id: 'team',    label: 'Team',        Icon: Users },
+    { id: 'reports', label: 'Reports', Icon: LayoutDashboard },
+    { id: 'users',   label: 'Users',   Icon: UserRound },
+    { id: 'team',    label: 'Team',    Icon: Users },
   ]
 
   return (
@@ -763,6 +979,17 @@ export default function AdminPanel() {
                 })}
               </div>
             )}
+          </>
+        )}
+
+        {/* ── Users tab ── */}
+        {activeTab === 'users' && (
+          <>
+            <div>
+              <h1 className="text-2xl font-semibold text-navy-950">Users</h1>
+              <p className="text-sm text-stone-500 mt-1">Profile details and readiness progress — no private plan content is shown</p>
+            </div>
+            <UsersSection isDemo={isDemo} />
           </>
         )}
 
