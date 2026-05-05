@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Link, useSearchParams, useNavigate } from 'react-router-dom'
-import { Shield, CheckCircle2, AlertCircle, Loader2 } from 'lucide-react'
+import { Shield, CheckCircle2, AlertCircle, Loader2, Eye, EyeOff } from 'lucide-react'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../contexts/AuthContext'
 
@@ -24,9 +24,16 @@ export default function AcceptAdminInvite() {
   const isDemo  = token === 'demo'
 
   // state: 'verifying' | 'needs-auth' | 'accepting' | 'done' | 'error'
-  const [stage, setStage]   = useState('verifying')
-  const [invite, setInvite] = useState(null)
-  const [errMsg, setErrMsg] = useState('')
+  const [stage, setStage]     = useState('verifying')
+  const [invite, setInvite]   = useState(null)
+  const [errMsg, setErrMsg]   = useState('')
+
+  // inline registration form state
+  const [formName, setFormName]   = useState('')
+  const [formPw, setFormPw]       = useState('')
+  const [showPw, setShowPw]       = useState(false)
+  const [formLoading, setFormLoading] = useState(false)
+  const [formErr, setFormErr]     = useState('')
 
   // ── 1. Verify token ────────────────────────────────────────
   useEffect(() => {
@@ -99,6 +106,26 @@ export default function AcceptAdminInvite() {
   // ─────────────────────────────────────────────────────────
   // RENDER
   // ─────────────────────────────────────────────────────────
+  const handleRegister = async (e) => {
+    e.preventDefault()
+    setFormErr('')
+    setFormLoading(true)
+    try {
+      const res = await fetch('/api/auth/delegate-register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ mode: 'admin', email: invite.email, password: formPw, name: formName, token }),
+      })
+      const data = await res.json()
+      if (!res.ok) { setFormErr(data.error || 'Something went wrong.'); return }
+      await supabase.auth.setSession({ access_token: data.access_token, refresh_token: data.refresh_token })
+    } catch {
+      setFormErr('Network error. Please try again.')
+    } finally {
+      setFormLoading(false)
+    }
+  }
+
   return (
     <div className="min-h-screen bg-navy-950 flex items-center justify-center p-6">
       <div className="bg-white rounded-3xl shadow-2xl w-full max-w-sm p-10">
@@ -119,29 +146,68 @@ export default function AcceptAdminInvite() {
           </div>
         )}
 
-        {/* Needs sign-in */}
+        {/* Needs sign-in — inline registration form */}
         {stage === 'needs-auth' && invite && (
-          <div className="space-y-5">
-            <div className="text-center">
-              <h2 className="font-semibold text-navy-900 text-lg">You've been invited</h2>
-              <p className="text-sm text-stone-500 mt-2 leading-relaxed">
-                This invite was sent to <strong className="text-navy-800">{invite.email}</strong>.
-                Sign in with that address to accept it and gain admin access.
+          <form onSubmit={handleRegister} className="space-y-4">
+            <div className="text-center mb-2">
+              <h2 className="font-semibold text-navy-900 text-lg">Create your admin account</h2>
+              <p className="text-xs text-stone-500 mt-1 leading-relaxed">
+                Access is reserved for <strong className="text-navy-800">{invite.email}</strong>
               </p>
             </div>
-            <Link
-              to={`/login?redirect=/accept-admin-invite?token=${token}`}
-              className="inline-flex items-center justify-center w-full bg-navy-900 text-white text-sm font-semibold py-3 rounded-xl hover:bg-navy-800 transition-colors"
+
+            <div>
+              <label className="block text-xs font-semibold text-stone-600 mb-1.5">Full name</label>
+              <input
+                type="text"
+                required
+                value={formName}
+                onChange={e => setFormName(e.target.value)}
+                placeholder="Your name"
+                className="w-full border border-stone-200 rounded-xl px-4 py-3 text-sm text-navy-900 focus:outline-none focus:ring-2 focus:ring-navy-300 focus:border-navy-400 transition-colors"
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold text-stone-600 mb-1.5">Email</label>
+              <input
+                type="email"
+                value={invite.email}
+                readOnly
+                className="w-full border border-stone-100 rounded-xl px-4 py-3 text-sm text-stone-400 bg-stone-50 cursor-not-allowed"
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold text-stone-600 mb-1.5">Password</label>
+              <div className="relative">
+                <input
+                  type={showPw ? 'text' : 'password'}
+                  required
+                  minLength={8}
+                  value={formPw}
+                  onChange={e => setFormPw(e.target.value)}
+                  placeholder="Min. 8 characters"
+                  className="w-full border border-stone-200 rounded-xl px-4 py-3 pr-10 text-sm text-navy-900 focus:outline-none focus:ring-2 focus:ring-navy-300 focus:border-navy-400 transition-colors"
+                />
+                <button type="button" onClick={() => setShowPw(v => !v)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-stone-400 hover:text-stone-600">
+                  {showPw ? <EyeOff size={15} /> : <Eye size={15} />}
+                </button>
+              </div>
+            </div>
+
+            {formErr && <p className="text-xs text-red-600 leading-relaxed">{formErr}</p>}
+
+            <button
+              type="submit"
+              disabled={formLoading}
+              className="inline-flex items-center justify-center gap-2 w-full bg-navy-900 text-white text-sm font-semibold py-3 rounded-xl hover:bg-navy-800 transition-colors disabled:opacity-60"
             >
-              Sign in to accept
-            </Link>
-            <Link
-              to={`/get-started?redirect=/accept-admin-invite?token=${token}`}
-              className="inline-flex items-center justify-center w-full border border-stone-200 text-navy-800 text-sm font-semibold py-3 rounded-xl hover:bg-stone-50 transition-colors"
-            >
-              Create an account
-            </Link>
-          </div>
+              {formLoading ? <Loader2 size={15} className="animate-spin" /> : null}
+              {formLoading ? 'Creating account…' : 'Create account & get access'}
+            </button>
+          </form>
         )}
 
         {/* Accepting */}

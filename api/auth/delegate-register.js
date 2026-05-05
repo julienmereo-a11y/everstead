@@ -5,8 +5,31 @@ const supabase = createClient(process.env.VITE_SUPABASE_URL, process.env.SUPABAS
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).end()
 
-  const { email, password, name, mode, wantsTrial } = req.body
+  const { email, password, name, mode, wantsTrial, token } = req.body
   if (!email || !password) return res.status(400).json({ error: 'Missing fields' })
+
+  if (mode === 'admin') {
+    // Validate the admin invite token before creating the user
+    const { data: inv, error: invErr } = await supabase
+      .from('admin_invites')
+      .select('email, status')
+      .eq('token', token)
+      .eq('status', 'pending')
+      .single()
+    if (invErr || !inv) return res.status(400).json({ error: 'Invalid or expired admin invite' })
+    if (inv.email.toLowerCase() !== email.toLowerCase())
+      return res.status(403).json({ error: 'Email does not match the invite' })
+
+    const { error: createErr } = await supabase.auth.admin.createUser({
+      email,
+      password,
+      user_metadata: { full_name: name ?? email },
+      email_confirm: true,
+    })
+    if (createErr && !createErr.message.includes('already registered'))
+      return res.status(400).json({ error: createErr.message })
+    // Fall through to sign-in below to return tokens
+  }
 
   if (mode === 'register') {
     const profileRole = wantsTrial ? 'owner' : 'delegate'
