@@ -8,6 +8,7 @@ import ErrorBoundary from './components/ErrorBoundary'
 import Nav from './components/Nav'
 import Footer from './components/Footer'
 import ChatWidget from './components/ChatWidget'
+import CookieBanner from './components/CookieBanner'
 
 // Pages
 import Home from './pages/Home'
@@ -125,6 +126,7 @@ export default function App() {
         </Routes>
         </ErrorBoundary>
         <ChatWidget />
+        <CookieBanner />
       </BrowserRouter>
     </AuthProvider>
   )
