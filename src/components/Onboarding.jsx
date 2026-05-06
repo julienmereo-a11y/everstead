@@ -6,14 +6,13 @@ import { CheckCircle2, X, ArrowRight, Sparkles } from 'lucide-react'
 // CHECKOUT SUCCESS BANNER
 // Appears at top of Dashboard after redirect from Stripe
 // ─────────────────────────────────────────────────────────────
-export function CheckoutSuccessBanner({ userName }) {
+export function CheckoutSuccessBanner({ userName, subscriptionStatus }) {
   const [searchParams, setSearchParams] = useSearchParams()
   const [visible, setVisible]           = useState(false)
 
   useEffect(() => {
     if (searchParams.get('checkout') === 'success') {
       setVisible(true)
-      // Clean URL without reload
       const next = new URLSearchParams(searchParams)
       next.delete('checkout')
       next.delete('trial')
@@ -23,18 +22,22 @@ export function CheckoutSuccessBanner({ userName }) {
 
   if (!visible) return null
 
+  const isTrialing = subscriptionStatus === 'trialing'
+  const heading = isTrialing
+    ? `Payment method saved${userName ? `, ${userName.split(' ')[0]}` : ''}! Your free trial continues.`
+    : `Subscription confirmed${userName ? `, ${userName.split(' ')[0]}` : ''}! You're all set.`
+  const sub = isTrialing
+    ? "You won't be charged until your trial ends. Start building your plan below."
+    : "Your subscription is now active. Start building your plan below."
+
   return (
     <div className="bg-gradient-to-r from-sage-600 to-sage-700 text-white px-6 py-4 flex items-center gap-4">
       <div className="w-9 h-9 rounded-full bg-white/20 flex items-center justify-center shrink-0">
         <Sparkles size={18} className="text-white" />
       </div>
       <div className="flex-1">
-        <p className="font-semibold text-sm">
-          Welcome to Everstead{userName ? `, ${userName.split(' ')[0]}` : ''}! Your 14-day free trial has started.
-        </p>
-        <p className="text-sage-100 text-xs mt-0.5">
-          Add your first account or document to begin building your plan.
-        </p>
+        <p className="font-semibold text-sm">{heading}</p>
+        <p className="text-sage-100 text-xs mt-0.5">{sub}</p>
       </div>
       <button
         onClick={() => setVisible(false)}

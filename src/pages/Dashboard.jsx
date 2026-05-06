@@ -11,7 +11,7 @@ import {
   Filter, CheckCheck, MessageSquare, Video, Play, FileEdit, Send, Menu, ShieldCheck
 } from 'lucide-react'
 import { useAuth }          from '../contexts/AuthContext'
-import { redirectToCheckout } from '../lib/stripe'
+import { redirectToCheckout, redirectToCustomerPortal } from '../lib/stripe'
 import { useAccounts }      from '../hooks/useData'
 import { useDocuments }     from '../hooks/useData'
 import { usePeople }        from '../hooks/useData'
@@ -466,21 +466,7 @@ export default function Dashboard() {
         </div>
       )}
 
-      {/* Checkout success banner */}
-      {checkoutSuccess && (
-        <div className="bg-sage-600 text-white text-sm text-center py-3 px-4 flex items-center justify-center gap-3 z-50">
-          <span>Your trial has started — welcome to Everstead. You won't be charged for 14 days.</span>
-          <button
-            onClick={() => {
-              const p = new URLSearchParams(searchParams)
-              p.delete('checkout')
-              setSearchParams(p, { replace: true })
-            }}
-            className="ml-2 opacity-70 hover:opacity-100 text-white font-bold leading-none"
-            aria-label="Dismiss"
-          >×</button>
-        </div>
-      )}
+      {/* Checkout success — handled by CheckoutSuccessBanner inside main content */}
 
       {/* Suspended / deceased banner */}
       {isSuspended && (
@@ -626,7 +612,7 @@ export default function Dashboard() {
             </button>
           )}
         </div>
-        {!isDemo && <CheckoutSuccessBanner userName={activeProfile.full_name} />}
+        {!isDemo && <CheckoutSuccessBanner userName={activeProfile.full_name} subscriptionStatus={activeProfile.subscription_status} />}
         {isTrialing && !trialExpired && (
           <TrialBanner daysLeft={trialDaysLeft} onUpgrade={() => { setActiveSection('settings') }} />
         )}
@@ -2643,6 +2629,29 @@ function ResourcesSection() {
 // ─────────────────────────────────────────────────────────────
 // SETTINGS SECTION
 // ─────────────────────────────────────────────────────────────
+function ManageBillingButton() {
+  const [loading, setLoading] = useState(false)
+  const [err, setErr]         = useState(null)
+  const handleClick = async () => {
+    setLoading(true); setErr(null)
+    try { await redirectToCustomerPortal() }
+    catch (e) { setErr(e.message) }
+    finally { setLoading(false) }
+  }
+  return (
+    <div>
+      <button
+        onClick={handleClick}
+        disabled={loading}
+        className="inline-flex items-center gap-2 text-xs font-semibold text-navy-700 border border-navy-200 rounded-lg px-3 py-2 hover:bg-navy-50 transition-colors disabled:opacity-50"
+      >
+        <ExternalLink size={13} /> {loading ? 'Opening billing portal…' : 'Manage billing & billing cycle'}
+      </button>
+      {err && <p className="mt-2 text-xs text-red-600">{err}</p>}
+    </div>
+  )
+}
+
 function SettingsSection({ profile, isDemo, updateProfile, onUpgrade, onDeleteAccount, upgradeError }) {
   const PLANS = [
     { id: 'essential', name: 'Essential', tier: 1, monthly: 7,  yearly: 5,  desc: 'For individuals. 2 trusted contacts, 5 GB storage.' },
@@ -2908,6 +2917,14 @@ function SettingsSection({ profile, isDemo, updateProfile, onUpgrade, onDeleteAc
               )
             })}
           </div>
+
+          {/* Manage billing — for paid subscribers to change cycle/plan via Stripe portal */}
+          {!isTrialing && profile.stripe_customer_id && (
+            <div className="mt-4 pt-4 border-t border-stone-100">
+              <p className="text-xs text-stone-400 mb-2">Need to switch between monthly and yearly, or update your payment method?</p>
+              <ManageBillingButton />
+            </div>
+          )}
 
           {/* Cancel subscription */}
           <div className="mt-5 pt-4 border-t border-stone-100">
