@@ -2883,9 +2883,12 @@ function SettingsSection({ profile, isDemo, updateProfile, onUpgrade, onDeleteAc
 
           <div className="grid sm:grid-cols-2 gap-4">
             {PLANS.map(plan => {
-              const isCurrent = profile.plan === plan.id
-              const isHigher  = plan.tier > currentTier
-              const price     = billingCycle === 'yearly' ? plan.yearly : plan.monthly
+              const isCurrent      = profile.plan === plan.id
+              const isHigher       = plan.tier > currentTier
+              const price          = billingCycle === 'yearly' ? plan.yearly : plan.monthly
+              // Detect when the user wants to switch the billing cycle of their current paid plan
+              const currentCycle   = profile.billing_cycle ?? 'monthly'
+              const wantsDiffCycle = isCurrent && !isTrialing && billingCycle !== currentCycle
               return (
                 <div key={plan.id} className={`rounded-xl border p-4 flex flex-col ${isCurrent ? 'border-navy-400 bg-navy-50 ring-1 ring-navy-400' : 'border-stone-200'}`}>
                   <div className="flex items-center justify-between mb-2">
@@ -2905,6 +2908,14 @@ function SettingsSection({ profile, isDemo, updateProfile, onUpgrade, onDeleteAc
                       Activate {plan.name} plan
                     </button>
                   )}
+                  {wantsDiffCycle && (
+                    <button
+                      onClick={() => onUpgrade(plan.id, billingCycle)}
+                      className="mt-3 w-full text-xs font-semibold bg-sage-600 text-white rounded-lg py-1.5 hover:bg-sage-700 transition-colors"
+                    >
+                      Switch to {billingCycle === 'yearly' ? 'yearly billing' : 'monthly billing'}
+                    </button>
+                  )}
                   {!isCurrent && (
                     <button
                       onClick={() => onUpgrade(plan.id, billingCycle)}
@@ -2918,10 +2929,10 @@ function SettingsSection({ profile, isDemo, updateProfile, onUpgrade, onDeleteAc
             })}
           </div>
 
-          {/* Manage billing — for paid subscribers to change cycle/plan via Stripe portal */}
-          {!isTrialing && profile.stripe_customer_id && (
+          {/* Manage billing — for paid subscribers to update payment method via Stripe portal */}
+          {!isTrialing && (
             <div className="mt-4 pt-4 border-t border-stone-100">
-              <p className="text-xs text-stone-400 mb-2">Need to switch between monthly and yearly, or update your payment method?</p>
+              <p className="text-xs text-stone-400 mb-2">Update your payment method or view invoices in the billing portal.</p>
               <ManageBillingButton />
             </div>
           )}

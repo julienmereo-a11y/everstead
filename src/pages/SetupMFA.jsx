@@ -24,16 +24,57 @@ export default function SetupMFA() {
   const startEnrollment = async () => {
     setStep('loading')
     setError(null)
-    const { data, error: err } = await supabase.auth.mfa.enroll({
-      factorType:   'totp',
-      issuer:       'Everstead',
-      friendlyName: 'Authenticator App',
-    })
-    if (err) { setError(err.message); setStep('enroll'); return }
-    setQrCode(data.totp.qr_code)
-    setSecret(data.totp.secret)
-    setFactorId(data.id)
-    setStep('enroll')
+
+    try {
+      // Clean up any stale unverified TOTP factors.
+      // Supabase rejects re-enrollment if one already exists in pending state.
+      try {
+        const { data: existing } = await supabase.auth.mfa.listFactors()
+        const allFactors = [
+          ...(existing?.totp ?? []),
+          ...(existing?.all  ?? []),
+        ]
+        const pending = allFactors.filter(f => f.status === 'unverified')
+        for (const f of pending) {
+          await supabase.auth.mfa.unenroll({ factorId: f.id })
+        }
+      } catch {
+        // non-fatal — proceed
+      }
+
+      const { data, error: err } = await supabase.auth.mfa.enroll({
+        factorType:   'totp',
+        issuer:       'Everstead',
+        friendlyName: 'Authenticator App',
+      })
+
+      if (err) {
+        const msg = err.message || err.error_description || JSON.stringify(err)
+        setError(msg)
+        setStep('enroll')
+        return
+      }
+
+      // Defensive: check the QR code actually came back
+      const qr = data?.totp?.qr_code
+      const sec = data?.totp?.secret
+      if (!qr) {
+        setError('Supabase returned no QR code. Please make sure MFA / TOTP is enabled in your Supabase project Authentication settings.')
+        setStep('enroll')
+        return
+      }
+
+      setQrCode(qr)
+      setSecret(sec ?? '')
+      setFactorId(data.id)
+      setStep('enroll')
+
+    } catch (thrown) {
+      // Catches JS exceptions (e.g. supabase.auth.mfa not available)
+      const msg = thrown?.message || String(thrown)
+      setError(`Unexpected error: ${msg}`)
+      setStep('enroll')
+    }
   }
 
   const copySecret = () => {
@@ -122,11 +163,32 @@ export default function SetupMFA() {
                 Scan this QR code with an authenticator app (Google Authenticator, Authy, or 1Password) to enable two-factor authentication.
               </p>
 
-              {/* QR code */}
+              {error && (
+                <div className="mb-4 bg-red-50 border border-red-200 rounded-lg px-3.5 py-2.5 text-sm text-red-700">
+                  {error}
+                  <button
+                    onClick={startEnrollment}
+                    className="block mt-2 text-xs font-semibold text-red-700 underline hover:text-red-900"
+                  >
+                    Try again
+                  </button>
+                </div>
+              )}
+
+              {/* QR code — Supabase returns raw SVG XML, not a data URL */}
               {qrCode && (
                 <div className="flex justify-center mb-5">
-                  <div className="bg-white border border-stone-200 rounded-xl p-4 inline-block">
-                    <img src={qrCode} alt="TOTP QR code" width={168} height={168} />
+                  <div className="bg-white border border-stone-200 rounded-xl p-4 inline-block w-[200px] h-[200px] flex items-center justify-center">
+                    {qrCode.startsWith('<') ? (
+                      // Raw SVG string
+                      <div
+                        style={{ width: 168, height: 168 }}
+                        dangerouslySetInnerHTML={{ __html: qrCode }}
+                      />
+                    ) : (
+                      // data: URL
+                      <img src={qrCode} alt="TOTP QR code" width={168} height={168} />
+                    )}
                   </div>
                 </div>
               )}
