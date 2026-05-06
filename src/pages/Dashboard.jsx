@@ -8,7 +8,7 @@ import {
   Plus, Eye, Upload, Search, X, Info, AlertTriangle, ArrowRight,
   Landmark, Building2, Wallet, Key, Activity, MoreHorizontal,
   Pencil, Trash2, Star, Crown, Zap, RefreshCw, ExternalLink, Download,
-  Filter, CheckCheck, MessageSquare, Video, Play, FileEdit, Send, Menu
+  Filter, CheckCheck, MessageSquare, Video, Play, FileEdit, Send, Menu, ShieldCheck
 } from 'lucide-react'
 import { useAuth }          from '../contexts/AuthContext'
 import { redirectToCheckout } from '../lib/stripe'
@@ -2825,6 +2825,23 @@ function SettingsSection({ profile, isDemo, updateProfile, onUpgrade, onDeleteAc
               {pwSaving ? 'Updating…' : 'Update password'}
             </button>
           </form>
+        </div>
+
+        {/* ── Two-factor authentication ── */}
+        <div className="bg-white border border-stone-200 rounded-2xl p-6">
+          <h2 className="font-semibold text-navy-950 text-sm mb-1 flex items-center gap-2">
+            <ShieldCheck size={15} className="text-navy-600" /> Two-factor authentication
+          </h2>
+          <p className="text-xs text-stone-400 mb-4 leading-relaxed">
+            Add an extra layer of security with an authenticator app (Google Authenticator, Authy, 1Password).
+            You'll still sign in with your email verification code — this is an additional optional step.
+          </p>
+          <a
+            href="/setup-mfa"
+            className="inline-flex items-center gap-2 text-xs font-semibold text-navy-700 border border-navy-200 rounded-lg px-3 py-2 hover:bg-navy-50 transition-colors"
+          >
+            <ShieldCheck size={13} /> Set up authenticator app
+          </a>
         </div>
 
         {/* ── Subscription ── */}
