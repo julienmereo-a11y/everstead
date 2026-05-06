@@ -7,6 +7,7 @@ import AdminProtectedRoute from './components/AdminProtectedRoute'
 import ErrorBoundary from './components/ErrorBoundary'
 import Nav from './components/Nav'
 import Footer from './components/Footer'
+import ChatWidget from './components/ChatWidget'
 
 // Pages
 import Home from './pages/Home'
@@ -123,6 +124,7 @@ export default function App() {
           <Route path="*"           element={<Layout><NotFound /></Layout>} />
         </Routes>
         </ErrorBoundary>
+        <ChatWidget />
       </BrowserRouter>
     </AuthProvider>
   )

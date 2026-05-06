@@ -59,10 +59,11 @@ export default function DelegateRegister() {
       .update({ invite_status: 'accepted', accepted_at: new Date().toISOString() })
       .eq('invite_token', token)
 
-    fetch('/api/emails/send-invite-accepted', {
+    fetch('/api/emails/send', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
+        type:        'invite-accepted',
         ownerName:   owner?.full_name,
         ownerEmail:  owner?.email,
         inviteeName: invite?.name,

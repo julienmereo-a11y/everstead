@@ -69,10 +69,11 @@ export function AuthProvider({ children }) {
                 const welcomeKey = `everstead_welcome_sent_${session.user.id}`
                 if (!localStorage.getItem(welcomeKey)) {
                   localStorage.setItem(welcomeKey, '1')
-                  fetch('/api/emails/send-welcome', {
+                  fetch('/api/emails/send', {
                     method:  'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body:    JSON.stringify({
+                      type:  'welcome',
                       name:  pending.full_name,
                       email: session.user.email,
                       plan:  pending.plan,

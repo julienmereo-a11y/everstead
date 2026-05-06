@@ -1,4 +1,10 @@
 import { loadStripe } from '@stripe/stripe-js'
+import { createClient } from '@supabase/supabase-js'
+
+const supabase = createClient(
+  import.meta.env.VITE_SUPABASE_URL,
+  import.meta.env.VITE_SUPABASE_ANON_KEY,
+)
 
 const stripePublicKey = import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY
 
@@ -84,12 +90,16 @@ export async function redirectToCheckout({ plan, billingCycle, userEmail, custom
 // ─────────────────────────────────────────────────────────────
 // PORTAL — redirect to Stripe Customer Portal
 // ─────────────────────────────────────────────────────────────
-export async function redirectToCustomerPortal(customerId) {
-  // This needs a backend call — see api/stripe-portal.js
+export async function redirectToCustomerPortal() {
+  const { data: { session } } = await supabase.auth.getSession()
+  if (!session?.access_token) throw new Error('Not authenticated')
+
   const res = await fetch('/api/stripe-portal', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ customerId }),
+    headers: {
+      'Content-Type':  'application/json',
+      'Authorization': `Bearer ${session.access_token}`,
+    },
   })
   const { url } = await res.json()
   if (!url || !url.startsWith('https://billing.stripe.com/')) {

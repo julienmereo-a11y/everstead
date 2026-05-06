@@ -430,7 +430,7 @@ function TeamSection({ isDemo, currentUserEmail }) {
       if (insertErr) throw insertErr
 
       // 2. Send invite email
-      const emailRes = await fetch('/api/emails/send-invite', {
+      const emailRes = await fetch('/api/emails/send', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

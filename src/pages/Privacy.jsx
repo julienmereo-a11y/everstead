@@ -157,7 +157,7 @@ export default function Privacy() {
               </div>
 
               <p className="text-stone-500 text-xs leading-relaxed italic">
-                Last updated: May 2026. Everstead Digital Ltd, registered in England &amp; Wales, No. 17166825.
+                Last updated: May 2026. Everstead Digital Ltd, registered in England &amp; Wales, No. 17166825. ICO registration no. 00013988672.
               </p>
             </div>
           </div>

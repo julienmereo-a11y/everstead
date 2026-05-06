@@ -59,10 +59,11 @@ export default function AcceptInvite() {
 
     if (error) { setState('error'); setErrorMsg(error.message); return }
 
-    fetch('/api/emails/send-invite-accepted', {
+    fetch('/api/emails/send', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
+        type:        'invite-accepted',
         ownerName:   owner?.full_name,
         ownerEmail:  owner?.email,
         inviteeName: invite.name,

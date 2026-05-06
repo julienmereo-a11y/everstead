@@ -122,10 +122,11 @@ export function usePeople() {
     const access_grants = { accessAreas, accountCategories, documentTypes, accessTiming }
     const person = await base.add({ name, email, role, access_grants })
 
-    fetch('/api/emails/send-invite', {
+    fetch('/api/emails/send', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
+        type:         'invite',
         inviteeName:  name,
         inviteeEmail: email,
         role,
@@ -167,10 +168,11 @@ export function usePeople() {
     // Refresh local state so the new token is available
     base.refetch()
 
-    fetch('/api/emails/send-invite', {
+    fetch('/api/emails/send', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
+        type:         'invite',
         inviteeName:  person.name,
         inviteeEmail: person.email,
         role:         person.role,

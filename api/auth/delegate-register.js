@@ -28,6 +28,13 @@ export default async function handler(req, res) {
     })
     if (createErr && !createErr.message.includes('already registered'))
       return res.status(400).json({ error: createErr.message })
+
+    // Invalidate the token immediately so it cannot be reused
+    await supabase
+      .from('admin_invites')
+      .update({ status: 'accepted' })
+      .eq('token', token)
+
     // Fall through to sign-in below to return tokens
   }
 
