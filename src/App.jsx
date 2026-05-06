@@ -36,6 +36,7 @@ import AdminPanel from './pages/AdminPanel'
 import AdminLogin from './pages/AdminLogin'
 import AcceptAdminInvite from './pages/AcceptAdminInvite'
 import DelegateRegister from './pages/DelegateRegister'
+import SetupMFA from './pages/SetupMFA'
 import ChooseAccount from './pages/ChooseAccount'
 import TrialEnded from './pages/TrialEnded'
 
@@ -88,6 +89,14 @@ export default function App() {
             element={
               <ProtectedRoute>
                 <TrialEnded />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/setup-mfa"
+            element={
+              <ProtectedRoute>
+                <SetupMFA />
               </ProtectedRoute>
             }
           />

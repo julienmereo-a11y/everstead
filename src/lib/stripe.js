@@ -68,14 +68,14 @@ export const PLANS = {
 // ─────────────────────────────────────────────────────────────
 // CHECKOUT — redirect to Stripe Checkout
 // ─────────────────────────────────────────────────────────────
-export async function redirectToCheckout({ plan, billingCycle, userEmail, customerId, trialEnd }) {
+export async function redirectToCheckout({ plan, billingCycle, userEmail, customerId, trialEnd, trialPeriodDays }) {
   const priceId = PLANS[plan]?.priceIds?.[billingCycle]
-  if (!priceId) throw new Error(`No price ID for plan=${plan} cycle=${billingCycle}`)
+  if (!priceId) throw new Error(`No price ID found for plan "${plan}" (${billingCycle}). Check Vercel env vars.`)
 
   const res = await fetch('/api/stripe/create-checkout', {
     method:  'POST',
     headers: { 'Content-Type': 'application/json' },
-    body:    JSON.stringify({ priceId, userEmail, customerId, trialEnd }),
+    body:    JSON.stringify({ priceId, userEmail, customerId, trialEnd, trialPeriodDays }),
   })
 
   if (!res.ok) {

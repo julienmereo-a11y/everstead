@@ -41,26 +41,28 @@ export default async function handler(req, res) {
     const subscription = await stripe.subscriptions.retrieve(subscriptionId)
     const priceId = subscription.items.data[0]?.price?.id
 
+    const isTrialing = subscription.status === 'trialing'
+
     // Update profile
     const { data: profiles } = await supabase
       .from('profiles')
       .update({
-        stripe_customer_id:   customerId,
-        subscription_status:  'trialing',
+        stripe_customer_id:     customerId,
+        subscription_status:    isTrialing ? 'trialing' : 'active',
         stripe_subscription_id: subscriptionId,
-        stripe_price_id:      priceId,
+        stripe_price_id:        priceId,
       })
       .eq('email', customerEmail)
       .select('id, full_name, email, plan')
 
-    // Send payment confirmed email
+    // Send payment confirmation email
     if (profiles?.[0]) {
       const p = profiles[0]
       await resend.emails.send({
-        from:    'Everstead <julien@everstead.care>',
+        from:    'Everstead <hello@everstead.care>',
         to:      p.email,
-        subject: 'Your Everstead trial has started',
-        html:    paymentConfirmedHtml(p.full_name, p.plan),
+        subject: 'Your Everstead subscription is confirmed',
+        html:    paymentConfirmedHtml(p.full_name, p.plan, isTrialing, subscription.current_period_end),
       }).catch(console.error)
     }
   }
@@ -84,7 +86,15 @@ export default async function handler(req, res) {
   res.status(200).json({ received: true })
 }
 
-function paymentConfirmedHtml(name, plan) {
+function paymentConfirmedHtml(name, plan, isTrialing, periodEnd) {
+  const nextChargeDate = periodEnd
+    ? new Date(periodEnd * 1000).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
+    : null
+
+  const bodyText = isTrialing
+    ? `Your payment method has been saved for your <strong>${plan || 'Essential'}</strong> plan. Your free trial continues — you won't be charged until it ends${nextChargeDate ? ` on <strong>${nextChargeDate}</strong>` : ''}.`
+    : `Your <strong>${plan || 'Essential'}</strong> plan is now active. Your payment was confirmed and your subscription starts today.`
+
   return `<!DOCTYPE html>
 <html>
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
@@ -92,17 +102,16 @@ function paymentConfirmedHtml(name, plan) {
   <table width="100%" cellpadding="0" cellspacing="0" style="background:#f5f4f0;padding:40px 0;">
     <tr><td align="center">
       <table width="560" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:12px;overflow:hidden;max-width:560px;width:100%;">
-        <tr><td style="background:#0d1628;padding:32px 40px;text-align:center;">
-          <p style="margin:0;color:#ffffff;font-size:22px;font-weight:normal;letter-spacing:0.5px;">Everstead</p>
+        <tr><td style="background:#0d1628;padding:28px 40px;text-align:center;">
+          <img src="https://www.everstead.care/logo-v2-white.png" alt="Everstead" width="160" style="display:block;margin:0 auto;height:auto;max-width:160px;" />
         </td></tr>
         <tr><td style="padding:40px;">
-          <h1 style="margin:0 0 16px;color:#0d1628;font-size:24px;font-weight:normal;">Your trial has started, ${name || 'there'}</h1>
-          <p style="margin:0 0 16px;color:#4a5568;font-size:16px;line-height:1.6;">Your 14-day free trial on the <strong>${plan || 'Essential'}</strong> plan is now active. You won't be charged until your trial ends.</p>
-          <p style="margin:0 0 32px;color:#4a5568;font-size:16px;line-height:1.6;">Head to your dashboard to start organising your estate and adding trusted people.</p>
+          <h1 style="margin:0 0 16px;color:#0d1628;font-size:24px;font-weight:normal;">Subscription confirmed, ${name || 'there'}</h1>
+          <p style="margin:0 0 32px;color:#4a5568;font-size:16px;line-height:1.6;">${bodyText}</p>
           <a href="${process.env.VITE_APP_URL}/dashboard" style="display:inline-block;background:#0d1628;color:#ffffff;text-decoration:none;padding:14px 28px;border-radius:8px;font-size:15px;">Go to dashboard →</a>
         </td></tr>
         <tr><td style="padding:24px 40px;border-top:1px solid #e8e5e0;">
-          <p style="margin:0;color:#9ca3af;font-size:13px;line-height:1.5;">Questions? Reply to this email or contact <a href="mailto:support@everstead.care" style="color:#4c7d47;">support@everstead.care</a></p>
+          <p style="margin:0;color:#9ca3af;font-size:13px;line-height:1.5;">Questions? <a href="mailto:support@everstead.care" style="color:#4c7d47;">support@everstead.care</a></p>
         </td></tr>
       </table>
     </td></tr>

@@ -251,6 +251,7 @@ export default function Dashboard() {
   const [activeSection, setActiveSection] = useState('overview')
   const [sidebarOpen, setSidebarOpen]     = useState(false)
   const [trialDismissed, setTrialDismissed] = useState(false)
+  const [upgradeError, setUpgradeError]   = useState(null)
   // Demo-mode mutable people state (so invite/edit/remove reflect in UI)
   const [demoPeople, setDemoPeople] = useState(DEMO_PEOPLE)
 
@@ -401,22 +402,20 @@ export default function Dashboard() {
 
   const planLimits = getPlanLimits(activeProfile.plan)
 
-  const handleUpgrade = async (planId) => {
+  const handleUpgrade = async (planId, billingCycle = 'yearly') => {
     if (isDemo) { navigate('/get-started'); return }
-    const targetPlan    = planId || activeProfile.plan || 'essential'
-    const billingCycle  = activeProfile.billing_cycle || 'monthly'
-    const trialEnd      = activeProfile.trial_ends_at
-      ? new Date(activeProfile.trial_ends_at).getTime()
-      : null
+    setUpgradeError(null)
+    const targetPlan = planId || activeProfile.plan || 'essential'
     try {
       await redirectToCheckout({
-        plan:       targetPlan,
+        plan:            targetPlan,
         billingCycle,
-        userEmail:  user.email,
-        customerId: activeProfile.stripe_customer_id || undefined,
-        trialEnd,
+        userEmail:       user.email,
+        customerId:      activeProfile.stripe_customer_id || undefined,
+        trialPeriodDays: 0, // user is converting from trial — charge immediately
       })
-    } catch {
+    } catch (err) {
+      setUpgradeError(err.message)
       setActiveSection('settings')
     }
   }
@@ -629,7 +628,7 @@ export default function Dashboard() {
         </div>
         {!isDemo && <CheckoutSuccessBanner userName={activeProfile.full_name} />}
         {isTrialing && !trialExpired && (
-          <TrialBanner daysLeft={trialDaysLeft} onUpgrade={() => handleUpgrade()} />
+          <TrialBanner daysLeft={trialDaysLeft} onUpgrade={() => { setActiveSection('settings') }} />
         )}
         {advisorGraceActive && (
           <AdvisorCancelledBanner
@@ -648,7 +647,7 @@ export default function Dashboard() {
         {activeSection === 'alerts'        && <AlertsSection    alerts={alerts} markRead={markRead} markAllRead={markAllRead} />}
         {activeSection === 'activity'      && <ActivitySection  activity={activity} loading={loadingActivity} />}
         {activeSection === 'resources'     && <ResourcesSection />}
-        {activeSection === 'settings'      && <SettingsSection  profile={activeProfile} isDemo={isDemo} updateProfile={updateProfile} onUpgrade={handleUpgrade} onDeleteAccount={handleDeleteAccount} />}
+        {activeSection === 'settings'      && <SettingsSection  profile={activeProfile} isDemo={isDemo} updateProfile={updateProfile} onUpgrade={handleUpgrade} onDeleteAccount={handleDeleteAccount} upgradeError={upgradeError} />}
       </main>
       </div>
     </div>
@@ -2644,15 +2643,16 @@ function ResourcesSection() {
 // ─────────────────────────────────────────────────────────────
 // SETTINGS SECTION
 // ─────────────────────────────────────────────────────────────
-function SettingsSection({ profile, isDemo, updateProfile, onUpgrade, onDeleteAccount }) {
+function SettingsSection({ profile, isDemo, updateProfile, onUpgrade, onDeleteAccount, upgradeError }) {
   const PLANS = [
-    { id: 'essential', name: 'Essential', tier: 1, price: '£7/mo',  desc: 'For individuals. 2 trusted contacts, 5 GB storage.' },
-    { id: 'family',    name: 'Family',    tier: 2, price: '£15/mo', desc: 'Household members, up to 10 trusted contacts, 25 GB storage.' },
+    { id: 'essential', name: 'Essential', tier: 1, monthly: 7,  yearly: 5,  desc: 'For individuals. 2 trusted contacts, 5 GB storage.' },
+    { id: 'family',    name: 'Family',    tier: 2, monthly: 15, yearly: 12, desc: 'Household members, up to 10 trusted contacts, 25 GB storage.' },
   ]
   const PLAN_TIERS = { essential: 1, family: 2, advisor: 3 }
   const currentTier = PLAN_TIERS[profile.plan] ?? 1
   const isTrialing  = profile.subscription_status === 'trialing'
 
+  const [billingCycle, setBillingCycle] = useState('yearly')
   const [cancelConfirm, setCancelConfirm] = useState(false)
   const [cancelReason, setCancelReason]   = useState('')
   const [cancelling, setCancelling]       = useState(false)
@@ -2838,22 +2838,42 @@ function SettingsSection({ profile, isDemo, updateProfile, onUpgrade, onDeleteAc
               <span className="ml-2 text-amber-600 font-medium">· Free trial active</span>
             )}
           </p>
+          {/* Billing cycle toggle */}
+          <div className="flex items-center gap-1 bg-stone-100 rounded-lg p-1 w-fit mb-4">
+            {['monthly', 'yearly'].map(cycle => (
+              <button
+                key={cycle}
+                onClick={() => setBillingCycle(cycle)}
+                className={`px-3 py-1.5 rounded-md text-xs font-semibold transition-all ${billingCycle === cycle ? 'bg-white text-navy-900 shadow-sm' : 'text-stone-500 hover:text-stone-700'}`}
+              >
+                {cycle === 'monthly' ? 'Monthly' : 'Yearly — save 20%'}
+              </button>
+            ))}
+          </div>
+
+          {upgradeError && (
+            <div className="mb-4 bg-red-50 border border-red-200 rounded-xl px-4 py-3 text-sm text-red-700">{upgradeError}</div>
+          )}
+
           <div className="grid sm:grid-cols-2 gap-4">
             {PLANS.map(plan => {
               const isCurrent = profile.plan === plan.id
               const isHigher  = plan.tier > currentTier
-              const isLower   = plan.tier < currentTier
+              const price     = billingCycle === 'yearly' ? plan.yearly : plan.monthly
               return (
                 <div key={plan.id} className={`rounded-xl border p-4 flex flex-col ${isCurrent ? 'border-navy-400 bg-navy-50 ring-1 ring-navy-400' : 'border-stone-200'}`}>
                   <div className="flex items-center justify-between mb-2">
                     <p className="font-semibold text-navy-950 text-sm">{plan.name}</p>
                     {isCurrent && <span className="text-xs bg-navy-800 text-white px-2 py-0.5 rounded-full">Current</span>}
                   </div>
-                  <p className="text-lg font-display font-light text-navy-950">{plan.price}</p>
+                  <p className="text-lg font-display font-light text-navy-950">
+                    £{price}/mo
+                    {billingCycle === 'yearly' && <span className="text-xs text-stone-400 ml-1">billed yearly</span>}
+                  </p>
                   <p className="text-xs text-stone-500 mt-1 leading-snug flex-1">{plan.desc}</p>
                   {isCurrent && isTrialing && (
                     <button
-                      onClick={() => onUpgrade(plan.id)}
+                      onClick={() => onUpgrade(plan.id, billingCycle)}
                       className="mt-3 w-full text-xs font-semibold bg-navy-800 text-white rounded-lg py-1.5 hover:bg-navy-700 transition-colors"
                     >
                       Activate {plan.name} plan
@@ -2861,7 +2881,7 @@ function SettingsSection({ profile, isDemo, updateProfile, onUpgrade, onDeleteAc
                   )}
                   {!isCurrent && (
                     <button
-                      onClick={() => onUpgrade(plan.id)}
+                      onClick={() => onUpgrade(plan.id, billingCycle)}
                       className="mt-3 w-full text-xs font-semibold text-navy-700 border border-navy-200 rounded-lg py-1.5 hover:bg-navy-50 transition-colors"
                     >
                       {isHigher ? `Upgrade to ${plan.name}` : `Switch to ${plan.name}`}
