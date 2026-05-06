@@ -7,6 +7,7 @@ import {
 } from 'lucide-react'
 import { useAuth } from '../contexts/AuthContext'
 import { PLANS } from '../lib/stripe'
+import { supabase } from '../lib/supabase'
 
 // ─────────────────────────────────────────────────────────────
 // CONSTANTS
@@ -140,21 +141,27 @@ export default function GetStarted() {
         full_name:     form.fullName,
       }))
 
-      await signUp({
-        email:    form.email,
-        password: form.password,
-        fullName: form.fullName,
-        metadata: {
-          plan:          selectedPlan,
-          billing_cycle: annualBilling ? 'yearly' : 'monthly',
-          trial_ends_at: trialEndsAt,
-          phone:         `${form.dialCode} ${form.phone}`.trim(),
-          country:       form.country,
-          nationality:   form.nationality,
-        },
+      // Register server-side to bypass Supabase CAPTCHA protection
+      const registerRes = await fetch('/api/auth/delegate-register', {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify({
+          mode:       'register',
+          wantsTrial: true,
+          email:      form.email,
+          password:   form.password,
+          name:       form.fullName,
+        }),
       })
 
-      setStep(3) // show "check your email" — welcome email fires after confirmation
+      if (!registerRes.ok) {
+        const { error } = await registerRes.json().catch(() => ({}))
+        throw new Error(error || 'Could not create account. Please try again.')
+      }
+
+      const { access_token, refresh_token } = await registerRes.json()
+      await supabase.auth.setSession({ access_token, refresh_token })
+      navigate('/dashboard')
     } catch (err) {
       setError(err.message ?? 'Something went wrong. Please try again.')
     } finally {
