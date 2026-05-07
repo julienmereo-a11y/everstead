@@ -56,34 +56,9 @@ export function AuthProvider({ children }) {
         fetchProfile(session.user.id)
         fetchDelegateInvites(session.user.email)
 
-        // Fire welcome email exactly once: on the first SIGNED_IN event after signup.
-        // This fires when the user confirms their email (or immediately if auto-confirmed).
-        // GetStarted stores plan data in localStorage; we read it here, then leave it
-        // in place so Dashboard can still sync the plan.
-        if (_event === 'SIGNED_IN') {
-          const raw = localStorage.getItem('everstead_pending_signup')
-          if (raw) {
-            try {
-              const pending = JSON.parse(raw)
-              if (pending.email === session.user.email) {
-                const welcomeKey = `everstead_welcome_sent_${session.user.id}`
-                if (!localStorage.getItem(welcomeKey)) {
-                  localStorage.setItem(welcomeKey, '1')
-                  fetch('/api/emails/send', {
-                    method:  'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body:    JSON.stringify({
-                      type:  'welcome',
-                      name:  pending.full_name,
-                      email: session.user.email,
-                      plan:  pending.plan,
-                    }),
-                  }).catch(() => {})
-                }
-              }
-            } catch {}
-          }
-        }
+        // Welcome email is now sent by the Stripe webhook (checkout.session.completed)
+        // after the user completes payment — not here on SIGNED_IN.
+        // This prevents sending the email to users who abandon the checkout flow.
       } else {
         setProfile(null)
         setDelegateInvites([])
