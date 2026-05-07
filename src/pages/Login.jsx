@@ -230,23 +230,7 @@ export default function Login() {
                 </Link>
               </p>
 
-              <div className="mt-6 pt-6 border-t border-stone-100">
-                <p className="text-center text-xs text-stone-400 mb-3">Just browsing?</p>
-                <div className="flex flex-col gap-2">
-                  <Link to="/dashboard?demo=true"
-                    className="w-full flex items-center justify-center gap-2 border border-stone-200 rounded-lg py-2.5 text-sm font-medium text-stone-600 hover:bg-stone-50 hover:border-stone-300 transition-colors">
-                    Preview owner dashboard
-                  </Link>
-                  <Link to="/delegate-dashboard?demo=true"
-                    className="w-full flex items-center justify-center gap-2 border border-stone-200 rounded-lg py-2.5 text-sm font-medium text-stone-600 hover:bg-stone-50 hover:border-stone-300 transition-colors">
-                    Preview executor view
-                  </Link>
-                  <Link to="/advisor-portal?demo=true"
-                    className="w-full flex items-center justify-center gap-2 border border-stone-200 rounded-lg py-2.5 text-sm font-medium text-stone-600 hover:bg-stone-50 hover:border-stone-300 transition-colors">
-                    Preview advisor portal
-                  </Link>
-                </div>
-              </div>
+              {/* Preview dashboard — hidden for launch, keep for future use */}
             </>
           )}
 
