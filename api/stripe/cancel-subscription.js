@@ -4,7 +4,7 @@ import { Resend } from 'resend'
 
 const stripe   = new Stripe(process.env.STRIPE_SECRET_KEY)
 const supabase = createClient(
-  process.env.VITE_SUPABASE_URL,
+  process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL,
   process.env.SUPABASE_SERVICE_ROLE_KEY
 )
 const resend = new Resend(process.env.RESEND_API_KEY)
@@ -25,10 +25,11 @@ export default async function handler(req, res) {
         cancel_at_period_end: false,
       })
 
-      await supabase
+      const { error: dbError } = await supabase
         .from('profiles')
         .update({ subscription_status: 'active', cancel_at: null })
         .eq('id', userId)
+      if (dbError) console.error('reactivate-subscription DB update error:', dbError)
 
       return res.status(200).json({ success: true })
     } catch (err) {
@@ -61,10 +62,11 @@ export default async function handler(req, res) {
       : periodEndDate
 
     // Mark profile as cancelling and store the exact access-end timestamp
-    await supabase
+    const { error: dbError } = await supabase
       .from('profiles')
       .update({ subscription_status: 'cancelling', cancel_at: cancelAt })
       .eq('id', userId)
+    if (dbError) console.error('cancel-subscription DB update error:', dbError)
 
     // Fetch profile for the email
     const { data: profiles } = await supabase
