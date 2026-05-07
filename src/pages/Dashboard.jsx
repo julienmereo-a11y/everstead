@@ -8,7 +8,7 @@ import {
   Plus, Eye, Upload, Search, X, Info, AlertTriangle, ArrowRight,
   Landmark, Building2, Wallet, Key, Activity, MoreHorizontal,
   Pencil, Trash2, Star, Crown, Zap, RefreshCw, ExternalLink, Download,
-  Filter, CheckCheck, MessageSquare, Video, Play, FileEdit, Send, Menu, ShieldCheck
+  Filter, CheckCheck, MessageSquare, Video, Play, FileEdit, Send, Menu, ShieldCheck, Loader2
 } from 'lucide-react'
 import { useAuth }          from '../contexts/AuthContext'
 import { redirectToCheckout, redirectToCustomerPortal } from '../lib/stripe'
@@ -2666,6 +2666,8 @@ function SettingsSection({ profile, isDemo, updateProfile, onUpgrade, onDeleteAc
   const [cancelReason, setCancelReason]   = useState('')
   const [cancelling, setCancelling]       = useState(false)
   const [cancelDone, setCancelDone]       = useState(false)
+  const [cancelPeriodEnd, setCancelPeriodEnd] = useState(null) // human-readable date from Stripe
+  const [cancelError, setCancelError]     = useState(null)
 
   // Account deletion
   const [deleteStep, setDeleteStep]       = useState(0) // 0=idle, 1=confirm
@@ -2674,11 +2676,30 @@ function SettingsSection({ profile, isDemo, updateProfile, onUpgrade, onDeleteAc
   const [deleteError, setDeleteError]     = useState(null)
 
   const handleCancelSubscription = async () => {
+    if (isDemo) { setCancelDone(true); setCancelConfirm(false); return }
     setCancelling(true)
+    setCancelError(null)
     try {
-      if (!isDemo) await new Promise(r => setTimeout(r, 800))
+      const { supabase: sb } = await import('../lib/supabase')
+      const { data: { session } } = await sb.auth.getSession()
+      const res = await fetch('/api/stripe/cancel-subscription', {
+        method:  'POST',
+        headers: {
+          'Content-Type':  'application/json',
+          'Authorization': `Bearer ${session.access_token}`,
+        },
+        body: JSON.stringify({
+          subscriptionId: profile.stripe_subscription_id,
+          userId:         profile.id,
+        }),
+      })
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.error || 'Could not cancel subscription.')
+      setCancelPeriodEnd(data.periodEndDate || null)
       setCancelDone(true)
       setCancelConfirm(false)
+    } catch (err) {
+      setCancelError(err.message)
     } finally {
       setCancelling(false)
     }
@@ -2940,39 +2961,47 @@ function SettingsSection({ profile, isDemo, updateProfile, onUpgrade, onDeleteAc
           {/* Cancel subscription */}
           <div className="mt-5 pt-4 border-t border-stone-100">
             {cancelDone ? (
-              <div className="flex items-center gap-2 text-sm text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-xl px-4 py-3">
-                <CheckCircle2 size={15} /> Cancellation request received. Your plan will remain active until the end of the billing period.
+              <div className="flex items-start gap-3 text-sm text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-xl px-4 py-3">
+                <CheckCircle2 size={15} className="shrink-0 mt-0.5" />
+                <span>
+                  Your plan has been cancelled.{' '}
+                  {cancelPeriodEnd
+                    ? <>You'll keep full access until <strong>{cancelPeriodEnd}</strong>.</>
+                    : "You'll keep full access until the end of your current billing period."
+                  }
+                </span>
               </div>
             ) : cancelConfirm ? (
-              <div className="bg-red-50 border border-red-200 rounded-xl p-4 space-y-3">
-                <p className="text-sm font-semibold text-red-800">Are you sure you want to cancel?</p>
-                <p className="text-xs text-red-700 leading-relaxed">
-                  Your plan stays active until the end of the current billing period. After that, your data is retained for 30 days before deletion.
+              <div className="bg-stone-50 border border-stone-200 rounded-xl p-5 space-y-3">
+                <p className="text-sm font-semibold text-navy-900">Are you sure you want to cancel?</p>
+                <p className="text-xs text-stone-500 leading-relaxed">
+                  You'll keep full access until the end of your current billing period. After that, your plan will be downgraded and your data kept safe for 30 days.
                 </p>
-                <Field label="Reason for cancelling (optional)">
-                  <select className={input} value={cancelReason} onChange={e => setCancelReason(e.target.value)}>
-                    <option value="">Select a reason…</option>
-                    <option>Too expensive</option>
-                    <option>Not using it enough</option>
-                    <option>Missing a feature I need</option>
-                    <option>Switching to another service</option>
-                    <option>Other</option>
-                  </select>
-                </Field>
-                <div className="flex gap-3">
-                  <a
-                    href={`mailto:support@everstead.care?subject=Cancellation%20request&body=Reason%3A%20${encodeURIComponent(cancelReason || 'Not specified')}`}
-                    onClick={() => { setCancelDone(true); setCancelConfirm(false) }}
-                    className="inline-flex items-center gap-2 bg-red-600 text-white text-sm font-medium px-4 py-2 rounded-lg hover:bg-red-700 transition-colors"
+                {cancelError && (
+                  <p className="text-xs text-red-600">{cancelError}</p>
+                )}
+                <div className="flex gap-3 pt-1">
+                  <button
+                    onClick={() => { setCancelConfirm(false); setCancelError(null) }}
+                    className="flex-1 bg-navy-800 text-white text-sm font-semibold px-4 py-2.5 rounded-lg hover:bg-navy-700 transition-colors"
                   >
-                    Yes, cancel my plan
-                  </a>
-                  <button onClick={() => setCancelConfirm(false)} className={secondaryBtn}>Keep my plan</button>
+                    Keep my plan
+                  </button>
+                  <button
+                    onClick={handleCancelSubscription}
+                    disabled={cancelling}
+                    className="flex-1 text-stone-500 text-sm font-medium px-4 py-2.5 rounded-lg border border-stone-200 hover:border-stone-300 hover:text-stone-700 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+                  >
+                    {cancelling
+                      ? <><Loader2 size={13} className="animate-spin" />Cancelling…</>
+                      : 'Yes, cancel my plan'
+                    }
+                  </button>
                 </div>
               </div>
             ) : (
               <button
-                onClick={() => setCancelConfirm(true)}
+                onClick={() => { setCancelConfirm(true); setCancelError(null) }}
                 className="text-xs text-stone-500 hover:text-red-600 transition-colors underline underline-offset-2"
               >
                 Cancel subscription

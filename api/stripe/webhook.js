@@ -75,22 +75,33 @@ export default async function handler(req, res) {
   }
 
   // ── customer.subscription.deleted ────────────────────────
+  // Fires at period end when cancel_at_period_end subscription expires.
   if (event.type === 'customer.subscription.deleted') {
     const subscription = event.data.object
     await supabase
       .from('profiles')
-      .update({ subscription_status: 'cancelled' })
-      .eq('stripe_subscription_id', subscription.id)
+      .update({ subscription_status: 'cancelled', plan: null })
+      .eq('stripe_customer_id', subscription.customer)
   }
 
   // ── customer.subscription.updated ────────────────────────
-  // Fires when trial converts to active, or subscription changes.
+  // Fires when trial converts to active, billing cycle changes,
+  // or cancel_at_period_end is set (cancellation scheduled).
   if (event.type === 'customer.subscription.updated') {
     const subscription = event.data.object
-    await supabase
-      .from('profiles')
-      .update({ subscription_status: subscription.status })
-      .eq('stripe_subscription_id', subscription.id)
+    if (subscription.cancel_at_period_end) {
+      // Cancellation scheduled — user still has access until period ends
+      await supabase
+        .from('profiles')
+        .update({ subscription_status: 'cancelling' })
+        .eq('stripe_customer_id', subscription.customer)
+    } else {
+      // Normal status update (trial → active, reactivation, etc.)
+      await supabase
+        .from('profiles')
+        .update({ subscription_status: subscription.status })
+        .eq('stripe_customer_id', subscription.customer)
+    }
   }
 
   // ── customer.subscription.trial_will_end ─────────────────
