@@ -600,11 +600,13 @@ function TeamSection({ isDemo, currentUserEmail }) {
 // DEMO USERS
 // ─────────────────────────────────────────────────────────────
 const DEMO_USERS = [
-  { id: 'u1', full_name: 'James Thornton',   email: 'james@example.com',   phone: '+44 7700 900111', plan: 'family',    subscription_status: 'active',   readiness_score: 72, created_at: '2026-04-15T10:00:00Z', trial_ends_at: null,                  accounts_count: 6, documents_count: 4, people_count: 3, instructions_count: 5, wishes_count: 2 },
-  { id: 'u2', full_name: 'Sarah Okafor',     email: 'sarah@example.com',   phone: '+44 7700 900222', plan: 'essential', subscription_status: 'trialing',  readiness_score: 35, created_at: '2026-04-22T14:30:00Z', trial_ends_at: '2026-05-06T14:30:00Z', accounts_count: 2, documents_count: 0, people_count: 1, instructions_count: 0, wishes_count: 0 },
-  { id: 'u3', full_name: 'Marcus Webb',      email: 'marcus@example.com',  phone: null,              plan: 'essential', subscription_status: 'trialing',  readiness_score: 10, created_at: '2026-05-01T09:00:00Z', trial_ends_at: '2026-05-15T09:00:00Z', accounts_count: 1, documents_count: 0, people_count: 0, instructions_count: 0, wishes_count: 0 },
-  { id: 'u4', full_name: 'Priya Sharma',     email: 'priya@example.com',   phone: '+44 7700 900444', plan: 'advisor',   subscription_status: 'active',   readiness_score: 91, created_at: '2026-04-10T08:00:00Z', trial_ends_at: null,                  accounts_count: 12, documents_count: 8, people_count: 5, instructions_count: 9, wishes_count: 4 },
-  { id: 'u5', full_name: 'Tom Blackwell',    email: 'tom@example.com',     phone: '+44 7700 900555', plan: 'family',    subscription_status: 'canceled', readiness_score: 55, created_at: '2026-03-28T16:00:00Z', trial_ends_at: null,                  accounts_count: 4, documents_count: 3, people_count: 2, instructions_count: 3, wishes_count: 1 },
+  { id: 'u1', full_name: 'James Thornton',   email: 'james@example.com',   phone: '+44 7700 900111', plan: 'family',    subscription_status: 'active',        billing_cycle: 'yearly',  readiness_score: 72, created_at: '2026-04-15T10:00:00Z', trial_ends_at: null,                   stripe_customer_id: 'cus_demo1', stripe_subscription_id: 'sub_demo1', accounts_count: 6, documents_count: 4, people_count: 3, instructions_count: 5, wishes_count: 2 },
+  { id: 'u2', full_name: 'Sarah Okafor',     email: 'sarah@example.com',   phone: '+44 7700 900222', plan: 'essential', subscription_status: 'trialing',       billing_cycle: 'monthly', readiness_score: 35, created_at: '2026-04-22T14:30:00Z', trial_ends_at: '2026-05-07T14:30:00Z', stripe_customer_id: 'cus_demo2', stripe_subscription_id: 'sub_demo2', accounts_count: 2, documents_count: 0, people_count: 1, instructions_count: 0, wishes_count: 0 },
+  { id: 'u3', full_name: 'Marcus Webb',      email: 'marcus@example.com',  phone: null,              plan: 'essential', subscription_status: 'trialing',       billing_cycle: 'monthly', readiness_score: 10, created_at: '2026-05-01T09:00:00Z', trial_ends_at: '2026-05-15T09:00:00Z', stripe_customer_id: 'cus_demo3', stripe_subscription_id: 'sub_demo3', accounts_count: 1, documents_count: 0, people_count: 0, instructions_count: 0, wishes_count: 0 },
+  { id: 'u4', full_name: 'Priya Sharma',     email: 'priya@example.com',   phone: '+44 7700 900444', plan: 'advisor',   subscription_status: 'active',        billing_cycle: 'yearly',  readiness_score: 91, created_at: '2026-04-10T08:00:00Z', trial_ends_at: null,                   stripe_customer_id: 'cus_demo4', stripe_subscription_id: 'sub_demo4', accounts_count: 12, documents_count: 8, people_count: 5, instructions_count: 9, wishes_count: 4 },
+  { id: 'u5', full_name: 'Tom Blackwell',    email: 'tom@example.com',     phone: '+44 7700 900555', plan: 'family',    subscription_status: 'cancelling',    billing_cycle: 'monthly', readiness_score: 55, created_at: '2026-03-28T16:00:00Z', trial_ends_at: null,                   stripe_customer_id: 'cus_demo5', stripe_subscription_id: 'sub_demo5', accounts_count: 4, documents_count: 3, people_count: 2, instructions_count: 3, wishes_count: 1 },
+  { id: 'u6', full_name: 'Helen Marsh',      email: 'helen@example.com',   phone: '+44 7700 900666', plan: 'essential', subscription_status: 'cancelled',     billing_cycle: 'monthly', readiness_score: 28, created_at: '2026-03-01T10:00:00Z', trial_ends_at: null,                   stripe_customer_id: 'cus_demo6', stripe_subscription_id: null,        accounts_count: 2, documents_count: 1, people_count: 1, instructions_count: 0, wishes_count: 0 },
+  { id: 'u7', full_name: 'David Osei',       email: 'david@example.com',   phone: '+44 7700 900777', plan: 'essential', subscription_status: 'trial_expired', billing_cycle: 'monthly', readiness_score: 20, created_at: '2026-04-20T12:00:00Z', trial_ends_at: '2026-05-04T12:00:00Z', stripe_customer_id: 'cus_demo7', stripe_subscription_id: 'sub_demo7', accounts_count: 1, documents_count: 0, people_count: 0, instructions_count: 0, wishes_count: 0 },
 ]
 
 // ─────────────────────────────────────────────────────────────
@@ -618,10 +620,22 @@ const PLAN_BADGE = {
 const STATUS_COLOR = {
   active:        'text-emerald-700 bg-emerald-50 border-emerald-200',
   trialing:      'text-sky-700 bg-sky-50 border-sky-200',
+  cancelling:    'text-amber-700 bg-amber-50 border-amber-200',
+  cancelled:     'text-stone-500 bg-stone-100 border-stone-200',
   canceled:      'text-stone-500 bg-stone-100 border-stone-200',
   past_due:      'text-red-700 bg-red-50 border-red-200',
-  trial_expired: 'text-amber-700 bg-amber-50 border-amber-200',
+  trial_expired: 'text-red-700 bg-red-50 border-red-200',
   incomplete:    'text-stone-500 bg-stone-100 border-stone-200',
+}
+const STATUS_LABEL = {
+  active:        'Active',
+  trialing:      'Free trial',
+  cancelling:    'Cancelling',
+  cancelled:     'Churned',
+  canceled:      'Churned',
+  past_due:      'Payment failed',
+  trial_expired: 'Trial expired',
+  incomplete:    'Incomplete',
 }
 
 function ReadinessBar({ score }) {
@@ -657,9 +671,14 @@ function TodoList({ u }) {
 
 function UserRow({ u }) {
   const [open, setOpen] = useState(false)
-  const statusCls = STATUS_COLOR[u.subscription_status] ?? STATUS_COLOR.incomplete
-  const planCls   = PLAN_BADGE[u.plan] ?? PLAN_BADGE.essential
-  const daysLeft  = u.trial_ends_at ? Math.ceil((new Date(u.trial_ends_at) - Date.now()) / 86400000) : null
+  const statusCls  = STATUS_COLOR[u.subscription_status] ?? STATUS_COLOR.incomplete
+  const planCls    = PLAN_BADGE[u.plan] ?? PLAN_BADGE.essential
+  const daysLeft   = u.trial_ends_at ? Math.ceil((new Date(u.trial_ends_at) - Date.now()) / 86400000) : null
+  const statusLabel = STATUS_LABEL[u.subscription_status] ?? (u.subscription_status?.replace(/_/g, ' ') ?? '—')
+
+  // Build Stripe dashboard URLs
+  const stripeCustomerUrl     = u.stripe_customer_id     ? `https://dashboard.stripe.com/customers/${u.stripe_customer_id}` : null
+  const stripeSubscriptionUrl = u.stripe_subscription_id ? `https://dashboard.stripe.com/subscriptions/${u.stripe_subscription_id}` : null
 
   return (
     <div className="bg-white border border-stone-200 rounded-2xl overflow-hidden">
@@ -674,8 +693,8 @@ function UserRow({ u }) {
           <div className="flex items-center gap-2 flex-wrap">
             <p className="text-sm font-semibold text-navy-900 truncate">{u.full_name ?? '—'}</p>
             <span className={`text-xs font-medium px-2 py-0.5 rounded-full border capitalize ${planCls}`}>{u.plan}</span>
-            <span className={`text-xs font-medium px-2 py-0.5 rounded-full border capitalize ${statusCls}`}>
-              {u.subscription_status?.replace('_', ' ')}
+            <span className={`text-xs font-medium px-2 py-0.5 rounded-full border ${statusCls}`}>
+              {statusLabel}
               {daysLeft !== null && daysLeft > 0 && ` · ${daysLeft}d left`}
             </span>
           </div>
@@ -690,7 +709,7 @@ function UserRow({ u }) {
       </button>
 
       {open && (
-        <div className="border-t border-stone-100 px-5 py-4 grid sm:grid-cols-2 gap-6">
+        <div className="border-t border-stone-100 px-5 py-4 grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {/* Contact details */}
           <div className="space-y-2">
             <p className="text-xs font-semibold text-stone-400 uppercase tracking-widest mb-2">Contact</p>
@@ -705,6 +724,71 @@ function UserRow({ u }) {
                 <span className="text-navy-900 font-medium text-xs">{val}</span>
               </div>
             ) : null)}
+          </div>
+
+          {/* Billing */}
+          <div className="space-y-2">
+            <p className="text-xs font-semibold text-stone-400 uppercase tracking-widest mb-2">Billing</p>
+            {/* Status */}
+            <div className="flex items-start gap-2">
+              <CreditCard size={13} className="text-stone-400 mt-0.5 shrink-0" />
+              <span className="text-stone-500 w-16 shrink-0 text-xs">Status</span>
+              <span className={`text-xs font-medium px-2 py-0.5 rounded-full border ${statusCls}`}>{statusLabel}</span>
+            </div>
+            {/* Billing cycle */}
+            {u.billing_cycle && (
+              <div className="flex items-start gap-2">
+                <Calendar size={13} className="text-stone-400 mt-0.5 shrink-0" />
+                <span className="text-stone-500 w-16 shrink-0 text-xs">Cycle</span>
+                <span className="text-navy-900 font-medium text-xs capitalize">{u.billing_cycle}</span>
+              </div>
+            )}
+            {/* Trial end date */}
+            {u.trial_ends_at && (
+              <div className="flex items-start gap-2">
+                <Calendar size={13} className="text-stone-400 mt-0.5 shrink-0" />
+                <span className="text-stone-500 w-16 shrink-0 text-xs">
+                  {['trialing'].includes(u.subscription_status) ? 'Trial ends' : 'Trial ended'}
+                </span>
+                <span className="text-navy-900 font-medium text-xs">{fmtDate(u.trial_ends_at)}</span>
+              </div>
+            )}
+            {/* Stripe customer link */}
+            {stripeCustomerUrl ? (
+              <div className="flex items-start gap-2">
+                <ExternalLink size={13} className="text-stone-400 mt-0.5 shrink-0" />
+                <span className="text-stone-500 w-16 shrink-0 text-xs">Stripe</span>
+                <a
+                  href={stripeCustomerUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-xs text-sky-600 hover:text-sky-800 hover:underline font-medium"
+                >
+                  View customer →
+                </a>
+              </div>
+            ) : (
+              <div className="flex items-start gap-2">
+                <ExternalLink size={13} className="text-stone-400 mt-0.5 shrink-0" />
+                <span className="text-stone-500 w-16 shrink-0 text-xs">Stripe</span>
+                <span className="text-xs text-stone-400">No Stripe record</span>
+              </div>
+            )}
+            {/* Stripe subscription link */}
+            {stripeSubscriptionUrl && (
+              <div className="flex items-start gap-2">
+                <ExternalLink size={13} className="text-stone-400 mt-0.5 shrink-0" />
+                <span className="text-stone-500 w-16 shrink-0 text-xs">Subscription</span>
+                <a
+                  href={stripeSubscriptionUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-xs text-sky-600 hover:text-sky-800 hover:underline font-medium"
+                >
+                  View subscription →
+                </a>
+              </div>
+            )}
           </div>
 
           {/* Completion */}
@@ -737,10 +821,11 @@ function UserRow({ u }) {
 }
 
 function UsersSection({ isDemo }) {
-  const [users, setUsers]       = useState(isDemo ? DEMO_USERS : [])
-  const [loading, setLoading]   = useState(!isDemo)
-  const [search, setSearch]     = useState('')
-  const [planFilter, setPlan]   = useState('all')
+  const [users, setUsers]           = useState(isDemo ? DEMO_USERS : [])
+  const [loading, setLoading]       = useState(!isDemo)
+  const [search, setSearch]         = useState('')
+  const [planFilter, setPlan]       = useState('all')
+  const [statusFilter, setStatus]   = useState('all')
 
   useEffect(() => {
     if (isDemo) return
@@ -752,24 +837,43 @@ function UsersSection({ isDemo }) {
 
   const visible = users.filter(u => {
     if (planFilter !== 'all' && u.plan !== planFilter) return false
+    if (statusFilter === 'active')   return ['active', 'trialing'].includes(u.subscription_status)
+    if (statusFilter === 'cancelling') return u.subscription_status === 'cancelling'
+    if (statusFilter === 'payment')  return ['trial_expired', 'past_due'].includes(u.subscription_status)
+    if (statusFilter === 'churned')  return ['cancelled', 'canceled'].includes(u.subscription_status)
     if (search) {
       const q = search.toLowerCase()
       return (u.full_name ?? '').toLowerCase().includes(q) || (u.email ?? '').toLowerCase().includes(q)
     }
     return true
+  }).filter(u => {
+    if (!search) return true
+    const q = search.toLowerCase()
+    return (u.full_name ?? '').toLowerCase().includes(q) || (u.email ?? '').toLowerCase().includes(q)
   })
 
-  const avgScore = users.length ? Math.round(users.reduce((s, u) => s + (u.readiness_score ?? 0), 0) / users.length) : 0
+  const activeCount      = users.filter(u => ['active', 'trialing'].includes(u.subscription_status)).length
+  const cancellingCount  = users.filter(u => u.subscription_status === 'cancelling').length
+  const churnedCount     = users.filter(u => ['cancelled', 'canceled'].includes(u.subscription_status)).length
+  const paymentIssueCount = users.filter(u => ['trial_expired', 'past_due'].includes(u.subscription_status)).length
 
   return (
     <div className="space-y-6">
       {/* Summary stats */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <StatCard label="Total users"    value={users.length}                                                  Icon={Users}        color="bg-navy-100 text-navy-700" />
-        <StatCard label="Active / trial" value={users.filter(u => ['active','trialing'].includes(u.subscription_status)).length} Icon={CheckCircle2} color="bg-emerald-100 text-emerald-700" />
-        <StatCard label="Avg readiness"  value={`${avgScore}%`}                                               Icon={LayoutDashboard} color="bg-blue-100 text-blue-700" />
-        <StatCard label="Churned"        value={users.filter(u => u.subscription_status === 'canceled').length} Icon={XCircle}      color="bg-red-100 text-red-600" />
+        <StatCard label="Total users"      value={users.length}      Icon={Users}        color="bg-navy-100 text-navy-700" />
+        <StatCard label="Active / trial"   value={activeCount}       Icon={CheckCircle2} color="bg-emerald-100 text-emerald-700" />
+        <StatCard label="Cancelling"       value={cancellingCount}   Icon={AlertCircle}  color="bg-amber-100 text-amber-700" />
+        <StatCard label="Churned"          value={churnedCount}      Icon={XCircle}      color="bg-stone-200 text-stone-600" />
       </div>
+      {paymentIssueCount > 0 && (
+        <div className="flex items-center gap-2 bg-red-50 border border-red-200 rounded-xl px-4 py-3">
+          <AlertCircle size={15} className="text-red-500 shrink-0" />
+          <p className="text-sm text-red-700 font-medium">
+            {paymentIssueCount} user{paymentIssueCount > 1 ? 's' : ''} with a payment issue — use the filter below to view them.
+          </p>
+        </div>
+      )}
 
       {/* Filters */}
       <div className="flex flex-wrap gap-3 items-center">
@@ -787,6 +891,19 @@ function UsersSection({ isDemo }) {
           {[['all','All plans'],['essential','Essential'],['family','Family'],['advisor','Advisor']].map(([v,l]) => (
             <button key={v} onClick={() => setPlan(v)}
               className={`px-3 py-2 transition-colors ${planFilter === v ? 'bg-navy-900 text-white' : 'text-stone-500 hover:bg-stone-50'}`}
+            >{l}</button>
+          ))}
+        </div>
+        <div className="flex rounded-xl border border-stone-200 bg-white overflow-hidden text-xs font-medium">
+          {[
+            ['all',        'All statuses'],
+            ['active',     'Active'],
+            ['cancelling', 'Cancelling'],
+            ['payment',    'Payment issue'],
+            ['churned',    'Churned'],
+          ].map(([v,l]) => (
+            <button key={v} onClick={() => setStatus(v)}
+              className={`px-3 py-2 transition-colors ${statusFilter === v ? 'bg-navy-900 text-white' : 'text-stone-500 hover:bg-stone-50'}`}
             >{l}</button>
           ))}
         </div>

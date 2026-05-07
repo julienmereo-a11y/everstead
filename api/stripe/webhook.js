@@ -86,20 +86,24 @@ export default async function handler(req, res) {
 
   // ── customer.subscription.updated ────────────────────────
   // Fires when trial converts to active, billing cycle changes,
-  // or cancel_at_period_end is set (cancellation scheduled).
+  // or cancel_at_period_end is set (cancellation scheduled or reversed).
   if (event.type === 'customer.subscription.updated') {
     const subscription = event.data.object
     if (subscription.cancel_at_period_end) {
       // Cancellation scheduled — user still has access until period ends
+      const cancelAt = subscription.cancel_at
+        ? new Date(subscription.cancel_at * 1000).toISOString()
+        : null
       await supabase
         .from('profiles')
-        .update({ subscription_status: 'cancelling' })
+        .update({ subscription_status: 'cancelling', cancel_at: cancelAt })
         .eq('stripe_customer_id', subscription.customer)
     } else {
       // Normal status update (trial → active, reactivation, etc.)
+      // Clear cancel_at in case this is a reactivation
       await supabase
         .from('profiles')
-        .update({ subscription_status: subscription.status })
+        .update({ subscription_status: subscription.status, cancel_at: null })
         .eq('stripe_customer_id', subscription.customer)
     }
   }

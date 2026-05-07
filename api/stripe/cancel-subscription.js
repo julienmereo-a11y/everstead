@@ -12,28 +12,58 @@ const resend = new Resend(process.env.RESEND_API_KEY)
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' })
 
-  const { subscriptionId, userId } = req.body
+  const { subscriptionId, userId, action } = req.body
   if (!subscriptionId || !userId) {
     return res.status(400).json({ error: 'Missing subscriptionId or userId' })
   }
 
+  // ── Reactivation ──────────────────────────────────────────────
+  // Undo a previously scheduled cancellation while still in the billing period.
+  if (action === 'reactivate') {
+    try {
+      await stripe.subscriptions.update(subscriptionId, {
+        cancel_at_period_end: false,
+      })
+
+      await supabase
+        .from('profiles')
+        .update({ subscription_status: 'active', cancel_at: null })
+        .eq('id', userId)
+
+      return res.status(200).json({ success: true })
+    } catch (err) {
+      console.error('reactivate-subscription error:', err)
+      return res.status(500).json({ error: err.message })
+    }
+  }
+
+  // ── Cancellation ─────────────────────────────────────────────
+  // Default action: schedule cancellation at period end.
   try {
-    // Cancel at period end — user keeps full access until their billing cycle ends
     const subscription = await stripe.subscriptions.update(subscriptionId, {
       cancel_at_period_end: true,
     })
 
-    const periodEnd = subscription.current_period_end
+    // cancel_at is the Unix timestamp when access actually ends
+    const cancelAt      = subscription.cancel_at
+      ? new Date(subscription.cancel_at * 1000).toISOString()
+      : null
+    const periodEnd     = subscription.current_period_end
     const periodEndDate = periodEnd
       ? new Date(periodEnd * 1000).toLocaleDateString('en-GB', {
           day: 'numeric', month: 'long', year: 'numeric',
         })
       : null
+    const cancelAtDate  = cancelAt
+      ? new Date(cancelAt).toLocaleDateString('en-GB', {
+          day: 'numeric', month: 'long', year: 'numeric',
+        })
+      : periodEndDate
 
-    // Mark profile as cancelling (still active until period ends)
+    // Mark profile as cancelling and store the exact access-end timestamp
     await supabase
       .from('profiles')
-      .update({ subscription_status: 'cancelling' })
+      .update({ subscription_status: 'cancelling', cancel_at: cancelAt })
       .eq('id', userId)
 
     // Fetch profile for the email
@@ -49,18 +79,18 @@ export default async function handler(req, res) {
         from:    'Everstead <support@everstead.care>',
         to:      profiles.email,
         subject: `We're sorry to see you go, ${firstName}.`,
-        html:    cancellationHtml(firstName, periodEndDate),
+        html:    cancellationHtml(firstName, cancelAtDate ?? periodEndDate),
       }).catch(console.error)
     }
 
-    res.status(200).json({ success: true, periodEnd, periodEndDate })
+    res.status(200).json({ success: true, cancelAt, cancelAtDate: cancelAtDate ?? periodEndDate, periodEnd, periodEndDate })
   } catch (err) {
     console.error('cancel-subscription error:', err)
     res.status(500).json({ error: err.message })
   }
 }
 
-function cancellationHtml(firstName, periodEndDate) {
+function cancellationHtml(firstName, accessEndDate) {
   return `<!DOCTYPE html>
 <html>
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
@@ -74,7 +104,7 @@ function cancellationHtml(firstName, periodEndDate) {
         <tr><td style="padding:40px;">
           <h1 style="margin:0 0 20px;color:#0d1628;font-size:24px;font-weight:normal;">We're sorry to see you go, ${firstName}.</h1>
           <p style="margin:0 0 16px;color:#4a5568;font-size:16px;line-height:1.7;">
-            We've confirmed the cancellation of your Everstead plan.${periodEndDate ? ` You'll keep full access until <strong>${periodEndDate}</strong> — nothing changes until then.` : ' You\'ll keep full access until the end of your current billing period.'}
+            We've confirmed the cancellation of your Everstead plan.${accessEndDate ? ` You'll keep full access until <strong>${accessEndDate}</strong> — nothing changes until then.` : " You'll keep full access until the end of your current billing period."}
           </p>
           <p style="margin:0 0 16px;color:#4a5568;font-size:16px;line-height:1.7;">
             We built Everstead because we believe every family deserves clarity, not chaos. We're sorry we didn't get the chance to be part of yours.

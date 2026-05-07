@@ -243,7 +243,7 @@ function AdvisorCancelledModal({ advisorName, onAddPayment }) {
 // DASHBOARD ROOT
 // ─────────────────────────────────────────────────────────────
 export default function Dashboard() {
-  const { user, profile, signOut, updateProfile } = useAuth()
+  const { user, profile, signOut, updateProfile, refreshProfile } = useAuth()
   const [searchParams, setSearchParams] = useSearchParams()
   const isDemo          = searchParams.get('demo') === 'true'
   const checkoutSuccess = searchParams.get('checkout') === 'success'
@@ -633,7 +633,7 @@ export default function Dashboard() {
         {activeSection === 'alerts'        && <AlertsSection    alerts={alerts} markRead={markRead} markAllRead={markAllRead} />}
         {activeSection === 'activity'      && <ActivitySection  activity={activity} loading={loadingActivity} />}
         {activeSection === 'resources'     && <ResourcesSection />}
-        {activeSection === 'settings'      && <SettingsSection  profile={activeProfile} isDemo={isDemo} updateProfile={updateProfile} onUpgrade={handleUpgrade} onDeleteAccount={handleDeleteAccount} upgradeError={upgradeError} />}
+        {activeSection === 'settings'      && <SettingsSection  profile={activeProfile} isDemo={isDemo} updateProfile={updateProfile} refreshProfile={refreshProfile} onUpgrade={handleUpgrade} onDeleteAccount={handleDeleteAccount} upgradeError={upgradeError} />}
       </main>
       </div>
     </div>
@@ -2652,22 +2652,28 @@ function ManageBillingButton() {
   )
 }
 
-function SettingsSection({ profile, isDemo, updateProfile, onUpgrade, onDeleteAccount, upgradeError }) {
+function SettingsSection({ profile, isDemo, updateProfile, refreshProfile, onUpgrade, onDeleteAccount, upgradeError }) {
   const PLANS = [
     { id: 'essential', name: 'Essential', tier: 1, monthly: 7,  yearly: 5,  desc: 'For individuals. 2 trusted contacts, 5 GB storage.' },
     { id: 'family',    name: 'Family',    tier: 2, monthly: 15, yearly: 12, desc: 'Household members, up to 10 trusted contacts, 25 GB storage.' },
   ]
   const PLAN_TIERS = { essential: 1, family: 2, advisor: 3 }
-  const currentTier = PLAN_TIERS[profile.plan] ?? 1
-  const isTrialing  = profile.subscription_status === 'trialing'
+  const currentTier   = PLAN_TIERS[profile.plan] ?? 1
+  const isTrialing    = profile.subscription_status === 'trialing'
+  const isCancelling  = profile.subscription_status === 'cancelling'
+  const isCancelled   = ['cancelled', 'canceled'].includes(profile.subscription_status)
+
+  // Format the access-end date from profile.cancel_at (ISO string stored in Supabase)
+  const cancelAtDate = profile.cancel_at
+    ? new Date(profile.cancel_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
+    : null
 
   const [billingCycle, setBillingCycle] = useState('yearly')
   const [cancelConfirm, setCancelConfirm] = useState(false)
-  const [cancelReason, setCancelReason]   = useState('')
   const [cancelling, setCancelling]       = useState(false)
-  const [cancelDone, setCancelDone]       = useState(false)
-  const [cancelPeriodEnd, setCancelPeriodEnd] = useState(null) // human-readable date from Stripe
   const [cancelError, setCancelError]     = useState(null)
+  const [reactivating, setReactivating]   = useState(false)
+  const [reactivateError, setReactivateError] = useState(null)
 
   // Account deletion
   const [deleteStep, setDeleteStep]       = useState(0) // 0=idle, 1=confirm
@@ -2676,7 +2682,7 @@ function SettingsSection({ profile, isDemo, updateProfile, onUpgrade, onDeleteAc
   const [deleteError, setDeleteError]     = useState(null)
 
   const handleCancelSubscription = async () => {
-    if (isDemo) { setCancelDone(true); setCancelConfirm(false); return }
+    if (isDemo) { setCancelConfirm(false); await refreshProfile?.(); return }
     setCancelling(true)
     setCancelError(null)
     try {
@@ -2695,13 +2701,42 @@ function SettingsSection({ profile, isDemo, updateProfile, onUpgrade, onDeleteAc
       })
       const data = await res.json()
       if (!res.ok) throw new Error(data.error || 'Could not cancel subscription.')
-      setCancelPeriodEnd(data.periodEndDate || null)
-      setCancelDone(true)
       setCancelConfirm(false)
+      // Refresh profile from Supabase so subscription_status + cancel_at are live
+      await refreshProfile?.()
     } catch (err) {
       setCancelError(err.message)
     } finally {
       setCancelling(false)
+    }
+  }
+
+  const handleReactivate = async () => {
+    if (isDemo) { await refreshProfile?.(); return }
+    setReactivating(true)
+    setReactivateError(null)
+    try {
+      const { supabase: sb } = await import('../lib/supabase')
+      const { data: { session } } = await sb.auth.getSession()
+      const res = await fetch('/api/stripe/cancel-subscription', {
+        method:  'POST',
+        headers: {
+          'Content-Type':  'application/json',
+          'Authorization': `Bearer ${session.access_token}`,
+        },
+        body: JSON.stringify({
+          subscriptionId: profile.stripe_subscription_id,
+          userId:         profile.id,
+          action:         'reactivate',
+        }),
+      })
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.error || 'Could not reactivate subscription.')
+      await refreshProfile?.()
+    } catch (err) {
+      setReactivateError(err.message)
+    } finally {
+      setReactivating(false)
     }
   }
 
@@ -2881,133 +2916,178 @@ function SettingsSection({ profile, isDemo, updateProfile, onUpgrade, onDeleteAc
           </h2>
           <p className="text-xs text-stone-400 mb-5">
             Currently on the <span className="font-semibold text-navy-800 capitalize">{profile.plan}</span> plan
-            {profile.subscription_status === 'trialing' && (
-              <span className="ml-2 text-amber-600 font-medium">· Free trial active</span>
-            )}
+            {isTrialing    && <span className="ml-2 text-amber-600 font-medium">· Free trial active</span>}
+            {isCancelling  && <span className="ml-2 text-amber-600 font-medium">· Cancellation scheduled</span>}
+            {isCancelled   && <span className="ml-2 text-stone-400 font-medium">· Plan ended</span>}
           </p>
-          {/* Billing cycle toggle */}
-          <div className="flex items-center gap-1 bg-stone-100 rounded-lg p-1 w-fit mb-4">
-            {['monthly', 'yearly'].map(cycle => (
-              <button
-                key={cycle}
-                onClick={() => setBillingCycle(cycle)}
-                className={`px-3 py-1.5 rounded-md text-xs font-semibold transition-all ${billingCycle === cycle ? 'bg-white text-navy-900 shadow-sm' : 'text-stone-500 hover:text-stone-700'}`}
-              >
-                {cycle === 'monthly' ? 'Monthly' : 'Yearly — save 20%'}
-              </button>
-            ))}
-          </div>
 
-          {upgradeError && (
-            <div className="mb-4 bg-red-50 border border-red-200 rounded-xl px-4 py-3 text-sm text-red-700">{upgradeError}</div>
-          )}
-
-          <div className="grid sm:grid-cols-2 gap-4">
-            {PLANS.map(plan => {
-              const isCurrent      = profile.plan === plan.id
-              const isHigher       = plan.tier > currentTier
-              const price          = billingCycle === 'yearly' ? plan.yearly : plan.monthly
-              // Detect when the user wants to switch the billing cycle of their current paid plan
-              const currentCycle   = profile.billing_cycle ?? 'monthly'
-              const wantsDiffCycle = isCurrent && !isTrialing && billingCycle !== currentCycle
-              return (
-                <div key={plan.id} className={`rounded-xl border p-4 flex flex-col ${isCurrent ? 'border-navy-400 bg-navy-50 ring-1 ring-navy-400' : 'border-stone-200'}`}>
-                  <div className="flex items-center justify-between mb-2">
-                    <p className="font-semibold text-navy-950 text-sm">{plan.name}</p>
-                    {isCurrent && <span className="text-xs bg-navy-800 text-white px-2 py-0.5 rounded-full">Current</span>}
-                  </div>
-                  <p className="text-lg font-display font-light text-navy-950">
-                    £{price}/mo
-                    {billingCycle === 'yearly' && <span className="text-xs text-stone-400 ml-1">billed yearly</span>}
+          {/* ── State: CANCELLING — show access-end notice, hide plan cards ── */}
+          {isCancelling && (
+            <div className="space-y-4">
+              <div className="flex items-start gap-3 bg-amber-50 border border-amber-200 rounded-xl px-4 py-4">
+                <AlertCircle size={16} className="text-amber-600 shrink-0 mt-0.5" />
+                <div className="text-sm text-amber-800 leading-relaxed">
+                  <p className="font-semibold mb-1">Your plan has been cancelled.</p>
+                  <p>
+                    {cancelAtDate
+                      ? <>You'll keep full access until <strong>{cancelAtDate}</strong>. After this date, your account will be downgraded and your data kept safe for 30 days.</>
+                      : "You'll keep full access until the end of your current billing period. After this date, your account will be downgraded."}
                   </p>
-                  <p className="text-xs text-stone-500 mt-1 leading-snug flex-1">{plan.desc}</p>
-                  {isCurrent && isTrialing && (
-                    <button
-                      onClick={() => onUpgrade(plan.id, billingCycle)}
-                      className="mt-3 w-full text-xs font-semibold bg-navy-800 text-white rounded-lg py-1.5 hover:bg-navy-700 transition-colors"
-                    >
-                      Activate {plan.name} plan
-                    </button>
-                  )}
-                  {wantsDiffCycle && (
-                    <button
-                      onClick={() => onUpgrade(plan.id, billingCycle)}
-                      className="mt-3 w-full text-xs font-semibold bg-sage-600 text-white rounded-lg py-1.5 hover:bg-sage-700 transition-colors"
-                    >
-                      Switch to {billingCycle === 'yearly' ? 'yearly billing' : 'monthly billing'}
-                    </button>
-                  )}
-                  {!isCurrent && (
-                    <button
-                      onClick={() => onUpgrade(plan.id, billingCycle)}
-                      className="mt-3 w-full text-xs font-semibold text-navy-700 border border-navy-200 rounded-lg py-1.5 hover:bg-navy-50 transition-colors"
-                    >
-                      {isHigher ? `Upgrade to ${plan.name}` : `Switch to ${plan.name}`}
-                    </button>
-                  )}
                 </div>
-              )
-            })}
-          </div>
+              </div>
 
-          {/* Manage billing — for paid subscribers to update payment method via Stripe portal */}
-          {!isTrialing && (
-            <div className="mt-4 pt-4 border-t border-stone-100">
-              <p className="text-xs text-stone-400 mb-2">Update your payment method or view invoices in the billing portal.</p>
-              <ManageBillingButton />
+              {/* Reactivate */}
+              <div>
+                <p className="text-xs text-stone-400 mb-2">Changed your mind? You can reactivate at any time before your access ends.</p>
+                {reactivateError && (
+                  <p className="text-xs text-red-600 mb-2">{reactivateError}</p>
+                )}
+                <button
+                  onClick={handleReactivate}
+                  disabled={reactivating}
+                  className="inline-flex items-center gap-2 text-sm font-semibold bg-navy-800 text-white px-4 py-2 rounded-lg hover:bg-navy-700 transition-colors disabled:opacity-50"
+                >
+                  {reactivating ? <><Loader2 size={13} className="animate-spin" />Reactivating…</> : 'Reactivate my plan'}
+                </button>
+              </div>
             </div>
           )}
 
-          {/* Cancel subscription */}
-          <div className="mt-5 pt-4 border-t border-stone-100">
-            {cancelDone ? (
-              <div className="flex items-start gap-3 text-sm text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-xl px-4 py-3">
-                <CheckCircle2 size={15} className="shrink-0 mt-0.5" />
-                <span>
-                  Your plan has been cancelled.{' '}
-                  {cancelPeriodEnd
-                    ? <>You'll keep full access until <strong>{cancelPeriodEnd}</strong>.</>
-                    : "You'll keep full access until the end of your current billing period."
-                  }
-                </span>
-              </div>
-            ) : cancelConfirm ? (
-              <div className="bg-stone-50 border border-stone-200 rounded-xl p-5 space-y-3">
-                <p className="text-sm font-semibold text-navy-900">Are you sure you want to cancel?</p>
-                <p className="text-xs text-stone-500 leading-relaxed">
-                  You'll keep full access until the end of your current billing period. After that, your plan will be downgraded and your data kept safe for 30 days.
-                </p>
-                {cancelError && (
-                  <p className="text-xs text-red-600">{cancelError}</p>
-                )}
-                <div className="flex gap-3 pt-1">
-                  <button
-                    onClick={() => { setCancelConfirm(false); setCancelError(null) }}
-                    className="flex-1 bg-navy-800 text-white text-sm font-semibold px-4 py-2.5 rounded-lg hover:bg-navy-700 transition-colors"
-                  >
-                    Keep my plan
-                  </button>
-                  <button
-                    onClick={handleCancelSubscription}
-                    disabled={cancelling}
-                    className="flex-1 text-stone-500 text-sm font-medium px-4 py-2.5 rounded-lg border border-stone-200 hover:border-stone-300 hover:text-stone-700 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
-                  >
-                    {cancelling
-                      ? <><Loader2 size={13} className="animate-spin" />Cancelling…</>
-                      : 'Yes, cancel my plan'
-                    }
-                  </button>
+          {/* ── State: CANCELLED / CHURNED ── */}
+          {isCancelled && (
+            <div className="space-y-4">
+              <div className="flex items-start gap-3 bg-stone-50 border border-stone-200 rounded-xl px-4 py-4">
+                <AlertCircle size={16} className="text-stone-400 shrink-0 mt-0.5" />
+                <div className="text-sm text-stone-600 leading-relaxed">
+                  <p className="font-semibold mb-1">Your plan has ended.</p>
+                  <p>Your data is kept safe for 30 days. Reactivate anytime to regain full access.</p>
                 </div>
               </div>
-            ) : (
               <button
-                onClick={() => { setCancelConfirm(true); setCancelError(null) }}
-                className="text-xs text-stone-500 hover:text-red-600 transition-colors underline underline-offset-2"
+                onClick={() => onUpgrade(profile.plan || 'essential', 'yearly')}
+                className="inline-flex items-center gap-2 text-sm font-semibold bg-navy-800 text-white px-4 py-2 rounded-lg hover:bg-navy-700 transition-colors"
               >
-                Cancel subscription
+                Reactivate Everstead
               </button>
-            )}
-          </div>
+            </div>
+          )}
+
+          {/* ── State: TRIALING or ACTIVE — show plan cards ── */}
+          {!isCancelling && !isCancelled && (
+            <>
+              {/* Billing cycle toggle */}
+              <div className="flex items-center gap-1 bg-stone-100 rounded-lg p-1 w-fit mb-4">
+                {['monthly', 'yearly'].map(cycle => (
+                  <button
+                    key={cycle}
+                    onClick={() => setBillingCycle(cycle)}
+                    className={`px-3 py-1.5 rounded-md text-xs font-semibold transition-all ${billingCycle === cycle ? 'bg-white text-navy-900 shadow-sm' : 'text-stone-500 hover:text-stone-700'}`}
+                  >
+                    {cycle === 'monthly' ? 'Monthly' : 'Yearly — save 20%'}
+                  </button>
+                ))}
+              </div>
+
+              {upgradeError && (
+                <div className="mb-4 bg-red-50 border border-red-200 rounded-xl px-4 py-3 text-sm text-red-700">{upgradeError}</div>
+              )}
+
+              <div className="grid sm:grid-cols-2 gap-4">
+                {PLANS.map(plan => {
+                  const isCurrent      = profile.plan === plan.id
+                  const isHigher       = plan.tier > currentTier
+                  const price          = billingCycle === 'yearly' ? plan.yearly : plan.monthly
+                  const currentCycle   = profile.billing_cycle ?? 'monthly'
+                  const wantsDiffCycle = isCurrent && !isTrialing && billingCycle !== currentCycle
+                  return (
+                    <div key={plan.id} className={`rounded-xl border p-4 flex flex-col ${isCurrent ? 'border-navy-400 bg-navy-50 ring-1 ring-navy-400' : 'border-stone-200'}`}>
+                      <div className="flex items-center justify-between mb-2">
+                        <p className="font-semibold text-navy-950 text-sm">{plan.name}</p>
+                        {isCurrent && <span className="text-xs bg-navy-800 text-white px-2 py-0.5 rounded-full">Current</span>}
+                      </div>
+                      <p className="text-lg font-display font-light text-navy-950">
+                        £{price}/mo
+                        {billingCycle === 'yearly' && <span className="text-xs text-stone-400 ml-1">billed yearly</span>}
+                      </p>
+                      <p className="text-xs text-stone-500 mt-1 leading-snug flex-1">{plan.desc}</p>
+                      {isCurrent && isTrialing && (
+                        <button
+                          onClick={() => onUpgrade(plan.id, billingCycle)}
+                          className="mt-3 w-full text-xs font-semibold bg-navy-800 text-white rounded-lg py-1.5 hover:bg-navy-700 transition-colors"
+                        >
+                          Activate {plan.name} plan
+                        </button>
+                      )}
+                      {wantsDiffCycle && (
+                        <button
+                          onClick={() => onUpgrade(plan.id, billingCycle)}
+                          className="mt-3 w-full text-xs font-semibold bg-sage-600 text-white rounded-lg py-1.5 hover:bg-sage-700 transition-colors"
+                        >
+                          Switch to {billingCycle === 'yearly' ? 'yearly billing' : 'monthly billing'}
+                        </button>
+                      )}
+                      {!isCurrent && (
+                        <button
+                          onClick={() => onUpgrade(plan.id, billingCycle)}
+                          className="mt-3 w-full text-xs font-semibold text-navy-700 border border-navy-200 rounded-lg py-1.5 hover:bg-navy-50 transition-colors"
+                        >
+                          {isHigher ? `Upgrade to ${plan.name}` : `Switch to ${plan.name}`}
+                        </button>
+                      )}
+                    </div>
+                  )
+                })}
+              </div>
+
+              {/* Manage billing — for paid subscribers */}
+              {!isTrialing && (
+                <div className="mt-4 pt-4 border-t border-stone-100">
+                  <p className="text-xs text-stone-400 mb-2">Update your payment method or view invoices in the billing portal.</p>
+                  <ManageBillingButton />
+                </div>
+              )}
+
+              {/* Cancel subscription */}
+              <div className="mt-5 pt-4 border-t border-stone-100">
+                {cancelConfirm ? (
+                  <div className="bg-stone-50 border border-stone-200 rounded-xl p-5 space-y-3">
+                    <p className="text-sm font-semibold text-navy-900">Are you sure you want to cancel?</p>
+                    <p className="text-xs text-stone-500 leading-relaxed">
+                      You'll keep full access until the end of your current billing period. After that, your plan will be downgraded and your data kept safe for 30 days.
+                    </p>
+                    {cancelError && (
+                      <p className="text-xs text-red-600">{cancelError}</p>
+                    )}
+                    <div className="flex gap-3 pt-1">
+                      <button
+                        onClick={() => { setCancelConfirm(false); setCancelError(null) }}
+                        className="flex-1 bg-navy-800 text-white text-sm font-semibold px-4 py-2.5 rounded-lg hover:bg-navy-700 transition-colors"
+                      >
+                        Keep my plan
+                      </button>
+                      <button
+                        onClick={handleCancelSubscription}
+                        disabled={cancelling}
+                        className="flex-1 text-stone-500 text-sm font-medium px-4 py-2.5 rounded-lg border border-stone-200 hover:border-stone-300 hover:text-stone-700 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+                      >
+                        {cancelling
+                          ? <><Loader2 size={13} className="animate-spin" />Cancelling…</>
+                          : 'Yes, cancel my plan'
+                        }
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <button
+                    onClick={() => { setCancelConfirm(true); setCancelError(null) }}
+                    className="text-xs text-stone-500 hover:text-red-600 transition-colors underline underline-offset-2"
+                  >
+                    {isTrialing ? 'Cancel trial' : 'Cancel subscription'}
+                  </button>
+                )}
+              </div>
+            </>
+          )}
         </div>
 
         {/* ── Danger zone ── */}
