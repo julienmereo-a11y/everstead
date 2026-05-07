@@ -485,7 +485,7 @@ export default function GetStarted() {
                   {loading ? (
                     <><Loader2 size={15} className="animate-spin" />Creating your account…</>
                   ) : (
-                    <><CreditCard size={15} />Continue to payment</>
+                    <><CreditCard size={15} />Start my Everstead trial</>
                   )}
                 </button>
               </form>
