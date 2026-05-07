@@ -75,7 +75,7 @@ export async function redirectToCheckout({ plan, billingCycle, userEmail, custom
   const res = await fetch('/api/stripe/create-checkout', {
     method:  'POST',
     headers: { 'Content-Type': 'application/json' },
-    body:    JSON.stringify({ priceId, userEmail, customerId, trialEnd, trialPeriodDays }),
+    body:    JSON.stringify({ priceId, userEmail, customerId, trialEnd, trialPeriodDays, plan, billingCycle }),
   })
 
   if (!res.ok) {

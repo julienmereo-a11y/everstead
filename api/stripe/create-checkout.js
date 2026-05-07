@@ -5,24 +5,29 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY)
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' })
 
-  const { priceId, userEmail, customerId, trialEnd, trialPeriodDays, cancelUrl } = req.body
+  const { priceId, userEmail, customerId, trialEnd, trialPeriodDays, cancelUrl, plan, billingCycle } = req.body
 
   if (!priceId) return res.status(400).json({ error: 'Missing priceId' })
+
+  // Embed plan + billing_cycle as metadata so the webhook can sync profiles.plan accurately
+  const metadata = {}
+  if (plan)         metadata.plan          = plan
+  if (billingCycle) metadata.billing_cycle = billingCycle
 
   let subscriptionData
   if (trialPeriodDays === 0) {
     // Explicit no-trial — post-trial checkout
-    subscriptionData = {}
+    subscriptionData = { metadata }
   } else if (trialEnd) {
     // trialEnd is a JS timestamp (ms). Stripe needs Unix seconds and requires
     // the value to be at least 48 hours in the future.
     const trialEndUnix = Math.floor(trialEnd / 1000)
     const minTrialEnd  = Math.floor(Date.now() / 1000) + 48 * 3600
     subscriptionData = trialEndUnix > minTrialEnd
-      ? { trial_end: trialEndUnix }
-      : { trial_period_days: 14 }
+      ? { trial_end: trialEndUnix, metadata }
+      : { trial_period_days: 14, metadata }
   } else {
-    subscriptionData = { trial_period_days: 14 }
+    subscriptionData = { trial_period_days: 14, metadata }
   }
 
   try {

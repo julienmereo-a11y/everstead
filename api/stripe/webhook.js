@@ -49,15 +49,23 @@ export default async function handler(req, res) {
       ? new Date(subscription.trial_end * 1000).toISOString()
       : null
 
+    // plan + billing_cycle are embedded as metadata at checkout creation
+    const metaPlan         = subscription.metadata?.plan          || null
+    const metaBillingCycle = subscription.metadata?.billing_cycle || null
+
+    const profileUpdate = {
+      stripe_customer_id:     customerId,
+      subscription_status:    isTrialing ? 'trialing' : 'active',
+      stripe_subscription_id: subscriptionId,
+      stripe_price_id:        priceId,
+      trial_ends_at:          trialEndsAt,
+    }
+    if (metaPlan)         profileUpdate.plan          = metaPlan
+    if (metaBillingCycle) profileUpdate.billing_cycle = metaBillingCycle
+
     const { data: profiles } = await supabase
       .from('profiles')
-      .update({
-        stripe_customer_id:     customerId,
-        subscription_status:    isTrialing ? 'trialing' : 'active',
-        stripe_subscription_id: subscriptionId,
-        stripe_price_id:        priceId,
-        trial_ends_at:          trialEndsAt,
-      })
+      .update(profileUpdate)
       .eq('email', customerEmail)
       .select('id, full_name, email, plan')
 
