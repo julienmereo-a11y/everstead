@@ -1047,7 +1047,7 @@ const sections = {
               },
               {
                 q: 'Can I start for free?',
-                a: "Yes. Every plan includes a 14-day free trial, no credit card required. You can build and explore your plan fully during the trial period.",
+                a: "Yes. Every plan includes a 14-day free trial. A card is required to start, but you won't be charged until the trial ends — cancel before then and pay nothing. You have full access to all features on your chosen plan during the trial.",
               },
             ],
           },
@@ -1107,7 +1107,7 @@ const sections = {
             items: [
               {
                 q: 'How does the free trial work?',
-                a: 'Every plan comes with a 14-day free trial. No credit card is required to start. You have full access to all features on your chosen plan during the trial. At the end of the trial, you can add a payment method to continue, or your account will move to a read-only state.',
+                a: 'Every plan comes with a 14-day free trial. A card is required at signup, but you are not charged for 14 days — cancel any time before and pay nothing. At the end of the trial, your card on file is charged automatically. If the payment fails, your account moves to a read-only state.',
               },
               {
                 q: 'What are the plans and prices?',

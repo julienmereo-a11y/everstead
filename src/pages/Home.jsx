@@ -163,7 +163,7 @@ export default function Home() {
             </div>
 
             <p className="mt-5 text-xs text-stone-400 animate-fade-up animate-delay-300">
-              No credit card required · Cancel anytime
+              14-day free trial · Card required · Cancel anytime
             </p>
           </div>
 
@@ -602,7 +602,7 @@ export default function Home() {
           </div>
 
           <p className="text-center mt-8 text-stone-500 text-xs reveal">
-            All plans include a 14-day free trial. No credit card required.{' '}
+            All plans include a 14-day free trial. Your card won't be charged until the trial ends.{' '}
             <Link to="/pricing" className="text-stone-400 hover:text-white underline underline-offset-2 transition-colors">Full pricing details →</Link>
           </p>
         </div>

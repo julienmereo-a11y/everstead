@@ -567,7 +567,7 @@ export default function Features() {
               View pricing
             </Link>
           </div>
-          <p className="mt-5 text-xs text-stone-500">14-day free trial · No credit card required · Cancel anytime</p>
+          <p className="mt-5 text-xs text-stone-500">14-day free trial · Card required · No charge until trial ends · Cancel anytime</p>
         </div>
       </section>
 

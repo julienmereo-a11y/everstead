@@ -6,7 +6,7 @@ import {
   CreditCard, Zap, Star,
 } from 'lucide-react'
 import { useAuth } from '../contexts/AuthContext'
-import { PLANS } from '../lib/stripe'
+import { PLANS, redirectToCheckout } from '../lib/stripe'
 import { supabase } from '../lib/supabase'
 
 // ─────────────────────────────────────────────────────────────
@@ -86,7 +86,7 @@ export default function GetStarted() {
   const [searchParams] = useSearchParams()
   const navigate       = useNavigate()
 
-  const [step, setStep]               = useState(1) // 1 = plan, 2 = account, 3 = redirecting
+  const [step, setStep]               = useState(1) // 1 = plan, 2 = account, 3 = redirecting to Stripe
   const [selectedPlan, setSelectedPlan] = useState('family')
   const [annualBilling, setAnnualBilling] = useState(true)
   const [advisorFamilyCount, setAdvisorFamilyCount] = useState(null) // null = not asked yet
@@ -120,28 +120,14 @@ export default function GetStarted() {
     /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email) &&
     form.password.length >= 8
 
-  // ── SUBMIT: create account → check your email ────────────
+  // ── SUBMIT: create account → redirect to Stripe Checkout ──
   const handleSubmit = async (e) => {
     e.preventDefault()
     setError(null)
     setLoading(true)
 
     try {
-      const trialEndsAt = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString()
-
-      // Sign up — all plan/billing data stored in user_metadata so AuthContext
-      // can auto-create the profile after email confirmation
-      // Persist plan selection so Dashboard can sync it after email confirmation
-      // (Supabase doesn't always propagate custom metadata keys to the DB trigger)
-      localStorage.setItem('everstead_pending_signup', JSON.stringify({
-        email:         form.email,
-        plan:          selectedPlan,
-        billing_cycle: annualBilling ? 'yearly' : 'monthly',
-        trial_ends_at: trialEndsAt,
-        full_name:     form.fullName,
-      }))
-
-      // Register server-side to bypass Supabase CAPTCHA protection
+      // 1. Register server-side to bypass Supabase CAPTCHA protection
       const registerRes = await fetch('/api/auth/delegate-register', {
         method:  'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -161,9 +147,30 @@ export default function GetStarted() {
 
       const { access_token, refresh_token } = await registerRes.json()
       await supabase.auth.setSession({ access_token, refresh_token })
-      navigate('/dashboard')
+
+      // 2. Store plan choice as fallback for dashboard sync
+      //    (webhook sets the canonical data from Stripe)
+      localStorage.setItem('everstead_pending_signup', JSON.stringify({
+        email:         form.email,
+        plan:          selectedPlan,
+        billing_cycle: annualBilling ? 'yearly' : 'monthly',
+        full_name:     form.fullName,
+      }))
+
+      // 3. Show redirecting screen, then go to Stripe Checkout
+      //    Card is required but not charged for 14 days.
+      setStep(3)
+
+      await redirectToCheckout({
+        plan:            selectedPlan,
+        billingCycle:    annualBilling ? 'yearly' : 'monthly',
+        userEmail:       form.email,
+        trialPeriodDays: 14,
+      })
+      // redirectToCheckout sets window.location.href — nothing below runs
     } catch (err) {
       setError(err.message ?? 'Something went wrong. Please try again.')
+      setStep(2)
     } finally {
       setLoading(false)
     }
@@ -181,7 +188,7 @@ export default function GetStarted() {
             Start your plan in minutes.
           </h1>
           <p className="mt-4 text-stone-300 text-base leading-relaxed max-w-md mx-auto">
-            14-day free trial on every plan. No credit card required to start.
+            14-day free trial on every plan. Enter your card details — you won't be charged until the trial ends.
           </p>
         </div>
       </section>
@@ -328,7 +335,7 @@ export default function GetStarted() {
                     Continue with {PLAN_OPTIONS.find(p => p.id === selectedPlan)?.name}
                     <ArrowRight size={16} />
                   </button>
-                  <p className="mt-3 text-xs text-stone-400">14-day free trial · No credit card required</p>
+                  <p className="mt-3 text-xs text-stone-400">14-day free trial · Cancel before it ends and pay nothing</p>
                 </div>
               )}
             </div>
@@ -478,7 +485,7 @@ export default function GetStarted() {
                   {loading ? (
                     <><Loader2 size={15} className="animate-spin" />Creating your account…</>
                   ) : (
-                    <><Zap size={15} />Start 14-day free trial</>
+                    <><CreditCard size={15} />Continue to payment</>
                   )}
                 </button>
               </form>
@@ -487,7 +494,7 @@ export default function GetStarted() {
               <div className="mt-5 flex items-start gap-3 bg-stone-100 rounded-xl p-4">
                 <Lock size={14} className="text-navy-600 mt-0.5 flex-shrink-0" />
                 <p className="text-xs text-stone-500 leading-relaxed">
-                  Your data is encrypted and never sold. You'll be redirected to our payment partner (Stripe) to set up billing — your card is only charged after the 14-day trial.
+                  Your card is stored securely by Stripe and will not be charged until your 14-day trial ends. Cancel anytime before then and pay nothing.
                 </p>
               </div>
 
@@ -502,18 +509,16 @@ export default function GetStarted() {
           {step === 3 && (
             <div className="max-w-sm mx-auto text-center py-16">
               <div className="w-16 h-16 rounded-full bg-sage-50 flex items-center justify-center mx-auto mb-6">
-                <CheckCheck size={28} className="text-sage-600" />
+                <Loader2 size={28} className="text-sage-600 animate-spin" />
               </div>
               <h2 className="font-display text-2xl font-light text-navy-950 mb-3">
-                Check your inbox
+                Taking you to payment…
               </h2>
               <p className="text-stone-500 text-sm leading-relaxed mb-2">
-                We've sent a confirmation link to
+                Your account has been created. We're redirecting you to Stripe to securely add your card.
               </p>
-              <p className="text-navy-800 font-medium text-sm mb-6">{form.email}</p>
               <p className="text-stone-400 text-xs leading-relaxed">
-                Click the link in that email to confirm your account and access your dashboard.
-                Your 14-day free trial starts the moment you confirm.
+                Your card won't be charged for 14 days. Cancel any time before the trial ends and pay nothing.
               </p>
             </div>
           )}

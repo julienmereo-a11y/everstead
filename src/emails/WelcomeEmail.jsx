@@ -13,7 +13,7 @@ export default function WelcomeEmail({ name, plan }) {
             </td></tr>
             <tr><td style={{ padding: '40px' }}>
               <h1 style={{ margin: '0 0 16px', color: '#0d1628', fontSize: '24px', fontWeight: 'normal' }}>Welcome, {name || 'there'}</h1>
-              <p style={{ margin: '0 0 16px', color: '#4a5568', fontSize: '16px', lineHeight: '1.6' }}>Thank you for joining Everstead. You're on the <strong>{plan || 'Essential'}</strong> plan — your 14-day free trial starts now.</p>
+              <p style={{ margin: '0 0 16px', color: '#4a5568', fontSize: '16px', lineHeight: '1.6' }}>Thank you for joining Everstead. You're on the <strong>{plan || 'Essential'}</strong> plan — your 14-day free trial is now active. Your card has been saved but <strong>will not be charged</strong> until the trial ends.</p>
               <p style={{ margin: '0 0 32px', color: '#4a5568', fontSize: '16px', lineHeight: '1.6' }}>Start by adding your first account or uploading an important document.</p>
               <a href={`${appUrl}/dashboard`} style={{ display: 'inline-block', background: '#0d1628', color: '#ffffff', textDecoration: 'none', padding: '14px 28px', borderRadius: '8px', fontSize: '15px' }}>Go to your dashboard →</a>
             </td></tr>

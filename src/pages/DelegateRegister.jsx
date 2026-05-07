@@ -240,7 +240,7 @@ export default function DelegateRegister() {
               </div>
               <div>
                 <p className="text-sm font-medium text-navy-900 leading-snug group-hover:text-navy-700 transition-colors">
-                  Start my own 14-day free trial — no credit card required
+                  Start my own 14-day free trial
                 </p>
                 <p className="text-xs text-stone-500 mt-0.5 leading-relaxed">
                   Protect your own family the same way {owner?.full_name} is protecting theirs.

@@ -2,9 +2,10 @@ import React, { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { Loader2, ArrowRight, ChevronDown } from 'lucide-react'
 import { useAuth } from '../contexts/AuthContext'
-import { PLANS } from '../lib/stripe'
+import { PLANS, redirectToCustomerPortal } from '../lib/stripe'
 import { supabase } from '../lib/supabase'
 
+// Fallback: open Stripe Checkout with no trial if portal isn't available
 async function goToCheckout({ priceId, userEmail, customerId }) {
   const res = await fetch('/api/stripe/create-checkout', {
     method:  'POST',
@@ -58,12 +59,19 @@ export default function TrialEnded() {
     setError(null)
     setBusy('continue')
     try {
+      // If user already has a Stripe customer (card on file), send to portal
+      // to update payment method — no new checkout needed.
+      if (profile.stripe_customer_id) {
+        await redirectToCustomerPortal()
+        return
+      }
+      // Fallback for legacy users without a card on file
       const priceId = planConfig.priceIds?.[billingCycle]
       if (!priceId) throw new Error('Price not found. Please contact support.')
       await goToCheckout({
         priceId,
         userEmail:  user.email,
-        customerId: profile.stripe_customer_id || undefined,
+        customerId: undefined,
       })
     } catch (err) {
       setError(err.message)
@@ -131,12 +139,12 @@ export default function TrialEnded() {
             )}
 
             <h1 className="font-display text-2xl font-light text-navy-950 text-center mb-2">
-              Your free trial has ended, {firstName}.
+              Payment failed, {firstName}.
             </h1>
             <p className="text-stone-500 text-sm text-center mb-8 leading-relaxed">
               {deletionImminent
-                ? `Your account and all your data will be deleted on ${deletionDateStr}. Subscribe now to keep everything.`
-                : "We've kept your plan safe. Choose how you'd like to continue."
+                ? `Your account and all your data will be deleted on ${deletionDateStr}. Update your payment method now to keep everything.`
+                : "We couldn't charge the card on file when your trial ended. Update your payment method to keep your plan — all your data is safe."
               }
             </p>
 
@@ -148,9 +156,9 @@ export default function TrialEnded() {
 
             <div className="space-y-3 mb-6">
 
-              {/* Option 1 — Continue */}
+              {/* Option 1 — Update payment method */}
               <div className="bg-navy-800 rounded-2xl p-6 text-white">
-                <p className="font-semibold text-base mb-0.5">Continue with Everstead</p>
+                <p className="font-semibold text-base mb-0.5">Update your payment method</p>
                 <p className="text-navy-300 text-sm mb-5">{priceLabel}</p>
                 <button
                   onClick={handleContinue}
@@ -158,8 +166,8 @@ export default function TrialEnded() {
                   className="flex items-center gap-2 bg-white text-navy-900 font-semibold text-sm px-5 py-2.5 rounded-lg hover:bg-stone-100 transition-colors disabled:opacity-50"
                 >
                   {busy === 'continue'
-                    ? <><Loader2 size={14} className="animate-spin" /> Setting up payment…</>
-                    : <>Add payment details <ArrowRight size={14} /></>
+                    ? <><Loader2 size={14} className="animate-spin" /> Opening billing portal…</>
+                    : <>Update payment method <ArrowRight size={14} /></>
                   }
                 </button>
               </div>

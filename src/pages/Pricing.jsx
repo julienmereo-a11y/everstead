@@ -66,7 +66,7 @@ export default function Pricing() {
     <>
     <Helmet>
       <title>Pricing — Everstead</title>
-      <meta name="description" content="Simple, transparent pricing for individuals, families, and professional advisors. Start your 14-day free trial — no credit card required." />
+      <meta name="description" content="Simple, transparent pricing for individuals, families, and professional advisors. Start your 14-day free trial — card required, no charge until trial ends." />
       <link rel="canonical" href="https://www.everstead.care/pricing" />
     </Helmet>
     <div className="bg-stone-50 pt-24">
@@ -78,7 +78,7 @@ export default function Pricing() {
             Simple, transparent pricing for every stage of life.
           </h1>
           <p className="mt-5 text-lg leading-relaxed text-stone-300 max-w-3xl mx-auto">
-            Start with a free trial. No card required. Upgrade when you're ready — or invite your advisor to manage it for you.
+            Start with a 14-day free trial. Your card is required but won't be charged until the trial ends — cancel anytime.
           </p>
         </div>
       </section>
