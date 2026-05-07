@@ -2659,13 +2659,21 @@ function SettingsSection({ profile, isDemo, updateProfile, refreshProfile, onUpg
   ]
   const PLAN_TIERS = { essential: 1, family: 2, advisor: 3 }
   const currentTier   = PLAN_TIERS[profile.plan] ?? 1
-  const isTrialing    = profile.subscription_status === 'trialing'
-  const isCancelling  = profile.subscription_status === 'cancelling'
-  const isCancelled   = ['cancelled', 'canceled'].includes(profile.subscription_status)
+  // Local overrides — set immediately after API calls so the UI doesn't wait on refreshProfile
+  const [localSubStatus, setLocalSubStatus] = useState(null)
+  const [localCancelAt,  setLocalCancelAt]  = useState(null)
 
-  // Format the access-end date from profile.cancel_at (ISO string stored in Supabase)
-  const cancelAtDate = profile.cancel_at
-    ? new Date(profile.cancel_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
+  // Effective values: local override wins, falls back to profile from Supabase
+  const effectiveStatus = localSubStatus ?? profile.subscription_status
+  const effectiveCancelAt = localCancelAt ?? profile.cancel_at
+
+  const isTrialing    = effectiveStatus === 'trialing'
+  const isCancelling  = effectiveStatus === 'cancelling'
+  const isCancelled   = ['cancelled', 'canceled'].includes(effectiveStatus)
+
+  // Format the access-end date
+  const cancelAtDate = effectiveCancelAt
+    ? new Date(effectiveCancelAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
     : null
 
   const [billingCycle, setBillingCycle] = useState('yearly')
@@ -2682,7 +2690,11 @@ function SettingsSection({ profile, isDemo, updateProfile, refreshProfile, onUpg
   const [deleteError, setDeleteError]     = useState(null)
 
   const handleCancelSubscription = async () => {
-    if (isDemo) { setCancelConfirm(false); await refreshProfile?.(); return }
+    if (isDemo) {
+      setLocalSubStatus('cancelling')
+      setCancelConfirm(false)
+      return
+    }
     setCancelling(true)
     setCancelError(null)
     try {
@@ -2701,9 +2713,12 @@ function SettingsSection({ profile, isDemo, updateProfile, refreshProfile, onUpg
       })
       const data = await res.json()
       if (!res.ok) throw new Error(data.error || 'Could not cancel subscription.')
+      // Immediately update local state so UI reflects cancellation without waiting on refreshProfile
+      setLocalSubStatus('cancelling')
+      setLocalCancelAt(data.cancelAt ?? null)
       setCancelConfirm(false)
-      // Refresh profile from Supabase so subscription_status + cancel_at are live
-      await refreshProfile?.()
+      // Also sync profile in context in the background
+      refreshProfile?.()
     } catch (err) {
       setCancelError(err.message)
     } finally {
@@ -2712,7 +2727,11 @@ function SettingsSection({ profile, isDemo, updateProfile, refreshProfile, onUpg
   }
 
   const handleReactivate = async () => {
-    if (isDemo) { await refreshProfile?.(); return }
+    if (isDemo) {
+      setLocalSubStatus('active')
+      setLocalCancelAt(null)
+      return
+    }
     setReactivating(true)
     setReactivateError(null)
     try {
@@ -2732,7 +2751,10 @@ function SettingsSection({ profile, isDemo, updateProfile, refreshProfile, onUpg
       })
       const data = await res.json()
       if (!res.ok) throw new Error(data.error || 'Could not reactivate subscription.')
-      await refreshProfile?.()
+      // Immediately update local state
+      setLocalSubStatus('active')
+      setLocalCancelAt(null)
+      refreshProfile?.()
     } catch (err) {
       setReactivateError(err.message)
     } finally {
