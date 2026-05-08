@@ -5,14 +5,15 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY)
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' })
 
-  const { priceId, userEmail, customerId, trialEnd, trialPeriodDays, cancelUrl, plan, billingCycle } = req.body
+  const { priceId, userEmail, customerId, trialEnd, trialPeriodDays, cancelUrl, plan, billingCycle, referredBy } = req.body
 
   if (!priceId) return res.status(400).json({ error: 'Missing priceId' })
 
-  // Embed plan + billing_cycle as metadata so the webhook can sync profiles.plan accurately
+  // Embed plan + billing_cycle + referredBy as metadata so the webhook can sync them
   const metadata = {}
   if (plan)         metadata.plan          = plan
   if (billingCycle) metadata.billing_cycle = billingCycle
+  if (referredBy)   metadata.referred_by   = referredBy
 
   let subscriptionData
   if (trialPeriodDays === 0) {
@@ -35,6 +36,7 @@ export default async function handler(req, res) {
       mode: 'subscription',
       line_items: [{ price: priceId, quantity: 1 }],
       subscription_data: subscriptionData,
+      allow_promotion_codes: true,
       success_url: `${process.env.VITE_APP_URL}/dashboard?checkout=success`,
       cancel_url:  cancelUrl ? `${process.env.VITE_APP_URL}${cancelUrl}` : `${process.env.VITE_APP_URL}/pricing`,
       ...(customerId

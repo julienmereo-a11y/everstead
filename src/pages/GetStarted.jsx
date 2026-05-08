@@ -99,6 +99,10 @@ export default function GetStarted() {
     dialCode: '+44', phone: '', country: 'United Kingdom', nationality: 'United Kingdom',
   })
 
+  // Referral code from ?ref= URL param — gives the new user a 21-day trial
+  const referralCode = searchParams.get('ref') || null
+  const trialDays    = referralCode ? 21 : 14
+
   // Pre-select plan from URL params (e.g. from Pricing page CTA)
   useEffect(() => {
     const plan    = searchParams.get('plan')
@@ -165,7 +169,8 @@ export default function GetStarted() {
         plan:            selectedPlan,
         billingCycle:    annualBilling ? 'yearly' : 'monthly',
         userEmail:       form.email,
-        trialPeriodDays: 14,
+        trialPeriodDays: trialDays,
+        referredBy:      referralCode,
       })
       // redirectToCheckout sets window.location.href — nothing below runs
     } catch (err) {
@@ -188,7 +193,10 @@ export default function GetStarted() {
             Start your plan in minutes.
           </h1>
           <p className="mt-4 text-stone-300 text-base leading-relaxed max-w-md mx-auto">
-            14-day free trial on every plan. Enter your card details — you won't be charged until the trial ends.
+            {referralCode
+              ? <><span className="text-sage-300 font-semibold">You've been referred — enjoy a 21-day free trial.</span> Enter your card details and you won't be charged until day 21.</>
+              : '14-day free trial on every plan. Enter your card details — you won\'t be charged until the trial ends.'
+            }
           </p>
         </div>
       </section>

@@ -8,7 +8,8 @@ import {
   Plus, Eye, Upload, Search, X, Info, AlertTriangle, ArrowRight,
   Landmark, Building2, Wallet, Key, Activity, MoreHorizontal,
   Pencil, Trash2, Star, Crown, Zap, RefreshCw, ExternalLink, Download,
-  Filter, CheckCheck, MessageSquare, Video, Play, FileEdit, Send, Menu, ShieldCheck, Loader2
+  Filter, CheckCheck, MessageSquare, Video, Play, FileEdit, Send, Menu, ShieldCheck, Loader2,
+  Gift, Check, Copy
 } from 'lucide-react'
 import { useAuth }          from '../contexts/AuthContext'
 import { redirectToCheckout, redirectToCustomerPortal } from '../lib/stripe'
@@ -678,9 +679,19 @@ function OverviewSection({ profile, accounts, documents, people, instructions, a
           </h1>
           <p className="text-stone-500 mt-1 text-sm">Here's the state of your plan.</p>
         </div>
-        <span className={`text-xs font-semibold px-3 py-1 rounded-full border capitalize ${planBadge.cls}`}>
-          {planBadge.label} plan
-        </span>
+        <div className="flex items-center gap-3 flex-wrap">
+          <a
+            href="/print"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1.5 text-xs font-semibold border border-stone-200 text-stone-600 bg-white px-3 py-1.5 rounded-lg hover:bg-stone-50 hover:text-navy-700 transition-colors"
+          >
+            <FileText size={12} /> Export plan
+          </a>
+          <span className={`text-xs font-semibold px-3 py-1 rounded-full border capitalize ${planBadge.cls}`}>
+            {planBadge.label} plan
+          </span>
+        </div>
       </div>
 
       {/* Critical alerts banner */}
@@ -1148,6 +1159,40 @@ function DocumentsSection({ documents, loading, uploadFile, update, remove, plan
           </div>
         )
       })()}
+      {/* Will & LPA guidance — always visible until user has uploaded both */}
+      {(() => {
+        const hasWill = documents.some(d => /will|testament/i.test(d.name + ' ' + (d.notes || '')))
+        const hasLPA  = documents.some(d => /lpa|lasting power|attorney/i.test(d.name + ' ' + (d.notes || '')))
+        if (hasWill && hasLPA) return null
+        return (
+          <div className="mb-5 bg-amber-50 border border-amber-200 rounded-xl p-5">
+            <p className="text-xs font-semibold text-amber-700 uppercase tracking-widest mb-3">Priority legal documents</p>
+            <div className="grid sm:grid-cols-2 gap-3">
+              {!hasWill && (
+                <div className="bg-white rounded-xl border border-amber-100 p-4">
+                  <p className="font-semibold text-navy-900 text-sm mb-1">Last Will &amp; Testament</p>
+                  <p className="text-xs text-stone-500 mb-3 leading-relaxed">The most important document in any estate plan. Without one, UK intestacy rules decide who gets what.</p>
+                  <div className="flex items-center gap-3 flex-wrap">
+                    <button onClick={openUpload} className="text-xs font-semibold text-navy-700 bg-navy-50 border border-navy-200 px-3 py-1.5 rounded-lg hover:bg-navy-100 transition-colors">Upload yours</button>
+                    <a href="https://www.gov.uk/make-will" target="_blank" rel="noopener noreferrer" className="text-xs text-stone-400 hover:text-navy-600 transition-colors">gov.uk guidance →</a>
+                  </div>
+                </div>
+              )}
+              {!hasLPA && (
+                <div className="bg-white rounded-xl border border-amber-100 p-4">
+                  <p className="font-semibold text-navy-900 text-sm mb-1">Lasting Power of Attorney</p>
+                  <p className="text-xs text-stone-500 mb-3 leading-relaxed">Grants someone you trust the legal authority to act for you if you lose mental capacity. Must be registered before it's needed.</p>
+                  <div className="flex items-center gap-3 flex-wrap">
+                    <button onClick={openUpload} className="text-xs font-semibold text-navy-700 bg-navy-50 border border-navy-200 px-3 py-1.5 rounded-lg hover:bg-navy-100 transition-colors">Upload yours</button>
+                    <a href="https://www.gov.uk/power-of-attorney" target="_blank" rel="noopener noreferrer" className="text-xs text-stone-400 hover:text-navy-600 transition-colors">gov.uk guidance →</a>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        )
+      })()}
+
       {loading ? <LoadingSpinner /> : documents.length === 0 ? (
         <EmptyState icon={FileText} label="No documents yet" action="Upload your first document — will, insurance policies, property deeds, and more." />
       ) : (
@@ -2652,6 +2697,35 @@ function ManageBillingButton() {
   )
 }
 
+// ─────────────────────────────────────────────────────────────
+// REFERRAL LINK BOX
+// ─────────────────────────────────────────────────────────────
+function ReferralLinkBox({ referralCode }) {
+  const [copied, setCopied] = useState(false)
+  const link = `${window.location.origin}/get-started?ref=${referralCode}`
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(link).then(() => {
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2000)
+    })
+  }
+
+  return (
+    <div className="flex items-center gap-2">
+      <div className="flex-1 bg-stone-50 border border-stone-200 rounded-xl px-3.5 py-2.5 text-xs text-stone-600 font-mono truncate">
+        {link}
+      </div>
+      <button
+        onClick={handleCopy}
+        className="shrink-0 inline-flex items-center gap-1.5 text-xs font-semibold bg-navy-900 text-white px-3.5 py-2.5 rounded-xl hover:bg-navy-800 transition-colors"
+      >
+        {copied ? <><Check size={13} />Copied!</> : <><Copy size={13} />Copy link</>}
+      </button>
+    </div>
+  )
+}
+
 function SettingsSection({ profile, isDemo, updateProfile, refreshProfile, onUpgrade, onDeleteAccount, upgradeError }) {
   const PLANS = [
     { id: 'essential', name: 'Essential', tier: 1, monthly: 7,  yearly: 5,  desc: 'For individuals. 2 trusted contacts, 5 GB storage.' },
@@ -3114,6 +3188,21 @@ function SettingsSection({ profile, isDemo, updateProfile, refreshProfile, onUpg
                 )}
               </div>
             </>
+          )}
+        </div>
+
+        {/* ── Refer a friend ── */}
+        <div className="bg-white border border-stone-200 rounded-2xl p-6">
+          <h2 className="font-semibold text-navy-950 text-sm mb-1 flex items-center gap-2">
+            <Gift size={15} className="text-sage-600" /> Refer a friend
+          </h2>
+          <p className="text-xs text-stone-400 mb-4">
+            Share your unique link — your friend gets a <span className="font-semibold text-navy-700">21-day free trial</span> instead of 14 days. Estate planning is a team effort.
+          </p>
+          {profile.referral_code ? (
+            <ReferralLinkBox referralCode={profile.referral_code} />
+          ) : (
+            <p className="text-xs text-stone-400">Generating your referral link…</p>
           )}
         </div>
 

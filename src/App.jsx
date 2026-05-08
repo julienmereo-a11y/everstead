@@ -39,6 +39,7 @@ import DelegateRegister from './pages/DelegateRegister'
 import SetupMFA from './pages/SetupMFA'
 import ChooseAccount from './pages/ChooseAccount'
 import TrialEnded from './pages/TrialEnded'
+import PrintView from './pages/PrintView'
 
 function ScrollToTop() {
   const { pathname } = useLocation()
@@ -97,6 +98,14 @@ export default function App() {
             element={
               <ProtectedRoute>
                 <SetupMFA />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/print"
+            element={
+              <ProtectedRoute>
+                <PrintView />
               </ProtectedRoute>
             }
           />

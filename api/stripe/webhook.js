@@ -49,9 +49,10 @@ export default async function handler(req, res) {
       ? new Date(subscription.trial_end * 1000).toISOString()
       : null
 
-    // plan + billing_cycle are embedded as metadata at checkout creation
+    // plan + billing_cycle + referred_by are embedded as metadata at checkout creation
     const metaPlan         = subscription.metadata?.plan          || null
     const metaBillingCycle = subscription.metadata?.billing_cycle || null
+    const metaReferredBy   = subscription.metadata?.referred_by   || null
 
     const currentPeriodEnd = subscription.current_period_end
       ? new Date(subscription.current_period_end * 1000).toISOString()
@@ -67,6 +68,7 @@ export default async function handler(req, res) {
     }
     if (metaPlan)         profileUpdate.plan          = metaPlan
     if (metaBillingCycle) profileUpdate.billing_cycle = metaBillingCycle
+    if (metaReferredBy)   profileUpdate.referred_by   = metaReferredBy
 
     const { data: profiles } = await supabase
       .from('profiles')
