@@ -4,6 +4,7 @@ import { AuthProvider } from './contexts/AuthContext'
 import ProtectedRoute from './components/ProtectedRoute'
 import AdvisorProtectedRoute from './components/AdvisorProtectedRoute'
 import AdminProtectedRoute from './components/AdminProtectedRoute'
+import AdminGate from './components/AdminGate'
 import ErrorBoundary from './components/ErrorBoundary'
 import Nav from './components/Nav'
 import Footer from './components/Footer'
@@ -110,13 +111,22 @@ export default function App() {
             }
           />
           <Route path="/accept-admin-invite" element={<AcceptAdminInvite />} />
-          <Route path="/admin-login" element={<AdminLogin />} />
+          <Route
+            path="/admin-login"
+            element={
+              <AdminGate>
+                <AdminLogin />
+              </AdminGate>
+            }
+          />
           <Route
             path="/admin"
             element={
-              <AdminProtectedRoute>
-                <AdminPanel />
-              </AdminProtectedRoute>
+              <AdminGate>
+                <AdminProtectedRoute>
+                  <AdminPanel />
+                </AdminProtectedRoute>
+              </AdminGate>
             }
           />
 
