@@ -110,31 +110,41 @@ export default async function handler(req, res) {
   )
 
   // ── Step 4: Execute permanent deletions ──────────────────────
+  // Covers both trial_expired (30 days post-trial) and pending_deletion
+  // (user-initiated account deletion — Stripe already cancelled at request time).
   const { data: toDelete } = await supabase
     .from('profiles')
-    .select('id, email, subscription_status, stripe_subscription_id')
+    .select('id, email, full_name, subscription_status')
     .in('subscription_status', ['trial_expired', 'pending_deletion'])
     .lte('scheduled_deletion_at', new Date().toISOString())
     .not('scheduled_deletion_at', 'is', null)
 
   for (const p of toDelete ?? []) {
-    // Re-fetch status immediately before deletion — never delete active subscribers
+    // Re-fetch immediately before deletion — guard against race where user
+    // reactivated between the query above and now.
     const { data: fresh } = await supabase
       .from('profiles')
       .select('subscription_status')
       .eq('id', p.id)
       .single()
 
-    if (!fresh || fresh.subscription_status === 'active') continue
+    const safeStatuses = ['active', 'trialing']
+    if (!fresh || safeStatuses.includes(fresh.subscription_status)) {
+      console.log(`daily-jobs: skipping deletion for ${p.id} — status is ${fresh?.subscription_status}`)
+      continue
+    }
 
     try {
       await deleteUserData(p.id)
       await supabase.from('deletion_log').insert({
-        user_id:          p.id,
-        deletion_reason:  fresh.subscription_status,
+        user_id:         p.id,
+        deleted_at:      new Date().toISOString(),
+        deletion_reason: fresh.subscription_status,
       })
+      console.log(`daily-jobs: deleted user ${p.id} (${p.email}) reason=${fresh.subscription_status}`)
       results.deleted++
     } catch (err) {
+      console.error(`daily-jobs: delete failed for ${p.id}:`, err.message)
       results.errors.push(`delete ${p.id}: ${err.message}`)
     }
   }
@@ -166,7 +176,12 @@ async function deleteUserData(userId) {
     await supabase.from('instruction_steps').delete().in('instruction_id', instructionIds)
   }
 
-  // Delete table data in safe order
+  // Delete table data in dependency order
+  // access_grants + delegate_sessions reference trusted_people, so go first
+  await supabase.from('mfa_pending')       .delete().eq('user_id', userId)
+  await supabase.from('delegate_sessions') .delete().eq('user_id', userId)
+  await supabase.from('access_grants')     .delete().eq('user_id', userId)
+
   const tables = [
     'trusted_people', 'activity_log', 'alerts', 'instructions',
     'documents', 'accounts', 'wishes', 'subscriptions',
@@ -175,7 +190,7 @@ async function deleteUserData(userId) {
     await supabase.from(table).delete().eq('user_id', userId)
   }
 
-  // Delete profile row, then auth user
+  // Delete profile row, then auth user (order matters — profile FK references auth.users)
   await supabase.from('profiles').delete().eq('id', userId)
   await supabase.auth.admin.deleteUser(userId)
 }
