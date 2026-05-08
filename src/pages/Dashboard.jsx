@@ -2941,6 +2941,11 @@ function SettingsSection({ profile, isDemo, updateProfile, refreshProfile, onUpg
             {isTrialing    && <span className="ml-2 text-amber-600 font-medium">· Free trial active</span>}
             {isCancelling  && <span className="ml-2 text-amber-600 font-medium">· Cancellation scheduled</span>}
             {isCancelled   && <span className="ml-2 text-stone-400 font-medium">· Plan ended</span>}
+            {!isTrialing && !isCancelling && !isCancelled && profile.current_period_end && (
+              <span className="ml-2 text-stone-400">
+                · Next billing {new Date(profile.current_period_end).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}
+              </span>
+            )}
           </p>
 
           {/* ── State: CANCELLING — show access-end notice, hide plan cards ── */}

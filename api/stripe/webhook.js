@@ -53,12 +53,17 @@ export default async function handler(req, res) {
     const metaPlan         = subscription.metadata?.plan          || null
     const metaBillingCycle = subscription.metadata?.billing_cycle || null
 
+    const currentPeriodEnd = subscription.current_period_end
+      ? new Date(subscription.current_period_end * 1000).toISOString()
+      : null
+
     const profileUpdate = {
       stripe_customer_id:     customerId,
       subscription_status:    isTrialing ? 'trialing' : 'active',
       stripe_subscription_id: subscriptionId,
       stripe_price_id:        priceId,
       trial_ends_at:          trialEndsAt,
+      current_period_end:     currentPeriodEnd,
     }
     if (metaPlan)         profileUpdate.plan          = metaPlan
     if (metaBillingCycle) profileUpdate.billing_cycle = metaBillingCycle
@@ -88,32 +93,50 @@ export default async function handler(req, res) {
     const subscription = event.data.object
     await supabase
       .from('profiles')
-      .update({ subscription_status: 'cancelled', plan: null })
+      .update({ subscription_status: 'cancelled', plan: null, current_period_end: null, cancel_at: null })
       .eq('stripe_customer_id', subscription.customer)
   }
 
   // ── customer.subscription.updated ────────────────────────
   // Fires when trial converts to active, billing cycle changes,
-  // or cancel_at_period_end is set (cancellation scheduled or reversed).
+  // cancel_at_period_end is set (cancellation scheduled), or
+  // user changes plan/cycle via the Stripe Customer Portal.
   if (event.type === 'customer.subscription.updated') {
     const subscription = event.data.object
-    if (subscription.cancel_at_period_end) {
-      // Cancellation scheduled — user still has access until period ends
-      const cancelAt = subscription.cancel_at
-        ? new Date(subscription.cancel_at * 1000).toISOString()
-        : null
-      await supabase
-        .from('profiles')
-        .update({ subscription_status: 'cancelling', cancel_at: cancelAt })
-        .eq('stripe_customer_id', subscription.customer)
-    } else {
-      // Normal status update (trial → active, reactivation, etc.)
-      // Clear cancel_at in case this is a reactivation
-      await supabase
-        .from('profiles')
-        .update({ subscription_status: subscription.status, cancel_at: null })
-        .eq('stripe_customer_id', subscription.customer)
+    const priceId = subscription.items.data[0]?.price?.id
+
+    // Reverse-map price ID → plan + billing_cycle so portal changes stay in sync
+    const PRICE_TO_PLAN = {
+      [process.env.VITE_STRIPE_ESSENTIAL_MONTHLY]: { plan: 'essential', billing_cycle: 'monthly' },
+      [process.env.VITE_STRIPE_ESSENTIAL_YEARLY]:  { plan: 'essential', billing_cycle: 'yearly'  },
+      [process.env.VITE_STRIPE_FAMILY_MONTHLY]:    { plan: 'family',    billing_cycle: 'monthly' },
+      [process.env.VITE_STRIPE_FAMILY_YEARLY]:     { plan: 'family',    billing_cycle: 'yearly'  },
+      [process.env.VITE_STRIPE_ADVISOR_MONTHLY]:   { plan: 'advisor',   billing_cycle: 'monthly' },
+      [process.env.VITE_STRIPE_ADVISOR_YEARLY]:    { plan: 'advisor',   billing_cycle: 'yearly'  },
     }
+    const planInfo = PRICE_TO_PLAN[priceId] || {}
+
+    const currentPeriodEnd = subscription.current_period_end
+      ? new Date(subscription.current_period_end * 1000).toISOString()
+      : null
+
+    const profileUpdate = {
+      subscription_status: subscription.cancel_at_period_end ? 'cancelling' : subscription.status,
+      current_period_end:  currentPeriodEnd,
+      stripe_price_id:     priceId,
+      ...planInfo,
+    }
+
+    if (subscription.cancel_at_period_end && subscription.cancel_at) {
+      profileUpdate.cancel_at = new Date(subscription.cancel_at * 1000).toISOString()
+    } else if (!subscription.cancel_at_period_end) {
+      profileUpdate.cancel_at = null
+    }
+
+    await supabase
+      .from('profiles')
+      .update(profileUpdate)
+      .eq('stripe_customer_id', subscription.customer)
   }
 
   // ── customer.subscription.trial_will_end ─────────────────
