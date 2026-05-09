@@ -1926,7 +1926,7 @@ function ResourcesIndex() {
       </section>
 
       {/* Free Tools */}
-      <section className="py-20 lg:py-28 bg-white border-t border-stone-100">
+      <section id="tools" className="py-20 lg:py-28 bg-white border-t border-stone-100">
         <div className="max-w-5xl mx-auto px-6 lg:px-8">
           <div className="mb-12 reveal">
             <p className="text-xs font-semibold uppercase tracking-widest text-sage-600 mb-3">Free tools</p>

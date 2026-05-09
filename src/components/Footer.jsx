@@ -27,6 +27,7 @@ const cols = [
       { label: 'Guides', href: '/resources/guides' },
       { label: 'Checklists', href: '/resources/checklists' },
       { label: 'FAQs', href: '/resources/faqs' },
+      { label: 'Free Tools', href: '/resources#tools' },
     ],
   },
   {
