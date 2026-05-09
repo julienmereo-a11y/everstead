@@ -83,7 +83,7 @@ export default async function handler(req, res) {
     .from('profiles')
     .select('id, full_name, email, scheduled_deletion_at')
     .eq('subscription_status', 'trial_expired')
-    .eq('deletion_warning_sent', false)
+    .or('deletion_warning_sent.is.null,deletion_warning_sent.eq.false')
     .lte('scheduled_deletion_at', warnBefore)
     .not('scheduled_deletion_at', 'is', null)
 

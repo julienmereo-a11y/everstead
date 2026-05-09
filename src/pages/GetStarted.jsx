@@ -195,7 +195,7 @@ export default function GetStarted() {
           <p className="mt-4 text-stone-300 text-base leading-relaxed max-w-md mx-auto">
             {referralCode
               ? <><span className="text-sage-300 font-semibold">You've been referred — enjoy a 21-day free trial.</span> Enter your card details and you won't be charged until day 21.</>
-              : '14-day free trial on every plan. Enter your card details — you won\'t be charged until the trial ends.'
+              : `${trialDays}-day free trial on every plan. Enter your card details — you won't be charged until the trial ends.`
             }
           </p>
         </div>
@@ -343,7 +343,7 @@ export default function GetStarted() {
                     Continue with {PLAN_OPTIONS.find(p => p.id === selectedPlan)?.name}
                     <ArrowRight size={16} />
                   </button>
-                  <p className="mt-3 text-xs text-stone-400">14-day free trial · Cancel before it ends and pay nothing</p>
+                  <p className="mt-3 text-xs text-stone-400">{trialDays}-day free trial · Cancel before it ends and pay nothing</p>
                 </div>
               )}
             </div>
@@ -502,7 +502,7 @@ export default function GetStarted() {
               <div className="mt-5 flex items-start gap-3 bg-stone-100 rounded-xl p-4">
                 <Lock size={14} className="text-navy-600 mt-0.5 flex-shrink-0" />
                 <p className="text-xs text-stone-500 leading-relaxed">
-                  Your card is stored securely by Stripe and will not be charged until your 14-day trial ends. Cancel anytime before then and pay nothing.
+                  Your card is stored securely by Stripe and will not be charged until your {trialDays}-day trial ends. Cancel anytime before then and pay nothing.
                 </p>
               </div>
 
@@ -526,7 +526,7 @@ export default function GetStarted() {
                 Your account has been created. We're redirecting you to Stripe to securely add your card.
               </p>
               <p className="text-stone-400 text-xs leading-relaxed">
-                Your card won't be charged for 14 days. Cancel any time before the trial ends and pay nothing.
+                Your card won't be charged for {trialDays} days. Cancel any time before the trial ends and pay nothing.
               </p>
             </div>
           )}

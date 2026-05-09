@@ -171,8 +171,20 @@ export default async function handler(req, res) {
   // ── invoice.payment_failed ────────────────────────────────
   // Fires when Stripe cannot charge the card — at trial end or renewal.
   // Mark the profile so the user is shown the payment-failed screen.
+  // Guard: do NOT overwrite pending_deletion — Stripe sometimes fires a final
+  // failed-payment event after the subscription is cancelled on account deletion.
   if (event.type === 'invoice.payment_failed') {
     const invoice = event.data.object
+
+    const { data: existing } = await supabase
+      .from('profiles')
+      .select('subscription_status')
+      .eq('stripe_customer_id', invoice.customer)
+      .single()
+
+    if (existing?.subscription_status === 'pending_deletion') {
+      return res.status(200).json({ received: true })
+    }
 
     await supabase
       .from('profiles')

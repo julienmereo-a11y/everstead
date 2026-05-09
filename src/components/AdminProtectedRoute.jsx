@@ -1,14 +1,10 @@
 import React from 'react'
-import { Navigate, useSearchParams, Link } from 'react-router-dom'
+import { Navigate, Link } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import { Shield } from 'lucide-react'
 
 export default function AdminProtectedRoute({ children }) {
   const { user, profile, loading } = useAuth()
-  const [searchParams] = useSearchParams()
-  const isDemo = searchParams.get('demo') === 'true'
-
-  if (isDemo) return children
 
   if (loading) {
     return (

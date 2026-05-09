@@ -21,13 +21,16 @@ export default async function handler(req, res) {
   // Undo a previously scheduled cancellation while still in the billing period.
   if (action === 'reactivate') {
     try {
-      await stripe.subscriptions.update(subscriptionId, {
+      // Fetch updated subscription from Stripe to get the real status
+      // (trialing users who reactivate should stay 'trialing', not become 'active')
+      const sub = await stripe.subscriptions.update(subscriptionId, {
         cancel_at_period_end: false,
       })
+      const reactivatedStatus = sub.status === 'trialing' ? 'trialing' : 'active'
 
       const { error: dbError } = await supabase
         .from('profiles')
-        .update({ subscription_status: 'active', cancel_at: null })
+        .update({ subscription_status: reactivatedStatus, cancel_at: null })
         .eq('id', userId)
       if (dbError) console.error('reactivate-subscription DB update error:', dbError)
 
