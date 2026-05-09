@@ -1,7 +1,7 @@
 import React from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { useReveal } from '../components/useReveal'
-import { BookOpen, FileText, CheckSquare, HelpCircle, ArrowRight, ChevronDown, ArrowLeft, Check } from 'lucide-react'
+import { BookOpen, FileText, CheckSquare, HelpCircle, ArrowRight, ChevronDown, ArrowLeft, Check, BookMarked } from 'lucide-react'
 
 // ─────────────────────────────────────────────────────────────────────────────
 // CONTENT DATA
@@ -13,6 +13,390 @@ const sections = {
     icon: BookOpen,
     desc: 'Practical guidance on estate planning, family organisation, and digital life management.',
     posts: [
+      {
+        slug: 'what-to-do-when-someone-dies',
+        title: 'What to do when someone dies: a complete step-by-step guide',
+        date: 'May 2026',
+        tag: 'Estate planning',
+        desc: 'A clear, compassionate guide to the practical steps after a death in England and Wales — from the first 24 hours through to closing the estate.',
+        readTime: '14 min read',
+        body: [
+          {
+            type: 'intro',
+            text: "When someone close to you dies, everything changes at once. Grief and shock arrive together — and within hours, the world seems to expect you to make decisions, contact institutions, and navigate processes you have never encountered before. This guide is here to help. It walks through every practical step involved after a death in England and Wales, from the first 24 hours through to the final stages of estate administration, in plain language and in the order things actually happen. You do not need legal expertise to use it. And if anything feels too heavy to face alone, that is also the right response.",
+          },
+          {
+            type: 'toc',
+            items: [
+              'Before anything else: give yourself time',
+              'Step 1: The first 24 to 48 hours',
+              'Step 2: The first week',
+              'Step 3: The first month',
+              'Step 4: The months ahead',
+              'When you need professional help',
+              'How to protect your own family',
+              'Frequently asked questions',
+            ],
+          },
+          {
+            type: 'heading',
+            text: 'Before anything else: give yourself time',
+          },
+          {
+            type: 'text',
+            text: "There is a common misconception that the days after a death are a race. That every hour of delay creates problems. In reality, almost nothing requires you to act within hours. The death certificate, the will, the bank — all of these can wait a day. What cannot wait is you. If you need to sit quietly, to cry, to call someone who loves you, to do absolutely nothing for a morning: that is not neglect. It is a healthy response to loss.",
+          },
+          {
+            type: 'text',
+            text: "This guide is structured chronologically — first 24 hours, first week, first month, and beyond — because that is how estate administration actually unfolds. Not everything will apply to your situation, and that is fine. Use what you need. Come back to the rest when you are ready.",
+          },
+          {
+            type: 'heading',
+            text: 'Step 1: The first 24 to 48 hours',
+          },
+          {
+            type: 'text',
+            text: "The earliest steps are largely about documentation and notification. Most of them cannot be completed until you have a medical certificate in hand, which is why that is always the starting point.",
+          },
+          {
+            type: 'subheading',
+            text: 'Get the medical certificate of cause of death',
+          },
+          {
+            type: 'text',
+            text: "A doctor — usually the GP or a hospital doctor — will issue the Medical Certificate of Cause of Death (MCCD). This is a formal document stating the cause of death. You will need it before you can register the death. If the death was sudden, unexpected, or the cause is unclear, the coroner may need to be involved before the certificate is issued. This can add time to the process, but it is a routine part of the system and does not indicate anything has gone wrong. The coroner's office will guide you through what is needed.",
+          },
+          {
+            type: 'subheading',
+            text: 'Register the death',
+          },
+          {
+            type: 'text',
+            text: "In England and Wales, deaths must be registered within five days (or eight days in Scotland). You register at the local Register Office — usually the one in the district where the death occurred, not necessarily where the deceased lived. You will need to bring the MCCD. The registrar will ask for basic details: the full name of the deceased, their date and place of birth, their occupation, and their last address. If you have a marriage certificate or birth certificate, bring those too, but they are not always required.",
+          },
+          {
+            type: 'text',
+            text: "At registration, you will receive the death certificate. This is an official certified document, and you will need multiple copies — not photocopies, but certified originals. Most banks, pension providers, insurance companies, and government departments will each want one. Order at least ten copies at registration. They cost a small fee per copy, but are much cheaper to obtain at this stage than later.",
+          },
+          {
+            type: 'note',
+            text: "You can register a death online in advance to book an appointment at most Register Offices in England and Wales. Search for your local Register Office on GOV.UK.",
+          },
+          {
+            type: 'subheading',
+            text: 'Notify immediate family and close friends',
+          },
+          {
+            type: 'text',
+            text: "This is often done in parallel with the practical steps above — sometimes by different family members. There is no single right way to handle this. Some families prefer to call people individually; others find a group message or a single coordinating person easier to manage. Think about who needs to hear from you directly, and who can be informed through others. If the deceased was employed, their employer should be told early — this is usually handled with a brief phone call or email, and the HR department will guide you on next steps.",
+          },
+          {
+            type: 'subheading',
+            text: 'Secure the home and property',
+          },
+          {
+            type: 'text',
+            text: "If the deceased lived alone, their home should be secured promptly. Ensure it is locked, that any pets are cared for, and that any perishable food is dealt with. If there are valuable items, it is wise to note them. Do not yet start clearing anything out — this should happen only after probate is granted and the executor has legal authority to deal with the estate.",
+          },
+          {
+            type: 'subheading',
+            text: 'Locate the will',
+          },
+          {
+            type: 'text',
+            text: "If you are the executor — or think you might be — finding the original will as early as possible is important. A will is often held by the deceased's solicitor, stored in a bank's safe custody service, or kept at home in a lockbox or filing cabinet. Some people register their will with a will storage service or the National Will Register. Check all of these possibilities. If the deceased used Everstead to record their documents, a trusted person they designated may have been granted access to that information.",
+          },
+          {
+            type: 'text',
+            text: "If no will can be found, the estate is treated as intestate — meaning it is distributed according to the Rules of Intestacy, not the deceased's wishes. This is a difficult situation, but not an insurmountable one. A solicitor will guide you through the intestacy process.",
+          },
+          {
+            type: 'heading',
+            text: 'Step 2: The first week',
+          },
+          {
+            type: 'text',
+            text: "Once the death is registered and the immediate notifications are made, the first week is about beginning the formal estate administration process. This involves engaging professionals, notifying financial institutions, and making arrangements for the funeral.",
+          },
+          {
+            type: 'subheading',
+            text: 'Contact a solicitor or probate specialist',
+          },
+          {
+            type: 'text',
+            text: "Probate — the legal process of administering a deceased person's estate — is required in most cases where the deceased owned property or significant assets in their sole name. Not every estate requires formal probate, but most do. Engaging a solicitor who specialises in probate early means you have professional guidance from the start. They can assess whether probate is needed, apply on your behalf, and advise on inheritance tax obligations. If the estate is straightforward and you are comfortable with paperwork, it is also possible to handle probate yourself through the Probate Registry.",
+          },
+          {
+            type: 'subheading',
+            text: 'Notify banks and financial institutions',
+          },
+          {
+            type: 'text',
+            text: "Contact each bank or building society where the deceased held accounts. You will need to provide a certified death certificate. Banks will typically freeze the deceased's individual accounts upon notification — this is standard practice, not a punitive measure. Joint accounts are usually unaffected and can continue to be operated by the surviving holder. The bank will explain their process for releasing funds once probate is granted. This is also the moment to check whether the deceased had any direct debits or standing orders that need to be managed — some may need to be continued temporarily (rent, utilities for an occupied property), while others should be cancelled.",
+          },
+          {
+            type: 'subheading',
+            text: 'Notify pension providers',
+          },
+          {
+            type: 'text',
+            text: "Pension death benefits can be significant and should be claimed promptly. Contact each pension provider and inform them of the death. For defined contribution pensions, the provider will ask about nominated beneficiaries. It is worth noting that pension funds typically fall outside the estate for probate purposes — they are paid directly to nominated beneficiaries. This makes the nomination form on a pension one of the most important documents an individual can complete during their lifetime. If the deceased had a defined benefit (final salary) pension, there may be a dependant's pension payable to a surviving spouse or civil partner.",
+          },
+          {
+            type: 'subheading',
+            text: 'Notify life insurance providers',
+          },
+          {
+            type: 'text',
+            text: "Life insurance claims are separate from the probate process. Contact the insurer with the policy number (found in the policy document or the deceased's records), a certified death certificate, and a claim form. The insurer will assess the claim and pay out to the named beneficiary. If the policy was written in trust, it falls outside the estate and is typically paid out more quickly and without inheritance tax. If no beneficiary is named, the proceeds fall into the estate and are subject to probate.",
+          },
+          {
+            type: 'subheading',
+            text: "Use the government's Tell Us Once service",
+          },
+          {
+            type: 'text',
+            text: "Tell Us Once is a free government service that allows you to report a death to multiple government departments in a single step. The registrar will give you a unique reference code when you register the death. You can use this code to notify HMRC, the Department for Work and Pensions, the DVLA, the passport office, the local council, and others — all at once. This is one of the most useful services available and significantly reduces the administrative burden of contacting each department separately. Use it as early as possible.",
+          },
+          {
+            type: 'subheading',
+            text: 'Arrange the funeral',
+          },
+          {
+            type: 'text',
+            text: "The funeral can be arranged before probate is granted. It does not require legal authority to proceed — and most families want to hold the service as soon as is practically and emotionally appropriate. A funeral director will guide you through the options: burial or cremation, the service format, transportation, and the practical details. If the deceased left written wishes — whether in a will, in an Everstead plan, or in a letter — now is the time to refer to them. If no wishes were recorded, close family members will need to agree on what would best reflect the person who died.",
+          },
+          {
+            type: 'text',
+            text: "Funeral costs are usually paid from the estate — even before probate is formally granted, most banks will release funds directly to a funeral director upon receiving a death certificate and the invoice. If funds are not immediately available, funeral directors are typically understanding and will discuss timing arrangements.",
+          },
+          {
+            type: 'heading',
+            text: 'Step 3: The first month',
+          },
+          {
+            type: 'text',
+            text: "The first month is where the administrative work begins in earnest. The emotional weight of the preceding weeks does not disappear — it often intensifies once the immediate busyness of the funeral has passed. Be patient with yourself and with others involved in this process.",
+          },
+          {
+            type: 'subheading',
+            text: 'Apply for the Grant of Probate',
+          },
+          {
+            type: 'text',
+            text: "If a will exists and executors are named, the executors apply for a Grant of Probate from the Probate Registry. This is the legal document that confirms the executor's authority to deal with the estate. Without it, banks cannot release funds, property cannot be transferred or sold, and the estate cannot be formally distributed. The application requires a completed probate application form, the original will, a certified death certificate, and payment of the Probate Registry fee (based on the value of the estate). Processing times vary — it can take anywhere from a few weeks to several months. Engaging a solicitor often speeds things up, as they are familiar with the process and can respond quickly to any queries from the Registry.",
+          },
+          {
+            type: 'note',
+            text: "If there is no will, the process is called applying for Letters of Administration rather than a Grant of Probate. The administrator — usually the closest living relative — has similar authority to an executor once Letters of Administration are granted.",
+          },
+          {
+            type: 'subheading',
+            text: 'Create a full estate inventory',
+          },
+          {
+            type: 'text',
+            text: "Before the estate can be distributed, you need to know exactly what it contains. This means identifying every asset and every liability. Assets include bank accounts, savings accounts, investments, ISAs, property, vehicles, business interests, personal valuables, and pension death benefits. Liabilities include mortgages, loans, credit card balances, unpaid bills, and any outstanding tax. This inventory forms the basis of the estate accounts — the formal record of what came in and went out during administration.",
+          },
+          {
+            type: 'text',
+            text: "If the deceased used a platform like Everstead to maintain a record of their accounts and assets, this step becomes significantly easier. A well-maintained estate plan means the executor has a starting point — a list of what existed, where it was held, and who the relevant contacts were. Without one, discovery can take months and may never be complete. This is one of the most compelling arguments for keeping an organised plan during your lifetime.",
+          },
+          {
+            type: 'related',
+            heading: 'Related reading',
+            links: [
+              { label: 'Building your family\'s financial inventory', href: '/resources/blog/building-financial-inventory' },
+              { label: 'What executors wish they had known', href: '/resources/blog/what-executors-wish-they-had-known' },
+              { label: 'Executor first steps checklist', href: '/resources/checklists/executor-first-steps-checklist' },
+            ],
+          },
+          {
+            type: 'subheading',
+            text: 'Cancel subscriptions, direct debits, and regular payments',
+          },
+          {
+            type: 'text',
+            text: "This step is easily forgotten but can be surprisingly costly. Streaming services, gym memberships, insurance renewals, software subscriptions, and other recurring charges continue until actively cancelled. In some cases, families discover that significant sums have been paid out over months of administration before anyone noticed. Go through the deceased's bank statements — both paper and online — to identify every recurring payment, and contact each provider with a death certificate. Most will cancel promptly. Some may require the death certificate by post.",
+          },
+          {
+            type: 'subheading',
+            text: 'Handle digital accounts',
+          },
+          {
+            type: 'text',
+            text: "Digital accounts are a growing and often overlooked part of an estate. Email, cloud storage, social media, financial apps, streaming services, and potentially cryptocurrency all need to be addressed. Each platform has its own process — Google allows family members to use an Inactive Account Manager process; Apple has a Legacy Contact feature; Facebook offers memorialisation or deletion. For platforms that have no formal bereavement process, a death certificate and evidence of relationship is usually required.",
+          },
+          {
+            type: 'text',
+            text: "Cryptocurrency presents a particular challenge: unlike a bank account, crypto is controlled entirely by private keys. If the executor does not have the wallet address and recovery phrase, that value is permanently inaccessible. There is no authority to call and no legal recourse. If the deceased held any cryptocurrency and did not leave access instructions, this may simply be a loss that cannot be recovered.",
+          },
+          {
+            type: 'related',
+            heading: 'Related reading',
+            links: [
+              { label: 'The digital accounts problem: what happens to your online life', href: '/resources/blog/digital-accounts-problem' },
+            ],
+          },
+          {
+            type: 'heading',
+            text: 'Step 4: The months ahead',
+          },
+          {
+            type: 'text',
+            text: "Estate administration is rarely quick. From application for probate to final distribution, six to twelve months is common. Complex estates — those involving property sales, business interests, overseas assets, or inheritance tax — can take considerably longer. This phase requires patience, organisation, and usually the continued involvement of a solicitor.",
+          },
+          {
+            type: 'subheading',
+            text: 'Collect in the assets',
+          },
+          {
+            type: 'text',
+            text: "Once the Grant of Probate or Letters of Administration is received, the executor has legal authority to collect all assets into the estate. Banks will release funds; pension providers can be formally asked to pay death benefits; property can be marketed for sale or transferred. Each institution will have its own process and paperwork. Keep detailed records of everything received — amounts, dates, sources — as this forms part of the estate accounts.",
+          },
+          {
+            type: 'subheading',
+            text: 'Pay debts and outstanding liabilities',
+          },
+          {
+            type: 'text',
+            text: "Before anything can be distributed to beneficiaries, all debts must be paid. This includes the mortgage, any personal loans, credit card balances, utility bills, and any outstanding tax owed to HMRC. Executors have a legal duty to pay debts before distributing the estate. Distributing assets to beneficiaries while debts remain outstanding can make the executor personally liable for those debts. If debts appear to exceed the estate's value, take legal advice immediately — the estate may be insolvent.",
+          },
+          {
+            type: 'subheading',
+            text: 'Consider inheritance tax',
+          },
+          {
+            type: 'text',
+            text: "Inheritance tax (IHT) is payable on estates above the nil-rate band, currently £325,000. An additional residence nil-rate band of up to £175,000 applies when a main residence is passed to direct descendants. Above these thresholds, IHT is charged at 40% on the excess. Importantly, IHT must be paid before probate is granted — which can create a liquidity challenge if the estate is mainly property. Some banks will release funds specifically to pay an IHT bill before probate, but this requires specific forms. A solicitor or tax adviser can help calculate any liability and structure payment.",
+          },
+          {
+            type: 'text',
+            text: "Spouses and civil partners are entirely exempt from inheritance tax — assets passed to a surviving spouse are not subject to IHT regardless of value. Gifts made to charity are also exempt. If the deceased gave significant gifts in the seven years before death, those may also be subject to IHT under the 'seven-year rule'. HMRC will want a full account of the estate including any gifts made in life.",
+          },
+          {
+            type: 'subheading',
+            text: 'Distribute the estate to beneficiaries',
+          },
+          {
+            type: 'text',
+            text: "Once debts, tax, and administration costs are paid, the remaining estate is distributed in accordance with the will — or, if there is no will, the Rules of Intestacy. Each beneficiary should receive a formal distribution statement showing what they are entitled to and what they have received. Keep copies of all correspondence. If a beneficiary cannot be located, there are legal processes for dealing with missing beneficiaries — do not simply distribute their share to others.",
+          },
+          {
+            type: 'subheading',
+            text: 'Prepare and finalise the estate accounts',
+          },
+          {
+            type: 'text',
+            text: "Estate accounts are a formal record of everything that came into the estate, everything that was paid out, and how the remainder was distributed. They should be prepared and approved by all residuary beneficiaries — those entitled to a share of the remainder of the estate. Once approved and signed, the estate is formally closed. Keep all records, correspondence, and accounts for at least twelve years. HMRC may enquire about the estate up to twenty years after death in certain circumstances.",
+          },
+          {
+            type: 'heading',
+            text: 'When you need professional help',
+          },
+          {
+            type: 'text',
+            text: "Most estates benefit from professional involvement at some stage. Some situations make professional help not just helpful but essential.",
+          },
+          {
+            type: 'list',
+            heading: 'Always seek professional advice if:',
+            items: [
+              "The estate may be subject to inheritance tax (value above £325,000 for a single person)",
+              "The deceased owned property in their sole name — property transfers and sales require solicitor involvement",
+              "There is no will, or the will is disputed by a family member or claimant",
+              "The estate includes business interests, partnerships, or company shares",
+              "The deceased had assets abroad — overseas estates involve multiple legal jurisdictions",
+              "There are complex family arrangements — previous marriages, stepchildren, dependants not mentioned in the will",
+              "The estate appears to be insolvent (debts exceed assets)",
+              "A creditor has made a formal claim against the estate",
+              "You are unsure about any aspect of your legal duties as executor",
+            ],
+          },
+          {
+            type: 'text',
+            text: "Solicitor fees for probate are typically charged as a percentage of the estate value (usually 1–2%) or on a fixed-fee basis, depending on complexity. Get a clear quote before engaging. If cost is a concern, many solicitors offer unbundled services — where they handle specific parts of the process (the probate application, for example) while you handle the rest.",
+          },
+          {
+            type: 'heading',
+            text: 'How to protect your own family from going through this unprepared',
+          },
+          {
+            type: 'text',
+            text: "If you are reading this guide while managing the administration of someone else's estate, you will already understand the burden that a disorganised or undocumented estate creates. The single most useful thing you can do for your own family is to ensure they never face the same experience.",
+          },
+          {
+            type: 'text',
+            text: "That means having a will in place and keeping it up to date. It means having Lasting Powers of Attorney in place before they are needed — because they can only be put in place while you still have mental capacity. It means keeping a clear, structured record of your accounts, documents, contacts, and wishes — a record that a trusted person can actually use on the day, without having to search through filing cabinets, browser histories, or old emails.",
+          },
+          {
+            type: 'text',
+            text: "It does not need to be perfect. An imperfect record is immeasurably more useful than none at all. What matters is that the people who will have to act on your behalf know what exists, where it is, and who to call.",
+          },
+          {
+            type: 'related',
+            heading: 'Related reading',
+            links: [
+              { label: "Why a will alone isn't enough", href: '/resources/blog/why-a-will-is-not-enough' },
+              { label: 'Estate readiness checklist', href: '/resources/checklists/estate-readiness-checklist' },
+              { label: 'How to have the estate conversation with aging parents', href: '/resources/blog/estate-conversation-aging-parents' },
+            ],
+          },
+          {
+            type: 'heading',
+            text: 'Frequently asked questions',
+          },
+          {
+            type: 'faq',
+            items: [
+              {
+                q: 'How long does probate take in England and Wales?',
+                a: "Probate typically takes between three and twelve months from the date of application, though complex estates involving property sales, inheritance tax, or disputes can take significantly longer. The Probate Registry itself currently has a processing time of several weeks to a few months for straightforward applications. Engaging a solicitor familiar with the process can help, but cannot entirely eliminate the waiting time.",
+              },
+              {
+                q: 'Do I have to use a solicitor for probate?',
+                a: "No. You can apply for probate yourself through the Probate Registry — this is known as 'personal application'. It is most practical for straightforward estates where there is no inheritance tax, no property to sell, and no disputes. For anything more complex, a probate solicitor will usually save time and reduce the risk of errors that could delay the process or create personal liability for the executor.",
+              },
+              {
+                q: 'What happens if there is no will?',
+                a: "If there is no will, the estate is administered under the Rules of Intestacy. In England and Wales, these rules determine who inherits based on relationship to the deceased — typically starting with a spouse or civil partner, then children, then parents, then siblings, and so on. Unmarried partners are not automatically entitled to anything under intestacy, regardless of the length of the relationship. An administrator (usually the closest living relative) applies for Letters of Administration rather than a Grant of Probate.",
+              },
+              {
+                q: 'Can the executor pay themselves?',
+                a: "Executors are entitled to be reimbursed for reasonable out-of-pocket expenses — postage, travel, document costs. They are not automatically entitled to charge for their time unless the will specifically provides for this or all beneficiaries agree. Professional executors (solicitors or trust companies named in the will) typically charge their standard professional rates.",
+              },
+              {
+                q: 'How many death certificates do I need?',
+                a: "Order at least ten to twelve certified copies at the time of registration. Each bank, pension provider, insurer, and government department will typically want an original certified copy — photocopies are not accepted. Copies obtained at registration cost a small fee each and are much cheaper and quicker to get at that point than retrospectively.",
+              },
+              {
+                q: 'What happens to joint bank accounts when someone dies?',
+                a: "Joint bank accounts typically pass automatically to the surviving account holder by right of survivorship, without going through probate. The surviving holder should notify the bank of the death with a certified death certificate. The account can usually continue to be operated normally. The deceased's share does not form part of the estate for probate purposes, though it may be relevant for inheritance tax calculations.",
+              },
+              {
+                q: 'Do all assets go through probate?',
+                a: "No. Some assets pass outside probate by their nature. These include: jointly held property or accounts (which pass to the survivor automatically), pension death benefits (paid directly to nominated beneficiaries), life insurance written in trust (paid directly to trust beneficiaries), and assets held in a trust. Only assets held in the deceased's sole name, without a nominated beneficiary, typically need to go through the probate process.",
+              },
+              {
+                q: 'What is the Tell Us Once service and how do I use it?',
+                a: "Tell Us Once is a free government service that lets you notify multiple government departments of a death in a single step. When you register the death, the registrar will give you a unique reference number. You can use this at gov.uk/tell-us-once to notify HMRC, the DWP, the DVLA, local council services, the passport office, and other departments simultaneously. It is strongly recommended — it saves considerable time and avoids the need for separate letters to each department.",
+              },
+              {
+                q: 'What is an executor and what are their duties?',
+                a: "An executor is the person named in a will to administer the estate. Their duties include registering the death, locating the will, applying for probate, collecting all assets, paying all debts and liabilities, dealing with tax obligations, and distributing the estate to beneficiaries in accordance with the will. It is a legally significant role that comes with personal liability — executors can be held responsible if they distribute assets before paying debts, or if they act improperly. You are not legally obliged to accept the role: you can formally renounce it before taking any steps in the administration.",
+              },
+              {
+                q: 'How does inheritance tax work and will the estate owe it?',
+                a: "Inheritance tax (IHT) is charged at 40% on the value of an estate above the nil-rate band (currently £325,000). An additional residence nil-rate band of up to £175,000 may apply when a main home is passed to direct descendants. Assets passed to a spouse or civil partner are entirely exempt. IHT must be paid before probate is granted — which can create a cash flow challenge if the estate is largely illiquid. If you think the estate may be above the threshold, seek specialist advice early. Allowances and reliefs are complex, and professional guidance can sometimes identify significant savings.",
+              },
+            ],
+          },
+          {
+            type: 'cta',
+            text: "One of the most lasting things you can do for the people you love is to make sure they never have to piece together your affairs from scratch. Everstead gives you a private, structured place to record everything — your accounts, documents, trusted contacts, and final wishes — so your executor has what they need, when they need it.",
+          },
+        ],
+      },
       {
         slug: 'what-executors-wish-they-had-known',
         title: 'What executors wish they had known',
@@ -1284,8 +1668,46 @@ function ArticleDetail({ sectionSlug, postSlug }) {
               if (block.type === 'intro') return (
                 <p key={i} className="text-lg text-stone-700 leading-relaxed font-light border-l-4 border-navy-200 pl-5">{block.text}</p>
               )
+              if (block.type === 'toc') return (
+                <div key={i} className="bg-stone-100 border border-stone-200 rounded-2xl px-6 py-5">
+                  <p className="text-xs font-semibold uppercase tracking-widest text-stone-500 mb-3">In this guide</p>
+                  <ol className="space-y-2">
+                    {block.items.map((item, j) => (
+                      <li key={j} className="flex items-start gap-3 text-sm text-navy-800">
+                        <span className="text-xs font-semibold text-stone-400 mt-0.5 w-4 flex-shrink-0">{j + 1}.</span>
+                        <span className="leading-snug">{item}</span>
+                      </li>
+                    ))}
+                  </ol>
+                </div>
+              )
               if (block.type === 'heading') return (
-                <h2 key={i} className="font-display text-2xl font-light text-navy-950 pt-4">{block.text}</h2>
+                <h2 key={i} className="font-display text-2xl font-light text-navy-950 pt-6 border-t border-stone-100">{block.text}</h2>
+              )
+              if (block.type === 'subheading') return (
+                <h3 key={i} className="font-semibold text-navy-900 text-lg pt-2">{block.text}</h3>
+              )
+              if (block.type === 'note') return (
+                <div key={i} className="flex items-start gap-3 bg-amber-50 border border-amber-200 rounded-xl px-5 py-4">
+                  <span className="text-amber-500 text-base mt-0.5 flex-shrink-0">ℹ</span>
+                  <p className="text-sm text-amber-800 leading-relaxed">{block.text}</p>
+                </div>
+              )
+              if (block.type === 'related') return (
+                <div key={i} className="border border-stone-200 rounded-xl px-5 py-4 bg-white">
+                  <p className="flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-stone-400 mb-3">
+                    <BookMarked size={12} /> {block.heading || 'Related reading'}
+                  </p>
+                  <ul className="space-y-2">
+                    {block.links.map((l, j) => (
+                      <li key={j}>
+                        <Link to={l.href} className="text-sm text-navy-700 hover:text-navy-900 hover:underline inline-flex items-center gap-1.5 transition-colors">
+                          <ArrowRight size={11} className="flex-shrink-0" />{l.label}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
               )
               if (block.type === 'text') return (
                 <p key={i} className="text-stone-600 leading-relaxed text-base">{block.text}</p>
