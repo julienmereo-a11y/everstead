@@ -49,6 +49,21 @@ export default async function handler(req, res) {
         html:    inviteHtml(inviteeName, ownerName, role, inviteToken),
       })
 
+    } else if (type === 'tool-report') {
+      // Estate Readiness Score — full report email (no auth required, public tool)
+      const { name, email, score, answers } = body
+      if (!email) return res.status(400).json({ error: 'Missing email' })
+      // Basic email validation — prevent abuse
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        return res.status(400).json({ error: 'Invalid email' })
+      }
+      await resend.emails.send({
+        from:    'Everstead <hello@everstead.care>',
+        to:      email,
+        subject: `Your estate readiness score: ${score}/100`,
+        html:    toolReportHtml(name, score, answers),
+      })
+
     } else {
       return res.status(400).json({ error: `Unknown type: ${type}` })
     }
@@ -182,6 +197,82 @@ function inviteHtml(inviteeName, ownerName, role, inviteToken) {
         </td></tr>
       </table>
       <p style="margin:20px 0 0;color:#c4bfb8;font-size:11px;text-align:center;">Everstead · everstead.care</p>
+    </td></tr>
+  </table>
+</body>
+</html>`
+}
+
+function toolReportHtml(name, score, answers) {
+  const firstName = name?.split(' ')[0] || 'there'
+  const appUrl    = process.env.VITE_APP_URL || 'https://www.everstead.care'
+
+  const band = score >= 86 ? { label: 'Excellent', color: '#0d1628' }
+             : score >= 61 ? { label: 'Good progress', color: '#4c7d47' }
+             : score >= 31 ? { label: 'A good start', color: '#d97706' }
+             :                { label: 'Needs attention', color: '#dc2626' }
+
+  const QUESTIONS = [
+    { id: 'will',     full: 'Up-to-date will' },
+    { id: 'accounts', full: 'Documented accounts & assets' },
+    { id: 'lpa',      full: 'Lasting Power of Attorney' },
+    { id: 'trusted',  full: 'Trusted contacts designated' },
+    { id: 'wishes',   full: 'Final wishes recorded in writing' },
+  ]
+
+  const rows = (answers || []).map((a, i) => {
+    const q   = QUESTIONS[i] || {}
+    const pts = typeof a?.points === 'number' ? a.points : 0
+    const col = pts === 20 ? '#4c7d47' : pts > 0 ? '#d97706' : '#dc2626'
+    return `<tr>
+      <td style="padding:10px 0;border-bottom:1px solid #f0ede8;font-size:14px;color:#374151;">${q.full || `Question ${i + 1}`}</td>
+      <td style="padding:10px 0 10px 16px;border-bottom:1px solid #f0ede8;text-align:right;font-size:14px;font-weight:600;color:${col};">${pts}/20</td>
+    </tr>`
+  }).join('')
+
+  const missing = (answers || [])
+    .map((a, i) => ({ q: QUESTIONS[i], pts: typeof a?.points === 'number' ? a.points : 0 }))
+    .filter(x => x.pts < 20)
+    .map(x => `<li style="margin:0 0 8px;font-size:14px;color:#4a5568;line-height:1.5;">${x.pts === 0 ? '❌' : '⚠️'} ${x.q?.full || 'Item'} — ${x.pts === 0 ? 'not yet in place' : 'partially complete'}</li>`)
+    .join('')
+
+  return `<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
+<body style="margin:0;padding:0;background:#f5f4f0;font-family:Georgia,serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#f5f4f0;padding:40px 0;">
+    <tr><td align="center">
+      <table width="560" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:12px;overflow:hidden;max-width:560px;width:100%;">
+        <tr><td style="background:#0d1628;padding:28px 40px;text-align:center;">
+          <img src="https://www.everstead.care/logo-v2-white.png" alt="Everstead" width="160" style="display:block;margin:0 auto;height:auto;max-width:160px;" />
+        </td></tr>
+        <tr><td style="padding:40px;">
+          <h1 style="margin:0 0 8px;color:#0d1628;font-size:24px;font-weight:normal;">Your estate readiness report</h1>
+          <p style="margin:0 0 28px;color:#6b7280;font-size:15px;">Hi ${firstName}, here's your full breakdown.</p>
+          <div style="background:#f9f8f6;border-radius:12px;padding:24px;text-align:center;margin:0 0 28px;">
+            <p style="margin:0 0 4px;font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;color:#9ca3af;">Your score</p>
+            <p style="margin:0;font-size:56px;font-weight:300;color:${band.color};line-height:1.1;">${score}<span style="font-size:24px;">/100</span></p>
+            <p style="margin:8px 0 0;font-size:16px;color:${band.color};font-weight:600;">${band.label}</p>
+          </div>
+          <h2 style="margin:0 0 12px;font-size:16px;font-weight:600;color:#0d1628;">Section breakdown</h2>
+          <table width="100%" cellpadding="0" cellspacing="0">${rows}</table>
+          ${missing ? `
+          <div style="margin:28px 0 0;background:#fff7ed;border-radius:10px;padding:20px 24px;">
+            <h3 style="margin:0 0 12px;font-size:15px;font-weight:600;color:#92400e;">What to focus on next</h3>
+            <ul style="margin:0;padding:0;list-style:none;">${missing}</ul>
+          </div>` : `
+          <div style="margin:28px 0 0;background:#f0fdf4;border-radius:10px;padding:20px 24px;">
+            <p style="margin:0;font-size:15px;color:#14532d;">🎉 Your plan is in excellent shape. Well done.</p>
+          </div>`}
+          <div style="margin:32px 0 0;text-align:center;">
+            <p style="margin:0 0 16px;color:#4a5568;font-size:15px;line-height:1.6;">Everstead is where you put all of this in one secure place — your accounts, documents, trusted people, and final wishes.</p>
+            <a href="${appUrl}/get-started" style="display:inline-block;background:#0d1628;color:#ffffff;text-decoration:none;padding:14px 28px;border-radius:8px;font-size:15px;">Start your free plan →</a>
+          </div>
+        </td></tr>
+        <tr><td style="padding:24px 40px;border-top:1px solid #e8e5e0;">
+          <p style="margin:0;color:#9ca3af;font-size:13px;">Questions? <a href="mailto:support@everstead.care" style="color:#4c7d47;">support@everstead.care</a></p>
+        </td></tr>
+      </table>
     </td></tr>
   </table>
 </body>

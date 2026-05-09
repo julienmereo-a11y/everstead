@@ -1570,6 +1570,40 @@ const sections = {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
+// FREE TOOLS (external pages — not rendered inside Resources router)
+// ─────────────────────────────────────────────────────────────────────────────
+
+const tools = [
+  {
+    href: '/estate-readiness-score',
+    title: 'Estate Readiness Score',
+    tag: 'Quiz',
+    tagColor: 'bg-sage-50 text-sage-700 border-sage-200',
+    desc: 'Answer 5 questions and get a score out of 100 — plus a breakdown of exactly what you\'re missing and why it matters.',
+    cta: 'Take the quiz',
+    badge: null,
+  },
+  {
+    href: '/executor-checklist',
+    title: 'Executor Checklist',
+    tag: 'Interactive',
+    tagColor: 'bg-navy-50 text-navy-700 border-navy-200',
+    desc: 'A complete, interactive checklist for executors in England & Wales — from the first 72 hours to closing the estate. Printable.',
+    cta: 'Open checklist',
+    badge: 'Most linked',
+  },
+  {
+    href: '/digital-estate-worth',
+    title: 'Digital Estate Calculator',
+    tag: 'Calculator',
+    tagColor: 'bg-amber-50 text-amber-700 border-amber-200',
+    desc: 'Enter your accounts, pensions, property, and assets to get an estimated estate value — with an IHT threshold alert if you\'re over £325,000.',
+    cta: 'Calculate now',
+    badge: null,
+  },
+]
+
+// ─────────────────────────────────────────────────────────────────────────────
 // HELPERS
 // ─────────────────────────────────────────────────────────────────────────────
 
@@ -1888,6 +1922,46 @@ function ResourcesIndex() {
               </Link>
             )
           })}
+        </div>
+      </section>
+
+      {/* Free Tools */}
+      <section className="py-20 lg:py-28 bg-white border-t border-stone-100">
+        <div className="max-w-5xl mx-auto px-6 lg:px-8">
+          <div className="mb-12 reveal">
+            <p className="text-xs font-semibold uppercase tracking-widest text-sage-600 mb-3">Free tools</p>
+            <h2 className="font-display text-3xl lg:text-4xl font-light text-navy-950 leading-tight">
+              Practical tools, no sign-up required.
+            </h2>
+            <p className="mt-3 text-stone-500 text-base leading-relaxed max-w-xl">
+              Use these tools to understand where you stand, get a checklist for administering an estate, or calculate what your digital estate is worth.
+            </p>
+          </div>
+          <div className="grid sm:grid-cols-3 gap-6">
+            {tools.map((tool, i) => (
+              <Link
+                key={tool.href}
+                to={tool.href}
+                className={`reveal reveal-delay-${i + 1} group relative bg-stone-50 border border-stone-200 rounded-2xl p-7 hover:border-navy-300 hover:shadow-md transition-all flex flex-col`}
+              >
+                {tool.badge && (
+                  <span className="absolute top-4 right-4 text-[10px] font-semibold uppercase tracking-widest bg-sage-100 text-sage-700 border border-sage-200 px-2 py-0.5 rounded-full">
+                    {tool.badge}
+                  </span>
+                )}
+                <span className={`self-start text-[11px] font-semibold uppercase tracking-widest border rounded-full px-2.5 py-0.5 mb-5 ${tool.tagColor}`}>
+                  {tool.tag}
+                </span>
+                <h3 className="font-semibold text-navy-900 text-base mb-3 group-hover:text-navy-700 transition-colors leading-snug">
+                  {tool.title}
+                </h3>
+                <p className="text-stone-500 text-sm leading-relaxed flex-1 mb-5">{tool.desc}</p>
+                <span className="inline-flex items-center gap-1.5 text-xs text-navy-700 font-medium">
+                  {tool.cta} <ArrowRight size={11} />
+                </span>
+              </Link>
+            ))}
+          </div>
         </div>
       </section>
     </div>

@@ -26,6 +26,9 @@ import Login from './pages/Login'
 import Privacy from './pages/Privacy'
 import Terms from './pages/Terms'
 import Resources from './pages/Resources'
+import ExecutorChecklist from './pages/ExecutorChecklist'
+import DigitalEstateCalculator from './pages/DigitalEstateCalculator'
+import EstateReadinessScore from './pages/EstateReadinessScore'
 import NotFound from './pages/NotFound'
 import ForgotPassword from './pages/ForgotPassword'
 import ResetPassword from './pages/ResetPassword'
@@ -150,6 +153,9 @@ export default function App() {
           <Route path="/resources"  element={<Layout><Resources /></Layout>} />
           <Route path="/resources/:section" element={<Layout><Resources /></Layout>} />
           <Route path="/resources/:section/:post" element={<Layout><Resources /></Layout>} />
+          <Route path="/executor-checklist"     element={<Layout><ExecutorChecklist /></Layout>} />
+          <Route path="/estate-readiness-score" element={<Layout><EstateReadinessScore /></Layout>} />
+          <Route path="/digital-estate-worth"   element={<Layout><DigitalEstateCalculator /></Layout>} />
           <Route path="*"           element={<Layout><NotFound /></Layout>} />
         </Routes>
         </ErrorBoundary>
