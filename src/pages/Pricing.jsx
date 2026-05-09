@@ -2,7 +2,75 @@ import React, { useMemo, useState } from 'react'
 import { Helmet } from 'react-helmet-async'
 import { Link } from 'react-router-dom'
 import { useReveal } from '../components/useReveal'
-import { ArrowRight, Briefcase, CheckCircle2, ShieldCheck } from 'lucide-react'
+import { ArrowRight, Briefcase, CheckCircle2, ShieldCheck, ChevronDown } from 'lucide-react'
+
+const faqs = [
+  {
+    q: 'How does the free trial work?',
+    a: 'Every plan includes a 14-day free trial. A card is required to start, but you won\'t be charged until the trial ends — cancel any time before and pay nothing. You have full access to all features on your chosen plan during the trial.',
+  },
+  {
+    q: 'What happens if I cancel during the trial?',
+    a: 'Nothing. You will not be charged. Your account is closed and your data is retained for 30 days in case you change your mind, then permanently deleted. No fees, no questions.',
+  },
+  {
+    q: 'Can I switch plans after signing up?',
+    a: 'Yes. You can upgrade or downgrade at any time from your account settings. Upgrades take effect immediately. Downgrades take effect at the end of your current billing period. You will never be charged more than the plan you are on.',
+  },
+  {
+    q: 'Is there a discount for annual billing?',
+    a: 'Yes — choosing yearly billing saves approximately 20–25% compared to monthly billing across all plans. The discounted rate is applied immediately and locked in for the year.',
+  },
+  {
+    q: 'What does the Family plan include that Essential does not?',
+    a: 'The Family plan adds household member access so multiple people in the same household can use the plan together, increases trusted contacts from 2 to 10, adds emergency vault sharing, expands storage from 5 GB to 25 GB, and includes a family-wide readiness score.',
+  },
+  {
+    q: 'What is the Advisor plan for?',
+    a: 'The Advisor plan is designed for financial advisers, solicitors, and other professionals who want to offer estate organisation as a service to clients. It includes a multi-client workspace, a co-branded client portal, collaboration tools, and priority support. Contact us to discuss a pilot rollout.',
+  },
+  {
+    q: 'Is Everstead a legal service?',
+    a: 'No. Everstead is an organisation and planning tool — it does not provide will drafting, legal advice, or any regulated professional service. It is designed to work alongside your solicitor, financial adviser, and other professionals. For legal estate planning, please use a qualified solicitor.',
+  },
+  {
+    q: 'How is my data protected?',
+    a: 'All data is encrypted in transit and at rest using AES-256 encryption. Everstead operates under UK GDPR and is registered with the ICO. Everstead staff cannot access the content of your estate plan. Access to your plan is controlled entirely by you.',
+  },
+]
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map(({ q, a }) => ({
+    '@type': 'Question',
+    name: q,
+    acceptedAnswer: { '@type': 'Answer', text: a },
+  })),
+}
+
+function FaqAccordion() {
+  const [open, setOpen] = useState(null)
+  return (
+    <div className="space-y-3">
+      {faqs.map(({ q, a }, i) => (
+        <div key={i} className="border border-stone-200 rounded-2xl overflow-hidden bg-white">
+          <button
+            onClick={() => setOpen(open === i ? null : i)}
+            className="w-full text-left flex items-start justify-between gap-4 px-6 py-5"
+            aria-expanded={open === i}
+          >
+            <span className="font-medium text-navy-900 text-sm leading-snug">{q}</span>
+            <ChevronDown size={16} className={`text-stone-400 mt-0.5 flex-shrink-0 transition-transform duration-200 ${open === i ? 'rotate-180' : ''}`} />
+          </button>
+          {open === i && (
+            <div className="px-6 pb-5 text-stone-600 text-sm leading-relaxed border-t border-stone-100 pt-4">{a}</div>
+          )}
+        </div>
+      ))}
+    </div>
+  )
+}
 
 const plans = [
   {
@@ -68,6 +136,7 @@ export default function Pricing() {
       <title>Pricing — Everstead</title>
       <meta name="description" content="Simple, transparent pricing for individuals, families, and professional advisors. Start your 14-day free trial — card required, no charge until trial ends." />
       <link rel="canonical" href="https://www.everstead.care/pricing" />
+      <script type="application/ld+json">{JSON.stringify(faqSchema)}</script>
     </Helmet>
     <div className="bg-stone-50 pt-24">
       <section className="py-20 lg:py-28 grain relative overflow-hidden">
@@ -231,6 +300,28 @@ export default function Pricing() {
               </Link>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* ── FAQ ─────────────────────────────────────────────────── */}
+      <section className="py-20 lg:py-28 bg-white border-t border-stone-100">
+        <div className="max-w-3xl mx-auto px-6 lg:px-8">
+          <div className="text-center mb-12 reveal">
+            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-navy-600 mb-4">Common questions</p>
+            <h2 className="font-display text-4xl lg:text-5xl font-light text-navy-950 text-balance">
+              Everything you might want to know.
+            </h2>
+          </div>
+          <div className="reveal reveal-delay-1">
+            <FaqAccordion />
+          </div>
+          <p className="mt-10 text-center text-sm text-stone-500">
+            Still have a question?{' '}
+            <a href="mailto:support@everstead.care" className="text-navy-700 font-medium hover:text-navy-900 transition-colors">
+              Write to us
+            </a>{' '}
+            and we'll reply within one business day.
+          </p>
         </div>
       </section>
     </div>

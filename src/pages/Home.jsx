@@ -115,6 +115,46 @@ export default function Home() {
       <title>Everstead — Digital Estate Planning for UK Families</title>
       <meta name="description" content="Everstead helps UK families securely organise accounts, documents, instructions, and final wishes — so loved ones know what to do when it matters most." />
       <link rel="canonical" href="https://www.everstead.care" />
+      <script type="application/ld+json">{JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'Organization',
+        name: 'Everstead',
+        alternateName: 'Everstead Digital',
+        url: 'https://www.everstead.care',
+        logo: {
+          '@type': 'ImageObject',
+          url: 'https://www.everstead.care/logo-v2-white.png',
+          width: 320,
+          height: 80,
+        },
+        description: 'Digital estate planning platform for UK families. Securely organise accounts, documents, instructions, and final wishes so loved ones know exactly what to do.',
+        foundingDate: '2025',
+        areaServed: 'GB',
+        address: {
+          '@type': 'PostalAddress',
+          addressLocality: 'London',
+          addressCountry: 'GB',
+        },
+        contactPoint: [
+          {
+            '@type': 'ContactPoint',
+            email: 'support@everstead.care',
+            contactType: 'customer support',
+            areaServed: 'GB',
+            availableLanguage: 'English',
+          },
+          {
+            '@type': 'ContactPoint',
+            email: 'hello@everstead.care',
+            contactType: 'sales',
+            areaServed: 'GB',
+            availableLanguage: 'English',
+          },
+        ],
+        sameAs: [
+          'https://www.everstead.care',
+        ],
+      })}</script>
     </Helmet>
     <div className="bg-stone-50">
 

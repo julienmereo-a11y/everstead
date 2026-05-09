@@ -27,6 +27,21 @@ const steps = [
   },
 ]
 
+const howToSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  name: 'How to set up your estate plan with Everstead',
+  description: 'Create a complete digital estate plan in a single afternoon — accounts, documents, trusted contacts, and final wishes — so your family is never left guessing.',
+  totalTime: 'PT1H',
+  step: steps.map((s, i) => ({
+    '@type': 'HowToStep',
+    position: i + 1,
+    name: s.title,
+    text: s.body,
+    url: `https://www.everstead.care/how-it-works#step-${s.number}`,
+  })),
+}
+
 export default function HowItWorks() {
   useReveal()
   return (
@@ -35,6 +50,7 @@ export default function HowItWorks() {
       <title>How It Works — Everstead</title>
       <meta name="description" content="See how Everstead helps you organise your accounts, documents, and wishes so your family is never left guessing. Takes under an hour to set up." />
       <link rel="canonical" href="https://www.everstead.care/how-it-works" />
+      <script type="application/ld+json">{JSON.stringify(howToSchema)}</script>
     </Helmet>
     <div className="bg-stone-50 pt-24">
 
