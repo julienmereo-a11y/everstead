@@ -683,11 +683,81 @@ function TodoList({ u }) {
   )
 }
 
+function EmailUserModal({ u, onClose }) {
+  const [subject, setSubject] = useState('')
+  const [message, setMessage] = useState('')
+  const [state, setState]     = useState('idle')
+
+  const send = async () => {
+    if (!subject.trim() || !message.trim()) return
+    setState('sending')
+    try {
+      const res = await fetch('/api/emails/send', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          type: 'admin-direct',
+          to: u.email,
+          toName: u.full_name,
+          subject: subject.trim(),
+          message: message.trim(),
+        }),
+      })
+      if (!res.ok) throw new Error()
+      setState('sent')
+      setTimeout(onClose, 1500)
+    } catch { setState('error') }
+  }
+
+  return (
+    <div className="fixed inset-0 z-60 flex items-center justify-center p-6" onClick={onClose}>
+      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md p-6 space-y-4" onClick={e => e.stopPropagation()}>
+        <div className="flex items-center justify-between">
+          <div>
+            <h3 className="font-semibold text-navy-900">Email {u.full_name ?? u.email}</h3>
+            <p className="text-xs text-stone-400 mt-0.5">Sends from hello@everstead.care</p>
+          </div>
+          <button onClick={onClose} className="text-stone-400 hover:text-stone-700 transition-colors"><X size={18} /></button>
+        </div>
+        <input
+          type="text"
+          placeholder="Subject"
+          value={subject}
+          onChange={e => setSubject(e.target.value)}
+          className="w-full border border-stone-200 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-navy-300"
+        />
+        <textarea
+          autoFocus
+          rows={5}
+          value={message}
+          onChange={e => setMessage(e.target.value)}
+          placeholder="Write your message…"
+          className="w-full border border-stone-200 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-navy-300 resize-none"
+        />
+        {state === 'error' && <p className="text-xs text-red-600">Failed to send — please try again.</p>}
+        <div className="flex gap-2 justify-end">
+          <button onClick={onClose} className="text-sm text-stone-500 hover:text-stone-700 px-4 py-2 rounded-xl transition-colors">Cancel</button>
+          <button
+            onClick={send}
+            disabled={state === 'sending' || !subject.trim() || !message.trim()}
+            className="inline-flex items-center gap-1.5 text-sm font-semibold px-4 py-2 rounded-xl bg-navy-900 text-white hover:bg-navy-800 transition-colors disabled:opacity-50"
+          >
+            {state === 'sending' ? <><Loader2 size={13} className="animate-spin" /> Sending…</> : state === 'sent' ? 'Sent ✓' : <><Send size={13} /> Send</>}
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 function AdminActions({ u }) {
-  const [pwState, setPwState]         = useState('idle') // idle | sending | sent | error
+  const [pwState, setPwState]         = useState('idle')
   const [trialState, setTrialState]   = useState('idle')
   const [cancelState, setCancelState] = useState('idle')
+  const [suspendState, setSuspendState] = useState('idle')
   const [extendDays, setExtendDays]   = useState(7)
+  const [showEmail, setShowEmail]     = useState(false)
+  const [isSuspended, setIsSuspended] = useState(u.is_suspended ?? false)
 
   const sendPasswordReset = async () => {
     setPwState('sending')
@@ -703,13 +773,12 @@ function AdminActions({ u }) {
   }
 
   const extendTrial = async () => {
-    if (!u.stripe_subscription_id) return
     setTrialState('sending')
     try {
       const res = await fetch('/api/stripe/cancel-subscription', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ subscriptionId: u.stripe_subscription_id, userId: u.id, action: 'extend-trial', days: extendDays }),
+        body: JSON.stringify({ subscriptionId: u.stripe_subscription_id || null, userId: u.id, action: 'extend-trial', days: extendDays }),
       })
       if (!res.ok) throw new Error()
       setTrialState('sent')
@@ -732,20 +801,47 @@ function AdminActions({ u }) {
     } catch { setCancelState('error') }
   }
 
-  return (
-    <div className="space-y-2">
-      {/* Password reset */}
-      <button
-        onClick={sendPasswordReset}
-        disabled={pwState === 'sending'}
-        className="w-full flex items-center gap-2 text-xs font-medium px-3 py-2 rounded-xl border border-stone-200 text-stone-700 hover:bg-stone-50 transition-colors disabled:opacity-50"
-      >
-        {pwState === 'sending' ? <Loader2 size={12} className="animate-spin" /> : <Mail size={12} />}
-        {pwState === 'sent' ? 'Reset sent ✓' : pwState === 'error' ? 'Failed — retry' : 'Send password reset'}
-      </button>
+  const toggleSuspend = async () => {
+    const newSuspended = !isSuspended
+    if (!window.confirm(newSuspended
+      ? `Suspend ${u.full_name ?? u.email}? They will be immediately logged out and unable to sign in.`
+      : `Unsuspend ${u.full_name ?? u.email}? They will regain access immediately.`
+    )) return
+    setSuspendState('sending')
+    try {
+      const res = await fetch('/api/stripe/cancel-subscription', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId: u.id, action: newSuspended ? 'suspend-user' : 'unsuspend-user' }),
+      })
+      if (!res.ok) throw new Error()
+      setIsSuspended(newSuspended)
+      setSuspendState('idle')
+    } catch { setSuspendState('error'); setTimeout(() => setSuspendState('idle'), 3000) }
+  }
 
-      {/* Extend trial */}
-      {u.stripe_subscription_id && (
+  return (
+    <>
+      <div className="space-y-2">
+        {/* Email user */}
+        <button
+          onClick={() => setShowEmail(true)}
+          className="w-full flex items-center gap-2 text-xs font-medium px-3 py-2 rounded-xl border border-navy-200 text-navy-700 hover:bg-navy-50 transition-colors"
+        >
+          <Send size={12} /> Email user
+        </button>
+
+        {/* Password reset */}
+        <button
+          onClick={sendPasswordReset}
+          disabled={pwState === 'sending'}
+          className="w-full flex items-center gap-2 text-xs font-medium px-3 py-2 rounded-xl border border-stone-200 text-stone-700 hover:bg-stone-50 transition-colors disabled:opacity-50"
+        >
+          {pwState === 'sending' ? <Loader2 size={12} className="animate-spin" /> : <Mail size={12} />}
+          {pwState === 'sent' ? 'Reset sent ✓' : pwState === 'error' ? 'Failed — retry' : 'Send password reset'}
+        </button>
+
+        {/* Extend trial — always visible for trialing or no-sub users */}
         <div className="flex gap-1">
           <select
             value={extendDays}
@@ -763,20 +859,36 @@ function AdminActions({ u }) {
             {trialState === 'sent' ? 'Extended ✓' : trialState === 'error' ? 'Failed' : 'Extend trial'}
           </button>
         </div>
-      )}
 
-      {/* Cancel subscription */}
-      {u.stripe_subscription_id && !['cancelled','canceled','cancelling'].includes(u.subscription_status) && (
+        {/* Suspend / unsuspend */}
         <button
-          onClick={cancelSubscription}
-          disabled={cancelState === 'sending'}
-          className="w-full flex items-center gap-2 text-xs font-medium px-3 py-2 rounded-xl border border-red-200 text-red-600 hover:bg-red-50 transition-colors disabled:opacity-50"
+          onClick={toggleSuspend}
+          disabled={suspendState === 'sending'}
+          className={`w-full flex items-center gap-2 text-xs font-medium px-3 py-2 rounded-xl border transition-colors disabled:opacity-50 ${
+            isSuspended
+              ? 'border-emerald-200 text-emerald-700 hover:bg-emerald-50'
+              : 'border-amber-200 text-amber-700 hover:bg-amber-50'
+          }`}
         >
-          {cancelState === 'sending' ? <Loader2 size={12} className="animate-spin" /> : <XCircle size={12} />}
-          {cancelState === 'sent' ? 'Cancelled ✓' : cancelState === 'error' ? 'Failed — retry' : 'Cancel subscription'}
+          {suspendState === 'sending' ? <Loader2 size={12} className="animate-spin" /> : <ShieldAlert size={12} />}
+          {suspendState === 'error' ? 'Failed — retry' : isSuspended ? 'Unsuspend user' : 'Suspend user'}
         </button>
-      )}
-    </div>
+
+        {/* Cancel subscription */}
+        {u.stripe_subscription_id && !['cancelled','canceled','cancelling'].includes(u.subscription_status) && (
+          <button
+            onClick={cancelSubscription}
+            disabled={cancelState === 'sending'}
+            className="w-full flex items-center gap-2 text-xs font-medium px-3 py-2 rounded-xl border border-red-200 text-red-600 hover:bg-red-50 transition-colors disabled:opacity-50"
+          >
+            {cancelState === 'sending' ? <Loader2 size={12} className="animate-spin" /> : <XCircle size={12} />}
+            {cancelState === 'sent' ? 'Cancelled ✓' : cancelState === 'error' ? 'Failed — retry' : 'Cancel subscription'}
+          </button>
+        )}
+      </div>
+
+      {showEmail && <EmailUserModal u={u} onClose={() => setShowEmail(false)} />}
+    </>
   )
 }
 
@@ -808,6 +920,11 @@ function UserRow({ u }) {
               {statusLabel}
               {daysLeft !== null && daysLeft > 0 && ` · ${daysLeft}d left`}
             </span>
+            {u.is_suspended && (
+              <span className="text-xs font-semibold px-2 py-0.5 rounded-full border bg-amber-50 text-amber-700 border-amber-200 flex items-center gap-1">
+                <ShieldAlert size={10} /> Suspended
+              </span>
+            )}
           </div>
           <p className="text-xs text-stone-400 mt-0.5 truncate">{u.email}</p>
         </div>

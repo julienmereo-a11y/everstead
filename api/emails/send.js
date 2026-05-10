@@ -64,6 +64,17 @@ export default async function handler(req, res) {
         html:    toolReportHtml(name, score, answers),
       })
 
+    } else if (type === 'admin-direct') {
+      // Admin emailing a user directly from the panel
+      const { to, toName, subject, message } = body
+      if (!to || !subject || !message) return res.status(400).json({ error: 'Missing to, subject, or message' })
+      await resend.emails.send({
+        from:    'Everstead <hello@everstead.care>',
+        to,
+        subject,
+        html:    adminDirectHtml(toName, subject, message),
+      })
+
     } else if (type === 'info-request') {
       // Admin requesting more info from a report submitter
       const { to, reporterName, ownerName, message } = body
@@ -316,6 +327,32 @@ function infoRequestHtml(reporterName, ownerName, message) {
         </td></tr>
         <tr><td style="padding:24px 40px;border-top:1px solid #e8e5e0;">
           <p style="margin:0;color:#9ca3af;font-size:13px;">Everstead · <a href="mailto:support@everstead.care" style="color:#4c7d47;">support@everstead.care</a></p>
+        </td></tr>
+      </table>
+    </td></tr>
+  </table>
+</body>
+</html>`
+}
+
+function adminDirectHtml(toName, subject, message) {
+  const escaped = message.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>')
+  return `<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
+<body style="margin:0;padding:0;background:#f5f4f0;font-family:Georgia,serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#f5f4f0;padding:40px 0;">
+    <tr><td align="center">
+      <table width="560" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:12px;overflow:hidden;max-width:560px;width:100%;">
+        <tr><td style="background:#0d1628;padding:28px 40px;text-align:center;">
+          <img src="https://www.everstead.care/logo-v2-white.png" alt="Everstead" width="160" style="display:block;margin:0 auto;height:auto;max-width:160px;" />
+        </td></tr>
+        <tr><td style="padding:40px;">
+          <p style="margin:0 0 16px;color:#4a5568;font-size:15px;line-height:1.7;">Hi ${toName || 'there'},</p>
+          <div style="color:#374151;font-size:15px;line-height:1.8;">${escaped}</div>
+        </td></tr>
+        <tr><td style="padding:24px 40px;border-top:1px solid #e8e5e0;">
+          <p style="margin:0;color:#9ca3af;font-size:13px;">Everstead · <a href="mailto:hello@everstead.care" style="color:#4c7d47;">hello@everstead.care</a></p>
         </td></tr>
       </table>
     </td></tr>
