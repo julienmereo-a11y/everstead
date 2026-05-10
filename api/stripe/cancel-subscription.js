@@ -43,33 +43,45 @@ export default async function handler(req, res) {
   if (action === 'extend-trial') {
     try {
       const extendDays = parseInt(days, 10) || 7
-      const newTrialEnd = (() => {
-        // If there's a Stripe subscription, extend from its current trial_end
-        // Otherwise just extend from now — DB-only update
-        return Math.floor(Date.now() / 1000) + extendDays * 86400
-      })()
+      let finalTrialEnd // Unix seconds
 
-      // Only call Stripe if there's a subscription to update
       if (subscriptionId) {
+        // Extend from current Stripe trial_end (or now if already expired)
         const currentSub = await stripe.subscriptions.retrieve(subscriptionId)
         const baseTime = (currentSub.trial_end && currentSub.trial_end > Math.floor(Date.now() / 1000))
           ? currentSub.trial_end
           : Math.floor(Date.now() / 1000)
-        const stripeTrialEnd = baseTime + extendDays * 86400
-        await stripe.subscriptions.update(subscriptionId, { trial_end: stripeTrialEnd })
-        await supabase.from('profiles').update({
-          trial_ends_at: new Date(stripeTrialEnd * 1000).toISOString(),
-          subscription_status: 'trialing',
-        }).eq('id', userId)
-        return res.status(200).json({ success: true, trialEndsAt: new Date(stripeTrialEnd * 1000).toISOString() })
+        finalTrialEnd = baseTime + extendDays * 86400
+        await stripe.subscriptions.update(subscriptionId, { trial_end: finalTrialEnd })
+      } else {
+        // No Stripe subscription — extend from current trial_ends_at or now
+        const { data: profile } = await supabase.from('profiles').select('trial_ends_at').eq('id', userId).single()
+        const currentEnd = profile?.trial_ends_at ? new Date(profile.trial_ends_at).getTime() / 1000 : null
+        const baseTime = (currentEnd && currentEnd > Math.floor(Date.now() / 1000))
+          ? currentEnd
+          : Math.floor(Date.now() / 1000)
+        finalTrialEnd = baseTime + extendDays * 86400
       }
 
-      // No Stripe subscription — update DB only
+      const trialEndsAt = new Date(finalTrialEnd * 1000).toISOString()
       await supabase.from('profiles').update({
-        trial_ends_at: new Date(newTrialEnd * 1000).toISOString(),
+        trial_ends_at: trialEndsAt,
         subscription_status: 'trialing',
       }).eq('id', userId)
-      return res.status(200).json({ success: true, trialEndsAt: new Date(newTrialEnd * 1000).toISOString() })
+
+      // Email the user
+      const { data: profile } = await supabase.from('profiles').select('full_name, email').eq('id', userId).single()
+      if (profile?.email) {
+        const endDate = new Date(finalTrialEnd * 1000).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
+        await resend.emails.send({
+          from:    'Everstead <hello@everstead.care>',
+          to:      profile.email,
+          subject: `Good news — your Everstead trial has been extended`,
+          html:    trialExtendedHtml(profile.full_name, extendDays, endDate),
+        }).catch(console.error)
+      }
+
+      return res.status(200).json({ success: true, trialEndsAt })
     } catch (err) {
       console.error('extend-trial error:', err)
       return res.status(500).json({ error: err.message })
@@ -185,6 +197,37 @@ function cancellationHtml(firstName, accessEndDate) {
         </td></tr>
         <tr><td style="padding:24px 40px;border-top:1px solid #e8e5e0;">
           <p style="margin:0;color:#9ca3af;font-size:13px;line-height:1.5;">Reply to this email or write to <a href="mailto:support@everstead.care" style="color:#4c7d47;">support@everstead.care</a> with any feedback.</p>
+        </td></tr>
+      </table>
+    </td></tr>
+  </table>
+</body>
+</html>`
+}
+
+function trialExtendedHtml(name, days, endDate) {
+  return `<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
+<body style="margin:0;padding:0;background:#f5f4f0;font-family:Georgia,serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#f5f4f0;padding:40px 0;">
+    <tr><td align="center">
+      <table width="560" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:12px;overflow:hidden;max-width:560px;width:100%;">
+        <tr><td style="background:#0d1628;padding:28px 40px;text-align:center;">
+          <img src="https://www.everstead.care/logo-v2-white.png" alt="Everstead" width="160" style="display:block;margin:0 auto;height:auto;max-width:160px;" />
+        </td></tr>
+        <tr><td style="padding:40px;">
+          <h1 style="margin:0 0 16px;color:#0d1628;font-size:24px;font-weight:normal;">Good news, ${name || 'there'}</h1>
+          <p style="margin:0 0 16px;color:#4a5568;font-size:16px;line-height:1.7;">
+            We've extended your Everstead free trial by <strong>${days} days</strong>. Your trial now runs until <strong>${endDate}</strong> — no action needed on your end.
+          </p>
+          <p style="margin:0 0 32px;color:#4a5568;font-size:16px;line-height:1.7;">
+            Use the extra time to get your estate plan in order. If you have any questions or need help getting started, just reply to this email.
+          </p>
+          <a href="${process.env.VITE_APP_URL}/dashboard" style="display:inline-block;background:#0d1628;color:#ffffff;text-decoration:none;padding:14px 28px;border-radius:8px;font-size:15px;">Go to your dashboard →</a>
+        </td></tr>
+        <tr><td style="padding:24px 40px;border-top:1px solid #e8e5e0;">
+          <p style="margin:0;color:#9ca3af;font-size:13px;">Questions? <a href="mailto:hello@everstead.care" style="color:#4c7d47;">hello@everstead.care</a></p>
         </td></tr>
       </table>
     </td></tr>

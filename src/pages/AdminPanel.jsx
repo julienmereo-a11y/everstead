@@ -750,14 +750,14 @@ function EmailUserModal({ u, onClose }) {
   )
 }
 
-function AdminActions({ u }) {
-  const [pwState, setPwState]         = useState('idle')
-  const [trialState, setTrialState]   = useState('idle')
-  const [cancelState, setCancelState] = useState('idle')
+function AdminActions({ u, onTrialExtended }) {
+  const [pwState, setPwState]           = useState('idle')
+  const [trialState, setTrialState]     = useState('idle')
+  const [cancelState, setCancelState]   = useState('idle')
   const [suspendState, setSuspendState] = useState('idle')
-  const [extendDays, setExtendDays]   = useState(7)
-  const [showEmail, setShowEmail]     = useState(false)
-  const [isSuspended, setIsSuspended] = useState(u.is_suspended ?? false)
+  const [extendDays, setExtendDays]     = useState(7)
+  const [showEmail, setShowEmail]       = useState(false)
+  const [isSuspended, setIsSuspended]   = useState(u.is_suspended ?? false)
 
   const sendPasswordReset = async () => {
     setPwState('sending')
@@ -781,6 +781,8 @@ function AdminActions({ u }) {
         body: JSON.stringify({ subscriptionId: u.stripe_subscription_id || null, userId: u.id, action: 'extend-trial', days: extendDays }),
       })
       if (!res.ok) throw new Error()
+      const data = await res.json()
+      if (data.trialEndsAt && onTrialExtended) onTrialExtended(data.trialEndsAt)
       setTrialState('sent')
       setTimeout(() => setTrialState('idle'), 3000)
     } catch { setTrialState('error') }
@@ -894,9 +896,10 @@ function AdminActions({ u }) {
 
 function UserRow({ u }) {
   const [open, setOpen] = useState(false)
+  const [trialEndsAt, setTrialEndsAt] = useState(u.trial_ends_at) // local — updated on extend
   const statusCls  = STATUS_COLOR[u.subscription_status] ?? STATUS_COLOR.incomplete
   const planCls    = PLAN_BADGE[u.plan] ?? PLAN_BADGE.essential
-  const daysLeft   = u.trial_ends_at ? Math.ceil((new Date(u.trial_ends_at) - Date.now()) / 86400000) : null
+  const daysLeft   = trialEndsAt ? Math.ceil((new Date(trialEndsAt) - Date.now()) / 86400000) : null
   const statusLabel = STATUS_LABEL[u.subscription_status] ?? (u.subscription_status?.replace(/_/g, ' ') ?? '—')
 
   // Build Stripe dashboard URLs
@@ -972,13 +975,13 @@ function UserRow({ u }) {
               </div>
             )}
             {/* Trial end date */}
-            {u.trial_ends_at && (
+            {trialEndsAt && (
               <div className="flex items-start gap-2">
                 <Calendar size={13} className="text-stone-400 mt-0.5 shrink-0" />
                 <span className="text-stone-500 w-16 shrink-0 text-xs">
                   {['trialing'].includes(u.subscription_status) ? 'Trial ends' : 'Trial ended'}
                 </span>
-                <span className="text-navy-900 font-medium text-xs">{fmtDate(u.trial_ends_at)}</span>
+                <span className="text-navy-900 font-medium text-xs">{fmtDate(trialEndsAt)}</span>
               </div>
             )}
             {/* Stripe customer link */}
@@ -1046,7 +1049,7 @@ function UserRow({ u }) {
           {/* Admin actions */}
           <div className="space-y-2">
             <p className="text-xs font-semibold text-stone-400 uppercase tracking-widest mb-2">Admin actions</p>
-            <AdminActions u={u} />
+            <AdminActions u={u} onTrialExtended={setTrialEndsAt} />
           </div>
         </div>
       )}
