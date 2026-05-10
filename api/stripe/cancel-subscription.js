@@ -12,9 +12,33 @@ const resend = new Resend(process.env.RESEND_API_KEY)
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' })
 
-  const { subscriptionId, userId, action } = req.body
+  const { subscriptionId, userId, action, days } = req.body
   if (!subscriptionId || !userId) {
     return res.status(400).json({ error: 'Missing subscriptionId or userId' })
+  }
+
+  // ── Trial extension (admin only) ──────────────────────────────
+  if (action === 'extend-trial') {
+    try {
+      const extendDays = parseInt(days, 10) || 7
+      // Fetch current sub to get current trial_end (extend from there, not from now)
+      const currentSub = await stripe.subscriptions.retrieve(subscriptionId)
+      const baseTime = (currentSub.trial_end && currentSub.trial_end > Math.floor(Date.now() / 1000))
+        ? currentSub.trial_end
+        : Math.floor(Date.now() / 1000)
+      const newTrialEnd = baseTime + extendDays * 86400
+
+      await stripe.subscriptions.update(subscriptionId, { trial_end: newTrialEnd })
+      await supabase.from('profiles').update({
+        trial_ends_at: new Date(newTrialEnd * 1000).toISOString(),
+        subscription_status: 'trialing',
+      }).eq('id', userId)
+
+      return res.status(200).json({ success: true, trialEndsAt: new Date(newTrialEnd * 1000).toISOString() })
+    } catch (err) {
+      console.error('extend-trial error:', err)
+      return res.status(500).json({ error: err.message })
+    }
   }
 
   // ── Reactivation ──────────────────────────────────────────────

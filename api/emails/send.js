@@ -64,6 +64,17 @@ export default async function handler(req, res) {
         html:    toolReportHtml(name, score, answers),
       })
 
+    } else if (type === 'info-request') {
+      // Admin requesting more info from a report submitter
+      const { to, reporterName, ownerName, message } = body
+      if (!to || !message) return res.status(400).json({ error: 'Missing to or message' })
+      await resend.emails.send({
+        from:    'Everstead <hello@everstead.care>',
+        to,
+        subject: `Information requested regarding your Everstead report`,
+        html:    infoRequestHtml(reporterName, ownerName, message),
+      })
+
     } else {
       return res.status(400).json({ error: `Unknown type: ${type}` })
     }
@@ -271,6 +282,40 @@ function toolReportHtml(name, score, answers) {
         </td></tr>
         <tr><td style="padding:24px 40px;border-top:1px solid #e8e5e0;">
           <p style="margin:0;color:#9ca3af;font-size:13px;">Questions? <a href="mailto:support@everstead.care" style="color:#4c7d47;">support@everstead.care</a></p>
+        </td></tr>
+      </table>
+    </td></tr>
+  </table>
+</body>
+</html>`
+}
+
+function infoRequestHtml(reporterName, ownerName, message) {
+  return `<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
+<body style="margin:0;padding:0;background:#f5f4f0;font-family:Georgia,serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#f5f4f0;padding:40px 0;">
+    <tr><td align="center">
+      <table width="560" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:12px;overflow:hidden;max-width:560px;width:100%;">
+        <tr><td style="background:#0d1628;padding:28px 40px;text-align:center;">
+          <img src="https://www.everstead.care/logo-v2-white.png" alt="Everstead" width="160" style="display:block;margin:0 auto;height:auto;max-width:160px;" />
+        </td></tr>
+        <tr><td style="padding:40px;">
+          <h1 style="margin:0 0 16px;color:#0d1628;font-size:22px;font-weight:normal;">Additional information required</h1>
+          <p style="margin:0 0 16px;color:#4a5568;font-size:15px;line-height:1.7;">Hi ${reporterName || 'there'},</p>
+          <p style="margin:0 0 16px;color:#4a5568;font-size:15px;line-height:1.7;">
+            We are reviewing the report you submitted${ownerName ? ` regarding <strong>${ownerName}</strong>` : ''} and need a little more information before we can proceed.
+          </p>
+          <div style="background:#f5f4f0;border-left:3px solid #4c7d47;border-radius:4px;padding:16px 20px;margin:24px 0;">
+            <p style="margin:0;color:#374151;font-size:15px;line-height:1.7;white-space:pre-wrap;">${message}</p>
+          </div>
+          <p style="margin:0 0 0;color:#4a5568;font-size:15px;line-height:1.7;">
+            Please reply directly to this email with the requested information and we will continue processing your report as quickly as possible.
+          </p>
+        </td></tr>
+        <tr><td style="padding:24px 40px;border-top:1px solid #e8e5e0;">
+          <p style="margin:0;color:#9ca3af;font-size:13px;">Everstead · <a href="mailto:support@everstead.care" style="color:#4c7d47;">support@everstead.care</a></p>
         </td></tr>
       </table>
     </td></tr>

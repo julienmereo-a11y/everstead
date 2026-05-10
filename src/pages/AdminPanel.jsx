@@ -337,8 +337,20 @@ function ReportDetail({ report, onClose, onAction }) {
         <InfoRequestModal
           report={report}
           onClose={() => setShowInfoModal(false)}
-          onSend={(msg) => {
+          onSend={async (msg) => {
             setShowInfoModal(false)
+            // Actually send the email to the reporter
+            fetch('/api/emails/send', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                type: 'info-request',
+                to: report.reporter_email,
+                reporterName: report.reporter_name,
+                ownerName: report.owner_name,
+                message: msg,
+              }),
+            }).catch(console.error)
             action('info_requested', `Info requested: "${msg}"`)
           }}
         />
@@ -618,24 +630,26 @@ const PLAN_BADGE = {
   advisor:   'bg-purple-50 text-purple-700 border-purple-200',
 }
 const STATUS_COLOR = {
-  active:        'text-emerald-700 bg-emerald-50 border-emerald-200',
-  trialing:      'text-sky-700 bg-sky-50 border-sky-200',
-  cancelling:    'text-amber-700 bg-amber-50 border-amber-200',
-  cancelled:     'text-stone-500 bg-stone-100 border-stone-200',
-  canceled:      'text-stone-500 bg-stone-100 border-stone-200',
-  past_due:      'text-red-700 bg-red-50 border-red-200',
-  trial_expired: 'text-red-700 bg-red-50 border-red-200',
-  incomplete:    'text-stone-500 bg-stone-100 border-stone-200',
+  active:           'text-emerald-700 bg-emerald-50 border-emerald-200',
+  trialing:         'text-sky-700 bg-sky-50 border-sky-200',
+  cancelling:       'text-amber-700 bg-amber-50 border-amber-200',
+  cancelled:        'text-stone-500 bg-stone-100 border-stone-200',
+  canceled:         'text-stone-500 bg-stone-100 border-stone-200',
+  past_due:         'text-red-700 bg-red-50 border-red-200',
+  trial_expired:    'text-red-700 bg-red-50 border-red-200',
+  incomplete:       'text-stone-500 bg-stone-100 border-stone-200',
+  pending_deletion: 'text-red-700 bg-red-50 border-red-200',
 }
 const STATUS_LABEL = {
-  active:        'Active',
-  trialing:      'Free trial',
-  cancelling:    'Cancelling',
-  cancelled:     'Churned',
-  canceled:      'Churned',
-  past_due:      'Payment failed',
-  trial_expired: 'Trial expired',
-  incomplete:    'Incomplete',
+  active:           'Active',
+  trialing:         'Free trial',
+  cancelling:       'Cancelling',
+  cancelled:        'Churned',
+  canceled:         'Churned',
+  past_due:         'Payment failed',
+  trial_expired:    'Trial expired',
+  incomplete:       'Incomplete',
+  pending_deletion: 'Pending deletion',
 }
 
 function ReadinessBar({ score }) {
@@ -665,6 +679,103 @@ function TodoList({ u }) {
       {remaining.map(i => (
         <span key={i.label} className="text-xs bg-amber-50 text-amber-700 border border-amber-200 px-2 py-0.5 rounded-full">{i.label}</span>
       ))}
+    </div>
+  )
+}
+
+function AdminActions({ u }) {
+  const [pwState, setPwState]         = useState('idle') // idle | sending | sent | error
+  const [trialState, setTrialState]   = useState('idle')
+  const [cancelState, setCancelState] = useState('idle')
+  const [extendDays, setExtendDays]   = useState(7)
+
+  const sendPasswordReset = async () => {
+    setPwState('sending')
+    try {
+      await fetch('/api/auth/forgot-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: u.email }),
+      })
+      setPwState('sent')
+      setTimeout(() => setPwState('idle'), 3000)
+    } catch { setPwState('error') }
+  }
+
+  const extendTrial = async () => {
+    if (!u.stripe_subscription_id) return
+    setTrialState('sending')
+    try {
+      const res = await fetch('/api/stripe/cancel-subscription', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ subscriptionId: u.stripe_subscription_id, userId: u.id, action: 'extend-trial', days: extendDays }),
+      })
+      if (!res.ok) throw new Error()
+      setTrialState('sent')
+      setTimeout(() => setTrialState('idle'), 3000)
+    } catch { setTrialState('error') }
+  }
+
+  const cancelSubscription = async () => {
+    if (!u.stripe_subscription_id || !window.confirm(`Cancel subscription for ${u.full_name ?? u.email}? They will keep access until the billing period ends.`)) return
+    setCancelState('sending')
+    try {
+      const res = await fetch('/api/stripe/cancel-subscription', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ subscriptionId: u.stripe_subscription_id, userId: u.id }),
+      })
+      if (!res.ok) throw new Error()
+      setCancelState('sent')
+      setTimeout(() => setCancelState('idle'), 3000)
+    } catch { setCancelState('error') }
+  }
+
+  return (
+    <div className="space-y-2">
+      {/* Password reset */}
+      <button
+        onClick={sendPasswordReset}
+        disabled={pwState === 'sending'}
+        className="w-full flex items-center gap-2 text-xs font-medium px-3 py-2 rounded-xl border border-stone-200 text-stone-700 hover:bg-stone-50 transition-colors disabled:opacity-50"
+      >
+        {pwState === 'sending' ? <Loader2 size={12} className="animate-spin" /> : <Mail size={12} />}
+        {pwState === 'sent' ? 'Reset sent ✓' : pwState === 'error' ? 'Failed — retry' : 'Send password reset'}
+      </button>
+
+      {/* Extend trial */}
+      {u.stripe_subscription_id && (
+        <div className="flex gap-1">
+          <select
+            value={extendDays}
+            onChange={e => setExtendDays(Number(e.target.value))}
+            className="text-xs border border-stone-200 rounded-xl px-2 py-2 bg-white text-stone-700 focus:outline-none w-20"
+          >
+            {[3, 7, 14, 30].map(d => <option key={d} value={d}>+{d}d</option>)}
+          </select>
+          <button
+            onClick={extendTrial}
+            disabled={trialState === 'sending'}
+            className="flex-1 flex items-center justify-center gap-1.5 text-xs font-medium px-3 py-2 rounded-xl border border-sky-200 text-sky-700 hover:bg-sky-50 transition-colors disabled:opacity-50"
+          >
+            {trialState === 'sending' ? <Loader2 size={12} className="animate-spin" /> : <Clock size={12} />}
+            {trialState === 'sent' ? 'Extended ✓' : trialState === 'error' ? 'Failed' : 'Extend trial'}
+          </button>
+        </div>
+      )}
+
+      {/* Cancel subscription */}
+      {u.stripe_subscription_id && !['cancelled','canceled','cancelling'].includes(u.subscription_status) && (
+        <button
+          onClick={cancelSubscription}
+          disabled={cancelState === 'sending'}
+          className="w-full flex items-center gap-2 text-xs font-medium px-3 py-2 rounded-xl border border-red-200 text-red-600 hover:bg-red-50 transition-colors disabled:opacity-50"
+        >
+          {cancelState === 'sending' ? <Loader2 size={12} className="animate-spin" /> : <XCircle size={12} />}
+          {cancelState === 'sent' ? 'Cancelled ✓' : cancelState === 'error' ? 'Failed — retry' : 'Cancel subscription'}
+        </button>
+      )}
     </div>
   )
 }
@@ -709,7 +820,7 @@ function UserRow({ u }) {
       </button>
 
       {open && (
-        <div className="border-t border-stone-100 px-5 py-4 grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="border-t border-stone-100 px-5 py-4 grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {/* Contact details */}
           <div className="space-y-2">
             <p className="text-xs font-semibold text-stone-400 uppercase tracking-widest mb-2">Contact</p>
@@ -814,10 +925,226 @@ function UserRow({ u }) {
               <TodoList u={u} />
             </div>
           </div>
+
+          {/* Admin actions */}
+          <div className="space-y-2">
+            <p className="text-xs font-semibold text-stone-400 uppercase tracking-widest mb-2">Admin actions</p>
+            <AdminActions u={u} />
+          </div>
         </div>
       )}
     </div>
   )
+}
+
+// ─────────────────────────────────────────────────────────────
+// OVERVIEW SECTION
+// ─────────────────────────────────────────────────────────────
+const MRR_RATES = {
+  essential: { monthly: 7,  yearly: 5  },
+  family:    { monthly: 15, yearly: 12 },
+  advisor:   { monthly: 60, yearly: 48 },
+}
+
+function OverviewSection({ isDemo }) {
+  const [users, setUsers]     = useState(isDemo ? DEMO_USERS : [])
+  const [loading, setLoading] = useState(!isDemo)
+
+  useEffect(() => {
+    if (isDemo) return
+    supabase.rpc('get_user_stats_for_admin').then(({ data, error }) => {
+      if (!error && data) setUsers(data)
+      setLoading(false)
+    })
+  }, [isDemo])
+
+  const active     = users.filter(u => ['active', 'trialing'].includes(u.subscription_status))
+  const trialing   = users.filter(u => u.subscription_status === 'trialing')
+  const churned    = users.filter(u => ['cancelled', 'canceled'].includes(u.subscription_status))
+  const issues     = users.filter(u => ['trial_expired', 'past_due'].includes(u.subscription_status))
+  const cancelling = users.filter(u => u.subscription_status === 'cancelling')
+  const pendingDel = users.filter(u => u.subscription_status === 'pending_deletion')
+
+  const mrr = active.reduce((sum, u) => {
+    const rates = MRR_RATES[u.plan] ?? { monthly: 0, yearly: 0 }
+    return sum + (rates[u.billing_cycle ?? 'monthly'] ?? 0)
+  }, 0)
+
+  const recent = [...users]
+    .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+    .slice(0, 6)
+
+  const endingSoon = trialing.filter(u => {
+    if (!u.trial_ends_at) return false
+    const d = Math.ceil((new Date(u.trial_ends_at) - Date.now()) / 86400000)
+    return d >= 0 && d <= 7
+  }).sort((a, b) => new Date(a.trial_ends_at) - new Date(b.trial_ends_at))
+
+  const planCounts = ['essential', 'family', 'advisor'].map(plan => ({
+    plan,
+    count: active.filter(u => u.plan === plan).length,
+    mrr: active.filter(u => u.plan === plan).reduce((s, u) => {
+      const rates = MRR_RATES[plan] ?? { monthly: 0, yearly: 0 }
+      return s + (rates[u.billing_cycle ?? 'monthly'] ?? 0)
+    }, 0),
+  }))
+
+  if (loading) return (
+    <div className="flex items-center justify-center py-20">
+      <Loader2 size={24} className="animate-spin text-stone-400" />
+    </div>
+  )
+
+  return (
+    <div className="space-y-8">
+      {/* KPI row */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="bg-white border border-stone-200 rounded-2xl px-5 py-4">
+          <p className="text-xs text-stone-500 mb-1">Est. MRR</p>
+          <p className="text-3xl font-semibold text-navy-950">£{mrr.toLocaleString()}</p>
+          <p className="text-xs text-stone-400 mt-0.5">active + trialing users</p>
+        </div>
+        <StatCard label="Total users"    value={users.length}   Icon={Users}        color="bg-navy-100 text-navy-700" />
+        <StatCard label="Active / trial" value={active.length}  Icon={CheckCircle2} color="bg-emerald-100 text-emerald-700" />
+        <StatCard label="Churned"        value={churned.length} Icon={XCircle}      color="bg-stone-200 text-stone-600" />
+      </div>
+
+      {/* Alerts */}
+      <div className="space-y-3">
+        {issues.length > 0 && (
+          <div className="flex items-center gap-3 bg-red-50 border border-red-200 rounded-xl px-4 py-3">
+            <AlertCircle size={15} className="text-red-500 shrink-0" />
+            <p className="text-sm text-red-700 font-medium">
+              {issues.length} user{issues.length > 1 ? 's' : ''} with a payment issue (trial expired or past due)
+            </p>
+          </div>
+        )}
+        {pendingDel.length > 0 && (
+          <div className="flex items-center gap-3 bg-red-50 border border-red-200 rounded-xl px-4 py-3">
+            <Trash2 size={15} className="text-red-500 shrink-0" />
+            <p className="text-sm text-red-700 font-medium">
+              {pendingDel.length} user{pendingDel.length > 1 ? 's' : ''} scheduled for hard deletion — check the cron timeline
+            </p>
+          </div>
+        )}
+        {cancelling.length > 0 && (
+          <div className="flex items-center gap-3 bg-amber-50 border border-amber-200 rounded-xl px-4 py-3">
+            <AlertCircle size={15} className="text-amber-500 shrink-0" />
+            <p className="text-sm text-amber-700 font-medium">
+              {cancelling.length} user{cancelling.length > 1 ? 's' : ''} cancelling — consider reaching out
+            </p>
+          </div>
+        )}
+      </div>
+
+      <div className="grid lg:grid-cols-2 gap-6">
+        {/* Recent signups */}
+        <div className="bg-white border border-stone-200 rounded-2xl p-6">
+          <h3 className="font-semibold text-navy-950 mb-4">Recent signups</h3>
+          {recent.length === 0 ? (
+            <p className="text-sm text-stone-400">No users yet.</p>
+          ) : (
+            <div className="space-y-3">
+              {recent.map(u => {
+                const statusCls = STATUS_COLOR[u.subscription_status] ?? STATUS_COLOR.incomplete
+                const planCls   = PLAN_BADGE[u.plan] ?? PLAN_BADGE.essential
+                return (
+                  <div key={u.id} className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-full bg-navy-100 text-navy-700 flex items-center justify-center text-xs font-semibold shrink-0">
+                      {u.full_name?.[0]?.toUpperCase() ?? '?'}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium text-navy-900 truncate">{u.full_name ?? u.email}</p>
+                      <p className="text-xs text-stone-400">{fmtDate(u.created_at)}</p>
+                    </div>
+                    <span className={`text-xs font-medium px-2 py-0.5 rounded-full border capitalize ${planCls}`}>{u.plan}</span>
+                    <span className={`text-xs font-medium px-2 py-0.5 rounded-full border ${statusCls}`}>
+                      {STATUS_LABEL[u.subscription_status] ?? u.subscription_status}
+                    </span>
+                  </div>
+                )
+              })}
+            </div>
+          )}
+        </div>
+
+        {/* Right column */}
+        <div className="space-y-6">
+          {/* Plan breakdown */}
+          <div className="bg-white border border-stone-200 rounded-2xl p-6">
+            <h3 className="font-semibold text-navy-950 mb-4">
+              Plan breakdown <span className="text-stone-400 font-normal text-sm">(active + trial)</span>
+            </h3>
+            <div className="space-y-3">
+              {planCounts.map(({ plan, count, mrr: planMrr }) => (
+                <div key={plan} className="flex items-center gap-3">
+                  <span className={`text-xs font-medium px-2 py-0.5 rounded-full border capitalize w-20 text-center ${PLAN_BADGE[plan] ?? PLAN_BADGE.essential}`}>{plan}</span>
+                  <div className="flex-1 bg-stone-100 rounded-full h-2 overflow-hidden">
+                    <div className="h-full bg-navy-500 rounded-full" style={{ width: active.length ? `${(count / active.length) * 100}%` : '0%' }} />
+                  </div>
+                  <span className="text-sm font-semibold text-navy-900 w-6 text-right">{count}</span>
+                  <span className="text-xs text-stone-400 w-16 text-right">£{planMrr}/mo</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Trials ending soon */}
+          <div className="bg-white border border-stone-200 rounded-2xl p-6">
+            <h3 className="font-semibold text-navy-950 mb-1">Trials ending in 7 days</h3>
+            <p className="text-xs text-stone-400 mb-4">These users haven't converted yet</p>
+            {endingSoon.length === 0 ? (
+              <p className="text-sm text-stone-400">None ending soon 🎉</p>
+            ) : (
+              <div className="space-y-3">
+                {endingSoon.map(u => {
+                  const d = Math.ceil((new Date(u.trial_ends_at) - Date.now()) / 86400000)
+                  return (
+                    <div key={u.id} className="flex items-center gap-3">
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium text-navy-900 truncate">{u.full_name ?? u.email}</p>
+                        <p className="text-xs text-stone-400 truncate">{u.email}</p>
+                      </div>
+                      <span className={`text-xs font-semibold px-2 py-0.5 rounded-full border ${d <= 2 ? 'bg-red-50 text-red-700 border-red-200' : 'bg-amber-50 text-amber-700 border-amber-200'}`}>
+                        {d === 0 ? 'Today' : `${d}d left`}
+                      </span>
+                    </div>
+                  )
+                })}
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+// ─────────────────────────────────────────────────────────────
+// CSV EXPORT
+// ─────────────────────────────────────────────────────────────
+function exportCsv(users) {
+  const headers = ['Name','Email','Phone','Plan','Billing','Status','Readiness %','Joined','Trial ends','Stripe customer']
+  const rows = users.map(u => [
+    u.full_name ?? '',
+    u.email ?? '',
+    u.phone ?? '',
+    u.plan ?? '',
+    u.billing_cycle ?? '',
+    u.subscription_status ?? '',
+    u.readiness_score ?? '',
+    u.created_at ? new Date(u.created_at).toLocaleDateString('en-GB') : '',
+    u.trial_ends_at ? new Date(u.trial_ends_at).toLocaleDateString('en-GB') : '',
+    u.stripe_customer_id ?? '',
+  ])
+  const csv  = [headers, ...rows].map(r => r.map(v => `"${String(v).replace(/"/g, '""')}"`).join(',')).join('\n')
+  const blob = new Blob([csv], { type: 'text/csv' })
+  const url  = URL.createObjectURL(blob)
+  const a    = document.createElement('a')
+  a.href     = url
+  a.download = `everstead-users-${new Date().toISOString().slice(0,10)}.csv`
+  a.click()
+  URL.revokeObjectURL(url)
 }
 
 function UsersSection({ isDemo }) {
@@ -907,6 +1234,13 @@ function UsersSection({ isDemo }) {
             >{l}</button>
           ))}
         </div>
+        <button
+          onClick={() => exportCsv(visible)}
+          title="Export visible users to CSV"
+          className="inline-flex items-center gap-1.5 text-xs font-medium px-3 py-2 rounded-xl border border-stone-200 bg-white text-stone-600 hover:bg-stone-50 transition-colors"
+        >
+          <FileText size={13} /> Export CSV
+        </button>
       </div>
 
       {/* User list */}
@@ -936,7 +1270,7 @@ export default function AdminPanel() {
   const { user, signOut } = useAuth()
   const isDemo = searchParams.get('demo') === 'true'
 
-  const [activeTab, setActiveTab]           = useState('reports')
+  const [activeTab, setActiveTab]           = useState('overview')
   const [reports, setReports]               = useState(() => getLiveReports())
   const [selected, setSelected]             = useState(null)
   const [filterType, setFilterType]         = useState('all')
@@ -967,9 +1301,10 @@ export default function AdminPanel() {
   const actionedCount = reports.filter(r => r.status === 'actioned').length
 
   const NAV = [
-    { id: 'reports', label: 'Reports', Icon: LayoutDashboard },
-    { id: 'users',   label: 'Users',   Icon: UserRound },
-    { id: 'team',    label: 'Team',    Icon: Users },
+    { id: 'overview', label: 'Overview', Icon: LayoutDashboard },
+    { id: 'reports',  label: 'Reports',  Icon: Clock },
+    { id: 'users',    label: 'Users',    Icon: UserRound },
+    { id: 'team',     label: 'Team',     Icon: Users },
   ]
 
   return (
@@ -1028,6 +1363,17 @@ export default function AdminPanel() {
       </div>
 
       <div className="flex-1 max-w-6xl w-full mx-auto px-6 py-8 space-y-8">
+
+        {/* ── Overview tab ── */}
+        {activeTab === 'overview' && (
+          <>
+            <div>
+              <h1 className="text-2xl font-semibold text-navy-950">Overview</h1>
+              <p className="text-sm text-stone-500 mt-1">Key metrics and recent activity</p>
+            </div>
+            <OverviewSection isDemo={isDemo} />
+          </>
+        )}
 
         {/* ── Reports tab ── */}
         {activeTab === 'reports' && (
