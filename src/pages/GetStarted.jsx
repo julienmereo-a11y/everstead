@@ -152,6 +152,19 @@ export default function GetStarted() {
       const { access_token, refresh_token } = await registerRes.json()
       await supabase.auth.setSession({ access_token, refresh_token })
 
+      // 1b. Notify owner immediately — fire-and-forget, doesn't block Stripe redirect
+      fetch('/api/emails/send', {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify({
+          type:         'owner-registration',
+          name:         form.fullName,
+          email:        form.email,
+          plan:         selectedPlan,
+          billingCycle: annualBilling ? 'yearly' : 'monthly',
+        }),
+      }).catch(console.error)
+
       // 2. Store plan choice as fallback for dashboard sync
       //    (webhook sets the canonical data from Stripe)
       localStorage.setItem('everstead_pending_signup', JSON.stringify({

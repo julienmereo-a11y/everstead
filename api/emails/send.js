@@ -64,6 +64,16 @@ export default async function handler(req, res) {
         html:    toolReportHtml(name, score, answers),
       })
 
+    } else if (type === 'owner-registration') {
+      // Fires immediately on signup, before Stripe checkout
+      const { name, email, plan, billingCycle } = body
+      await resend.emails.send({
+        from:    'Everstead <hello@everstead.care>',
+        to:      'julien@everstead.care',
+        subject: `🆕 New registration — ${name || email} (${plan || 'essential'})`,
+        html:    ownerRegistrationHtml({ name, email, plan, billingCycle }),
+      })
+
     } else if (type === 'admin-direct') {
       // Admin emailing a user directly from the panel
       const { to, toName, subject, message } = body
@@ -353,6 +363,54 @@ function adminDirectHtml(toName, subject, message) {
         </td></tr>
         <tr><td style="padding:24px 40px;border-top:1px solid #e8e5e0;">
           <p style="margin:0;color:#9ca3af;font-size:13px;">Everstead · <a href="mailto:hello@everstead.care" style="color:#4c7d47;">hello@everstead.care</a></p>
+        </td></tr>
+      </table>
+    </td></tr>
+  </table>
+</body>
+</html>`
+}
+
+function ownerRegistrationHtml({ name, email, plan, billingCycle }) {
+  const signedUpAt = new Date().toLocaleString('en-GB', {
+    day: 'numeric', month: 'long', year: 'numeric',
+    hour: '2-digit', minute: '2-digit', timeZone: 'Europe/London',
+  })
+  const row = (label, value) => value
+    ? `<tr>
+        <td style="padding:10px 0;color:#6b7280;font-size:14px;border-bottom:1px solid #f0ede8;width:140px;">${label}</td>
+        <td style="padding:10px 0;color:#0d1628;font-size:14px;border-bottom:1px solid #f0ede8;font-weight:500;">${value}</td>
+      </tr>`
+    : ''
+  return `<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
+<body style="margin:0;padding:0;background:#f5f4f0;font-family:Georgia,serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#f5f4f0;padding:40px 0;">
+    <tr><td align="center">
+      <table width="560" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:12px;overflow:hidden;max-width:560px;width:100%;">
+        <tr><td style="background:#0d1628;padding:28px 40px;">
+          <img src="https://www.everstead.care/logo-v2-white.png" alt="Everstead" width="140" style="display:block;height:auto;" />
+        </td></tr>
+        <tr><td style="padding:36px 40px 28px;">
+          <p style="margin:0 0 4px;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:#4c7d47;">New registration</p>
+          <h1 style="margin:0 0 6px;color:#0d1628;font-size:22px;font-weight:normal;">
+            ${name || email} just created an account
+          </h1>
+          <p style="margin:0 0 24px;color:#9ca3af;font-size:13px;">Card not yet entered — awaiting Stripe checkout</p>
+          <table width="100%" cellpadding="0" cellspacing="0">
+            ${row('Name', name || '—')}
+            ${row('Email', `<a href="mailto:${email}" style="color:#4c7d47;">${email}</a>`)}
+            ${row('Plan selected', plan ? plan.charAt(0).toUpperCase() + plan.slice(1) : '—')}
+            ${row('Billing', billingCycle ? billingCycle.charAt(0).toUpperCase() + billingCycle.slice(1) : '—')}
+            ${row('Registered', signedUpAt)}
+          </table>
+          <div style="margin-top:28px;">
+            <a href="${process.env.VITE_APP_URL}/admin" style="display:inline-block;background:#0d1628;color:#ffffff;text-decoration:none;padding:12px 24px;border-radius:8px;font-size:14px;">View in admin panel →</a>
+          </div>
+        </td></tr>
+        <tr><td style="padding:20px 40px;border-top:1px solid #e8e5e0;">
+          <p style="margin:0;color:#9ca3af;font-size:12px;">Everstead · automated owner notification · a follow-up email will arrive when they complete Stripe checkout</p>
         </td></tr>
       </table>
     </td></tr>

@@ -91,7 +91,7 @@ export default async function handler(req, res) {
       await resend.emails.send({
         from:    'Everstead <hello@everstead.care>',
         to:      'julien@everstead.care',
-        subject: `🆕 New signup — ${p.full_name || p.email} (${metaPlan || p.plan || 'unknown'})`,
+        subject: `💳 Card captured — ${p.full_name || p.email} (${metaPlan || p.plan || 'unknown'})`,
         html:    ownerNewSignupHtml({
           name:         p.full_name,
           email:        p.email,
