@@ -612,13 +612,13 @@ function TeamSection({ isDemo, currentUserEmail }) {
 // DEMO USERS
 // ─────────────────────────────────────────────────────────────
 const DEMO_USERS = [
-  { id: 'u1', full_name: 'James Thornton',   email: 'james@example.com',   phone: '+44 7700 900111', plan: 'family',    subscription_status: 'active',        billing_cycle: 'yearly',  readiness_score: 72, created_at: '2026-04-15T10:00:00Z', trial_ends_at: null,                   stripe_customer_id: 'cus_demo1', stripe_subscription_id: 'sub_demo1', accounts_count: 6, documents_count: 4, people_count: 3, instructions_count: 5, wishes_count: 2 },
-  { id: 'u2', full_name: 'Sarah Okafor',     email: 'sarah@example.com',   phone: '+44 7700 900222', plan: 'essential', subscription_status: 'trialing',       billing_cycle: 'monthly', readiness_score: 35, created_at: '2026-04-22T14:30:00Z', trial_ends_at: '2026-05-07T14:30:00Z', stripe_customer_id: 'cus_demo2', stripe_subscription_id: 'sub_demo2', accounts_count: 2, documents_count: 0, people_count: 1, instructions_count: 0, wishes_count: 0 },
-  { id: 'u3', full_name: 'Marcus Webb',      email: 'marcus@example.com',  phone: null,              plan: 'essential', subscription_status: 'trialing',       billing_cycle: 'monthly', readiness_score: 10, created_at: '2026-05-01T09:00:00Z', trial_ends_at: '2026-05-15T09:00:00Z', stripe_customer_id: 'cus_demo3', stripe_subscription_id: 'sub_demo3', accounts_count: 1, documents_count: 0, people_count: 0, instructions_count: 0, wishes_count: 0 },
-  { id: 'u4', full_name: 'Priya Sharma',     email: 'priya@example.com',   phone: '+44 7700 900444', plan: 'advisor',   subscription_status: 'active',        billing_cycle: 'yearly',  readiness_score: 91, created_at: '2026-04-10T08:00:00Z', trial_ends_at: null,                   stripe_customer_id: 'cus_demo4', stripe_subscription_id: 'sub_demo4', accounts_count: 12, documents_count: 8, people_count: 5, instructions_count: 9, wishes_count: 4 },
-  { id: 'u5', full_name: 'Tom Blackwell',    email: 'tom@example.com',     phone: '+44 7700 900555', plan: 'family',    subscription_status: 'cancelling',    billing_cycle: 'monthly', readiness_score: 55, created_at: '2026-03-28T16:00:00Z', trial_ends_at: null,                   stripe_customer_id: 'cus_demo5', stripe_subscription_id: 'sub_demo5', accounts_count: 4, documents_count: 3, people_count: 2, instructions_count: 3, wishes_count: 1 },
-  { id: 'u6', full_name: 'Helen Marsh',      email: 'helen@example.com',   phone: '+44 7700 900666', plan: 'essential', subscription_status: 'cancelled',     billing_cycle: 'monthly', readiness_score: 28, created_at: '2026-03-01T10:00:00Z', trial_ends_at: null,                   stripe_customer_id: 'cus_demo6', stripe_subscription_id: null,        accounts_count: 2, documents_count: 1, people_count: 1, instructions_count: 0, wishes_count: 0 },
-  { id: 'u7', full_name: 'David Osei',       email: 'david@example.com',   phone: '+44 7700 900777', plan: 'essential', subscription_status: 'trial_expired', billing_cycle: 'monthly', readiness_score: 20, created_at: '2026-04-20T12:00:00Z', trial_ends_at: '2026-05-04T12:00:00Z', stripe_customer_id: 'cus_demo7', stripe_subscription_id: 'sub_demo7', accounts_count: 1, documents_count: 0, people_count: 0, instructions_count: 0, wishes_count: 0 },
+  { id: 'u1', full_name: 'James Thornton',   email: 'james@example.com',   phone: '+44 7700 900111', country: 'United Kingdom', nationality: 'British',  plan: 'family',    subscription_status: 'active',        billing_cycle: 'yearly',  readiness_score: 72, created_at: '2026-04-15T10:00:00Z', trial_ends_at: null,                   stripe_customer_id: 'cus_demo1', stripe_subscription_id: 'sub_demo1', accounts_count: 6, documents_count: 4, people_count: 3, instructions_count: 5, wishes_count: 2 },
+  { id: 'u2', full_name: 'Sarah Okafor',     email: 'sarah@example.com',   phone: '+44 7700 900222', country: 'United Kingdom', nationality: 'Nigerian',  plan: 'essential', subscription_status: 'trialing',       billing_cycle: 'monthly', readiness_score: 35, created_at: '2026-04-22T14:30:00Z', trial_ends_at: '2026-05-07T14:30:00Z', stripe_customer_id: 'cus_demo2', stripe_subscription_id: 'sub_demo2', accounts_count: 2, documents_count: 0, people_count: 1, instructions_count: 0, wishes_count: 0 },
+  { id: 'u3', full_name: 'Marcus Webb',      email: 'marcus@example.com',  phone: null,              country: null,             nationality: null,        plan: 'essential', subscription_status: 'trialing',       billing_cycle: 'monthly', readiness_score: 10, created_at: '2026-05-01T09:00:00Z', trial_ends_at: '2026-05-15T09:00:00Z', stripe_customer_id: 'cus_demo3', stripe_subscription_id: 'sub_demo3', accounts_count: 1, documents_count: 0, people_count: 0, instructions_count: 0, wishes_count: 0 },
+  { id: 'u4', full_name: 'Priya Sharma',     email: 'priya@example.com',   phone: '+44 7700 900444', country: 'United Kingdom', nationality: 'Indian',    plan: 'advisor',   subscription_status: 'active',        billing_cycle: 'yearly',  readiness_score: 91, created_at: '2026-04-10T08:00:00Z', trial_ends_at: null,                   stripe_customer_id: 'cus_demo4', stripe_subscription_id: 'sub_demo4', accounts_count: 12, documents_count: 8, people_count: 5, instructions_count: 9, wishes_count: 4 },
+  { id: 'u5', full_name: 'Tom Blackwell',    email: 'tom@example.com',     phone: '+44 7700 900555', country: 'United Kingdom', nationality: 'British',  plan: 'family',    subscription_status: 'cancelling',    billing_cycle: 'monthly', readiness_score: 55, created_at: '2026-03-28T16:00:00Z', trial_ends_at: null,                   stripe_customer_id: 'cus_demo5', stripe_subscription_id: 'sub_demo5', accounts_count: 4, documents_count: 3, people_count: 2, instructions_count: 3, wishes_count: 1 },
+  { id: 'u6', full_name: 'Helen Marsh',      email: 'helen@example.com',   phone: '+44 7700 900666', country: 'Ireland',        nationality: 'Irish',     plan: 'essential', subscription_status: 'cancelled',     billing_cycle: 'monthly', readiness_score: 28, created_at: '2026-03-01T10:00:00Z', trial_ends_at: null,                   stripe_customer_id: 'cus_demo6', stripe_subscription_id: null,        accounts_count: 2, documents_count: 1, people_count: 1, instructions_count: 0, wishes_count: 0 },
+  { id: 'u7', full_name: 'David Osei',       email: 'david@example.com',   phone: '+44 7700 900777', country: 'United Kingdom', nationality: 'Ghanaian', plan: 'essential', subscription_status: 'trial_expired', billing_cycle: 'monthly', readiness_score: 20, created_at: '2026-04-20T12:00:00Z', trial_ends_at: '2026-05-04T12:00:00Z', stripe_customer_id: 'cus_demo7', stripe_subscription_id: 'sub_demo7', accounts_count: 1, documents_count: 0, people_count: 0, instructions_count: 0, wishes_count: 0 },
 ]
 
 // ─────────────────────────────────────────────────────────────
@@ -945,16 +945,16 @@ function UserRow({ u }) {
           <div className="space-y-2">
             <p className="text-xs font-semibold text-stone-400 uppercase tracking-widest mb-2">Contact</p>
             {[
-              [Mail,     'Email',       u.email],
-              [Phone,    'Phone',       u.phone],
-              [MapPin,   'Country',     u.country],
-              [MapPin,   'Nationality', u.nationality],
-              [Calendar, 'Joined',      fmtDate(u.created_at)],
-            ].map(([Icon, label, val]) => val ? (
+              [Mail,     'Email',       u.email,       false],
+              [Phone,    'Phone',       u.phone,       false],
+              [MapPin,   'Country',     u.country,     true],
+              [MapPin,   'Nationality', u.nationality, true],
+              [Calendar, 'Joined',      fmtDate(u.created_at), false],
+            ].map(([Icon, label, val, alwaysShow]) => (val || alwaysShow) ? (
               <div key={label} className="flex items-start gap-2 text-sm">
                 <Icon size={13} className="text-stone-400 mt-0.5 shrink-0" />
                 <span className="text-stone-500 w-20 shrink-0 text-xs">{label}</span>
-                <span className="text-navy-900 font-medium text-xs">{val}</span>
+                <span className={`font-medium text-xs ${val ? 'text-navy-900' : 'text-stone-400'}`}>{val || '—'}</span>
               </div>
             ) : null)}
           </div>
