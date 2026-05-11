@@ -152,7 +152,15 @@ export default function GetStarted() {
       const { access_token, refresh_token } = await registerRes.json()
       await supabase.auth.setSession({ access_token, refresh_token })
 
-      // 1b. Notify owner immediately — fire-and-forget, doesn't block Stripe redirect
+      // 1b. Save phone, country, nationality to profile (trigger only creates basic row)
+      const fullPhone = (form.dialCode && form.phone) ? `${form.dialCode} ${form.phone}` : null
+      await supabase.from('profiles').update({
+        phone:       fullPhone,
+        country:     form.country     || null,
+        nationality: form.nationality || null,
+      }).eq('id', (await supabase.auth.getUser()).data.user?.id)
+
+      // 1d. Notify owner immediately — fire-and-forget, doesn't block Stripe redirect
       fetch('/api/emails/send', {
         method:  'POST',
         headers: { 'Content-Type': 'application/json' },
