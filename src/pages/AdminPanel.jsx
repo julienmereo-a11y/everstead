@@ -946,7 +946,7 @@ function UserRow({ u }) {
             <p className="text-xs font-semibold text-stone-400 uppercase tracking-widest mb-2">Contact</p>
             {[
               [Mail,     'Email',       u.email,       false],
-              [Phone,    'Phone',       u.phone,       false],
+              [Phone,    'Phone',       u.phone,       true],
               [MapPin,   'Country',     u.country,     true],
               [MapPin,   'Nationality', u.nationality, true],
               [Calendar, 'Joined',      fmtDate(u.created_at), false],
