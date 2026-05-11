@@ -107,6 +107,101 @@ export default async function handler(req, res) {
     }
   }
 
+  // ── customer.subscription.created ────────────────────────
+  // Fires immediately when the inline-checkout flow creates the subscription.
+  // Syncs plan/billing/trial data to the profile using user_id from metadata.
+  if (event.type === 'customer.subscription.created') {
+    const subscription = event.data.object
+    const priceId          = subscription.items.data[0]?.price?.id
+    const metaPlan         = subscription.metadata?.plan          || null
+    const metaBillingCycle = subscription.metadata?.billing_cycle || null
+    const metaReferredBy   = subscription.metadata?.referred_by   || null
+    const metaUserId       = subscription.metadata?.user_id       || null
+    const isTrialing       = subscription.status === 'trialing'
+
+    const trialEndsAt = subscription.trial_end
+      ? new Date(subscription.trial_end * 1000).toISOString()
+      : null
+    const currentPeriodEnd = subscription.current_period_end
+      ? new Date(subscription.current_period_end * 1000).toISOString()
+      : null
+
+    const profileUpdate = {
+      stripe_customer_id:     subscription.customer,
+      stripe_subscription_id: subscription.id,
+      stripe_price_id:        priceId,
+      subscription_status:    isTrialing ? 'trialing' : subscription.status,
+      trial_ends_at:          trialEndsAt,
+      current_period_end:     currentPeriodEnd,
+    }
+    if (metaPlan)         profileUpdate.plan          = metaPlan
+    if (metaBillingCycle) profileUpdate.billing_cycle = metaBillingCycle
+    if (metaReferredBy)   profileUpdate.referred_by   = metaReferredBy
+
+    // Prefer user_id from metadata (avoids race condition where stripe_customer_id
+    // hasn't been written to profiles yet when the webhook arrives)
+    if (metaUserId) {
+      await supabase.from('profiles').update(profileUpdate).eq('id', metaUserId)
+    } else {
+      await supabase.from('profiles').update(profileUpdate).eq('stripe_customer_id', subscription.customer)
+    }
+  }
+
+  // ── setup_intent.succeeded ────────────────────────────────
+  // Fires when the user successfully confirms their card in the inline checkout.
+  // This is the equivalent of checkout.session.completed for the new flow —
+  // send welcome email to user and owner notification.
+  if (event.type === 'setup_intent.succeeded') {
+    const setupIntent = event.data.object
+
+    // Only handle setup intents linked to a customer (subscription flow)
+    if (!setupIntent.customer) return res.status(200).json({ received: true })
+
+    const { data: profiles } = await supabase
+      .from('profiles')
+      .select('id, full_name, email, plan, billing_cycle, stripe_subscription_id')
+      .eq('stripe_customer_id', setupIntent.customer)
+
+    if (profiles?.[0]) {
+      const p = profiles[0]
+
+      let subscription = null
+      if (p.stripe_subscription_id) {
+        try { subscription = await stripe.subscriptions.retrieve(p.stripe_subscription_id) } catch {}
+      }
+      const isTrialing = subscription?.status === 'trialing'
+      const periodEnd  = subscription?.trial_end || subscription?.current_period_end
+
+      // Welcome email to user
+      await resend.emails.send({
+        from:    'Everstead <hello@everstead.care>',
+        to:      p.email,
+        subject: isTrialing
+          ? 'Your Everstead trial has started — card saved'
+          : 'Your Everstead subscription is confirmed',
+        html: paymentConfirmedHtml(p.full_name, p.plan, isTrialing, periodEnd),
+      }).catch(console.error)
+
+      // Owner notification
+      await resend.emails.send({
+        from:    'Everstead <hello@everstead.care>',
+        to:      'julien@everstead.care',
+        subject: `💳 Card captured — ${p.full_name || p.email} (${p.plan || 'unknown'})`,
+        html:    ownerNewSignupHtml({
+          name:           p.full_name,
+          email:          p.email,
+          plan:           p.plan,
+          billingCycle:   p.billing_cycle,
+          isTrialing,
+          trialEnd:       subscription?.trial_end,
+          referredBy:     subscription?.metadata?.referred_by,
+          customerId:     setupIntent.customer,
+          subscriptionId: p.stripe_subscription_id,
+        }),
+      }).catch(console.error)
+    }
+  }
+
   // ── customer.subscription.deleted ────────────────────────
   // Fires at period end when cancel_at_period_end subscription expires.
   if (event.type === 'customer.subscription.deleted') {

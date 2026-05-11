@@ -5,8 +5,9 @@ import {
   Eye, EyeOff, AlertCircle, Loader2, CheckCheck,
   CreditCard, Zap, Star,
 } from 'lucide-react'
+import { Elements, PaymentElement, useStripe, useElements } from '@stripe/react-stripe-js'
 import { useAuth } from '../contexts/AuthContext'
-import { PLANS, redirectToCheckout } from '../lib/stripe'
+import { PLANS, getStripe } from '../lib/stripe'
 import { supabase } from '../lib/supabase'
 
 // ─────────────────────────────────────────────────────────────
@@ -86,13 +87,14 @@ export default function GetStarted() {
   const [searchParams] = useSearchParams()
   const navigate       = useNavigate()
 
-  const [step, setStep]               = useState(1) // 1 = plan, 2 = account, 3 = redirecting to Stripe
+  const [step, setStep]               = useState(1) // 1 = plan, 2 = account, 3 = payment
   const [selectedPlan, setSelectedPlan] = useState('family')
   const [annualBilling, setAnnualBilling] = useState(true)
   const [advisorFamilyCount, setAdvisorFamilyCount] = useState(null) // null = not asked yet
   const [showPw, setShowPw]           = useState(false)
   const [loading, setLoading]         = useState(false)
   const [error, setError]             = useState(null)
+  const [clientSecret, setClientSecret] = useState(null)
 
   const [form, setForm] = useState({
     fullName: '', email: '', password: '',
@@ -124,7 +126,7 @@ export default function GetStarted() {
     /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email) &&
     form.password.length >= 8
 
-  // ── SUBMIT: create account → redirect to Stripe Checkout ──
+  // ── SUBMIT: create account → create Stripe subscription → show inline card form ──
   const handleSubmit = async (e) => {
     e.preventDefault()
     setError(null)
@@ -152,15 +154,17 @@ export default function GetStarted() {
       const { access_token, refresh_token } = await registerRes.json()
       await supabase.auth.setSession({ access_token, refresh_token })
 
+      const { data: { user } } = await supabase.auth.getUser()
+
       // 1b. Save phone, country, nationality to profile (trigger only creates basic row)
       const fullPhone = (form.dialCode && form.phone) ? `${form.dialCode} ${form.phone}` : null
       await supabase.from('profiles').update({
         phone:       fullPhone,
         country:     form.country     || null,
         nationality: form.nationality || null,
-      }).eq('id', (await supabase.auth.getUser()).data.user?.id)
+      }).eq('id', user?.id)
 
-      // 1d. Notify owner immediately — fire-and-forget, doesn't block Stripe redirect
+      // 1c. Notify owner — fire-and-forget
       fetch('/api/emails/send', {
         method:  'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -173,27 +177,30 @@ export default function GetStarted() {
         }),
       }).catch(console.error)
 
-      // 2. Store plan choice as fallback for dashboard sync
-      //    (webhook sets the canonical data from Stripe)
-      localStorage.setItem('everstead_pending_signup', JSON.stringify({
-        email:         form.email,
-        plan:          selectedPlan,
-        billing_cycle: annualBilling ? 'yearly' : 'monthly',
-        full_name:     form.fullName,
-      }))
-
-      // 3. Show redirecting screen, then go to Stripe Checkout
-      //    Card is required but not charged for 14 days.
-      setStep(3)
-
-      await redirectToCheckout({
-        plan:            selectedPlan,
-        billingCycle:    annualBilling ? 'yearly' : 'monthly',
-        userEmail:       form.email,
-        trialPeriodDays: trialDays,
-        referredBy:      referralCode,
+      // 2. Create Stripe customer + subscription with trial → get client secret
+      //    for the inline PaymentElement (no redirect to Stripe)
+      const intentRes = await fetch('/api/stripe/setup-intent', {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify({
+          userId:          user?.id,
+          email:           form.email,
+          name:            form.fullName,
+          plan:            selectedPlan,
+          billingCycle:    annualBilling ? 'yearly' : 'monthly',
+          referredBy:      referralCode,
+          trialPeriodDays: trialDays,
+        }),
       })
-      // redirectToCheckout sets window.location.href — nothing below runs
+
+      if (!intentRes.ok) {
+        const { error } = await intentRes.json().catch(() => ({}))
+        throw new Error(error || 'Could not set up payment. Please try again.')
+      }
+
+      const { clientSecret: secret } = await intentRes.json()
+      setClientSecret(secret)
+      setStep(3)
     } catch (err) {
       setError(err.message ?? 'Something went wrong. Please try again.')
       setStep(2)
@@ -246,11 +253,12 @@ export default function GetStarted() {
           )}
 
           {/* Step indicator */}
-          {step <= 2 && (
+          {step <= 3 && (
             <div className="flex items-center justify-center gap-3 mb-14">
               {[
                 { n: 1, label: 'Choose plan' },
                 { n: 2, label: 'Create account' },
+                { n: 3, label: 'Payment' },
               ].map(({ n, label }, i, arr) => (
                 <React.Fragment key={n}>
                   <div className={`flex items-center gap-2 ${step >= n ? 'text-navy-800' : 'text-stone-400'}`}>
@@ -534,21 +542,47 @@ export default function GetStarted() {
             </div>
           )}
 
-          {/* ── STEP 3: Redirecting to Stripe ─────────────── */}
-          {step === 3 && (
-            <div className="max-w-sm mx-auto text-center py-16">
-              <div className="w-16 h-16 rounded-full bg-sage-50 flex items-center justify-center mx-auto mb-6">
-                <Loader2 size={28} className="text-sage-600 animate-spin" />
+          {/* ── STEP 3: Inline payment ─────────────────────── */}
+          {step === 3 && clientSecret && (
+            <div className="max-w-md mx-auto">
+              <h2 className="font-display text-3xl font-light text-navy-950 text-center mb-2">Add your card</h2>
+              <p className="text-center text-stone-500 text-sm mb-8">
+                Your card won't be charged for {trialDays} days. Cancel any time before then and pay nothing.
+              </p>
+
+              <Elements
+                stripe={getStripe()}
+                options={{
+                  clientSecret,
+                  appearance: {
+                    theme: 'stripe',
+                    variables: {
+                      colorPrimary:      '#0d1628',
+                      colorBackground:   '#ffffff',
+                      colorText:         '#0d1628',
+                      colorDanger:       '#ef4444',
+                      fontFamily:        'DM Sans, system-ui, sans-serif',
+                      borderRadius:      '8px',
+                      fontSizeBase:      '14px',
+                      spacingUnit:       '4px',
+                    },
+                    rules: {
+                      '.Input': { border: '1px solid #d6d3cd', boxShadow: 'none', padding: '10px 14px' },
+                      '.Input:focus': { border: '1px solid #0d1628', boxShadow: '0 0 0 2px rgba(13,22,40,0.12)' },
+                      '.Label': { fontWeight: '600', color: '#57534e', marginBottom: '6px' },
+                    },
+                  },
+                }}
+              >
+                <CheckoutForm trialDays={trialDays} plan={selectedPlan} />
+              </Elements>
+
+              <div className="mt-5 flex items-start gap-3 bg-stone-100 rounded-xl p-4">
+                <Lock size={14} className="text-navy-600 mt-0.5 flex-shrink-0" />
+                <p className="text-xs text-stone-500 leading-relaxed">
+                  Your card details are handled directly by Stripe and never touch our servers. Secured with 256-bit encryption.
+                </p>
               </div>
-              <h2 className="font-display text-2xl font-light text-navy-950 mb-3">
-                Taking you to payment…
-              </h2>
-              <p className="text-stone-500 text-sm leading-relaxed mb-2">
-                Your account has been created. We're redirecting you to Stripe to securely add your card.
-              </p>
-              <p className="text-stone-400 text-xs leading-relaxed">
-                Your card won't be charged for {trialDays} days. Cancel any time before the trial ends and pay nothing.
-              </p>
             </div>
           )}
 
@@ -573,6 +607,69 @@ export default function GetStarted() {
         </div>
       </section>
     </div>
+  )
+}
+
+// ─────────────────────────────────────────────────────────────
+// INLINE CHECKOUT FORM (step 3)
+// ─────────────────────────────────────────────────────────────
+function CheckoutForm({ trialDays, plan }) {
+  const stripe   = useStripe()
+  const elements = useElements()
+  const [loading, setLoading] = useState(false)
+  const [error,   setError]   = useState(null)
+
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    if (!stripe || !elements) return
+    setLoading(true)
+    setError(null)
+
+    const { error: stripeError } = await stripe.confirmSetup({
+      elements,
+      confirmParams: {
+        return_url: `${window.location.origin}/dashboard?checkout=success`,
+      },
+      // Don't redirect if Stripe can confirm without 3DS
+      redirect: 'if_required',
+    })
+
+    if (stripeError) {
+      setError(stripeError.message)
+      setLoading(false)
+    } else {
+      // Confirmed without redirect — go straight to dashboard
+      window.location.href = '/dashboard?checkout=success'
+    }
+  }
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-5">
+      <PaymentElement options={{ layout: 'tabs' }} />
+
+      {error && (
+        <div className="flex items-start gap-3 bg-red-50 border border-red-200 rounded-xl px-4 py-3.5">
+          <AlertCircle size={16} className="text-red-500 mt-0.5 shrink-0" />
+          <p className="text-sm text-red-700">{error}</p>
+        </div>
+      )}
+
+      <button
+        type="submit"
+        disabled={!stripe || loading}
+        className="w-full bg-navy-800 text-white font-semibold text-sm py-3.5 rounded-lg hover:bg-navy-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+      >
+        {loading ? (
+          <><Loader2 size={15} className="animate-spin" />Processing…</>
+        ) : (
+          <><CreditCard size={15} />Start my {trialDays}-day free trial</>
+        )}
+      </button>
+
+      <p className="text-center text-xs text-stone-400">
+        You won't be charged until day {trialDays}. Cancel any time before then.
+      </p>
+    </form>
   )
 }
 
