@@ -945,13 +945,15 @@ function UserRow({ u }) {
           <div className="space-y-2">
             <p className="text-xs font-semibold text-stone-400 uppercase tracking-widest mb-2">Contact</p>
             {[
-              [Mail,     'Email',  u.email],
-              [Phone,    'Phone',  u.phone],
-              [Calendar, 'Joined', fmtDate(u.created_at)],
+              [Mail,     'Email',       u.email],
+              [Phone,    'Phone',       u.phone],
+              [MapPin,   'Country',     u.country],
+              [MapPin,   'Nationality', u.nationality],
+              [Calendar, 'Joined',      fmtDate(u.created_at)],
             ].map(([Icon, label, val]) => val ? (
               <div key={label} className="flex items-start gap-2 text-sm">
                 <Icon size={13} className="text-stone-400 mt-0.5 shrink-0" />
-                <span className="text-stone-500 w-16 shrink-0 text-xs">{label}</span>
+                <span className="text-stone-500 w-20 shrink-0 text-xs">{label}</span>
                 <span className="text-navy-900 font-medium text-xs">{val}</span>
               </div>
             ) : null)}
@@ -1244,11 +1246,13 @@ function OverviewSection({ isDemo }) {
 // CSV EXPORT
 // ─────────────────────────────────────────────────────────────
 function exportCsv(users) {
-  const headers = ['Name','Email','Phone','Plan','Billing','Status','Readiness %','Joined','Trial ends','Stripe customer']
+  const headers = ['Name','Email','Phone','Country','Nationality','Plan','Billing','Status','Readiness %','Joined','Trial ends','Stripe customer']
   const rows = users.map(u => [
     u.full_name ?? '',
     u.email ?? '',
     u.phone ?? '',
+    u.country ?? '',
+    u.nationality ?? '',
     u.plan ?? '',
     u.billing_cycle ?? '',
     u.subscription_status ?? '',
