@@ -106,6 +106,47 @@ export default function GetStarted() {
   const referralCode = searchParams.get('ref') || null
   const trialDays    = referralCode ? 21 : 14
 
+  // Resume checkout for users who created an account but didn't enter their card
+  useEffect(() => {
+    if (searchParams.get('resume') !== 'true') return
+    ;(async () => {
+      const { data: { session } } = await supabase.auth.getSession()
+      if (!session) return
+
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('stripe_customer_id, full_name, email, plan, billing_cycle')
+        .eq('id', session.user.id)
+        .single()
+
+      if (!profile) return
+
+      const resumePlan    = profile.plan    || 'essential'
+      const resumeBilling = profile.billing_cycle || 'monthly'
+      setSelectedPlan(resumePlan)
+      setAnnualBilling(resumeBilling === 'yearly')
+
+      const intentRes = await fetch('/api/stripe/setup-intent', {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify({
+          userId:             session.user.id,
+          email:              profile.email || session.user.email,
+          name:               profile.full_name,
+          existingCustomerId: profile.stripe_customer_id || undefined,
+          plan:               resumePlan,
+          billingCycle:       resumeBilling,
+          trialPeriodDays:    referralCode ? 21 : 14,
+        }),
+      })
+      if (!intentRes.ok) return
+      const { clientSecret: secret, customerId } = await intentRes.json()
+      setClientSecret(secret)
+      setStripeCustomerId(customerId)
+      setStep(3)
+    })()
+  }, [])
+
   // Pre-select plan from URL params (e.g. from Pricing page CTA)
   useEffect(() => {
     const plan    = searchParams.get('plan')
@@ -164,19 +205,6 @@ export default function GetStarted() {
         country:     form.country     || null,
         nationality: form.nationality || null,
       }).eq('id', user?.id)
-
-      // 1c. Notify owner — fire-and-forget
-      fetch('/api/emails/send', {
-        method:  'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body:    JSON.stringify({
-          type:         'owner-registration',
-          name:         form.fullName,
-          email:        form.email,
-          plan:         selectedPlan,
-          billingCycle: annualBilling ? 'yearly' : 'monthly',
-        }),
-      }).catch(console.error)
 
       // 2. Create Stripe customer + subscription with trial → get client secret
       //    for the inline PaymentElement (no redirect to Stripe)

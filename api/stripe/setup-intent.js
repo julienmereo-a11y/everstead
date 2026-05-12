@@ -10,17 +10,18 @@ const supabase = createClient(
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' })
 
-  const { userId, email, name, plan, billingCycle, referredBy, trialPeriodDays = 14 } = req.body
+  const { userId, email, name, plan, billingCycle, referredBy, trialPeriodDays = 14, existingCustomerId } = req.body
   if (!userId || !email) return res.status(400).json({ error: 'Missing required fields' })
 
   try {
-    // Create Stripe customer only — NO subscription yet.
-    // The subscription is created in create-subscription.js AFTER the card is confirmed.
-    // This prevents users from getting trialing dashboard access without a card.
-    const customer = await stripe.customers.create({
-      email,
-      name: name || undefined,
-    })
+    // Reuse existing customer if provided (resume-checkout flow),
+    // otherwise create a new one. No subscription created yet.
+    let customer
+    if (existingCustomerId) {
+      customer = await stripe.customers.retrieve(existingCustomerId)
+    } else {
+      customer = await stripe.customers.create({ email, name: name || undefined })
+    }
 
     // Standalone SetupIntent — collects and saves the card without creating a subscription.
     // Metadata carries everything needed by create-subscription.js after confirmation.

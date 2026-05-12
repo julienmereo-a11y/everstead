@@ -23,10 +23,17 @@ export default function ProtectedRoute({ children }) {
   if (!user) return <Navigate to="/login" state={{ from: location }} replace />
   if (!profile) return <Spinner />
 
-  // Redirect expired trial owners to the /trial-ended choice screen.
-  // Skip: delegates (not on a trial), already on /trial-ended, mid-checkout.
-  const isDelegateOnly = profile.role === 'delegate'
+  const isDelegateOnly   = profile.role === 'delegate'
   const onTrialEndedPage = location.pathname === '/trial-ended'
+
+  // Gate: user created an account but never completed checkout (no subscription).
+  // Delegates are excluded — they don't go through checkout.
+  // Skip if already mid-checkout (?checkout=success) to avoid redirect loop.
+  if (!isDelegateOnly && !isCheckout && !profile.stripe_subscription_id) {
+    return <Navigate to="/get-started?resume=true" replace />
+  }
+
+  // Redirect expired trial owners to the /trial-ended choice screen.
   if (!isDelegateOnly && !onTrialEndedPage && !isCheckout) {
     const trialExpiredByStatus = profile.subscription_status === 'trial_expired'
     const trialExpiredByDate   =
