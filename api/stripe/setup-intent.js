@@ -7,11 +7,24 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY
 )
 
+// Sanctioned / restricted countries — must match client-side list in GetStarted.jsx
+const RESTRICTED_COUNTRIES = new Set([
+  'Russia', 'North Korea', 'Iran', 'Syria', 'Belarus', 'Afghanistan',
+  'Myanmar', 'Venezuela', 'Zimbabwe', 'Nicaragua', 'Libya', 'Somalia',
+  'Yemen', 'Sudan', 'Mali', 'Burundi', 'Central African Republic',
+  'Democratic Republic of Congo', 'Iraq', 'Lebanon', 'Bosnia and Herzegovina',
+])
+
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' })
 
-  const { userId, email, name, plan, billingCycle, referredBy, trialPeriodDays = 14, existingCustomerId } = req.body
+  const { userId, email, name, plan, billingCycle, referredBy, trialPeriodDays = 14, existingCustomerId, country, nationality } = req.body
   if (!userId || !email) return res.status(400).json({ error: 'Missing required fields' })
+
+  // Server-side sanctions enforcement
+  if (RESTRICTED_COUNTRIES.has(country) || RESTRICTED_COUNTRIES.has(nationality)) {
+    return res.status(403).json({ error: 'Service unavailable in your country due to regulatory restrictions.' })
+  }
 
   try {
     // Reuse existing customer if provided (resume-checkout flow),

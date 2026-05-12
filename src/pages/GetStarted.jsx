@@ -39,6 +39,14 @@ const PLAN_OPTIONS = [
   },
 ]
 
+// Sanctioned / restricted countries — registration blocked for compliance
+const RESTRICTED_COUNTRIES = new Set([
+  'Russia', 'North Korea', 'Iran', 'Syria', 'Belarus', 'Afghanistan',
+  'Myanmar', 'Venezuela', 'Zimbabwe', 'Nicaragua', 'Libya', 'Somalia',
+  'Yemen', 'Sudan', 'Mali', 'Burundi', 'Central African Republic',
+  'Democratic Republic of Congo', 'Iraq', 'Lebanon', 'Bosnia and Herzegovina',
+])
+
 const COUNTRIES = [
   { name: 'United Kingdom', code: 'GB', dial: '+44' },
   { name: 'United States',  code: 'US', dial: '+1'  },
@@ -175,6 +183,11 @@ export default function GetStarted() {
     setLoading(true)
 
     try {
+      // 0. Sanctions check — block restricted countries before any registration
+      if (RESTRICTED_COUNTRIES.has(form.country) || RESTRICTED_COUNTRIES.has(form.nationality)) {
+        throw new Error('We\'re unable to offer our services in your country due to regulatory restrictions. If you believe this is an error, please contact support@everstead.care.')
+      }
+
       // 1. Register server-side to bypass Supabase CAPTCHA protection
       const registerRes = await fetch('/api/auth/delegate-register', {
         method:  'POST',
@@ -219,6 +232,8 @@ export default function GetStarted() {
           billingCycle:    annualBilling ? 'yearly' : 'monthly',
           referredBy:      referralCode,
           trialPeriodDays: trialDays,
+          country:         form.country,
+          nationality:     form.nationality,
         }),
       })
 
