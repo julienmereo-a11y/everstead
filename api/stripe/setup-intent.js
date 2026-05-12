@@ -7,65 +7,45 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY
 )
 
-const PRICE_IDS = {
-  essential: { monthly: process.env.VITE_STRIPE_ESSENTIAL_MONTHLY, yearly: process.env.VITE_STRIPE_ESSENTIAL_YEARLY },
-  family:    { monthly: process.env.VITE_STRIPE_FAMILY_MONTHLY,    yearly: process.env.VITE_STRIPE_FAMILY_YEARLY    },
-  advisor:   { monthly: process.env.VITE_STRIPE_ADVISOR_MONTHLY,   yearly: process.env.VITE_STRIPE_ADVISOR_YEARLY   },
-}
-
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' })
 
   const { userId, email, name, plan, billingCycle, referredBy, trialPeriodDays = 14 } = req.body
   if (!userId || !email) return res.status(400).json({ error: 'Missing required fields' })
 
-  const priceId = PRICE_IDS[plan]?.[billingCycle]
-  if (!priceId) return res.status(400).json({ error: `No price ID for plan "${plan}" (${billingCycle})` })
-
   try {
-    // Create Stripe customer
+    // Create Stripe customer only — NO subscription yet.
+    // The subscription is created in create-subscription.js AFTER the card is confirmed.
+    // This prevents users from getting trialing dashboard access without a card.
     const customer = await stripe.customers.create({
       email,
       name: name || undefined,
     })
 
-    // Create subscription with trial.
-    // payment_behavior: 'default_incomplete' means Stripe creates a pending_setup_intent
-    // so we can collect the card inline without charging yet.
-    const subscription = await stripe.subscriptions.create({
+    // Standalone SetupIntent — collects and saves the card without creating a subscription.
+    // Metadata carries everything needed by create-subscription.js after confirmation.
+    const setupIntent = await stripe.setupIntents.create({
       customer: customer.id,
-      items: [{ price: priceId }],
-      trial_period_days: trialPeriodDays,
-      payment_behavior: 'default_incomplete',
-      payment_settings: { save_default_payment_method: 'on_subscription' },
-      expand: ['pending_setup_intent'],
+      payment_method_types: ['card'],
+      usage: 'off_session',
       metadata: {
         plan,
-        billing_cycle: billingCycle,
-        user_id:       userId,
+        billing_cycle:      billingCycle,
+        user_id:            userId,
+        trial_period_days:  String(trialPeriodDays),
         ...(referredBy ? { referred_by: referredBy } : {}),
       },
     })
 
-    // Pre-populate stripe IDs on the profile so the webhook has a fallback lookup.
-    // The customer.subscription.created webhook will also update these via user_id metadata.
+    // Save only customer ID to profile — no subscription_status change yet
     await supabase
       .from('profiles')
-      .update({
-        stripe_customer_id:     customer.id,
-        stripe_subscription_id: subscription.id,
-      })
+      .update({ stripe_customer_id: customer.id })
       .eq('id', userId)
 
-    const clientSecret = subscription.pending_setup_intent?.client_secret
-    if (!clientSecret) {
-      throw new Error('Stripe did not return a pending_setup_intent — the subscription may already have a payment method.')
-    }
-
     return res.status(200).json({
-      clientSecret,
-      customerId:     customer.id,
-      subscriptionId: subscription.id,
+      clientSecret: setupIntent.client_secret,
+      customerId:   customer.id,
     })
   } catch (err) {
     console.error('setup-intent error:', err)

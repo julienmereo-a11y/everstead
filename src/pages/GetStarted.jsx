@@ -95,6 +95,7 @@ export default function GetStarted() {
   const [loading, setLoading]         = useState(false)
   const [error, setError]             = useState(null)
   const [clientSecret, setClientSecret] = useState(null)
+  const [stripeCustomerId, setStripeCustomerId] = useState(null)
 
   const [form, setForm] = useState({
     fullName: '', email: '', password: '',
@@ -198,8 +199,9 @@ export default function GetStarted() {
         throw new Error(error || 'Could not set up payment. Please try again.')
       }
 
-      const { clientSecret: secret } = await intentRes.json()
+      const { clientSecret: secret, customerId } = await intentRes.json()
       setClientSecret(secret)
+      setStripeCustomerId(customerId)
       setStep(3)
     } catch (err) {
       setError(err.message ?? 'Something went wrong. Please try again.')
@@ -574,7 +576,13 @@ export default function GetStarted() {
                   },
                 }}
               >
-                <CheckoutForm trialDays={trialDays} plan={selectedPlan} />
+                <CheckoutForm
+                  trialDays={trialDays}
+                  plan={selectedPlan}
+                  billingCycle={annualBilling ? 'yearly' : 'monthly'}
+                  customerId={stripeCustomerId}
+                  referredBy={referralCode}
+                />
               </Elements>
 
               <div className="mt-5 flex items-start gap-3 bg-stone-100 rounded-xl p-4">
@@ -613,7 +621,7 @@ export default function GetStarted() {
 // ─────────────────────────────────────────────────────────────
 // INLINE CHECKOUT FORM (step 3)
 // ─────────────────────────────────────────────────────────────
-function CheckoutForm({ trialDays, plan }) {
+function CheckoutForm({ trialDays, plan, billingCycle, customerId, referredBy }) {
   const stripe   = useStripe()
   const elements = useElements()
   const [loading, setLoading] = useState(false)
@@ -625,21 +633,51 @@ function CheckoutForm({ trialDays, plan }) {
     setLoading(true)
     setError(null)
 
-    const { error: stripeError } = await stripe.confirmSetup({
+    // Confirm the SetupIntent — saves the card to the Stripe customer
+    const { setupIntent, error: stripeError } = await stripe.confirmSetup({
       elements,
       confirmParams: {
         return_url: `${window.location.origin}/dashboard?checkout=success`,
       },
-      // Don't redirect if Stripe can confirm without 3DS
       redirect: 'if_required',
     })
 
     if (stripeError) {
       setError(stripeError.message)
       setLoading(false)
-    } else {
-      // Confirmed without redirect — go straight to dashboard
+      return
+    }
+
+    // Card confirmed — now create the subscription with the saved payment method
+    try {
+      const { data: { user } } = await supabase.auth.getUser()
+      const paymentMethodId = typeof setupIntent.payment_method === 'string'
+        ? setupIntent.payment_method
+        : setupIntent.payment_method?.id
+
+      const subRes = await fetch('/api/stripe/create-subscription', {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify({
+          customerId,
+          paymentMethodId,
+          plan,
+          billingCycle,
+          userId:          user?.id,
+          trialPeriodDays: trialDays,
+          referredBy,
+        }),
+      })
+
+      if (!subRes.ok) {
+        const { error } = await subRes.json().catch(() => ({}))
+        throw new Error(error || 'Could not activate your subscription. Please contact support.')
+      }
+
       window.location.href = '/dashboard?checkout=success'
+    } catch (err) {
+      setError(err.message)
+      setLoading(false)
     }
   }
 
