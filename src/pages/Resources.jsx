@@ -14,6 +14,440 @@ const sections = {
     desc: 'Practical guidance on estate planning, family organisation, and digital life management.',
     posts: [
       {
+        slug: 'what-happens-to-bank-accounts-when-you-die',
+        title: 'What happens to bank accounts when you die in the UK?',
+        date: 'May 2026',
+        tag: 'Estate planning',
+        desc: 'A plain-language guide to what UK banks do when an account holder dies — how accounts are frozen, how money is released, and what families need to do.',
+        readTime: '9 min read',
+        body: [
+          {
+            type: 'intro',
+            text: "One of the most common questions families face after a bereavement is a simple but urgent one: what happens to the money in the bank? The answer depends on whether the account was held individually or jointly, the size of the estate, and whether probate is required. This guide explains what UK banks actually do when an account holder dies, step by step — so you know what to expect and what you need to do.",
+          },
+          {
+            type: 'toc',
+            items: [
+              'What happens immediately after the bank is notified',
+              'Solo accounts vs joint accounts',
+              'How much can be released without probate?',
+              'What you need to provide to the bank',
+              'How long does it take to release funds?',
+              'What about savings accounts, ISAs, and investments?',
+              'What about online-only banks?',
+              'Practical checklist for families',
+              'How to protect your own family',
+            ],
+          },
+          {
+            type: 'heading',
+            text: 'What happens immediately after the bank is notified',
+          },
+          {
+            type: 'text',
+            text: "When a bank is told that an account holder has died, it will freeze the individual accounts in that person's sole name. This is standard practice — not a penalty or complication — and it protects the estate from unauthorised transactions while the legal process of administering the estate unfolds.",
+          },
+          {
+            type: 'text',
+            text: "Freezing the account means no money can be withdrawn from it. Direct debits and standing orders will be cancelled. Any incoming payments — such as a pension or benefits — should also stop, and notifying those providers early prevents overpayments that would need to be repaid later.",
+          },
+          {
+            type: 'note',
+            text: "You are not legally required to notify the bank immediately. However, doing so early prevents complications such as ongoing charges, failed direct debits, or continued pension payments that the estate will have to repay.",
+          },
+          {
+            type: 'heading',
+            text: 'Solo accounts vs joint accounts',
+          },
+          {
+            type: 'text',
+            text: "The type of account makes a significant difference to what happens next.",
+          },
+          {
+            type: 'subheading',
+            text: 'Sole accounts',
+          },
+          {
+            type: 'text',
+            text: "Accounts held in the deceased's name only are frozen upon notification. Access to the funds depends on the size of the account balance and whether probate is required. The money forms part of the estate and is distributed according to the will — or the Rules of Intestacy if there is no will.",
+          },
+          {
+            type: 'subheading',
+            text: 'Joint accounts',
+          },
+          {
+            type: 'text',
+            text: "Most joint bank accounts operate on a 'right of survivorship' basis — meaning the surviving account holder automatically inherits the full balance when one holder dies. The account is not frozen and the surviving holder can continue using it normally. The bank will usually update the account to the sole name of the survivor upon receiving a death certificate.",
+          },
+          {
+            type: 'text',
+            text: "It is worth checking the exact terms of a joint account, as a small number use 'tenants in common' arrangements where each person's share forms part of their estate. Your bank can confirm which applies.",
+          },
+          {
+            type: 'heading',
+            text: 'How much can be released without probate?',
+          },
+          {
+            type: 'text',
+            text: "One of the most practically useful things to know is that many UK banks will release funds without requiring a grant of probate, up to a threshold that varies by institution. Typical thresholds range from £5,000 to £50,000, though some banks set their limits higher.",
+          },
+          {
+            type: 'list',
+            heading: 'Common bank thresholds (as of 2026 — confirm with each bank directly):',
+            items: [
+              'Barclays — up to £50,000 without probate',
+              'Lloyds, Halifax, Bank of Scotland — up to £50,000 without probate',
+              'NatWest and Royal Bank of Scotland — up to £25,000 without probate',
+              'HSBC — up to £50,000 without probate',
+              'Nationwide — up to £50,000 without probate',
+              'Santander — up to £50,000 without probate',
+            ],
+          },
+          {
+            type: 'text',
+            text: "If the balance exceeds the bank's threshold, they will require a grant of probate (or letters of administration if there is no will) before releasing funds. The grant is obtained through the Probate Registry — a process that typically takes several months and may involve legal fees if you use a solicitor.",
+          },
+          {
+            type: 'note',
+            text: "Even below the probate threshold, banks can ask for different documentation. Always call the bank's bereavement team to confirm exactly what they need before sending anything.",
+          },
+          {
+            type: 'heading',
+            text: 'What you need to provide to the bank',
+          },
+          {
+            type: 'list',
+            heading: 'Banks typically ask for some or all of the following:',
+            items: [
+              'A certified original death certificate (not a photocopy)',
+              'Proof of your identity and relationship to the deceased',
+              'The original will, if one exists',
+              'A grant of probate or letters of administration (for larger estates)',
+              "The deceased's account details or sort code and account number",
+            ],
+          },
+          {
+            type: 'text',
+            text: "Certified copies of the death certificate — not photocopies, but official certified duplicates — can be obtained from the Register Office when you register the death, or ordered later. Order at least ten at registration, as each institution will want one and they are cheaper to obtain in bulk at this stage.",
+          },
+          {
+            type: 'heading',
+            text: 'How long does it take to release funds?',
+          },
+          {
+            type: 'text',
+            text: "For small accounts within the bank's no-probate threshold, funds can sometimes be released within a few weeks of providing the required documentation. For larger estates requiring probate, the full process typically takes between six months and a year — sometimes longer if the estate is complex, if there are disputes, or if inheritance tax is owed.",
+          },
+          {
+            type: 'text',
+            text: "Funeral costs are a notable exception: most banks will release funds directly to a funeral director before probate is granted, upon receiving a death certificate and the funeral director's invoice. This prevents families from having to pay out of pocket and then wait for reimbursement.",
+          },
+          {
+            type: 'heading',
+            text: 'What about savings accounts, ISAs, and investments?',
+          },
+          {
+            type: 'text',
+            text: "The same principles apply to savings accounts: they are frozen upon notification and released according to the same thresholds and process as current accounts. Any interest accruing up to the date of death forms part of the estate.",
+          },
+          {
+            type: 'text',
+            text: "ISAs cannot be transferred on death in the way a joint account would be — the tax-free status of an ISA does not automatically pass to a beneficiary. However, spouses and civil partners may be eligible for an 'Additional Permitted Subscription' allowance, which lets them make an additional ISA contribution equal to the deceased's ISA balance, preserving the tax advantage. This must be claimed within three years.",
+          },
+          {
+            type: 'text',
+            text: "Investment accounts, stocks and shares ISAs, and pension-linked investment accounts each have their own processes. Contact each provider separately. Pension funds typically fall outside the estate entirely — they are paid directly to nominated beneficiaries and are not subject to probate.",
+          },
+          {
+            type: 'heading',
+            text: 'What about online-only banks?',
+          },
+          {
+            type: 'text',
+            text: "App-based banks — Monzo, Starling, Revolut, and others — handle bereavement claims similarly to traditional banks, though the process is typically managed by email or through a dedicated online form rather than in branch. Most have bereavement pages on their websites with instructions.",
+          },
+          {
+            type: 'text',
+            text: "The challenge with digital banks is that executors often do not know they exist. Unlike a statement that arrives by post, an app on a phone can go unnoticed. This is one of the most common ways money goes unclaimed after a death — and one of the strongest reasons to document all accounts, including digital ones, in a plan that trusted people can access.",
+          },
+          {
+            type: 'heading',
+            text: 'Practical checklist for families',
+          },
+          {
+            type: 'list',
+            heading: 'When dealing with bank accounts after a death:',
+            items: [
+              'Order at least ten certified death certificates when registering the death',
+              'Notify each bank as soon as practically possible — ask for their bereavement team',
+              'Ask each bank for their specific documentation requirements before sending anything',
+              'Check whether accounts are sole or joint — joint accounts are usually unaffected',
+              'Ask the bank to release funds directly to the funeral director to cover funeral costs',
+              "Use the government's Tell Us Once service to notify HMRC and DWP in one step",
+              "Check for online-only bank accounts — look through the deceased's phone and email for statements",
+              'Do not close accounts until the estate is fully administered — you may need them to receive refunds',
+            ],
+          },
+          {
+            type: 'heading',
+            text: 'How to protect your own family',
+          },
+          {
+            type: 'text',
+            text: "The families who navigate this process most smoothly are almost always those where the deceased had documented their accounts in advance. Knowing which banks to contact, what sort codes and account numbers are involved, and where to find the relevant paperwork removes weeks of searching from what is already a difficult time.",
+          },
+          {
+            type: 'text',
+            text: "A complete account inventory — including sole accounts, joint accounts, savings, ISAs, and any online bank accounts — stored somewhere your trusted people can access is one of the most practical things you can leave behind. It does not require a solicitor or a formal document. It requires only that you sit down, list what you have, and share it with someone you trust.",
+          },
+        ],
+      },
+      {
+        slug: 'how-to-organise-your-estate-uk',
+        title: 'How to organise your estate in the UK: a complete guide',
+        date: 'May 2026',
+        tag: 'Getting started',
+        desc: 'A practical, step-by-step guide to getting your financial life organised so your family is never left guessing — accounts, documents, contacts, and wishes all in one place.',
+        readTime: '11 min read',
+        body: [
+          {
+            type: 'intro',
+            text: "Organising your estate sounds like something only the very wealthy or very old need to do. In reality, it is something anyone with a bank account, a pension, a rented flat, or a family needs to think about. It is not about death — it is about making sure the people who love you are not left navigating a confusing mess of paperwork, passwords, and unanswered questions at the worst possible moment. This guide walks you through every step of organising your estate in the UK, in plain language, in the order that makes practical sense.",
+          },
+          {
+            type: 'toc',
+            items: [
+              'What does "organising your estate" actually mean?',
+              'Step 1: Take stock of your financial accounts',
+              'Step 2: Locate and organise your important documents',
+              'Step 3: Make or update your will',
+              'Step 4: Review your pension nominations',
+              'Step 5: Sort out your digital life',
+              'Step 6: Decide who should know what',
+              'Step 7: Write down your wishes',
+              'Step 8: Keep it updated',
+              'How long does it take?',
+            ],
+          },
+          {
+            type: 'heading',
+            text: 'What does "organising your estate" actually mean?',
+          },
+          {
+            type: 'text',
+            text: "Your estate is everything you own: your money, your property, your belongings, your digital accounts, and your debts. Organising it means making sure someone else could find, access, and deal with all of that if something happened to you — without needing to spend months investigating.",
+          },
+          {
+            type: 'text',
+            text: "It is not the same as writing a will, though that is part of it. A will tells people what you want done with your assets. Organising your estate means they can actually find those assets, understand what exists, and follow the instructions you have left.",
+          },
+          {
+            type: 'heading',
+            text: 'Step 1: Take stock of your financial accounts',
+          },
+          {
+            type: 'text',
+            text: "Start by listing every financial account you hold. Most people have more than they think when they actually sit down to do this.",
+          },
+          {
+            type: 'list',
+            heading: 'Work through these categories:',
+            items: [
+              'Current accounts — every bank or building society where you hold a current account',
+              'Savings accounts — including easy-access, fixed-term, and regular saver accounts',
+              'ISAs — cash ISAs, stocks and shares ISAs, Lifetime ISAs',
+              "Workplace pension — your employer's pension scheme, including provider name and reference number",
+              'Personal pensions — SIPPs or other pensions you manage yourself',
+              "State Pension — check your forecast on GOV.UK if you haven't recently",
+              'Investments — trading accounts, funds, premium bonds',
+              'Property — your home (if owned), any buy-to-lets, shares in inherited property',
+              'Business interests — if you own or part-own a business',
+              'Debts — mortgage, loans, credit cards, hire purchase agreements',
+            ],
+          },
+          {
+            type: 'text',
+            text: "For each account, record the provider name, sort code and account number (or policy number), and an approximate balance. You do not need to be precise — the point is that a family member could identify and contact each institution.",
+          },
+          {
+            type: 'note',
+            text: "Do not record passwords or PINs in the same document as your account list. Keep those separately, secured, and leave instructions for how to access them — not the credentials themselves.",
+          },
+          {
+            type: 'heading',
+            text: 'Step 2: Locate and organise your important documents',
+          },
+          {
+            type: 'text',
+            text: "Documents are the evidence behind your estate. Without them, executors cannot prove ownership, claim insurance, or administer a pension. Knowing where they are — and making sure someone else knows — is as important as having them at all.",
+          },
+          {
+            type: 'list',
+            heading: 'Key documents to locate and record:',
+            items: [
+              'Your will — where is the original stored? With a solicitor, at home, with a storage service?',
+              'Passport and driving licence',
+              'Birth certificate and marriage/civil partnership certificate',
+              'Property deeds or lease agreement',
+              'Mortgage documents — lender, outstanding balance, monthly payment',
+              'Life insurance policies — insurer, policy number, sum assured, nominated beneficiary',
+              'Critical illness and income protection policies',
+              'Pension paperwork — particularly any nomination of beneficiary forms',
+              'Investment account statements',
+              'Tax documents — most recent P60, self-assessment returns if applicable',
+              'Business agreements if you are self-employed or a company director',
+            ],
+          },
+          {
+            type: 'text',
+            text: "You do not need to physically gather all of these in one place. You need to know where each one is and record that location clearly. A digital vault — where you can upload scanned copies and note where originals are stored — is the most practical way to manage this.",
+          },
+          {
+            type: 'heading',
+            text: 'Step 3: Make or update your will',
+          },
+          {
+            type: 'text',
+            text: "If you do not have a will, making one is the single highest-impact thing you can do for your family. Without a will, your estate is distributed according to the Rules of Intestacy — a fixed legal formula that may not reflect your wishes at all. Unmarried partners, for example, receive nothing under intestacy, regardless of how long you have been together.",
+          },
+          {
+            type: 'text',
+            text: "If you already have a will, check when it was last updated. Major life events — marriage, divorce, having children, buying property, significant changes in wealth — should all trigger a review. A will that was written before your children were born or before you remarried may not reflect what you actually want.",
+          },
+          {
+            type: 'list',
+            heading: 'A will should address:',
+            items: [
+              'Who your executor is (the person responsible for carrying out your wishes)',
+              'Who benefits from your estate, and in what proportions',
+              'Guardianship arrangements for any dependent children',
+              'Any specific gifts — particular items to particular people',
+              'What should happen if a beneficiary dies before you',
+              'Funeral wishes, if you want to record them here',
+            ],
+          },
+          {
+            type: 'text',
+            text: "Wills should be written by a solicitor or a reputable will-writing service and signed in the presence of two independent witnesses. Online will services are now widely available in the UK from around £90 to £200, and are suitable for straightforward estates. Complex situations — blended families, significant assets, business interests, property abroad — generally warrant professional legal advice.",
+          },
+          {
+            type: 'heading',
+            text: 'Step 4: Review your pension nominations',
+          },
+          {
+            type: 'text',
+            text: "Pensions are often the largest single asset people hold — and they sit outside your estate for inheritance purposes. They are not covered by your will. They are paid directly to whoever you have nominated as your beneficiary on the pension itself.",
+          },
+          {
+            type: 'text',
+            text: "This makes the nomination form on each pension one of the most important documents in your estate. If your nomination is out of date — naming an ex-partner, or not naming a new spouse — your pension may be paid to the wrong person, or the decision left entirely to the pension trustees.",
+          },
+          {
+            type: 'text',
+            text: "Contact each pension provider and request your current nomination of beneficiary form. Update it if necessary. Do this for every pension — workplace and personal — as they each hold their own nomination separately.",
+          },
+          {
+            type: 'heading',
+            text: 'Step 5: Sort out your digital life',
+          },
+          {
+            type: 'text',
+            text: "The average UK adult now has over 100 online accounts. Most will need to be found, closed, or transferred when you die. Without any guidance, this becomes an enormous task for an already-grieving family.",
+          },
+          {
+            type: 'list',
+            heading: 'For your digital estate, work through:',
+            items: [
+              'Email accounts — which ones do you use, and what do they contain?',
+              'Cloud storage — Google Drive, iCloud, Dropbox, OneDrive',
+              'Social media — what would you like done with each profile?',
+              'Online banking and investment apps — are these recorded in your financial inventory?',
+              'Subscription services — streaming, news, software (to be cancelled to stop charges)',
+              'Cryptocurrency or NFTs — if you hold any, your executor needs to know where and how',
+              'Password manager — how will a trusted person access it?',
+              'Domain names and websites if you own any',
+            ],
+          },
+          {
+            type: 'text',
+            text: "For major platforms, set up their legacy features where available. Google's Inactive Account Manager lets you designate someone to receive your data if your account is dormant for a set period. Apple's Legacy Contact (iOS 15.2+) lets you name up to five people who can request access after your death. Facebook allows you to designate a Legacy Contact or request deletion of your account.",
+          },
+          {
+            type: 'heading',
+            text: 'Step 6: Decide who should know what',
+          },
+          {
+            type: 'text',
+            text: "Having everything organised is only useful if the right people can find it when they need it. This means deciding — intentionally — who should have access to which parts of your estate plan.",
+          },
+          {
+            type: 'list',
+            heading: 'Think about these roles:',
+            items: [
+              'Executor — the person legally responsible for administering your estate. They need to know about everything.',
+              'Spouse or partner — they may need day-to-day access to joint financial information even before any legal process.',
+              'Children — they may benefit from your estate but typically do not need access to all details in advance.',
+              'Solicitor or financial adviser — they may hold certain documents and should be informed that a plan exists.',
+              'A trusted friend — useful as a backup if family relationships are complicated.',
+            ],
+          },
+          {
+            type: 'text',
+            text: "The key is granting each person access to what they need — not everything. Your executor needs the full picture. Your children may only need to know where to find the key documents and who to call.",
+          },
+          {
+            type: 'heading',
+            text: 'Step 7: Write down your wishes',
+          },
+          {
+            type: 'text',
+            text: "Beyond the legal and financial, there are things your family will want to know that no document captures on its own. Funeral preferences. What you want done with sentimental possessions. Who should receive a particular item. How you want to be remembered.",
+          },
+          {
+            type: 'text',
+            text: "These can be recorded in a letter of wishes — an informal, non-legally-binding document that accompanies your will. It does not replace legal instructions, but it fills in the human detail that legal documents leave out. You can also use a platform like Everstead to record and share these wishes digitally, so they are accessible to the people who need them.",
+          },
+          {
+            type: 'heading',
+            text: 'Step 8: Keep it updated',
+          },
+          {
+            type: 'text',
+            text: "An estate plan is not a one-off task. Life changes — you move house, change jobs, get married, have children, accumulate new accounts, and close old ones. The plan you put in place today will need to be revisited.",
+          },
+          {
+            type: 'list',
+            heading: 'Review your estate plan when:',
+            items: [
+              'You marry, divorce, or enter or leave a civil partnership',
+              'You have or adopt a child',
+              'A significant beneficiary or executor dies',
+              'You buy or sell property',
+              'You change jobs and move pension providers',
+              'You open or close significant financial accounts',
+              'Your financial circumstances change significantly',
+              'It has been more than three years since you last looked at it',
+            ],
+          },
+          {
+            type: 'heading',
+            text: 'How long does it take?',
+          },
+          {
+            type: 'text',
+            text: "Most people can complete a basic estate plan — account inventory, document locations, updated will, pension nominations reviewed — in a weekend if they commit to it. The first session typically takes two to three hours. Updating it once a year takes much less.",
+          },
+          {
+            type: 'text',
+            text: "The hardest part is usually starting. Once you sit down and begin the account inventory, the rest tends to follow naturally. The emotional resistance — the sense that thinking about this is morbid or premature — is almost always greater than the actual effort involved.",
+          },
+          {
+            type: 'text',
+            text: "The families who benefit most from estate planning are not those who did it perfectly. They are those who did it at all.",
+          },
+        ],
+      },
+      {
         slug: 'what-to-do-when-someone-dies',
         title: 'What to do when someone dies: a complete step-by-step guide',
         date: 'May 2026',

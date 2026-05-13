@@ -9,11 +9,11 @@ import {
 } from 'lucide-react'
 
 const trustItems = [
-  { icon: Lock, label: 'Bank-level encryption' },
-  { icon: ShieldCheck, label: 'Private sharing controls' },
-  { icon: Users, label: 'Trusted by families & advisors' },
-  { icon: FileText, label: 'Secure document storage' },
-  { icon: ClipboardList, label: 'Guided planning workflows' },
+  { icon: Lock,       label: 'AES-256 encrypted storage' },
+  { icon: ShieldCheck, label: 'Payments secured by Stripe' },
+  { icon: Users,      label: 'Trusted by families & advisors' },
+  { icon: FileText,   label: 'Hosted in Europe (EU data residency)' },
+  { icon: ShieldCheck, label: 'Zero data selling — ever' },
 ]
 
 const painPoints = [
@@ -496,35 +496,126 @@ export default function Home() {
 
       {/* ── SECURITY ─────────────────────────────────────────────── */}
       <section className="py-24 lg:py-32 bg-stone-50 border-y border-stone-100">
-        <div className="max-w-7xl mx-auto px-6 lg:px-8 grid lg:grid-cols-2 gap-16 items-center">
-          <div className="reveal">
-            <p className="text-xs font-semibold uppercase tracking-widest text-navy-600 mb-4">Security & privacy</p>
-            <h2 className="font-display text-4xl lg:text-5xl font-light text-navy-950 text-balance leading-tight">
-              Built for privacy, control, and trust.
-            </h2>
-            <p className="mt-5 text-stone-600 leading-relaxed">
-              Every piece of information you add is encrypted, access-controlled, and never shared without your explicit permission.
-            </p>
-            <Link to="/security" className="inline-flex items-center gap-2 mt-8 text-navy-700 font-medium text-sm hover:text-navy-900 transition-colors">
-              Read our security practices <ArrowRight size={15} />
-            </Link>
-          </div>
-          <div className="reveal reveal-delay-1 grid grid-cols-2 gap-4">
-            {[
-              { icon: Lock, label: 'AES-256 encrypted storage' },
-              { icon: Users, label: 'Role-based access controls' },
-              { icon: BookOpen, label: 'Complete audit history' },
-              { icon: Share2, label: 'Private sharing only' },
-              { icon: Bell, label: 'Emergency vault access' },
-              { icon: ShieldCheck, label: 'Privacy-first commitments' },
-            ].map(({ icon: Icon, label }) => (
-              <div key={label} className="bg-white rounded-xl p-4 flex items-center gap-3 border border-stone-200">
-                <div className="w-8 h-8 rounded-lg bg-navy-50 flex items-center justify-center flex-shrink-0">
-                  <Icon size={16} className="text-navy-700" />
+        <div className="max-w-7xl mx-auto px-6 lg:px-8">
+          <div className="grid lg:grid-cols-2 gap-16 items-center mb-16">
+            <div className="reveal">
+              <p className="text-xs font-semibold uppercase tracking-widest text-navy-600 mb-4">Security & privacy</p>
+              <h2 className="font-display text-4xl lg:text-5xl font-light text-navy-950 text-balance leading-tight">
+                Built for privacy, control, and trust.
+              </h2>
+              <p className="mt-5 text-stone-600 leading-relaxed">
+                Every piece of information you add is encrypted, access-controlled, and never shared without your explicit permission.
+              </p>
+              <Link to="/security" className="inline-flex items-center gap-2 mt-8 text-navy-700 font-medium text-sm hover:text-navy-900 transition-colors">
+                Read our security practices <ArrowRight size={15} />
+              </Link>
+            </div>
+            <div className="reveal reveal-delay-1 grid grid-cols-2 gap-4">
+              {[
+                { icon: Lock,       label: 'AES-256 encrypted storage' },
+                { icon: Users,      label: 'Role-based access controls' },
+                { icon: BookOpen,   label: 'Complete audit history' },
+                { icon: Share2,     label: 'Private sharing only' },
+                { icon: Bell,       label: 'Emergency vault access' },
+                { icon: ShieldCheck, label: 'Privacy-first commitments' },
+              ].map(({ icon: Icon, label }) => (
+                <div key={label} className="bg-white rounded-xl p-4 flex items-center gap-3 border border-stone-200">
+                  <div className="w-8 h-8 rounded-lg bg-navy-50 flex items-center justify-center flex-shrink-0">
+                    <Icon size={16} className="text-navy-700" />
+                  </div>
+                  <span className="text-sm font-medium text-stone-700">{label}</span>
                 </div>
-                <span className="text-sm font-medium text-stone-700">{label}</span>
-              </div>
-            ))}
+              ))}
+            </div>
+          </div>
+
+          {/* Tech trust badges */}
+          <div className="reveal border-t border-stone-200 pt-12 mb-16">
+            <p className="text-xs font-semibold uppercase tracking-widest text-stone-400 mb-7 text-center">Powered by trusted infrastructure</p>
+            <div className="flex flex-wrap justify-center gap-4 lg:gap-6">
+              {[
+                {
+                  label: 'Stripe',
+                  sublabel: 'Payment security',
+                  desc: 'All card data is handled exclusively by Stripe — a PCI DSS Level 1 certified provider trusted by millions of businesses worldwide. Your card details never touch our servers.',
+                },
+                {
+                  label: 'AES-256',
+                  sublabel: 'Encryption standard',
+                  desc: 'The same encryption standard used by governments and major banks globally. Every document and account record you store is encrypted at rest and in transit.',
+                },
+                {
+                  label: 'EU data residency',
+                  sublabel: 'GDPR compliant',
+                  desc: 'Your data is stored on European infrastructure, subject to UK GDPR and European data protection law. We do not transfer your personal data outside the UK or EEA.',
+                },
+                {
+                  label: 'Zero data selling',
+                  sublabel: 'Privacy commitment',
+                  desc: 'We do not sell, licence, or share your personal data with third parties for advertising or commercial purposes. Ever. Your information is used only to run your plan.',
+                },
+              ].map(({ label, sublabel, desc }) => (
+                <div key={label} className="bg-white border border-stone-200 rounded-xl p-5 max-w-[240px] text-center hover:border-navy-200 hover:shadow-sm transition-all">
+                  <div className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-navy-50 mb-3">
+                    <ShieldCheck size={18} className="text-navy-700" />
+                  </div>
+                  <p className="font-bold text-navy-900 text-sm">{label}</p>
+                  <p className="text-xs text-navy-500 font-medium mb-2">{sublabel}</p>
+                  <p className="text-xs text-stone-500 leading-relaxed">{desc}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* How we protect your data */}
+          <div className="reveal bg-navy-950 rounded-2xl p-8 lg:p-10 text-white">
+            <div className="max-w-3xl">
+              <p className="text-xs font-semibold uppercase tracking-widest text-sage-400 mb-4">How we handle your data</p>
+              <h3 className="font-display text-2xl lg:text-3xl font-light text-white mb-6 text-balance">
+                Plain-language commitments on what we do — and don't do — with your information.
+              </h3>
+            </div>
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 mt-2">
+              {[
+                {
+                  title: 'We encrypt everything',
+                  body: 'Every document, account entry, and personal detail is encrypted with AES-256 before storage. Your data is unreadable to anyone — including us — without the decryption keys tied to your account.',
+                },
+                {
+                  title: 'We never sell your data',
+                  body: 'Your information is never sold, rented, or shared with advertising networks, data brokers, or marketing companies. Your estate plan is yours alone.',
+                },
+                {
+                  title: 'Access is entirely your choice',
+                  body: 'Only people you explicitly invite — and only to the sections you choose — can ever see your plan. There is no default sharing, no hidden access, and no backdoors.',
+                },
+                {
+                  title: 'You can export or delete at any time',
+                  body: 'Your data is portable. Export a full copy at any time, or request complete deletion. We comply with all UK GDPR rights — access, portability, rectification, erasure.',
+                },
+                {
+                  title: 'We store data in Europe',
+                  body: 'Your personal data is stored on EU infrastructure and governed by UK GDPR. We do not transfer your data to countries outside the UK or EEA without legal safeguards in place.',
+                },
+                {
+                  title: 'Payments go directly to Stripe',
+                  body: 'We never see or store your card details. Payment processing is handled entirely by Stripe, which is PCI DSS Level 1 certified — the highest level of payment security available.',
+                },
+              ].map(({ title, body }) => (
+                <div key={title} className="bg-white/5 border border-white/10 rounded-xl p-5">
+                  <p className="font-semibold text-white text-sm mb-2">{title}</p>
+                  <p className="text-stone-400 text-xs leading-relaxed">{body}</p>
+                </div>
+              ))}
+            </div>
+            <div className="mt-8 flex flex-wrap gap-4">
+              <Link to="/privacy" className="inline-flex items-center gap-2 text-sm font-medium text-sage-400 hover:text-sage-300 transition-colors">
+                Read our privacy policy <ArrowRight size={14} />
+              </Link>
+              <Link to="/security" className="inline-flex items-center gap-2 text-sm font-medium text-stone-400 hover:text-stone-200 transition-colors">
+                Full security overview <ArrowRight size={14} />
+              </Link>
+            </div>
           </div>
         </div>
       </section>
