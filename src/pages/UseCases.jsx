@@ -55,7 +55,7 @@ const cases = {
     quote: '"We had no idea where my mother kept anything — her bank, her pension, even her will. We spent six months piecing it together. Everstead would have changed everything."',
     quoteAuthor: '— Adult child and estate executor',
     ctaText: 'Set up your family plan',
-    ctaNote: '14-day free trial · No card required',
+    ctaNote: '14-day free trial · Card required · No charge until trial ends',
   },
 
   parents: {
@@ -446,7 +446,7 @@ function UseCasesIndex() {
           {[
             { value: '45 min', label: 'Average setup time' },
             { value: '5 roles', label: 'Supported use cases' },
-            { value: '14 days', label: 'Free trial, no card needed' },
+            { value: '14 days', label: 'Free trial, no charge until it ends' },
           ].map(({ value, label }) => (
             <div key={label} className="text-center px-6 reveal">
               <p className="font-display text-3xl font-light text-navy-950">{value}</p>
@@ -549,7 +549,7 @@ function UseCasesIndex() {
             Whichever role you're in — start here.
           </h2>
           <p className="text-stone-500 mb-8 leading-relaxed">
-            14-day free trial. Set up in about 45 minutes. No card required to start.
+            14-day free trial. Set up in about 45 minutes. No charge until your trial ends.
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <Link to="/get-started" className="inline-flex items-center justify-center gap-2 bg-navy-800 text-white font-semibold text-sm px-7 py-3.5 rounded-lg hover:bg-navy-700 transition-colors">

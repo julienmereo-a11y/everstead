@@ -573,7 +573,7 @@ export default function DigitalEstateCalculator() {
                 <ArrowRight size={15} />
               </Link>
               <p className="mt-3 text-[11px] text-stone-600">
-                Free 14-day trial · No credit card required
+                Free 14-day trial · Card required · No charge until trial ends
               </p>
             </div>
           </div>

@@ -535,7 +535,7 @@ export default function EstateReadinessScore() {
                         <ArrowRight size={15} />
                       </Link>
                       <p className="mt-3 text-xs text-stone-400">
-                        Free 14-day trial · No card required
+                        Free 14-day trial · Card required · No charge until trial ends
                       </p>
                     </div>
                   )}
