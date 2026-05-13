@@ -495,7 +495,7 @@ export default function Home() {
       </section>
 
       {/* ── SECURITY ─────────────────────────────────────────────── */}
-      <section className="py-24 lg:py-32 bg-stone-50 border-y border-stone-100">
+      <section className="pt-24 pb-14 lg:pt-32 lg:pb-16 bg-stone-50 border-y border-stone-100">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-16 items-center mb-16">
             <div className="reveal">
@@ -621,7 +621,7 @@ export default function Home() {
       </section>
 
       {/* ── TESTIMONIALS ─────────────────────────────────────────── */}
-      <section className="py-24 lg:py-32">
+      <section className="py-14 lg:py-20">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <div className="text-center mb-14 reveal">
             <p className="text-xs font-semibold uppercase tracking-widest text-navy-600 mb-4">Stories</p>
