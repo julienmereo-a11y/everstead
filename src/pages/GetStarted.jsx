@@ -104,6 +104,7 @@ export default function GetStarted() {
   const [error, setError]             = useState(null)
   const [clientSecret, setClientSecret] = useState(null)
   const [stripeCustomerId, setStripeCustomerId] = useState(null)
+  const [isOAuthProfile, setIsOAuthProfile] = useState(false) // true = Google user filling in missing details
 
   const [form, setForm] = useState({
     fullName: '', email: '', password: '',
@@ -126,7 +127,7 @@ export default function GetStarted() {
 
       const { data: profile } = await supabase
         .from('profiles')
-        .select('stripe_customer_id, full_name, email, plan, billing_cycle')
+        .select('stripe_customer_id, full_name, email, plan, billing_cycle, phone, country, nationality')
         .eq('id', session.user.id)
         .single()
 
@@ -143,6 +144,21 @@ export default function GetStarted() {
         : (oauthPlan?.billing ?? true)
       setSelectedPlan(resumePlan)
       setAnnualBilling(resumeBilling)
+
+      // Google OAuth users skip step 2 — collect missing profile fields first
+      if (isOAuth && (!profile.phone || !profile.country || !profile.nationality)) {
+        setForm(v => ({
+          ...v,
+          fullName:    profile.full_name || session.user.user_metadata?.full_name || '',
+          email:       profile.email     || session.user.email || '',
+          country:     profile.country     || 'United Kingdom',
+          nationality: profile.nationality || 'United Kingdom',
+          phone:       profile.phone || '',
+        }))
+        setIsOAuthProfile(true)
+        setStep(2)
+        return
+      }
 
       const intentRes = await fetch('/api/stripe/setup-intent', {
         method:  'POST',
@@ -198,6 +214,63 @@ export default function GetStarted() {
       provider: 'google',
       options:  { redirectTo: `${window.location.origin}/get-started` },
     })
+  }
+
+  // ── OAUTH PROFILE COMPLETION: save phone/country/nationality → setup-intent → step 3 ──
+  const handleOAuthProfileSubmit = async (e) => {
+    e.preventDefault()
+    setError(null)
+    setLoading(true)
+    try {
+      if (RESTRICTED_COUNTRIES.has(form.country) || RESTRICTED_COUNTRIES.has(form.nationality)) {
+        throw new Error('We\'re unable to offer our services in your country due to regulatory restrictions. If you believe this is an error, please contact support@everstead.care.')
+      }
+
+      const { data: { session } } = await supabase.auth.getSession()
+      if (!session) throw new Error('Session expired. Please sign in again.')
+
+      const fullPhone = (form.dialCode && form.phone) ? `${form.dialCode} ${form.phone}` : null
+      await supabase.from('profiles').update({
+        phone:       fullPhone,
+        country:     form.country     || null,
+        nationality: form.nationality || null,
+      }).eq('id', session.user.id)
+
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('stripe_customer_id, full_name, email, plan, billing_cycle')
+        .eq('id', session.user.id)
+        .single()
+
+      const intentRes = await fetch('/api/stripe/setup-intent', {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify({
+          userId:             session.user.id,
+          email:              profile?.email || session.user.email,
+          name:               profile?.full_name,
+          existingCustomerId: profile?.stripe_customer_id || undefined,
+          plan:               selectedPlan,
+          billingCycle:       annualBilling ? 'yearly' : 'monthly',
+          trialPeriodDays:    referralCode ? 21 : 14,
+          country:            form.country,
+          nationality:        form.nationality,
+        }),
+      })
+      if (!intentRes.ok) {
+        const { error } = await intentRes.json().catch(() => ({}))
+        throw new Error(error || 'Could not set up payment. Please try again.')
+      }
+      const { clientSecret: secret, customerId } = await intentRes.json()
+      setClientSecret(secret)
+      setStripeCustomerId(customerId)
+      setIsOAuthProfile(false)
+      setStep(3)
+    } catch (err) {
+      setError(err.message ?? 'Something went wrong. Please try again.')
+    } finally {
+      setLoading(false)
+    }
   }
 
   // ── SUBMIT: create account → create Stripe subscription → show inline card form ──
@@ -326,7 +399,7 @@ export default function GetStarted() {
             <div className="flex items-center justify-center gap-3 mb-14">
               {[
                 { n: 1, label: 'Choose plan' },
-                { n: 2, label: 'Create account' },
+                { n: 2, label: isOAuthProfile ? 'Your details' : 'Create account' },
                 { n: 3, label: 'Payment' },
               ].map(({ n, label }, i, arr) => (
                 <React.Fragment key={n}>
@@ -447,8 +520,84 @@ export default function GetStarted() {
             </div>
           )}
 
-          {/* ── STEP 2: Account creation ───────────────────── */}
-          {step === 2 && (
+          {/* ── STEP 2a: OAuth profile completion (Google users only) ─ */}
+          {step === 2 && isOAuthProfile && (
+            <div className="max-w-md mx-auto">
+              <h2 className="font-display text-3xl font-light text-navy-950 text-center mb-2">One last step</h2>
+              <p className="text-center text-stone-500 text-sm mb-10">
+                We just need a few more details before setting up your trial.
+              </p>
+
+              {error && (
+                <div className="flex items-start gap-3 bg-red-50 border border-red-200 rounded-xl px-4 py-3.5 mb-6">
+                  <AlertCircle size={16} className="text-red-500 mt-0.5 shrink-0" />
+                  <p className="text-sm text-red-700">{error}</p>
+                </div>
+              )}
+
+              <form onSubmit={handleOAuthProfileSubmit} className="space-y-4">
+
+                {/* Phone */}
+                <Field label="Phone number" required>
+                  <div className="flex gap-2">
+                    <select
+                      name="dialCode" value={form.dialCode} onChange={handleChange}
+                      className={`${inputClass} !w-28 flex-shrink-0 px-3`}
+                    >
+                      {COUNTRIES.map(c => (
+                        <option key={c.code + c.dial} value={c.dial}>{c.dial} {c.code}</option>
+                      ))}
+                    </select>
+                    <input
+                      type="tel" name="phone" value={form.phone} onChange={handleChange}
+                      placeholder="7911 123456" inputMode="tel" autoComplete="tel-national"
+                      required autoFocus
+                      className={`${inputClass} min-w-0 flex-1`}
+                    />
+                  </div>
+                </Field>
+
+                {/* Country of residence */}
+                <Field label="Country of residence" required>
+                  <select name="country" value={form.country} onChange={handleChange} required className={inputClass}>
+                    <option value="">Select country…</option>
+                    {COUNTRIES.map(c => <option key={c.code} value={c.name}>{c.name}</option>)}
+                  </select>
+                </Field>
+
+                {/* Nationality */}
+                <Field label="Nationality" required>
+                  <select name="nationality" value={form.nationality} onChange={handleChange} required className={inputClass}>
+                    <option value="">Select nationality…</option>
+                    {COUNTRIES.map(c => <option key={c.code} value={c.name}>{c.name}</option>)}
+                  </select>
+                </Field>
+
+                {/* Terms */}
+                <p className="text-xs text-stone-400 leading-relaxed pt-1">
+                  By continuing you agree to our{' '}
+                  <Link to="/terms" className="text-navy-700 underline underline-offset-2" target="_blank">Terms of Service</Link>
+                  {' '}and{' '}
+                  <Link to="/privacy" className="text-navy-700 underline underline-offset-2" target="_blank">Privacy Policy</Link>.
+                </p>
+
+                <button
+                  type="submit"
+                  disabled={loading || !form.phone || !form.country || !form.nationality}
+                  className="w-full bg-navy-800 text-white font-semibold text-sm py-3.5 rounded-lg hover:bg-navy-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                >
+                  {loading ? (
+                    <><Loader2 size={15} className="animate-spin" />Setting up…</>
+                  ) : (
+                    <><CreditCard size={15} />Continue to payment</>
+                  )}
+                </button>
+              </form>
+            </div>
+          )}
+
+          {/* ── STEP 2b: Email account creation ───────────────────── */}
+          {step === 2 && !isOAuthProfile && (
             <div className="max-w-md mx-auto">
               <h2 className="font-display text-3xl font-light text-navy-950 text-center mb-2">Create your account</h2>
               <p className="text-center text-stone-500 text-sm mb-10">
