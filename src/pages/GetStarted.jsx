@@ -114,9 +114,11 @@ export default function GetStarted() {
   const referralCode = searchParams.get('ref') || null
   const trialDays    = referralCode ? 21 : 14
 
-  // Resume checkout for users who created an account but didn't enter their card
+  // Resume checkout — handles both ?resume=true (dashboard gate) and ?oauth=true (Google OAuth callback)
   useEffect(() => {
-    if (searchParams.get('resume') !== 'true') return
+    const isResume = searchParams.get('resume') === 'true'
+    const isOAuth  = searchParams.get('oauth')  === 'true'
+    if (!isResume && !isOAuth) return
     ;(async () => {
       const { data: { session } } = await supabase.auth.getSession()
       if (!session) return
@@ -129,10 +131,17 @@ export default function GetStarted() {
 
       if (!profile) return
 
-      const resumePlan    = profile.plan    || 'essential'
-      const resumeBilling = profile.billing_cycle || 'monthly'
+      // Restore plan from localStorage if coming from Google OAuth
+      let oauthPlan = null
+      try { oauthPlan = JSON.parse(localStorage.getItem('everstead_oauth_plan') || 'null') } catch {}
+      if (oauthPlan) localStorage.removeItem('everstead_oauth_plan')
+
+      const resumePlan    = profile.plan    || oauthPlan?.plan    || 'essential'
+      const resumeBilling = profile.billing_cycle
+        ? profile.billing_cycle === 'yearly'
+        : (oauthPlan?.billing ?? true)
       setSelectedPlan(resumePlan)
-      setAnnualBilling(resumeBilling === 'yearly')
+      setAnnualBilling(resumeBilling)
 
       const intentRes = await fetch('/api/stripe/setup-intent', {
         method:  'POST',
@@ -175,6 +184,19 @@ export default function GetStarted() {
     form.fullName.trim().length > 1 &&
     /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email) &&
     form.password.length >= 8
+
+  // ── GOOGLE SIGNUP ─────────────────────────────────────────────
+  const handleGoogleSignup = async () => {
+    // Persist plan choice so we can restore it after the OAuth redirect
+    localStorage.setItem('everstead_oauth_plan', JSON.stringify({
+      plan:    selectedPlan,
+      billing: annualBilling,
+    }))
+    await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options:  { redirectTo: `${window.location.origin}/get-started?oauth=true` },
+    })
+  }
 
   // ── SUBMIT: create account → create Stripe subscription → show inline card form ──
   const handleSubmit = async (e) => {
@@ -437,6 +459,22 @@ export default function GetStarted() {
                 </button>
                 {' '}· {annualBilling ? 'yearly billing' : 'monthly billing'}
               </p>
+
+              {/* Google sign-up */}
+              <button
+                type="button"
+                onClick={handleGoogleSignup}
+                className="w-full flex items-center justify-center gap-3 border border-stone-300 bg-white text-navy-900 font-medium text-sm py-3 rounded-lg hover:bg-stone-50 transition-colors mb-5"
+              >
+                <GoogleIcon />
+                Continue with Google
+              </button>
+
+              <div className="flex items-center gap-3 mb-5">
+                <div className="flex-1 h-px bg-stone-200" />
+                <span className="text-xs text-stone-400">or continue with email</span>
+                <div className="flex-1 h-px bg-stone-200" />
+              </div>
 
               {error && (
                 <div className="flex items-start gap-3 bg-red-50 border border-red-200 rounded-xl px-4 py-3.5 mb-6">
@@ -770,3 +808,16 @@ function Field({ label, required, children }) {
 }
 
 const inputClass = 'w-full border border-stone-300 rounded-lg px-4 py-2.5 text-sm text-navy-900 placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-navy-400 focus:border-navy-400 bg-white transition-colors'
+
+function GoogleIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg">
+      <g fill="none" fillRule="evenodd">
+        <path d="M17.64 9.205c0-.639-.057-1.252-.164-1.841H9v3.481h4.844a4.14 4.14 0 0 1-1.796 2.716v2.259h2.908c1.702-1.567 2.684-3.875 2.684-6.615z" fill="#4285F4"/>
+        <path d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z" fill="#34A853"/>
+        <path d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z" fill="#FBBC05"/>
+        <path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z" fill="#EA4335"/>
+      </g>
+    </svg>
+  )
+}
