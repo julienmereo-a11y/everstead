@@ -114,11 +114,12 @@ export default function GetStarted() {
   const referralCode = searchParams.get('ref') || null
   const trialDays    = referralCode ? 21 : 14
 
-  // Resume checkout — handles both ?resume=true (dashboard gate) and ?oauth=true (Google OAuth callback)
+  // Resume checkout — handles ?resume=true (dashboard gate) and localStorage flag (Google OAuth callback)
   useEffect(() => {
-    const isResume = searchParams.get('resume') === 'true'
-    const isOAuth  = searchParams.get('oauth')  === 'true'
+    const isResume  = searchParams.get('resume') === 'true'
+    const isOAuth   = localStorage.getItem('everstead_oauth_pending') === 'true'
     if (!isResume && !isOAuth) return
+    if (isOAuth) localStorage.removeItem('everstead_oauth_pending')
     ;(async () => {
       const { data: { session } } = await supabase.auth.getSession()
       if (!session) return
@@ -187,14 +188,15 @@ export default function GetStarted() {
 
   // ── GOOGLE SIGNUP ─────────────────────────────────────────────
   const handleGoogleSignup = async () => {
-    // Persist plan choice so we can restore it after the OAuth redirect
+    // Persist plan choice + flag so we can restore them after the OAuth redirect
+    localStorage.setItem('everstead_oauth_pending', 'true')
     localStorage.setItem('everstead_oauth_plan', JSON.stringify({
       plan:    selectedPlan,
       billing: annualBilling,
     }))
     await supabase.auth.signInWithOAuth({
       provider: 'google',
-      options:  { redirectTo: `${window.location.origin}/get-started?oauth=true` },
+      options:  { redirectTo: `${window.location.origin}/get-started` },
     })
   }
 
