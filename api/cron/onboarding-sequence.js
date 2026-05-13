@@ -1,0 +1,277 @@
+import { createClient } from '@supabase/supabase-js'
+import { Resend } from 'resend'
+
+const supabase = createClient(
+  process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL,
+  process.env.SUPABASE_SERVICE_ROLE_KEY
+)
+const resend  = new Resend(process.env.RESEND_API_KEY)
+const APP_URL = process.env.VITE_APP_URL || 'https://www.everstead.care'
+
+// ─────────────────────────────────────────────────────────────────────────────
+// DRIP SCHEDULE
+// Each email fires once, N days after the user's stripe_subscription_id was set.
+// We use created_at as a close-enough proxy (checkout typically happens minutes
+// after account creation). The sent-at column prevents double-sends.
+// ─────────────────────────────────────────────────────────────────────────────
+const SEQUENCE = [
+  {
+    n:          1,
+    field:      'onboarding_email_1_sent_at',
+    afterDays:  2,
+    subject:    'Start here: add your first financial account',
+    html:       email1Html,
+  },
+  {
+    n:          2,
+    field:      'onboarding_email_2_sent_at',
+    afterDays:  4,
+    subject:    'Who would handle things if you couldn\'t?',
+    html:       email2Html,
+  },
+  {
+    n:          3,
+    field:      'onboarding_email_3_sent_at',
+    afterDays:  7,
+    subject:    'Your will, passport, and pension — stored in one safe place',
+    html:       email3Html,
+  },
+  {
+    n:          4,
+    field:      'onboarding_email_4_sent_at',
+    afterDays:  10,
+    subject:    'The one thing most people forget in their estate plan',
+    html:       email4Html,
+  },
+  {
+    n:          5,
+    field:      'onboarding_email_5_sent_at',
+    afterDays:  13,
+    subject:    'A quick check-in from Julien',
+    html:       email5Html,
+  },
+]
+
+export default async function handler(req, res) {
+  if (req.method !== 'GET' && req.method !== 'POST') {
+    return res.status(405).json({ error: 'Method not allowed' })
+  }
+
+  const authHeader = req.headers['authorization']
+  if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+    return res.status(401).json({ error: 'Unauthorized' })
+  }
+
+  const now     = new Date()
+  const results = { sent: {}, errors: [] }
+
+  for (const step of SEQUENCE) {
+    const cutoff = new Date(now.getTime() - step.afterDays * 86_400_000).toISOString()
+
+    // Eligible: paying/trialing, account created before cutoff, this email not yet sent
+    const { data: users, error } = await supabase
+      .from('profiles')
+      .select(`id, full_name, email, plan`)
+      .not('stripe_subscription_id', 'is', null)
+      .neq('role', 'delegate')
+      .not('email', 'is', null)
+      .lte('created_at', cutoff)
+      .is(step.field, null)
+
+    if (error) {
+      console.error(`onboarding-sequence email ${step.n} query error:`, error)
+      results.errors.push(`email_${step.n}_query: ${error.message}`)
+      continue
+    }
+
+    let stepSent = 0
+    for (const user of users ?? []) {
+      try {
+        await resend.emails.send({
+          from:    'Julien at Everstead <hello@everstead.care>',
+          to:      user.email,
+          subject: step.subject,
+          html:    step.html(user.full_name, user.plan),
+        })
+        await supabase
+          .from('profiles')
+          .update({ [step.field]: now.toISOString() })
+          .eq('id', user.id)
+        stepSent++
+      } catch (err) {
+        console.error(`onboarding-sequence email ${step.n} for ${user.email}:`, err)
+        results.errors.push(`email_${step.n}_${user.id}: ${err.message}`)
+      }
+    }
+    results.sent[`email_${step.n}`] = stepSent
+  }
+
+  console.log('onboarding-sequence:', results)
+  return res.status(200).json(results)
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// SHARED LAYOUT
+// ─────────────────────────────────────────────────────────────────────────────
+function layout(body) {
+  return `<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
+<body style="margin:0;padding:0;background:#f5f4f0;font-family:Georgia,serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#f5f4f0;padding:40px 0;">
+    <tr><td align="center">
+      <table width="560" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:12px;overflow:hidden;max-width:560px;width:100%;">
+        <tr><td style="background:#0d1628;padding:28px 40px;text-align:center;">
+          <img src="https://www.everstead.care/logo-v2-white.png" alt="Everstead" width="160" style="display:block;margin:0 auto;height:auto;max-width:160px;" />
+        </td></tr>
+        <tr><td style="padding:40px;">${body}</td></tr>
+        <tr><td style="padding:24px 40px;border-top:1px solid #e8e5e0;">
+          <p style="margin:0;color:#9ca3af;font-size:13px;line-height:1.5;">
+            Questions? Reply to this email or write to <a href="mailto:hello@everstead.care" style="color:#4c7d47;">hello@everstead.care</a>
+          </p>
+        </td></tr>
+      </table>
+    </td></tr>
+  </table>
+</body>
+</html>`
+}
+
+function cta(href, label) {
+  return `<a href="${href}" style="display:inline-block;background:#0d1628;color:#ffffff;text-decoration:none;padding:14px 28px;border-radius:8px;font-size:15px;">${label}</a>`
+}
+
+function tip(icon, text) {
+  return `<tr>
+    <td style="padding:10px 14px;vertical-align:top;font-size:20px;line-height:1;">${icon}</td>
+    <td style="padding:10px 0;color:#4a5568;font-size:14px;line-height:1.6;">${text}</td>
+  </tr>`
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// EMAIL 1 — Day 2: Add your first account
+// ─────────────────────────────────────────────────────────────────────────────
+function email1Html(name) {
+  const first = name?.split(' ')[0] || 'there'
+  return layout(`
+    <h1 style="margin:0 0 16px;color:#0d1628;font-size:24px;font-weight:normal;">
+      ${first}, let's start with what you own.
+    </h1>
+    <p style="margin:0 0 16px;color:#4a5568;font-size:16px;line-height:1.7;">
+      The foundation of any good estate plan is a clear picture of your finances — bank accounts, investments, pensions, property. It's what your family would need to find in an emergency.
+    </p>
+    <p style="margin:0 0 24px;color:#4a5568;font-size:16px;line-height:1.7;">
+      In Everstead you can add all of them in a few minutes. Here's what to include:
+    </p>
+    <table cellpadding="0" cellspacing="0" style="margin:0 0 32px;width:100%;">
+      ${tip('🏦', '<strong>Bank accounts</strong> — current accounts, savings, ISAs')}
+      ${tip('📈', '<strong>Investments & pensions</strong> — workplace pensions, SIPPs, stocks & shares')}
+      ${tip('🏠', '<strong>Property</strong> — your home, buy-to-lets, land')}
+      ${tip('🛡️', '<strong>Insurance policies</strong> — life, critical illness, income protection')}
+    </table>
+    ${cta(`${APP_URL}/dashboard`, 'Add my first account →')}
+    <p style="margin:32px 0 0;color:#6b7280;font-size:14px;line-height:1.6;">— Julien, founder of Everstead</p>
+  `)
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// EMAIL 2 — Day 4: Trusted contacts
+// ─────────────────────────────────────────────────────────────────────────────
+function email2Html(name) {
+  const first = name?.split(' ')[0] || 'there'
+  return layout(`
+    <h1 style="margin:0 0 16px;color:#0d1628;font-size:24px;font-weight:normal;">
+      Who would handle things if you couldn't?
+    </h1>
+    <p style="margin:0 0 16px;color:#4a5568;font-size:16px;line-height:1.7;">
+      Hi ${first}. One of the most important things you can do in Everstead is name the people who should have access to your plan — your spouse, a sibling, a solicitor, or a close friend.
+    </p>
+    <p style="margin:0 0 16px;color:#4a5568;font-size:16px;line-height:1.7;">
+      These are your <strong>trusted contacts</strong>. They only get access when you grant it — but when the time comes, they'll know exactly where everything is and what to do.
+    </p>
+    <p style="margin:0 0 32px;color:#4a5568;font-size:16px;line-height:1.7;">
+      It takes 60 seconds and makes an enormous difference.
+    </p>
+    ${cta(`${APP_URL}/dashboard`, 'Add a trusted contact →')}
+    <p style="margin:32px 0 0;color:#6b7280;font-size:14px;line-height:1.6;">— Julien, founder of Everstead</p>
+  `)
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// EMAIL 3 — Day 7: Document vault
+// ─────────────────────────────────────────────────────────────────────────────
+function email3Html(name) {
+  const first = name?.split(' ')[0] || 'there'
+  return layout(`
+    <h1 style="margin:0 0 16px;color:#0d1628;font-size:24px;font-weight:normal;">
+      Your documents deserve a safer home.
+    </h1>
+    <p style="margin:0 0 16px;color:#4a5568;font-size:16px;line-height:1.7;">
+      Hi ${first}. Think about where your will is right now. Your passport. Your pension statements. Your life insurance policy. Could your family find them quickly if they needed to?
+    </p>
+    <p style="margin:0 0 24px;color:#4a5568;font-size:16px;line-height:1.7;">
+      Everstead's encrypted vault keeps them in one place — organised, accessible, and private. Here's what's worth uploading first:
+    </p>
+    <table cellpadding="0" cellspacing="0" style="margin:0 0 32px;width:100%;">
+      ${tip('📜', '<strong>Your will</strong> — or a note about where the original is stored')}
+      ${tip('🪪', '<strong>Passport & ID</strong> — the numbers matter as much as the documents')}
+      ${tip('📄', '<strong>Pension & insurance</strong> — policy numbers, provider contacts')}
+      ${tip('🏡', '<strong>Property deeds</strong> — especially if you own without a mortgage')}
+    </table>
+    ${cta(`${APP_URL}/dashboard`, 'Upload my first document →')}
+    <p style="margin:32px 0 0;color:#6b7280;font-size:14px;line-height:1.6;">— Julien, founder of Everstead</p>
+  `)
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// EMAIL 4 — Day 10: Instructions feature
+// ─────────────────────────────────────────────────────────────────────────────
+function email4Html(name) {
+  const first = name?.split(' ')[0] || 'there'
+  return layout(`
+    <h1 style="margin:0 0 16px;color:#0d1628;font-size:24px;font-weight:normal;">
+      The one thing most people forget.
+    </h1>
+    <p style="margin:0 0 16px;color:#4a5568;font-size:16px;line-height:1.7;">
+      Hi ${first}. Accounts and documents are essential — but there's something just as important that almost everyone overlooks: <strong>instructions</strong>.
+    </p>
+    <p style="margin:0 0 16px;color:#4a5568;font-size:16px;line-height:1.7;">
+      What should your family do first? Who should they call? Where is the spare key? What are your funeral wishes? What happens to the dog?
+    </p>
+    <p style="margin:0 0 16px;color:#4a5568;font-size:16px;line-height:1.7;">
+      In Everstead you can write step-by-step instructions your trusted contacts will see the moment they need them. It sounds morbid — but families who have it say it's one of the most generous things you can leave behind.
+    </p>
+    <p style="margin:0 0 32px;color:#4a5568;font-size:16px;line-height:1.7;">
+      It doesn't need to be perfect. Just start.
+    </p>
+    ${cta(`${APP_URL}/dashboard`, 'Write my first instruction →')}
+    <p style="margin:32px 0 0;color:#6b7280;font-size:14px;line-height:1.6;">— Julien, founder of Everstead</p>
+  `)
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// EMAIL 5 — Day 13: Personal check-in from Julien
+// ─────────────────────────────────────────────────────────────────────────────
+function email5Html(name, plan) {
+  const first    = name?.split(' ')[0] || 'there'
+  const planName = plan ? plan.charAt(0).toUpperCase() + plan.slice(1) : 'Essential'
+  return layout(`
+    <h1 style="margin:0 0 16px;color:#0d1628;font-size:24px;font-weight:normal;">
+      A quick note from me.
+    </h1>
+    <p style="margin:0 0 16px;color:#4a5568;font-size:16px;line-height:1.7;">
+      Hi ${first}, it's Julien — I started Everstead after watching my own family struggle to piece together a loved one's affairs under enormous stress. I built it so no one else would have to go through that.
+    </p>
+    <p style="margin:0 0 16px;color:#4a5568;font-size:16px;line-height:1.7;">
+      You've had two weeks with your <strong>${planName}</strong> plan. I just wanted to check in — is there anything you got stuck on, or anything I can help you set up?
+    </p>
+    <p style="margin:0 0 16px;color:#4a5568;font-size:16px;line-height:1.7;">
+      Just hit reply. I read every message.
+    </p>
+    <p style="margin:0 0 32px;color:#4a5568;font-size:16px;line-height:1.7;">
+      And if your trial is ending soon — everything you've built is still here, ready to go.
+    </p>
+    ${cta(`${APP_URL}/dashboard`, 'Open my plan →')}
+    <p style="margin:32px 0 0;color:#6b7280;font-size:14px;line-height:1.6;">— Julien, founder of Everstead</p>
+  `)
+}
