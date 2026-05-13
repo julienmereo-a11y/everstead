@@ -356,7 +356,7 @@ export default function HowItWorks() {
               </p>
               <ul className="space-y-4">
                 {[
-                  { icon: Eye,       text: 'They only see the sections you've explicitly shared — nothing else.' },
+                  { icon: Eye,       text: "They only see the sections you've explicitly shared — nothing else." },
                   { icon: ClipboardList, text: 'Your step-by-step instructions appear at the top, in the order you wrote them.' },
                   { icon: Bell,      text: 'Emergency vault access can be granted instantly if you choose to enable it.' },
                   { icon: Shield,    text: 'Every access event is logged — you always know who viewed what and when.' },
