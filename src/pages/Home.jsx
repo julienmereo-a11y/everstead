@@ -25,7 +25,7 @@ const painPoints = [
 ]
 
 const featureHighlights = [
-  { icon: Folder, title: 'Digital account inventory', desc: 'Organize every account — banking, investments, subscriptions, and digital assets — in one structured place.' },
+  { icon: Folder, title: 'Digital account inventory', desc: 'Organise every account — banking, investments, subscriptions, and digital assets — in one structured place.' },
   { icon: FileText, title: 'Secure document vault', desc: 'Upload, tag, and assign access to legal, financial, and personal documents with version history.' },
   { icon: ClipboardList, title: 'Step-by-step instructions', desc: 'Leave clear guidance so loved ones know exactly what to do, in what order, and who to contact.' },
   { icon: Users, title: 'People & role assignment', desc: 'Assign roles like executor, attorney, or caregiver with tailored access to only what they need.' },
@@ -34,7 +34,7 @@ const featureHighlights = [
 ]
 
 const steps = [
-  { num: '01', title: 'Add your accounts & details', desc: 'Organize financial accounts, documents, subscriptions, and key contacts into a structured plan.' },
+  { num: '01', title: 'Add your accounts & details', desc: 'Organise financial accounts, documents, subscriptions, and key contacts into a structured plan.' },
   { num: '02', title: 'Assign trusted people', desc: 'Give each person role-based access — only what they need, nothing more.' },
   { num: '03', title: 'Leave instructions & wishes', desc: 'Write step-by-step guidance, personal notes, and final wishes on your own terms.' },
   { num: '04', title: 'Keep it updated over time', desc: 'Smart reminders and a readiness score keep your plan current and complete.' },
@@ -83,12 +83,12 @@ const plans = [
 const faqs = [
   { q: 'Is my information actually secure?', a: 'Yes. All data is encrypted at rest and in transit with AES-256 encryption. Role-based access ensures only people you authorize can see specific sections. We never sell your data.' },
   { q: 'What happens to my account if I pass away?', a: 'You assign trusted people in advance. When the time comes, they access only the sections you\'ve shared with them — on their own timeline, at their own pace.' },
-  { q: 'Can I start before I have everything organized?', a: 'Absolutely. Most people start with just a few accounts and build over time. Our readiness score shows progress and highlights what\'s still missing.' },
+  { q: 'Can I start before I have everything organised?', a: 'Absolutely. Most people start with just a few accounts and build over time. Our readiness score shows progress and highlights what\'s still missing.' },
   { q: 'Is this a legal document service?', a: 'No. Everstead is an organisation and planning platform — not a legal service. It does not draft wills, prepare legal documents, give legal or financial advice, or replace a solicitor, estate lawyer, accountant, or family advisor. It helps families organise information, instructions, and controlled access in one place.' },
 ]
 
 const proofStats = [
-  { value: '14 days', label: 'Free trial to get organized' },
+  { value: '14 days', label: 'Free trial to get organised' },
   { value: 'Role-based', label: 'Access control for family and executors' },
   { value: '24/7', label: 'Access to your plan when it matters' },
 ]
@@ -173,17 +173,12 @@ export default function Home() {
         <div className="relative max-w-7xl mx-auto px-6 lg:px-8 grid lg:grid-cols-2 gap-16 items-center">
           {/* Copy */}
           <div>
-            <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full px-4 py-1.5 text-xs text-stone-200 font-medium mb-8 animate-fade-in">
-              <span className="w-1.5 h-1.5 rounded-full bg-sage-400 animate-pulse" />
-              Trusted by families and estate advisors
-            </div>
-
             <h1 className="font-display text-5xl lg:text-6xl xl:text-7xl font-light text-white leading-[1.08] tracking-tight text-balance animate-fade-up">
               Put your digital life in order, so your family is not left guessing.
             </h1>
 
             <p className="mt-6 text-lg text-stone-300 leading-relaxed max-w-xl animate-fade-up animate-delay-100">
-              Everstead helps you securely organize accounts, documents, instructions, contacts, and final wishes in one place — so loved ones know what to do when it matters most.
+              Everstead helps you securely organise accounts, documents, instructions, contacts, and final wishes in one place — so loved ones know what to do when it matters most.
             </p>
 
             <div className="mt-10 flex flex-wrap gap-3 animate-fade-up animate-delay-200">
@@ -259,15 +254,28 @@ export default function Home() {
       </section>
 
       {/* ── TRUST BAR ────────────────────────────────────────────── */}
-      <section className="bg-white border-y border-stone-100 py-6">
+      <section className="bg-white border-y border-stone-100 py-5">
         <div className="max-w-5xl mx-auto px-6 lg:px-8">
-          <div className="flex flex-wrap justify-center gap-8 lg:gap-12">
-            {trustItems.map(({ icon: Icon, label }) => (
-              <div key={label} className="flex items-center gap-2 text-stone-500">
-                <Icon size={16} className="text-navy-600 flex-shrink-0" />
-                <span className="text-sm font-medium">{label}</span>
-              </div>
-            ))}
+          <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-3 lg:gap-x-12">
+            <div className="flex items-center gap-2 text-stone-500">
+              <Lock size={15} className="text-navy-600 flex-shrink-0" />
+              <span className="text-sm font-medium">AES-256 bank-level encryption</span>
+            </div>
+            <span className="hidden sm:block w-px h-4 bg-stone-200" />
+            <div className="flex items-center gap-2 text-stone-500">
+              <ShieldCheck size={15} className="text-navy-600 flex-shrink-0" />
+              <span className="text-sm font-medium">Payments secured by Stripe</span>
+            </div>
+            <span className="hidden sm:block w-px h-4 bg-stone-200" />
+            <div className="flex items-center gap-2 text-stone-500">
+              <FileText size={15} className="text-navy-600 flex-shrink-0" />
+              <span className="text-sm font-medium">EU data residency · GDPR compliant</span>
+            </div>
+            <span className="hidden sm:block w-px h-4 bg-stone-200" />
+            <div className="flex items-center gap-2 text-stone-500">
+              <ShieldCheck size={15} className="text-navy-600 flex-shrink-0" />
+              <span className="text-sm font-medium">Zero data selling — ever</span>
+            </div>
           </div>
         </div>
       </section>
@@ -470,7 +478,7 @@ export default function Home() {
             {[
               { title: 'For Families', desc: 'Make sure loved ones know where everything is and what to do first.', href: '/use-cases/families' },
               { title: 'For Parents', desc: 'Leave guidance, not guesswork, for practical and personal decisions.', href: '/use-cases/parents' },
-              { title: 'For Aging Adults', desc: 'Organize with dignity and clarity while assigning trusted support.', href: '/use-cases/aging-adults' },
+              { title: 'For Aging Adults', desc: 'Organise with dignity and clarity while assigning trusted support.', href: '/use-cases/aging-adults' },
               { title: 'For Executors', desc: 'A clearer path through responsibilities, documents, and timing.', href: '/use-cases/executors' },
               { title: 'For Advisors', desc: 'Offer estate organization as a modern client service.', href: '/use-cases/advisors' },
               {
@@ -769,7 +777,7 @@ export default function Home() {
           <div className="reveal rounded-3xl bg-gradient-to-br from-navy-900 to-navy-950 border border-navy-800 p-8 lg:p-10 text-white flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
             <div className="max-w-2xl">
               <p className="text-xs font-semibold uppercase tracking-widest text-sage-400 mb-3">Share Everstead</p>
-              <h2 className="font-display text-3xl lg:text-4xl font-light leading-tight">Help a parent, partner, or client get organized before a crisis.</h2>
+              <h2 className="font-display text-3xl lg:text-4xl font-light leading-tight">Help a parent, partner, or client get organised before a crisis.</h2>
               <p className="text-sm text-stone-300 mt-3 leading-relaxed">Everstead works especially well when one family member starts the process and invites others in with the right permissions.</p>
             </div>
             <div className="flex flex-wrap gap-3">
