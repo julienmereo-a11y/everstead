@@ -1205,7 +1205,7 @@ function OverviewSection({ isDemo }) {
                     <div className="h-full bg-navy-500 rounded-full" style={{ width: active.length ? `${(count / active.length) * 100}%` : '0%' }} />
                   </div>
                   <span className="text-sm font-semibold text-navy-900 w-6 text-right">{count}</span>
-                  <span className="text-xs text-stone-400 w-16 text-right">£{planMrr}/mo</span>
+                  <span className="text-xs text-stone-400 w-16 text-right">£{planMrr} MRR</span>
                 </div>
               ))}
             </div>
