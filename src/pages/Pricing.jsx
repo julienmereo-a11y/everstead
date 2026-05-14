@@ -37,6 +37,10 @@ const faqs = [
     q: 'How is my data protected?',
     a: 'All data is encrypted in transit and at rest using AES-256 encryption. Everstead operates under UK GDPR and is registered with the ICO. Everstead staff cannot access the content of your estate plan. Access to your plan is controlled entirely by you.',
   },
+  {
+    q: 'Is Everstead worth it if I only use it once to set up my plan?',
+    a: 'Most people set up their plan once — then update it a few times a year as their life changes. But the real value isn\'t in the setup. It\'s in knowing that if something happens tomorrow, your family won\'t spend months trying to piece your life together. For less than £1 a day, that\'s one of the better investments you can make for the people you love.',
+  },
 ]
 
 const faqSchema = {
@@ -78,8 +82,10 @@ const plans = [
     name: 'Essential',
     monthly: 7,
     yearly: 5,
+    yearlyTotal: 60,
     promo: 'Launch offer',
     description: 'For individuals getting their digital life in order.',
+    reframe: '£1.15 a week — less than a coffee.',
     features: ['Unlimited accounts & documents', 'Step-by-step instructions', '2 trusted contacts', 'Readiness score', '5 GB storage'],
     cta: 'Get started free',
   },
@@ -88,7 +94,9 @@ const plans = [
     name: 'Family',
     monthly: 15,
     yearly: 12,
+    yearlyTotal: 144,
     description: 'For couples and households planning together.',
+    reframe: '£12 a month — less than a family lunch. Peace of mind that lasts.',
     features: ['Everything in Essential', 'Two private vaults — one subscription', 'Each person keeps their own private data', 'Share only what you choose', 'Up to 10 trusted contacts', '25 GB storage'],
     cta: 'Get started free',
     highlight: true,
@@ -99,7 +107,9 @@ const plans = [
     name: 'Advisor',
     monthly: 60,
     yearly: 48,
-    description: 'For professionals managing client estate organization.',
+    yearlyTotal: 576,
+    description: 'For professionals managing client estate organisation.',
+    reframe: '£48 a month — less than one billable hour.',
     features: ['Everything in Family', 'Multi-client workspace', 'Co-branded client portal', 'Advisor collaboration tools', 'Priority support', 'White-label options'],
     cta: 'Book a demo',
   },
@@ -173,6 +183,21 @@ export default function Pricing() {
         </div>
       </section>
 
+      {/* ── VALUE ANCHOR BAR ──────────────────────────────────────── */}
+      <div className="bg-sage-50 border-b border-sage-100 py-3">
+        <p className="text-center text-xs text-stone-500 px-6">
+          A solicitor charges £200/hr &middot; Probate costs UK families £3,000+ &middot; Everstead costs less than £1 a day
+        </p>
+      </div>
+
+      {/* ── TESTIMONIAL ───────────────────────────────────────────── */}
+      <div className="bg-white border-b border-stone-100 py-6">
+        <p className="text-center text-sm italic text-stone-400 max-w-2xl mx-auto px-6">
+          "I spent four months trying to sort out my father's accounts after he died. I set up Everstead the week after the funeral."
+        </p>
+        <p className="text-center text-xs text-stone-400 mt-2">— Beta user, London</p>
+      </div>
+
       <section className="py-20 lg:py-24">
         <div className="max-w-7xl mx-auto px-6 lg:px-8 grid xl:grid-cols-3 gap-6">
           {plans.map((plan, index) => {
@@ -191,9 +216,14 @@ export default function Pricing() {
                   <p className={`text-sm font-semibold ${plan.highlight ? 'text-sage-300' : 'text-navy-700'}`}>{plan.name}</p>
                   <p className={`mt-3 text-sm leading-relaxed ${plan.highlight ? 'text-stone-300' : 'text-stone-600'}`}>{plan.description}</p>
                 </div>
-                <div className="mt-8 flex items-end gap-2">
-                  <span className="font-display text-5xl font-light">£{price}</span>
-                  <span className={`pb-2 text-sm ${plan.highlight ? 'text-stone-400' : 'text-stone-500'}`}>/ month</span>
+                <div className="mt-8">
+                  <div className="flex items-end gap-2">
+                    <span className="font-display text-5xl font-light">£{price}</span>
+                    <span className={`pb-2 text-sm ${plan.highlight ? 'text-stone-400' : 'text-stone-500'}`}>/ month</span>
+                  </div>
+                  {annual && plan.reframe && (
+                    <p className={`mt-2 text-xs leading-relaxed ${plan.highlight ? 'text-stone-400' : 'text-stone-400'}`}>{plan.reframe}</p>
+                  )}
                 </div>
                 <ul className="mt-8 space-y-3 flex-1">
                   {plan.features.map(feature => (
@@ -226,6 +256,38 @@ export default function Pricing() {
               </div>
             )
           })}
+        </div>
+      </section>
+
+      {/* ── COMPARISON SECTION ────────────────────────────────────── */}
+      <section className="py-16 lg:py-20 bg-stone-50 border-t border-stone-100">
+        <div className="max-w-5xl mx-auto px-6 lg:px-8">
+          <h2 className="font-display text-2xl lg:text-3xl font-light text-navy-950 text-center mb-10 reveal text-balance">
+            Less than the alternatives. More than any of them.
+          </h2>
+          <div className="grid sm:grid-cols-3 gap-4">
+            {/* Solicitor */}
+            <div className="reveal bg-white rounded-2xl border border-stone-200 p-6">
+              <p className="text-2xl mb-3">🏛️</p>
+              <p className="font-semibold text-navy-900 text-sm mb-1">Solicitor (probate)</p>
+              <p className="font-display text-2xl font-light text-navy-950 mb-3">£3,000–5,000</p>
+              <p className="text-xs text-stone-500 leading-relaxed">One estate settled, after you're gone. No ongoing access, no instructions, no peace of mind while you're alive.</p>
+            </div>
+            {/* Will writing */}
+            <div className="reveal reveal-delay-1 bg-white rounded-2xl border border-stone-200 p-6">
+              <p className="text-2xl mb-3">📋</p>
+              <p className="font-semibold text-navy-900 text-sm mb-1">Will writing service</p>
+              <p className="font-display text-2xl font-light text-navy-950 mb-3">£150–500</p>
+              <p className="text-xs text-stone-500 leading-relaxed">A document. No instructions, no organised accounts, no access grants, no way for your family to find anything.</p>
+            </div>
+            {/* Everstead — highlighted */}
+            <div className="reveal reveal-delay-2 bg-navy-950 rounded-2xl border border-navy-800 p-6">
+              <p className="text-2xl mb-3">🔒</p>
+              <p className="font-semibold text-sage-300 text-sm mb-1">Everstead Family</p>
+              <p className="font-display text-2xl font-light text-white mb-3">£144 / yr</p>
+              <p className="text-xs text-stone-300 leading-relaxed">Everything organised, updated, and shared — for as long as you need it. Two private vaults included.</p>
+            </div>
+          </div>
         </div>
       </section>
 
