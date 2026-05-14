@@ -388,7 +388,11 @@ export default function GetStarted() {
                   onClick={() => setAnnualBilling(true)}
                   className={`px-5 py-1.5 text-sm font-medium rounded-full transition-colors ${annualBilling ? 'bg-navy-800 text-white' : 'text-stone-500 hover:text-navy-800'}`}
                 >
-                  Yearly <span className="text-sage-500 font-semibold ml-1">Save 20%</span>
+                  Yearly{' '}
+                  {annualBilling
+                    ? <span className="text-sage-300 font-semibold ml-1">✓ Saving 20%</span>
+                    : <span className="text-sage-500 font-semibold ml-1">Save 20%</span>
+                  }
                 </button>
               </div>
             </div>
@@ -783,6 +787,24 @@ export default function GetStarted() {
               <p className="text-center text-stone-500 text-sm mb-8">
                 Your card won't be charged for {trialDays} days. Cancel any time before then and pay nothing.
               </p>
+
+              {!annualBilling && (() => {
+                const plan = PLAN_OPTIONS.find(p => p.id === selectedPlan)
+                const saving = plan ? (plan.monthly - plan.yearly) * 12 : 0
+                return (
+                  <div className="mb-5 flex items-center justify-between bg-sage-50 border border-sage-200 rounded-xl px-4 py-3">
+                    <p className="text-xs text-sage-700">
+                      💡 Switch to yearly and save <strong>£{saving}/yr</strong>
+                    </p>
+                    <button
+                      onClick={() => setAnnualBilling(true)}
+                      className="text-xs font-semibold text-sage-700 hover:text-sage-900 underline underline-offset-2 ml-3 whitespace-nowrap"
+                    >
+                      Switch to yearly →
+                    </button>
+                  </div>
+                )
+              })()}
 
               <Elements
                 stripe={getStripe()}

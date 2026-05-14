@@ -135,10 +135,15 @@ export default function Pricing() {
   useReveal()
   const [annual, setAnnual] = useState(true)
 
-  const billingNote = useMemo(
-    () => annual ? 'Save with yearly billing. Launch pricing applies while it lasts.' : 'Billed month to month. Switch to yearly to save more.',
-    [annual],
-  )
+  const familyPlan     = plans.find(p => p.id === 'family')
+  const yearlyDiscount = Math.round((1 - familyPlan.yearly / familyPlan.monthly) * 100)
+
+  const billingNote = useMemo(() => {
+    const saving = (familyPlan.monthly - familyPlan.yearly) * 12
+    return annual
+      ? `Billed yearly. You're saving £${saving}/yr on the Family plan compared to monthly. ✓`
+      : `Billed monthly. Switch to yearly and save £${saving} on the Family plan.`
+  }, [annual])
 
   return (
     <>
@@ -176,7 +181,10 @@ export default function Pricing() {
               className={`flex items-center gap-2 px-5 py-2.5 text-sm font-semibold rounded-full transition-colors ${annual ? 'bg-white text-navy-900 shadow-sm' : 'text-stone-400 hover:text-stone-200'}`}
             >
               Yearly
-              {!annual && <span className="text-sage-400 font-semibold text-xs">Save more</span>}
+              {annual
+                ? <span className="text-sage-600 font-semibold text-xs">✓ Saving {yearlyDiscount}%</span>
+                : <span className="text-sage-400 font-semibold text-xs">Save {yearlyDiscount}%</span>
+              }
             </button>
           </div>
           <p className="mt-4 text-sm text-stone-500">{billingNote}</p>
@@ -206,6 +214,11 @@ export default function Pricing() {
                     <span className="font-display text-5xl font-light">£{price}</span>
                     <span className={`pb-2 text-sm ${plan.highlight ? 'text-stone-400' : 'text-stone-500'}`}>/ month</span>
                   </div>
+                  {annual && (
+                    <p className={`mt-1.5 text-[11px] ${plan.highlight ? 'text-stone-400' : 'text-stone-400'}`}>
+                      Save £{(plan.monthly - plan.yearly) * 12}/yr vs monthly
+                    </p>
+                  )}
                 </div>
                 <ul className="mt-8 space-y-3 flex-1">
                   {plan.features.map(feature => (
