@@ -26,8 +26,8 @@ const PLAN_OPTIONS = [
     id: 'family',
     name: 'Family',
     monthly: 15, yearly: 12,
-    desc: 'For households planning together.',
-    features: ['All household members', '10 trusted contacts', 'Emergency vault sharing', '25 GB storage'],
+    desc: 'For couples and households planning together.',
+    features: ['Two private vaults — one subscription', 'Each person keeps their own private data', 'Share only what you choose', '10 trusted contacts', '25 GB storage'],
     badge: 'Most popular',
   },
   {

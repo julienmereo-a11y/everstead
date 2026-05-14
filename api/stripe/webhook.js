@@ -206,10 +206,29 @@ export default async function handler(req, res) {
   // Fires at period end when cancel_at_period_end subscription expires.
   if (event.type === 'customer.subscription.deleted') {
     const subscription = event.data.object
-    await supabase
+    const { data: deletedProfiles } = await supabase
       .from('profiles')
       .update({ subscription_status: 'cancelled', plan: null, current_period_end: null, cancel_at: null })
       .eq('stripe_customer_id', subscription.customer)
+      .select('id')
+
+    // Cascade subscription status to secondary family member
+    if (deletedProfiles?.[0]?.id) {
+      const primaryUserId = deletedProfiles[0].id
+      const { data: membership } = await supabase
+        .from('family_memberships')
+        .select('secondary_user_id')
+        .eq('primary_user_id', primaryUserId)
+        .eq('invite_status', 'accepted')
+        .maybeSingle()
+
+      if (membership?.secondary_user_id) {
+        await supabase
+          .from('profiles')
+          .update({ subscription_status: 'cancelled', plan: null })
+          .eq('id', membership.secondary_user_id)
+      }
+    }
   }
 
   // ── customer.subscription.updated ────────────────────────
@@ -248,10 +267,32 @@ export default async function handler(req, res) {
       profileUpdate.cancel_at = null
     }
 
-    await supabase
+    const { data: updatedProfiles } = await supabase
       .from('profiles')
       .update(profileUpdate)
       .eq('stripe_customer_id', subscription.customer)
+      .select('id, plan, subscription_status')
+
+    // Cascade subscription status to secondary family member
+    if (updatedProfiles?.[0]?.id) {
+      const primaryUserId = updatedProfiles[0].id
+      const newStatus     = updatedProfiles[0].subscription_status
+      const newPlan       = updatedProfiles[0].plan
+
+      const { data: membership } = await supabase
+        .from('family_memberships')
+        .select('secondary_user_id')
+        .eq('primary_user_id', primaryUserId)
+        .eq('invite_status', 'accepted')
+        .maybeSingle()
+
+      if (membership?.secondary_user_id) {
+        await supabase
+          .from('profiles')
+          .update({ subscription_status: newStatus, plan: newPlan })
+          .eq('id', membership.secondary_user_id)
+      }
+    }
   }
 
   // ── customer.subscription.trial_will_end ─────────────────

@@ -39,11 +39,13 @@ import AdvisorPortal from './pages/AdvisorPortal'
 import AdminPanel from './pages/AdminPanel'
 import AdminLogin from './pages/AdminLogin'
 import AcceptAdminInvite from './pages/AcceptAdminInvite'
+import AcceptFamilyInvite from './pages/AcceptFamilyInvite'
 import DelegateRegister from './pages/DelegateRegister'
 import SetupMFA from './pages/SetupMFA'
 import ChooseAccount from './pages/ChooseAccount'
 import TrialEnded from './pages/TrialEnded'
 import PrintView from './pages/PrintView'
+import Settings from './pages/Settings'
 
 function ScrollToTop() {
   const { pathname } = useLocation()
@@ -113,7 +115,16 @@ export default function App() {
               </ProtectedRoute>
             }
           />
+          <Route
+            path="/settings"
+            element={
+              <ProtectedRoute>
+                <Settings />
+              </ProtectedRoute>
+            }
+          />
           <Route path="/accept-admin-invite" element={<AcceptAdminInvite />} />
+          <Route path="/accept-family-invite" element={<AcceptFamilyInvite />} />
           <Route
             path="/admin-login"
             element={
