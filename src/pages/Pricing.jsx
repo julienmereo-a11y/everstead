@@ -285,6 +285,7 @@ export default function Pricing() {
                 Discuss advisor rollout <ArrowRight size={15} />
               </Link>
             </div>
+          </div>
         </div>
       </section>
 
