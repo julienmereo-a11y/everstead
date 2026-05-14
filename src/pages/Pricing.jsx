@@ -270,22 +270,8 @@ export default function Pricing() {
       </section>
 
       <section className="py-20 lg:py-24">
-        <div className="max-w-6xl mx-auto px-6 lg:px-8 grid lg:grid-cols-[0.88fr_1.12fr] gap-12 items-start">
-          <div className="reveal rounded-[2rem] border border-navy-200 bg-navy-50 p-8">
-            <div className="flex items-center gap-3 mb-5">
-              <div className="w-11 h-11 rounded-2xl bg-navy-800 text-white flex items-center justify-center">
-                <Briefcase size={20} />
-              </div>
-              <div>
-                <p className="text-sm font-semibold text-navy-900">Advisor pilot focus</p>
-                <p className="text-sm text-stone-500">The fastest route to trusted distribution</p>
-              </div>
-            </div>
-            <p className="text-sm leading-relaxed text-stone-600">
-              The advisor tier is designed as a deliberate early-stage wedge: one firm, one rollout, one repeatable motion. That partner can introduce Everstead to dozens of families while giving the product the endorsement it needs in a high-trust category.
-            </p>
-          </div>
-          <div className="reveal reveal-delay-1 rounded-[2rem] border border-amber-200 bg-amber-50 p-8">
+        <div className="max-w-3xl mx-auto px-6 lg:px-8">
+          <div className="reveal rounded-[2rem] border border-amber-200 bg-amber-50 p-8">
             <p className="text-xs font-semibold uppercase tracking-[0.22em] text-amber-700 mb-4">Important disclaimer</p>
             <h2 className="font-display text-3xl font-light text-navy-950">Everstead is not a legal service.</h2>
             <p className="mt-4 text-sm leading-relaxed text-stone-700">
@@ -299,7 +285,6 @@ export default function Pricing() {
                 Discuss advisor rollout <ArrowRight size={15} />
               </Link>
             </div>
-          </div>
         </div>
       </section>
 
