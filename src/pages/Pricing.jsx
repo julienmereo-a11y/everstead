@@ -206,9 +206,6 @@ export default function Pricing() {
                     <span className="font-display text-5xl font-light">£{price}</span>
                     <span className={`pb-2 text-sm ${plan.highlight ? 'text-stone-400' : 'text-stone-500'}`}>/ month</span>
                   </div>
-                  {annual && plan.reframe && (
-                    <p className={`mt-2 text-xs leading-relaxed ${plan.highlight ? 'text-stone-400' : 'text-stone-400'}`}>{plan.reframe}</p>
-                  )}
                 </div>
                 <ul className="mt-8 space-y-3 flex-1">
                   {plan.features.map(feature => (
