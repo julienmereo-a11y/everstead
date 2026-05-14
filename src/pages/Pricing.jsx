@@ -183,21 +183,6 @@ export default function Pricing() {
         </div>
       </section>
 
-      {/* ── VALUE ANCHOR BAR ──────────────────────────────────────── */}
-      <div className="bg-sage-50 border-b border-sage-100 py-3">
-        <p className="text-center text-xs text-stone-500 px-6">
-          A solicitor charges £200/hr &middot; Probate costs UK families £3,000+ &middot; Everstead costs less than £1 a day
-        </p>
-      </div>
-
-      {/* ── TESTIMONIAL ───────────────────────────────────────────── */}
-      <div className="bg-white border-b border-stone-100 py-6">
-        <p className="text-center text-sm italic text-stone-400 max-w-2xl mx-auto px-6">
-          "I spent four months trying to sort out my father's accounts after he died. I set up Everstead the week after the funeral."
-        </p>
-        <p className="text-center text-xs text-stone-400 mt-2">— Beta user, London</p>
-      </div>
-
       <section className="py-20 lg:py-24">
         <div className="max-w-7xl mx-auto px-6 lg:px-8 grid xl:grid-cols-3 gap-6">
           {plans.map((plan, index) => {
