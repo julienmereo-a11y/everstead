@@ -198,7 +198,7 @@ export default function Home() {
             </div>
 
             <p className="mt-5 text-xs text-stone-400 animate-fade-up animate-delay-300">
-              14-day free trial · Card required · Cancel anytime
+              14-day free trial · Cancel anytime
             </p>
           </div>
 

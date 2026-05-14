@@ -162,7 +162,7 @@ export default function Pricing() {
             Simple, transparent pricing for every stage of life.
           </h1>
           <p className="mt-5 text-lg leading-relaxed text-stone-300 max-w-3xl mx-auto">
-            Start with a 14-day free trial. Your card is required but won't be charged until the trial ends — cancel anytime.
+            Start with a 14-day free trial. No charge for 14 days — cancel anytime.
           </p>
         </div>
       </section>
