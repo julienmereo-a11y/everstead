@@ -139,7 +139,8 @@ function TrialExpiredModal({ profile, onUpgrade }) {
         <div className="space-y-3 mb-8">
           {[
             { name: 'Essential', price: '£7/mo', note: 'or £5/mo yearly · Launch offer', id: 'essential' },
-            { name: 'Family', price: '£15/mo', note: 'or £12/mo yearly — all household members', id: 'family', highlight: true },
+            { name: 'Family', price: '£15/mo', note: 'or £12/mo yearly — two private vaults', id: 'family', highlight: profile.plan !== 'advisor' },
+            ...(profile.plan === 'advisor' ? [{ name: 'Advisor', price: '£60/mo', note: 'or £48/mo yearly · For estate advisors', id: 'advisor', highlight: true }] : []),
           ].map(plan => (
             <button
               key={plan.id}
@@ -405,6 +406,12 @@ export default function Dashboard() {
     )
   }
 
+  // New Google OAuth users who signed in via /login and never went through checkout
+  // will have no stripe_customer_id — redirect them to checkout to get a subscription
+  const hasNoSubscription = !isDemo
+    && !activeProfile.stripe_customer_id
+    && !['trialing', 'active', 'cancelling'].includes(activeProfile.subscription_status)
+
   const isTrialing = activeProfile.subscription_status === 'trialing'
   const trialDaysLeft = isTrialing ? getTrialDaysLeft(activeProfile.trial_ends_at) : null
   const trialExpired = trialDaysLeft !== null && trialDaysLeft <= 0
@@ -463,6 +470,12 @@ export default function Dashboard() {
     } catch (err) {
       throw err
     }
+  }
+
+  // Redirect Google OAuth users who signed in via /login without a subscription
+  if (hasNoSubscription) {
+    navigate('/get-started?resume=true', { replace: true })
+    return null
   }
 
   return (

@@ -213,7 +213,7 @@ function trialReminderHtml(name, plan, trialEndsAt, daysLeft) {
           <h1 style="margin:0 0 16px;color:#0d1628;font-size:24px;font-weight:normal;">${daysLeft === 1 ? 'Your trial ends tomorrow.' : `Your trial ends in ${daysLeft} days.`}</h1>
           <p style="margin:0 0 16px;color:#4a5568;font-size:16px;line-height:1.6;">Hi ${name || 'there'}, your free trial on the <strong>${plan || 'Essential'}</strong> plan ends${endDate ? ` on <strong>${endDate}</strong>` : ' soon'}.</p>
           <p style="margin:0 0 32px;color:#4a5568;font-size:16px;line-height:1.6;">Add your payment details before then to keep access to your estate plan, documents, and trusted contacts.</p>
-          <a href="${APP_URL}/trial-ended" style="display:inline-block;background:#0d1628;color:#ffffff;text-decoration:none;padding:14px 28px;border-radius:8px;font-size:15px;">Continue with Everstead →</a>
+          <a href="${APP_URL}/dashboard" style="display:inline-block;background:#0d1628;color:#ffffff;text-decoration:none;padding:14px 28px;border-radius:8px;font-size:15px;">Go to my vault →</a>
         </td></tr>
         <tr><td style="padding:24px 40px;border-top:1px solid #e8e5e0;">
           <p style="margin:0;color:#9ca3af;font-size:13px;">Questions? <a href="mailto:support@everstead.care" style="color:#4c7d47;">support@everstead.care</a></p>

@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react'
 import { Helmet } from 'react-helmet-async'
-import { Link, useNavigate, useLocation } from 'react-router-dom'
+import { Link, useNavigate, useLocation, useSearchParams } from 'react-router-dom'
 import { Mail, Lock, Eye, EyeOff, ArrowRight, ShieldCheck } from 'lucide-react'
 import { supabase } from '../lib/supabase'
 
@@ -20,7 +20,10 @@ function GoogleIcon() {
 export default function Login() {
   const navigate = useNavigate()
   const location = useLocation()
-  const from     = location.state?.from?.pathname ?? null
+  const [searchParams] = useSearchParams()
+  const from          = location.state?.from?.pathname ?? null
+  // ?redirect= param used by AcceptFamilyInvite "sign in instead" link
+  const redirectParam = searchParams.get('redirect') ?? null
 
   // step 1: email + password  →  step 2: 6-digit code
   const [step, setStep]         = useState(1)
@@ -61,9 +64,13 @@ export default function Login() {
 
   // ── Google sign-in ───────────────────────────────────────────
   const handleGoogleSignIn = async () => {
+    // If there's a ?redirect= param (e.g. family invite), send user there after OAuth
+    const dest = redirectParam
+      ? `${window.location.origin}${redirectParam}`
+      : `${window.location.origin}/dashboard`
     await supabase.auth.signInWithOAuth({
       provider: 'google',
-      options:  { redirectTo: `${window.location.origin}/dashboard` },
+      options:  { redirectTo: dest },
     })
   }
 
@@ -109,7 +116,8 @@ export default function Login() {
       })
       if (sessionErr) throw sessionErr
 
-      // If user was redirected here from a protected page, honour that destination
+      // Honour explicit redirect param (e.g. from family invite link) or router state
+      if (redirectParam) { navigate(redirectParam, { replace: true }); return }
       if (from) { navigate(from, { replace: true }); return }
 
       const userId    = sessionData?.user?.id

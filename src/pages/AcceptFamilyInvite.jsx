@@ -76,61 +76,27 @@ export default function AcceptFamilyInvite() {
     setLoading(true)
 
     try {
-      // Update membership
-      await supabase
-        .from('family_memberships')
-        .update({
-          secondary_user_id: user.id,
-          invite_status:     'accepted',
-          accepted_at:       new Date().toISOString(),
-        })
-        .eq('id', membership.id)
+      const { data: { session } } = await supabase.auth.getSession()
+      if (!session) throw new Error('Session not found. Please refresh and try again.')
 
-      // Update secondary profile
-      await supabase
-        .from('profiles')
-        .update({
-          plan:                'family',
-          family_role:         'secondary',
-          family_id:           membership.id,
-          subscription_status: 'active',
-        })
-        .eq('id', user.id)
-
-      // Update primary profile with family_id if not set
-      const { data: primaryProfile } = await supabase
-        .from('profiles')
-        .select('family_id, full_name, email')
-        .eq('id', membership.primary_user_id)
-        .maybeSingle()
-
-      if (primaryProfile && !primaryProfile.family_id) {
-        await supabase
-          .from('profiles')
-          .update({ family_id: membership.id })
-          .eq('id', membership.primary_user_id)
+      // Server-side accept — uses service role key, validates token and expiry
+      const res = await fetch('/api/family/accept-invite', {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${session.access_token}` },
+        body:    JSON.stringify({ inviteToken: token }),
+      })
+      const data = await res.json()
+      if (!res.ok) {
+        if (data.error === 'expired') { setState('expired'); return }
+        throw new Error(data.error || 'Could not accept invitation.')
       }
 
-      // Notify primary
-      const { data: { session } } = await supabase.auth.getSession()
-      if (session && primaryProfile?.email) {
-        const { data: secondaryProfile } = await supabase
-          .from('profiles')
-          .select('full_name')
-          .eq('id', user.id)
-          .maybeSingle()
-
+      // Notify primary (fire and forget)
+      if (data.primaryEmail) {
         fetch('/api/emails/send-family-invite-accepted', {
           method:  'POST',
-          headers: {
-            'Content-Type':  'application/json',
-            'Authorization': `Bearer ${session.access_token}`,
-          },
-          body: JSON.stringify({
-            primaryEmail:  primaryProfile.email,
-            primaryName:   primaryProfile.full_name,
-            secondaryName: secondaryProfile?.full_name || user.email,
-          }),
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${session.access_token}` },
+          body:    JSON.stringify({ primaryEmail: data.primaryEmail, primaryName: data.primaryName, secondaryName: user.email }),
         }).catch(console.error)
       }
 
@@ -163,55 +129,34 @@ export default function AcceptFamilyInvite() {
       const newUser = signUpData.user
       if (!newUser) throw new Error('Account creation failed. Please try again.')
 
-      // Upsert profile
+      // Write basic profile row so the server endpoint can find it
       await supabase.from('profiles').upsert({
-        id:                  newUser.id,
-        full_name:           form.fullName,
-        email:               membership.secondary_email,
-        plan:                'family',
-        family_role:         'secondary',
-        family_id:           membership.id,
-        subscription_status: 'active',
+        id:        newUser.id,
+        full_name: form.fullName,
+        email:     membership.secondary_email,
       }, { onConflict: 'id' })
 
-      // Update membership record
-      await supabase
-        .from('family_memberships')
-        .update({
-          secondary_user_id: newUser.id,
-          invite_status:     'accepted',
-          accepted_at:       new Date().toISOString(),
-        })
-        .eq('id', membership.id)
+      // Server-side accept — validates token, sets plan/status via service role
+      const { data: { session } } = await supabase.auth.getSession()
+      if (!session) throw new Error('Session error. Please try again.')
 
-      // Update primary's profile with family_id if not set
-      const { data: primaryProfile } = await supabase
-        .from('profiles')
-        .select('family_id, full_name, email')
-        .eq('id', membership.primary_user_id)
-        .maybeSingle()
-
-      if (primaryProfile && !primaryProfile.family_id) {
-        await supabase
-          .from('profiles')
-          .update({ family_id: membership.id })
-          .eq('id', membership.primary_user_id)
+      const res = await fetch('/api/family/accept-invite', {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${session.access_token}` },
+        body:    JSON.stringify({ inviteToken: token }),
+      })
+      const data = await res.json()
+      if (!res.ok) {
+        if (data.error === 'expired') { setState('expired'); return }
+        throw new Error(data.error || 'Could not accept invitation.')
       }
 
-      // Notify primary
-      const { data: { session } } = await supabase.auth.getSession()
-      if (session && primaryProfile?.email) {
+      // Notify primary (fire and forget)
+      if (data.primaryEmail) {
         fetch('/api/emails/send-family-invite-accepted', {
           method:  'POST',
-          headers: {
-            'Content-Type':  'application/json',
-            'Authorization': `Bearer ${session.access_token}`,
-          },
-          body: JSON.stringify({
-            primaryEmail:  primaryProfile.email,
-            primaryName:   primaryProfile.full_name,
-            secondaryName: form.fullName,
-          }),
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${session.access_token}` },
+          body:    JSON.stringify({ primaryEmail: data.primaryEmail, primaryName: data.primaryName, secondaryName: form.fullName }),
         }).catch(console.error)
       }
 
@@ -376,7 +321,7 @@ export default function AcceptFamilyInvite() {
                     <p className="text-center text-xs text-stone-400">
                       Already have an account?{' '}
                       <Link
-                        to={`/login?redirect=/accept-family-invite?token=${token}`}
+                        to={`/login?redirect=${encodeURIComponent(`/accept-family-invite?token=${token}`)}`}
                         className="text-navy-700 font-medium hover:text-navy-900"
                       >
                         Sign in instead
