@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import { AuthProvider } from './contexts/AuthContext'
 import ProtectedRoute from './components/ProtectedRoute'
 import AdvisorProtectedRoute from './components/AdvisorProtectedRoute'
@@ -117,11 +117,7 @@ export default function App() {
           />
           <Route
             path="/settings"
-            element={
-              <ProtectedRoute>
-                <Settings />
-              </ProtectedRoute>
-            }
+            element={<Navigate to="/dashboard?tab=settings" replace />}
           />
           <Route path="/accept-admin-invite" element={<AcceptAdminInvite />} />
           <Route path="/accept-family-invite" element={<AcceptFamilyInvite />} />

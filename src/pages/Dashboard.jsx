@@ -282,7 +282,13 @@ export default function Dashboard() {
   const isDemo          = searchParams.get('demo') === 'true'
   const checkoutSuccess = searchParams.get('checkout') === 'success'
 
-  const [activeSection, setActiveSection] = useState('overview')
+  // Honour ?tab= param so /settings and other deep-links open the right section
+  const tabParam = searchParams.get('tab')
+  const [activeSection, setActiveSection] = useState(
+    tabParam && ['overview','accounts','documents','people','family','messages','instructions','subscriptions','alerts','activity','resources','settings'].includes(tabParam)
+      ? tabParam
+      : 'overview'
+  )
   const [sidebarOpen, setSidebarOpen]     = useState(false)
   const [trialDismissed, setTrialDismissed] = useState(false)
   const [upgradeError, setUpgradeError]   = useState(null)

@@ -41,9 +41,9 @@ const steps = [
 ]
 
 const testimonials = [
-  { quote: 'My father passed suddenly. Everstead made an incredibly painful time so much more manageable. Everything was right there.', name: 'Margaret T.', role: 'Daughter & executor' },
-  { quote: 'As an estate attorney, I now recommend this to every client. It dramatically reduces the back-and-forth during settlement.', name: 'David R.', role: 'Estate attorney' },
-  { quote: 'We finally have peace of mind. Our kids will know exactly what to do and where to find everything.', name: 'James & Carol B.', role: 'Parents, married 34 years' },
+  { quote: 'My father passed suddenly. Everstead made an incredibly painful time so much more manageable. Everything was right there.', name: 'Margaret T.', role: 'Daughter & executor', badge: 'Early access member' },
+  { quote: 'As an estate attorney, I now recommend this to every client. It dramatically reduces the back-and-forth during settlement.', name: 'David R.', role: 'Estate attorney', badge: 'Early access member' },
+  { quote: 'We finally have peace of mind. Our kids will know exactly what to do and where to find everything.', name: 'James & Carol B.', role: 'Parents, married 34 years', badge: 'Early access member' },
 ]
 
 const plans = [
@@ -108,6 +108,7 @@ const resourceCards = [
 export default function Home() {
   useReveal()
   const [annualPricing, setAnnualPricing] = useState(true)
+  const [openFaq, setOpenFaq] = useState(null)
 
   return (
     <>
@@ -636,10 +637,15 @@ export default function Home() {
             <h2 className="font-display text-4xl font-light text-navy-950">What families say.</h2>
           </div>
           <div className="grid md:grid-cols-3 gap-6">
-            {testimonials.map(({ quote, name, role }, i) => (
+            {testimonials.map(({ quote, name, role, badge }, i) => (
               <div key={name} className={`reveal reveal-delay-${i + 1} bg-white border border-stone-200 rounded-2xl p-7`}>
-                <div className="flex gap-0.5 mb-5">
-                  {[...Array(5)].map((_, j) => <Star key={j} size={13} className="text-amber-400 fill-amber-400" />)}
+                <div className="flex items-center justify-between mb-5">
+                  <div className="flex gap-0.5">
+                    {[...Array(5)].map((_, j) => <Star key={j} size={13} className="text-amber-400 fill-amber-400" />)}
+                  </div>
+                  {badge && (
+                    <span className="text-xs text-stone-400 border border-stone-200 px-2 py-0.5 rounded-full">{badge}</span>
+                  )}
                 </div>
                 <p className="text-stone-700 text-sm leading-relaxed mb-6 italic">"{quote}"</p>
                 <div>
@@ -820,7 +826,7 @@ export default function Home() {
           </div>
           <div className="space-y-4">
             {faqs.map(({ q, a }, i) => (
-              <FaqItem key={i} q={q} a={a} delay={i + 1} />
+              <FaqItem key={i} q={q} a={a} delay={i + 1} open={openFaq === i} onToggle={() => setOpenFaq(openFaq === i ? null : i)} />
             ))}
           </div>
         </div>
@@ -860,12 +866,11 @@ export default function Home() {
   )
 }
 
-function FaqItem({ q, a, delay }) {
-  const [open, setOpen] = React.useState(false)
+function FaqItem({ q, a, delay, open, onToggle }) {
   return (
     <div className={`reveal reveal-delay-${Math.min(delay, 5)} border border-stone-200 rounded-xl overflow-hidden bg-white`}>
       <button
-        onClick={() => setOpen(v => !v)}
+        onClick={onToggle}
         className="w-full text-left flex items-start justify-between gap-4 px-6 py-5"
       >
         <span className="font-medium text-navy-900 text-sm">{q}</span>

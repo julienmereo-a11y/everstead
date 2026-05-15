@@ -84,7 +84,8 @@ export default async function handler(req, res) {
         subject: isTrialing
           ? 'Your Everstead trial has started — card saved'
           : 'Your Everstead subscription is confirmed',
-        html: paymentConfirmedHtml(p.full_name, p.plan, isTrialing, subscription.trial_end ?? subscription.current_period_end),
+        html: paymentConfirmedHtml(p.full_name, p.plan, isTrialing, subscription.trial_end ?? subscription.current_period_end,
+          subscription.trial_end && subscription.created ? Math.round((subscription.trial_end - subscription.created) / 86400) : 14),
       }).catch(console.error)
 
       // ── Owner notification ────────────────────────────────
@@ -179,7 +180,8 @@ export default async function handler(req, res) {
         subject: isTrialing
           ? 'Your Everstead trial has started — card saved'
           : 'Your Everstead subscription is confirmed',
-        html: paymentConfirmedHtml(p.full_name, p.plan, isTrialing, periodEnd),
+        html: paymentConfirmedHtml(p.full_name, p.plan, isTrialing, periodEnd,
+          subscription?.trial_end && subscription?.created ? Math.round((subscription.trial_end - subscription.created) / 86400) : 14),
       }).catch(console.error)
 
       // Owner notification
@@ -369,13 +371,13 @@ export default async function handler(req, res) {
 // EMAIL TEMPLATES
 // ─────────────────────────────────────────────────────────────
 
-function paymentConfirmedHtml(name, plan, isTrialing, periodEnd) {
+function paymentConfirmedHtml(name, plan, isTrialing, periodEnd, trialDays = 14) {
   const chargeDate = periodEnd
     ? new Date(periodEnd * 1000).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
     : null
 
   const bodyText = isTrialing
-    ? `Your card has been saved for your <strong>${plan || 'Essential'}</strong> plan. Your 14-day free trial is now active — you won't be charged until it ends${chargeDate ? ` on <strong>${chargeDate}</strong>` : ''}.`
+    ? `Your card has been saved for your <strong>${plan || 'Essential'}</strong> plan. Your ${trialDays}-day free trial is now active — you won't be charged until it ends${chargeDate ? ` on <strong>${chargeDate}</strong>` : ''}.`
     : `Your <strong>${plan || 'Essential'}</strong> plan is now active. Your payment was confirmed and your subscription starts today.`
 
   return emailShell(`
