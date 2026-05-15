@@ -108,7 +108,7 @@ export default function GetStarted() {
 
   const [form, setForm] = useState({
     fullName: '', email: '', password: '',
-    dialCode: '+44', phone: '', country: 'United Kingdom', nationality: 'United Kingdom',
+    country: 'United Kingdom',
   })
 
   // Referral code from ?ref= URL param — gives the new user a 21-day trial
@@ -127,7 +127,7 @@ export default function GetStarted() {
 
       const { data: profile } = await supabase
         .from('profiles')
-        .select('stripe_customer_id, full_name, email, plan, billing_cycle, phone, country, nationality')
+        .select('stripe_customer_id, full_name, email, plan, billing_cycle, country')
         .eq('id', session.user.id)
         .single()
 
@@ -151,14 +151,12 @@ export default function GetStarted() {
       setAnnualBilling(resumeBilling)
 
       // Google OAuth users skip step 2 — collect missing profile fields first
-      if (isOAuth && (!profile.phone || !profile.country || !profile.nationality)) {
+      if (isOAuth && !profile.country) {
         setForm(v => ({
           ...v,
-          fullName:    profile.full_name || session.user.user_metadata?.full_name || '',
-          email:       profile.email     || session.user.email || '',
-          country:     profile.country     || 'United Kingdom',
-          nationality: profile.nationality || 'United Kingdom',
-          phone:       profile.phone || '',
+          fullName: profile.full_name || session.user.user_metadata?.full_name || '',
+          email:    profile.email     || session.user.email || '',
+          country:  profile.country   || 'United Kingdom',
         }))
         setIsOAuthProfile(true)
         setStep(2)
@@ -221,24 +219,21 @@ export default function GetStarted() {
     })
   }
 
-  // ── OAUTH PROFILE COMPLETION: save phone/country/nationality → setup-intent → step 3 ──
+  // ── OAUTH PROFILE COMPLETION: save country → setup-intent → step 3 ──
   const handleOAuthProfileSubmit = async (e) => {
     e.preventDefault()
     setError(null)
     setLoading(true)
     try {
-      if (RESTRICTED_COUNTRIES.has(form.country) || RESTRICTED_COUNTRIES.has(form.nationality)) {
+      if (RESTRICTED_COUNTRIES.has(form.country)) {
         throw new Error('We\'re unable to offer our services in your country due to regulatory restrictions. If you believe this is an error, please contact support@everstead.care.')
       }
 
       const { data: { session } } = await supabase.auth.getSession()
       if (!session) throw new Error('Session expired. Please sign in again.')
 
-      const fullPhone = (form.dialCode && form.phone) ? `${form.dialCode} ${form.phone}` : null
       await supabase.from('profiles').update({
-        phone:       fullPhone,
-        country:     form.country     || null,
-        nationality: form.nationality || null,
+        country: form.country || null,
       }).eq('id', session.user.id)
 
       const { data: profile } = await supabase
@@ -259,7 +254,6 @@ export default function GetStarted() {
           billingCycle:       annualBilling ? 'yearly' : 'monthly',
           trialPeriodDays:    referralCode ? 21 : 14,
           country:            form.country,
-          nationality:        form.nationality,
         }),
       })
       if (!intentRes.ok) {
@@ -286,7 +280,7 @@ export default function GetStarted() {
 
     try {
       // 0. Sanctions check — block restricted countries before any registration
-      if (RESTRICTED_COUNTRIES.has(form.country) || RESTRICTED_COUNTRIES.has(form.nationality)) {
+      if (RESTRICTED_COUNTRIES.has(form.country)) {
         throw new Error('We\'re unable to offer our services in your country due to regulatory restrictions. If you believe this is an error, please contact support@everstead.care.')
       }
 
@@ -313,12 +307,9 @@ export default function GetStarted() {
 
       const { data: { user } } = await supabase.auth.getUser()
 
-      // 1b. Save phone, country, nationality to profile (trigger only creates basic row)
-      const fullPhone = (form.dialCode && form.phone) ? `${form.dialCode} ${form.phone}` : null
+      // 1b. Save country to profile (trigger only creates basic row)
       await supabase.from('profiles').update({
-        phone:       fullPhone,
-        country:     form.country     || null,
-        nationality: form.nationality || null,
+        country: form.country || null,
       }).eq('id', user?.id)
 
       // 2. Create Stripe customer + subscription with trial → get client secret
@@ -335,7 +326,6 @@ export default function GetStarted() {
           referredBy:      referralCode,
           trialPeriodDays: trialDays,
           country:         form.country,
-          nationality:     form.nationality,
         }),
       })
 
@@ -546,38 +536,10 @@ export default function GetStarted() {
 
               <form onSubmit={handleOAuthProfileSubmit} className="space-y-4">
 
-                {/* Phone */}
-                <Field label="Phone number" required>
-                  <div className="flex gap-2">
-                    <select
-                      name="dialCode" value={form.dialCode} onChange={handleChange}
-                      className={`${inputClass} !w-28 flex-shrink-0 px-3`}
-                    >
-                      {COUNTRIES.map(c => (
-                        <option key={c.code + c.dial} value={c.dial}>{c.dial} {c.code}</option>
-                      ))}
-                    </select>
-                    <input
-                      type="tel" name="phone" value={form.phone} onChange={handleChange}
-                      placeholder="7911 123456" inputMode="tel" autoComplete="tel-national"
-                      required autoFocus
-                      className={`${inputClass} min-w-0 flex-1`}
-                    />
-                  </div>
-                </Field>
-
                 {/* Country of residence */}
                 <Field label="Country of residence" required>
-                  <select name="country" value={form.country} onChange={handleChange} required className={inputClass}>
+                  <select name="country" value={form.country} onChange={handleChange} required autoFocus className={inputClass}>
                     <option value="">Select country…</option>
-                    {COUNTRIES.map(c => <option key={c.code} value={c.name}>{c.name}</option>)}
-                  </select>
-                </Field>
-
-                {/* Nationality */}
-                <Field label="Nationality" required>
-                  <select name="nationality" value={form.nationality} onChange={handleChange} required className={inputClass}>
-                    <option value="">Select nationality…</option>
                     {COUNTRIES.map(c => <option key={c.code} value={c.name}>{c.name}</option>)}
                   </select>
                 </Field>
@@ -592,7 +554,7 @@ export default function GetStarted() {
 
                 <button
                   type="submit"
-                  disabled={loading || !form.phone || !form.country || !form.nationality}
+                  disabled={loading || !form.country}
                   className="w-full bg-navy-800 text-white font-semibold text-sm py-3.5 rounded-lg hover:bg-navy-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                 >
                   {loading ? (
@@ -705,44 +667,14 @@ export default function GetStarted() {
                   <div className="pt-4 space-y-4">
                     <div className="flex items-center gap-3">
                       <div className="flex-1 h-px bg-stone-200" />
-                      <span className="text-xs text-stone-400 font-medium">A few more details</span>
+                      <span className="text-xs text-stone-400 font-medium">One more detail</span>
                       <div className="flex-1 h-px bg-stone-200" />
                     </div>
-
-                    {/* Phone */}
-                    <Field label="Phone number" required>
-                      <div className="flex gap-2">
-                        <select
-                          name="dialCode" value={form.dialCode} onChange={handleChange}
-                          className={`${inputClass} !w-28 flex-shrink-0 px-3`}
-                        >
-                          {COUNTRIES.map(c => (
-                            <option key={c.code + c.dial} value={c.dial}>{c.dial} {c.code}</option>
-                          ))}
-                        </select>
-                        <input
-                          type="tel" name="phone" value={form.phone} onChange={handleChange}
-                          placeholder="7911 123456"
-                          inputMode="tel"
-                          autoComplete="tel-national"
-                          required={basicFieldsValid}
-                          className={`${inputClass} min-w-0 flex-1`}
-                        />
-                      </div>
-                    </Field>
 
                     {/* Country of residence */}
                     <Field label="Country of residence" required>
                       <select name="country" value={form.country} onChange={handleChange} required={basicFieldsValid} className={inputClass}>
                         <option value="">Select country…</option>
-                        {COUNTRIES.map(c => <option key={c.code} value={c.name}>{c.name}</option>)}
-                      </select>
-                    </Field>
-
-                    {/* Nationality */}
-                    <Field label="Nationality" required>
-                      <select name="nationality" value={form.nationality} onChange={handleChange} required={basicFieldsValid} className={inputClass}>
-                        <option value="">Select nationality…</option>
                         {COUNTRIES.map(c => <option key={c.code} value={c.name}>{c.name}</option>)}
                       </select>
                     </Field>

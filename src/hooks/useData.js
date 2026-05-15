@@ -289,6 +289,57 @@ export function useAlerts() {
 }
 
 // ─────────────────────────────────────────────────────────────
+// MESSAGES
+// ─────────────────────────────────────────────────────────────
+export function useMessages() {
+  const [data, setData] = useState([])
+  const [loading, setLoading] = useState(true)
+
+  const load = useCallback(async () => {
+    const { supabase } = await import('../lib/supabase')
+    const { data: { session } } = await supabase.auth.getSession()
+    if (!session) { setLoading(false); return }
+    const { data: rows } = await supabase
+      .from('messages')
+      .select('*')
+      .eq('user_id', session.user.id)
+      .order('created_at', { ascending: false })
+    setData(rows || [])
+    setLoading(false)
+  }, [])
+
+  useEffect(() => { load() }, [load])
+
+  const add = async (msg) => {
+    const { supabase } = await import('../lib/supabase')
+    const { data: { session } } = await supabase.auth.getSession()
+    const { data: row } = await supabase.from('messages').insert({ ...msg, user_id: session.user.id }).select().single()
+    if (row) setData(prev => [row, ...prev])
+    return row
+  }
+
+  const update = async (id, changes) => {
+    const { supabase } = await import('../lib/supabase')
+    const { data: row } = await supabase.from('messages').update(changes).eq('id', id).select().single()
+    if (row) setData(prev => prev.map(m => m.id === id ? row : m))
+    return row
+  }
+
+  const uploadVideo = async (messageId, file) => {
+    const { supabase } = await import('../lib/supabase')
+    const { data: { session } } = await supabase.auth.getSession()
+    const path = `${session.user.id}/${messageId}/${file.name}`
+    const { error } = await supabase.storage.from('messages').upload(path, file, { upsert: true })
+    if (error) throw error
+    const { data: { publicUrl } } = supabase.storage.from('messages').getPublicUrl(path)
+    await update(messageId, { video_url: publicUrl })
+    return publicUrl
+  }
+
+  return { data, loading, add, update, uploadVideo, refresh: load }
+}
+
+// ─────────────────────────────────────────────────────────────
 // ACTIVITY LOG
 // ─────────────────────────────────────────────────────────────
 export function useActivityLog(limit = 20) {

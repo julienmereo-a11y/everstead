@@ -97,11 +97,28 @@ export default async function handler(req, res) {
       if (now < sendAfter) continue // not yet time for this user
 
       try {
+        let html
+        if (step.n === 5) {
+          // Fetch personalised counts for the day-13 check-in email
+          const [
+            { count: accountCount },
+            { count: documentCount },
+            { count: contactCount },
+          ] = await Promise.all([
+            supabase.from('accounts')      .select('id', { count: 'exact', head: true }).eq('user_id', user.id),
+            supabase.from('documents')     .select('id', { count: 'exact', head: true }).eq('user_id', user.id),
+            supabase.from('trusted_people').select('id', { count: 'exact', head: true }).eq('user_id', user.id),
+          ])
+          html = step.html(user.full_name, user.plan, accountCount ?? 0, documentCount ?? 0, contactCount ?? 0)
+        } else {
+          html = step.html(user.full_name, user.plan)
+        }
+
         await resend.emails.send({
           from:    'Everstead <hello@everstead.care>',
           to:      user.email,
           subject: step.subject,
-          html:    step.html(user.full_name, user.plan),
+          html,
         })
         await supabase
           .from('profiles')
@@ -260,11 +277,29 @@ function email4Html(name) {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// EMAIL 5 — Day 13: Personal check-in from Julien
+// EMAIL 5 — Day 13: Personal check-in from Julien (data-driven)
 // ─────────────────────────────────────────────────────────────────────────────
-function email5Html(name, plan) {
+function email5Html(name, plan, accountCount = 0, documentCount = 0, contactCount = 0) {
   const first    = name?.split(' ')[0] || 'there'
   const planName = plan ? plan.charAt(0).toUpperCase() + plan.slice(1) : 'Essential'
+
+  // Build a personalised data summary
+  const dataSummary = `You've added ${accountCount} financial ${accountCount === 1 ? 'account' : 'accounts'}, ${documentCount} ${documentCount === 1 ? 'document' : 'documents'}, and named ${contactCount} trusted ${contactCount === 1 ? 'contact' : 'contacts'}.`
+
+  // Identify gaps to surface
+  const gaps = []
+  if (accountCount === 0) gaps.push('You haven't added any financial accounts yet — it only takes 2 minutes.')
+  if (documentCount === 0) gaps.push('Your document vault is empty — uploading your will or pension statement is a great first step.')
+  if (contactCount === 0) gaps.push('You haven't named a trusted contact yet — this is the person who'd act on your behalf if needed.')
+
+  const gapsHtml = gaps.length > 0
+    ? `<table cellpadding="0" cellspacing="0" style="margin:16px 0 24px;width:100%;background:#fdf8f0;border-radius:10px;padding:8px;">
+        ${gaps.map(g => `<tr><td style="padding:10px 14px;vertical-align:top;font-size:18px;line-height:1;">💡</td><td style="padding:10px 0;color:#92400e;font-size:14px;line-height:1.6;">${g}</td></tr>`).join('')}
+      </table>`
+    : `<p style="margin:0 0 24px;color:#4a5568;font-size:16px;line-height:1.7;">
+        Your plan is shaping up well — keep it up.
+      </p>`
+
   return layout(`
     <h1 style="margin:0 0 16px;color:#0d1628;font-size:24px;font-weight:normal;">
       A quick note from me.
@@ -273,15 +308,19 @@ function email5Html(name, plan) {
       Hi ${first}, it's Julien — I started Everstead after watching my own family struggle to piece together a loved one's affairs under enormous stress. I built it so no one else would have to go through that.
     </p>
     <p style="margin:0 0 16px;color:#4a5568;font-size:16px;line-height:1.7;">
-      You've had two weeks with your <strong>${planName}</strong> plan. I just wanted to check in — is there anything you got stuck on, or anything I can help you set up?
+      You've had two weeks with your <strong>${planName}</strong> plan. Here's where things stand:
     </p>
+    <p style="margin:0 0 8px;color:#0d1628;font-size:15px;line-height:1.7;background:#f9f8f6;border-radius:8px;padding:14px 18px;">
+      ${dataSummary}
+    </p>
+    ${gapsHtml}
     <p style="margin:0 0 16px;color:#4a5568;font-size:16px;line-height:1.7;">
-      Just hit reply. I read every message.
+      If you got stuck on anything, or there's something I can help you set up — just hit reply. I read every message.
     </p>
     <p style="margin:0 0 32px;color:#4a5568;font-size:16px;line-height:1.7;">
       And if your trial is ending soon — everything you've built is still here, ready to go.
     </p>
-    ${cta(`${APP_URL}/dashboard`, 'Open my plan →')}
+    ${cta(`${APP_URL}/dashboard`, 'Go to my vault →')}
     <p style="margin:32px 0 0;color:#6b7280;font-size:14px;line-height:1.6;">— Julien, founder of Everstead</p>
   `)
 }

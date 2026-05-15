@@ -50,6 +50,48 @@ export function CheckoutSuccessBanner({ userName, subscriptionStatus }) {
 }
 
 // ─────────────────────────────────────────────────────────────
+// GIFT REDEEMED BANNER
+// Appears at top of Dashboard after recipient redeems a gift
+// ─────────────────────────────────────────────────────────────
+export function GiftRedeemedBanner({ userName }) {
+  const [searchParams, setSearchParams] = useSearchParams()
+  const [visible, setVisible]           = useState(false)
+
+  useEffect(() => {
+    if (searchParams.get('gift') === 'redeemed') {
+      setVisible(true)
+      const next = new URLSearchParams(searchParams)
+      next.delete('gift')
+      setSearchParams(next, { replace: true })
+    }
+  }, [])
+
+  if (!visible) return null
+
+  return (
+    <div className="bg-gradient-to-r from-amber-500 to-amber-600 text-white px-6 py-4 flex items-center gap-4">
+      <div className="w-9 h-9 rounded-full bg-white/20 flex items-center justify-center shrink-0 text-lg">
+        🎁
+      </div>
+      <div className="flex-1">
+        <p className="font-semibold text-sm">
+          Welcome{userName ? `, ${userName.split(' ')[0]}` : ''}! Your gift plan is active.
+        </p>
+        <p className="text-amber-100 text-xs mt-0.5">
+          Start building your estate plan — your subscription is already paid for.
+        </p>
+      </div>
+      <button
+        onClick={() => setVisible(false)}
+        className="p-1.5 hover:bg-white/20 rounded-lg transition-colors shrink-0"
+      >
+        <X size={16} />
+      </button>
+    </div>
+  )
+}
+
+// ─────────────────────────────────────────────────────────────
 // ONBOARDING CHECKLIST
 // Shown in Overview section until all steps are complete
 // ─────────────────────────────────────────────────────────────
@@ -78,14 +120,21 @@ const ONBOARDING_STEPS = [
     desc: 'A simple "first 48 hours" checklist for your executor.',
     section: 'instructions',
   },
+  {
+    id: 'birthday',
+    label: 'Add your date of birth',
+    desc: "We'll send you a birthday message each year — and a nudge to review your plan.",
+    section: 'settings',
+  },
 ]
 
-export function OnboardingChecklist({ accounts, documents, people, instructions, onNavigate, userId }) {
+export function OnboardingChecklist({ profile, accounts, documents, people, instructions, onNavigate, userId }) {
   const completed = {
     account:     accounts.length     > 0,
     document:    documents.filter(d => d.status !== 'missing').length > 0,
     person:      people.length       > 0,
     instruction: instructions.length > 0,
+    birthday:    !!profile?.date_of_birth,
   }
 
   const doneCount = Object.values(completed).filter(Boolean).length

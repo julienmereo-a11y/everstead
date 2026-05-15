@@ -240,7 +240,7 @@ const cases = {
     quoteAuthor: '— Certified Financial Planner',
     ctaText: 'Book a demo for your practice',
     ctaHref: '/book-demo',
-    ctaNote: 'Advisor and white-label plans available',
+    ctaNote: 'Advisor plans available for practices of all sizes',
   },
 }
 

@@ -46,6 +46,8 @@ import ChooseAccount from './pages/ChooseAccount'
 import TrialEnded from './pages/TrialEnded'
 import PrintView from './pages/PrintView'
 import Settings from './pages/Settings'
+import Gift from './pages/Gift'
+import RedeemGift from './pages/RedeemGift'
 
 function ScrollToTop() {
   const { pathname } = useLocation()
@@ -163,6 +165,8 @@ export default function App() {
           <Route path="/executor-checklist"     element={<Layout><ExecutorChecklist /></Layout>} />
           <Route path="/estate-readiness-score" element={<Layout><EstateReadinessScore /></Layout>} />
           <Route path="/digital-estate-worth"   element={<Layout><DigitalEstateCalculator /></Layout>} />
+          <Route path="/gift"         element={<Layout><Gift /></Layout>} />
+          <Route path="/redeem-gift"  element={<Layout><RedeemGift /></Layout>} />
           <Route path="*"           element={<Layout><NotFound /></Layout>} />
         </Routes>
         </ErrorBoundary>

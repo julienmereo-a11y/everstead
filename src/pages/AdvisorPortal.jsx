@@ -1041,7 +1041,7 @@ function AdvisorResourcesSection() {
         <div className="mt-5 bg-navy-50 border border-navy-200 rounded-2xl px-5 py-4 flex flex-col sm:flex-row sm:items-center gap-4">
           <div className="flex-1">
             <p className="font-semibold text-navy-900 text-sm">Questions about the Advisor plan?</p>
-            <p className="text-xs text-stone-500 mt-1 leading-relaxed">Our team is happy to assist with onboarding, pilot rollout, or white-label enquiries.</p>
+            <p className="text-xs text-stone-500 mt-1 leading-relaxed">Our team is happy to assist with onboarding or pilot rollout.</p>
           </div>
           <a
             href="mailto:support@everstead.care"
@@ -1064,10 +1064,39 @@ function AdvisorSettings({ advisor, families, isDemo }) {
     email:     advisor.email,
     firm:      advisor.firm,
     phone:     '',
+    logo_url:  advisor.logo_url || '',
   })
-  const [saved, setSaved]       = useState(false)
-  const [saving, setSaving]     = useState(false)
-  const [cancelled, setCancelled] = useState(false)
+  const [saved, setSaved]           = useState(false)
+  const [saving, setSaving]         = useState(false)
+  const [cancelled, setCancelled]   = useState(false)
+  const [logoUploading, setLogoUploading] = useState(false)
+  const [logoError, setLogoError]   = useState(null)
+
+  const handleLogoUpload = async (e) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    if (!file.type.startsWith('image/')) { setLogoError('Please upload an image file.'); return }
+    if (file.size > 2 * 1024 * 1024) { setLogoError('Logo must be under 2 MB.'); return }
+    setLogoError(null)
+    setLogoUploading(true)
+    try {
+      const ext  = file.name.split('.').pop()
+      const path = `${advisor.id}/logo.${ext}`
+      const { error: uploadError } = await supabase.storage
+        .from('advisor-logos')
+        .upload(path, file, { upsert: true, contentType: file.type })
+      if (uploadError) throw uploadError
+      const { data: { publicUrl } } = supabase.storage.from('advisor-logos').getPublicUrl(path)
+      if (!isDemo) {
+        await supabase.from('profiles').update({ logo_url: publicUrl }).eq('id', advisor.id)
+      }
+      setProfile(p => ({ ...p, logo_url: publicUrl }))
+    } catch (err) {
+      setLogoError(err.message ?? 'Upload failed. Please try again.')
+    } finally {
+      setLogoUploading(false)
+    }
+  }
 
   const handleSave = async (e) => {
     e.preventDefault()
@@ -1127,6 +1156,40 @@ function AdvisorSettings({ advisor, families, isDemo }) {
             {saving ? 'Saving…' : 'Save changes'}
           </button>
         </form>
+      </div>
+
+      {/* ── Logo upload card ── */}
+      <div className="rounded-[2rem] border border-stone-200 bg-white p-8 space-y-4">
+        <div>
+          <h2 className="text-base font-semibold text-navy-950">Practice logo</h2>
+          <p className="text-xs text-stone-400 mt-0.5">Shown on your advisor profile. Max 2 MB, image files only.</p>
+        </div>
+
+        <div className="flex items-center gap-5">
+          {profile.logo_url ? (
+            <img
+              src={profile.logo_url}
+              alt="Practice logo"
+              className="h-14 w-auto max-w-[140px] rounded-lg object-contain border border-stone-200 bg-stone-50 p-1"
+            />
+          ) : (
+            <div className="h-14 w-14 rounded-lg border border-dashed border-stone-300 bg-stone-50 flex items-center justify-center text-stone-400 text-xs">
+              No logo
+            </div>
+          )}
+
+          <label className={`${primaryBtn} cursor-pointer inline-flex items-center gap-2 ${logoUploading ? 'opacity-50 pointer-events-none' : ''}`}>
+            <input type="file" accept="image/*" className="sr-only" onChange={handleLogoUpload} disabled={logoUploading || isDemo} />
+            {logoUploading ? 'Uploading…' : profile.logo_url ? 'Replace logo' : 'Upload logo'}
+          </label>
+        </div>
+
+        {logoError && (
+          <p className="text-xs text-red-600">{logoError}</p>
+        )}
+        {isDemo && (
+          <p className="text-xs text-stone-400 italic">Logo upload disabled in demo mode.</p>
+        )}
       </div>
 
       {/* ── Membership card ── */}

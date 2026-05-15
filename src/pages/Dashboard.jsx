@@ -16,12 +16,13 @@ import { redirectToCheckout, redirectToCustomerPortal } from '../lib/stripe'
 import { useAccounts }      from '../hooks/useData'
 import { useDocuments }     from '../hooks/useData'
 import { usePeople }        from '../hooks/useData'
-import { CheckoutSuccessBanner, OnboardingChecklist } from '../components/Onboarding'
+import { CheckoutSuccessBanner, GiftRedeemedBanner, OnboardingChecklist } from '../components/Onboarding'
 import { SkeletonStats } from '../components/Skeleton'
 import { useInstructions }  from '../hooks/useData'
 import { useSubscriptions } from '../hooks/useData'
 import { useAlerts }        from '../hooks/useData'
 import { useActivityLog }   from '../hooks/useData'
+import { useMessages }      from '../hooks/useData'
 import { FamilySection }    from './Settings'
 import {
   DEMO_PROFILE, DEMO_ACCOUNTS, DEMO_DOCUMENTS, DEMO_PEOPLE,
@@ -413,8 +414,9 @@ export default function Dashboard() {
   const activity        = isDemo ? DEMO_ACTIVITY : realActivity.data
   const loadingActivity = isDemo ? false          : realActivity.loading
 
-  const messages        = isDemo ? DEMO_MESSAGES : []
-  const loadingMessages = false
+  const messagesHook    = useMessages()
+  const messages        = isDemo ? DEMO_MESSAGES : messagesHook.data
+  const loadingMessages = isDemo ? false : messagesHook.loading
 
   if (!activeProfile) {
     return (
@@ -433,6 +435,11 @@ export default function Dashboard() {
   const isTrialing = activeProfile.subscription_status === 'trialing'
   const trialDaysLeft = isTrialing ? getTrialDaysLeft(activeProfile.trial_ends_at) : null
   const trialExpired = trialDaysLeft !== null && trialDaysLeft <= 0
+
+  const lastSignIn = user?.last_sign_in_at
+  const daysSinceLogin = lastSignIn
+    ? Math.floor((Date.now() - new Date(lastSignIn).getTime()) / 86400000)
+    : null
 
   const advisorCancelledAt = activeProfile.advisor_cancelled_at ?? null
   const advisorDaysLeft    = getAdvisorDaysLeft(advisorCancelledAt)
@@ -665,6 +672,7 @@ export default function Dashboard() {
           )}
         </div>
         {!isDemo && <CheckoutSuccessBanner userName={activeProfile.full_name} subscriptionStatus={activeProfile.subscription_status} />}
+        {!isDemo && <GiftRedeemedBanner userName={activeProfile.full_name} />}
         {isTrialing && !trialExpired && (
           <TrialBanner daysLeft={trialDaysLeft} onUpgrade={() => { setActiveSection('settings') }} />
         )}
@@ -675,11 +683,11 @@ export default function Dashboard() {
             onAddPayment={() => handleUpgrade()}
           />
         )}
-        {activeSection === 'overview'      && <OverviewSection  profile={activeProfile} accounts={accounts} documents={documents} people={people} instructions={instructions} alerts={alerts} markRead={markRead} onNavigate={setActiveSection} planLimits={planLimits} loading={loadingAccounts || loadingDocs} />}
+        {activeSection === 'overview'      && <OverviewSection  profile={activeProfile} accounts={accounts} documents={documents} people={people} instructions={instructions} alerts={alerts} markRead={markRead} onNavigate={setActiveSection} planLimits={planLimits} loading={loadingAccounts || loadingDocs} daysSinceLogin={daysSinceLogin} />}
         {activeSection === 'accounts'      && <AccountsSection  accounts={accounts} loading={loadingAccounts} add={addAccount} update={updateAccount} remove={removeAccount} />}
         {activeSection === 'documents'     && <DocumentsSection documents={documents} loading={loadingDocs} uploadFile={uploadFile} update={updateDocument} remove={removeDocument} planLimits={planLimits} />}
         {activeSection === 'people'        && <PeopleSection    people={people} loading={loadingPeople} invite={invite} resendInvite={resendInvite} updatePerson={updatePerson} removePerson={removePerson} planLimits={planLimits} onUpgrade={() => handleUpgrade('family', 'yearly')} />}
-        {activeSection === 'messages'      && <MessagesSection  messages={messages} loading={loadingMessages} people={people} isDemo={isDemo} planLimits={planLimits} onUpgrade={() => handleUpgrade('family', 'yearly')} />}
+        {activeSection === 'messages'      && <MessagesSection  messages={messages} loading={loadingMessages} people={people} isDemo={isDemo} planLimits={planLimits} onUpgrade={() => handleUpgrade('family', 'yearly')} addMessage={messagesHook.add} updateMessage={messagesHook.update} uploadVideo={messagesHook.uploadVideo} />}
         {activeSection === 'instructions'  && <InstructionsSection instructions={instructions} loading={loadingInstructions} add={addInstruction} update={updateInstruction} remove={removeInstruction} />}
         {activeSection === 'subscriptions' && <SubscriptionsSection subscriptions={subscriptions} loading={loadingSubs} add={addSubscription} update={updateSubscription} remove={removeSubscription} />}
         {activeSection === 'alerts'        && <AlertsSection    alerts={alerts} markRead={markRead} markAllRead={markAllRead} />}
@@ -703,8 +711,10 @@ const PLAN_BADGE = {
   advisor:   { label: 'Advisor',   cls: 'bg-sage-50  text-sage-700  border-sage-200'  },
 }
 
-function OverviewSection({ profile, accounts, documents, people, instructions, alerts, markRead, onNavigate, planLimits, loading }) {
+function OverviewSection({ profile, accounts, documents, people, instructions, alerts, markRead, onNavigate, planLimits, loading, daysSinceLogin }) {
   const criticalAlerts = alerts.filter(a => a.severity === 'critical' && !a.is_read)
+  const [staleBannerDismissed, setStaleBannerDismissed] = React.useState(false)
+  const showStaleBanner = !staleBannerDismissed && daysSinceLogin !== null && daysSinceLogin >= 180
   const isFamilyPlus = planLimits?.messages ?? false // family and advisor have messages
 
   // Family member status (Family plan only)
@@ -787,8 +797,36 @@ function OverviewSection({ profile, accounts, documents, people, instructions, a
         </div>
       )}
 
+      {/* Stale plan banner — shown when user hasn't logged in for 180+ days */}
+      {showStaleBanner && (
+        <div className="mb-6 bg-stone-50 border border-stone-200 rounded-xl p-4 flex items-start justify-between gap-4">
+          <div className="flex items-start gap-3">
+            <RefreshCw size={16} className="text-stone-400 mt-0.5 shrink-0" />
+            <p className="text-sm text-stone-600">
+              Your plan hasn't been reviewed in {daysSinceLogin} days — a few things may have changed.
+            </p>
+          </div>
+          <div className="flex items-center gap-3 shrink-0">
+            <button
+              onClick={() => onNavigate('accounts')}
+              className="text-xs font-semibold text-navy-700 hover:text-navy-900 transition-colors whitespace-nowrap"
+            >
+              Review now →
+            </button>
+            <button
+              onClick={() => setStaleBannerDismissed(true)}
+              className="text-stone-400 hover:text-stone-600 transition-colors"
+              aria-label="Dismiss"
+            >
+              <X size={14} />
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Onboarding checklist — hidden once all steps done + dismissed */}
       <OnboardingChecklist
+        profile={profile}
         accounts={accounts}
         documents={documents}
         people={people}
@@ -1480,7 +1518,7 @@ function DocumentsSection({ documents, loading, uploadFile, update, remove, plan
 // ─────────────────────────────────────────────────────────────
 // PERSONAL MESSAGES SECTION
 // ─────────────────────────────────────────────────────────────
-function MessagesSection({ messages: initialMessages, loading, people, isDemo, planLimits, onUpgrade }) {
+function MessagesSection({ messages: initialMessages, loading, people, isDemo, planLimits, onUpgrade, addMessage, updateMessage, uploadVideo }) {
   const [showCompose, setShowCompose]   = useState(false)
   const [expanded, setExpanded]         = useState(null)
   const [confirmRelease, setConfirmRelease] = useState(null)  // message id to confirm
@@ -1505,8 +1543,9 @@ function MessagesSection({ messages: initialMessages, loading, people, isDemo, p
   const doRelease = async (id) => {
     setReleasing(id)
     try {
-      if (!isDemo) { /* wire to Supabase update */ }
-      await new Promise(r => setTimeout(r, 700))
+      if (!isDemo) {
+        await updateMessage(id, { released: true, released_at: new Date().toISOString() })
+      }
       setReleasedIds(prev => new Set([...prev, id]))
     } finally {
       setReleasing(null)
@@ -1517,8 +1556,11 @@ function MessagesSection({ messages: initialMessages, loading, people, isDemo, p
   const doReleaseAll = async () => {
     setReleasing('all')
     try {
-      if (!isDemo) { /* wire to Supabase batch update */ }
-      await new Promise(r => setTimeout(r, 900))
+      if (!isDemo) {
+        await Promise.all(
+          messages.filter(m => !m.released).map(m => updateMessage(m.id, { released: true, released_at: new Date().toISOString() }))
+        )
+      }
       setReleasedIds(new Set(messages.map(m => m.id)))
     } finally {
       setReleasing(null)
@@ -1530,10 +1572,17 @@ function MessagesSection({ messages: initialMessages, loading, people, isDemo, p
     e.preventDefault()
     setSaving(true)
     try {
-      await new Promise(r => setTimeout(r, 600))
+      if (!isDemo) {
+        await addMessage({
+          recipient_name: form.recipient_name,
+          recipient_role: form.recipient_role,
+          title: form.title,
+          type: form.type,
+          content: form.content,
+        })
+      }
       setShowCompose(false)
       setForm({ recipient_name: '', recipient_role: '', title: '', type: 'note', content: '' })
-      if (isDemo) { /* demo: message not persisted */ }
     } finally { setSaving(false) }
   }
 
@@ -1693,7 +1742,7 @@ function MessagesSection({ messages: initialMessages, loading, people, isDemo, p
                         {!isDemo && (
                           <label className="cursor-pointer mt-2 inline-flex items-center gap-2 bg-white text-navy-900 text-xs font-semibold px-4 py-2 rounded-lg hover:bg-stone-100 transition-colors">
                             <Upload size={13} /> Upload video
-                            <input type="file" accept="video/*" className="sr-only" />
+                            <input type="file" accept="video/*" className="sr-only" onChange={async (e) => { const file = e.target.files?.[0]; if (!file) return; await uploadVideo(msg.id, file) }} />
                           </label>
                         )}
                       </div>
@@ -2982,6 +3031,7 @@ function SettingsSection({ profile, isDemo, updateProfile, refreshProfile, onUpg
   const [profileForm, setProfileForm] = useState({
     full_name:   profile.full_name   ?? '',
     phone:       profile.phone       ?? '',
+    date_of_birth: profile.date_of_birth ?? '',
     address_line1: profile.address_line1 ?? '',
     address_line2: profile.address_line2 ?? '',
     city:        profile.city        ?? '',
@@ -3048,6 +3098,17 @@ function SettingsSection({ profile, isDemo, updateProfile, refreshProfile, onUpg
                   onChange={e => setProfileForm(p => ({ ...p, phone: e.target.value }))}
                   placeholder="+44 7700 900000" />
               </Field>
+              <div className="space-y-1">
+                <label className="block text-xs font-semibold text-stone-500 uppercase tracking-wide">Date of birth</label>
+                <input
+                  type="date"
+                  className={input}
+                  value={profileForm.date_of_birth}
+                  onChange={e => setProfileForm(p => ({ ...p, date_of_birth: e.target.value }))}
+                  max={new Date().toISOString().split('T')[0]}
+                />
+                <p className="text-xs text-stone-400">Used to send you a birthday message each year.</p>
+              </div>
             </div>
 
             <div className="pt-2 border-t border-stone-100">
@@ -3331,11 +3392,7 @@ function SettingsSection({ profile, isDemo, updateProfile, refreshProfile, onUpg
           <p className="text-xs text-stone-400 mb-4">
             Share your unique link — your friend gets a <span className="font-semibold text-navy-700">21-day free trial</span> instead of 14 days. Estate planning is a team effort.
           </p>
-          {profile.referral_code ? (
-            <ReferralLinkBox referralCode={profile.referral_code} />
-          ) : (
-            <p className="text-xs text-stone-400">Generating your referral link…</p>
-          )}
+          <ReferralLinkBox referralCode={profile.referral_code || profile.id} />
         </div>
 
         {/* ── Danger zone ── */}
