@@ -254,7 +254,7 @@ export default function Pricing() {
         </div>
 
         {/* ── Gift callout — sits directly under the 3 plan cards ── */}
-        <div className="text-center mt-10 pb-4">
+        <div className="text-center mt-10 pb-2">
           <p className="text-stone-500 text-sm mb-3">Looking for a gift for someone you care about?</p>
           <Link
             to="/gift"
@@ -266,7 +266,7 @@ export default function Pricing() {
       </section>
 
       {/* ── COMPARISON SECTION ────────────────────────────────────── */}
-      <section className="py-16 lg:py-20 bg-stone-50 border-t border-stone-100">
+      <section className="pt-8 pb-16 lg:pt-10 lg:pb-20 bg-stone-50 border-t border-stone-100">
         <div className="max-w-5xl mx-auto px-6 lg:px-8">
           <h2 className="font-display text-2xl lg:text-3xl font-light text-navy-950 text-center mb-10 reveal text-balance">
             Less than the alternatives. More than any of them.
