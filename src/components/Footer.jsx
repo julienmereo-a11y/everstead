@@ -36,6 +36,7 @@ const cols = [
       { label: 'About', href: '/about' },
       { label: 'Contact', href: '/contact' },
       { label: 'Book Demo', href: '/book-demo' },
+      { label: '🎁 Give as a gift', href: '/gift' },
       { label: 'Privacy Policy', href: '/privacy' },
       { label: 'Terms', href: '/terms' },
     ],

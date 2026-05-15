@@ -12,8 +12,34 @@ import { getStripe } from '../lib/stripe'
 // ─────────────────────────────────────────────────────────────
 
 const GIFT_PLANS = [
-  { id: 'essential', name: 'Essential', yearlyPrice: 60,  desc: 'For individuals getting organised.' },
-  { id: 'family',    name: 'Family',    yearlyPrice: 144, desc: 'Two private vaults, one subscription.' },
+  {
+    id: 'essential',
+    name: 'Essential',
+    yearlyPrice: 60,
+    desc: 'For individuals getting organised.',
+    features: [
+      'Unlimited accounts & documents',
+      'Step-by-step instructions for executors',
+      '2 trusted contacts',
+      '5 GB secure storage',
+      'Personal messages to loved ones',
+    ],
+  },
+  {
+    id: 'family',
+    name: 'Family',
+    yearlyPrice: 144,
+    desc: 'Two private vaults, one subscription.',
+    badge: 'Most popular gift',
+    features: [
+      'Everything in Essential',
+      'Two private vaults — one for each person',
+      'Each person keeps their own private data',
+      'Up to 10 trusted contacts',
+      '25 GB secure storage',
+      'Share only what you choose',
+    ],
+  },
 ]
 
 const YEAR_OPTIONS = [
@@ -158,7 +184,7 @@ function GiftPaymentForm({ plan, years, gifterName, gifterEmail, recipientName, 
 
 export default function Gift() {
   const [step, setStep]           = useState(1)
-  const [selectedPlan, setSelectedPlan] = useState('essential')
+  const [selectedPlan, setSelectedPlan] = useState('family')
   const [selectedYears, setSelectedYears] = useState(1)
   const [clientSecret, setClientSecret]   = useState(null)
   const [intentId, setIntentId]           = useState(null)
@@ -309,8 +335,15 @@ export default function Gift() {
                           : 'border-stone-200 bg-white hover:border-navy-300'
                       }`}
                     >
-                      <div className="flex items-start justify-between gap-2 mb-2">
-                        <h3 className="font-semibold text-navy-900">{plan.name}</h3>
+                      <div className="flex items-start justify-between gap-2 mb-1">
+                        <div>
+                          <h3 className="font-semibold text-navy-900">{plan.name}</h3>
+                          {plan.badge && (
+                            <span className="inline-block mt-1 text-[10px] font-semibold bg-sage-100 text-sage-700 px-2 py-0.5 rounded-full">
+                              {plan.badge}
+                            </span>
+                          )}
+                        </div>
                         <div className={`w-5 h-5 rounded-full border-2 flex-shrink-0 mt-0.5 flex items-center justify-center transition-all ${
                           selectedPlan === plan.id ? 'border-navy-700 bg-navy-700' : 'border-stone-300'
                         }`}>
@@ -318,6 +351,16 @@ export default function Gift() {
                         </div>
                       </div>
                       <p className="text-stone-500 text-xs mb-4 leading-relaxed">{plan.desc}</p>
+                      <ul className="space-y-1.5 mb-5">
+                        {plan.features.map(f => (
+                          <li key={f} className="flex items-start gap-2 text-xs text-stone-600">
+                            <svg className="w-3.5 h-3.5 text-sage-500 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                            </svg>
+                            {f}
+                          </li>
+                        ))}
+                      </ul>
                       <p className="font-display text-xl font-light text-navy-950">
                         £{plan.yearlyPrice}<span className="text-xs text-stone-400 ml-1">/year</span>
                       </p>
