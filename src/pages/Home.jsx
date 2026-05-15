@@ -388,7 +388,7 @@ export default function Home() {
       </section>
 
       {/* ── SOLUTION ─────────────────────────────────────────────── */}
-      <section className="py-24 lg:py-32 bg-navy-950 grain relative overflow-hidden">
+      <section className="pt-4 pb-24 lg:pt-6 lg:pb-32 bg-navy-950 grain relative overflow-hidden">
         <div className="absolute inset-0 opacity-5"
           style={{ backgroundImage: 'radial-gradient(circle at 80% 50%, #6ea6d8 0%, transparent 60%)' }}
         />
