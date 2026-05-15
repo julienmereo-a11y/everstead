@@ -68,8 +68,87 @@ export default async function handler(req, res) {
     }
   }
 
-  console.log('gift-delivery:', { sent, errors })
-  return res.status(200).json({ sent, total: gifts.length, errors })
+  // ── Step 2: 7-day reminder for unredeemed gifts ──────────────────
+  const sevenDaysAgo = new Date(now.getTime() - 7 * 86_400_000).toISOString()
+
+  const { data: toRemind } = await supabase
+    .from('gift_codes')
+    .select('*')
+    .eq('status', 'sent')
+    .is('reminder_sent_at', null)
+    .lte('sent_at', sevenDaysAgo)
+
+  let reminded = 0
+
+  for (const gift of toRemind ?? []) {
+    try {
+      const planName   = PLAN_NAMES[gift.plan] || gift.plan
+      const yearsLabel = gift.years === 1 ? '1 year' : `${gift.years} years`
+
+      await resend.emails.send({
+        from:    'Everstead <hello@everstead.care>',
+        to:      gift.recipient_email,
+        subject: gift.gifter_name
+          ? `A reminder: ${gift.gifter_name} sent you a gift 🎁`
+          : "You have an unclaimed Everstead gift 🎁",
+        html: reminderGiftHtml({ gift, planName, yearsLabel }),
+      })
+
+      await supabase.from('gift_codes')
+        .update({ reminder_sent_at: now.toISOString() })
+        .eq('id', gift.id)
+
+      reminded++
+    } catch (err) {
+      console.error(`gift-reminder error for gift ${gift.id}:`, err)
+      errors.push(`reminder ${gift.id}: ${err.message}`)
+    }
+  }
+
+  console.log('gift-delivery:', { sent, reminded, errors })
+  return res.status(200).json({ sent, reminded, total: gifts.length, errors })
+}
+
+function reminderGiftHtml({ gift, planName, yearsLabel }) {
+  const recipientFirst = gift.recipient_name?.split(' ')[0] || 'there'
+  const gifterDisplay  = gift.gifter_name || 'Someone special'
+  const redeemUrl      = `${APP_URL}/redeem-gift?code=${gift.code}`
+  const expiryDate     = new Date(gift.expires_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
+
+  return `<!DOCTYPE html>
+<html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
+<body style="margin:0;padding:0;background:#f5f4f0;font-family:Georgia,serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#f5f4f0;padding:40px 0;">
+    <tr><td align="center">
+      <table width="560" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:12px;overflow:hidden;max-width:560px;width:100%;">
+        <tr><td style="background:#0d1628;padding:32px 40px;text-align:center;">
+          <p style="margin:0;color:#ffffff;font-size:22px;font-weight:normal;letter-spacing:0.5px;">Everstead</p>
+        </td></tr>
+        <tr><td style="padding:40px;">
+          <h1 style="margin:0 0 16px;color:#0d1628;font-size:24px;font-weight:normal;">You have an unclaimed gift, ${recipientFirst}.</h1>
+          <p style="margin:0 0 16px;color:#4a5568;font-size:16px;line-height:1.6;">
+            Just a gentle reminder — <strong>${gifterDisplay}</strong> gave you an Everstead <strong>${planName}</strong> plan for <strong>${yearsLabel}</strong> a week ago and it's waiting for you.
+          </p>
+          <p style="margin:0 0 32px;color:#4a5568;font-size:16px;line-height:1.6;">
+            It takes about 2 minutes to claim. No credit card needed.
+          </p>
+          <a href="${redeemUrl}"
+             style="display:inline-block;background:#0d1628;color:#ffffff;text-decoration:none;padding:14px 28px;border-radius:8px;font-size:15px;font-family:Georgia,serif;">
+            Claim your gift →
+          </a>
+          <p style="margin:24px 0 0;color:#9ca3af;font-size:13px;line-height:1.6;">
+            This gift is valid until ${expiryDate}. After that the link will expire.
+          </p>
+        </td></tr>
+        <tr><td style="padding:24px 40px;border-top:1px solid #e8e5e0;">
+          <p style="margin:0;color:#9ca3af;font-size:13px;">
+            Questions? <a href="mailto:support@everstead.care" style="color:#4c7d47;">support@everstead.care</a>
+          </p>
+        </td></tr>
+      </table>
+    </td></tr>
+  </table>
+</body></html>`
 }
 
 function recipientGiftHtml({ gift, planName, yearsLabel }) {
