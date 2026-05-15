@@ -29,7 +29,7 @@ const inputClass = 'w-full border border-stone-300 rounded-lg px-4 py-2.5 text-s
 // ─────────────────────────────────────────────────────────────
 // FAMILY SECTION
 // ─────────────────────────────────────────────────────────────
-function FamilySection({ profile, session }) {
+export function FamilySection({ profile, session }) {
   const [membership, setMembership]     = useState(null)
   const [partnerProfile, setPartnerProfile] = useState(null)
   const [loadingMembership, setLoadingMembership] = useState(true)

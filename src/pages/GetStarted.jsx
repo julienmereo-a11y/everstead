@@ -138,7 +138,12 @@ export default function GetStarted() {
       try { oauthPlan = JSON.parse(localStorage.getItem('everstead_oauth_plan') || 'null') } catch {}
       if (oauthPlan) localStorage.removeItem('everstead_oauth_plan')
 
-      const resumePlan    = profile.plan    || oauthPlan?.plan    || 'essential'
+      // URL param plan always wins over profile default (prevents race condition
+      // where async resume effect overwrites plan set by the URL param effect)
+      const urlPlan    = searchParams.get('plan')
+      const resumePlan = (urlPlan && PLAN_OPTIONS.find(p => p.id === urlPlan))
+        ? urlPlan
+        : (oauthPlan?.plan || profile.plan || 'essential')
       const resumeBilling = profile.billing_cycle
         ? profile.billing_cycle === 'yearly'
         : (oauthPlan?.billing ?? true)

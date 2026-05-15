@@ -22,6 +22,7 @@ import { useInstructions }  from '../hooks/useData'
 import { useSubscriptions } from '../hooks/useData'
 import { useAlerts }        from '../hooks/useData'
 import { useActivityLog }   from '../hooks/useData'
+import { FamilySection }    from './Settings'
 import {
   DEMO_PROFILE, DEMO_ACCOUNTS, DEMO_DOCUMENTS, DEMO_PEOPLE,
   DEMO_INSTRUCTIONS, DEMO_SUBSCRIPTIONS, DEMO_ALERTS, DEMO_ACTIVITY, DEMO_MESSAGES,
@@ -50,6 +51,7 @@ const NAV_ITEMS = [
   { id: 'accounts',       label: 'Accounts',         icon: Landmark },
   { id: 'documents',      label: 'Documents',        icon: FileText },
   { id: 'people',         label: 'People',           icon: Users },
+  { id: 'family',         label: 'Family Member',    icon: Heart,        familyOnly: true },
   { id: 'messages',       label: 'Personal Messages',icon: MessageSquare },
   { id: 'instructions',   label: 'Instructions',     icon: BookOpen },
   { id: 'subscriptions',  label: 'Subscriptions',    icon: CreditCard },
@@ -237,6 +239,24 @@ function AdvisorCancelledModal({ advisorName, onAddPayment }) {
         </p>
       </div>
     </div>
+  )
+}
+
+// ─────────────────────────────────────────────────────────────
+// FAMILY WRAPPER — fetches session so FamilySection has access_token
+// ─────────────────────────────────────────────────────────────
+function FamilyWrapper({ profile }) {
+  const [session, setSession] = React.useState(null)
+  React.useEffect(() => {
+    import('../lib/supabase').then(({ supabase: s }) => {
+      s.auth.getSession().then(({ data: { session: sess } }) => setSession(sess))
+    })
+  }, [])
+  if (!session) return null
+  return (
+    <SectionShell title="Family Member" subtitle="Invite your partner or spouse to their own private vault under your plan.">
+      <FamilySection profile={profile} session={session} />
+    </SectionShell>
   )
 }
 
@@ -527,7 +547,7 @@ export default function Dashboard() {
 
         {/* Nav */}
         <nav className="flex-1 px-3 py-4 space-y-0.5 overflow-y-auto" aria-label="Dashboard navigation">
-          {NAV_ITEMS.map(({ id, label, icon: Icon }) => {
+          {NAV_ITEMS.filter(({ familyOnly }) => !familyOnly || activeProfile.plan === 'family').map(({ id, label, icon: Icon }) => {
             const isActive = activeSection === id
             const badge    = id === 'alerts' ? unreadCount : 0
             const locked   = id === 'messages' && !planLimits.messages
@@ -634,6 +654,7 @@ export default function Dashboard() {
         {activeSection === 'alerts'        && <AlertsSection    alerts={alerts} markRead={markRead} markAllRead={markAllRead} />}
         {activeSection === 'activity'      && <ActivitySection  activity={activity} loading={loadingActivity} />}
         {activeSection === 'resources'     && <ResourcesSection />}
+        {activeSection === 'family'        && <FamilyWrapper    profile={activeProfile} />}
         {activeSection === 'settings'      && <SettingsSection  profile={activeProfile} isDemo={isDemo} updateProfile={updateProfile} refreshProfile={refreshProfile} onUpgrade={handleUpgrade} onDeleteAccount={handleDeleteAccount} upgradeError={upgradeError} />}
       </main>
       </div>
