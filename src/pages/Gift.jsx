@@ -250,10 +250,10 @@ export default function Gift() {
         <title>Give an Everstead gift | Everstead</title>
         <meta name="description" content="Give the gift of peace of mind. Purchase an Everstead plan for someone you care about." />
       </Helmet>
-      <div className="bg-stone-50 pt-24 min-h-screen">
+      <div className="min-h-screen">
 
         {/* ── HERO ── */}
-        <section className="py-16 lg:py-20 grain relative overflow-hidden">
+        <section className="pt-32 pb-16 lg:pt-40 lg:pb-20 grain relative overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-br from-navy-950 to-navy-800" />
           <div className="relative max-w-3xl mx-auto px-6 text-center">
             <p className="text-xs font-semibold uppercase tracking-widest text-sage-400 mb-4">Gift an Everstead plan</p>
@@ -266,7 +266,7 @@ export default function Gift() {
           </div>
         </section>
 
-        <section className="py-16 lg:py-24">
+        <section className="py-16 lg:py-24 bg-stone-50">
           <div className="max-w-2xl mx-auto px-6 lg:px-8">
 
             {/* Step indicator */}
@@ -575,7 +575,7 @@ export default function Gift() {
 
         {/* ── TRUST FOOTER ── */}
         {step <= 3 && (
-          <section className="py-12 border-t border-stone-200">
+          <section className="py-12 border-t border-stone-200 bg-stone-50">
             <div className="max-w-3xl mx-auto px-6">
               <div className="flex flex-wrap justify-center gap-8">
                 {[
