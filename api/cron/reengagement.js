@@ -86,7 +86,7 @@ export default async function handler(req, res) {
       ].filter(Boolean)
 
       await resend.emails.send({
-        from:    'Julien at Everstead <hello@everstead.care>',
+        from:    'Everstead <hello@everstead.care>',
         to:      user.email,
         subject: nudgeSubject(missing),
         html:    nudgeHtml(user.full_name, user.plan, hasAccounts, hasContacts, hasDocuments),

@@ -67,7 +67,7 @@ export default async function handler(req, res) {
   // ── Send deletion confirmation email ──────────────────────
   if (profile?.email) {
     resend.emails.send({
-      from:    'Everstead <support@everstead.care>',
+      from:    'Everstead <hello@everstead.care>',
       to:      profile.email,
       subject: 'Your Everstead account has been deleted',
       html:    deletionHtml(profile.full_name),

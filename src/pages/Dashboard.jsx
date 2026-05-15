@@ -51,7 +51,7 @@ const NAV_ITEMS = [
   { id: 'accounts',       label: 'Accounts',         icon: Landmark },
   { id: 'documents',      label: 'Documents',        icon: FileText },
   { id: 'people',         label: 'People',           icon: Users },
-  { id: 'family',         label: 'Family Member',    icon: Heart,        familyOnly: true },
+  { id: 'family',         label: 'Family Plan',      icon: Heart,        familyOnly: true },
   { id: 'messages',       label: 'Personal Messages',icon: MessageSquare },
   { id: 'instructions',   label: 'Instructions',     icon: BookOpen },
   { id: 'subscriptions',  label: 'Subscriptions',    icon: CreditCard },
@@ -90,36 +90,43 @@ function getTrialDaysLeft(trialEndsAt) {
 }
 
 function TrialBanner({ daysLeft, onUpgrade }) {
-  if (daysLeft <= 0 || daysLeft > 7) return null
+  if (daysLeft <= 0 || daysLeft > 14) return null
   const critical = daysLeft <= 1
   const urgent   = daysLeft <= 3
-  const cls = critical
-    ? 'bg-red-50 border-b border-red-200'
-    : urgent
-    ? 'bg-amber-50 border-b border-amber-200'
-    : 'bg-stone-100 border-b border-stone-200'
-  const textCls = critical ? 'text-red-700 font-medium' : urgent ? 'text-amber-700' : 'text-stone-600'
-  const iconCls = critical ? 'text-red-500' : urgent ? 'text-amber-600' : 'text-stone-400'
-  const btnCls  = critical
-    ? 'bg-red-600 text-white hover:bg-red-700'
-    : urgent
-    ? 'bg-amber-500 text-white hover:bg-amber-600'
-    : 'bg-stone-700 text-white hover:bg-stone-800'
+  const warning  = daysLeft <= 7
+  // Days 8–14: subtle info strip; days 1–7: escalating colour
+  const cls = critical ? 'bg-red-50 border-b border-red-200'
+    : urgent   ? 'bg-amber-50 border-b border-amber-200'
+    : warning  ? 'bg-stone-100 border-b border-stone-200'
+    : 'bg-navy-950/5 border-b border-navy-100'
+  const textCls = critical ? 'text-red-700 font-medium'
+    : urgent  ? 'text-amber-700'
+    : warning ? 'text-stone-600'
+    : 'text-navy-700'
+  const iconCls = critical ? 'text-red-500'
+    : urgent  ? 'text-amber-600'
+    : warning ? 'text-stone-400'
+    : 'text-navy-400'
+  const btnCls = critical ? 'bg-red-600 text-white hover:bg-red-700'
+    : urgent  ? 'bg-amber-500 text-white hover:bg-amber-600'
+    : warning ? 'bg-stone-700 text-white hover:bg-stone-800'
+    : 'bg-navy-800 text-white hover:bg-navy-700'
+  const msg = daysLeft === 1
+    ? 'Your free trial ends tomorrow — add your card to keep access.'
+    : daysLeft <= 7
+    ? `Your free trial ends in ${daysLeft} days. Add payment details to continue.`
+    : `You're on a free trial — ${daysLeft} days remaining.`
   return (
     <div className={`flex items-center justify-between gap-4 px-6 py-3 text-sm ${cls}`}>
       <div className="flex items-center gap-2">
         <Clock size={15} className={iconCls} />
-        <span className={textCls}>
-          {daysLeft === 1
-            ? "Your free trial ends tomorrow — add your card to keep access."
-            : `Your free trial ends in ${daysLeft} days. Add payment details to continue.`}
-        </span>
+        <span className={textCls}>{msg}</span>
       </div>
       <button
         onClick={onUpgrade}
         className={`shrink-0 text-xs font-semibold px-4 py-1.5 rounded-lg transition-colors ${btnCls}`}
       >
-        Add payment details →
+        {daysLeft > 7 ? 'View plans →' : 'Add payment details →'}
       </button>
     </div>
   )
@@ -255,7 +262,12 @@ function FamilyWrapper({ profile }) {
   }, [])
   if (!session) return null
   return (
-    <SectionShell title="Family Member" subtitle="Invite your partner or spouse to their own private vault under your plan.">
+    <SectionShell
+      title="Family Plan"
+      subtitle={profile.family_role === 'secondary'
+        ? 'You have your own private vault under a Family plan subscription.'
+        : 'Invite your partner or spouse to their own private vault under your plan.'}
+    >
       <FamilySection profile={profile} session={session} />
     </SectionShell>
   )
@@ -692,20 +704,24 @@ function OverviewSection({ profile, accounts, documents, people, instructions, a
   // Family member status (Family plan only)
   const [familyMembership, setFamilyMembership] = React.useState(null)
   const [familyLoading, setFamilyLoading] = React.useState(false)
+  const isSecondaryUser = profile.family_role === 'secondary'
   React.useEffect(() => {
     if (profile.plan !== 'family') return
     setFamilyLoading(true)
     import('../lib/supabase').then(({ supabase: sb }) => {
-      sb.from('family_memberships')
-        .select('*')
-        .eq('primary_user_id', profile.id)
-        .in('invite_status', ['pending', 'accepted'])
-        .order('created_at', { ascending: false })
-        .limit(1)
-        .maybeSingle()
-        .then(({ data }) => { setFamilyMembership(data || null); setFamilyLoading(false) })
+      const query = isSecondaryUser && profile.family_id
+        // Secondary: look up the membership row by family_id
+        ? sb.from('family_memberships').select('*').eq('id', profile.family_id).maybeSingle()
+        // Primary: look up membership where they are the primary
+        : sb.from('family_memberships').select('*')
+            .eq('primary_user_id', profile.id)
+            .in('invite_status', ['pending', 'accepted'])
+            .order('created_at', { ascending: false })
+            .limit(1)
+            .maybeSingle()
+      query.then(({ data }) => { setFamilyMembership(data || null); setFamilyLoading(false) })
     })
-  }, [profile.id, profile.plan])
+  }, [profile.id, profile.plan, profile.family_id, isSecondaryUser])
 
   const vaultStats = [
     { label: 'Accounts documented', value: accounts.length, icon: Landmark, target: 5 },
@@ -838,9 +854,13 @@ function OverviewSection({ profile, accounts, documents, people, instructions, a
                 <Heart size={18} className="text-sage-600" />
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-semibold text-navy-900">Family vault active</p>
+                <p className="text-sm font-semibold text-navy-900">
+                  {isSecondaryUser ? 'Your Family Plan vault is active' : 'Family vault active'}
+                </p>
                 <p className="text-xs text-stone-500 mt-0.5 truncate">
-                  {familyMembership.secondary_email} has their own private vault under your plan.
+                  {isSecondaryUser
+                    ? `Covered by the plan holder — your vault is fully private.`
+                    : `${familyMembership.secondary_email} has their own private vault under your plan.`}
                 </p>
               </div>
               <span className="shrink-0 text-xs font-semibold text-sage-700 bg-sage-50 border border-sage-200 px-2.5 py-1 rounded-full">Active</span>

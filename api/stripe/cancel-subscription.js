@@ -154,7 +154,7 @@ export default async function handler(req, res) {
     if (profiles?.email) {
       const firstName = profiles.full_name?.split(' ')[0] || 'there'
       await resend.emails.send({
-        from:    'Everstead <support@everstead.care>',
+        from:    'Everstead <hello@everstead.care>',
         to:      profiles.email,
         subject: `We're sorry to see you go, ${firstName}.`,
         html:    cancellationHtml(firstName, cancelAtDate ?? periodEndDate),

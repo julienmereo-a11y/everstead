@@ -29,7 +29,7 @@ export default async function handler(req, res) {
 
   try {
     await resend.emails.send({
-      from:    'Julien at Everstead <julien@everstead.care>',
+      from:    'Everstead <hello@everstead.care>',
       to:      secondaryEmail,
       subject: `${primaryName || 'Someone'} has invited you to join their Everstead Family plan`,
       html:    familyInviteHtml(primaryName, inviteUrl),

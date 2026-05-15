@@ -25,7 +25,7 @@ export default async function handler(req, res) {
 
   try {
     await resend.emails.send({
-      from:    'Julien at Everstead <julien@everstead.care>',
+      from:    'Everstead <hello@everstead.care>',
       to:      primaryEmail,
       subject: `${secondaryName || 'Your partner'} has joined your Everstead Family plan`,
       html:    familyInviteAcceptedHtml(primaryName, secondaryName, APP_URL),

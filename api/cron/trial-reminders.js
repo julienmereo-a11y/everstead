@@ -61,7 +61,7 @@ export default async function handler(req, res) {
       for (const task of tasks) {
         try {
           await resend.emails.send({
-            from:    'Everstead <julien@everstead.care>',
+            from:    'Everstead <hello@everstead.care>',
             to:      p.email,
             subject: task.daysLeft === 1
               ? 'Your Everstead trial ends tomorrow'
@@ -93,7 +93,7 @@ export default async function handler(req, res) {
         .toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
       try {
         await resend.emails.send({
-          from:    'Julien at Everstead <julien@everstead.care>',
+          from:    'Everstead <hello@everstead.care>',
           to:      p.email,
           subject: 'Your Everstead account will be deleted in 7 days',
           html:    deletionWarningHtml(p.full_name, deletionDate),

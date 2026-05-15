@@ -159,10 +159,13 @@ export function FamilySection({ profile, session }) {
     setResendLoading(true)
     setActionError('')
     try {
-      // Generate new token by updating invited_at
+      // Rotate token + reset invited_at — invalidates the old link
       const { data: updated, error } = await supabase
         .from('family_memberships')
-        .update({ invited_at: new Date().toISOString() })
+        .update({
+          invited_at:   new Date().toISOString(),
+          invite_token: crypto.randomUUID(),
+        })
         .eq('id', membership.id)
         .select()
         .single()

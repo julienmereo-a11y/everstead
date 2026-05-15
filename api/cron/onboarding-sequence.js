@@ -66,17 +66,20 @@ export default async function handler(req, res) {
   const results = { sent: {}, errors: [] }
 
   for (const step of SEQUENCE) {
-    const cutoff = new Date(now.getTime() - step.afterDays * 86_400_000).toISOString()
+    // Anchor to trial start (trial_ends_at - 14 days), falling back to created_at.
+    // This prevents emails firing too early/late for users who delayed checkout.
+    // We fetch all candidates and filter in JS so we can use trial_ends_at per-user.
+    const earliestCutoff = new Date(now.getTime() - step.afterDays * 86_400_000).toISOString()
 
-    // Eligible: paying/trialing, account created before cutoff, this email not yet sent
+    // Eligible: paying/trialing, this email not yet sent
     const { data: users, error } = await supabase
       .from('profiles')
-      .select(`id, full_name, email, plan`)
+      .select(`id, full_name, email, plan, created_at, trial_ends_at`)
       .not('stripe_subscription_id', 'is', null)
       .neq('role', 'delegate')
       .not('email', 'is', null)
-      .lte('created_at', cutoff)
       .is(step.field, null)
+      .lte('created_at', earliestCutoff) // broad pre-filter; refined per-user below
 
     if (error) {
       console.error(`onboarding-sequence email ${step.n} query error:`, error)
@@ -86,9 +89,16 @@ export default async function handler(req, res) {
 
     let stepSent = 0
     for (const user of users ?? []) {
+      // Use trial start (trial_ends_at - 14 days) as anchor when available
+      const trialStart = user.trial_ends_at
+        ? new Date(new Date(user.trial_ends_at).getTime() - 14 * 86_400_000)
+        : new Date(user.created_at)
+      const sendAfter = new Date(trialStart.getTime() + step.afterDays * 86_400_000)
+      if (now < sendAfter) continue // not yet time for this user
+
       try {
         await resend.emails.send({
-          from:    'Julien at Everstead <hello@everstead.care>',
+          from:    'Everstead <hello@everstead.care>',
           to:      user.email,
           subject: step.subject,
           html:    step.html(user.full_name, user.plan),

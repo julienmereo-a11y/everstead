@@ -25,7 +25,7 @@ export default async function handler(req, res) {
 
   try {
     await resend.emails.send({
-      from:    'Julien at Everstead <julien@everstead.care>',
+      from:    'Everstead <hello@everstead.care>',
       to:      secondaryEmail,
       subject: 'Your Everstead Family plan access has ended',
       html:    familyAccessRevokedHtml(secondaryName, APP_URL),

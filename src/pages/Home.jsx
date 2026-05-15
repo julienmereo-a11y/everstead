@@ -64,7 +64,7 @@ const plans = [
     monthly: 15,
     annual: 12,
     desc: 'For households planning together with shared clarity.',
-    features: ['Everything in Essential', 'Household members included', 'Up to 10 trusted contacts', 'Emergency vault sharing', '25 GB storage', 'Family readiness score'],
+    features: ['Everything in Essential', 'Two private vaults — one subscription', 'Each person keeps their own private data', 'Up to 10 trusted contacts', '25 GB storage', 'Share only what you choose'],
     cta: 'Get started free',
     highlight: true,
   },

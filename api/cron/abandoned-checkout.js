@@ -44,7 +44,7 @@ export default async function handler(req, res) {
   for (const user of abandoned) {
     try {
       await resend.emails.send({
-        from:    'Julien at Everstead <hello@everstead.care>',
+        from:    'Everstead <hello@everstead.care>',
         to:      user.email,
         subject: 'Your Everstead free trial is ready — you just need to add your card',
         html:    abandonedCheckoutHtml(user.full_name, user.plan),
