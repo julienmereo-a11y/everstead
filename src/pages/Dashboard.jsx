@@ -676,6 +676,24 @@ function OverviewSection({ profile, accounts, documents, people, instructions, a
   const criticalAlerts = alerts.filter(a => a.severity === 'critical' && !a.is_read)
   const isFamilyPlus = planLimits?.messages ?? false // family and advisor have messages
 
+  // Family member status (Family plan only)
+  const [familyMembership, setFamilyMembership] = React.useState(null)
+  const [familyLoading, setFamilyLoading] = React.useState(false)
+  React.useEffect(() => {
+    if (profile.plan !== 'family') return
+    setFamilyLoading(true)
+    import('../lib/supabase').then(({ supabase: sb }) => {
+      sb.from('family_memberships')
+        .select('*')
+        .eq('primary_user_id', profile.id)
+        .in('invite_status', ['pending', 'accepted'])
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .maybeSingle()
+        .then(({ data }) => { setFamilyMembership(data || null); setFamilyLoading(false) })
+    })
+  }, [profile.id, profile.plan])
+
   const vaultStats = [
     { label: 'Accounts documented', value: accounts.length, icon: Landmark, target: 5 },
     { label: 'Documents uploaded', value: documents.filter(d => d.status !== 'missing').length, icon: FileText, target: 5 },
@@ -797,6 +815,60 @@ function OverviewSection({ profile, accounts, documents, people, instructions, a
           </div>
         )}
       </div>
+
+      {/* Family member card — Family plan only */}
+      {profile.plan === 'family' && !familyLoading && (
+        <div className="mb-6">
+          {familyMembership?.invite_status === 'accepted' ? (
+            <div className="bg-white border border-stone-200 rounded-2xl p-5 flex items-center gap-4">
+              <div className="w-10 h-10 rounded-full bg-sage-100 flex items-center justify-center shrink-0">
+                <Heart size={18} className="text-sage-600" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-semibold text-navy-900">Family vault active</p>
+                <p className="text-xs text-stone-500 mt-0.5 truncate">
+                  {familyMembership.secondary_email} has their own private vault under your plan.
+                </p>
+              </div>
+              <span className="shrink-0 text-xs font-semibold text-sage-700 bg-sage-50 border border-sage-200 px-2.5 py-1 rounded-full">Active</span>
+            </div>
+          ) : familyMembership?.invite_status === 'pending' ? (
+            <div className="bg-amber-50 border border-amber-200 rounded-2xl p-5 flex items-center gap-4">
+              <div className="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center shrink-0">
+                <Heart size={18} className="text-amber-600" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-semibold text-navy-900">Invitation pending</p>
+                <p className="text-xs text-stone-500 mt-0.5 truncate">
+                  Waiting for {familyMembership.secondary_email} to accept.
+                </p>
+              </div>
+              <button
+                onClick={() => onNavigate('family')}
+                className="shrink-0 text-xs font-semibold text-amber-700 bg-white border border-amber-300 px-3 py-1.5 rounded-lg hover:bg-amber-50 transition-colors"
+              >
+                Manage →
+              </button>
+            </div>
+          ) : (
+            <div className="bg-navy-50 border border-navy-200 rounded-2xl p-5 flex items-center gap-4">
+              <div className="w-10 h-10 rounded-full bg-navy-100 flex items-center justify-center shrink-0">
+                <Heart size={18} className="text-navy-500" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-semibold text-navy-900">Add your partner or spouse</p>
+                <p className="text-xs text-stone-500 mt-0.5">Your plan includes a second private vault — invite them to set up theirs.</p>
+              </div>
+              <button
+                onClick={() => onNavigate('family')}
+                className="shrink-0 text-xs font-semibold text-white bg-navy-800 px-3 py-1.5 rounded-lg hover:bg-navy-700 transition-colors"
+              >
+                Invite →
+              </button>
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Recent documents + alerts */}
       <div className="grid lg:grid-cols-2 gap-6">
