@@ -86,7 +86,7 @@ const plans = [
     promo: 'Launch offer',
     description: 'For individuals getting their digital life in order.',
     reframe: '£1.15 a week — less than a coffee.',
-    features: ['Unlimited accounts & documents', 'Step-by-step instructions', '2 trusted contacts', 'Readiness score', '5 GB storage'],
+    features: ['Unlimited accounts & documents', 'Step-by-step instructions', 'Personal messages to loved ones', '2 trusted contacts', 'Readiness score', '5 GB storage'],
     cta: 'Get started free',
   },
   {
@@ -110,7 +110,7 @@ const plans = [
     yearlyTotal: 576,
     description: 'For professionals managing client estate organisation.',
     reframe: '£48 a month — less than one billable hour.',
-    features: ['Everything in Family', 'Multi-client workspace', 'Co-branded client portal', 'Advisor collaboration tools', 'Priority support', 'White-label options'],
+    features: ['Everything in Family', 'Multi-client workspace', 'Co-branded client portal', 'Advisor collaboration tools', 'Priority support'],
     cta: 'Book a demo',
   },
 ]

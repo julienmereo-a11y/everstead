@@ -34,7 +34,7 @@ import {
 // PLAN LIMITS
 // ─────────────────────────────────────────────────────────────
 const PLAN_LIMITS = {
-  essential: { trustedContacts: 2,  storageGB: 5,  messages: false },
+  essential: { trustedContacts: 2,  storageGB: 5,  messages: true  },
   family:    { trustedContacts: 10, storageGB: 25, messages: true  },
   advisor:   { trustedContacts: 10, storageGB: 25, messages: true  },
 }
@@ -593,7 +593,7 @@ export default function Dashboard() {
               <button
                 key={id}
                 onClick={() => { setActiveSection(id); setSidebarOpen(false) }}
-                title={locked ? 'Personal Messages — Family plan & above. Click to see upgrade options.' : undefined}
+                title={locked ? 'Personal Messages — upgrade to access. Click to see options.' : undefined}
                 aria-current={isActive && !locked ? 'page' : undefined}
                 className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40 ${
                   isActive && !locked
