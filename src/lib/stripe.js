@@ -30,9 +30,13 @@ export const PLANS = {
       yearly:  import.meta.env.VITE_STRIPE_ESSENTIAL_YEARLY,
     },
     limits: {
-      trustedPeople: 2,
-      storageGb:     5,
+      trustedPeople: 1,
+      storageGb: 1,
       householdMembers: 1,
+      maxAccounts: 10,
+      maxDocuments: 10,
+      instructionSets: 1,
+      personalMessages: false,
     },
   },
   family: {
@@ -45,8 +49,12 @@ export const PLANS = {
     },
     limits: {
       trustedPeople: 10,
-      storageGb:     25,
+      storageGb: 25,
       householdMembers: 5,
+      maxAccounts: null,
+      maxDocuments: null,
+      instructionSets: null,
+      personalMessages: true,
     },
   },
   advisor: {
@@ -59,8 +67,12 @@ export const PLANS = {
     },
     limits: {
       trustedPeople: 999,
-      storageGb:     100,
+      storageGb: 100,
       householdMembers: 999,
+      maxAccounts: null,
+      maxDocuments: null,
+      instructionSets: null,
+      personalMessages: true,
     },
   },
 }

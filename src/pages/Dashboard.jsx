@@ -12,7 +12,8 @@ import {
   Gift, Check, Copy
 } from 'lucide-react'
 import { useAuth }          from '../contexts/AuthContext'
-import { redirectToCheckout, redirectToCustomerPortal } from '../lib/stripe'
+import { redirectToCheckout, redirectToCustomerPortal, PLANS } from '../lib/stripe'
+import { isAtLimit, getLimit, canUseFeature } from '../lib/planLimits'
 import { useAccounts }      from '../hooks/useData'
 import { useDocuments }     from '../hooks/useData'
 import { usePeople }        from '../hooks/useData'
@@ -30,19 +31,6 @@ import {
   getOwnerStatus,
 } from '../lib/demoData'
 
-// ─────────────────────────────────────────────────────────────
-// PLAN LIMITS
-// ─────────────────────────────────────────────────────────────
-const PLAN_LIMITS = {
-  essential: { trustedContacts: 2,  storageGB: 5,  messages: true  },
-  family:    { trustedContacts: 10, storageGB: 25, messages: true  },
-  advisor:   { trustedContacts: 10, storageGB: 25, messages: true  },
-}
-function getPlanLimits(plan) {
-  // Unknown or missing plans fall back to family (not essential) to avoid
-  // silently restricting users who have a paid plan with a stale/unknown slug.
-  return PLAN_LIMITS[plan] ?? PLAN_LIMITS.family
-}
 
 // ─────────────────────────────────────────────────────────────
 // CONSTANTS
@@ -453,7 +441,7 @@ export default function Dashboard() {
   const isSuspended    = ownerStatus === 'deceased' || ownerStatus === 'incapacitated'
   const isDeceased     = ownerStatus === 'deceased'
 
-  const planLimits = getPlanLimits(activeProfile.plan)
+  const planLimits = PLANS[activeProfile.plan]?.limits ?? PLANS.essential.limits
 
   const handleUpgrade = async (planId, billingCycle = 'yearly') => {
     if (isDemo) { navigate('/get-started'); return }
@@ -588,7 +576,7 @@ export default function Dashboard() {
           {NAV_ITEMS.filter(({ familyOnly }) => !familyOnly || activeProfile.plan === 'family').map(({ id, label, icon: Icon }) => {
             const isActive = activeSection === id
             const badge    = id === 'alerts' ? unreadCount : 0
-            const locked   = id === 'messages' && !planLimits.messages
+            const locked   = id === 'messages' && !planLimits.personalMessages
             return (
               <button
                 key={id}
@@ -684,11 +672,11 @@ export default function Dashboard() {
           />
         )}
         {activeSection === 'overview'      && <OverviewSection  profile={activeProfile} accounts={accounts} documents={documents} people={people} instructions={instructions} alerts={alerts} markRead={markRead} onNavigate={setActiveSection} planLimits={planLimits} loading={loadingAccounts || loadingDocs} daysSinceLogin={daysSinceLogin} />}
-        {activeSection === 'accounts'      && <AccountsSection  accounts={accounts} loading={loadingAccounts} add={addAccount} update={updateAccount} remove={removeAccount} />}
-        {activeSection === 'documents'     && <DocumentsSection documents={documents} loading={loadingDocs} uploadFile={uploadFile} update={updateDocument} remove={removeDocument} planLimits={planLimits} />}
-        {activeSection === 'people'        && <PeopleSection    people={people} loading={loadingPeople} invite={invite} resendInvite={resendInvite} updatePerson={updatePerson} removePerson={removePerson} planLimits={planLimits} onUpgrade={() => handleUpgrade('family', 'yearly')} />}
+        {activeSection === 'accounts'      && <AccountsSection  accounts={accounts} loading={loadingAccounts} add={addAccount} update={updateAccount} remove={removeAccount} profile={activeProfile} onUpgrade={() => handleUpgrade('family', 'yearly')} />}
+        {activeSection === 'documents'     && <DocumentsSection documents={documents} loading={loadingDocs} uploadFile={uploadFile} update={updateDocument} remove={removeDocument} planLimits={planLimits} profile={activeProfile} onUpgrade={() => handleUpgrade('family', 'yearly')} />}
+        {activeSection === 'people'        && <PeopleSection    people={people} loading={loadingPeople} invite={invite} resendInvite={resendInvite} updatePerson={updatePerson} removePerson={removePerson} planLimits={planLimits} profile={activeProfile} onUpgrade={() => handleUpgrade('family', 'yearly')} />}
         {activeSection === 'messages'      && <MessagesSection  messages={messages} loading={loadingMessages} people={people} isDemo={isDemo} planLimits={planLimits} onUpgrade={() => handleUpgrade('family', 'yearly')} addMessage={messagesHook.add} updateMessage={messagesHook.update} uploadVideo={messagesHook.uploadVideo} />}
-        {activeSection === 'instructions'  && <InstructionsSection instructions={instructions} loading={loadingInstructions} add={addInstruction} update={updateInstruction} remove={removeInstruction} />}
+        {activeSection === 'instructions'  && <InstructionsSection instructions={instructions} loading={loadingInstructions} add={addInstruction} update={updateInstruction} remove={removeInstruction} profile={activeProfile} onUpgrade={() => handleUpgrade('family', 'yearly')} />}
         {activeSection === 'subscriptions' && <SubscriptionsSection subscriptions={subscriptions} loading={loadingSubs} add={addSubscription} update={updateSubscription} remove={removeSubscription} />}
         {activeSection === 'alerts'        && <AlertsSection    alerts={alerts} markRead={markRead} markAllRead={markAllRead} />}
         {activeSection === 'activity'      && <ActivitySection  activity={activity} loading={loadingActivity} />}
@@ -715,7 +703,7 @@ function OverviewSection({ profile, accounts, documents, people, instructions, a
   const criticalAlerts = alerts.filter(a => a.severity === 'critical' && !a.is_read)
   const [staleBannerDismissed, setStaleBannerDismissed] = React.useState(false)
   const showStaleBanner = !staleBannerDismissed && daysSinceLogin !== null && daysSinceLogin >= 180
-  const isFamilyPlus = planLimits?.messages ?? false // family and advisor have messages
+  const isFamilyPlus = planLimits?.personalMessages ?? false // family and advisor have messages
 
   // Family member status (Family plan only)
   const [familyMembership, setFamilyMembership] = React.useState(null)
@@ -1008,7 +996,7 @@ function OverviewSection({ profile, accounts, documents, people, instructions, a
 // ─────────────────────────────────────────────────────────────
 // ACCOUNTS SECTION
 // ─────────────────────────────────────────────────────────────
-function AccountsSection({ accounts, loading, add, update, remove }) {
+function AccountsSection({ accounts, loading, add, update, remove, profile, onUpgrade }) {
   const emptyForm = { institution: '', account_type: '', category: 'Banking', account_number_hint: '', balance_display: '', notes: '' }
   const [showAdd, setShowAdd] = useState(false)
   const [editingAccount, setEditingAccount] = useState(null)
@@ -1063,12 +1051,27 @@ function AccountsSection({ accounts, loading, add, update, remove }) {
     }
   }
 
+  const atAccountLimit = isAtLimit(profile?.plan, 'maxAccounts', accounts.length)
+
   return (
     <SectionShell
       title="Accounts & Assets"
       subtitle={`${accounts.length} account${accounts.length !== 1 ? 's' : ''} documented`}
-      action={<button onClick={openAdd} className={primaryBtn}><Plus size={15} />Add account</button>}
+      action={
+        <button onClick={atAccountLimit ? undefined : openAdd} disabled={atAccountLimit} className={primaryBtn} style={atAccountLimit ? { opacity: 0.5, cursor: 'not-allowed' } : {}}>
+          <Plus size={15} />Add account
+        </button>
+      }
     >
+      {atAccountLimit && (
+        <p className="text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded-xl px-4 py-3 mt-3 mb-4">
+          You've reached your 10-account limit on the Essential plan.{' '}
+          <button onClick={onUpgrade} className="font-semibold underline underline-offset-2 hover:text-amber-900">
+            Upgrade to Family →
+          </button>{' '}
+          for unlimited accounts.
+        </p>
+      )}
       {loading ? <LoadingSpinner /> : accounts.length === 0 ? (
         <EmptyState icon={Landmark} label="No accounts yet" action="Add your first account to start organizing your financial life." />
       ) : (
@@ -1221,7 +1224,7 @@ function OwnerDocViewerModal({ doc, onClose }) {
 // ─────────────────────────────────────────────────────────────
 // DOCUMENTS SECTION
 // ─────────────────────────────────────────────────────────────
-function DocumentsSection({ documents, loading, uploadFile, update, remove, planLimits }) {
+function DocumentsSection({ documents, loading, uploadFile, update, remove, planLimits, profile, onUpgrade }) {
   const emptyForm = { name: '', doc_type: 'Legal', status: 'current', expires_at: '', notes: '' }
   const [showUpload, setShowUpload] = useState(false)
   const [editingDocument, setEditingDocument] = useState(null)
@@ -1295,15 +1298,21 @@ function DocumentsSection({ documents, loading, uploadFile, update, remove, plan
     }
   }
 
+  const atDocLimit = isAtLimit(profile?.plan, 'maxDocuments', documents.length)
+
   return (
     <SectionShell
       title="Document Vault"
       subtitle={`${documents.filter(d => d.status !== 'missing').length} documents uploaded`}
-      action={<button onClick={openUpload} className={primaryBtn}><Upload size={15} />Upload document</button>}
+      action={
+        <button onClick={atDocLimit ? undefined : openUpload} disabled={atDocLimit} className={primaryBtn} style={atDocLimit ? { opacity: 0.5, cursor: 'not-allowed' } : {}}>
+          <Upload size={15} />Upload document
+        </button>
+      }
     >
       {/* Storage usage bar */}
       {planLimits && (() => {
-        const limitGB = planLimits.storageGB
+        const limitGB = planLimits.storageGb
         // Demo: estimate ~0.5 MB per uploaded doc; real mode: sum storage_size fields
         const usedMB = documents.filter(d => d.file_url || d.storage_path).length * 0.5
         const usedGB = usedMB / 1024
@@ -1329,6 +1338,15 @@ function DocumentsSection({ documents, loading, uploadFile, update, remove, plan
           </div>
         )
       })()}
+      {atDocLimit && (
+        <p className="text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded-xl px-4 py-3 mt-3 mb-4">
+          You've reached your 10-document limit on the Essential plan.{' '}
+          <button onClick={onUpgrade} className="font-semibold underline underline-offset-2 hover:text-amber-900">
+            Upgrade to Family →
+          </button>{' '}
+          for unlimited storage.
+        </p>
+      )}
       {/* Will & LPA guidance — always visible until user has uploaded both */}
       {(() => {
         const hasWill = documents.some(d => /will|testament/i.test(d.name + ' ' + (d.notes || '')))
@@ -1592,36 +1610,13 @@ function MessagesSection({ messages: initialMessages, loading, people, isDemo, p
 
   const unreleased = messages.filter(m => !m.released)
 
-  // Feature gate: messages require Family plan or above
-  if (planLimits && !planLimits.messages) {
-    return (
-      <SectionShell title="Personal Messages" subtitle="Family plan feature">
-        <div className="flex flex-col items-center justify-center py-16 text-center gap-4 max-w-sm mx-auto">
-          <div className="w-14 h-14 rounded-2xl bg-navy-100 flex items-center justify-center">
-            <Lock size={24} className="text-navy-600" />
-          </div>
-          <div>
-            <p className="font-semibold text-navy-900 text-base mb-2">Personal Messages require the Family plan</p>
-            <p className="text-sm text-stone-500 leading-relaxed">
-              Write sealed messages for loved ones — released automatically after your passing, or on demand. Available on the Family and Advisor plans.
-            </p>
-          </div>
-          <button
-            onClick={onUpgrade}
-            className="inline-flex items-center gap-2 bg-navy-800 text-white text-sm font-semibold px-5 py-3 rounded-xl hover:bg-navy-700 transition-colors"
-          >
-            Upgrade to Family <ArrowRight size={15} />
-          </button>
-        </div>
-      </SectionShell>
-    )
-  }
+  const messagesLocked = planLimits && !planLimits.personalMessages
 
   return (
     <SectionShell
       title="Personal Messages"
-      subtitle={`${releasedCount} released · ${sealedCount} sealed`}
-      action={
+      subtitle={messagesLocked ? 'Family plan feature' : `${releasedCount} released · ${sealedCount} sealed`}
+      action={!messagesLocked ? (
         <div className="flex items-center gap-2">
           {unreleased.length > 1 && (
             <button
@@ -1633,17 +1628,36 @@ function MessagesSection({ messages: initialMessages, loading, people, isDemo, p
           )}
           <button onClick={() => setShowCompose(true)} className={primaryBtn}><Plus size={15} />New message</button>
         </div>
-      }
+      ) : null}
     >
+      {messagesLocked && (
+        <div className="rounded-2xl border border-sage-200 bg-sage-50 p-8 text-center">
+          <div className="w-12 h-12 bg-sage-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <span className="text-2xl">💌</span>
+          </div>
+          <h3 className="font-display text-xl font-light text-navy-950 mb-2">Leave something behind that matters.</h3>
+          <p className="text-stone-600 text-sm leading-relaxed max-w-sm mx-auto mb-6">
+            Write letters, record final wishes, and set release triggers for the people you love — delivered when it matters most. Personal messages are included in the Family plan.
+          </p>
+          <button
+            onClick={onUpgrade}
+            className="inline-flex items-center gap-2 bg-navy-800 text-white font-semibold text-sm px-6 py-3 rounded-xl hover:bg-navy-700 transition-colors"
+          >
+            Upgrade to Family →
+          </button>
+        </div>
+      )}
       {/* Info banner */}
+      {!messagesLocked && (
       <div className="flex items-start gap-3 bg-navy-50 border border-navy-100 rounded-xl px-4 py-3.5 mb-5">
         <Lock size={15} className="text-navy-600 mt-0.5 shrink-0" />
         <p className="text-xs text-navy-700 leading-relaxed">
           Messages are <strong>sealed</strong> by default — recipients cannot see them until you release them manually, or they are released automatically when Everstead verifies your passing. You can release a message at any time using the button on each card.
         </p>
       </div>
+      )}
 
-      {loading ? <LoadingSpinner /> : messages.length === 0 ? (
+      {!messagesLocked && (loading ? <LoadingSpinner /> : messages.length === 0 ? (
         <EmptyState icon={MessageSquare} label="No messages yet" action="Leave a personal note or video message for someone important — your spouse, children, attorney, or anyone you choose." />
       ) : (
         <div className="space-y-3">
@@ -1780,7 +1794,7 @@ function MessagesSection({ messages: initialMessages, loading, people, isDemo, p
             )
           })}
         </div>
-      )}
+      ))}
 
       {/* Release all confirmation modal */}
       {confirmReleaseAll && (
@@ -2148,7 +2162,7 @@ function PersonAccessForm({ initial, onSave, onCancel, saving, submitLabel }) {
   )
 }
 
-function PeopleSection({ people, loading, invite, resendInvite, updatePerson, removePerson, planLimits, onUpgrade }) {
+function PeopleSection({ people, loading, invite, resendInvite, updatePerson, removePerson, planLimits, profile, onUpgrade }) {
   const [showInvite, setShowInvite] = useState(false)
   const [editingPerson, setEditingPerson] = useState(null)
   const [saving, setSaving] = useState(false)
@@ -2191,13 +2205,13 @@ function PeopleSection({ people, loading, invite, resendInvite, updatePerson, re
     return t === 'after_death' ? 'After death / incapacity' : 'While alive'
   }
 
-  const contactLimit = planLimits?.trustedContacts ?? 10
-  const atLimit = people.length >= contactLimit
+  const contactLimit = getLimit(profile?.plan, 'trustedPeople')
+  const atLimit = isAtLimit(profile?.plan, 'trustedPeople', people.length)
 
   return (
     <SectionShell
       title="Trusted People"
-      subtitle={`${people.length} / ${contactLimit} trusted contacts`}
+      subtitle={contactLimit !== null ? `${people.length} / ${contactLimit} trusted contacts` : `${people.length} trusted contacts`}
       action={
         atLimit
           ? (
@@ -2219,16 +2233,13 @@ function PeopleSection({ people, loading, invite, resendInvite, updatePerson, re
         </div>
       )}
       {atLimit && (
-        <div className="mb-4 flex items-start gap-3 bg-amber-50 border border-amber-200 rounded-xl px-4 py-3">
-          <AlertTriangle size={15} className="text-amber-600 mt-0.5 shrink-0" />
-          <div className="flex-1">
-            <p className="text-sm font-semibold text-amber-800">Trusted contact limit reached</p>
-            <p className="text-xs text-amber-700 mt-0.5 leading-relaxed">
-              Your current plan allows up to {contactLimit} trusted contacts.{' '}
-              <button onClick={onUpgrade} className="underline font-semibold hover:no-underline">Upgrade to add more.</button>
-            </p>
-          </div>
-        </div>
+        <p className="text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded-xl px-4 py-3 mt-3 mb-4">
+          The Essential plan includes 1 trusted contact.{' '}
+          <button onClick={onUpgrade} className="font-semibold underline underline-offset-2 hover:text-amber-900">
+            Upgrade to Family →
+          </button>{' '}
+          to invite up to 10 people.
+        </p>
       )}
       {loading ? <LoadingSpinner /> : people.length === 0 ? (
         <EmptyState icon={Users} label="No trusted people yet" action="Invite an executor, healthcare proxy, or family member to your plan." />
@@ -2321,7 +2332,7 @@ function PeopleSection({ people, loading, invite, resendInvite, updatePerson, re
 // ─────────────────────────────────────────────────────────────
 // INSTRUCTIONS SECTION
 // ─────────────────────────────────────────────────────────────
-function InstructionsSection({ instructions, loading, add, update, remove }) {
+function InstructionsSection({ instructions, loading, add, update, remove, profile, onUpgrade }) {
   const emptyForm = { title: '', category: 'Immediate', audience: 'Executor', body: '', stepsText: '' }
   const [showAdd, setShowAdd] = useState(false)
   const [editingInstruction, setEditingInstruction] = useState(null)
@@ -2376,8 +2387,27 @@ function InstructionsSection({ instructions, loading, add, update, remove }) {
     }
   }
 
+  const atInstructionLimit = isAtLimit(profile?.plan, 'instructionSets', instructions.length)
+
   return (
-    <SectionShell title="Instructions" subtitle={`${instructions.length} instruction sets`} action={<button onClick={openAdd} className={primaryBtn}><Plus size={15} />Add instructions</button>}>
+    <SectionShell
+      title="Instructions"
+      subtitle={`${instructions.length} instruction sets`}
+      action={
+        <button onClick={atInstructionLimit ? undefined : openAdd} disabled={atInstructionLimit} className={primaryBtn} style={atInstructionLimit ? { opacity: 0.5, cursor: 'not-allowed' } : {}}>
+          <Plus size={15} />Add instructions
+        </button>
+      }
+    >
+      {atInstructionLimit && (
+        <p className="text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded-xl px-4 py-3 mt-3 mb-4">
+          The Essential plan includes 1 instruction set.{' '}
+          <button onClick={onUpgrade} className="font-semibold underline underline-offset-2 hover:text-amber-900">
+            Upgrade to Family →
+          </button>{' '}
+          for unlimited instructions.
+        </p>
+      )}
       {loading ? <LoadingSpinner /> : instructions.length === 0 ? (
         <EmptyState icon={BookOpen} label="No instructions yet" action="Write step-by-step guidance for your executor, family, or healthcare proxy." />
       ) : (

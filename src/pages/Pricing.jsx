@@ -86,7 +86,7 @@ const plans = [
     promo: 'LAUNCH OFFER',
     description: 'For individuals getting their digital life in order.',
     reframe: '£0.69 a week — less than a coffee.',
-    features: ['Unlimited accounts & documents', 'Step-by-step instructions', 'Personal messages to loved ones', '2 trusted contacts', 'Readiness score', '5 GB storage'],
+    features: ['Up to 10 accounts & documents', '1 trusted contact', '1 instruction set', '1 GB secure storage', 'Readiness score'],
     cta: 'Get started free',
   },
   {
@@ -97,7 +97,7 @@ const plans = [
     yearlyTotal: 120,
     description: 'For couples and households planning together.',
     reframe: '£10/mo billed yearly · Two vaults · Just £5 per person',
-    features: ['Everything in Essential', 'Two private vaults — one subscription', 'Each person keeps their own private data', 'Share only what you choose', 'Up to 10 trusted contacts', '25 GB storage'],
+    features: ['Two private vaults — one subscription', 'Unlimited accounts & documents', 'Up to 10 trusted contacts', 'Unlimited instructions & wishes', 'Personal messages & final wishes', '25 GB secure storage'],
     cta: 'Get started free',
     highlight: true,
     badge: 'Most popular',
@@ -250,9 +250,16 @@ export default function Pricing() {
                     </Link>
                   </div>
                 ) : (
-                  <Link to={href} className={`inline-flex items-center justify-center gap-2 mt-8 w-full rounded-xl px-5 py-3.5 text-sm font-semibold transition-colors ${plan.highlight ? 'bg-white text-navy-900 hover:bg-stone-100' : 'bg-navy-800 text-white hover:bg-navy-700'}`}>
-                    {plan.cta} <ArrowRight size={15} />
-                  </Link>
+                  <>
+                    <Link to={href} className={`inline-flex items-center justify-center gap-2 mt-8 w-full rounded-xl px-5 py-3.5 text-sm font-semibold transition-colors ${plan.highlight ? 'bg-white text-navy-900 hover:bg-stone-100' : 'bg-navy-800 text-white hover:bg-navy-700'}`}>
+                      {plan.cta} <ArrowRight size={15} />
+                    </Link>
+                    {plan.id === 'essential' && (
+                      <p className="mt-3 text-center text-xs text-stone-400 leading-relaxed">
+                        Need more? Family includes two private vaults — just £5 per person.
+                      </p>
+                    )}
+                  </>
                 )}
               </div>
             )
