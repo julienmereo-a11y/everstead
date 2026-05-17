@@ -23,7 +23,7 @@ const faqs = [
   },
   {
     q: 'What does the Family plan include that Essential does not?',
-    a: 'The Family plan adds household member access so multiple people in the same household can use the plan together, increases trusted contacts from 2 to 10, adds emergency vault sharing, expands storage from 5 GB to 25 GB, and includes a family-wide readiness score.',
+    a: 'The Family plan gives two people their own private vaults under one subscription — each person keeps their own private data, but you can organise and plan together. It increases trusted contacts from 1 to 10, adds emergency vault sharing, expands storage to 25 GB, and includes a family-wide readiness score. Think of it as joint planning with individual privacy.',
   },
   {
     q: 'What is the Advisor plan for?',
@@ -39,7 +39,7 @@ const faqs = [
   },
   {
     q: 'Is Everstead worth it if I only use it once to set up my plan?',
-    a: 'Most people set up their plan once — then update it a few times a year as their life changes. But the real value isn\'t in the setup. It\'s in knowing that if something happens tomorrow, your family won\'t spend months trying to piece your life together. For less than £1 a day, that\'s one of the better investments you can make for the people you love.',
+    a: 'Most members use Everstead regularly — as a single place to track accounts, find documents, and keep their financial life in order. It\'s useful today, not just someday. That said, even if you only set it up once, the value is real: the people you love won\'t spend months piecing your life together if something unexpected happens. For less than a coffee a week, that\'s one of the better things you can do for yourself and for them.',
   },
 ]
 
@@ -84,7 +84,7 @@ const plans = [
     yearly: 3,
     yearlyTotal: 36,
     promo: 'LAUNCH OFFER',
-    description: 'For individuals getting their digital life in order.',
+    description: 'For individuals getting their accounts, documents, and wishes in order.',
     reframe: '£0.69 a week — less than a coffee.',
     features: ['Up to 10 accounts & documents', '1 trusted contact', '1 instruction set', '1 GB secure storage', 'Readiness score'],
     cta: 'Get started free',
@@ -95,7 +95,7 @@ const plans = [
     monthly: 12,
     yearly: 10,
     yearlyTotal: 120,
-    description: 'For couples and households planning together.',
+    description: 'For couples and families — two private vaults, shared protection.',
     reframe: '£10/mo billed yearly · Two vaults · Just £5 per person',
     features: ['Two private vaults — one subscription', 'Unlimited accounts & documents', 'Up to 10 trusted contacts', 'Unlimited instructions & wishes', 'Personal messages & final wishes', '25 GB secure storage'],
     cta: 'Get started free',
@@ -160,10 +160,10 @@ export default function Pricing() {
         <div className="relative max-w-5xl mx-auto px-6 lg:px-8 text-center reveal">
           <p className="text-xs font-semibold uppercase tracking-[0.22em] text-sage-300 mb-5">Pricing</p>
           <h1 className="font-display text-5xl lg:text-6xl font-light text-white leading-tight text-balance">
-            Simple, transparent pricing for every stage of life.
+            One plan for your whole financial life.
           </h1>
           <p className="mt-5 text-lg leading-relaxed text-stone-300 max-w-3xl mx-auto">
-            Start with a 14-day free trial. No charge for 14 days — cancel anytime.
+            Start organising today. Your family will thank you later.
           </p>
         </div>
       </section>

@@ -749,7 +749,7 @@ function OverviewSection({ profile, accounts, documents, people, instructions, a
           <h1 className="font-display text-3xl font-light text-navy-950">
             {(() => { const h = new Date().getHours(); return h < 12 ? 'Good morning' : h < 18 ? 'Good afternoon' : 'Good evening' })()}, {profile.full_name?.split(' ')[0] ?? 'there'}.
           </h1>
-          <p className="text-stone-500 mt-1 text-sm">Here's the state of your plan.</p>
+          <p className="text-stone-500 mt-1 text-sm">Here's where your financial life stands.</p>
         </div>
         <div className="flex items-center gap-3 flex-wrap">
           <a
@@ -791,7 +791,7 @@ function OverviewSection({ profile, accounts, documents, people, instructions, a
           <div className="flex items-start gap-3">
             <RefreshCw size={16} className="text-stone-400 mt-0.5 shrink-0" />
             <p className="text-sm text-stone-600">
-              Your plan hasn't been reviewed in {daysSinceLogin} days — a few things may have changed.
+              Your vault hasn't been updated in {daysSinceLogin} days — accounts, documents, or contacts may have changed since you last checked in.
             </p>
           </div>
           <div className="flex items-center gap-3 shrink-0">

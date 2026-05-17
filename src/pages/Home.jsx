@@ -25,12 +25,12 @@ const painPoints = [
 ]
 
 const featureHighlights = [
-  { icon: Folder, title: 'Digital account inventory', desc: 'Organise every account — banking, investments, subscriptions, and digital assets — in one structured place.' },
-  { icon: FileText, title: 'Secure document vault', desc: 'Upload, tag, and assign access to legal, financial, and personal documents with version history.' },
-  { icon: ClipboardList, title: 'Step-by-step instructions', desc: 'Leave clear guidance so loved ones know exactly what to do, in what order, and who to contact.' },
-  { icon: Users, title: 'People & role assignment', desc: 'Assign roles like executor, attorney, or caregiver with tailored access to only what they need.' },
-  { icon: Share2, title: 'Controlled sharing', desc: 'Share by role and category. Emergency vault access with a single tap when it matters most.' },
-  { icon: Heart, title: 'Final wishes', desc: 'Capture funeral preferences, personal letters, sentimental instructions, and more with care.' },
+  { icon: Folder, title: 'Digital account inventory', desc: 'See every account — banking, investments, subscriptions, and digital assets — in one structured place. No more hunting across apps.' },
+  { icon: FileText, title: 'Secure document vault', desc: 'Upload, tag, and find legal, financial, and personal documents in seconds. Version history included.' },
+  { icon: ClipboardList, title: 'Step-by-step instructions', desc: 'Write clear guidance on your own terms — for everyday reference, and so the people you love know what to do when it counts.' },
+  { icon: Users, title: 'People & role assignment', desc: 'Give each person access to only what they need — a trusted contact today, a caregiver or executor when required.' },
+  { icon: Share2, title: 'Controlled sharing', desc: 'Share by role and category on your terms. Emergency vault access available with a single tap.' },
+  { icon: Heart, title: 'Final wishes', desc: 'Capture personal letters, funeral preferences, and sentimental instructions — warm, private, and on your own timeline.' },
 ]
 
 const steps = [
@@ -53,7 +53,7 @@ const plans = [
     monthly: 5,
     annual: 3,
     promo: true,
-    desc: 'For individuals who want to get their accounts, documents, and wishes in order — before it matters.',
+    desc: 'For individuals who want their accounts, documents, and wishes in one secure place.',
     features: ['Up to 10 accounts & documents', 'Step-by-step instructions', '1 trusted contact', 'Readiness score', '1 GB storage'],
     cta: 'Get started free',
     highlight: false,
@@ -63,7 +63,7 @@ const plans = [
     name: 'Family',
     monthly: 12,
     annual: 10,
-    desc: 'For couples and families who want to protect each other — two private vaults, one subscription.',
+    desc: 'For couples and families — two private vaults, one subscription. Organised together, private separately.',
     features: ['Everything in Essential', 'Two private vaults — one subscription', 'Each person keeps their own private data', 'Up to 10 trusted contacts', '25 GB storage', 'Share only what you choose'],
     cta: 'Get started free',
     highlight: true,
@@ -82,7 +82,7 @@ const plans = [
 
 const faqs = [
   { q: 'Is my information actually secure?', a: 'Yes. All data is encrypted at rest and in transit with AES-256 encryption. Role-based access ensures only people you authorize can see specific sections. We never sell your data.' },
-  { q: 'What happens to my account if I pass away?', a: 'You assign trusted people in advance. When the time comes, they access only the sections you\'ve shared with them — on their own timeline, at their own pace.' },
+  { q: 'What happens to my account if I pass away?', a: 'You assign trusted people in advance — giving them access only to the sections you\'ve chosen, nothing more. But Everstead is useful long before that moment. Most members use it regularly to keep their financial life organised, knowing the access is there if it\'s ever needed.' },
   { q: 'Can I start before I have everything organised?', a: 'Absolutely. Most people start with just a few accounts and build over time. Our readiness score shows progress and highlights what\'s still missing.' },
   { q: 'Is this a legal document service?', a: 'No. Everstead is an organisation and planning platform — not a legal service. It does not draft wills, prepare legal documents, give legal or financial advice, or replace a solicitor, estate lawyer, accountant, or family advisor. It helps families organise information, instructions, and controlled access in one place.' },
 ]
@@ -113,8 +113,8 @@ export default function Home() {
   return (
     <>
     <Helmet>
-      <title>Everstead — Digital Estate Planning for UK Families</title>
-      <meta name="description" content="Everstead helps UK families securely organise accounts, documents, instructions, and final wishes — so loved ones know what to do when it matters most." />
+      <title>Everstead — Your financial life, organised.</title>
+      <meta name="description" content="Everstead is the secure home for your accounts, documents, and important decisions — organised for you today, and ready for your family when it counts." />
       <link rel="canonical" href="https://www.everstead.care" />
       <script type="application/ld+json">{JSON.stringify({
         '@context': 'https://schema.org',
@@ -128,7 +128,7 @@ export default function Home() {
           width: 320,
           height: 80,
         },
-        description: 'Digital estate planning platform for UK families. Securely organise accounts, documents, instructions, and final wishes so loved ones know exactly what to do.',
+        description: 'Secure personal vault for UK families. Organise accounts, documents, and important decisions — accessible today, and ready for your loved ones when it matters.',
         foundingDate: '2025',
         areaServed: 'GB',
         address: {
@@ -175,11 +175,11 @@ export default function Home() {
           {/* Copy */}
           <div>
             <h1 className="font-display text-5xl lg:text-6xl xl:text-7xl font-light text-white leading-[1.08] tracking-tight text-balance animate-fade-up">
-              Put your digital life in order, so your family is not left guessing.
+              Everything that matters, in one place.
             </h1>
 
             <p className="mt-6 text-lg text-stone-300 leading-relaxed max-w-xl animate-fade-up animate-delay-100">
-              Everstead helps you securely organise accounts, documents, instructions, contacts, and final wishes in one place — so loved ones know what to do when it matters most.
+              Accounts, documents, instructions, and wishes — organised for your life today, and ready for the people you love when it counts.
             </p>
 
             <div className="mt-10 flex flex-wrap gap-3 animate-fade-up animate-delay-200">
@@ -321,10 +321,10 @@ export default function Home() {
         <div className="relative max-w-4xl mx-auto px-6 lg:px-8 text-center">
           <div className="reveal mb-12">
             <h2 className="font-display text-4xl lg:text-6xl font-bold text-white leading-tight text-balance mb-6">
-              When someone dies, the hardest part is often the paperwork, passwords, and unanswered questions.
+              Your financial life is scattered across dozens of places — and only you know where everything is.
             </h2>
             <p className="text-stone-400 text-lg leading-relaxed max-w-2xl mx-auto">
-              Families face a painful second burden — finding documents, identifying accounts, understanding wishes.
+              Accounts, documents, subscriptions, passwords — all in different places, and none of it easy for the people who depend on you.
             </p>
           </div>
 
@@ -332,18 +332,18 @@ export default function Home() {
             {[
               {
                 icon: AlertCircle,
-                title: "Documents can't be found",
-                desc: "Family members don't know where documents are — wills, insurance, contracts, property records."
+                title: "Important documents live everywhere",
+                desc: "Insurance policies, property records, contracts — saved across email, drives, drawers, and apps you've long forgotten."
               },
               {
                 icon: CreditCard,
-                title: "Accounts go undiscovered",
-                desc: "Subscriptions, crypto, digital accounts — assets disappear without a trace or clear record."
+                title: "Accounts pile up invisibly",
+                desc: "Subscriptions, investments, pension pots, digital accounts — most people have no single view of where everything stands."
               },
               {
                 icon: Clock,
-                title: "Wishes were never recorded",
-                desc: "Funeral preferences, personal messages, sentimental items — never written down anywhere."
+                title: "Wishes stay in your head",
+                desc: "Preferences, personal messages, and key decisions — rarely written down, never easy to find when it counts."
               }
             ].map(({ icon: Icon, title, desc }, i) => (
               <div key={title} className={`reveal reveal-delay-${i + 1} bg-white/5 border border-white/10 rounded-2xl p-6`}>
@@ -362,20 +362,20 @@ export default function Home() {
               <div className="w-10 h-10 rounded-full bg-red-900/60 flex items-center justify-center mb-5">
                 <UserCircle size={18} className="text-red-400" />
               </div>
-              <h3 className="font-bold text-white text-base mb-3 leading-snug">Executors waste time chasing details</h3>
-              <p className="text-stone-400 text-sm leading-relaxed">Without a clear guide, executors spend weeks searching for scattered information.</p>
+              <h3 className="font-bold text-white text-base mb-3 leading-snug">The people you love are left guessing</h3>
+              <p className="text-stone-400 text-sm leading-relaxed">Without a clear record, your partner, children, or executor face weeks of searching through scattered information.</p>
             </div>
 
             <div className="reveal reveal-delay-2 bg-white/5 border border-white/10 rounded-2xl p-6">
               <div className="w-10 h-10 rounded-full bg-red-900/60 flex items-center justify-center mb-5">
                 <Clock size={18} className="text-red-400" />
               </div>
-              <h3 className="font-bold text-white text-base mb-3 leading-snug">Costly delays and mistakes</h3>
-              <p className="text-stone-400 text-sm leading-relaxed">Active subscriptions, blocked accounts, missed deadlines — all caused by lack of clear information.</p>
+              <h3 className="font-bold text-white text-base mb-3 leading-snug">Disorganisation costs more than you think</h3>
+              <p className="text-stone-400 text-sm leading-relaxed">Forgotten subscriptions, missed renewals, overlooked accounts — the real price of not having one place for everything.</p>
             </div>
 
             <div className="reveal reveal-delay-3 bg-white/5 border border-white/10 rounded-2xl p-6 flex flex-col items-center justify-center text-center gap-5">
-              <p className="text-stone-300 text-lg leading-snug">There's a better way to prepare for all of this.</p>
+              <p className="text-stone-300 text-lg leading-snug">There's a better way to stay organised — for you today, and for the people you love when it counts.</p>
               <Link
                 to="/get-started"
                 className="w-full py-3 px-6 rounded-xl border border-white/30 text-white font-bold text-base hover:bg-white/10 transition-colors"
@@ -396,7 +396,7 @@ export default function Home() {
           <div className="text-center mb-16 reveal">
             <p className="text-xs font-semibold uppercase tracking-widest text-sage-400 mb-4">One platform</p>
             <h2 className="font-display text-4xl lg:text-5xl font-light text-white text-balance max-w-2xl mx-auto leading-tight">
-              One secure place for everything your family may need.
+              Your financial life, finally in one place.
             </h2>
           </div>
 
@@ -839,10 +839,10 @@ export default function Home() {
         />
         <div className="relative max-w-3xl mx-auto px-6 lg:px-8 text-center reveal">
           <h2 className="font-display text-4xl lg:text-5xl font-light text-white text-balance leading-tight">
-            Give your family clarity, not chaos.
+            Get organised in an afternoon. Stay protected for life.
           </h2>
           <p className="mt-5 text-stone-300 text-lg leading-relaxed">
-            Start your plan today. It takes minutes to begin — and a lifetime of peace of mind in return.
+            Start with what you have and build as you go. Most people are up and running in under an hour — and the people they love are protected from that moment on.
           </p>
           <div className="mt-10 flex flex-wrap gap-3 justify-center">
             <Link
