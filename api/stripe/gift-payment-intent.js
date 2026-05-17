@@ -2,8 +2,8 @@ import Stripe from 'stripe'
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY)
 
 const GIFT_PRICES = {
-  essential: 60,  // £/year
-  family:    144, // £/year
+  essential: 36,  // £/year
+  family:    120, // £/year
 }
 
 export default async function handler(req, res) {

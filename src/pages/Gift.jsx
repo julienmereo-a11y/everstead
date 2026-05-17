@@ -15,7 +15,7 @@ const GIFT_PLANS = [
   {
     id: 'essential',
     name: 'Essential',
-    yearlyPrice: 60,
+    yearlyPrice: 36,
     desc: 'For individuals getting organised.',
     features: [
       'Unlimited accounts & documents',
@@ -28,7 +28,7 @@ const GIFT_PLANS = [
   {
     id: 'family',
     name: 'Family',
-    yearlyPrice: 144,
+    yearlyPrice: 120,
     desc: 'Two private vaults, one subscription.',
     badge: 'Most popular gift',
     features: [

@@ -23,8 +23,8 @@ export const getStripe = (() => {
 export const PLANS = {
   essential: {
     name: 'Essential',
-    monthly: 7,
-    yearly:  5,
+    monthly: 5,
+    yearly:  3,
     priceIds: {
       monthly: import.meta.env.VITE_STRIPE_ESSENTIAL_MONTHLY,
       yearly:  import.meta.env.VITE_STRIPE_ESSENTIAL_YEARLY,
@@ -37,8 +37,8 @@ export const PLANS = {
   },
   family: {
     name: 'Family',
-    monthly: 15,
-    yearly:  12,
+    monthly: 12,
+    yearly:  10,
     priceIds: {
       monthly: import.meta.env.VITE_STRIPE_FAMILY_MONTHLY,
       yearly:  import.meta.env.VITE_STRIPE_FAMILY_YEARLY,

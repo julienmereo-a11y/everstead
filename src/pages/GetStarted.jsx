@@ -18,14 +18,14 @@ const PLAN_OPTIONS = [
   {
     id: 'essential',
     name: 'Essential',
-    monthly: 7, yearly: 5, promo: true,
+    monthly: 5, yearly: 3, promo: true,
     desc: 'For individuals getting organised.',
     features: ['Unlimited accounts & documents', 'Step-by-step instructions', '2 trusted contacts', '5 GB storage'],
   },
   {
     id: 'family',
     name: 'Family',
-    monthly: 15, yearly: 12,
+    monthly: 12, yearly: 10,
     desc: 'For couples and households planning together.',
     features: ['Two private vaults — one subscription', 'Each person keeps their own private data', 'Share only what you choose', '10 trusted contacts', '25 GB storage'],
     badge: 'Most popular',

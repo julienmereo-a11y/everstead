@@ -146,8 +146,8 @@ function TrialExpiredModal({ profile, onUpgrade }) {
         </p>
         <div className="space-y-3 mb-8">
           {[
-            { name: 'Essential', price: '£7/mo', note: 'or £5/mo yearly · Launch offer', id: 'essential' },
-            { name: 'Family', price: '£15/mo', note: 'or £12/mo yearly — two private vaults', id: 'family', highlight: profile.plan !== 'advisor' },
+            { name: 'Essential', price: '£5/mo', note: 'or £3/mo yearly (£36/yr) · Launch offer', id: 'essential' },
+            { name: 'Family', price: '£12/mo', note: 'or £10/mo yearly (£120/yr) — two private vaults', id: 'family', highlight: profile.plan !== 'advisor' },
             ...(profile.plan === 'advisor' ? [{ name: 'Advisor', price: '£60/mo', note: 'or £48/mo yearly · For estate advisors', id: 'advisor', highlight: true }] : []),
           ].map(plan => (
             <button
@@ -226,8 +226,8 @@ function AdvisorCancelledModal({ advisorName, onAddPayment }) {
         </p>
         <div className="space-y-3 mb-8">
           {[
-            { name: 'Essential', price: '£7/mo', note: 'or £5/mo yearly · Launch offer', id: 'essential' },
-            { name: 'Family', price: '£15/mo', note: 'or £12/mo yearly — all household members', id: 'family', highlight: true },
+            { name: 'Essential', price: '£5/mo', note: 'or £3/mo yearly (£36/yr) · Launch offer', id: 'essential' },
+            { name: 'Family', price: '£12/mo', note: 'or £10/mo yearly (£120/yr) — all household members', id: 'family', highlight: true },
           ].map(plan => (
             <button
               key={plan.id}
@@ -2909,8 +2909,8 @@ function ReferralLinkBox({ referralCode }) {
 
 function SettingsSection({ profile, isDemo, updateProfile, refreshProfile, onUpgrade, onDeleteAccount, upgradeError }) {
   const PLANS = [
-    { id: 'essential', name: 'Essential', tier: 1, monthly: 7,  yearly: 5,  desc: 'For individuals. 2 trusted contacts, 5 GB storage.' },
-    { id: 'family',    name: 'Family',    tier: 2, monthly: 15, yearly: 12, desc: 'Household members, up to 10 trusted contacts, 25 GB storage.' },
+    { id: 'essential', name: 'Essential', tier: 1, monthly: 5,  yearly: 3,  desc: 'For individuals. 2 trusted contacts, 5 GB storage.' },
+    { id: 'family',    name: 'Family',    tier: 2, monthly: 12, yearly: 10, desc: 'Household members, up to 10 trusted contacts, 25 GB storage.' },
   ]
   const PLAN_TIERS = { essential: 1, family: 2, advisor: 3 }
   const currentTier   = PLAN_TIERS[profile.plan] ?? 1

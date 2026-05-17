@@ -19,7 +19,7 @@ const faqs = [
   },
   {
     q: 'Is there a discount for annual billing?',
-    a: 'Yes — choosing yearly billing saves approximately 20–25% compared to monthly billing across all plans. The discounted rate is applied immediately and locked in for the year.',
+    a: 'Yes — choosing yearly billing saves £24 per year on the Essential and Family plans compared to monthly billing. The discounted rate is applied immediately and locked in for the year.',
   },
   {
     q: 'What does the Family plan include that Essential does not?',
@@ -80,27 +80,28 @@ const plans = [
   {
     id: 'essential',
     name: 'Essential',
-    monthly: 7,
-    yearly: 5,
-    yearlyTotal: 60,
-    promo: 'Launch offer',
+    monthly: 5,
+    yearly: 3,
+    yearlyTotal: 36,
+    promo: 'LAUNCH OFFER',
     description: 'For individuals getting their digital life in order.',
-    reframe: '£1.15 a week — less than a coffee.',
+    reframe: '£0.69 a week — less than a coffee.',
     features: ['Unlimited accounts & documents', 'Step-by-step instructions', 'Personal messages to loved ones', '2 trusted contacts', 'Readiness score', '5 GB storage'],
     cta: 'Get started free',
   },
   {
     id: 'family',
     name: 'Family',
-    monthly: 15,
-    yearly: 12,
-    yearlyTotal: 144,
+    monthly: 12,
+    yearly: 10,
+    yearlyTotal: 120,
     description: 'For couples and households planning together.',
-    reframe: '£12 a month — less than a family lunch. Peace of mind that lasts.',
+    reframe: '£10/mo billed yearly · Two vaults · Just £5 per person',
     features: ['Everything in Essential', 'Two private vaults — one subscription', 'Each person keeps their own private data', 'Share only what you choose', 'Up to 10 trusted contacts', '25 GB storage'],
     cta: 'Get started free',
     highlight: true,
     badge: 'Most popular',
+    promo: 'LAUNCH OFFER',
   },
   {
     id: 'advisor',
@@ -190,6 +191,11 @@ export default function Pricing() {
           <p className="mt-4 text-sm text-stone-500">{billingNote}</p>
         </div>
       </section>
+
+      {/* ── LAUNCH OFFER BANNER ── */}
+      <div style={{ background: '#4c7d47', color: '#ffffff', textAlign: 'center', padding: '10px 20px', fontSize: '14px', fontFamily: 'Georgia, serif', fontStyle: 'italic' }}>
+        🎉 Launch offer — these prices are guaranteed for life for early members. <strong>Price increases coming soon.</strong>
+      </div>
 
       <section className="py-20 lg:py-24">
         <div className="max-w-7xl mx-auto px-6 lg:px-8 grid xl:grid-cols-3 gap-6">
@@ -290,7 +296,7 @@ export default function Pricing() {
             <div className="reveal reveal-delay-2 bg-navy-950 rounded-2xl border border-navy-800 p-6">
               <p className="text-2xl mb-3">🔒</p>
               <p className="font-semibold text-sage-300 text-sm mb-1">Everstead Family</p>
-              <p className="font-display text-2xl font-light text-white mb-3">£144 / yr</p>
+              <p className="font-display text-2xl font-light text-white mb-3">£120 / yr</p>
               <p className="text-xs text-stone-300 leading-relaxed">Everything organised, updated, and shared — for as long as you need it. Two private vaults included.</p>
             </div>
           </div>
