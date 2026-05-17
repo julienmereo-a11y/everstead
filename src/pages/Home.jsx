@@ -82,7 +82,7 @@ const plans = [
 
 const faqs = [
   { q: 'Is my information actually secure?', a: 'Yes. All data is encrypted at rest and in transit with AES-256 encryption. Role-based access ensures only people you authorize can see specific sections. We never sell your data.' },
-  { q: 'What happens to my account if I pass away?', a: 'You assign trusted people in advance — giving them access only to the sections you\'ve chosen, nothing more. But Everstead is useful long before that moment. Most members use it regularly to keep their financial life organised, knowing the access is there if it\'s ever needed.' },
+  { q: 'What happens to my account if I pass away?', a: 'You assign trusted people in advance — giving them access only to the sections you\'ve chosen, nothing more. But Everstead is useful long before that moment. Most members use it regularly to keep everything organised, knowing the access is there if it\'s ever needed.' },
   { q: 'Can I start before I have everything organised?', a: 'Absolutely. Most people start with just a few accounts and build over time. Our readiness score shows progress and highlights what\'s still missing.' },
   { q: 'Is this a legal document service?', a: 'No. Everstead is an organisation and planning platform — not a legal service. It does not draft wills, prepare legal documents, give legal or financial advice, or replace a solicitor, estate lawyer, accountant, or family advisor. It helps families organise information, instructions, and controlled access in one place.' },
 ]
@@ -113,7 +113,7 @@ export default function Home() {
   return (
     <>
     <Helmet>
-      <title>Everstead — Your financial life, organised.</title>
+      <title>Everstead — Your life, organised.</title>
       <meta name="description" content="Everstead is the secure home for your accounts, documents, and important decisions — organised for you today, and ready for your family when it counts." />
       <link rel="canonical" href="https://www.everstead.care" />
       <script type="application/ld+json">{JSON.stringify({
@@ -321,7 +321,7 @@ export default function Home() {
         <div className="relative max-w-4xl mx-auto px-6 lg:px-8 text-center">
           <div className="reveal mb-12">
             <h2 className="font-display text-4xl lg:text-6xl font-bold text-white leading-tight text-balance mb-6">
-              Your financial life is scattered across dozens of places — and only you know where everything is.
+              Your life is scattered across dozens of places — and only you know where everything is.
             </h2>
             <p className="text-stone-400 text-lg leading-relaxed max-w-2xl mx-auto">
               Accounts, documents, subscriptions, passwords — all in different places, and none of it easy for the people who depend on you.
@@ -396,7 +396,7 @@ export default function Home() {
           <div className="text-center mb-16 reveal">
             <p className="text-xs font-semibold uppercase tracking-widest text-sage-400 mb-4">One platform</p>
             <h2 className="font-display text-4xl lg:text-5xl font-light text-white text-balance max-w-2xl mx-auto leading-tight">
-              Your financial life, finally in one place.
+              Everything that matters, finally in one place.
             </h2>
           </div>
 

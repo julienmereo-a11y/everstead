@@ -39,7 +39,7 @@ const faqs = [
   },
   {
     q: 'Is Everstead worth it if I only use it once to set up my plan?',
-    a: 'Most members use Everstead regularly — as a single place to track accounts, find documents, and keep their financial life in order. It\'s useful today, not just someday. That said, even if you only set it up once, the value is real: the people you love won\'t spend months piecing your life together if something unexpected happens. For less than a coffee a week, that\'s one of the better things you can do for yourself and for them.',
+    a: 'Most members use Everstead regularly — as a single place to track accounts, store documents, and keep everything important in order. It\'s useful today, not just someday. That said, even if you only set it up once, the value is real: the people you love won\'t spend months piecing your life together if something unexpected happens. For less than a coffee a week, that\'s one of the better things you can do for yourself and for them.',
   },
 ]
 
@@ -160,7 +160,7 @@ export default function Pricing() {
         <div className="relative max-w-5xl mx-auto px-6 lg:px-8 text-center reveal">
           <p className="text-xs font-semibold uppercase tracking-[0.22em] text-sage-300 mb-5">Pricing</p>
           <h1 className="font-display text-5xl lg:text-6xl font-light text-white leading-tight text-balance">
-            One plan for your whole financial life.
+            One plan for everything that matters.
           </h1>
           <p className="mt-5 text-lg leading-relaxed text-stone-300 max-w-3xl mx-auto">
             Start organising today. Your family will thank you later.

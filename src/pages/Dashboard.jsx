@@ -749,7 +749,7 @@ function OverviewSection({ profile, accounts, documents, people, instructions, a
           <h1 className="font-display text-3xl font-light text-navy-950">
             {(() => { const h = new Date().getHours(); return h < 12 ? 'Good morning' : h < 18 ? 'Good afternoon' : 'Good evening' })()}, {profile.full_name?.split(' ')[0] ?? 'there'}.
           </h1>
-          <p className="text-stone-500 mt-1 text-sm">Here's where your financial life stands.</p>
+          <p className="text-stone-500 mt-1 text-sm">Here's where everything stands.</p>
         </div>
         <div className="flex items-center gap-3 flex-wrap">
           <a
@@ -1073,7 +1073,7 @@ function AccountsSection({ accounts, loading, add, update, remove, profile, onUp
         </p>
       )}
       {loading ? <LoadingSpinner /> : accounts.length === 0 ? (
-        <EmptyState icon={Landmark} label="No accounts yet" action="Add your first account to start organizing your financial life." />
+        <EmptyState icon={Landmark} label="No accounts yet" action="Add your first account to start building your vault." />
       ) : (
         Object.entries(grouped).map(([category, items]) => {
           const CatIcon = CATEGORY_ICONS[category] ?? Folder
