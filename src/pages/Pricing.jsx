@@ -192,11 +192,6 @@ export default function Pricing() {
         </div>
       </section>
 
-      {/* ── LAUNCH OFFER BANNER ── */}
-      <div style={{ background: '#4c7d47', color: '#ffffff', textAlign: 'center', padding: '10px 20px', fontSize: '14px', fontFamily: 'Georgia, serif', fontStyle: 'italic' }}>
-        🎉 Launch offer — these prices are guaranteed for life for early members. <strong>Price increases coming soon.</strong>
-      </div>
-
       <section className="py-20 lg:py-24">
         <div className="max-w-7xl mx-auto px-6 lg:px-8 grid xl:grid-cols-3 gap-6">
           {plans.map((plan, index) => {
