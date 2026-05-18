@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { Helmet } from 'react-helmet-async'
 import { Link } from 'react-router-dom'
 import { Loader2, CheckCircle2, ArrowLeft } from 'lucide-react'
 
@@ -31,6 +32,8 @@ export default function ForgotPassword() {
   }
 
   return (
+    <>
+    <Helmet><meta name="robots" content="noindex, nofollow" /></Helmet>
     <div className="bg-stone-50 pt-24 min-h-screen flex items-center justify-center px-6">
       <div className="w-full max-w-md">
         <div className="bg-white border border-stone-200 rounded-2xl shadow-sm p-8">
@@ -96,5 +99,6 @@ export default function ForgotPassword() {
         </div>
       </div>
     </div>
+    </>
   )
 }

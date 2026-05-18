@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { Helmet } from 'react-helmet-async'
 import { useNavigate, Link } from 'react-router-dom'
 import { Loader2, Eye, EyeOff, CheckCircle2, Shield } from 'lucide-react'
 import { supabase } from '../lib/supabase'
@@ -61,6 +62,8 @@ export default function ResetPassword() {
   }
 
   return (
+    <>
+    <Helmet><meta name="robots" content="noindex, nofollow" /></Helmet>
     <div className="bg-stone-50 pt-24 min-h-screen flex items-center justify-center px-6">
       <div className="w-full max-w-md">
         <div className="flex items-center gap-2.5 justify-center mb-8">
@@ -167,5 +170,6 @@ export default function ResetPassword() {
         </div>
       </div>
     </div>
+    </>
   )
 }

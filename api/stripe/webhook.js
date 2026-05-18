@@ -88,6 +88,23 @@ export default async function handler(req, res) {
           subscription.trial_end && subscription.created ? Math.round((subscription.trial_end - subscription.created) / 86400) : 14),
       }).catch(console.error)
 
+      // ── Referral conversion notification ─────────────────
+      if (metaReferredBy) {
+        const { data: referrers } = await supabase
+          .from('profiles')
+          .select('full_name, email')
+          .eq('referral_code', metaReferredBy)
+          .limit(1)
+        if (referrers?.[0]?.email) {
+          await resend.emails.send({
+            from:    'Everstead <hello@everstead.care>',
+            to:      referrers[0].email,
+            subject: 'Your referral just joined Everstead 🎉',
+            html:    referralConversionHtml(referrers[0].full_name, p.full_name || p.email),
+          }).catch(console.error)
+        }
+      }
+
       // ── Owner notification ────────────────────────────────
       await resend.emails.send({
         from:    'Everstead <hello@everstead.care>',
@@ -280,11 +297,30 @@ export default async function handler(req, res) {
       profileUpdate.cancel_at = null
     }
 
+    // Detect plan upgrade before applying update
+    const prevPriceId = event.data.previous_attributes?.items?.data?.[0]?.price?.id
+    const prevPlan    = PRICE_TO_PLAN[prevPriceId]?.plan
+
     const { data: updatedProfiles } = await supabase
       .from('profiles')
       .update(profileUpdate)
       .eq('stripe_customer_id', subscription.customer)
-      .select('id, plan, subscription_status')
+      .select('id, full_name, email, plan, subscription_status')
+
+    // Post-upgrade celebratory email (essential → family)
+    if (
+      prevPlan === 'essential' &&
+      planInfo.plan === 'family' &&
+      updatedProfiles?.[0]?.email
+    ) {
+      const p = updatedProfiles[0]
+      await resend.emails.send({
+        from:    'Everstead <hello@everstead.care>',
+        to:      p.email,
+        subject: 'Welcome to Family — your second vault is ready',
+        html:    upgradeConfirmedHtml(p.full_name),
+      }).catch(console.error)
+    }
 
     // Cascade subscription status to secondary family member
     if (updatedProfiles?.[0]?.id) {
@@ -440,7 +476,7 @@ function emailShell(body) {
         </td></tr>
         <tr><td style="padding:40px;">${body}</td></tr>
         <tr><td style="padding:24px 40px;border-top:1px solid #e8e5e0;">
-          <p style="margin:0;color:#9ca3af;font-size:13px;line-height:1.5;">Questions? <a href="mailto:support@everstead.care" style="color:#4c7d47;">support@everstead.care</a></p>
+          <p style="margin:0;color:#9ca3af;font-size:13px;line-height:1.5;">Questions? <a href="mailto:hello@everstead.care" style="color:#4c7d47;">hello@everstead.care</a></p>
         </td></tr>
       </table>
     </td></tr>
@@ -504,6 +540,57 @@ function ownerNewSignupHtml({ name, email, plan, billingCycle, isTrialing, trial
   </table>
 </body>
 </html>`
+}
+
+function upgradeConfirmedHtml(name) {
+  const first = name?.split(' ')[0] || 'there'
+  const APP_URL = process.env.VITE_APP_URL || 'https://www.everstead.care'
+  return emailShell(`
+    <h1 style="margin:0 0 16px;color:#0d1628;font-size:24px;font-weight:normal;">
+      Welcome to Family, ${first}.
+    </h1>
+    <p style="margin:0 0 16px;color:#4a5568;font-size:16px;line-height:1.7;">
+      Your plan has been upgraded to <strong>Everstead Family</strong>. Here's what's now unlocked:
+    </p>
+    <table cellpadding="0" cellspacing="0" style="margin:0 0 32px;width:100%;background:#f9f8f6;border-radius:10px;padding:8px;">
+      <tr>
+        <td style="padding:10px 14px;vertical-align:top;font-size:18px;line-height:1;">👫</td>
+        <td style="padding:10px 0;color:#1a202c;font-size:14px;line-height:1.6;"><strong>Two private vaults</strong> — invite your partner or family member to their own secure vault under the same subscription</td>
+      </tr>
+      <tr>
+        <td style="padding:10px 14px;vertical-align:top;font-size:18px;line-height:1;">👥</td>
+        <td style="padding:10px 0;color:#1a202c;font-size:14px;line-height:1.6;"><strong>Up to 10 trusted contacts</strong> — more people who can access your plan when it matters</td>
+      </tr>
+      <tr>
+        <td style="padding:10px 14px;vertical-align:top;font-size:18px;line-height:1;">💬</td>
+        <td style="padding:10px 0;color:#1a202c;font-size:14px;line-height:1.6;"><strong>Personal messages</strong> — write messages to the people you love, delivered when the time comes</td>
+      </tr>
+      <tr>
+        <td style="padding:10px 14px;vertical-align:top;font-size:18px;line-height:1;">📦</td>
+        <td style="padding:10px 0;color:#1a202c;font-size:14px;line-height:1.6;"><strong>25 GB storage</strong> — plenty of space for documents, photos, and everything important</td>
+      </tr>
+    </table>
+    <a href="${APP_URL}/dashboard" style="display:inline-block;background:#0d1628;color:#ffffff;text-decoration:none;padding:14px 28px;border-radius:8px;font-size:15px;">Go to my vault →</a>
+    <p style="margin:32px 0 0;color:#6b7280;font-size:14px;line-height:1.6;">— Julien, founder of Everstead</p>
+  `)
+}
+
+function referralConversionHtml(referrerName, newMemberName) {
+  const first = referrerName?.split(' ')[0] || 'there'
+  const APP_URL = process.env.VITE_APP_URL || 'https://www.everstead.care'
+  return emailShell(`
+    <h1 style="margin:0 0 16px;color:#0d1628;font-size:24px;font-weight:normal;">
+      Your referral just joined, ${first}. 🎉
+    </h1>
+    <p style="margin:0 0 16px;color:#4a5568;font-size:16px;line-height:1.7;">
+      <strong>${newMemberName}</strong> just signed up to Everstead using your referral link. Thank you for sharing — it genuinely means a lot.
+    </p>
+    <p style="margin:0 0 32px;color:#4a5568;font-size:16px;line-height:1.7;">
+      If you haven't already claimed your referral reward, you can find it in your dashboard under Settings.
+    </p>
+    <a href="${APP_URL}/dashboard" style="display:inline-block;background:#0d1628;color:#ffffff;text-decoration:none;padding:14px 28px;border-radius:8px;font-size:15px;">View my dashboard →</a>
+    <p style="margin:32px 0 0;color:#6b7280;font-size:14px;line-height:1.6;">— Julien, founder of Everstead</p>
+  `)
 }
 
 function cancellationWinbackHtml(name) {

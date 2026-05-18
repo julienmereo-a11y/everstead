@@ -150,6 +150,7 @@ export default function RedeemGift() {
       <Helmet>
         <title>Claim your Everstead gift | Everstead</title>
         <meta name="description" content="You've received an Everstead plan as a gift. Create your account to claim it." />
+        <meta name="robots" content="noindex, nofollow" />
       </Helmet>
       <div className="bg-stone-50 pt-24 min-h-screen">
 
