@@ -34,9 +34,9 @@ export default function Press() {
         <link rel="canonical" href="https://www.everstead.care/press" />
       </Helmet>
 
-      <div className="bg-stone-50 pt-24 min-h-screen">
+      <div className="min-h-screen">
         {/* Hero */}
-        <section className="py-20 lg:py-28 grain relative overflow-hidden">
+        <section className="pt-40 pb-20 lg:pt-48 lg:pb-28 grain relative overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-br from-navy-950 via-navy-900 to-navy-800" />
           <div className="relative max-w-4xl mx-auto px-6 lg:px-8 text-center reveal">
             <p className="text-xs font-semibold uppercase tracking-[0.22em] text-sage-300 mb-5">Press & Media</p>
@@ -56,7 +56,7 @@ export default function Press() {
           </div>
         </section>
 
-        <section className="py-24 lg:py-32">
+        <section className="py-24 lg:py-32 bg-stone-50">
           <div className="max-w-5xl mx-auto px-6 lg:px-8 space-y-20">
 
             {/* Company facts */}
