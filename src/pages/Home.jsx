@@ -74,7 +74,7 @@ const plans = [
     monthly: 60,
     annual: 48,
     desc: 'For professionals managing client estate organisation.',
-    features: ['Everything in Family', 'Multi-client workspace', 'Co-branded client portal', 'Advisor collaboration tools', 'Priority support', 'White-label options'],
+    features: ['Everything in Family', 'Multi-client workspace', 'Co-branded client portal', 'Advisor collaboration tools', 'Priority support'],
     cta: 'Book a demo',
     highlight: false,
   },

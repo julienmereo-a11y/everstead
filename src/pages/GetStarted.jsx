@@ -20,7 +20,7 @@ const PLAN_OPTIONS = [
     name: 'Essential',
     monthly: 5, yearly: 3, promo: true,
     desc: 'For individuals getting started. Up to 10 accounts, 1 trusted contact, 1 GB storage.',
-    features: ['Unlimited accounts & documents', 'Step-by-step instructions', '2 trusted contacts', '5 GB storage'],
+    features: ['Up to 10 accounts & documents', 'Step-by-step instructions', '1 trusted contact', '1 GB storage'],
   },
   {
     id: 'family',
