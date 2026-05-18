@@ -23,7 +23,7 @@ const faqs = [
   },
   {
     q: 'What does the Family plan include that Essential does not?',
-    a: 'The Family plan gives two people their own private vaults under one subscription — each person keeps their own private data, but you can organise and plan together. It increases trusted contacts from 1 to 10, adds emergency vault sharing, expands storage to 25 GB, and includes a family-wide readiness score. Think of it as joint planning with individual privacy.',
+    a: 'The Family plan gives two people their own private vaults under one subscription — each person keeps their own private data, but you can organise and plan together. It increases trusted contacts from 1 to 10, adds emergency vault sharing, expands storage from 1 GB to 25 GB, and includes a family-wide readiness score. Think of it as joint planning with individual privacy.',
   },
   {
     q: 'What is the Advisor plan for?',

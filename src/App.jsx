@@ -48,6 +48,9 @@ import PrintView from './pages/PrintView'
 import Settings from './pages/Settings'
 import Gift from './pages/Gift'
 import RedeemGift from './pages/RedeemGift'
+import Cookies from './pages/Cookies'
+import Accessibility from './pages/Accessibility'
+import Press from './pages/Press'
 
 function ScrollToTop() {
   const { pathname } = useLocation()
@@ -167,6 +170,9 @@ export default function App() {
           <Route path="/digital-estate-worth"   element={<Layout><DigitalEstateCalculator /></Layout>} />
           <Route path="/gift"         element={<Layout><Gift /></Layout>} />
           <Route path="/redeem-gift"  element={<Layout><RedeemGift /></Layout>} />
+          <Route path="/cookies"      element={<Layout><Cookies /></Layout>} />
+          <Route path="/accessibility" element={<Layout><Accessibility /></Layout>} />
+          <Route path="/press"        element={<Layout><Press /></Layout>} />
           <Route path="*"           element={<Layout><NotFound /></Layout>} />
         </Routes>
         </ErrorBoundary>

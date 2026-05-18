@@ -216,7 +216,7 @@ function trialReminderHtml(name, plan, trialEndsAt, daysLeft) {
           <a href="${APP_URL}/dashboard" style="display:inline-block;background:#0d1628;color:#ffffff;text-decoration:none;padding:14px 28px;border-radius:8px;font-size:15px;">Go to my vault →</a>
         </td></tr>
         <tr><td style="padding:24px 40px;border-top:1px solid #e8e5e0;">
-          <p style="margin:0;color:#9ca3af;font-size:13px;">Questions? <a href="mailto:support@everstead.care" style="color:#4c7d47;">support@everstead.care</a></p>
+          <p style="margin:0;color:#9ca3af;font-size:13px;">Questions? <a href="mailto:hello@everstead.care" style="color:#4c7d47;">hello@everstead.care</a> · <a href="mailto:hello@everstead.care?subject=Unsubscribe" style="color:#9ca3af;">Unsubscribe</a></p>
         </td></tr>
       </table>
     </td></tr>
@@ -244,7 +244,7 @@ function deletionWarningHtml(name, deletionDate) {
           <p style="margin:32px 0 0;color:#9ca3af;font-size:14px;line-height:1.6;">If you no longer need Everstead, you don't need to do anything. Your account will be removed automatically on ${deletionDate}.</p>
         </td></tr>
         <tr><td style="padding:24px 40px;border-top:1px solid #e8e5e0;">
-          <p style="margin:0;color:#9ca3af;font-size:13px;">Julien · Founder, Everstead · <a href="mailto:julien@everstead.care" style="color:#4c7d47;">julien@everstead.care</a></p>
+          <p style="margin:0;color:#9ca3af;font-size:13px;">Julien · Founder, Everstead · <a href="mailto:hello@everstead.care" style="color:#4c7d47;">hello@everstead.care</a> · <a href="mailto:hello@everstead.care?subject=Unsubscribe" style="color:#9ca3af;">Unsubscribe</a></p>
         </td></tr>
       </table>
     </td></tr>
