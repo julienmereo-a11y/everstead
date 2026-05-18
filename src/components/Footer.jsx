@@ -7,8 +7,9 @@ const cols = [
     links: [
       { label: 'Features', href: '/features' },
       { label: 'How It Works', href: '/how-it-works' },
-      { label: 'How We Protect Data', href: '/security' },
       { label: 'Pricing', href: '/pricing' },
+      { label: 'Security', href: '/security' },
+      { label: 'Changelog', href: '/changelog' },
     ],
   },
   {
@@ -36,13 +37,17 @@ const cols = [
       { label: 'About', href: '/about' },
       { label: 'Contact', href: '/contact' },
       { label: 'Press', href: '/press' },
-      { label: 'Changelog', href: '/changelog' },
-      { label: 'Book Demo', href: '/book-demo' },
+      { label: 'Book a Demo', href: '/book-demo' },
       { label: '🎁 Give as a gift', href: '/gift' },
+    ],
+  },
+  {
+    heading: 'Legal',
+    links: [
       { label: 'Privacy Policy', href: '/privacy' },
-      { label: 'Terms', href: '/terms' },
+      { label: 'Terms of Service', href: '/terms' },
       { label: 'Advisor DPA', href: '/advisor-dpa' },
-      { label: 'Cookies', href: '/cookies' },
+      { label: 'Cookie Policy', href: '/cookies' },
       { label: 'Accessibility', href: '/accessibility' },
     ],
   },
@@ -52,7 +57,7 @@ export default function Footer() {
   return (
     <footer className="bg-navy-950 text-stone-400">
       <div className="max-w-7xl mx-auto px-6 lg:px-8 py-16 lg:py-20">
-        <div className="grid grid-cols-2 lg:grid-cols-5 gap-10">
+        <div className="grid grid-cols-2 lg:grid-cols-6 gap-10">
           {/* Brand */}
           <div className="col-span-2 lg:col-span-1 space-y-4">
             <Link to="/">
