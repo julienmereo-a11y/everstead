@@ -51,6 +51,9 @@ import RedeemGift from './pages/RedeemGift'
 import Cookies from './pages/Cookies'
 import Accessibility from './pages/Accessibility'
 import Press from './pages/Press'
+import AdvisorDPA from './pages/AdvisorDPA'
+import Changelog from './pages/Changelog'
+import Compare from './pages/Compare'
 
 function ScrollToTop() {
   const { pathname } = useLocation()
@@ -173,6 +176,9 @@ export default function App() {
           <Route path="/cookies"      element={<Layout><Cookies /></Layout>} />
           <Route path="/accessibility" element={<Layout><Accessibility /></Layout>} />
           <Route path="/press"        element={<Layout><Press /></Layout>} />
+          <Route path="/advisor-dpa"  element={<Layout><AdvisorDPA /></Layout>} />
+          <Route path="/changelog"    element={<Layout><Changelog /></Layout>} />
+          <Route path="/compare/:slug" element={<Layout><Compare /></Layout>} />
           <Route path="*"           element={<Layout><NotFound /></Layout>} />
         </Routes>
         </ErrorBoundary>

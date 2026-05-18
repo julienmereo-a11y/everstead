@@ -81,6 +81,26 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://www.everstead.care/changelog</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.everstead.care/compare/farewill</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.everstead.care/compare/settld</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.everstead.care/advisor-dpa</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
     <loc>https://www.everstead.care/privacy</loc>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
