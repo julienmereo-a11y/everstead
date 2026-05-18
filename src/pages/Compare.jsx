@@ -14,7 +14,7 @@ const competitors = {
     category: 'Will writing & probate',
     tagline: 'Everstead vs Farewill',
     headline: 'Farewill writes your will. Everstead organises your whole life.',
-    subhead: 'Farewill is a will-writing service. Everstead is a secure personal vault — a living, updated record of your accounts, documents, and wishes that's useful today and ready for your family when it counts.',
+    subhead: 'Farewill is a will-writing service. Everstead is a secure personal vault — a living, updated record of your accounts, documents, and wishes that\'s useful today and ready for your family when it counts.',
     eversteadDesc: 'A secure personal vault for organising everything that matters — accounts, documents, instructions, and final wishes — with controlled access for the people you trust.',
     competitorDesc: 'An online legal services company offering will writing, probate assistance, and funeral planning. A one-time service focused on legal documents.',
     rows: [
