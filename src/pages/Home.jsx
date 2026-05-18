@@ -41,9 +41,9 @@ const steps = [
 ]
 
 const testimonials = [
-  { quote: 'My father passed suddenly. Everstead made an incredibly painful time so much more manageable. Everything was right there.', name: 'Margaret T.', role: 'Daughter & executor', badge: 'Early access member' },
-  { quote: 'As an estate attorney, I now recommend this to every client. It dramatically reduces the back-and-forth during settlement.', name: 'David R.', role: 'Estate attorney', badge: 'Early access member' },
-  { quote: 'We finally have peace of mind. Our kids will know exactly what to do and where to find everything.', name: 'James & Carol B.', role: 'Parents, married 34 years', badge: 'Early access member' },
+  { quote: 'The whole process felt straightforward and reassuring from the beginning. The platform was genuinely very easy to navigate, which made everything feel much less overwhelming.', name: 'Victoria Miller', role: 'Verified Trustpilot review', badge: '★★★★★' },
+  { quote: 'I was looking for a service like this for a long time since starting a family. Everstead was the only one that hit the mark. I really feel at ease having this in place.', name: 'Yasmina Banine', role: 'Verified Trustpilot review', badge: '★★★★★' },
+  { quote: 'It was recommended to me by a friend — I was first sceptical but now a happy user. Will recommend too.', name: 'Daniel Sutherland', role: 'Verified Trustpilot review', badge: '★★★★★' },
 ]
 
 const plans = [
@@ -633,8 +633,11 @@ export default function Home() {
       <section className="py-14 lg:py-20">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <div className="text-center mb-14 reveal">
-            <p className="text-xs font-semibold uppercase tracking-widest text-navy-600 mb-4">Stories</p>
-            <h2 className="font-display text-4xl font-light text-navy-950">What families say.</h2>
+            <p className="text-xs font-semibold uppercase tracking-widest text-navy-600 mb-4">Trustpilot reviews</p>
+            <h2 className="font-display text-4xl font-light text-navy-950">What members say.</h2>
+            <a href="https://www.trustpilot.com/review/everstead.care" target="_blank" rel="noopener noreferrer" className="inline-block mt-4 text-xs text-stone-400 hover:text-navy-700 transition-colors underline underline-offset-2">
+              See all reviews on Trustpilot →
+            </a>
           </div>
           <div className="grid md:grid-cols-3 gap-6">
             {testimonials.map(({ quote, name, role, badge }, i) => (
