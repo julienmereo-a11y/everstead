@@ -212,7 +212,18 @@ export default async function handler(req, res) {
       .from('profiles')
       .update({ subscription_status: 'cancelled', plan: null, current_period_end: null, cancel_at: null })
       .eq('stripe_customer_id', subscription.customer)
-      .select('id')
+      .select('id, full_name, email, plan')
+
+    // Send winback email to the cancelled user
+    if (deletedProfiles?.[0]?.email) {
+      const p = deletedProfiles[0]
+      await resend.emails.send({
+        from:    'Everstead <hello@everstead.care>',
+        to:      p.email,
+        subject: 'Your Everstead data is safe — come back any time',
+        html:    cancellationWinbackHtml(p.full_name),
+      }).catch(console.error)
+    }
 
     // Cascade subscription status to secondary family member
     if (deletedProfiles?.[0]?.id) {
@@ -487,6 +498,68 @@ function ownerNewSignupHtml({ name, email, plan, billingCycle, isTrialing, trial
         </td></tr>
         <tr><td style="padding:20px 40px;border-top:1px solid #e8e5e0;">
           <p style="margin:0;color:#9ca3af;font-size:12px;">Everstead · automated owner notification</p>
+        </td></tr>
+      </table>
+    </td></tr>
+  </table>
+</body>
+</html>`
+}
+
+function cancellationWinbackHtml(name) {
+  const firstName = name?.split(' ')[0] || 'there'
+  const APP_URL = process.env.VITE_APP_URL || 'https://www.everstead.care'
+  return `<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
+<body style="margin:0;padding:0;background:#f5f4f0;font-family:Georgia,serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#f5f4f0;padding:40px 0;">
+    <tr><td align="center">
+      <table width="560" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:12px;overflow:hidden;max-width:560px;width:100%;">
+        <tr><td style="background:#0d1628;padding:28px 40px;text-align:center;">
+          <img src="https://www.everstead.care/logo-v2-white.png" alt="Everstead" width="160" style="display:block;margin:0 auto;height:auto;max-width:160px;" />
+        </td></tr>
+        <tr><td style="padding:40px;">
+          <h1 style="margin:0 0 16px;color:#0d1628;font-size:24px;font-weight:normal;">
+            ${firstName}, your data is safe.
+          </h1>
+          <p style="margin:0 0 16px;color:#4a5568;font-size:16px;line-height:1.7;">
+            Your Everstead subscription has ended — but everything you've built is still here. Your accounts, documents, instructions, and wishes will be safely stored for <strong>30 days</strong>.
+          </p>
+          <p style="margin:0 0 32px;color:#4a5568;font-size:16px;line-height:1.7;">
+            After 30 days, your data will be permanently deleted in line with our privacy policy.
+          </p>
+
+          <table width="100%" cellpadding="0" cellspacing="0" style="background:#f9f8f6;border:1px solid #e8e5e0;border-radius:10px;overflow:hidden;margin-bottom:32px;">
+            <tr><td style="padding:16px 20px;border-bottom:1px solid #e8e5e0;">
+              <p style="margin:0;font-size:13px;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:.05em;">What you'll lose access to</p>
+            </td></tr>
+            <tr><td style="padding:16px 20px;">
+              <ul style="margin:0;padding:0 0 0 18px;color:#4a5568;font-size:14px;line-height:1.8;">
+                <li>Your account and document vault</li>
+                <li>Trusted contact access and permissions</li>
+                <li>Step-by-step instructions</li>
+                <li>Personal messages and final wishes</li>
+                <li>Readiness score and review reminders</li>
+              </ul>
+            </td></tr>
+          </table>
+
+          <p style="margin:0 0 24px;color:#4a5568;font-size:15px;line-height:1.7;">
+            If you'd like to come back, it takes 30 seconds — your trial has ended but you can restart on any plan.
+          </p>
+          <a href="${APP_URL}/get-started"
+             style="display:inline-block;background:#0d1628;color:#ffffff;text-decoration:none;padding:14px 28px;border-radius:8px;font-size:15px;margin-bottom:32px;">
+            Restart my account →
+          </a>
+          <p style="margin:0;color:#6b7280;font-size:14px;line-height:1.6;">
+            — Julien, founder of Everstead
+          </p>
+        </td></tr>
+        <tr><td style="padding:24px 40px;border-top:1px solid #e8e5e0;">
+          <p style="margin:0;color:#9ca3af;font-size:13px;line-height:1.5;">
+            Questions? Reply to this email or write to <a href="mailto:hello@everstead.care" style="color:#4c7d47;">hello@everstead.care</a>
+          </p>
         </td></tr>
       </table>
     </td></tr>

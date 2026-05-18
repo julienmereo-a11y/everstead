@@ -263,6 +263,28 @@ function FamilyWrapper({ profile }) {
 }
 
 // ─────────────────────────────────────────────────────────────
+// CELEBRATION TOAST
+// ─────────────────────────────────────────────────────────────
+function CelebrationToast({ message, onDone }) {
+  const [visible, setVisible] = React.useState(true)
+  React.useEffect(() => {
+    const t = setTimeout(() => { setVisible(false); setTimeout(onDone, 300) }, 5000)
+    return () => clearTimeout(t)
+  }, [onDone])
+  return (
+    <div className={`fixed bottom-6 right-6 z-50 max-w-sm bg-white border border-sage-200 rounded-2xl shadow-xl p-5 flex items-start gap-4 transition-all duration-300 ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
+      <div className="w-10 h-10 bg-sage-100 rounded-full flex items-center justify-center shrink-0 text-xl">
+        {message.emoji}
+      </div>
+      <div>
+        <p className="font-semibold text-navy-900 text-sm">{message.headline}</p>
+        <p className="text-stone-500 text-xs mt-0.5 leading-relaxed">{message.body}</p>
+      </div>
+    </div>
+  )
+}
+
+// ─────────────────────────────────────────────────────────────
 // DASHBOARD ROOT
 // ─────────────────────────────────────────────────────────────
 export default function Dashboard() {
@@ -294,6 +316,16 @@ export default function Dashboard() {
   const realActivity      = useActivityLog()
 
   const navigate = useNavigate()
+
+  // ── Milestone celebration toast ────────────────────────────
+  const [celebration, setCelebration] = React.useState(null)
+
+  const celebrate = React.useCallback((key, emoji, headline, body) => {
+    const storageKey = `everstead_celebrated_${key}_${activeProfile?.id}`
+    if (localStorage.getItem(storageKey)) return
+    localStorage.setItem(storageKey, '1')
+    setCelebration({ emoji, headline, body })
+  }, [activeProfile?.id])
 
   // ── Sync plan from localStorage after email confirmation ───
   // The DB trigger may have used default values if Supabase didn't propagate
@@ -485,6 +517,15 @@ export default function Dashboard() {
     }
   }
 
+  // ── Milestone effects ──────────────────────────────────────
+  React.useEffect(() => {
+    if (!isDemo && accounts.length === 1) celebrate('first_account', '🏦', 'First account added!', 'Your vault is taking shape. Keep going.')
+  }, [accounts.length, isDemo])
+
+  React.useEffect(() => {
+    if (!isDemo && documents.length === 1) celebrate('first_document', '📄', 'First document uploaded!', 'One less thing for your family to hunt for.')
+  }, [documents.length, isDemo])
+
   // Redirect Google OAuth users who signed in via /login without a subscription
   if (hasNoSubscription) {
     navigate('/get-started?resume=true', { replace: true })
@@ -671,7 +712,7 @@ export default function Dashboard() {
             onAddPayment={() => handleUpgrade()}
           />
         )}
-        {activeSection === 'overview'      && <OverviewSection  profile={activeProfile} accounts={accounts} documents={documents} people={people} instructions={instructions} alerts={alerts} markRead={markRead} onNavigate={setActiveSection} planLimits={planLimits} loading={loadingAccounts || loadingDocs} daysSinceLogin={daysSinceLogin} />}
+        {activeSection === 'overview'      && <OverviewSection  profile={activeProfile} accounts={accounts} documents={documents} people={people} instructions={instructions} alerts={alerts} markRead={markRead} onNavigate={setActiveSection} planLimits={planLimits} loading={loadingAccounts || loadingDocs} daysSinceLogin={daysSinceLogin} onCelebrate={celebrate} />}
         {activeSection === 'accounts'      && <AccountsSection  accounts={accounts} loading={loadingAccounts} add={addAccount} update={updateAccount} remove={removeAccount} profile={activeProfile} onUpgrade={() => handleUpgrade('family', 'yearly')} />}
         {activeSection === 'documents'     && <DocumentsSection documents={documents} loading={loadingDocs} uploadFile={uploadFile} update={updateDocument} remove={removeDocument} planLimits={planLimits} profile={activeProfile} onUpgrade={() => handleUpgrade('family', 'yearly')} />}
         {activeSection === 'people'        && <PeopleSection    people={people} loading={loadingPeople} invite={invite} resendInvite={resendInvite} updatePerson={updatePerson} removePerson={removePerson} planLimits={planLimits} profile={activeProfile} onUpgrade={() => handleUpgrade('family', 'yearly')} />}
@@ -686,6 +727,12 @@ export default function Dashboard() {
       </main>
       </div>
     </div>
+    {celebration && (
+      <CelebrationToast
+        message={celebration}
+        onDone={() => setCelebration(null)}
+      />
+    )}
     </>
   )
 }
@@ -699,7 +746,7 @@ const PLAN_BADGE = {
   advisor:   { label: 'Advisor',   cls: 'bg-sage-50  text-sage-700  border-sage-200'  },
 }
 
-function OverviewSection({ profile, accounts, documents, people, instructions, alerts, markRead, onNavigate, planLimits, loading, daysSinceLogin }) {
+function OverviewSection({ profile, accounts, documents, people, instructions, alerts, markRead, onNavigate, planLimits, loading, daysSinceLogin, onCelebrate }) {
   const criticalAlerts = alerts.filter(a => a.severity === 'critical' && !a.is_read)
   const [staleBannerDismissed, setStaleBannerDismissed] = React.useState(false)
   const showStaleBanner = !staleBannerDismissed && daysSinceLogin !== null && daysSinceLogin >= 180
@@ -738,11 +785,15 @@ function OverviewSection({ profile, accounts, documents, people, instructions, a
   const alertPenalty = Math.min(criticalAlerts.length * 5, 15)
   const score = Math.max(0, Math.round(scoreBase * 100) - alertPenalty)
 
+  React.useEffect(() => {
+    if (score === 100) onCelebrate?.('readiness_100', '⭐', '100% readiness!', 'Your vault is complete. Your family is protected.')
+  }, [score])
+
   const planBadge = PLAN_BADGE[profile.plan] ?? PLAN_BADGE.essential
   const scoreLabel = isFamilyPlus ? 'Family readiness' : 'Plan readiness'
 
   return (
-    <div className="p-8 max-w-5xl mx-auto">
+    <div className="p-4 lg:p-8 max-w-5xl mx-auto">
       {/* Header */}
       <div className="mb-8 flex items-start justify-between gap-4 flex-wrap">
         <div>
@@ -3524,7 +3575,7 @@ function SettingsSection({ profile, isDemo, updateProfile, refreshProfile, onUpg
 
 function SectionShell({ title, subtitle, action, children }) {
   return (
-    <div className="p-8 max-w-5xl mx-auto">
+    <div className="p-4 lg:p-8 max-w-5xl mx-auto">
       <div className="flex items-start justify-between mb-6">
         <div>
           <h1 className="font-display text-2xl font-light text-navy-950">{title}</h1>
