@@ -752,6 +752,11 @@ function OverviewSection({ profile, accounts, documents, people, instructions, a
   const showStaleBanner = !staleBannerDismissed && daysSinceLogin !== null && daysSinceLogin >= 180
   const isFamilyPlus = planLimits?.personalMessages ?? false // family and advisor have messages
 
+  // ── Readiness coach ──
+  const [coachAdvice, setCoachAdvice] = React.useState(null)
+  const [coachLoading, setCoachLoading] = React.useState(false)
+  const [coachError, setCoachError] = React.useState(null)
+
   // Family member status (Family plan only)
   const [familyMembership, setFamilyMembership] = React.useState(null)
   const [familyLoading, setFamilyLoading] = React.useState(false)
@@ -791,6 +796,35 @@ function OverviewSection({ profile, accounts, documents, people, instructions, a
 
   const planBadge = PLAN_BADGE[profile.plan] ?? PLAN_BADGE.essential
   const scoreLabel = isFamilyPlus ? 'Family readiness' : 'Plan readiness'
+
+  const fetchCoachAdvice = async () => {
+    setCoachLoading(true)
+    setCoachError(null)
+    try {
+      const res = await fetch('/api/ai/assist', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          type: 'readiness-coach',
+          context: {
+            score,
+            accountCount: accounts.length,
+            documentCount: documents.filter(d => d.status !== 'missing').length,
+            contactCount: people.length,
+            instructionCount: instructions.length,
+            plan: profile.plan,
+          },
+        }),
+      })
+      const data = await res.json()
+      if (data.error) throw new Error(data.error)
+      setCoachAdvice(data.reply)
+    } catch (err) {
+      setCoachError('Could not load advice right now. Please try again.')
+    } finally {
+      setCoachLoading(false)
+    }
+  }
 
   return (
     <div className="p-4 lg:p-8 max-w-5xl mx-auto">
@@ -899,7 +933,45 @@ function OverviewSection({ profile, accounts, documents, people, instructions, a
              score >= 50 ? 'Good progress — a few items remaining.' :
              'Getting started — keep building your plan.'}
           </p>
+
+          {/* Readiness coach button */}
+          {!coachAdvice && (
+            <button
+              onClick={fetchCoachAdvice}
+              disabled={coachLoading}
+              className="mt-4 inline-flex items-center gap-1.5 text-xs font-semibold text-navy-700 bg-navy-50 hover:bg-navy-100 border border-navy-200 px-3 py-2 rounded-lg transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+            >
+              {coachLoading ? (
+                <><Loader2 size={12} className="animate-spin" /> Thinking…</>
+              ) : (
+                <><Zap size={12} /> What should I focus on?</>
+              )}
+            </button>
+          )}
+          {coachError && (
+            <p className="mt-3 text-xs text-red-600">{coachError}</p>
+          )}
         </div>
+
+        {/* Coach advice panel — shown once loaded */}
+        {coachAdvice && (
+          <div className="mt-4 w-full text-left bg-navy-50 border border-navy-100 rounded-xl p-4">
+            <div className="flex items-center justify-between mb-2">
+              <p className="text-xs font-semibold text-navy-700 flex items-center gap-1.5"><Zap size={11} /> Your readiness coach</p>
+              <button onClick={() => setCoachAdvice(null)} className="text-stone-400 hover:text-stone-600 transition-colors" aria-label="Dismiss">
+                <X size={13} />
+              </button>
+            </div>
+            <div className="text-xs text-navy-900 leading-relaxed whitespace-pre-line">{coachAdvice}</div>
+            <button
+              onClick={fetchCoachAdvice}
+              disabled={coachLoading}
+              className="mt-3 text-xs text-navy-500 hover:text-navy-700 transition-colors disabled:opacity-60"
+            >
+              {coachLoading ? 'Refreshing…' : '↺ Refresh advice'}
+            </button>
+          </div>
+        )}
 
         {/* Vault stats */}
         {loading ? (
@@ -2409,6 +2481,79 @@ function InstructionsSection({ instructions, loading, add, update, remove, profi
   const [form, setForm] = useState(emptyForm)
   const [saving, setSaving] = useState(false)
 
+  // ── AI writing assistant ──
+  const [showAssistant, setShowAssistant] = useState(false)
+  const [assistantMessages, setAssistantMessages] = useState([
+    { role: 'assistant', content: 'I\'m here to help you write clear instructions for your family or executor. What do you want to help them with? For example: "What to do in the first 48 hours", "How to access our bank accounts", or "My medical wishes."' }
+  ])
+  const [assistantInput, setAssistantInput] = useState('')
+  const [assistantLoading, setAssistantLoading] = useState(false)
+  const [parsedSuggestion, setParsedSuggestion] = useState(null)
+
+  const sendAssistantMessage = async () => {
+    const text = assistantInput.trim()
+    if (!text || assistantLoading) return
+    const newMessages = [...assistantMessages, { role: 'user', content: text }]
+    setAssistantMessages(newMessages)
+    setAssistantInput('')
+    setAssistantLoading(true)
+    try {
+      const res = await fetch('/api/ai/assist', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ type: 'instructions-assistant', messages: newMessages }),
+      })
+      const data = await res.json()
+      if (data.error) throw new Error(data.error)
+      const reply = data.reply
+      setAssistantMessages(prev => [...prev, { role: 'assistant', content: reply }])
+      // Try to parse structured output
+      if (reply.includes('TITLE:') && reply.includes('STEPS:')) {
+        const titleMatch = reply.match(/TITLE:\s*(.+)/i)
+        const categoryMatch = reply.match(/CATEGORY:\s*(.+)/i)
+        const forMatch = reply.match(/FOR:\s*(.+)/i)
+        const overviewMatch = reply.match(/OVERVIEW:\s*([\s\S]+?)(?=STEPS:|$)/i)
+        const stepsMatch = reply.match(/STEPS:\s*([\s\S]+)$/i)
+        if (titleMatch && stepsMatch) {
+          const stepsRaw = stepsMatch[1].trim()
+          const steps = stepsRaw.split('\n').map(s => s.replace(/^\d+\.\s*/, '').trim()).filter(Boolean)
+          const validCategories = ['Immediate', 'Financial', 'Household', 'Medical', 'Digital', 'Personal', 'Other']
+          const validAudiences = ['Executor', 'Family', 'Healthcare Proxy', 'Advisor', 'Everyone']
+          const category = validCategories.find(c => categoryMatch?.[1]?.includes(c)) ?? 'Immediate'
+          const audience = validAudiences.find(a => forMatch?.[1]?.includes(a)) ?? 'Executor'
+          setParsedSuggestion({
+            title: titleMatch[1].trim(),
+            category,
+            audience,
+            body: overviewMatch?.[1]?.trim() ?? '',
+            stepsText: steps.join('\n'),
+          })
+        }
+      }
+    } catch {
+      setAssistantMessages(prev => [...prev, { role: 'assistant', content: 'Sorry, I couldn\'t connect right now. Please try again.' }])
+    } finally {
+      setAssistantLoading(false)
+    }
+  }
+
+  const applyAssistantSuggestion = () => {
+    if (!parsedSuggestion) return
+    setForm(parsedSuggestion)
+    setShowAssistant(false)
+    setEditingInstruction(null)
+    setShowAdd(true)
+    setParsedSuggestion(null)
+    setAssistantMessages([
+      { role: 'assistant', content: 'I\'m here to help you write clear instructions for your family or executor. What do you want to help them with? For example: "What to do in the first 48 hours", "How to access our bank accounts", or "My medical wishes."' }
+    ])
+  }
+
+  const closeAssistant = () => {
+    setShowAssistant(false)
+    setParsedSuggestion(null)
+  }
+
   const closeModal = () => {
     setShowAdd(false)
     setEditingInstruction(null)
@@ -2464,9 +2609,17 @@ function InstructionsSection({ instructions, loading, add, update, remove, profi
       title="Instructions"
       subtitle={`${instructions.length} instruction sets`}
       action={
-        <button onClick={atInstructionLimit ? undefined : openAdd} disabled={atInstructionLimit} className={primaryBtn} style={atInstructionLimit ? { opacity: 0.5, cursor: 'not-allowed' } : {}}>
-          <Plus size={15} />Add instructions
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => setShowAssistant(true)}
+            className="inline-flex items-center gap-1.5 text-xs font-semibold text-navy-700 bg-navy-50 hover:bg-navy-100 border border-navy-200 px-3 py-2 rounded-lg transition-colors"
+          >
+            <Zap size={12} /> Help me write this
+          </button>
+          <button onClick={atInstructionLimit ? undefined : openAdd} disabled={atInstructionLimit} className={primaryBtn} style={atInstructionLimit ? { opacity: 0.5, cursor: 'not-allowed' } : {}}>
+            <Plus size={15} />Add instructions
+          </button>
+        </div>
       }
     >
       {atInstructionLimit && (
@@ -2517,6 +2670,71 @@ function InstructionsSection({ instructions, loading, add, update, remove, profi
             </div>
           ))}
         </div>
+      )}
+
+      {/* ── AI writing assistant modal ── */}
+      {showAssistant && (
+        <Modal title="Writing assistant" onClose={closeAssistant}>
+          <div className="flex flex-col" style={{ height: '420px' }}>
+            {/* Message thread */}
+            <div className="flex-1 overflow-y-auto space-y-3 mb-4 pr-1">
+              {assistantMessages.map((msg, i) => (
+                <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+                  <div className={`max-w-[85%] px-3.5 py-2.5 rounded-xl text-sm leading-relaxed whitespace-pre-line ${
+                    msg.role === 'user'
+                      ? 'bg-navy-800 text-white rounded-br-sm'
+                      : 'bg-stone-100 text-navy-900 rounded-bl-sm'
+                  }`}>
+                    {msg.content}
+                  </div>
+                </div>
+              ))}
+              {assistantLoading && (
+                <div className="flex justify-start">
+                  <div className="bg-stone-100 rounded-xl rounded-bl-sm px-3.5 py-2.5">
+                    <Loader2 size={14} className="animate-spin text-stone-400" />
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Parsed suggestion — apply to form */}
+            {parsedSuggestion && (
+              <div className="mb-3 bg-sage-50 border border-sage-200 rounded-xl p-3 flex items-center justify-between gap-3">
+                <div>
+                  <p className="text-xs font-semibold text-sage-800">Ready to use: "{parsedSuggestion.title}"</p>
+                  <p className="text-xs text-sage-700 mt-0.5">{parsedSuggestion.stepsText.split('\n').length} steps · {parsedSuggestion.category} · For: {parsedSuggestion.audience}</p>
+                </div>
+                <button
+                  onClick={applyAssistantSuggestion}
+                  className="shrink-0 text-xs font-semibold text-white bg-sage-600 hover:bg-sage-700 px-3 py-1.5 rounded-lg transition-colors"
+                >
+                  Use this →
+                </button>
+              </div>
+            )}
+
+            {/* Input */}
+            <div className="flex gap-2">
+              <input
+                className={`${input} flex-1`}
+                value={assistantInput}
+                onChange={e => setAssistantInput(e.target.value)}
+                onKeyDown={e => e.key === 'Enter' && !e.shiftKey && sendAssistantMessage()}
+                placeholder="Describe what you want to communicate…"
+                disabled={assistantLoading}
+              />
+              <button
+                onClick={sendAssistantMessage}
+                disabled={!assistantInput.trim() || assistantLoading}
+                className="shrink-0 bg-navy-800 text-white px-3 py-2 rounded-lg hover:bg-navy-700 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                aria-label="Send"
+              >
+                <Send size={14} />
+              </button>
+            </div>
+          </div>
+        </Modal>
       )}
 
       {(showAdd || editingInstruction) && (
