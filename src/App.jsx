@@ -67,6 +67,7 @@ function Layout({ children }) {
       <Nav />
       <main>{children}</main>
       <Footer />
+      <ChatWidget />
     </>
   )
 }
@@ -182,7 +183,6 @@ export default function App() {
           <Route path="*"           element={<Layout><NotFound /></Layout>} />
         </Routes>
         </ErrorBoundary>
-        <ChatWidget />
         <CookieBanner />
       </BrowserRouter>
     </AuthProvider>
