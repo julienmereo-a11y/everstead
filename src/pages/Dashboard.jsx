@@ -9,7 +9,7 @@ import {
   Landmark, Building2, Wallet, Key, Activity, MoreHorizontal,
   Pencil, Trash2, Star, Crown, Zap, RefreshCw, ExternalLink, Download,
   Filter, CheckCheck, MessageSquare, Video, Play, FileEdit, Send, Menu, ShieldCheck, Loader2,
-  Gift, Check, Copy
+  Gift, Check, Copy, Sparkles, ChevronUp
 } from 'lucide-react'
 import { useAuth }          from '../contexts/AuthContext'
 import { redirectToCheckout, redirectToCustomerPortal, PLANS } from '../lib/stripe'
@@ -733,6 +733,167 @@ export default function Dashboard() {
         onDone={() => setCelebration(null)}
       />
     )}
+    {!isDemo && (
+      <OwnerAIGuide
+        userName={activeProfile.full_name}
+        plan={activeProfile.plan}
+        accountCount={accounts.length}
+        documentCount={documents.filter(d => d.status !== 'missing').length}
+        contactCount={people.length}
+        instructionCount={instructions.length}
+      />
+    )}
+    </>
+  )
+}
+
+// ─────────────────────────────────────────────────────────────
+// OWNER AI GUIDE — floating chat widget
+// ─────────────────────────────────────────────────────────────
+function OwnerAIGuide({ userName, plan, accountCount, documentCount, contactCount, instructionCount }) {
+  const [open, setOpen] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const [input, setInput] = useState('')
+  const messagesEndRef = React.useRef(null)
+
+  const [messages, setMessages] = useState([{
+    role: 'assistant',
+    content: `Hi${userName ? ` ${userName.split(' ')[0]}` : ''}! I'm your Everstead planning coach. I can help you think through your estate plan, explain concepts like wills and LPAs, or guide you on what to add to your vault next.\n\nWhat would you like to know?`,
+  }])
+
+  React.useEffect(() => {
+    if (open) messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+  }, [messages, open])
+
+  const send = async () => {
+    const text = input.trim()
+    if (!text || loading) return
+    const next = [...messages, { role: 'user', content: text }]
+    setMessages(next)
+    setInput('')
+    setLoading(true)
+    try {
+      const res = await fetch('/api/ai/assist', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          type: 'owner-guide',
+          context: { userName, plan, accountCount, documentCount, contactCount, instructionCount },
+          messages: next,
+        }),
+      })
+      const data = await res.json()
+      if (data.error) throw new Error(data.error)
+      setMessages(prev => [...prev, { role: 'assistant', content: data.reply }])
+    } catch {
+      setMessages(prev => [...prev, { role: 'assistant', content: 'Sorry, I couldn\'t connect right now. Please try again.' }])
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const quickPrompts = [
+    'What should I add next?',
+    'How do I choose an executor?',
+    'What is an LPA?',
+    'Do I need a will?',
+  ]
+
+  return (
+    <>
+      {/* Floating trigger */}
+      <button
+        onClick={() => setOpen(v => !v)}
+        className={`fixed bottom-6 right-6 z-50 inline-flex items-center gap-2.5 px-4 py-3 rounded-2xl text-white text-sm font-semibold shadow-lg transition-all bg-sage-600 hover:bg-sage-700 ${open ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}
+        aria-label="Open planning coach"
+      >
+        <Sparkles size={16} />
+        Ask your coach
+      </button>
+
+      {/* Chat panel */}
+      {open && (
+        <div className="fixed bottom-6 right-6 z-50 w-[360px] max-w-[calc(100vw-3rem)] rounded-[1.75rem] border border-stone-200 bg-white shadow-2xl flex flex-col overflow-hidden" style={{ height: '520px' }}>
+          {/* Header */}
+          <div className="px-5 py-4 bg-navy-950 flex items-center justify-between gap-3">
+            <div className="flex items-center gap-2.5">
+              <div className="w-8 h-8 rounded-xl bg-white/10 flex items-center justify-center">
+                <Sparkles size={15} className="text-sage-400" />
+              </div>
+              <div>
+                <p className="text-sm font-semibold text-white leading-none">Planning coach</p>
+                <p className="text-xs text-white/50 mt-0.5">Ask anything about your estate plan</p>
+              </div>
+            </div>
+            <button
+              onClick={() => setOpen(false)}
+              className="text-white/50 hover:text-white transition-colors p-1 rounded-lg hover:bg-white/10"
+              aria-label="Close"
+            >
+              <ChevronUp size={16} />
+            </button>
+          </div>
+
+          {/* Messages */}
+          <div className="flex-1 overflow-y-auto px-4 py-4 space-y-3">
+            {messages.map((msg, i) => (
+              <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+                <div className={`max-w-[88%] px-3.5 py-2.5 rounded-2xl text-sm leading-relaxed whitespace-pre-line ${
+                  msg.role === 'user'
+                    ? 'bg-navy-800 text-white rounded-br-sm'
+                    : 'bg-stone-100 text-navy-900 rounded-bl-sm'
+                }`}>
+                  {msg.content}
+                </div>
+              </div>
+            ))}
+            {loading && (
+              <div className="flex justify-start">
+                <div className="bg-stone-100 rounded-2xl rounded-bl-sm px-3.5 py-2.5 flex items-center gap-1.5">
+                  <Loader2 size={13} className="animate-spin text-stone-400" />
+                  <span className="text-xs text-stone-400">Thinking…</span>
+                </div>
+              </div>
+            )}
+            <div ref={messagesEndRef} />
+          </div>
+
+          {/* Quick prompts — only before first user message */}
+          {messages.length === 1 && (
+            <div className="px-4 pb-2 flex flex-wrap gap-1.5">
+              {quickPrompts.map(prompt => (
+                <button
+                  key={prompt}
+                  onClick={() => setInput(prompt)}
+                  className="text-xs text-navy-700 bg-navy-50 border border-navy-200 px-2.5 py-1.5 rounded-xl hover:bg-navy-100 transition-colors"
+                >
+                  {prompt}
+                </button>
+              ))}
+            </div>
+          )}
+
+          {/* Input */}
+          <div className="border-t border-stone-100 p-3 flex gap-2">
+            <input
+              className="flex-1 text-sm bg-stone-50 border border-stone-200 rounded-xl px-3.5 py-2.5 outline-none focus:ring-2 focus:ring-navy-300 focus:border-navy-300 placeholder:text-stone-400"
+              value={input}
+              onChange={e => setInput(e.target.value)}
+              onKeyDown={e => e.key === 'Enter' && !e.shiftKey && send()}
+              placeholder="Ask anything about your plan…"
+              disabled={loading}
+            />
+            <button
+              onClick={send}
+              disabled={!input.trim() || loading}
+              className="shrink-0 bg-navy-800 text-white p-2.5 rounded-xl hover:bg-navy-700 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+              aria-label="Send"
+            >
+              <Send size={15} />
+            </button>
+          </div>
+        </div>
+      )}
     </>
   )
 }
