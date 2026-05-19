@@ -321,11 +321,11 @@ export default function Dashboard() {
   const [celebration, setCelebration] = React.useState(null)
 
   const celebrate = React.useCallback((key, emoji, headline, body) => {
-    const storageKey = `everstead_celebrated_${key}_${activeProfile?.id}`
+    const storageKey = `everstead_celebrated_${key}_${profile?.id}`
     if (localStorage.getItem(storageKey)) return
     localStorage.setItem(storageKey, '1')
     setCelebration({ emoji, headline, body })
-  }, [activeProfile?.id])
+  }, [profile?.id])
 
   // ── Sync plan from localStorage after email confirmation ───
   // The DB trigger may have used default values if Supabase didn't propagate

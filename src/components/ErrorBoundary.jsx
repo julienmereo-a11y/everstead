@@ -44,10 +44,10 @@ export default class ErrorBoundary extends React.Component {
               Go to homepage
             </button>
           </div>
-          {import.meta.env.DEV && this.state.error && (
-            <pre className="mt-8 text-left text-xs text-red-600 bg-red-50 border border-red-200 rounded-xl p-4 overflow-auto max-h-40">
-              {this.state.error.toString()}
-            </pre>
+          {this.state.error && (
+            <p className="mt-6 text-xs text-stone-400">
+              Error: {this.state.error.message ?? this.state.error.toString()}
+            </p>
           )}
         </div>
       </div>
