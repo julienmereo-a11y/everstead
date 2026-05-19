@@ -36,6 +36,10 @@ import {
   Users,
   HelpCircle,
   Mail,
+  Loader2,
+  Sparkles,
+  ListChecks,
+  ChevronUp,
 } from 'lucide-react'
 import { getDocumentUrl, supabase } from '../lib/supabase'
 
@@ -459,6 +463,14 @@ export default function DelegateDashboard() {
         <main className="space-y-6" aria-label="Plan content">
           {activeTab === 'overview' && (
             <>
+              {/* First steps panel — shown when owner is deceased or incapacitated */}
+              <FirstStepsPanel
+                ownerStatus={resolvedOwnerStatus}
+                ownerName={owner?.full_name}
+                onNavigate={setActiveTab}
+                onReportDeath={() => setActiveTab('report-death')}
+              />
+
               {/* No-access-grants empty state */}
               {grants.length === 0 && (
                 <div className="rounded-[2rem] border border-amber-200 bg-amber-50 p-8 text-center space-y-4">
@@ -932,6 +944,17 @@ export default function DelegateDashboard() {
           )}
         </main>
       </div>
+
+      {/* AI guide — floating chat, always accessible */}
+      <DelegateAIGuide
+        ownerName={owner?.full_name}
+        delegateName={invite?.name}
+        role={invite?.role}
+        ownerStatus={resolvedOwnerStatus}
+        docCount={accessibleDocuments.length}
+        accountCount={accessibleAccounts.length}
+        instructionCount={accessibleInstructions.length}
+      />
     </div>
   )
 }
@@ -2018,6 +2041,242 @@ function ReportIncidentPanel({ owner, invite, isDemo, onSubmit }) {
         </div>
       </form>
     </section>
+  )
+}
+
+// ─────────────────────────────────────────────────────────────
+// DELEGATE AI GUIDE — floating chat widget
+// ─────────────────────────────────────────────────────────────
+function DelegateAIGuide({ ownerName, delegateName, role, ownerStatus, docCount, accountCount, instructionCount }) {
+  const [open, setOpen] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const messagesEndRef = React.useRef(null)
+
+  const openingMessage = ownerStatus === 'deceased'
+    ? `I'm here to help you through the next steps after ${ownerName || 'the plan owner'}'s passing. This is a difficult time — I'll keep things clear and practical.\n\nWhat would you like to start with? You might ask:\n• "What do I need to do this week?"\n• "How do I notify the bank?"\n• "What is probate and do I need it?"\n• "How do I find the will?"`
+    : ownerStatus === 'incapacitated'
+      ? `I'm here to help you act as ${role || 'trusted person'} for ${ownerName || 'the plan owner'}. Their account is now suspended and your access permissions are active.\n\nWhat would you like help with? You might ask:\n• "What are my responsibilities as ${role || 'a trusted person'}?"\n• "How do I use a Lasting Power of Attorney?"\n• "Which accounts should I contact first?"`
+      : `I'm here to help you understand this plan and your role as ${role || 'trusted person'} for ${ownerName || 'the plan owner'}.\n\nWhat would you like to know? For example:\n• "What does an executor do?"\n• "Where should I start?"\n• "How do I prepare for when the time comes?"`
+
+  const [messages, setMessages] = useState([
+    { role: 'assistant', content: openingMessage },
+  ])
+  const [input, setInput] = useState('')
+
+  const context = { ownerName, delegateName, role, ownerStatus, docCount, accountCount, instructionCount }
+
+  React.useEffect(() => {
+    if (open) messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+  }, [messages, open])
+
+  const send = async () => {
+    const text = input.trim()
+    if (!text || loading) return
+    const next = [...messages, { role: 'user', content: text }]
+    setMessages(next)
+    setInput('')
+    setLoading(true)
+    try {
+      const res = await fetch('/api/ai/assist', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ type: 'delegate-guide', context, messages: next }),
+      })
+      const data = await res.json()
+      if (data.error) throw new Error(data.error)
+      setMessages(prev => [...prev, { role: 'assistant', content: data.reply }])
+    } catch {
+      setMessages(prev => [...prev, { role: 'assistant', content: 'Sorry, I couldn\'t connect right now. Please try again in a moment.' }])
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const urgencyColor = ownerStatus === 'deceased'
+    ? 'bg-stone-900 hover:bg-stone-800'
+    : ownerStatus === 'incapacitated'
+      ? 'bg-amber-700 hover:bg-amber-600'
+      : 'bg-navy-800 hover:bg-navy-700'
+
+  return (
+    <>
+      {/* Floating trigger button */}
+      <button
+        onClick={() => setOpen(v => !v)}
+        className={`fixed bottom-6 right-6 z-50 inline-flex items-center gap-2.5 px-4 py-3 rounded-2xl text-white text-sm font-semibold shadow-lg transition-all ${urgencyColor} ${open ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}
+        aria-label="Open guide"
+      >
+        <Sparkles size={16} />
+        {ownerStatus === 'deceased' || ownerStatus === 'incapacitated' ? 'What do I do now?' : 'Ask for guidance'}
+      </button>
+
+      {/* Chat panel */}
+      {open && (
+        <div className="fixed bottom-6 right-6 z-50 w-[360px] max-w-[calc(100vw-3rem)] rounded-[1.75rem] border border-stone-200 bg-white shadow-2xl flex flex-col overflow-hidden" style={{ height: '520px' }}>
+          {/* Header */}
+          <div className={`px-5 py-4 flex items-center justify-between gap-3 ${
+            ownerStatus === 'deceased' ? 'bg-stone-900' : ownerStatus === 'incapacitated' ? 'bg-amber-700' : 'bg-navy-900'
+          }`}>
+            <div className="flex items-center gap-2.5">
+              <div className="w-8 h-8 rounded-xl bg-white/10 flex items-center justify-center">
+                <Sparkles size={15} className="text-white" />
+              </div>
+              <div>
+                <p className="text-sm font-semibold text-white leading-none">Everstead guide</p>
+                <p className="text-xs text-white/60 mt-0.5">Here to help — ask anything</p>
+              </div>
+            </div>
+            <button
+              onClick={() => setOpen(false)}
+              className="text-white/60 hover:text-white transition-colors p-1 rounded-lg hover:bg-white/10"
+              aria-label="Close guide"
+            >
+              <ChevronUp size={16} />
+            </button>
+          </div>
+
+          {/* Messages */}
+          <div className="flex-1 overflow-y-auto px-4 py-4 space-y-3">
+            {messages.map((msg, i) => (
+              <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+                <div className={`max-w-[88%] px-3.5 py-2.5 rounded-2xl text-sm leading-relaxed whitespace-pre-line ${
+                  msg.role === 'user'
+                    ? 'bg-navy-800 text-white rounded-br-sm'
+                    : 'bg-stone-100 text-navy-900 rounded-bl-sm'
+                }`}>
+                  {msg.content}
+                </div>
+              </div>
+            ))}
+            {loading && (
+              <div className="flex justify-start">
+                <div className="bg-stone-100 rounded-2xl rounded-bl-sm px-3.5 py-2.5 flex items-center gap-1.5">
+                  <Loader2 size={13} className="animate-spin text-stone-400" />
+                  <span className="text-xs text-stone-400">Thinking…</span>
+                </div>
+              </div>
+            )}
+            <div ref={messagesEndRef} />
+          </div>
+
+          {/* Quick prompts — shown only when there's just the opening message */}
+          {messages.length === 1 && (
+            <div className="px-4 pb-2 flex flex-wrap gap-1.5">
+              {(ownerStatus === 'deceased'
+                ? ['What do I do this week?', 'How do I notify banks?', 'Do I need probate?']
+                : ownerStatus === 'incapacitated'
+                  ? ['What are my responsibilities?', 'How do I use an LPA?', 'Who should I contact?']
+                  : ['What does an executor do?', 'How do I prepare?', 'What is probate?']
+              ).map(prompt => (
+                <button
+                  key={prompt}
+                  onClick={() => { setInput(prompt); }}
+                  className="text-xs text-navy-700 bg-navy-50 border border-navy-200 px-2.5 py-1.5 rounded-xl hover:bg-navy-100 transition-colors"
+                >
+                  {prompt}
+                </button>
+              ))}
+            </div>
+          )}
+
+          {/* Input */}
+          <div className="border-t border-stone-100 p-3 flex gap-2">
+            <input
+              className="flex-1 text-sm bg-stone-50 border border-stone-200 rounded-xl px-3.5 py-2.5 outline-none focus:ring-2 focus:ring-navy-300 focus:border-navy-300 placeholder:text-stone-400"
+              value={input}
+              onChange={e => setInput(e.target.value)}
+              onKeyDown={e => e.key === 'Enter' && !e.shiftKey && send()}
+              placeholder="Ask anything…"
+              disabled={loading}
+            />
+            <button
+              onClick={send}
+              disabled={!input.trim() || loading}
+              className="shrink-0 bg-navy-800 text-white p-2.5 rounded-xl hover:bg-navy-700 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+              aria-label="Send"
+            >
+              <Send size={15} />
+            </button>
+          </div>
+        </div>
+      )}
+    </>
+  )
+}
+
+// ─────────────────────────────────────────────────────────────
+// FIRST STEPS PANEL — shown in Overview when owner is suspended
+// ─────────────────────────────────────────────────────────────
+function FirstStepsPanel({ ownerStatus, ownerName, onNavigate, onReportDeath }) {
+  if (ownerStatus !== 'deceased' && ownerStatus !== 'incapacitated') return null
+
+  const isDeceased = ownerStatus === 'deceased'
+  const steps = isDeceased ? [
+    { n: '1', label: 'Register the death', detail: 'Within 5 days at a local register office. Request at least 10 certified death certificates — banks and institutions each need an original.' },
+    { n: '2', label: 'Locate the will', detail: 'Check the Documents tab. The original signed will (not a scan) is needed for probate. Check with their solicitor if it\'s not here.' },
+    { n: '3', label: 'Notify close family', detail: 'Inform immediate family before making any formal notifications to institutions.' },
+    { n: '4', label: 'Apply for probate', detail: 'A Grant of Probate from the Probate Registry is usually needed to access accounts. Takes 4–8 weeks. Estates under ~£10,000 may not require it.' },
+    { n: '5', label: 'Notify financial institutions', detail: 'Check the Accounts tab for a full list. Use Tell Us Once (gov.uk) for government departments. Settld.com can notify banks and utilities in bulk.' },
+    { n: '6', label: 'Cancel subscriptions', detail: 'Use the accounts list to find and cancel ongoing direct debits — they continue to charge until cancelled.' },
+  ] : [
+    { n: '1', label: 'Confirm your LPA is registered', detail: 'A Lasting Power of Attorney must be registered with the Office of the Public Guardian (OPG) before you can use it. Check you have the registration certificate.' },
+    { n: '2', label: 'Review the documents', detail: 'Check the Documents tab for the LPA certificate, any medical directives, and care instructions.' },
+    { n: '3', label: 'Contact the plan owner\'s bank', detail: 'Present your registered LPA to gain access to their accounts. Each institution has its own process — call ahead to find out what they need.' },
+    { n: '4', label: 'Review the instructions', detail: 'Check the Instructions tab for any guidance the plan owner left for this situation.' },
+    { n: '5', label: 'Keep a record of all decisions', detail: 'As attorney, you must act in the donor\'s best interests and keep records. Note all decisions and reasons.' },
+  ]
+
+  return (
+    <div className={`rounded-[2rem] border p-6 ${isDeceased ? 'border-stone-300 bg-stone-900' : 'border-amber-200 bg-amber-50'}`}>
+      <div className="flex items-center gap-3 mb-5">
+        <div className={`w-10 h-10 rounded-2xl flex items-center justify-center shrink-0 ${isDeceased ? 'bg-white/10' : 'bg-amber-100'}`}>
+          <ListChecks size={18} className={isDeceased ? 'text-white' : 'text-amber-700'} />
+        </div>
+        <div>
+          <h2 className={`text-base font-semibold leading-none ${isDeceased ? 'text-white' : 'text-amber-950'}`}>
+            {isDeceased ? `What to do now — ${ownerName || 'next steps'}` : 'Your immediate priorities'}
+          </h2>
+          <p className={`text-xs mt-1 ${isDeceased ? 'text-stone-400' : 'text-amber-700'}`}>
+            {isDeceased ? 'A prioritised checklist for the days ahead' : 'As attorney, here\'s where to start'}
+          </p>
+        </div>
+      </div>
+      <ol className="space-y-3">
+        {steps.map(step => (
+          <li key={step.n} className={`flex items-start gap-3.5 rounded-2xl px-4 py-3.5 ${isDeceased ? 'bg-white/5' : 'bg-white/60 border border-amber-100'}`}>
+            <span className={`text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center shrink-0 mt-0.5 ${isDeceased ? 'bg-white/10 text-white' : 'bg-amber-200 text-amber-800'}`}>
+              {step.n}
+            </span>
+            <div>
+              <p className={`text-sm font-semibold leading-snug ${isDeceased ? 'text-white' : 'text-amber-950'}`}>{step.label}</p>
+              <p className={`text-xs leading-relaxed mt-1 ${isDeceased ? 'text-stone-400' : 'text-amber-800'}`}>{step.detail}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
+      <div className="mt-4 flex flex-wrap gap-2">
+        <button
+          onClick={() => onNavigate('documents')}
+          className={`inline-flex items-center gap-1.5 text-xs font-semibold px-3.5 py-2 rounded-xl transition-colors ${isDeceased ? 'bg-white/10 text-white hover:bg-white/20' : 'bg-amber-200 text-amber-900 hover:bg-amber-300'}`}
+        >
+          <FileText size={12} /> View documents
+        </button>
+        <button
+          onClick={() => onNavigate('accounts')}
+          className={`inline-flex items-center gap-1.5 text-xs font-semibold px-3.5 py-2 rounded-xl transition-colors ${isDeceased ? 'bg-white/10 text-white hover:bg-white/20' : 'bg-amber-200 text-amber-900 hover:bg-amber-300'}`}
+        >
+          <Wallet size={12} /> View accounts
+        </button>
+        {isDeceased && (
+          <button
+            onClick={onReportDeath}
+            className="inline-flex items-center gap-1.5 text-xs font-semibold px-3.5 py-2 rounded-xl bg-red-700 text-white hover:bg-red-600 transition-colors"
+          >
+            <HeartCrack size={12} /> Report the death to Everstead
+          </button>
+        )}
+      </div>
+    </div>
   )
 }
 
