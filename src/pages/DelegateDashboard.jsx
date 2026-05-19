@@ -40,19 +40,28 @@ import {
   Sparkles,
   ListChecks,
   ChevronUp,
+  Copy,
+  Check,
+  Menu,
+  Printer,
+  Globe,
+  Search,
+  BellRing,
+  ClipboardCheck,
 } from 'lucide-react'
 import { getDocumentUrl, supabase } from '../lib/supabase'
 
 const tabs = [
-  { id: 'overview',      label: 'Overview',      icon: ShieldCheck },
-  { id: 'documents',     label: 'Documents',     icon: FileText },
-  { id: 'accounts',      label: 'Accounts',      icon: Wallet },
-  { id: 'instructions',  label: 'Instructions',  icon: BookOpen },
-  { id: 'messages',      label: 'Messages',      icon: MessageSquare },
-  { id: 'alerts',        label: 'Alerts',        icon: Bell },
-  { id: 'activity',      label: 'Activity',      icon: Clock3 },
-  { id: 'resources',     label: 'Help & Guides', icon: HelpCircle },
-  { id: 'settings',      label: 'My settings',   icon: Settings },
+  { id: 'overview',      label: 'Overview',            icon: ShieldCheck },
+  { id: 'documents',     label: 'Documents',            icon: FileText },
+  { id: 'accounts',      label: 'Accounts',             icon: Wallet },
+  { id: 'instructions',  label: 'Instructions',         icon: BookOpen },
+  { id: 'notify',        label: 'Notification tracker', icon: ClipboardCheck },
+  { id: 'messages',      label: 'Messages',             icon: MessageSquare },
+  { id: 'alerts',        label: 'Alerts',               icon: Bell },
+  { id: 'activity',      label: 'Activity',             icon: Clock3 },
+  { id: 'resources',     label: 'Help & Guides',        icon: HelpCircle },
+  { id: 'settings',      label: 'My settings',          icon: Settings },
 ]
 
 const formatDate = (value) => {
@@ -106,6 +115,10 @@ export default function DelegateDashboard() {
   const [expandedAlert, setExpandedAlert] = useState(null)
   const [readAlertIds, setReadAlertIds] = useState(new Set())
   const [myMessages, setMyMessages] = useState([])
+  const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false)
+  const [searchQuery, setSearchQuery] = useState('')
+  const [copiedId, setCopiedId] = useState(null)
+  const [notifyStatuses, setNotifyStatuses] = useState({})
 
   useEffect(() => {
     // Demo mode — inject seed data without any Supabase calls
@@ -244,6 +257,76 @@ export default function DelegateDashboard() {
   const ownerIncapacitated = resolvedOwnerStatus === 'incapacitated'
   const ownerSuspended     = ownerDeceased || ownerIncapacitated
 
+  // Persist notification tracker statuses in localStorage
+  const notifyKey = `everstead-notify-${token || 'demo'}`
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem(notifyKey)
+      if (saved) setNotifyStatuses(JSON.parse(saved))
+    } catch {}
+  }, [notifyKey])
+  const setNotifyStatus = (id, status) => {
+    setNotifyStatuses(prev => {
+      const next = { ...prev, [id]: status }
+      try { localStorage.setItem(notifyKey, JSON.stringify(next)) } catch {}
+      return next
+    })
+  }
+
+  // Copy helper
+  const copyToClipboard = (text, id) => {
+    navigator.clipboard.writeText(text).then(() => {
+      setCopiedId(id)
+      setTimeout(() => setCopiedId(null), 2000)
+    })
+  }
+
+  // Print handler
+  const handlePrint = () => {
+    const sections = []
+    if (accessibleAccounts.length) {
+      sections.push(`<h2>Accounts (${accessibleAccounts.length})</h2><ul>${
+        accessibleAccounts.map(a => `<li><strong>${a.institution}</strong> — ${a.account_type}${a.account_number_hint ? ` (••••${a.account_number_hint})` : ''}${a.notes ? `<br><em>${a.notes}</em>` : ''}</li>`).join('')
+      }</ul>`)
+    }
+    if (accessibleDocuments.length) {
+      sections.push(`<h2>Documents (${accessibleDocuments.length})</h2><ul>${
+        accessibleDocuments.map(d => `<li><strong>${d.name}</strong> — ${d.doc_type || 'Document'}${d.expires_at ? ` (expires ${formatDate(d.expires_at)})` : ''}${d.notes ? `<br><em>${d.notes}</em>` : ''}</li>`).join('')
+      }</ul>`)
+    }
+    if (accessibleInstructions.length) {
+      sections.push(`<h2>Instructions (${accessibleInstructions.length})</h2>${
+        accessibleInstructions.map(i => `<div style="margin-bottom:1.5rem"><strong>${i.title}</strong> (${i.category} · ${i.audience})<br>${i.body || ''}<ol>${(i.instruction_steps || []).map(s => `<li>${s.body}</li>`).join('')}</ol></div>`).join('')
+      }`)
+    }
+    const html = `<!DOCTYPE html><html><head><title>${owner?.full_name || 'Plan'} — Handoff Plan</title><style>body{font-family:Georgia,serif;max-width:800px;margin:2rem auto;color:#1a1a1a;line-height:1.6}h1{font-size:1.8rem;margin-bottom:0.5rem}h2{font-size:1.1rem;text-transform:uppercase;letter-spacing:.08em;color:#666;border-bottom:1px solid #ddd;padding-bottom:.5rem;margin-top:2rem}ul{padding-left:1.2rem}li{margin-bottom:.75rem}@media print{body{margin:1rem}}</style></head><body><h1>${owner?.full_name || 'Plan owner'}'s handoff plan</h1><p style="color:#666;font-size:.9rem">Viewed by ${invite?.name || 'delegate'} (${invite?.role || 'trusted person'}) · Printed ${new Date().toLocaleDateString('en-GB', { dateStyle: 'long' })}</p>${sections.join('')}<hr style="margin-top:3rem"><p style="font-size:.8rem;color:#999">Exported from Everstead — secure estate planning platform · everstead.care</p></body></html>`
+    const w = window.open('', '_blank')
+    w.document.write(html)
+    w.document.close()
+    w.print()
+  }
+
+  // Search filtering
+  const searchLower = searchQuery.toLowerCase().trim()
+  const searchResults = searchLower ? {
+    documents: accessibleDocuments.filter(d =>
+      [d.name, d.doc_type, d.notes].some(f => f?.toLowerCase().includes(searchLower))
+    ),
+    accounts: accessibleAccounts.filter(a =>
+      [a.institution, a.account_type, a.category, a.notes].some(f => f?.toLowerCase().includes(searchLower))
+    ),
+    instructions: accessibleInstructions.filter(i =>
+      [i.title, i.body, i.category].some(f => f?.toLowerCase().includes(searchLower))
+    ),
+  } : null
+
+  // Expiring documents (within 90 days)
+  const expiringDocs = useMemo(() => {
+    const cutoff = new Date()
+    cutoff.setDate(cutoff.getDate() + 90)
+    return accessibleDocuments.filter(d => d.expires_at && new Date(d.expires_at) <= cutoff && new Date(d.expires_at) > new Date())
+  }, [accessibleDocuments])
+
   const handleDownload = async (documentRecord) => {
     // Use direct file_url for demo/preview docs; fall back to signed Supabase URL for real uploads
     if (documentRecord.file_url && !documentRecord.storage_path) {
@@ -355,29 +438,82 @@ export default function DelegateDashboard() {
         </div>
       )}
       <div className="border-b border-stone-200 bg-white">
-        <div className="max-w-7xl mx-auto px-6 lg:px-8 py-5 flex flex-wrap items-center justify-between gap-4">
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-navy-600">Delegate dashboard</p>
-            <h1 className="font-display text-3xl font-light text-navy-950 mt-2">
-              {owner?.full_name || 'Plan owner'}’s handoff workspace
-            </h1>
-            <p className="mt-2 text-sm text-stone-500">
-              You are viewing this plan as <span className="font-semibold text-navy-800">{invite.role}</span>. Access is read-only and limited to the sections shared with you.
-            </p>
+        <div className="max-w-7xl mx-auto px-6 lg:px-8 py-5">
+          <div className="flex flex-wrap items-start justify-between gap-4">
+            <div className="flex items-start gap-3">
+              {/* Mobile hamburger */}
+              <button
+                onClick={() => setMobileSidebarOpen(v => !v)}
+                className="xl:hidden mt-1 p-2 rounded-xl border border-stone-200 text-stone-600 hover:bg-stone-50 transition-colors shrink-0"
+                aria-label="Toggle navigation"
+              >
+                <Menu size={18} />
+              </button>
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-[0.22em] text-navy-600">Delegate dashboard</p>
+                <h1 className="font-display text-3xl font-light text-navy-950 mt-2">
+                  {(owner?.full_name || 'Plan owner') + "'s handoff workspace"}
+                </h1>
+                <p className="mt-2 text-sm text-stone-500">
+                  You are viewing this plan as <span className="font-semibold text-navy-800">{invite.role}</span>. Access is read-only.
+                </p>
+              </div>
+            </div>
+            <div className="flex flex-wrap gap-2 items-center">
+              <button
+                onClick={handlePrint}
+                className="inline-flex items-center gap-2 rounded-xl border border-stone-300 px-3.5 py-2.5 text-sm font-semibold text-navy-800 hover:bg-stone-100 transition-colors"
+                title="Export plan to PDF"
+              >
+                <Printer size={15} /> Export
+              </button>
+              <Link to="/security" className="hidden sm:inline-flex items-center gap-2 rounded-xl border border-stone-300 px-3.5 py-2.5 text-sm font-semibold text-navy-800 hover:bg-stone-100 transition-colors">
+                Why protected
+              </Link>
+              <Link to="/" className="inline-flex items-center gap-2 rounded-xl bg-navy-800 px-4 py-2.5 text-sm font-semibold text-white hover:bg-navy-700 transition-colors">
+                <LogOut size={15} /> Exit
+              </Link>
+            </div>
           </div>
-          <div className="flex flex-wrap gap-3">
-            <Link to="/security" className="inline-flex items-center gap-2 rounded-xl border border-stone-300 px-4 py-2.5 text-sm font-semibold text-navy-800 hover:bg-stone-100 transition-colors">
-              Why this is protected
-            </Link>
-            <Link to="/" className="inline-flex items-center gap-2 rounded-xl bg-navy-800 px-4 py-2.5 text-sm font-semibold text-white hover:bg-navy-700 transition-colors">
-              <LogOut size={15} /> Exit dashboard
-            </Link>
+          {/* Search bar */}
+          <div className="mt-4 relative max-w-md">
+            <Search size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-stone-400 pointer-events-none" />
+            <input
+              type="search"
+              value={searchQuery}
+              onChange={e => setSearchQuery(e.target.value)}
+              placeholder="Search documents, accounts, instructions…"
+              className="w-full pl-9 pr-4 py-2.5 text-sm border border-stone-200 rounded-xl bg-stone-50 focus:outline-none focus:ring-2 focus:ring-navy-300 focus:border-navy-300 placeholder:text-stone-400"
+            />
+            {searchQuery && (
+              <button onClick={() => setSearchQuery('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-stone-400 hover:text-stone-600">
+                <X size={14} />
+              </button>
+            )}
           </div>
         </div>
       </div>
 
+      {/* Mobile sidebar overlay */}
+      {mobileSidebarOpen && (
+        <div
+          className="fixed inset-0 z-40 bg-black/40 xl:hidden"
+          onClick={() => setMobileSidebarOpen(false)}
+        />
+      )}
+
       <div className="max-w-7xl mx-auto px-6 lg:px-8 py-8 grid xl:grid-cols-[280px_1fr] gap-8 items-start">
-        <aside className="xl:sticky xl:top-24 space-y-5" aria-label="Delegate sidebar">
+        <aside
+          className={`xl:sticky xl:top-24 space-y-5 xl:block fixed xl:relative inset-y-0 left-0 z-50 xl:z-auto w-72 xl:w-auto bg-stone-50 xl:bg-transparent overflow-y-auto xl:overflow-visible p-4 xl:p-0 transition-transform xl:transition-none ${mobileSidebarOpen ? 'translate-x-0' : '-translate-x-full xl:translate-x-0'}`}
+          aria-label="Delegate sidebar"
+        >
+          {/* Close button — mobile only */}
+          <div className="flex items-center justify-between xl:hidden mb-2">
+            <p className="text-xs font-semibold text-stone-500 uppercase tracking-widest">Navigation</p>
+            <button onClick={() => setMobileSidebarOpen(false)} className="p-1.5 rounded-lg text-stone-500 hover:bg-stone-200 transition-colors">
+              <X size={16} />
+            </button>
+          </div>
           <div className="rounded-[2rem] border border-stone-200 bg-white p-6">
             <div className="flex items-center gap-3">
               <div className="w-12 h-12 rounded-2xl bg-navy-100 text-navy-700 flex items-center justify-center">
@@ -404,23 +540,33 @@ export default function DelegateDashboard() {
 
           <div className="rounded-[2rem] border border-stone-200 bg-white p-4">
             <nav className="space-y-1" aria-label="Delegate dashboard navigation">
-              {tabs.map(({ id, label, icon: Icon }) => (
-                <button
-                  key={id}
-                  onClick={() => setActiveTab(id)}
-                  aria-current={activeTab === id ? 'page' : undefined}
-                  className={`w-full flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy-400 ${activeTab === id ? 'bg-navy-50 text-navy-900' : 'text-stone-600 hover:bg-stone-100 hover:text-navy-900'}`}
-                >
-                  <Icon size={16} />
-                  <span>{label}</span>
-                  {id === 'alerts' && unreadAlerts.length > 0 && (
-                    <span className="ml-auto rounded-full bg-red-500 px-2 py-0.5 text-[11px] font-bold text-white">{unreadAlerts.length}</span>
-                  )}
-                  {id === 'messages' && myMessages.length > 0 && (
-                    <span className="ml-auto rounded-full bg-navy-700 px-2 py-0.5 text-[11px] font-bold text-white">{myMessages.length}</span>
-                  )}
-                </button>
-              ))}
+              {tabs.map(({ id, label, icon: Icon }) => {
+                const tabCount =
+                  id === 'documents'    ? accessibleDocuments.length    :
+                  id === 'accounts'     ? accessibleAccounts.length      :
+                  id === 'instructions' ? accessibleInstructions.length  :
+                  id === 'alerts'       ? (unreadAlerts.length - readAlertIds.size) || null :
+                  id === 'messages'     ? (myMessages.length || null)    :
+                  id === 'notify'       ? null : null
+                const alertBadge = id === 'alerts' && (unreadAlerts.length - readAlertIds.size) > 0
+                const msgBadge   = id === 'messages' && myMessages.length > 0
+                return (
+                  <button
+                    key={id}
+                    onClick={() => { setActiveTab(id); setMobileSidebarOpen(false) }}
+                    aria-current={activeTab === id ? 'page' : undefined}
+                    className={`w-full flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy-400 ${activeTab === id ? 'bg-navy-50 text-navy-900' : 'text-stone-600 hover:bg-stone-100 hover:text-navy-900'}`}
+                  >
+                    <Icon size={16} className="shrink-0" />
+                    <span className="flex-1 text-left">{label}</span>
+                    {alertBadge && <span className="rounded-full bg-red-500 px-2 py-0.5 text-[11px] font-bold text-white">{unreadAlerts.length - readAlertIds.size}</span>}
+                    {msgBadge   && <span className="rounded-full bg-navy-700 px-2 py-0.5 text-[11px] font-bold text-white">{myMessages.length}</span>}
+                    {!alertBadge && !msgBadge && tabCount > 0 && (
+                      <span className="text-[11px] text-stone-400 font-medium">{tabCount}</span>
+                    )}
+                  </button>
+                )
+              })}
             </nav>
           </div>
 
@@ -461,7 +607,72 @@ export default function DelegateDashboard() {
         </aside>
 
         <main className="space-y-6" aria-label="Plan content">
-          {activeTab === 'overview' && (
+
+          {/* ── Search results ── */}
+          {searchResults && (
+            <div className="space-y-6">
+              <div className="flex items-center gap-3">
+                <Search size={16} className="text-stone-400" />
+                <p className="text-sm text-stone-600">
+                  Results for <span className="font-semibold text-navy-900">"{searchQuery}"</span>
+                  {' '}— {searchResults.documents.length + searchResults.accounts.length + searchResults.instructions.length} found
+                </p>
+              </div>
+              {searchResults.documents.length > 0 && (
+                <Panel title="Documents" icon={FileText} count={searchResults.documents.length}>
+                  <div className="space-y-2">
+                    {searchResults.documents.map(item => (
+                      <div key={item.id} className="rounded-2xl border border-stone-200 bg-stone-50 p-4 flex items-center justify-between gap-3">
+                        <div>
+                          <p className="text-sm font-semibold text-navy-950">{item.name}</p>
+                          <p className="text-xs text-stone-500 mt-0.5">{item.doc_type || 'Document'}</p>
+                        </div>
+                        <button onClick={() => { setActiveTab('documents'); setSearchQuery('') }} className="text-xs text-navy-600 hover:text-navy-900 font-semibold whitespace-nowrap">View →</button>
+                      </div>
+                    ))}
+                  </div>
+                </Panel>
+              )}
+              {searchResults.accounts.length > 0 && (
+                <Panel title="Accounts" icon={Wallet} count={searchResults.accounts.length}>
+                  <div className="space-y-2">
+                    {searchResults.accounts.map(item => (
+                      <div key={item.id} className="rounded-2xl border border-stone-200 bg-stone-50 p-4 flex items-center justify-between gap-3">
+                        <div>
+                          <p className="text-sm font-semibold text-navy-950">{item.institution}</p>
+                          <p className="text-xs text-stone-500 mt-0.5">{item.account_type} · {item.category}</p>
+                        </div>
+                        <button onClick={() => { setActiveTab('accounts'); setSearchQuery('') }} className="text-xs text-navy-600 hover:text-navy-900 font-semibold whitespace-nowrap">View →</button>
+                      </div>
+                    ))}
+                  </div>
+                </Panel>
+              )}
+              {searchResults.instructions.length > 0 && (
+                <Panel title="Instructions" icon={BookOpen} count={searchResults.instructions.length}>
+                  <div className="space-y-2">
+                    {searchResults.instructions.map(item => (
+                      <div key={item.id} className="rounded-2xl border border-stone-200 bg-stone-50 p-4 flex items-center justify-between gap-3">
+                        <div>
+                          <p className="text-sm font-semibold text-navy-950">{item.title}</p>
+                          <p className="text-xs text-stone-500 mt-0.5">{item.category} · {item.audience}</p>
+                        </div>
+                        <button onClick={() => { setActiveTab('instructions'); setSearchQuery('') }} className="text-xs text-navy-600 hover:text-navy-900 font-semibold whitespace-nowrap">View →</button>
+                      </div>
+                    ))}
+                  </div>
+                </Panel>
+              )}
+              {(searchResults.documents.length + searchResults.accounts.length + searchResults.instructions.length) === 0 && (
+                <div className="text-center py-16 text-stone-400">
+                  <Search size={32} className="mx-auto mb-3 opacity-30" />
+                  <p className="text-sm">No results for "{searchQuery}"</p>
+                </div>
+              )}
+            </div>
+          )}
+
+          {!searchResults && activeTab === 'overview' && (
             <>
               {/* First steps panel — shown when owner is deceased or incapacitated */}
               <FirstStepsPanel
@@ -583,10 +794,42 @@ export default function DelegateDashboard() {
                   )}
                 </Panel>
               </div>
+
+              {/* Expiring documents callout */}
+              {expiringDocs.length > 0 && (
+                <div className="rounded-[2rem] border border-amber-200 bg-amber-50 p-5">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="w-9 h-9 rounded-xl bg-amber-100 flex items-center justify-center shrink-0">
+                      <Clock3 size={16} className="text-amber-700" />
+                    </div>
+                    <div>
+                      <p className="text-sm font-semibold text-amber-900">Documents expiring soon</p>
+                      <p className="text-xs text-amber-700 mt-0.5">{expiringDocs.length} document{expiringDocs.length > 1 ? 's' : ''} expire within the next 90 days</p>
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    {expiringDocs.map(doc => (
+                      <div key={doc.id} className="flex items-center justify-between gap-3 rounded-xl bg-white border border-amber-100 px-4 py-3">
+                        <div>
+                          <p className="text-sm font-semibold text-navy-950">{doc.name}</p>
+                          <p className="text-xs text-stone-500 mt-0.5">{doc.doc_type}</p>
+                        </div>
+                        <span className="text-xs font-semibold text-amber-700 shrink-0">Expires {formatDate(doc.expires_at)}</span>
+                      </div>
+                    ))}
+                  </div>
+                  <button onClick={() => setActiveTab('documents')} className="mt-3 text-xs font-semibold text-amber-800 hover:text-amber-900 transition-colors">
+                    View all documents →
+                  </button>
+                </div>
+              )}
+
+              {/* Useful external links */}
+              <ExternalLinksPanel />
             </>
           )}
 
-          {activeTab === 'documents' && (
+          {!searchResults && activeTab === 'documents' && (
             <Panel title="Shared documents" icon={FileText} count={accessibleDocuments.length}>
               {accessibleDocuments.length > 0 ? (
                 <div className="space-y-2">
@@ -678,7 +921,7 @@ export default function DelegateDashboard() {
             </Panel>
           )}
 
-          {activeTab === 'accounts' && (
+          {!searchResults && activeTab === 'accounts' && (
             <Panel title="Shared accounts" icon={Wallet} count={accessibleAccounts.length}>
               {accessibleAccounts.length > 0 ? (
                 <div className="space-y-2">
@@ -716,7 +959,18 @@ export default function DelegateDashboard() {
                               </div>
                               <div>
                                 <p className="text-xs font-semibold uppercase tracking-wider text-stone-400 mb-1">Reference</p>
-                                <p className="text-sm text-navy-900 font-mono">{item.account_number_hint ? `•••• ${item.account_number_hint}` : 'Not provided'}</p>
+                                <div className="flex items-center gap-2">
+                                  <p className="text-sm text-navy-900 font-mono">{item.account_number_hint ? `•••• ${item.account_number_hint}` : 'Not provided'}</p>
+                                  {item.account_number_hint && (
+                                    <button
+                                      onClick={() => copyToClipboard(item.account_number_hint, `ref-${item.id}`)}
+                                      className="p-1 rounded-md text-stone-400 hover:text-navy-700 hover:bg-navy-50 transition-colors"
+                                      title="Copy reference"
+                                    >
+                                      {copiedId === `ref-${item.id}` ? <Check size={12} className="text-sage-600" /> : <Copy size={12} />}
+                                    </button>
+                                  )}
+                                </div>
                               </div>
                               <div>
                                 <p className="text-xs font-semibold uppercase tracking-wider text-stone-400 mb-1">Last updated</p>
@@ -735,6 +989,20 @@ export default function DelegateDashboard() {
                                 <p className="text-sm text-stone-700 leading-relaxed">{item.notes}</p>
                               </div>
                             )}
+                            <div className="pt-1 flex flex-wrap gap-2">
+                              <button
+                                onClick={() => copyToClipboard(item.institution, `inst-${item.id}`)}
+                                className="inline-flex items-center gap-1.5 text-xs font-semibold text-stone-600 bg-stone-100 hover:bg-stone-200 px-3 py-1.5 rounded-lg transition-colors"
+                              >
+                                {copiedId === `inst-${item.id}` ? <><Check size={11} className="text-sage-600" /> Copied!</> : <><Copy size={11} /> Copy institution name</>}
+                              </button>
+                              <button
+                                onClick={() => setActiveTab('notify')}
+                                className="inline-flex items-center gap-1.5 text-xs font-semibold text-navy-700 bg-navy-50 hover:bg-navy-100 px-3 py-1.5 rounded-lg transition-colors"
+                              >
+                                <ClipboardCheck size={11} /> Track notification
+                              </button>
+                            </div>
                           </div>
                         )}
                       </div>
@@ -747,7 +1015,7 @@ export default function DelegateDashboard() {
             </Panel>
           )}
 
-          {activeTab === 'instructions' && (
+          {!searchResults && activeTab === 'instructions' && (
             <Panel title="Shared instructions" icon={BookOpen} count={accessibleInstructions.length}>
               {accessibleInstructions.length > 0 ? (
                 <div className="space-y-4">
@@ -782,7 +1050,7 @@ export default function DelegateDashboard() {
             </Panel>
           )}
 
-          {activeTab === 'alerts' && (
+          {!searchResults && activeTab === 'alerts' && (
             <Panel
               title="Plan alerts"
               icon={Bell}
@@ -862,7 +1130,7 @@ export default function DelegateDashboard() {
             </Panel>
           )}
 
-          {activeTab === 'activity' && (
+          {!searchResults && activeTab === 'activity' && (
             <Panel title="Recent plan activity" icon={Clock3}>
               {activity.length > 0 ? (
                 <div className="space-y-4">
@@ -889,7 +1157,7 @@ export default function DelegateDashboard() {
             </Panel>
           )}
 
-          {activeTab === 'messages' && (
+          {!searchResults && activeTab === 'messages' && (
             <Panel
               title="Personal messages"
               icon={MessageSquare}
@@ -927,19 +1195,31 @@ export default function DelegateDashboard() {
             </Panel>
           )}
 
-          {activeTab === 'resources' && (
-            <DelegateResourcesPanel />
+          {!searchResults && activeTab === 'notify' && (
+            <NotificationTracker
+              accounts={accessibleAccounts}
+              statuses={notifyStatuses}
+              onSetStatus={setNotifyStatus}
+              ownerSuspended={ownerSuspended}
+            />
           )}
 
-          {activeTab === 'settings' && (
+          {!searchResults && activeTab === 'resources' && (
+            <>
+              <ExternalLinksPanel />
+              <DelegateResourcesPanel />
+            </>
+          )}
+
+          {!searchResults && activeTab === 'settings' && (
             <DelegateSettingsPanel invite={invite} isDemo={isDemo} />
           )}
 
-          {activeTab === 'report-death' && (
+          {!searchResults && activeTab === 'report-death' && (
             <ReportDeathPanel owner={owner} invite={invite} isDemo={isDemo} onSubmit={submitReport} />
           )}
 
-          {activeTab === 'report-incident' && (
+          {!searchResults && activeTab === 'report-incident' && (
             <ReportIncidentPanel owner={owner} invite={invite} isDemo={isDemo} onSubmit={submitReport} />
           )}
         </main>
@@ -2041,6 +2321,167 @@ function ReportIncidentPanel({ owner, invite, isDemo, onSubmit }) {
         </div>
       </form>
     </section>
+  )
+}
+
+// ─────────────────────────────────────────────────────────────
+// EXTERNAL LINKS PANEL
+// ─────────────────────────────────────────────────────────────
+const EXTERNAL_LINKS = [
+  { label: 'Tell Us Once', desc: 'Notify multiple UK government departments about a death in one step', url: 'https://www.gov.uk/tell-us-once', color: 'bg-blue-50 text-blue-700 border-blue-200' },
+  { label: 'Settld', desc: 'Free service to notify banks, utilities and companies about a bereavement', url: 'https://settld.care', color: 'bg-emerald-50 text-emerald-700 border-emerald-200' },
+  { label: 'Apply for probate', desc: 'GOV.UK guide to applying for a Grant of Probate or Letters of Administration', url: 'https://www.gov.uk/wills-probate-inheritance/applying-for-probate', color: 'bg-navy-50 text-navy-700 border-navy-200' },
+  { label: 'National Will Register', desc: 'Search the Certainty register to locate a missing will', url: 'https://www.nationalwillregister.co.uk', color: 'bg-violet-50 text-violet-700 border-violet-200' },
+  { label: 'Office of the Public Guardian', desc: 'Check or register a Lasting Power of Attorney with the OPG', url: 'https://www.gov.uk/government/organisations/office-of-the-public-guardian', color: 'bg-amber-50 text-amber-700 border-amber-200' },
+  { label: 'HMRC bereavement', desc: 'Tell HMRC about a death and deal with tax affairs and final returns', url: 'https://www.gov.uk/government/organisations/hm-revenue-customs/contact/bereavement', color: 'bg-stone-50 text-stone-700 border-stone-200' },
+]
+
+function ExternalLinksPanel() {
+  return (
+    <Panel title="Useful services" icon={Globe}>
+      <p className="text-xs text-stone-500 mb-4 -mt-1">External UK services that are commonly needed during estate administration.</p>
+      <div className="grid sm:grid-cols-2 gap-3">
+        {EXTERNAL_LINKS.map(link => (
+          <a
+            key={link.label}
+            href={link.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={`flex items-start gap-3 rounded-2xl border p-4 hover:shadow-sm transition-shadow ${link.color}`}
+          >
+            <ExternalLink size={14} className="shrink-0 mt-0.5 opacity-70" />
+            <div>
+              <p className="text-sm font-semibold leading-snug">{link.label}</p>
+              <p className="text-xs leading-relaxed mt-0.5 opacity-80">{link.desc}</p>
+            </div>
+          </a>
+        ))}
+      </div>
+      <p className="mt-3 text-xs text-stone-400">Everstead is not affiliated with these services. Always verify information on official websites.</p>
+    </Panel>
+  )
+}
+
+// ─────────────────────────────────────────────────────────────
+// NOTIFICATION TRACKER
+// ─────────────────────────────────────────────────────────────
+const UK_INSTITUTIONS = [
+  { id: 'tell-us-once',    name: 'Tell Us Once (GOV.UK)',       category: 'Government',  how: 'Online at gov.uk/tell-us-once — notifies DWP, DVLA, HMRC, and others in one step', url: 'https://www.gov.uk/tell-us-once' },
+  { id: 'hmrc',            name: 'HMRC',                        category: 'Government',  how: 'Call 0300 200 3300 or write. Final tax return may be needed for year of death.' },
+  { id: 'dwp',             name: 'DWP / State pension',         category: 'Government',  how: 'Call 0800 731 0469. Stop pension payments and claim any arrears.' },
+  { id: 'probate',         name: 'Probate Registry',            category: 'Legal',       how: 'Apply online at gov.uk for Grant of Probate. Allow 4–8 weeks.', url: 'https://www.gov.uk/wills-probate-inheritance/applying-for-probate' },
+  { id: 'nhs-gp',          name: 'NHS / GP surgery',            category: 'Healthcare',  how: 'Contact the GP surgery directly to cancel NHS records and return unused medications.' },
+  { id: 'council-tax',     name: 'Council tax',                 category: 'Local',       how: 'Contact the local council to update or cancel the council tax account.' },
+  { id: 'electoral',       name: 'Electoral register',          category: 'Government',  how: 'Contact the local council to remove from the electoral register.' },
+  { id: 'dvla',            name: 'DVLA',                        category: 'Government',  how: 'Return driving licence and notify about any vehicles. gov.uk/tell-dvla-about-bereavement' },
+  { id: 'passport',        name: 'HM Passport Office',          category: 'Government',  how: 'Cancel and return the passport by post to HM Passport Office, Newport, NP20 9AR.' },
+  { id: 'energy',          name: 'Energy supplier',             category: 'Utilities',   how: 'Contact provider to take final meter readings and close or transfer the account.' },
+  { id: 'broadband',       name: 'Broadband / phone',           category: 'Utilities',   how: 'Contact provider to cancel or transfer contract. Early exit fees may be waived on death.' },
+  { id: 'water',           name: 'Water company',               category: 'Utilities',   how: 'Contact local water company to update account name or close if property is empty.' },
+  { id: 'royal-mail',      name: 'Royal Mail redirect',         category: 'Postal',      how: 'Set up mail redirection at royalmail.com to avoid missing important correspondence.', url: 'https://www.royalmail.com/track-my-mail/redirection' },
+  { id: 'subscriptions',   name: 'Subscriptions & direct debits', category: 'Financial', how: 'Cancel all standing orders via the bank. Check accounts list for known subscriptions.' },
+  { id: 'life-insurance',  name: 'Life insurance',              category: 'Insurance',   how: 'Contact insurer with policy number. Life policies are usually paid outside probate.' },
+  { id: 'pension-private', name: 'Private pension provider',    category: 'Financial',   how: 'Contact each provider. Pensions written in trust are paid to nominated beneficiaries.' },
+]
+
+const STATUS_OPTIONS = [
+  { value: 'todo',       label: 'To do',     cls: 'bg-stone-100 text-stone-600 border-stone-200' },
+  { value: 'notified',   label: 'Notified',  cls: 'bg-amber-100 text-amber-700 border-amber-200' },
+  { value: 'done',       label: 'Done',      cls: 'bg-sage-100 text-sage-700 border-sage-200' },
+]
+
+function NotificationTracker({ accounts, statuses, onSetStatus, ownerSuspended }) {
+  const categories = useMemo(() => {
+    const cats = {}
+    // Standard institutions
+    UK_INSTITUTIONS.forEach(inst => {
+      if (!cats[inst.category]) cats[inst.category] = []
+      cats[inst.category].push(inst)
+    })
+    // Accounts from the plan as extra rows
+    accounts.forEach(acc => {
+      const cat = 'From this plan'
+      if (!cats[cat]) cats[cat] = []
+      cats[cat].push({
+        id: `account-${acc.id}`,
+        name: acc.institution,
+        category: cat,
+        how: `${acc.account_type}${acc.account_number_hint ? ` — ref: ••••${acc.account_number_hint}` : ''}${acc.notes ? ` — ${acc.notes}` : ''}`,
+      })
+    })
+    return cats
+  }, [accounts])
+
+  const allItems = [...UK_INSTITUTIONS, ...accounts.map(a => ({ id: `account-${a.id}` }))]
+  const doneCount = allItems.filter(item => statuses[item.id] === 'done').length
+  const notifiedCount = allItems.filter(item => statuses[item.id] === 'notified').length
+  const pct = Math.round((doneCount / allItems.length) * 100)
+
+  return (
+    <div className="space-y-4">
+      {/* Header card */}
+      <div className="rounded-[2rem] border border-stone-200 bg-white p-6">
+        <div className="flex items-center gap-3 mb-4">
+          <div className="w-10 h-10 rounded-2xl bg-navy-50 text-navy-700 flex items-center justify-center">
+            <ClipboardCheck size={18} />
+          </div>
+          <div>
+            <h2 className="text-lg font-semibold text-navy-950 leading-none">Institution notification tracker</h2>
+            <p className="text-xs text-stone-400 mt-0.5">Track which organisations you've contacted — saved to this device</p>
+          </div>
+        </div>
+        {!ownerSuspended && (
+          <div className="bg-amber-50 border border-amber-200 rounded-xl px-4 py-3 mb-4 flex items-start gap-2.5">
+            <Info size={14} className="text-amber-600 mt-0.5 shrink-0" />
+            <p className="text-xs text-amber-800 leading-relaxed">This tracker is designed for use after a death or incapacity event has been verified. You can prepare now by reviewing the list.</p>
+          </div>
+        )}
+        <div className="flex items-center gap-4">
+          <div className="flex-1 h-2 bg-stone-100 rounded-full overflow-hidden">
+            <div className="h-full bg-sage-500 rounded-full transition-all" style={{ width: `${pct}%` }} />
+          </div>
+          <p className="text-xs font-semibold text-stone-600 shrink-0">{doneCount} of {allItems.length} done</p>
+        </div>
+        {notifiedCount > 0 && <p className="text-xs text-amber-700 mt-1.5">{notifiedCount} awaiting response</p>}
+      </div>
+
+      {/* Institution groups */}
+      {Object.entries(categories).map(([cat, items]) => (
+        <div key={cat} className="rounded-[2rem] border border-stone-200 bg-white p-5">
+          <p className="text-xs font-semibold uppercase tracking-widest text-stone-400 mb-3">{cat}</p>
+          <div className="space-y-2">
+            {items.map(inst => {
+              const status = statuses[inst.id] || 'todo'
+              const next = status === 'todo' ? 'notified' : status === 'notified' ? 'done' : 'todo'
+              const statusInfo = STATUS_OPTIONS.find(s => s.value === status)
+              return (
+                <div key={inst.id} className="flex items-start gap-3 rounded-2xl border border-stone-100 bg-stone-50 px-4 py-3">
+                  <button
+                    onClick={() => onSetStatus(inst.id, next)}
+                    className={`shrink-0 mt-0.5 text-xs font-semibold px-2.5 py-1 rounded-full border transition-colors hover:opacity-80 ${statusInfo.cls}`}
+                    title={`Mark as ${next}`}
+                  >
+                    {status === 'done' ? <Check size={11} className="inline" /> : statusInfo.label}
+                  </button>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <p className={`text-sm font-semibold leading-snug ${status === 'done' ? 'line-through text-stone-400' : 'text-navy-950'}`}>{inst.name}</p>
+                      {inst.url && (
+                        <a href={inst.url} target="_blank" rel="noopener noreferrer" className="text-navy-500 hover:text-navy-700">
+                          <ExternalLink size={11} />
+                        </a>
+                      )}
+                    </div>
+                    <p className="text-xs text-stone-500 mt-0.5 leading-relaxed">{inst.how}</p>
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+        </div>
+      ))}
+      <p className="text-xs text-stone-400 text-center pb-2">Progress is saved to this browser only. Screenshot or print to share with co-executors.</p>
+    </div>
   )
 }
 
