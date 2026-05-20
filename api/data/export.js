@@ -1,10 +1,15 @@
 import { createClient } from '@supabase/supabase-js'
-import JSZip from 'jszip'
+
+// JSZip — defensive import to handle ESM/CJS interop in Vercel's bundler
+import JSZipPkg from 'jszip'
+const JSZip = JSZipPkg.default ?? JSZipPkg
 
 const supabase = createClient(
   process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL,
   process.env.SUPABASE_SERVICE_ROLE_KEY
 )
+
+const APP_URL = process.env.VITE_APP_URL || 'https://www.everstead.care'
 
 // ─────────────────────────────────────────────────────────────────────────────
 // POST /api/data/export
@@ -15,51 +20,87 @@ const supabase = createClient(
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).end()
 
-  // ── Authenticate the request ──────────────────────────────────────────────
-  const authHeader = req.headers['authorization'] || ''
-  const token = authHeader.replace('Bearer ', '').trim()
+  // ── Authenticate ─────────────────────────────────────────────────────────
+  const token = (req.headers['authorization'] || '').replace('Bearer ', '').trim()
   if (!token) return res.status(401).json({ error: 'Unauthorised' })
 
-  // Verify the token and get the user
   const { data: { user }, error: authError } = await supabase.auth.getUser(token)
-  if (authError || !user) return res.status(401).json({ error: 'Invalid token' })
+  if (authError || !user) {
+    console.error('export: auth error', authError?.message)
+    return res.status(401).json({ error: 'Invalid token' })
+  }
 
   const userId = user.id
+  const exportDate = new Date().toISOString().split('T')[0]
+  const exportTs   = new Date().toISOString()
 
   try {
-    // ── Fetch all user data in parallel ──────────────────────────────────────
+    // ── Fetch all tables in parallel ────────────────────────────────────────
     const [
-      { data: profile },
-      { data: accounts },
-      { data: documents },
-      { data: trustedPeople },
-      { data: accessGrants },
-      { data: instructions },
-      { data: instructionSteps },
-      { data: wishes },
-      { data: subscriptions },
-      { data: activityLog },
+      profileRes,
+      accountsRes,
+      documentsRes,
+      trustedPeopleRes,
+      instructionsRes,
+      wishesRes,
+      subscriptionsRes,
+      activityRes,
     ] = await Promise.all([
       supabase.from('profiles').select('*').eq('id', userId).single(),
       supabase.from('accounts').select('*').eq('user_id', userId),
       supabase.from('documents').select('*').eq('user_id', userId),
       supabase.from('trusted_people').select('*').eq('user_id', userId),
-      supabase.from('access_grants').select('*').eq('user_id', userId),
       supabase.from('instructions').select('*').eq('user_id', userId),
-      supabase.from('instruction_steps').select('*'),
       supabase.from('wishes').select('*').eq('user_id', userId),
       supabase.from('subscriptions').select('*').eq('user_id', userId),
-      supabase.from('activity_log').select('*').eq('user_id', userId).order('created_at', { ascending: false }).limit(500),
+      supabase.from('activity_log').select('*').eq('user_id', userId)
+        .order('created_at', { ascending: false }).limit(500),
     ])
 
-    const exportDate = new Date().toISOString().split('T')[0] // YYYY-MM-DD
-    const exportTs   = new Date().toISOString()
+    const profile       = profileRes.data
+    const accounts      = accountsRes.data      ?? []
+    const documents     = documentsRes.data     ?? []
+    const trustedPeople = trustedPeopleRes.data ?? []
+    const instructions  = instructionsRes.data  ?? []
+    const wishes        = wishesRes.data        ?? []
+    const subscriptions = subscriptionsRes.data ?? []
+    const activityLog   = activityRes.data      ?? []
 
-    // ── Build the ZIP ─────────────────────────────────────────────────────────
-    const zip = new JSZip()
-    const folder = zip.folder(`everstead-export-${exportDate}`)
+    // ── Fetch instruction steps filtered to this user's instructions ─────────
+    let instructionSteps = []
+    const instructionIds = instructions.map(i => i.id)
+    if (instructionIds.length > 0) {
+      const { data: steps } = await supabase
+        .from('instruction_steps')
+        .select('*')
+        .in('instruction_id', instructionIds)
+        .order('position')
+      instructionSteps = steps ?? []
+    }
 
-    // profile.json — strip sensitive server fields
+    // ── Generate signed download URLs for document files ─────────────────────
+    // We include these in documents.json so users can download their files.
+    // Signed for 7 days — enough time to download after export.
+    const docsWithUrls = await Promise.all(
+      documents.map(async (doc) => {
+        const base = {
+          id: doc.id, name: doc.name, type: doc.type,
+          notes: doc.notes, expiry_date: doc.expiry_date,
+          created_at: doc.created_at,
+        }
+        if (!doc.storage_path) return base
+        try {
+          const { data: signed } = await supabase.storage
+            .from('documents')
+            .createSignedUrl(doc.storage_path, 7 * 24 * 60 * 60) // 7 days
+          return { ...base, download_url: signed?.signedUrl ?? null }
+        } catch {
+          return base
+        }
+      })
+    )
+
+    // ── Build profile export (strip server-only fields) ───────────────────────
     const profileExport = {
       full_name:           profile?.full_name,
       email:               profile?.email,
@@ -74,75 +115,16 @@ export default async function handler(req, res) {
       postcode:            profile?.postcode,
       country:             profile?.country,
     }
-    folder.file('profile.json', JSON.stringify(profileExport, null, 2))
 
-    // accounts.json
-    const accountsExport = (accounts ?? []).map(a => ({
-      id: a.id, name: a.name, type: a.type, institution: a.institution,
-      account_number: a.account_number, sort_code: a.sort_code,
-      notes: a.notes, estimated_value: a.estimated_value,
-      currency: a.currency, is_joint: a.is_joint, created_at: a.created_at,
-    }))
-    folder.file('accounts.json', JSON.stringify(accountsExport, null, 2))
-
-    // instructions.json — merge steps into each instruction
-    const instructionIds = (instructions ?? []).map(i => i.id)
-    const stepsForUser = (instructionSteps ?? []).filter(s => instructionIds.includes(s.instruction_id))
-    const instructionsExport = (instructions ?? []).map(instr => ({
+    // ── Merge instruction steps into instructions ──────────────────────────────
+    const instructionsExport = instructions.map(instr => ({
       ...instr,
-      steps: stepsForUser.filter(s => s.instruction_id === instr.id).sort((a, b) => a.position - b.position),
+      steps: instructionSteps
+        .filter(s => s.instruction_id === instr.id)
+        .sort((a, b) => (a.position ?? 0) - (b.position ?? 0)),
     }))
-    folder.file('instructions.json', JSON.stringify(instructionsExport, null, 2))
 
-    // wishes.json
-    folder.file('wishes.json', JSON.stringify(wishes ?? [], null, 2))
-
-    // subscriptions.json
-    folder.file('subscriptions.json', JSON.stringify(subscriptions ?? [], null, 2))
-
-    // activity-log.json
-    folder.file('activity-log.json', JSON.stringify(activityLog ?? [], null, 2))
-
-    // trusted-people.json — merge access grants
-    const peopleExport = (trustedPeople ?? []).map(p => ({
-      ...p,
-      access_grants: (accessGrants ?? []).filter(g => g.trusted_person_id === p.id),
-    }))
-    folder.file('trusted-people.json', JSON.stringify(peopleExport, null, 2))
-
-    // documents.json — metadata only
-    const docsExport = (documents ?? []).map(d => ({
-      id: d.id, name: d.name, type: d.type, notes: d.notes,
-      expiry_date: d.expiry_date, created_at: d.created_at,
-      storage_path: d.storage_path,
-    }))
-    folder.file('documents.json', JSON.stringify(docsExport, null, 2))
-
-    // documents/ — actual files via signed URLs
-    const docsFolder = folder.folder('documents')
-    const docResults = await Promise.allSettled(
-      (documents ?? []).filter(d => d.storage_path).map(async (doc) => {
-        try {
-          const { data: signed } = await supabase.storage
-            .from('documents')
-            .createSignedUrl(doc.storage_path, 60) // 60s — enough to fetch
-
-          if (!signed?.signedUrl) return
-
-          const fileRes = await fetch(signed.signedUrl)
-          if (!fileRes.ok) return
-
-          const buffer = await fileRes.arrayBuffer()
-          const fileName = doc.name || doc.storage_path.split('/').pop() || `document-${doc.id}`
-          docsFolder.file(fileName, buffer)
-        } catch {
-          // Skip files that fail — they'll be listed in documents.json
-        }
-      })
-    )
-    void docResults // result unused — per-file errors are silently skipped
-
-    // README.txt
+    // ── README ───────────────────────────────────────────────────────────────
     const readme = [
       'Everstead Data Export',
       `Exported: ${exportTs}`,
@@ -151,45 +133,61 @@ export default async function handler(req, res) {
       'This file contains a complete copy of your Everstead plan.',
       '',
       'Files included:',
-      '- profile.json: Your account details',
-      '- accounts.json: Your documented financial accounts and assets',
-      '- documents/: Your uploaded files',
-      '- documents.json: Document details and notes',
-      '- trusted-people.json: Your trusted contacts and their access permissions',
-      '- instructions.json: Your step-by-step instructions',
-      '- wishes.json: Your personal messages and final wishes',
-      '- subscriptions.json: Your tracked subscriptions',
-      '- activity-log.json: A record of all changes made to your plan',
+      '- profile.json        Your account details',
+      '- accounts.json       Your documented financial accounts and assets',
+      '- documents.json      Document details, notes, and 7-day download links',
+      '- trusted-people.json Your trusted contacts and their access permissions',
+      '- instructions.json   Your step-by-step instructions',
+      '- wishes.json         Your personal messages and final wishes',
+      '- subscriptions.json  Your tracked subscriptions',
+      '- activity-log.json   A record of all changes made to your plan',
+      '',
+      'Document files: Use the download_url in documents.json to download each',
+      'uploaded file. Links are valid for 7 days from the export date.',
       '',
       'Your data belongs to you. If you need help with this export,',
       'contact us at hello@everstead.care',
+      '',
+      `Full data promise: ${APP_URL}/data-promise`,
     ].join('\n')
-    folder.file('README.txt', readme)
 
-    // ── Generate ZIP buffer ───────────────────────────────────────────────────
+    // ── Assemble ZIP ─────────────────────────────────────────────────────────
+    const zip    = new JSZip()
+    const folder = zip.folder(`everstead-export-${exportDate}`)
+
+    folder.file('README.txt',            readme)
+    folder.file('profile.json',          JSON.stringify(profileExport,      null, 2))
+    folder.file('accounts.json',         JSON.stringify(accounts,           null, 2))
+    folder.file('documents.json',        JSON.stringify(docsWithUrls,       null, 2))
+    folder.file('trusted-people.json',   JSON.stringify(trustedPeople,      null, 2))
+    folder.file('instructions.json',     JSON.stringify(instructionsExport, null, 2))
+    folder.file('wishes.json',           JSON.stringify(wishes,             null, 2))
+    folder.file('subscriptions.json',    JSON.stringify(subscriptions,      null, 2))
+    folder.file('activity-log.json',     JSON.stringify(activityLog,        null, 2))
+
     const zipBuffer = await zip.generateAsync({
       type: 'nodebuffer',
       compression: 'DEFLATE',
       compressionOptions: { level: 6 },
     })
 
-    // ── Log the export to activity_log ────────────────────────────────────────
+    // ── Log to activity_log ───────────────────────────────────────────────────
     await supabase.from('activity_log').insert({
-      user_id:    userId,
-      action:     'data_export',
-      entity:     'account',
-      entity_id:  userId,
-      meta:       { exported_at: exportTs, file: `everstead-export-${exportDate}.zip` },
-    }).catch(() => {}) // don't fail the export if logging fails
+      user_id:   userId,
+      action:    'data_export',
+      entity:    'account',
+      entity_id: userId,
+      meta:      { exported_at: exportTs, file: `everstead-export-${exportDate}.zip` },
+    }).catch(err => console.error('export: activity log failed', err.message))
 
-    // ── Return the ZIP ────────────────────────────────────────────────────────
+    // ── Stream ZIP back ───────────────────────────────────────────────────────
     res.setHeader('Content-Type', 'application/zip')
     res.setHeader('Content-Disposition', `attachment; filename="everstead-export-${exportDate}.zip"`)
     res.setHeader('Cache-Control', 'no-store')
     res.status(200).send(zipBuffer)
 
   } catch (err) {
-    console.error('data/export error:', err)
+    console.error('export: unexpected error', err)
     res.status(500).json({ error: 'Export failed. Please try again.' })
   }
 }
