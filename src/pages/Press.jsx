@@ -32,6 +32,13 @@ export default function Press() {
         <title>Press & Media — Everstead</title>
         <meta name="description" content="Press kit, company facts, and media enquiries for Everstead — the secure personal vault for UK families." />
         <link rel="canonical" href="https://www.everstead.care/press" />
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content="Press & Media — Everstead" />
+        <meta property="og:description" content="Press kit, company facts, and media enquiries for Everstead — the secure personal vault for UK families." />
+        <meta property="og:url" content="https://www.everstead.care/press" />
+        <meta property="og:image" content="https://www.everstead.care/og-image.png" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:image" content="https://www.everstead.care/og-image.png" />
       </Helmet>
 
       <div className="min-h-screen">

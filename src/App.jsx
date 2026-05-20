@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, Suspense, lazy } from 'react'
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import { AuthProvider } from './contexts/AuthContext'
 import ProtectedRoute from './components/ProtectedRoute'
@@ -11,50 +11,61 @@ import Footer from './components/Footer'
 import ChatWidget from './components/ChatWidget'
 import CookieBanner from './components/CookieBanner'
 
-// Pages
-import Home from './pages/Home'
-import Features from './pages/Features'
-import HowItWorks from './pages/HowItWorks'
-import Pricing from './pages/Pricing'
-import Security from './pages/Security'
-import UseCases from './pages/UseCases'
-import GetStarted from './pages/GetStarted'
-import About from './pages/About'
-import Contact from './pages/Contact'
-import BookDemo from './pages/BookDemo'
-import Login from './pages/Login'
-import Privacy from './pages/Privacy'
-import Terms from './pages/Terms'
-import Resources from './pages/Resources'
-import ExecutorChecklist from './pages/ExecutorChecklist'
-import DigitalEstateCalculator from './pages/DigitalEstateCalculator'
-import EstateReadinessScore from './pages/EstateReadinessScore'
-import NotFound from './pages/NotFound'
-import ForgotPassword from './pages/ForgotPassword'
-import ResetPassword from './pages/ResetPassword'
-import Dashboard from './pages/Dashboard'
-import DelegateDashboard from './pages/DelegateDashboard'
-import AcceptInvite from './pages/AcceptInvite'
-import AdvisorPortal from './pages/AdvisorPortal'
-import AdminPanel from './pages/AdminPanel'
-import AdminLogin from './pages/AdminLogin'
-import AcceptAdminInvite from './pages/AcceptAdminInvite'
-import AcceptFamilyInvite from './pages/AcceptFamilyInvite'
-import DelegateRegister from './pages/DelegateRegister'
-import SetupMFA from './pages/SetupMFA'
-import ChooseAccount from './pages/ChooseAccount'
-import TrialEnded from './pages/TrialEnded'
-import PrintView from './pages/PrintView'
-import Settings from './pages/Settings'
-import Gift from './pages/Gift'
-import RedeemGift from './pages/RedeemGift'
-import Cookies from './pages/Cookies'
-import Accessibility from './pages/Accessibility'
-import Press from './pages/Press'
-import AdvisorDPA from './pages/AdvisorDPA'
-import Changelog from './pages/Changelog'
-import Compare from './pages/Compare'
-import WhenSomeoneDies from './pages/WhenSomeoneDies'
+// ── Lazy-loaded pages ─────────────────────────────────────────────────────────
+// Each route is code-split into its own chunk, reducing the initial JS bundle
+// that visitors to the homepage (or any single page) need to download.
+const Home                  = lazy(() => import('./pages/Home'))
+const Features              = lazy(() => import('./pages/Features'))
+const HowItWorks            = lazy(() => import('./pages/HowItWorks'))
+const Pricing               = lazy(() => import('./pages/Pricing'))
+const Security              = lazy(() => import('./pages/Security'))
+const UseCases              = lazy(() => import('./pages/UseCases'))
+const GetStarted            = lazy(() => import('./pages/GetStarted'))
+const About                 = lazy(() => import('./pages/About'))
+const Contact               = lazy(() => import('./pages/Contact'))
+const BookDemo              = lazy(() => import('./pages/BookDemo'))
+const Login                 = lazy(() => import('./pages/Login'))
+const Privacy               = lazy(() => import('./pages/Privacy'))
+const Terms                 = lazy(() => import('./pages/Terms'))
+const Resources             = lazy(() => import('./pages/Resources'))
+const ExecutorChecklist     = lazy(() => import('./pages/ExecutorChecklist'))
+const DigitalEstateCalculator = lazy(() => import('./pages/DigitalEstateCalculator'))
+const EstateReadinessScore  = lazy(() => import('./pages/EstateReadinessScore'))
+const NotFound              = lazy(() => import('./pages/NotFound'))
+const ForgotPassword        = lazy(() => import('./pages/ForgotPassword'))
+const ResetPassword         = lazy(() => import('./pages/ResetPassword'))
+const Dashboard             = lazy(() => import('./pages/Dashboard'))
+const DelegateDashboard     = lazy(() => import('./pages/DelegateDashboard'))
+const AcceptInvite          = lazy(() => import('./pages/AcceptInvite'))
+const AdvisorPortal         = lazy(() => import('./pages/AdvisorPortal'))
+const AdminPanel            = lazy(() => import('./pages/AdminPanel'))
+const AdminLogin            = lazy(() => import('./pages/AdminLogin'))
+const AcceptAdminInvite     = lazy(() => import('./pages/AcceptAdminInvite'))
+const AcceptFamilyInvite    = lazy(() => import('./pages/AcceptFamilyInvite'))
+const DelegateRegister      = lazy(() => import('./pages/DelegateRegister'))
+const SetupMFA              = lazy(() => import('./pages/SetupMFA'))
+const ChooseAccount         = lazy(() => import('./pages/ChooseAccount'))
+const TrialEnded            = lazy(() => import('./pages/TrialEnded'))
+const PrintView             = lazy(() => import('./pages/PrintView'))
+const Settings              = lazy(() => import('./pages/Settings'))
+const Gift                  = lazy(() => import('./pages/Gift'))
+const RedeemGift            = lazy(() => import('./pages/RedeemGift'))
+const Cookies               = lazy(() => import('./pages/Cookies'))
+const Accessibility         = lazy(() => import('./pages/Accessibility'))
+const Press                 = lazy(() => import('./pages/Press'))
+const AdvisorDPA            = lazy(() => import('./pages/AdvisorDPA'))
+const Changelog             = lazy(() => import('./pages/Changelog'))
+const Compare               = lazy(() => import('./pages/Compare'))
+const WhenSomeoneDies       = lazy(() => import('./pages/WhenSomeoneDies'))
+
+// ── Page loading fallback ─────────────────────────────────────────────────────
+function PageLoader() {
+  return (
+    <div className="min-h-screen bg-stone-50 flex items-center justify-center">
+      <div className="w-7 h-7 rounded-full border-2 border-stone-200 border-t-navy-800 animate-spin" />
+    </div>
+  )
+}
 
 function ScrollToTop() {
   const { pathname } = useLocation()
@@ -79,111 +90,113 @@ export default function App() {
       <BrowserRouter>
         <ScrollToTop />
         <ErrorBoundary>
-        <Routes>
-          {/* ── Protected app pages — no Nav/Footer ── */}
-          <Route
-            path="/dashboard"
-            element={
-              <ProtectedRoute>
-                <Dashboard />
-              </ProtectedRoute>
-            }
-          />
-          <Route path="/delegate-dashboard" element={<DelegateDashboard />} />
-          <Route
-            path="/advisor-portal"
-            element={
-              <AdvisorProtectedRoute>
-                <AdvisorPortal />
-              </AdvisorProtectedRoute>
-            }
-          />
-          <Route path="/accept-invite" element={<AcceptInvite />} />
-          <Route path="/delegate-register" element={<DelegateRegister />} />
-          <Route path="/choose-account" element={<ChooseAccount />} />
-          <Route
-            path="/trial-ended"
-            element={
-              <ProtectedRoute>
-                <TrialEnded />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/setup-mfa"
-            element={
-              <ProtectedRoute>
-                <SetupMFA />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/print"
-            element={
-              <ProtectedRoute>
-                <PrintView />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/settings"
-            element={<Navigate to="/dashboard?tab=settings" replace />}
-          />
-          <Route path="/accept-admin-invite" element={<AcceptAdminInvite />} />
-          <Route path="/accept-family-invite" element={<AcceptFamilyInvite />} />
-          <Route
-            path="/admin-login"
-            element={
-              <AdminGate>
-                <AdminLogin />
-              </AdminGate>
-            }
-          />
-          <Route
-            path="/admin"
-            element={
-              <AdminGate>
-                <AdminProtectedRoute>
-                  <AdminPanel />
-                </AdminProtectedRoute>
-              </AdminGate>
-            }
-          />
+          <Suspense fallback={<PageLoader />}>
+            <Routes>
+              {/* ── Protected app pages — no Nav/Footer ── */}
+              <Route
+                path="/dashboard"
+                element={
+                  <ProtectedRoute>
+                    <Dashboard />
+                  </ProtectedRoute>
+                }
+              />
+              <Route path="/delegate-dashboard" element={<DelegateDashboard />} />
+              <Route
+                path="/advisor-portal"
+                element={
+                  <AdvisorProtectedRoute>
+                    <AdvisorPortal />
+                  </AdvisorProtectedRoute>
+                }
+              />
+              <Route path="/accept-invite" element={<AcceptInvite />} />
+              <Route path="/delegate-register" element={<DelegateRegister />} />
+              <Route path="/choose-account" element={<ChooseAccount />} />
+              <Route
+                path="/trial-ended"
+                element={
+                  <ProtectedRoute>
+                    <TrialEnded />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/setup-mfa"
+                element={
+                  <ProtectedRoute>
+                    <SetupMFA />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/print"
+                element={
+                  <ProtectedRoute>
+                    <PrintView />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/settings"
+                element={<Navigate to="/dashboard?tab=settings" replace />}
+              />
+              <Route path="/accept-admin-invite" element={<AcceptAdminInvite />} />
+              <Route path="/accept-family-invite" element={<AcceptFamilyInvite />} />
+              <Route
+                path="/admin-login"
+                element={
+                  <AdminGate>
+                    <AdminLogin />
+                  </AdminGate>
+                }
+              />
+              <Route
+                path="/admin"
+                element={
+                  <AdminGate>
+                    <AdminProtectedRoute>
+                      <AdminPanel />
+                    </AdminProtectedRoute>
+                  </AdminGate>
+                }
+              />
 
-          {/* ── Public pages ── */}
-          <Route path="/"           element={<Layout><Home /></Layout>} />
-          <Route path="/features"   element={<Layout><Features /></Layout>} />
-          <Route path="/how-it-works" element={<Layout><HowItWorks /></Layout>} />
-          <Route path="/pricing"    element={<Layout><Pricing /></Layout>} />
-          <Route path="/security"   element={<Layout><Security /></Layout>} />
-          <Route path="/use-cases"  element={<Layout><UseCases /></Layout>} />
-          <Route path="/use-cases/:slug" element={<Layout><UseCases /></Layout>} />
-          <Route path="/get-started" element={<Layout><GetStarted /></Layout>} />
-          <Route path="/about"      element={<Layout><About /></Layout>} />
-          <Route path="/contact"    element={<Layout><Contact /></Layout>} />
-          <Route path="/book-demo"  element={<Layout><BookDemo /></Layout>} />
-          <Route path="/login"           element={<Layout><Login /></Layout>} />
-          <Route path="/forgot-password" element={<Layout><ForgotPassword /></Layout>} />
-          <Route path="/reset-password"  element={<Layout><ResetPassword /></Layout>} />
-          <Route path="/privacy"    element={<Layout><Privacy /></Layout>} />
-          <Route path="/terms"      element={<Layout><Terms /></Layout>} />
-          <Route path="/resources"  element={<Layout><Resources /></Layout>} />
-          <Route path="/resources/:section" element={<Layout><Resources /></Layout>} />
-          <Route path="/resources/:section/:post" element={<Layout><Resources /></Layout>} />
-          <Route path="/executor-checklist"     element={<Layout><ExecutorChecklist /></Layout>} />
-          <Route path="/estate-readiness-score" element={<Layout><EstateReadinessScore /></Layout>} />
-          <Route path="/digital-estate-worth"   element={<Layout><DigitalEstateCalculator /></Layout>} />
-          <Route path="/gift"         element={<Layout><Gift /></Layout>} />
-          <Route path="/redeem-gift"  element={<Layout><RedeemGift /></Layout>} />
-          <Route path="/cookies"      element={<Layout><Cookies /></Layout>} />
-          <Route path="/accessibility" element={<Layout><Accessibility /></Layout>} />
-          <Route path="/press"        element={<Layout><Press /></Layout>} />
-          <Route path="/advisor-dpa"  element={<Layout><AdvisorDPA /></Layout>} />
-          <Route path="/changelog"    element={<Layout><Changelog /></Layout>} />
-          <Route path="/compare/:slug" element={<Layout><Compare /></Layout>} />
-          <Route path="/what-to-do-when-someone-dies" element={<WhenSomeoneDies />} />
-          <Route path="*"           element={<Layout><NotFound /></Layout>} />
-        </Routes>
+              {/* ── Public pages ── */}
+              <Route path="/"           element={<Layout><Home /></Layout>} />
+              <Route path="/features"   element={<Layout><Features /></Layout>} />
+              <Route path="/how-it-works" element={<Layout><HowItWorks /></Layout>} />
+              <Route path="/pricing"    element={<Layout><Pricing /></Layout>} />
+              <Route path="/security"   element={<Layout><Security /></Layout>} />
+              <Route path="/use-cases"  element={<Layout><UseCases /></Layout>} />
+              <Route path="/use-cases/:slug" element={<Layout><UseCases /></Layout>} />
+              <Route path="/get-started" element={<Layout><GetStarted /></Layout>} />
+              <Route path="/about"      element={<Layout><About /></Layout>} />
+              <Route path="/contact"    element={<Layout><Contact /></Layout>} />
+              <Route path="/book-demo"  element={<Layout><BookDemo /></Layout>} />
+              <Route path="/login"           element={<Layout><Login /></Layout>} />
+              <Route path="/forgot-password" element={<Layout><ForgotPassword /></Layout>} />
+              <Route path="/reset-password"  element={<Layout><ResetPassword /></Layout>} />
+              <Route path="/privacy"    element={<Layout><Privacy /></Layout>} />
+              <Route path="/terms"      element={<Layout><Terms /></Layout>} />
+              <Route path="/resources"  element={<Layout><Resources /></Layout>} />
+              <Route path="/resources/:section" element={<Layout><Resources /></Layout>} />
+              <Route path="/resources/:section/:post" element={<Layout><Resources /></Layout>} />
+              <Route path="/executor-checklist"     element={<Layout><ExecutorChecklist /></Layout>} />
+              <Route path="/estate-readiness-score" element={<Layout><EstateReadinessScore /></Layout>} />
+              <Route path="/digital-estate-worth"   element={<Layout><DigitalEstateCalculator /></Layout>} />
+              <Route path="/gift"         element={<Layout><Gift /></Layout>} />
+              <Route path="/redeem-gift"  element={<Layout><RedeemGift /></Layout>} />
+              <Route path="/cookies"      element={<Layout><Cookies /></Layout>} />
+              <Route path="/accessibility" element={<Layout><Accessibility /></Layout>} />
+              <Route path="/press"        element={<Layout><Press /></Layout>} />
+              <Route path="/advisor-dpa"  element={<Layout><AdvisorDPA /></Layout>} />
+              <Route path="/changelog"    element={<Layout><Changelog /></Layout>} />
+              <Route path="/compare/:slug" element={<Layout><Compare /></Layout>} />
+              <Route path="/what-to-do-when-someone-dies" element={<WhenSomeoneDies />} />
+              <Route path="*"           element={<Layout><NotFound /></Layout>} />
+            </Routes>
+          </Suspense>
         </ErrorBoundary>
         <CookieBanner />
       </BrowserRouter>

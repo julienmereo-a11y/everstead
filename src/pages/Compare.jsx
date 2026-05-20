@@ -90,6 +90,13 @@ export default function Compare() {
         <title>{tagline} — Everstead</title>
         <meta name="description" content={subhead} />
         <link rel="canonical" href={`https://www.everstead.care/compare/${slug}`} />
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content={`${tagline} — Everstead`} />
+        <meta property="og:description" content={subhead} />
+        <meta property="og:url" content={`https://www.everstead.care/compare/${slug}`} />
+        <meta property="og:image" content="https://www.everstead.care/og-image.png" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:image" content="https://www.everstead.care/og-image.png" />
       </Helmet>
 
       <div className="bg-stone-50 pt-24 min-h-screen">

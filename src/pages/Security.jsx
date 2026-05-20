@@ -127,6 +127,13 @@ export default function Security() {
       <title>Security — Everstead</title>
       <meta name="description" content="Everstead is built on bank-equivalent security standards. AES-256 encryption at rest, TLS 1.3 in transit, granular access controls, and a full audit trail." />
       <link rel="canonical" href="https://www.everstead.care/security" />
+      <meta property="og:type" content="website" />
+      <meta property="og:title" content="Security — Everstead" />
+      <meta property="og:description" content="Everstead is built on bank-equivalent security standards. AES-256 encryption at rest, TLS 1.3 in transit, granular access controls, and a full audit trail." />
+      <meta property="og:url" content="https://www.everstead.care/security" />
+      <meta property="og:image" content="https://www.everstead.care/og-image.png" />
+      <meta name="twitter:card" content="summary_large_image" />
+      <meta name="twitter:image" content="https://www.everstead.care/og-image.png" />
     </Helmet>
     <div className="bg-stone-50 pt-24">
 

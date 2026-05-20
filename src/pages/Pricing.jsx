@@ -152,6 +152,13 @@ export default function Pricing() {
       <title>Pricing — Everstead</title>
       <meta name="description" content="Simple, transparent pricing for individuals, families, and professional advisors. Start your 14-day free trial — card required, no charge until trial ends." />
       <link rel="canonical" href="https://www.everstead.care/pricing" />
+      <meta property="og:type" content="website" />
+      <meta property="og:title" content="Pricing — Everstead" />
+      <meta property="og:description" content="Simple, transparent pricing for individuals, families, and professional advisors. Start your 14-day free trial — card required, no charge until trial ends." />
+      <meta property="og:url" content="https://www.everstead.care/pricing" />
+      <meta property="og:image" content="https://www.everstead.care/og-image.png" />
+      <meta name="twitter:card" content="summary_large_image" />
+      <meta name="twitter:image" content="https://www.everstead.care/og-image.png" />
       <script type="application/ld+json">{JSON.stringify(faqSchema)}</script>
     </Helmet>
     <div className="bg-stone-50 pt-24">

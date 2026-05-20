@@ -100,6 +100,7 @@ const assuranceBadges = [
 ]
 
 const resourceCards = [
+  { icon: Heart, title: 'What to do when someone dies', desc: 'A free, compassionate AI guide through the practical steps after a death in the UK — from the first hours to closing the estate.', href: '/what-to-do-when-someone-dies' },
   { icon: BookOpen, title: 'Executor starter guide', desc: 'A practical guide to the first steps families face after a death.', href: '/resources/guides' },
   { icon: ClipboardList, title: 'Estate planning checklist', desc: 'Use the same checklist structure reflected inside the dashboard.', href: '/resources/checklists' },
   { icon: FileText, title: 'Security and privacy overview', desc: 'See how Everstead handles permissions, encryption, and data access.', href: '/security' },
@@ -116,6 +117,13 @@ export default function Home() {
       <title>Everstead — Your life, organised.</title>
       <meta name="description" content="Everstead is the secure home for your accounts, documents, and important decisions — organised for you today, and ready for your family when it counts." />
       <link rel="canonical" href="https://www.everstead.care" />
+      <meta property="og:type" content="website" />
+      <meta property="og:title" content="Everstead — Your life, organised." />
+      <meta property="og:description" content="Everstead is the secure home for your accounts, documents, and important decisions — organised for you today, and ready for your family when it counts." />
+      <meta property="og:url" content="https://www.everstead.care" />
+      <meta property="og:image" content="https://www.everstead.care/og-image.png" />
+      <meta name="twitter:card" content="summary_large_image" />
+      <meta name="twitter:image" content="https://www.everstead.care/og-image.png" />
       <script type="application/ld+json">{JSON.stringify({
         '@context': 'https://schema.org',
         '@type': 'Organization',
@@ -766,7 +774,7 @@ export default function Home() {
             </div>
             <Link to="/resources" className="hidden sm:inline-flex items-center gap-2 text-sm font-medium text-navy-700 hover:text-navy-900 transition-colors">Explore resources <ArrowRight size={14} /></Link>
           </div>
-          <div className="grid md:grid-cols-3 gap-5">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
             {resourceCards.map(({ icon: Icon, title, desc, href }, i) => (
               <Link key={title} to={href} className={`reveal reveal-delay-${i + 1} group bg-stone-50 border border-stone-200 rounded-2xl p-6 hover:border-navy-300 hover:bg-white transition-all`}>
                 <div className="w-11 h-11 rounded-2xl bg-navy-50 flex items-center justify-center mb-5 group-hover:bg-navy-100 transition-colors">

@@ -267,6 +267,13 @@ export default function EstateReadinessScore() {
           content="Take our free 5-question quiz and instantly see how ready your estate really is. No sign-up required. Get your personalised score out of 100."
         />
         <link rel="canonical" href="https://www.everstead.care/estate-readiness-score" />
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content="Estate Readiness Score — Free Tool | Everstead" />
+        <meta property="og:description" content="Take our free 5-question quiz and instantly see how ready your estate really is. No sign-up required. Get your personalised score out of 100." />
+        <meta property="og:url" content="https://www.everstead.care/estate-readiness-score" />
+        <meta property="og:image" content="https://www.everstead.care/og-image.png" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:image" content="https://www.everstead.care/og-image.png" />
       </Helmet>
 
       <div className="bg-stone-50 min-h-screen">

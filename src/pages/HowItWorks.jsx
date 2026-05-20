@@ -175,6 +175,13 @@ export default function HowItWorks() {
       <title>How It Works — Everstead</title>
       <meta name="description" content="See how Everstead helps you organise your accounts, documents, trusted contacts, and final wishes — so your family knows exactly what to do. Takes under an hour to set up." />
       <link rel="canonical" href="https://www.everstead.care/how-it-works" />
+      <meta property="og:type" content="website" />
+      <meta property="og:title" content="How It Works — Everstead" />
+      <meta property="og:description" content="See how Everstead helps you organise your accounts, documents, trusted contacts, and final wishes — so your family knows exactly what to do. Takes under an hour to set up." />
+      <meta property="og:url" content="https://www.everstead.care/how-it-works" />
+      <meta property="og:image" content="https://www.everstead.care/og-image.png" />
+      <meta name="twitter:card" content="summary_large_image" />
+      <meta name="twitter:image" content="https://www.everstead.care/og-image.png" />
       <script type="application/ld+json">{JSON.stringify(howToSchema)}</script>
     </Helmet>
     <div className="bg-stone-50 pt-24">

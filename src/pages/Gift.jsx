@@ -275,6 +275,14 @@ export default function Gift() {
       <Helmet>
         <title>Give an Everstead gift | Everstead</title>
         <meta name="description" content="Give the gift of peace of mind. Purchase an Everstead plan for someone you care about." />
+        <link rel="canonical" href="https://www.everstead.care/gift" />
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content="Give an Everstead gift | Everstead" />
+        <meta property="og:description" content="Give the gift of peace of mind. Purchase an Everstead plan for someone you care about." />
+        <meta property="og:url" content="https://www.everstead.care/gift" />
+        <meta property="og:image" content="https://www.everstead.care/og-image.png" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:image" content="https://www.everstead.care/og-image.png" />
       </Helmet>
       <div className="min-h-screen">
 

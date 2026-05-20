@@ -392,6 +392,13 @@ export default function DigitalEstateCalculator() {
           content="Calculate the estimated value of your estate in under 2 minutes. Free tool for UK families — includes financial accounts, property, pensions, and digital assets."
         />
         <link rel="canonical" href="https://www.everstead.care/digital-estate-worth" />
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content="What's Your Digital Estate Worth? Free Calculator | Everstead" />
+        <meta property="og:description" content="Calculate the estimated value of your estate in under 2 minutes. Free tool for UK families — includes financial accounts, property, pensions, and digital assets." />
+        <meta property="og:url" content="https://www.everstead.care/digital-estate-worth" />
+        <meta property="og:image" content="https://www.everstead.care/og-image.png" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:image" content="https://www.everstead.care/og-image.png" />
       </Helmet>
 
       {/* ── Hero ── */}

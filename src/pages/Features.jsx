@@ -220,6 +220,13 @@ export default function Features() {
       <title>Features — Everstead</title>
       <meta name="description" content="Explore everything Everstead offers — account vault, document storage, trusted people, step-by-step instructions, and a readiness score to keep you on track." />
       <link rel="canonical" href="https://www.everstead.care/features" />
+      <meta property="og:type" content="website" />
+      <meta property="og:title" content="Features — Everstead" />
+      <meta property="og:description" content="Explore everything Everstead offers — account vault, document storage, trusted people, step-by-step instructions, and a readiness score to keep you on track." />
+      <meta property="og:url" content="https://www.everstead.care/features" />
+      <meta property="og:image" content="https://www.everstead.care/og-image.png" />
+      <meta name="twitter:card" content="summary_large_image" />
+      <meta name="twitter:image" content="https://www.everstead.care/og-image.png" />
     </Helmet>
     <div className="bg-stone-50 pt-24">
 

@@ -76,6 +76,52 @@ export default function WhenSomeoneDies() {
           name="description"
           content="A free, compassionate AI guide to help you navigate the practical steps after a death in the UK — from registering the death to sorting the estate."
         />
+        <link rel="canonical" href="https://www.everstead.care/what-to-do-when-someone-dies" />
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content="What to do when someone dies — Free UK guide | Everstead" />
+        <meta property="og:description" content="A free, compassionate AI guide to help you navigate the practical steps after a death in the UK — from registering the death to sorting the estate." />
+        <meta property="og:url" content="https://www.everstead.care/what-to-do-when-someone-dies" />
+        <meta property="og:image" content="https://www.everstead.care/og-image.png" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:image" content="https://www.everstead.care/og-image.png" />
+        <script type="application/ld+json">{JSON.stringify({
+          '@context': 'https://schema.org',
+          '@type': 'FAQPage',
+          mainEntity: [
+            {
+              '@type': 'Question',
+              name: 'What do I do first when someone dies in the UK?',
+              acceptedAnswer: {
+                '@type': 'Answer',
+                text: 'First, contact a GP or call 111 if the death occurred at home. The doctor will issue a Medical Certificate of Cause of Death (MCCD). If the death was sudden or unexpected, the coroner will be involved. You must register the death within 5 days at the local register office.',
+              },
+            },
+            {
+              '@type': 'Question',
+              name: 'How do I register a death in the UK?',
+              acceptedAnswer: {
+                '@type': 'Answer',
+                text: 'Register the death at the local register office in the district where the death occurred. You will need the Medical Certificate of Cause of Death. You will receive a Death Certificate — order at least 10 certified copies as most institutions require originals.',
+              },
+            },
+            {
+              '@type': 'Question',
+              name: 'Do I need probate?',
+              acceptedAnswer: {
+                '@type': 'Answer',
+                text: 'Most estates where assets are held in sole names require a Grant of Probate. Estates under approximately £10,000 or with only jointly-held assets may not need probate. Apply through the Probate Registry at gov.uk.',
+              },
+            },
+            {
+              '@type': 'Question',
+              name: 'What is Tell Us Once?',
+              acceptedAnswer: {
+                '@type': 'Answer',
+                text: 'Tell Us Once is a free government service (gov.uk) that notifies multiple government departments — including DWP, HMRC, DVLA, and the passport office — about a death in a single step. It saves dozens of individual calls.',
+              },
+            },
+          ],
+        })}</script>
       </Helmet>
 
       <div className="h-screen flex flex-col bg-stone-50">
