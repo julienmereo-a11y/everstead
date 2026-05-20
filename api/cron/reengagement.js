@@ -38,13 +38,14 @@ export default async function handler(req, res) {
   // not nudged yet or last nudge was 14+ days ago
   const { data: candidates, error } = await supabase
     .from('profiles')
-    .select('id, full_name, email, plan')
+    .select('id, full_name, email, plan, notify_reengagement, notify_vault_nudges')
     .not('stripe_subscription_id', 'is', null)
     .in('subscription_status', ['trialing', 'active'])
     .neq('role', 'delegate')
     .not('email', 'is', null)
     .lte('created_at', sevenDaysAgo)
     .or(`reengagement_nudge_sent_at.is.null,reengagement_nudge_sent_at.lte.${fourteenDaysAgo}`)
+    .neq('notify_reengagement', false)
 
   if (error) {
     console.error('reengagement query error:', error)

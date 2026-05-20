@@ -714,7 +714,7 @@ export default function Dashboard() {
         )}
         {activeSection === 'overview'      && <OverviewSection  profile={activeProfile} accounts={accounts} documents={documents} people={people} instructions={instructions} alerts={alerts} markRead={markRead} onNavigate={setActiveSection} planLimits={planLimits} loading={loadingAccounts || loadingDocs} daysSinceLogin={daysSinceLogin} onCelebrate={celebrate} />}
         {activeSection === 'accounts'      && <AccountsSection  accounts={accounts} loading={loadingAccounts} add={addAccount} update={updateAccount} remove={removeAccount} profile={activeProfile} onUpgrade={() => handleUpgrade('family', 'yearly')} />}
-        {activeSection === 'documents'     && <DocumentsSection documents={documents} loading={loadingDocs} uploadFile={uploadFile} update={updateDocument} remove={removeDocument} planLimits={planLimits} profile={activeProfile} onUpgrade={() => handleUpgrade('family', 'yearly')} />}
+        {activeSection === 'documents'     && <DocumentsSection documents={documents} loading={loadingDocs} uploadFile={uploadFile} update={updateDocument} remove={removeDocument} planLimits={planLimits} profile={activeProfile} onUpgrade={() => handleUpgrade('family', 'yearly')} updateProfile={isDemo ? undefined : updateProfile} />}
         {activeSection === 'people'        && <PeopleSection    people={people} loading={loadingPeople} invite={invite} resendInvite={resendInvite} updatePerson={updatePerson} removePerson={removePerson} planLimits={planLimits} profile={activeProfile} onUpgrade={() => handleUpgrade('family', 'yearly')} />}
         {activeSection === 'messages'      && <MessagesSection  messages={messages} loading={loadingMessages} people={people} isDemo={isDemo} planLimits={planLimits} onUpgrade={() => handleUpgrade('family', 'yearly')} addMessage={messagesHook.add} updateMessage={messagesHook.update} uploadVideo={messagesHook.uploadVideo} />}
         {activeSection === 'instructions'  && <InstructionsSection instructions={instructions} loading={loadingInstructions} add={addInstruction} update={updateInstruction} remove={removeInstruction} profile={activeProfile} onUpgrade={() => handleUpgrade('family', 'yearly')} />}
@@ -793,11 +793,21 @@ function OwnerAIGuide({ userName, plan, accountCount, documentCount, contactCoun
   }
 
   const quickPrompts = [
+    'What should I focus on?',
     'What should I add next?',
     'How do I choose an executor?',
     'What is an LPA?',
-    'Do I need a will?',
   ]
+
+  // Listen for events from OverviewSection "Ask your planning coach" link
+  React.useEffect(() => {
+    const handler = (e) => {
+      setOpen(true)
+      if (e.detail) setInput(e.detail)
+    }
+    window.addEventListener('everstead:coach', handler)
+    return () => window.removeEventListener('everstead:coach', handler)
+  }, [])
 
   return (
     <>
@@ -913,11 +923,6 @@ function OverviewSection({ profile, accounts, documents, people, instructions, a
   const showStaleBanner = !staleBannerDismissed && daysSinceLogin !== null && daysSinceLogin >= 180
   const isFamilyPlus = planLimits?.personalMessages ?? false // family and advisor have messages
 
-  // ── Readiness coach ──
-  const [coachAdvice, setCoachAdvice] = React.useState(null)
-  const [coachLoading, setCoachLoading] = React.useState(false)
-  const [coachError, setCoachError] = React.useState(null)
-
   // Family member status (Family plan only)
   const [familyMembership, setFamilyMembership] = React.useState(null)
   const [familyLoading, setFamilyLoading] = React.useState(false)
@@ -958,35 +963,6 @@ function OverviewSection({ profile, accounts, documents, people, instructions, a
   const planBadge = PLAN_BADGE[profile.plan] ?? PLAN_BADGE.essential
   const scoreLabel = isFamilyPlus ? 'Family readiness' : 'Plan readiness'
 
-  const fetchCoachAdvice = async () => {
-    setCoachLoading(true)
-    setCoachError(null)
-    try {
-      const res = await fetch('/api/ai/assist', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          type: 'readiness-coach',
-          context: {
-            score,
-            accountCount: accounts.length,
-            documentCount: documents.filter(d => d.status !== 'missing').length,
-            contactCount: people.length,
-            instructionCount: instructions.length,
-            plan: profile.plan,
-          },
-        }),
-      })
-      const data = await res.json()
-      if (data.error) throw new Error(data.error)
-      setCoachAdvice(data.reply)
-    } catch (err) {
-      setCoachError('Could not load advice right now. Please try again.')
-    } finally {
-      setCoachLoading(false)
-    }
-  }
-
   return (
     <div className="p-4 lg:p-8 max-w-5xl mx-auto">
       {/* Header */}
@@ -998,14 +974,14 @@ function OverviewSection({ profile, accounts, documents, people, instructions, a
           <p className="text-stone-500 mt-1 text-sm">Here's where everything stands.</p>
         </div>
         <div className="flex items-center gap-3 flex-wrap">
-          <a
-            href="/print"
+          <Link
+            to="/print"
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-1.5 text-xs font-semibold border border-stone-200 text-stone-600 bg-white px-3 py-1.5 rounded-lg hover:bg-stone-50 hover:text-navy-700 transition-colors"
           >
             <FileText size={12} /> Export plan
-          </a>
+          </Link>
           <span className={`text-xs font-semibold px-3 py-1 rounded-full border capitalize ${planBadge.cls}`}>
             {planBadge.label} plan
           </span>
@@ -1095,44 +1071,14 @@ function OverviewSection({ profile, accounts, documents, people, instructions, a
              'Getting started — keep building your plan.'}
           </p>
 
-          {/* Readiness coach button */}
-          {!coachAdvice && (
-            <button
-              onClick={fetchCoachAdvice}
-              disabled={coachLoading}
-              className="mt-4 inline-flex items-center gap-1.5 text-xs font-semibold text-navy-700 bg-navy-50 hover:bg-navy-100 border border-navy-200 px-3 py-2 rounded-lg transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
-            >
-              {coachLoading ? (
-                <><Loader2 size={12} className="animate-spin" /> Thinking…</>
-              ) : (
-                <><Zap size={12} /> What should I focus on?</>
-              )}
-            </button>
-          )}
-          {coachError && (
-            <p className="mt-3 text-xs text-red-600">{coachError}</p>
-          )}
+          {/* Open planning coach */}
+          <button
+            onClick={() => window.dispatchEvent(new CustomEvent('everstead:coach', { detail: 'What should I focus on?' }))}
+            className="mt-4 inline-flex items-center gap-1.5 text-xs font-semibold text-navy-700 bg-navy-50 hover:bg-navy-100 border border-navy-200 px-3 py-2 rounded-lg transition-colors"
+          >
+            <Sparkles size={12} /> What should I focus on?
+          </button>
         </div>
-
-        {/* Coach advice panel — shown once loaded */}
-        {coachAdvice && (
-          <div className="mt-4 w-full text-left bg-navy-50 border border-navy-100 rounded-xl p-4">
-            <div className="flex items-center justify-between mb-2">
-              <p className="text-xs font-semibold text-navy-700 flex items-center gap-1.5"><Zap size={11} /> Your readiness coach</p>
-              <button onClick={() => setCoachAdvice(null)} className="text-stone-400 hover:text-stone-600 transition-colors" aria-label="Dismiss">
-                <X size={13} />
-              </button>
-            </div>
-            <div className="text-xs text-navy-900 leading-relaxed whitespace-pre-line">{coachAdvice}</div>
-            <button
-              onClick={fetchCoachAdvice}
-              disabled={coachLoading}
-              className="mt-3 text-xs text-navy-500 hover:text-navy-700 transition-colors disabled:opacity-60"
-            >
-              {coachLoading ? 'Refreshing…' : '↺ Refresh advice'}
-            </button>
-          </div>
-        )}
 
         {/* Vault stats */}
         {loading ? (
@@ -1527,7 +1473,7 @@ function OwnerDocViewerModal({ doc, onClose }) {
 // ─────────────────────────────────────────────────────────────
 // DOCUMENTS SECTION
 // ─────────────────────────────────────────────────────────────
-function DocumentsSection({ documents, loading, uploadFile, update, remove, planLimits, profile, onUpgrade }) {
+function DocumentsSection({ documents, loading, uploadFile, update, remove, planLimits, profile, onUpgrade, updateProfile }) {
   const emptyForm = { name: '', doc_type: 'Legal', status: 'current', expires_at: '', notes: '' }
   const [showUpload, setShowUpload] = useState(false)
   const [editingDocument, setEditingDocument] = useState(null)
@@ -1537,6 +1483,25 @@ function DocumentsSection({ documents, loading, uploadFile, update, remove, plan
   const [saving, setSaving] = useState(false)
   const [dragOver, setDragOver] = useState(false)
   const [formError, setFormError] = useState(null)
+
+  // Will & solicitor details
+  const [willForm, setWillForm] = useState({
+    will_location:    profile?.will_location    ?? '',
+    solicitor_name:   profile?.solicitor_name   ?? '',
+    solicitor_firm:   profile?.solicitor_firm   ?? '',
+    solicitor_contact: profile?.solicitor_contact ?? '',
+  })
+  const [willSaving, setWillSaving] = useState(false)
+  const [willSaved,  setWillSaved]  = useState(false)
+
+  const handleWillSave = async (e) => {
+    e.preventDefault()
+    if (!updateProfile) return
+    setWillSaving(true)
+    try { await updateProfile(willForm); setWillSaved(true); setTimeout(() => setWillSaved(false), 2500) }
+    catch {}
+    finally { setWillSaving(false) }
+  }
 
   const closeModal = () => {
     setShowUpload(false)
@@ -1683,6 +1648,64 @@ function DocumentsSection({ documents, loading, uploadFile, update, remove, plan
           </div>
         )
       })()}
+
+      {/* Will & solicitor details */}
+      <div className="mb-5 bg-white border border-stone-200 rounded-2xl p-5">
+        <h3 className="text-xs font-semibold text-stone-500 uppercase tracking-widest mb-4 flex items-center gap-2">
+          <BookOpen size={13} className="text-navy-600" /> Will & Solicitor Details
+        </h3>
+        <p className="text-xs text-stone-400 mb-4 leading-relaxed">
+          Record where your will is stored and how to reach your solicitor. Your executor will need this immediately.
+        </p>
+        <form onSubmit={handleWillSave} className="grid sm:grid-cols-2 gap-4">
+          <div className="sm:col-span-2">
+            <label className="block text-xs font-semibold text-stone-500 uppercase tracking-wide mb-1">Where is your will stored?</label>
+            <input
+              className="w-full text-sm bg-stone-50 border border-stone-200 rounded-xl px-3.5 py-2.5 outline-none focus:ring-2 focus:ring-navy-300 focus:border-navy-300 placeholder:text-stone-300"
+              value={willForm.will_location}
+              onChange={e => setWillForm(p => ({ ...p, will_location: e.target.value }))}
+              placeholder="e.g. In the filing cabinet in the study, or with my solicitor at Smith & Jones"
+            />
+          </div>
+          <div>
+            <label className="block text-xs font-semibold text-stone-500 uppercase tracking-wide mb-1">Solicitor name</label>
+            <input
+              className="w-full text-sm bg-stone-50 border border-stone-200 rounded-xl px-3.5 py-2.5 outline-none focus:ring-2 focus:ring-navy-300 focus:border-navy-300 placeholder:text-stone-300"
+              value={willForm.solicitor_name}
+              onChange={e => setWillForm(p => ({ ...p, solicitor_name: e.target.value }))}
+              placeholder="e.g. Sarah Thompson"
+            />
+          </div>
+          <div>
+            <label className="block text-xs font-semibold text-stone-500 uppercase tracking-wide mb-1">Firm name</label>
+            <input
+              className="w-full text-sm bg-stone-50 border border-stone-200 rounded-xl px-3.5 py-2.5 outline-none focus:ring-2 focus:ring-navy-300 focus:border-navy-300 placeholder:text-stone-300"
+              value={willForm.solicitor_firm}
+              onChange={e => setWillForm(p => ({ ...p, solicitor_firm: e.target.value }))}
+              placeholder="e.g. Thompson & Associates LLP"
+            />
+          </div>
+          <div className="sm:col-span-2">
+            <label className="block text-xs font-semibold text-stone-500 uppercase tracking-wide mb-1">Phone or email</label>
+            <input
+              className="w-full text-sm bg-stone-50 border border-stone-200 rounded-xl px-3.5 py-2.5 outline-none focus:ring-2 focus:ring-navy-300 focus:border-navy-300 placeholder:text-stone-300"
+              value={willForm.solicitor_contact}
+              onChange={e => setWillForm(p => ({ ...p, solicitor_contact: e.target.value }))}
+              placeholder="e.g. 020 7123 4567 or sarah@thompsonlaw.co.uk"
+            />
+          </div>
+          <div className="sm:col-span-2 flex items-center gap-3 pt-1">
+            <button
+              type="submit"
+              disabled={willSaving || !updateProfile}
+              className="inline-flex items-center gap-2 bg-navy-800 text-white text-sm font-semibold px-4 py-2 rounded-xl hover:bg-navy-700 transition-colors disabled:opacity-50"
+            >
+              {willSaving ? 'Saving…' : willSaved ? '✓ Saved' : 'Save details'}
+            </button>
+            {willSaved && <span className="text-xs text-emerald-600 font-medium">Details saved.</span>}
+          </div>
+        </form>
+      </div>
 
       {loading ? <LoadingSpinner /> : documents.length === 0 ? (
         <EmptyState icon={FileText} label="No documents yet" action="Upload your first document — will, insurance policies, property deeds, and more." />
@@ -3517,6 +3540,26 @@ function SettingsSection({ profile, isDemo, updateProfile, refreshProfile, onUpg
     postcode:    profile.postcode    ?? '',
     country:     profile.country     ?? 'United Kingdom',
   })
+
+  // Notification preferences
+  const [notifForm, setNotifForm] = useState({
+    notify_birthday:        profile.notify_birthday        ?? true,
+    notify_annual_review:   profile.notify_annual_review   ?? true,
+    notify_trial_reminders: profile.notify_trial_reminders ?? true,
+    notify_reengagement:    profile.notify_reengagement    ?? true,
+    notify_document_expiry: profile.notify_document_expiry ?? true,
+    notify_vault_nudges:    profile.notify_vault_nudges    ?? true,
+  })
+  const [notifSaving, setNotifSaving] = useState(false)
+  const [notifSaved,  setNotifSaved]  = useState(false)
+
+  const handleNotifSave = async () => {
+    if (isDemo) { setNotifSaved(true); setTimeout(() => setNotifSaved(false), 2000); return }
+    setNotifSaving(true)
+    try { await updateProfile(notifForm); setNotifSaved(true); setTimeout(() => setNotifSaved(false), 2500) }
+    catch {}
+    finally { setNotifSaving(false) }
+  }
   const [profileSaving, setProfileSaving] = useState(false)
   const [profileSaved,  setProfileSaved]  = useState(false)
 
@@ -3872,6 +3915,54 @@ function SettingsSection({ profile, isDemo, updateProfile, refreshProfile, onUpg
             Share your unique link — your friend gets a <span className="font-semibold text-navy-700">21-day free trial</span> instead of 14 days. Estate planning is a team effort.
           </p>
           <ReferralLinkBox referralCode={profile.referral_code || profile.id} />
+        </div>
+
+        {/* ── Notification preferences ── */}
+        <div className="bg-white border border-stone-200 rounded-2xl p-6">
+          <h2 className="font-semibold text-navy-950 text-sm mb-1 flex items-center gap-2">
+            <Bell size={15} className="text-navy-600" /> Email notifications
+          </h2>
+          <p className="text-xs text-stone-400 mb-5 leading-relaxed">
+            Choose which emails you'd like to receive from Everstead. You can update these at any time.
+          </p>
+          <div className="space-y-3">
+            {[
+              { key: 'notify_birthday',        label: 'Birthday reminder',         desc: 'A message on your birthday each year.' },
+              { key: 'notify_annual_review',   label: 'Annual vault review',       desc: 'A prompt to review and update your plan once a year.' },
+              { key: 'notify_document_expiry', label: 'Document expiry alerts',    desc: 'Alerts when documents in your vault are approaching expiry.' },
+              { key: 'notify_vault_nudges',    label: 'Vault completeness nudges', desc: 'Tips when key items are missing from your vault.' },
+              { key: 'notify_reengagement',    label: 'Re-engagement reminders',   desc: "Gentle nudges if your vault hasn't been updated in a while." },
+              { key: 'notify_trial_reminders', label: 'Trial & billing reminders', desc: 'Important emails about your trial status and upcoming payments.' },
+            ].map(({ key, label, desc }) => (
+              <label key={key} className="flex items-start gap-3 cursor-pointer group py-1">
+                <div className="relative mt-0.5 shrink-0">
+                  <input
+                    type="checkbox"
+                    className="sr-only peer"
+                    checked={notifForm[key]}
+                    onChange={e => setNotifForm(p => ({ ...p, [key]: e.target.checked }))}
+                  />
+                  <div className="w-9 h-5 rounded-full bg-stone-200 peer-checked:bg-navy-700 transition-colors" />
+                  <div className="absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-white shadow transition-transform peer-checked:translate-x-4" />
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-navy-900 leading-snug">{label}</p>
+                  <p className="text-xs text-stone-400 mt-0.5">{desc}</p>
+                </div>
+              </label>
+            ))}
+          </div>
+          <div className="flex items-center gap-3 mt-5 pt-4 border-t border-stone-100">
+            <button
+              type="button"
+              onClick={handleNotifSave}
+              disabled={notifSaving}
+              className="inline-flex items-center gap-2 bg-navy-800 text-white text-sm font-semibold px-4 py-2 rounded-xl hover:bg-navy-700 transition-colors disabled:opacity-50"
+            >
+              {notifSaving ? 'Saving…' : notifSaved ? '✓ Saved' : 'Save preferences'}
+            </button>
+            {notifSaved && <span className="text-xs text-emerald-600 font-medium">Preferences updated.</span>}
+          </div>
         </div>
 
         {/* ── Danger zone ── */}
