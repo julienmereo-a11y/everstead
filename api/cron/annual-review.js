@@ -39,13 +39,14 @@ export default async function handler(req, res) {
 
   const { data: candidates, error } = await supabase
     .from('profiles')
-    .select('id, full_name, email, plan')
+    .select('id, full_name, email, plan, notify_annual_review')
     .in('subscription_status', ['trialing', 'active'])
     .neq('role', 'delegate')
     .not('email', 'is', null)
     .gte('created_at', windowStart)
     .lte('created_at', windowEnd)
     .or(`annual_review_sent_at.is.null,annual_review_sent_at.lte.${elevenMonthsAgo}`)
+    .neq('notify_annual_review', false)
 
   if (error) {
     console.error('annual-review query error:', error)

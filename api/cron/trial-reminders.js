@@ -42,9 +42,10 @@ export default async function handler(req, res) {
   // ── Step 2: Trial reminder emails (7 / 3 / 1 days before expiry) ──
   const { data: trialing } = await supabase
     .from('profiles')
-    .select('id, full_name, email, plan, trial_ends_at, reminder_7_sent, reminder_3_sent, reminder_1_sent')
+    .select('id, full_name, email, plan, trial_ends_at, reminder_7_sent, reminder_3_sent, reminder_1_sent, notify_trial_reminders')
     .eq('subscription_status', 'trialing')
     .not('trial_ends_at', 'is', null)
+    .neq('notify_trial_reminders', false)
 
   const now = Date.now()
 

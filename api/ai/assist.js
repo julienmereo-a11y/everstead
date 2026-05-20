@@ -288,10 +288,13 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'Unknown type' })
   }
 
+  // Give conversational guides more room; quick single-shot responses need less
+  const maxTokens = type === 'grief-guide' || type === 'delegate-guide' || type === 'owner-guide' ? 1024 : 512
+
   try {
     const response = await anthropic.messages.create({
       model: 'claude-haiku-4-5-20251001',
-      max_tokens: 512,
+      max_tokens: maxTokens,
       system: systemPrompt,
       messages: requestMessages,
     })

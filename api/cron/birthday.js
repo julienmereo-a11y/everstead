@@ -24,12 +24,13 @@ export default async function handler(req, res) {
   // active/trialing, non-advisor, with a date_of_birth set
   const { data: candidates, error } = await supabase
     .from('profiles')
-    .select('id, full_name, email, date_of_birth, birthday_email_year')
+    .select('id, full_name, email, date_of_birth, birthday_email_year, notify_birthday')
     .in('subscription_status', ['trialing', 'active'])
     .eq('is_advisor', false)
     .not('date_of_birth', 'is', null)
     .not('email', 'is', null)
     .filter('date_of_birth', 'not.is', null)
+    .neq('notify_birthday', false)
 
   if (error) {
     console.error('birthday query error:', error)

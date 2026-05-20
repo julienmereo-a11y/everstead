@@ -53,7 +53,7 @@ export default function WhenSomeoneDies() {
         body:    JSON.stringify({ type: 'grief-guide', messages: next }),
       })
       const data = await res.json()
-      if (data.error) throw new Error(data.error)
+      if (!res.ok || data.error) throw new Error(data.error || `Server error ${res.status}`)
       setMessages(prev => [...prev, { role: 'assistant', content: data.reply }])
     } catch {
       setMessages(prev => [...prev, {
