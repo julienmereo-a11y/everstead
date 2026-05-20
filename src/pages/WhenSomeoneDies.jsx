@@ -122,9 +122,7 @@ export default function WhenSomeoneDies() {
             {messages.map((msg, i) => (
               <div key={i} className={`flex items-start ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                 {msg.role === 'assistant' && (
-                  <div className="w-7 h-7 rounded-xl bg-navy-900 flex items-center justify-center shrink-0 mr-2.5 mt-0.5">
-                    <img src="/logo-v2-white.png" alt="" className="w-4 h-4 object-contain" />
-                  </div>
+                  <img src="/favicon.png" alt="" className="w-7 h-7 rounded-xl object-cover shrink-0 mr-2.5 mt-0.5" />
                 )}
                 <div
                   className={`max-w-[86%] sm:max-w-[75%] px-4 py-3 rounded-2xl text-sm leading-relaxed whitespace-pre-line ${
@@ -141,9 +139,7 @@ export default function WhenSomeoneDies() {
             {/* Typing indicator */}
             {loading && (
               <div className="flex items-start justify-start">
-                <div className="w-7 h-7 rounded-xl bg-navy-900 flex items-center justify-center shrink-0 mr-2.5 mt-0.5">
-                  <img src="/logo-v2-white.png" alt="" className="w-4 h-4 object-contain" />
-                </div>
+                <img src="/favicon.png" alt="" className="w-7 h-7 rounded-xl object-cover shrink-0 mr-2.5 mt-0.5" />
                 <div className="bg-white border border-stone-200 rounded-2xl rounded-bl-sm px-4 py-3 flex items-center gap-2 shadow-sm">
                   <Loader2 size={14} className="animate-spin text-stone-400" />
                   <span className="text-xs text-stone-400">Thinking…</span>
