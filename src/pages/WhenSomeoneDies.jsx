@@ -18,7 +18,7 @@ const QUICK_PROMPTS = [
   { label: 'It just happened — what do I do first?', icon: '🕯️' },
   { label: 'The funeral is arranged — what comes next?', icon: '📋' },
   { label: 'I need to notify banks and institutions', icon: '🏦' },
-  { label: 'I\'m dealing with the estate and probate', icon: '⚖️' },
+  { label: "I'm dealing with the estate and probate", icon: '⚖️' },
 ]
 
 export default function WhenSomeoneDies() {
@@ -30,8 +30,11 @@ export default function WhenSomeoneDies() {
   const messagesEndRef        = useRef(null)
   const inputRef              = useRef(null)
 
+  // Only scroll to bottom after the user has sent at least one message
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+    if (messages.length > 1) {
+      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+    }
   }, [messages])
 
   const send = async (text) => {
@@ -63,7 +66,7 @@ export default function WhenSomeoneDies() {
     }
   }
 
-  const firstUserMessage = messages.some(m => m.role === 'user')
+  const hasStarted = messages.some(m => m.role === 'user')
 
   return (
     <>
@@ -75,13 +78,13 @@ export default function WhenSomeoneDies() {
         />
       </Helmet>
 
-      <div className="h-screen flex flex-col bg-stone-50 overflow-hidden">
+      <div className="h-screen flex flex-col bg-stone-50">
 
         {/* ── Header ── */}
         <header className="shrink-0 bg-white border-b border-stone-100 px-4 sm:px-6 py-3 flex items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <Link to="/" aria-label="Back to Everstead">
-              <img src="/logo-v2.png" alt="Everstead" className="h-8 w-auto" />
+              <img src="/logo-v2-dark.png" alt="Everstead" className="h-8 w-auto" />
             </Link>
             <div className="hidden sm:block w-px h-5 bg-stone-200" />
             <p className="hidden sm:block text-sm text-stone-500 font-medium">
@@ -96,35 +99,35 @@ export default function WhenSomeoneDies() {
           </Link>
         </header>
 
+        {/* ── Intro — visible before user starts chatting ── */}
+        {!hasStarted && (
+          <div className="shrink-0 bg-white border-b border-stone-100 px-4 sm:px-6 py-6 text-center">
+            <div className="inline-flex items-center justify-center w-11 h-11 rounded-2xl bg-stone-100 mb-3">
+              <Heart size={20} className="text-stone-400" />
+            </div>
+            <h1 className="font-display text-2xl sm:text-3xl font-light text-navy-950 mb-1.5">
+              What to do when someone dies
+            </h1>
+            <p className="text-stone-500 text-sm max-w-md mx-auto leading-relaxed">
+              A free, compassionate guide through the practical steps after a death in the UK.
+              No sign-up needed — just ask.
+            </p>
+          </div>
+        )}
+
         {/* ── Messages ── */}
         <div className="flex-1 overflow-y-auto">
-          <div className="max-w-2xl mx-auto px-4 sm:px-6 py-6 space-y-4">
+          <div className="max-w-2xl mx-auto px-4 sm:px-6 py-5 space-y-4">
 
-            {/* Page intro — shown before first user message */}
-            {!firstUserMessage && (
-              <div className="text-center mb-2">
-                <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-stone-100 mb-4">
-                  <Heart size={22} className="text-stone-400" />
-                </div>
-                <h1 className="font-display text-2xl sm:text-3xl font-light text-navy-950 mb-2">
-                  What to do when someone dies
-                </h1>
-                <p className="text-stone-500 text-sm max-w-sm mx-auto leading-relaxed">
-                  A free, private guide through the practical steps. No sign-up needed.
-                </p>
-              </div>
-            )}
-
-            {/* Chat messages */}
             {messages.map((msg, i) => (
-              <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+              <div key={i} className={`flex items-start ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                 {msg.role === 'assistant' && (
                   <div className="w-7 h-7 rounded-xl bg-navy-900 flex items-center justify-center shrink-0 mr-2.5 mt-0.5">
                     <img src="/logo-v2-white.png" alt="" className="w-4 h-4 object-contain" />
                   </div>
                 )}
                 <div
-                  className={`max-w-[88%] sm:max-w-[78%] px-4 py-3 rounded-2xl text-sm leading-relaxed whitespace-pre-line ${
+                  className={`max-w-[86%] sm:max-w-[75%] px-4 py-3 rounded-2xl text-sm leading-relaxed whitespace-pre-line ${
                     msg.role === 'user'
                       ? 'bg-navy-800 text-white rounded-br-sm'
                       : 'bg-white border border-stone-200 text-navy-900 rounded-bl-sm shadow-sm'
@@ -137,7 +140,7 @@ export default function WhenSomeoneDies() {
 
             {/* Typing indicator */}
             {loading && (
-              <div className="flex justify-start">
+              <div className="flex items-start justify-start">
                 <div className="w-7 h-7 rounded-xl bg-navy-900 flex items-center justify-center shrink-0 mr-2.5 mt-0.5">
                   <img src="/logo-v2-white.png" alt="" className="w-4 h-4 object-contain" />
                 </div>
@@ -153,17 +156,18 @@ export default function WhenSomeoneDies() {
         </div>
 
         {/* ── Quick prompts — only before first user message ── */}
-        {!firstUserMessage && (
+        {!hasStarted && (
           <div className="shrink-0 bg-stone-50 border-t border-stone-100 px-4 sm:px-6 py-3">
-            <div className="max-w-2xl mx-auto flex flex-wrap gap-2">
+            <div className="max-w-2xl mx-auto flex gap-2 overflow-x-auto pb-0.5 scrollbar-none">
               {QUICK_PROMPTS.map(({ label, icon }) => (
                 <button
                   key={label}
                   onClick={() => send(label)}
                   disabled={loading}
-                  className="inline-flex items-center gap-1.5 text-xs font-medium text-navy-700 bg-white border border-stone-200 hover:border-navy-300 hover:bg-navy-50 px-3 py-2 rounded-xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="shrink-0 inline-flex items-center gap-1.5 text-xs font-medium text-navy-700 bg-white border border-stone-200 hover:border-navy-300 hover:bg-navy-50 px-3 py-2 rounded-xl transition-colors disabled:opacity-50"
                 >
-                  <span>{icon}</span> {label}
+                  <span>{icon}</span>
+                  <span className="whitespace-nowrap">{label}</span>
                 </button>
               ))}
             </div>
@@ -194,12 +198,15 @@ export default function WhenSomeoneDies() {
           </div>
         </div>
 
-        {/* ── Soft CTA footer ── */}
+        {/* ── Footer ── */}
         <div className="shrink-0 bg-white border-t border-stone-100 px-4 sm:px-6 py-2.5 text-center">
           <p className="text-xs text-stone-400">
             This is a guide, not legal advice. For complex estates, always seek a solicitor.
             {' '}·{' '}
-            <Link to="/get-started" className="text-navy-600 hover:text-navy-800 underline underline-offset-2 transition-colors">
+            <Link
+              to="/get-started"
+              className="text-navy-600 hover:text-navy-800 underline underline-offset-2 transition-colors"
+            >
               Organise your own estate with Everstead →
             </Link>
           </p>
