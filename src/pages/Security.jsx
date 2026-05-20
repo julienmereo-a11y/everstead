@@ -348,6 +348,10 @@ export default function Security() {
           <p className="text-xs text-stone-400 mt-5">
             For general support: <a href="mailto:hello@everstead.care" className="text-navy-600 hover:text-navy-900">hello@everstead.care</a>
           </p>
+          <p className="text-xs text-stone-400 mt-3">
+            Want to know about data portability and your export rights?{' '}
+            <Link to="/data-promise" className="text-navy-600 hover:text-navy-900">Our data promise →</Link>
+          </p>
         </div>
       </section>
 

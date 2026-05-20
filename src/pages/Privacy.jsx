@@ -34,6 +34,12 @@ We may share minimal data with service providers who help us operate the platfor
 If you are located in the UK or European Economic Area, you have additional rights under UK GDPR and EU GDPR, including rights of access, rectification, erasure, and data portability. Contact us at privacy@everstead.care to exercise these rights.`,
   },
   {
+    title: 'Data portability',
+    content: `You have the right to receive a copy of your personal data in a structured, commonly used, and machine-readable format. You can exercise this right at any time by visiting your dashboard settings and clicking "Export my data". Your export includes accounts, documents, instructions, wishes, trusted contacts, and your activity log — in standard JSON and file formats.
+
+If Everstead Digital Ltd ceases trading, we commit to providing a minimum of 90 days notice and continued free access to data export for all users. Full details are available at everstead.care/data-promise.`,
+  },
+  {
     title: 'Cookies',
     content: `Everstead uses strictly necessary session cookies to keep you logged in. We do not use third-party tracking or advertising cookies. You can disable cookies in your browser settings, though some platform features may not function correctly without them.`,
   },

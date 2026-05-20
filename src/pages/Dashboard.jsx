@@ -3437,6 +3437,45 @@ function SettingsSection({ profile, isDemo, updateProfile, refreshProfile, onUpg
   const [cancelConfirm, setCancelConfirm] = useState(false)
   const [cancelling, setCancelling]       = useState(false)
   const [cancelError, setCancelError]     = useState(null)
+
+  // Data export
+  const [exporting, setExporting]       = useState(false)
+  const [exportDone, setExportDone]     = useState(false)
+  const [exportError, setExportError]   = useState(null)
+
+  const handleExport = async () => {
+    if (isDemo) return
+    setExporting(true)
+    setExportDone(false)
+    setExportError(null)
+    try {
+      const { supabase: sb } = await import('../lib/supabase')
+      const { data: { session } } = await sb.auth.getSession()
+      const res = await fetch('/api/data/export', {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${session.access_token}` },
+      })
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}))
+        throw new Error(err.error || `Export failed (${res.status})`)
+      }
+      const blob = await res.blob()
+      const date = new Date().toISOString().split('T')[0]
+      const url  = URL.createObjectURL(blob)
+      const a    = document.createElement('a')
+      a.href     = url
+      a.download = `everstead-export-${date}.zip`
+      document.body.appendChild(a)
+      a.click()
+      document.body.removeChild(a)
+      URL.revokeObjectURL(url)
+      setExportDone(true)
+    } catch (err) {
+      setExportError(err.message || 'Export failed. Please try again.')
+    } finally {
+      setExporting(false)
+    }
+  }
   const [reactivating, setReactivating]   = useState(false)
   const [reactivateError, setReactivateError] = useState(null)
 
@@ -3963,6 +4002,46 @@ function SettingsSection({ profile, isDemo, updateProfile, refreshProfile, onUpg
             </button>
             {notifSaved && <span className="text-xs text-emerald-600 font-medium">Preferences updated.</span>}
           </div>
+        </div>
+
+        {/* ── My Data ── */}
+        <div className="bg-white border border-stone-200 rounded-2xl p-6">
+          <h2 className="font-semibold text-navy-950 text-sm mb-1 flex items-center gap-2">
+            <Download size={15} className="text-navy-600" /> My data
+          </h2>
+          <p className="text-xs text-stone-500 mb-5 leading-relaxed">
+            Download a complete copy of everything in your Everstead plan — accounts, documents, instructions, wishes, and more.
+            Your data belongs to you, always.{' '}
+            <Link to="/data-promise" className="text-navy-600 hover:text-navy-800 underline underline-offset-2">Our data promise →</Link>
+          </p>
+          {isDemo ? (
+            <p className="text-xs text-stone-400 italic">Data export is disabled in demo mode.</p>
+          ) : (
+            <div className="space-y-3">
+              <button
+                onClick={handleExport}
+                disabled={exporting}
+                className="inline-flex items-center gap-2 bg-navy-800 text-white text-sm font-semibold px-4 py-2.5 rounded-xl hover:bg-navy-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {exporting ? (
+                  <><Loader2 size={14} className="animate-spin" /> Preparing your export…</>
+                ) : (
+                  <><Download size={14} /> Export my data</>
+                )}
+              </button>
+              {exportDone && (
+                <p className="text-xs text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-lg px-3 py-2">
+                  Your data has been exported. Keep this file somewhere safe.
+                </p>
+              )}
+              {exportError && (
+                <p className="text-xs text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2">{exportError}</p>
+              )}
+              <p className="text-xs text-stone-400">
+                Includes all accounts, uploaded documents, instructions, wishes, trusted contacts, and your activity log. May take a few seconds for larger vaults.
+              </p>
+            </div>
+          )}
         </div>
 
         {/* ── Danger zone ── */}

@@ -66,6 +66,12 @@ You may also delete your account at any time from your account settings.`,
     content: `These terms are governed by the laws of England and Wales. Any disputes arising in connection with these terms shall be subject to the exclusive jurisdiction of the courts of England and Wales.`,
   },
   {
+    title: 'Data continuity',
+    content: `In the event that Everstead Digital Ltd ceases trading, users will receive a minimum of 90 days written notice. During this period, data export will remain available free of charge to all users regardless of subscription status. No user data will be deleted without prior notice and a reasonable opportunity to export.
+
+Full details of our data commitments are available at everstead.care/data-promise.`,
+  },
+  {
     title: 'Contact',
     content: `Questions about these terms? Contact us at legal@everstead.care.
 

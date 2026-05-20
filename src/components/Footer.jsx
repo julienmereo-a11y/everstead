@@ -46,6 +46,7 @@ const cols = [
     links: [
       { label: 'Privacy Policy', href: '/privacy' },
       { label: 'Terms of Service', href: '/terms' },
+      { label: 'Data Promise', href: '/data-promise' },
       { label: 'Advisor DPA', href: '/advisor-dpa' },
       { label: 'Cookie Policy', href: '/cookies' },
       { label: 'Accessibility', href: '/accessibility' },
@@ -93,6 +94,7 @@ export default function Footer() {
           <div className="flex items-center gap-5">
             <Link to="/privacy" className="hover:text-stone-400 transition-colors">Privacy</Link>
             <Link to="/terms" className="hover:text-stone-400 transition-colors">Terms</Link>
+            <Link to="/data-promise" className="hover:text-stone-400 transition-colors">Data Promise</Link>
             <Link to="/cookies" className="hover:text-stone-400 transition-colors">Cookies</Link>
             <Link to="/accessibility" className="hover:text-stone-400 transition-colors">Accessibility</Link>
             <Link to="/security" className="hover:text-stone-400 transition-colors">Trust</Link>

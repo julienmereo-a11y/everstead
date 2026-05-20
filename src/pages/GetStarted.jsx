@@ -714,6 +714,10 @@ export default function GetStarted() {
                 Already have an account?{' '}
                 <Link to="/login" className="text-navy-700 font-medium hover:text-navy-900">Sign in</Link>
               </p>
+              <p className="text-center mt-3 text-xs text-stone-400">
+                Not ready to commit? You can export all your data anytime.{' '}
+                <Link to="/data-promise" className="text-navy-600 hover:text-navy-800">Our data promise →</Link>
+              </p>
             </div>
           )}
 

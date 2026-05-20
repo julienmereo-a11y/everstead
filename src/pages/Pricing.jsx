@@ -268,6 +268,12 @@ export default function Pricing() {
           })}
         </div>
 
+        {/* ── Data promise trust line ── */}
+        <p className="reveal text-center mt-8 text-stone-500 text-sm">
+          Your data belongs to you. Export everything anytime. 90-day wind-down commitment.{' '}
+          <Link to="/data-promise" className="text-navy-700 font-medium hover:text-navy-900 underline underline-offset-2 transition-colors">Learn more →</Link>
+        </p>
+
         {/* ── Gift callout — sits directly under the 3 plan cards ── */}
         <div className="text-center mt-10 pb-2">
           <p className="text-stone-500 text-sm mb-3">Looking for a gift for someone you care about?</p>

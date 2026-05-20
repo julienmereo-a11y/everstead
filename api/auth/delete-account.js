@@ -97,12 +97,17 @@ function deletionHtml(name) {
             We've confirmed the deletion of your Everstead account. Any active subscription has been cancelled immediately — you will not be charged again.
           </p>
           <p style="margin:0 0 16px;color:#4a5568;font-size:16px;line-height:1.6;">
-            Your data will be permanently and irreversibly removed within <strong>30 days</strong>. If this was a mistake, contact us within that window and we'll do our best to help.
+            Your account is scheduled for deletion within <strong>30 days</strong>. If this was a mistake, contact us within that window and we'll do our best to help.
           </p>
+          <p style="margin:0 0 8px;color:#4a5568;font-size:16px;line-height:1.6;font-weight:600;">Download a copy of your data before then.</p>
+          <p style="margin:0 0 24px;color:#4a5568;font-size:16px;line-height:1.6;">
+            Everything you've added to your Everstead plan is yours to keep. Visit your dashboard to export a complete copy of your accounts, documents, instructions, and wishes while your account is still active.
+          </p>
+          <a href="https://www.everstead.care/dashboard?tab=settings" style="display:inline-block;background:#0d1628;color:#ffffff;text-decoration:none;padding:14px 28px;border-radius:8px;font-size:15px;margin-bottom:24px;">Export my data →</a>
           <p style="margin:0 0 32px;color:#4a5568;font-size:16px;line-height:1.6;">
             We're sorry to see you go. If you have a moment, we'd genuinely love to know what we could have done better — just reply to this email.
           </p>
-          <a href="mailto:support@everstead.care" style="display:inline-block;background:#0d1628;color:#ffffff;text-decoration:none;padding:14px 28px;border-radius:8px;font-size:15px;">Contact support</a>
+          <a href="mailto:support@everstead.care" style="display:inline-block;background:#f5f4f0;color:#0d1628;text-decoration:none;padding:12px 24px;border-radius:8px;font-size:14px;border:1px solid #e8e5e0;">Contact support</a>
         </td></tr>
         <tr><td style="padding:24px 40px;border-top:1px solid #e8e5e0;">
           <p style="margin:0;color:#9ca3af;font-size:13px;line-height:1.5;">Questions? <a href="mailto:support@everstead.care" style="color:#4c7d47;">support@everstead.care</a></p>

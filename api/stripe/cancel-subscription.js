@@ -190,9 +190,14 @@ function cancellationHtml(firstName, accessEndDate) {
           <p style="margin:0 0 32px;color:#4a5568;font-size:16px;line-height:1.7;">
             If you have a moment, we'd genuinely love to hear from you. What could we have done better? Was there something missing? Your feedback — even just a sentence — would mean a lot to us and help us build something better for the next family.
           </p>
-          <p style="margin:0 0 32px;color:#4a5568;font-size:16px;line-height:1.7;">
+          <p style="margin:0 0 20px;color:#4a5568;font-size:16px;line-height:1.7;">
             If you ever change your mind, your account will be here. We'll keep your data safe for 30 days.
           </p>
+          <p style="margin:0 0 8px;color:#4a5568;font-size:15px;line-height:1.7;font-weight:600;">Before you go — don't forget to export your data.</p>
+          <p style="margin:0 0 24px;color:#4a5568;font-size:15px;line-height:1.7;">
+            Everything you've added to your Everstead plan is yours to keep. You can download a complete copy of your accounts, documents, instructions, and wishes from your dashboard before your access ends.
+          </p>
+          <a href="https://www.everstead.care/dashboard?tab=settings" style="display:inline-block;background:#0d1628;color:#ffffff;text-decoration:none;padding:12px 24px;border-radius:8px;font-size:14px;margin-bottom:24px;">Export my data →</a>
           <p style="margin:0 0 0;color:#6b7280;font-size:15px;line-height:1.6;font-style:italic;">With thanks for giving us a try.<br>The Everstead team</p>
         </td></tr>
         <tr><td style="padding:24px 40px;border-top:1px solid #e8e5e0;">

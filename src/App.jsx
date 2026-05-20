@@ -57,6 +57,7 @@ const AdvisorDPA            = lazy(() => import('./pages/AdvisorDPA'))
 const Changelog             = lazy(() => import('./pages/Changelog'))
 const Compare               = lazy(() => import('./pages/Compare'))
 const WhenSomeoneDies       = lazy(() => import('./pages/WhenSomeoneDies'))
+const DataPromise           = lazy(() => import('./pages/DataPromise'))
 
 // ── Page loading fallback ─────────────────────────────────────────────────────
 function PageLoader() {
@@ -194,6 +195,7 @@ export default function App() {
               <Route path="/changelog"    element={<Layout><Changelog /></Layout>} />
               <Route path="/compare/:slug" element={<Layout><Compare /></Layout>} />
               <Route path="/what-to-do-when-someone-dies" element={<WhenSomeoneDies />} />
+              <Route path="/data-promise"  element={<Layout><DataPromise /></Layout>} />
               <Route path="*"           element={<Layout><NotFound /></Layout>} />
             </Routes>
           </Suspense>

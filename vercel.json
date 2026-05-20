@@ -2,6 +2,9 @@
   "rewrites": [
     { "source": "/((?!api/).*)", "destination": "/index.html" }
   ],
+  "functions": {
+    "api/data/export.js": { "maxDuration": 60 }
+  },
   "crons": [
     { "path": "/api/cron/trial-reminders",    "schedule": "0 9 * * *"   },
     { "path": "/api/cron/abandoned-checkout", "schedule": "0 * * * *"   },
