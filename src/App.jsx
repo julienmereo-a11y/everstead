@@ -54,6 +54,7 @@ import Press from './pages/Press'
 import AdvisorDPA from './pages/AdvisorDPA'
 import Changelog from './pages/Changelog'
 import Compare from './pages/Compare'
+import WhenSomeoneDies from './pages/WhenSomeoneDies'
 
 function ScrollToTop() {
   const { pathname } = useLocation()
@@ -180,6 +181,7 @@ export default function App() {
           <Route path="/advisor-dpa"  element={<Layout><AdvisorDPA /></Layout>} />
           <Route path="/changelog"    element={<Layout><Changelog /></Layout>} />
           <Route path="/compare/:slug" element={<Layout><Compare /></Layout>} />
+          <Route path="/what-to-do-when-someone-dies" element={<WhenSomeoneDies />} />
           <Route path="*"           element={<Layout><NotFound /></Layout>} />
         </Routes>
         </ErrorBoundary>

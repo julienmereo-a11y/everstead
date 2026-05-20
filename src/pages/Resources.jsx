@@ -2009,6 +2009,15 @@ const sections = {
 
 const tools = [
   {
+    href: '/what-to-do-when-someone-dies',
+    title: 'What to do when someone dies',
+    tag: 'AI guide',
+    tagColor: 'bg-stone-100 text-stone-700 border-stone-200',
+    desc: 'A free, compassionate AI guide through the practical steps after a death in the UK — from the first hours to closing the estate. No sign-up needed.',
+    cta: 'Start the guide',
+    badge: 'Free · No login',
+  },
+  {
     href: '/estate-readiness-score',
     title: 'Estate Readiness Score',
     tag: 'Quiz',
