@@ -154,6 +154,9 @@ export default function Security() {
           <p className="mt-6 text-stone-300 text-lg leading-relaxed max-w-xl mx-auto animate-fade-up animate-delay-100">
             Everstead was designed from the ground up for trust, privacy, and control. Every technical and operational decision reflects the responsibility we hold.
           </p>
+          <p className="mt-4 text-xs text-stone-500 animate-fade-up animate-delay-200" style={{ letterSpacing: '0.02em' }}>
+            🔒 AES-256 encryption &nbsp;·&nbsp; 🇬🇧 UK-based &nbsp;·&nbsp; ICO registered &nbsp;·&nbsp; No. 17166825
+          </p>
         </div>
       </section>
 
@@ -340,7 +343,10 @@ export default function Security() {
           </p>
           <a
             href="mailto:security@everstead.care"
-            className="inline-flex items-center gap-2 bg-navy-800 text-white font-semibold text-sm px-6 py-3 rounded-lg hover:bg-navy-700 transition-colors"
+            className="inline-flex items-center gap-2 font-semibold text-sm px-6 py-3 rounded-lg transition-colors"
+            style={{ backgroundColor: '#4c7d47', color: '#ffffff' }}
+            onMouseEnter={e => e.currentTarget.style.backgroundColor = '#3d6b3a'}
+            onMouseLeave={e => e.currentTarget.style.backgroundColor = '#4c7d47'}
           >
             security@everstead.care
             <ArrowRight size={15} />

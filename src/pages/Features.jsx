@@ -40,6 +40,7 @@ const coreFeatures = [
       'Role-based access — share only what is needed',
       'Version history and file audit log',
     ],
+    ai: 'Upload a document — we extract the key details automatically. ✨',
     accent: 'bg-emerald-50 border-emerald-100',
     iconBg: 'bg-emerald-100',
     iconColor: 'text-emerald-700',
@@ -56,6 +57,7 @@ const coreFeatures = [
       'Contact lists with names, roles, and numbers',
       'Personal notes and situation-specific guidance',
     ],
+    ai: "Not sure what to write? We'll help you find the words. ✨",
     accent: 'bg-violet-50 border-violet-100',
     iconBg: 'bg-violet-100',
     iconColor: 'text-violet-700',
@@ -104,6 +106,7 @@ const coreFeatures = [
       'Personal letters and messages for loved ones',
       'Allocation of sentimental or personal items',
     ],
+    ai: "We can help you start when the words don't come easily. ✨",
     accent: 'bg-pink-50 border-pink-100',
     iconBg: 'bg-pink-100',
     iconColor: 'text-pink-700',
@@ -120,6 +123,7 @@ const coreFeatures = [
       'Released only to the intended recipient after the plan is activated',
       'Separate messages per person — different words for different relationships',
     ],
+    ai: 'Write it yourself or let us help you get started. ✨',
     accent: 'bg-violet-50 border-violet-100',
     iconBg: 'bg-violet-100',
     iconColor: 'text-violet-700',
@@ -152,6 +156,7 @@ const coreFeatures = [
       'Periodic review reminders',
       'A clear signal your family can rely on you\'ve prepared',
     ],
+    ai: 'Your AI readiness coach tells you exactly what to focus on next. ✨',
     accent: 'bg-teal-50 border-teal-100',
     iconBg: 'bg-teal-100',
     iconColor: 'text-teal-700',
@@ -218,11 +223,11 @@ export default function Features() {
     <>
     <Helmet>
       <title>Features — Everstead</title>
-      <meta name="description" content="Explore everything Everstead offers — account vault, document storage, trusted people, step-by-step instructions, and a readiness score to keep you on track." />
+      <meta name="description" content="Explore everything Everstead offers — document scanning, AI-assisted instructions, personal messages, trusted contacts, and a readiness score to keep your plan on track." />
       <link rel="canonical" href="https://www.everstead.care/features" />
       <meta property="og:type" content="website" />
       <meta property="og:title" content="Features — Everstead" />
-      <meta property="og:description" content="Explore everything Everstead offers — account vault, document storage, trusted people, step-by-step instructions, and a readiness score to keep you on track." />
+      <meta property="og:description" content="Explore everything Everstead offers — document scanning, AI-assisted instructions, personal messages, trusted contacts, and a readiness score to keep your plan on track." />
       <meta property="og:url" content="https://www.everstead.care/features" />
       <meta property="og:image" content="https://www.everstead.care/og-image.png" />
       <meta name="twitter:card" content="summary_large_image" />
@@ -233,13 +238,6 @@ export default function Features() {
       {/* ── Hero ───────────────────────────────────────────────────────── */}
       <section className="py-24 lg:py-32 grain relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-navy-950 via-navy-800 to-navy-700" />
-        <div
-          className="absolute inset-0 opacity-40"
-          style={{
-            backgroundImage: 'linear-gradient(to right,rgba(255,255,255,.04) 1px,transparent 1px),linear-gradient(to bottom,rgba(255,255,255,.04) 1px,transparent 1px)',
-            backgroundSize: '48px 48px',
-          }}
-        />
         <div className="relative max-w-4xl mx-auto px-6 text-center">
           <p className="text-xs font-semibold uppercase tracking-widest text-sage-400 mb-5">Features</p>
           <h1 className="font-display text-5xl lg:text-6xl font-light text-white leading-tight text-balance">
@@ -249,7 +247,13 @@ export default function Features() {
             Everstead gives you a structured, secure, and complete picture of your estate — accounts, documents, instructions, and final wishes — organised and accessible to the right people when it matters most.
           </p>
           <div className="mt-10 flex flex-wrap gap-3 justify-center">
-            <Link to="/get-started" className="inline-flex items-center gap-2 bg-white text-navy-900 font-semibold text-sm px-6 py-3 rounded-lg hover:bg-stone-100 transition-colors">
+            <Link
+              to="/get-started"
+              className="inline-flex items-center gap-2 font-semibold text-sm px-6 py-3 rounded-lg transition-colors"
+              style={{ backgroundColor: '#4c7d47', color: '#ffffff' }}
+              onMouseEnter={e => e.currentTarget.style.backgroundColor = '#3d6b3a'}
+              onMouseLeave={e => e.currentTarget.style.backgroundColor = '#4c7d47'}
+            >
               Get started free <ArrowRight size={15} />
             </Link>
             <Link to="/how-it-works" className="inline-flex items-center gap-2 bg-white/10 text-white font-medium text-sm px-6 py-3 rounded-lg border border-white/20 hover:bg-white/20 transition-colors">
@@ -293,7 +297,7 @@ export default function Features() {
           </div>
 
           <div className="space-y-6">
-            {coreFeatures.map(({ icon: Icon, tag, title, headline, body, bullets, accent, iconBg, iconColor }, i) => (
+            {coreFeatures.map(({ icon: Icon, tag, title, headline, body, bullets, accent, iconBg, iconColor, ai }, i) => (
               <div
                 key={title}
                 className={`reveal reveal-delay-${Math.min(i + 1, 5)} rounded-2xl border bg-white overflow-hidden transition-all`}
@@ -323,6 +327,9 @@ export default function Features() {
                     <div>
                       <p className="font-semibold text-navy-900 text-base mb-3">{headline}</p>
                       <p className="text-stone-600 text-sm leading-relaxed">{body}</p>
+                      {ai && (
+                        <p style={{ fontSize: '12px', color: '#4c7d47', marginTop: '8px', fontStyle: 'italic' }}>{ai}</p>
+                      )}
                     </div>
                     <ul className="space-y-2.5">
                       {bullets.map(b => (
@@ -567,7 +574,13 @@ export default function Features() {
             It takes minutes to start. It takes one crisis to wish you had.
           </p>
           <div className="mt-10 flex flex-wrap gap-3 justify-center">
-            <Link to="/get-started" className="inline-flex items-center gap-2 bg-white text-navy-900 font-semibold text-sm px-7 py-3.5 rounded-lg hover:bg-stone-100 transition-colors">
+            <Link
+              to="/get-started"
+              className="inline-flex items-center gap-2 font-semibold text-sm px-7 py-3.5 rounded-lg transition-colors"
+              style={{ backgroundColor: '#4c7d47', color: '#ffffff' }}
+              onMouseEnter={e => e.currentTarget.style.backgroundColor = '#3d6b3a'}
+              onMouseLeave={e => e.currentTarget.style.backgroundColor = '#4c7d47'}
+            >
               Get started free <ArrowRight size={16} />
             </Link>
             <Link to="/pricing" className="inline-flex items-center gap-2 bg-white/10 text-white font-medium text-sm px-7 py-3.5 rounded-lg border border-white/20 hover:bg-white/20 transition-colors">

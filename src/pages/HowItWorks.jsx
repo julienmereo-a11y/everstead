@@ -45,7 +45,7 @@ const steps = [
     id: 'step-2',
     label: 'Store your documents',
     title: 'Give every important document a permanent home.',
-    body: "A will that can't be found is almost as useless as not having one. The same goes for insurance policies, pension paperwork, and property deeds. Everstead's encrypted vault lets you upload originals or scanned copies, tag them, and note where physical originals are stored — so your family can find everything in one place, not in three filing cabinets and a solicitor's office.",
+    body: "A will that can't be found is almost as useless as not having one. The same goes for insurance policies, pension paperwork, and property deeds. Everstead's encrypted vault lets you upload originals or scanned copies, tag them, and note where physical originals are stored — so your family can find everything in one place, not in three filing cabinets and a solicitor's office. Upload a document and we'll read it for you — extracting the name, type, and expiry automatically.",
     bullets: [
       'Upload and organise your will and LPAs',
       'Store passport, ID, and birth certificate details',
@@ -97,7 +97,7 @@ const steps = [
     id: 'step-4',
     label: 'Write your instructions',
     title: 'Tell them what to do — step by step.',
-    body: "Documents and account lists answer 'where is it?'. Instructions answer 'what do I do next?'. This is the part most people skip, and the part families say they needed most. In Everstead you can write clear, ordered guidance: who to call first, which accounts to freeze, what your funeral preferences are, what to do with the dog. It doesn't need to be perfect — it just needs to exist.",
+    body: "Documents and account lists answer 'where is it?'. Instructions answer 'what do I do next?'. This is the part most people skip, and the part families say they needed most. In Everstead you can write clear, ordered guidance: who to call first, which accounts to freeze, what your funeral preferences are, what to do with the dog. Not sure where to start? We'll help you write it — just tell us the basics and we'll find the words.",
     bullets: [
       'Write step-by-step instructions in plain language',
       'Record funeral and burial preferences',
@@ -173,11 +173,11 @@ export default function HowItWorks() {
     <>
     <Helmet>
       <title>How It Works — Everstead</title>
-      <meta name="description" content="See how Everstead helps you organise your accounts, documents, trusted contacts, and final wishes — so your family knows exactly what to do. Takes under an hour to set up." />
+      <meta name="description" content="See how Everstead works — organise accounts, upload documents with automatic scanning, write instructions with AI assistance, and give your family everything they need. Under an hour to set up." />
       <link rel="canonical" href="https://www.everstead.care/how-it-works" />
       <meta property="og:type" content="website" />
       <meta property="og:title" content="How It Works — Everstead" />
-      <meta property="og:description" content="See how Everstead helps you organise your accounts, documents, trusted contacts, and final wishes — so your family knows exactly what to do. Takes under an hour to set up." />
+      <meta property="og:description" content="See how Everstead works — organise accounts, upload documents with automatic scanning, write instructions with AI assistance, and give your family everything they need. Under an hour to set up." />
       <meta property="og:url" content="https://www.everstead.care/how-it-works" />
       <meta property="og:image" content="https://www.everstead.care/og-image.png" />
       <meta name="twitter:card" content="summary_large_image" />
@@ -493,7 +493,10 @@ export default function HowItWorks() {
           <div className="flex flex-wrap gap-3 justify-center">
             <Link
               to="/get-started"
-              className="inline-flex items-center gap-2 bg-white text-navy-900 font-semibold text-sm px-7 py-3.5 rounded-lg hover:bg-stone-100 transition-colors"
+              className="inline-flex items-center gap-2 font-semibold text-sm px-7 py-3.5 rounded-lg transition-colors"
+              style={{ backgroundColor: '#4c7d47', color: '#ffffff' }}
+              onMouseEnter={e => e.currentTarget.style.backgroundColor = '#3d6b3a'}
+              onMouseLeave={e => e.currentTarget.style.backgroundColor = '#4c7d47'}
             >
               Get started free <ArrowRight size={15} />
             </Link>
