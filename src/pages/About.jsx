@@ -95,11 +95,11 @@ export default function About() {
             <div className="grid lg:grid-cols-[280px_1fr] gap-12 lg:gap-20 items-start reveal">
               {/* Photo / avatar */}
               <div className="flex flex-col items-center lg:items-start gap-5">
-                <div className="w-40 h-40 rounded-2xl overflow-hidden bg-gradient-to-br from-navy-800 to-navy-950 flex items-center justify-center flex-shrink-0 shadow-lg">
-                  <span className="font-display text-6xl font-light text-white/60 select-none">J</span>
+                <div className="w-40 h-40 rounded-2xl overflow-hidden flex-shrink-0 shadow-lg bg-stone-100">
+                  <img src="/julien-thuy.png" alt="Julien Thuy, Founder of Everstead" className="w-full h-full object-cover object-top" />
                 </div>
                 <div>
-                  <p className="font-semibold text-navy-900 text-lg">Julien</p>
+                  <p className="font-semibold text-navy-900 text-lg">Julien Thuy</p>
                   <p className="text-stone-500 text-sm mt-0.5">Founder, Everstead</p>
                   <p className="text-stone-400 text-xs mt-1">London, UK</p>
                 </div>
