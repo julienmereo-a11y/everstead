@@ -300,6 +300,11 @@ export default function Dashboard() {
       ? tabParam
       : 'overview'
   )
+  const mainRef = React.useRef(null)
+  React.useEffect(() => {
+    if (mainRef.current) mainRef.current.scrollTop = 0
+  }, [activeSection])
+
   const [sidebarOpen, setSidebarOpen]     = useState(false)
   const [trialDismissed, setTrialDismissed] = useState(false)
   const [upgradeError, setUpgradeError]   = useState(null)
@@ -688,7 +693,7 @@ export default function Dashboard() {
       </aside>
 
       {/* ── MAIN CONTENT ────────────────────────────────────── */}
-      <main className="flex-1 overflow-auto flex flex-col min-w-0" aria-label="Main content">
+      <main ref={mainRef} className="flex-1 overflow-auto flex flex-col min-w-0" aria-label="Main content">
 
         {/* Mobile top bar */}
         <div className="lg:hidden sticky top-0 z-20 bg-navy-950 border-b border-navy-800 px-4 py-3 flex items-center gap-3">
