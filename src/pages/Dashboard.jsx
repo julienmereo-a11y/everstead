@@ -17,7 +17,7 @@ import { isAtLimit, getLimit, canUseFeature } from '../lib/planLimits'
 import { useAccounts }      from '../hooks/useData'
 import { useDocuments }     from '../hooks/useData'
 import { usePeople }        from '../hooks/useData'
-import { CheckoutSuccessBanner, GiftRedeemedBanner, OnboardingChecklist } from '../components/Onboarding'
+import { CheckoutSuccessBanner, GiftRedeemedBanner } from '../components/Onboarding'
 import { SkeletonStats } from '../components/Skeleton'
 import { useInstructions }  from '../hooks/useData'
 import { useSubscriptions } from '../hooks/useData'
@@ -1362,17 +1362,6 @@ function OverviewSection({ profile, accounts, documents, people, instructions, a
           </div>
         </div>
       )}
-
-      {/* Onboarding checklist — hidden once all steps done + dismissed */}
-      <OnboardingChecklist
-        profile={profile}
-        accounts={accounts}
-        documents={documents}
-        people={people}
-        instructions={instructions}
-        onNavigate={onNavigate}
-        userId={profile.id}
-      />
 
       {/* Readiness score + stats */}
       <div className="grid lg:grid-cols-[1fr_2fr] gap-6 mb-6">
