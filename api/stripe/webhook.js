@@ -128,6 +128,8 @@ export default async function handler(req, res) {
   // ── customer.subscription.created ────────────────────────
   // Fires immediately when the inline-checkout flow creates the subscription.
   // Syncs plan/billing/trial data to the profile using user_id from metadata.
+  // Also sends the owner notification — this is the most reliable hook for it
+  // because the subscription object is already fully formed here.
   if (event.type === 'customer.subscription.created') {
     const subscription = event.data.object
     const priceId          = subscription.items.data[0]?.price?.id
@@ -158,17 +160,43 @@ export default async function handler(req, res) {
 
     // Prefer user_id from metadata (avoids race condition where stripe_customer_id
     // hasn't been written to profiles yet when the webhook arrives)
+    let updatedProfile = null
     if (metaUserId) {
-      await supabase.from('profiles').update(profileUpdate).eq('id', metaUserId)
+      const { data } = await supabase.from('profiles').update(profileUpdate).eq('id', metaUserId).select('id, full_name, email, plan, billing_cycle').single()
+      updatedProfile = data
     } else {
-      await supabase.from('profiles').update(profileUpdate).eq('stripe_customer_id', subscription.customer)
+      const { data } = await supabase.from('profiles').update(profileUpdate).eq('stripe_customer_id', subscription.customer).select('id, full_name, email, plan, billing_cycle').single()
+      updatedProfile = data
+    }
+
+    // Owner notification — fired here (not in setup_intent.succeeded) so it
+    // always has a fully-formed subscription object and no race conditions.
+    if (updatedProfile) {
+      await resend.emails.send({
+        from:    'Everstead <hello@everstead.care>',
+        to:      'julien@everstead.care',
+        subject: `💳 New subscriber — ${updatedProfile.full_name || updatedProfile.email} (${metaPlan || updatedProfile.plan || 'unknown'})`,
+        html:    ownerNewSignupHtml({
+          name:           updatedProfile.full_name,
+          email:          updatedProfile.email,
+          plan:           metaPlan || updatedProfile.plan,
+          billingCycle:   metaBillingCycle || updatedProfile.billing_cycle,
+          isTrialing,
+          trialEnd:       subscription.trial_end,
+          referredBy:     metaReferredBy,
+          customerId:     subscription.customer,
+          subscriptionId: subscription.id,
+        }),
+      }).catch(err => console.error('owner notification error:', err.message))
     }
   }
 
   // ── setup_intent.succeeded ────────────────────────────────
-  // Fires when the user successfully confirms their card in the inline checkout.
-  // This is the equivalent of checkout.session.completed for the new flow —
-  // send welcome email to user and owner notification.
+  // Fires when the user confirms their card in the inline checkout.
+  // Sends the welcome/confirmation email to the user.
+  // Owner notification is handled in customer.subscription.created instead
+  // to avoid the race condition where stripe_subscription_id may not be in
+  // the profile yet when this event fires.
   if (event.type === 'setup_intent.succeeded') {
     const setupIntent = event.data.object
 
@@ -190,34 +218,20 @@ export default async function handler(req, res) {
       const isTrialing = subscription?.status === 'trialing'
       const periodEnd  = subscription?.trial_end || subscription?.current_period_end
 
-      // Welcome email to user
+      // Welcome / payment confirmation email to user
       await resend.emails.send({
         from:    'Everstead <hello@everstead.care>',
         to:      p.email,
         subject: isTrialing
           ? 'Your Everstead trial has started — card saved'
           : 'Your Everstead subscription is confirmed',
-        html: paymentConfirmedHtml(p.full_name, p.plan, isTrialing, periodEnd,
-          subscription?.trial_end && subscription?.created ? Math.round((subscription.trial_end - subscription.created) / 86400) : 14),
-      }).catch(console.error)
-
-      // Owner notification
-      await resend.emails.send({
-        from:    'Everstead <hello@everstead.care>',
-        to:      'julien@everstead.care',
-        subject: `💳 Card captured — ${p.full_name || p.email} (${p.plan || 'unknown'})`,
-        html:    ownerNewSignupHtml({
-          name:           p.full_name,
-          email:          p.email,
-          plan:           p.plan,
-          billingCycle:   p.billing_cycle,
-          isTrialing,
-          trialEnd:       subscription?.trial_end,
-          referredBy:     subscription?.metadata?.referred_by,
-          customerId:     setupIntent.customer,
-          subscriptionId: p.stripe_subscription_id,
-        }),
-      }).catch(console.error)
+        html: paymentConfirmedHtml(
+          p.full_name, p.plan, isTrialing, periodEnd,
+          subscription?.trial_end && subscription?.created
+            ? Math.round((subscription.trial_end - subscription.created) / 86400)
+            : 14
+        ),
+      }).catch(err => console.error('welcome email error:', err.message))
     }
   }
 
