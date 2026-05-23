@@ -2513,19 +2513,28 @@ function DelegateAIGuide({ ownerName, delegateName, role, ownerStatus, docCount,
   const send = async () => {
     const text = input.trim()
     if (!text || loading) return
+    const userMessages = messages.slice(1) // exclude opening message from history
+    const conversationHistory = userMessages.map(m => ({ role: m.role, content: m.content }))
     const next = [...messages, { role: 'user', content: text }]
     setMessages(next)
     setInput('')
     setLoading(true)
     try {
-      const res = await fetch('/api/ai/assist', {
+      const vaultSummary = `The delegate can see ${accountCount} account${accountCount !== 1 ? 's' : ''}, ${docCount} document${docCount !== 1 ? 's' : ''}, and ${instructionCount} instruction set${instructionCount !== 1 ? 's' : ''}.`
+      const res = await fetch('/api/ai/executor-assistant', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ type: 'delegate-guide', context, messages: next }),
+        body: JSON.stringify({
+          question: text,
+          delegateName,
+          ownerName,
+          vaultSummary,
+          conversationHistory,
+        }),
       })
       const data = await res.json()
       if (data.error) throw new Error(data.error)
-      setMessages(prev => [...prev, { role: 'assistant', content: data.reply }])
+      setMessages(prev => [...prev, { role: 'assistant', content: data.response }])
     } catch {
       setMessages(prev => [...prev, { role: 'assistant', content: 'Sorry, I couldn\'t connect right now. Please try again in a moment.' }])
     } finally {

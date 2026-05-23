@@ -305,6 +305,8 @@ export default function Dashboard() {
   const [upgradeError, setUpgradeError]   = useState(null)
   // Demo-mode mutable people state (so invite/edit/remove reflect in UI)
   const [demoPeople, setDemoPeople] = useState(DEMO_PEOPLE)
+  // AI onboarding overlay — shown once on first login for brand-new users
+  const [showAIOnboarding, setShowAIOnboarding] = useState(false)
 
   // Real data hooks — only used when not in demo mode
   const realAccounts      = useAccounts()
@@ -474,6 +476,20 @@ export default function Dashboard() {
   const isDeceased     = ownerStatus === 'deceased'
 
   const planLimits = PLANS[activeProfile.plan]?.limits ?? PLANS.essential.limits
+
+  // Trigger AI onboarding for brand-new users (no accounts, profile < 7 days old, not demo)
+  React.useEffect(() => {
+    if (isDemo || !activeProfile?.id) return
+    const key = `everstead_ai_onboarding_shown_${activeProfile.id}`
+    if (localStorage.getItem(key)) return
+    const createdAt = new Date(activeProfile.created_at || Date.now())
+    const ageInDays = (Date.now() - createdAt.getTime()) / 86400000
+    if (ageInDays < 7 && accounts.length === 0) {
+      // Small delay so the dashboard renders first
+      const t = setTimeout(() => { setShowAIOnboarding(true) }, 1800)
+      return () => clearTimeout(t)
+    }
+  }, [activeProfile?.id, accounts.length]) // eslint-disable-line
 
   const handleUpgrade = async (planId, billingCycle = 'yearly') => {
     if (isDemo) { navigate('/get-started'); return }
@@ -714,7 +730,7 @@ export default function Dashboard() {
         )}
         {activeSection === 'overview'      && <OverviewSection  profile={activeProfile} accounts={accounts} documents={documents} people={people} instructions={instructions} alerts={alerts} markRead={markRead} onNavigate={setActiveSection} planLimits={planLimits} loading={loadingAccounts || loadingDocs} daysSinceLogin={daysSinceLogin} onCelebrate={celebrate} />}
         {activeSection === 'accounts'      && <AccountsSection  accounts={accounts} loading={loadingAccounts} add={addAccount} update={updateAccount} remove={removeAccount} profile={activeProfile} onUpgrade={() => handleUpgrade('family', 'yearly')} />}
-        {activeSection === 'documents'     && <DocumentsSection documents={documents} loading={loadingDocs} uploadFile={uploadFile} update={updateDocument} remove={removeDocument} planLimits={planLimits} profile={activeProfile} onUpgrade={() => handleUpgrade('family', 'yearly')} updateProfile={isDemo ? undefined : updateProfile} />}
+        {activeSection === 'documents'     && <DocumentsSection documents={documents} loading={loadingDocs} uploadFile={uploadFile} update={updateDocument} remove={removeDocument} planLimits={planLimits} profile={activeProfile} onUpgrade={() => handleUpgrade('family', 'yearly')} updateProfile={isDemo ? undefined : updateProfile} addAlert={isDemo ? undefined : realAlerts.add} />}
         {activeSection === 'people'        && <PeopleSection    people={people} loading={loadingPeople} invite={invite} resendInvite={resendInvite} updatePerson={updatePerson} removePerson={removePerson} planLimits={planLimits} profile={activeProfile} onUpgrade={() => handleUpgrade('family', 'yearly')} />}
         {activeSection === 'messages'      && <MessagesSection  messages={messages} loading={loadingMessages} people={people} isDemo={isDemo} planLimits={planLimits} onUpgrade={() => handleUpgrade('family', 'yearly')} addMessage={messagesHook.add} updateMessage={messagesHook.update} uploadVideo={messagesHook.uploadVideo} />}
         {activeSection === 'instructions'  && <InstructionsSection instructions={instructions} loading={loadingInstructions} add={addInstruction} update={updateInstruction} remove={removeInstruction} profile={activeProfile} onUpgrade={() => handleUpgrade('family', 'yearly')} />}
@@ -743,7 +759,211 @@ export default function Dashboard() {
         instructionCount={instructions.length}
       />
     )}
+    {showAIOnboarding && (
+      <AIOnboardingOverlay
+        userName={activeProfile.full_name}
+        onClose={() => {
+          setShowAIOnboarding(false)
+          localStorage.setItem(`everstead_ai_onboarding_shown_${activeProfile.id}`, '1')
+        }}
+        onComplete={async (result) => {
+          setShowAIOnboarding(false)
+          localStorage.setItem(`everstead_ai_onboarding_shown_${activeProfile.id}`, '1')
+          // Create vault entries from AI-processed answers
+          try {
+            if (result.accounts?.length) {
+              for (const acc of result.accounts) {
+                await realAccounts.add({ name: acc.name, category: acc.type, institution: acc.institution, notes: acc.notes })
+              }
+            }
+            if (result.people?.length) {
+              for (const person of result.people) {
+                await realPeople.invite({ name: person.name, email: '', role: person.role, notes: person.notes, accessAreas: ['accounts','documents','instructions'] })
+              }
+            }
+          } catch {}
+        }}
+      />
+    )}
     </>
+  )
+}
+
+// ─────────────────────────────────────────────────────────────
+// AI ONBOARDING OVERLAY — shown once on first login
+// ─────────────────────────────────────────────────────────────
+function AIOnboardingOverlay({ userName, onClose, onComplete }) {
+  const firstName = userName?.split(' ')[0] || 'there'
+  const QUESTIONS = [
+    { key: 'property',       q: `Do you own property — a home, flat, or land? If so, whereabouts and with whom?` },
+    { key: 'pension',        q: `Do you have a pension? If so, who's the provider — e.g. the NHS, Aviva, or a workplace scheme?` },
+    { key: 'lifeInsurance',  q: `Do you have life insurance or any protection policies?` },
+    { key: 'bankAccounts',   q: `Which banks or building societies do you have accounts with?` },
+    { key: 'executor',       q: `Who would you want to handle your estate — an executor or trusted person? Give their name if you know it.` },
+  ]
+
+  const [step, setStep] = useState(-1) // -1 = intro
+  const [answers, setAnswers] = useState({})
+  const [input, setInput] = useState('')
+  const [processing, setProcessing] = useState(false)
+  const [done, setDone] = useState(false)
+  const [summary, setSummary] = useState('')
+  const inputRef = React.useRef(null)
+
+  React.useEffect(() => {
+    if (step >= 0) inputRef.current?.focus()
+  }, [step])
+
+  const handleNext = () => {
+    if (step >= 0) {
+      const key = QUESTIONS[step].key
+      setAnswers(prev => ({ ...prev, [key]: input.trim() || 'Not provided' }))
+      setInput('')
+    }
+    if (step < QUESTIONS.length - 1) {
+      setStep(s => s + 1)
+    } else {
+      // All questions answered — process
+      handleProcess()
+    }
+  }
+
+  const handleProcess = async () => {
+    setProcessing(true)
+    const finalAnswers = { ...answers }
+    if (step >= 0) finalAnswers[QUESTIONS[step].key] = input.trim() || 'Not provided'
+    try {
+      const res = await fetch('/api/ai/process-onboarding', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ answers: finalAnswers, firstName }),
+      })
+      const data = await res.json()
+      setSummary(data.onboardingSummary || "I've set up some draft entries based on what you shared. You can review and edit everything in your vault.")
+      setDone(true)
+      await onComplete(data)
+    } catch {
+      setSummary("Something went wrong, but don't worry — you can add everything manually in your vault.")
+      setDone(true)
+    } finally {
+      setProcessing(false)
+    }
+  }
+
+  const progress = step < 0 ? 0 : Math.round(((step) / QUESTIONS.length) * 100)
+
+  return (
+    <div className="fixed inset-0 z-[60] bg-navy-950/95 backdrop-blur-sm flex items-center justify-center p-4">
+      <div className="bg-white rounded-3xl shadow-2xl max-w-lg w-full overflow-hidden">
+        {/* Header */}
+        <div className="bg-navy-950 px-7 py-5 flex items-center justify-between">
+          <div className="flex items-center gap-2.5">
+            <Sparkles size={18} className="text-sage-400" />
+            <p className="text-white font-semibold text-sm">Quick vault setup</p>
+          </div>
+          <button onClick={onClose} className="text-white/40 hover:text-white/80 transition-colors p-1">
+            <X size={16} />
+          </button>
+        </div>
+
+        {/* Progress bar */}
+        {step >= 0 && !done && (
+          <div className="h-1 bg-stone-100">
+            <div className="h-full bg-sage-500 transition-all duration-500" style={{ width: `${progress}%` }} />
+          </div>
+        )}
+
+        <div className="px-7 py-8">
+          {/* Intro */}
+          {step === -1 && (
+            <div className="text-center">
+              <div className="w-14 h-14 bg-sage-100 rounded-full flex items-center justify-center mx-auto mb-5">
+                <Sparkles size={22} className="text-sage-600" />
+              </div>
+              <h2 className="font-display text-2xl font-light text-navy-950 mb-3">
+                Welcome, {firstName}. Let's get your vault started.
+              </h2>
+              <p className="text-stone-500 text-sm leading-relaxed mb-8">
+                I'll ask you 5 quick questions to set up your vault automatically. It takes under 2 minutes and you can edit everything afterwards.
+              </p>
+              <div className="flex flex-col gap-3">
+                <button
+                  onClick={() => setStep(0)}
+                  className="w-full bg-navy-800 text-white font-semibold text-sm py-3.5 rounded-xl hover:bg-navy-700 transition-colors flex items-center justify-center gap-2"
+                >
+                  <Sparkles size={15} /> Let's go
+                </button>
+                <button onClick={onClose} className="text-sm text-stone-400 hover:text-stone-600 transition-colors">
+                  Skip for now — I'll do it manually
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Questions */}
+          {step >= 0 && !done && !processing && (
+            <div>
+              <p className="text-xs font-semibold text-stone-400 uppercase tracking-widest mb-6">
+                Question {step + 1} of {QUESTIONS.length}
+              </p>
+              <p className="text-navy-950 font-medium text-base leading-relaxed mb-6">
+                {QUESTIONS[step].q}
+              </p>
+              <textarea
+                ref={inputRef}
+                className="w-full border border-stone-200 rounded-xl px-4 py-3 text-sm text-navy-900 placeholder-stone-300 focus:outline-none focus:ring-2 focus:ring-navy-400 focus:border-navy-400 bg-stone-50 resize-none transition-colors"
+                rows={3}
+                placeholder="Type your answer here…"
+                value={input}
+                onChange={e => setInput(e.target.value)}
+                onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleNext() } }}
+              />
+              <div className="flex items-center justify-between mt-5">
+                <button
+                  onClick={() => { setInput(''); handleNext() }}
+                  className="text-sm text-stone-400 hover:text-stone-600 transition-colors"
+                >
+                  Skip this question
+                </button>
+                <button
+                  onClick={handleNext}
+                  className="inline-flex items-center gap-2 bg-navy-800 text-white font-semibold text-sm px-5 py-2.5 rounded-xl hover:bg-navy-700 transition-colors"
+                >
+                  {step < QUESTIONS.length - 1 ? 'Next' : 'Set up my vault'}
+                  <ArrowRight size={15} />
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Processing */}
+          {processing && (
+            <div className="text-center py-4">
+              <Loader2 size={28} className="animate-spin text-navy-600 mx-auto mb-4" />
+              <p className="text-navy-900 font-medium text-sm">Setting up your vault…</p>
+              <p className="text-stone-400 text-xs mt-1">This takes just a moment.</p>
+            </div>
+          )}
+
+          {/* Done */}
+          {done && (
+            <div className="text-center">
+              <div className="w-14 h-14 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-5">
+                <CheckCircle2 size={22} className="text-emerald-600" />
+              </div>
+              <h2 className="font-display text-2xl font-light text-navy-950 mb-3">Your vault is ready</h2>
+              <p className="text-stone-500 text-sm leading-relaxed mb-8">{summary}</p>
+              <button
+                onClick={onClose}
+                className="w-full bg-navy-800 text-white font-semibold text-sm py-3.5 rounded-xl hover:bg-navy-700 transition-colors"
+              >
+                View my vault
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
   )
 }
 
@@ -905,6 +1125,88 @@ function OwnerAIGuide({ userName, plan, accountCount, documentCount, contactCoun
         </div>
       )}
     </>
+  )
+}
+
+// ─────────────────────────────────────────────────────────────
+// READINESS COACH CARD (Feature 3)
+// ─────────────────────────────────────────────────────────────
+function ReadinessCoachCard({ profile, stats, onNavigate }) {
+  const [coachData, setCoachData] = React.useState(null)
+  const [loading, setLoading] = React.useState(false)
+  const [dismissed, setDismissed] = React.useState(false)
+
+  React.useEffect(() => {
+    // Only fetch once per session
+    const key = `everstead_coach_${profile?.id}_${JSON.stringify(stats)}`
+    const cached = sessionStorage.getItem(key)
+    if (cached) {
+      try { setCoachData(JSON.parse(cached)); return } catch {}
+    }
+
+    setLoading(true)
+    fetch('/api/ai/readiness-coach', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        firstName: profile?.full_name?.split(' ')[0],
+        plan: profile?.plan,
+        stats,
+      }),
+    })
+      .then(r => r.json())
+      .then(data => {
+        if (data.coaching) {
+          setCoachData(data.coaching)
+          sessionStorage.setItem(key, JSON.stringify(data.coaching))
+        }
+      })
+      .catch(() => {})
+      .finally(() => setLoading(false))
+  }, [profile?.id]) // eslint-disable-line
+
+  if (dismissed) return null
+
+  return (
+    <div className="mb-6 bg-gradient-to-br from-navy-50 to-sage-50 border border-navy-100 rounded-2xl p-5">
+      <div className="flex items-start justify-between gap-4">
+        <div className="flex items-center gap-2.5 mb-3">
+          <div className="w-8 h-8 rounded-xl bg-navy-100 flex items-center justify-center shrink-0">
+            <Sparkles size={15} className="text-navy-600" />
+          </div>
+          <p className="text-xs font-semibold text-navy-700 uppercase tracking-widest">Your Readiness Coach</p>
+        </div>
+        <button
+          onClick={() => setDismissed(true)}
+          className="text-stone-300 hover:text-stone-500 transition-colors shrink-0"
+          aria-label="Dismiss"
+        >
+          <X size={14} />
+        </button>
+      </div>
+
+      {loading && (
+        <div className="flex items-center gap-2 py-2">
+          <Loader2 size={14} className="animate-spin text-navy-400" />
+          <p className="text-sm text-stone-400">Getting your personalised advice…</p>
+        </div>
+      )}
+
+      {coachData && !loading && (
+        <>
+          <p className="text-sm text-navy-900 leading-relaxed mb-4">{coachData.message}</p>
+          {coachData.nextAction && (
+            <button
+              onClick={() => coachData.nextActionRoute && onNavigate(coachData.nextActionRoute)}
+              className="inline-flex items-center gap-2 bg-navy-800 text-white text-xs font-semibold px-4 py-2.5 rounded-xl hover:bg-navy-700 transition-colors"
+            >
+              <ArrowRight size={13} />
+              {coachData.nextActionLabel || 'Next step'}
+            </button>
+          )}
+        </>
+      )}
+    </div>
   )
 }
 
@@ -1106,6 +1408,19 @@ function OverviewSection({ profile, accounts, documents, people, instructions, a
           </div>
         )}
       </div>
+
+      {/* Readiness Coach card (Feature 3) */}
+      <ReadinessCoachCard
+        profile={profile}
+        stats={{
+          accountsCount: accounts.length,
+          documentsCount: documents.filter(d => d.status !== 'missing').length,
+          contactsCount: people.length,
+          instructionsCount: instructions.length,
+          wishesCount: 0,
+        }}
+        onNavigate={onNavigate}
+      />
 
       {/* Family member card — Family plan only */}
       {profile.plan === 'family' && !familyLoading && (
@@ -1473,7 +1788,7 @@ function OwnerDocViewerModal({ doc, onClose }) {
 // ─────────────────────────────────────────────────────────────
 // DOCUMENTS SECTION
 // ─────────────────────────────────────────────────────────────
-function DocumentsSection({ documents, loading, uploadFile, update, remove, planLimits, profile, onUpgrade, updateProfile }) {
+function DocumentsSection({ documents, loading, uploadFile, update, remove, planLimits, profile, onUpgrade, updateProfile, addAlert }) {
   const emptyForm = { name: '', doc_type: 'Legal', status: 'current', expires_at: '', notes: '' }
   const [showUpload, setShowUpload] = useState(false)
   const [editingDocument, setEditingDocument] = useState(null)
@@ -1483,6 +1798,56 @@ function DocumentsSection({ documents, loading, uploadFile, update, remove, plan
   const [saving, setSaving] = useState(false)
   const [dragOver, setDragOver] = useState(false)
   const [formError, setFormError] = useState(null)
+
+  // AI document scanning (Feature 2)
+  const [aiScanning, setAiScanning] = useState(false)
+  const [aiScanDone, setAiScanDone] = useState(false)
+
+  const handleFileSelect = (f) => {
+    setFile(f)
+    setForm(p => ({ ...p, name: p.name || f.name.replace(/\.[^.]+$/, '') }))
+    setAiScanDone(false)
+  }
+
+  const handleAIScan = async () => {
+    if (!file) return
+    setAiScanning(true)
+    try {
+      const reader = new FileReader()
+      reader.onload = async (e) => {
+        const base64 = e.target.result.split(',')[1]
+        const mimeType = file.type || 'application/octet-stream'
+        const supported = ['application/pdf', 'image/jpeg', 'image/jpg', 'image/png', 'image/webp']
+        if (!supported.includes(mimeType)) {
+          setAiScanning(false)
+          return
+        }
+        try {
+          const res = await fetch('/api/ai/extract-document', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ fileBase64: base64, mimeType, fileName: file.name }),
+          })
+          const data = await res.json()
+          if (data.extracted) {
+            const ex = data.extracted
+            setForm(p => ({
+              ...p,
+              name: ex.documentName || p.name,
+              doc_type: ex.documentType ? capitaliseFirst(ex.documentType.replace(/_/g, ' ')) : p.doc_type,
+              expires_at: ex.expiryDate || p.expires_at,
+              notes: ex.notes ? (p.notes ? p.notes + '\n' + ex.notes : ex.notes) : p.notes,
+            }))
+            setAiScanDone(true)
+          }
+        } catch {}
+        setAiScanning(false)
+      }
+      reader.readAsDataURL(file)
+    } catch {
+      setAiScanning(false)
+    }
+  }
 
   // Will & solicitor details
   const [willForm, setWillForm] = useState({
@@ -1538,6 +1903,23 @@ function DocumentsSection({ documents, loading, uploadFile, update, remove, plan
     setFormError(null)
     try {
       await uploadFile(form, file)
+      // Feature 6: Smart expiry alert creation
+      if (form.expires_at && addAlert) {
+        const expiryDate = new Date(form.expires_at)
+        const today = new Date()
+        today.setHours(0, 0, 0, 0)
+        const daysUntilExpiry = Math.ceil((expiryDate - today) / 86400000)
+        if (daysUntilExpiry > 0 && daysUntilExpiry <= 90) {
+          const severity = daysUntilExpiry <= 30 ? 'critical' : 'warning'
+          const fmtDate = expiryDate.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
+          await addAlert({
+            title: `${form.name || 'Document'} expiry approaching`,
+            message: `Your ${form.name || 'document'} expires on ${fmtDate}. Update it before it lapses.`,
+            severity,
+            category: 'document',
+          }).catch(() => {})
+        }
+      }
       closeModal()
     } catch (err) {
       setFormError(err.message ?? 'Upload failed. Please try again.')
@@ -1785,7 +2167,7 @@ function DocumentsSection({ documents, loading, uploadFile, update, remove, plan
             <div
               onDragOver={e => { e.preventDefault(); setDragOver(true) }}
               onDragLeave={() => setDragOver(false)}
-              onDrop={e => { e.preventDefault(); setDragOver(false); const f = e.dataTransfer.files[0]; if (f) { setFile(f); setForm(p => ({ ...p, name: p.name || f.name.replace(/\.[^.]+$/,'') })) } }}
+              onDrop={e => { e.preventDefault(); setDragOver(false); const f = e.dataTransfer.files[0]; if (f) handleFileSelect(f) }}
               onClick={() => document.getElementById('doc-file').click()}
               className={`border-2 border-dashed rounded-xl p-8 text-center cursor-pointer transition-colors ${dragOver ? 'border-navy-400 bg-navy-50' : 'border-stone-200 hover:border-navy-300'}`}
             >
@@ -1795,8 +2177,31 @@ function DocumentsSection({ documents, loading, uploadFile, update, remove, plan
               ) : (
                 <p className="text-sm text-stone-400">Drop file here or click to browse<br /><span className="text-xs">PDF, Word, JPG, PNG up to 50MB</span></p>
               )}
-              <input id="doc-file" type="file" className="hidden" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.txt" onChange={e => { const f = e.target.files[0]; if (f) { setFile(f); setForm(p => ({ ...p, name: p.name || f.name.replace(/\.[^.]+$/,'') })) } }} />
+              <input id="doc-file" type="file" className="hidden" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.txt" onChange={e => { const f = e.target.files[0]; if (f) handleFileSelect(f) }} />
             </div>
+
+            {/* AI scan offer — shown when a scannable file is selected */}
+            {file && ['application/pdf','image/jpeg','image/jpg','image/png','image/webp'].includes(file.type) && !aiScanDone && (
+              <div className="flex items-center justify-between bg-sage-50 border border-sage-200 rounded-xl px-4 py-3">
+                <div className="flex items-center gap-2">
+                  <Sparkles size={14} className="text-sage-600" />
+                  <p className="text-xs text-sage-800 font-medium">Extract details automatically with AI?</p>
+                </div>
+                <button
+                  type="button"
+                  onClick={handleAIScan}
+                  disabled={aiScanning}
+                  className="shrink-0 inline-flex items-center gap-1.5 text-xs font-semibold text-sage-700 bg-white border border-sage-300 px-3 py-1.5 rounded-lg hover:bg-sage-50 transition-colors disabled:opacity-50"
+                >
+                  {aiScanning ? <><Loader2 size={12} className="animate-spin" />Scanning…</> : 'Scan document'}
+                </button>
+              </div>
+            )}
+            {aiScanDone && (
+              <p className="text-xs text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-xl px-4 py-2.5 flex items-center gap-2">
+                <CheckCircle2 size={13} /> Details extracted — review and edit below before saving.
+              </p>
+            )}
             <Field label="Document name" required>
               <input className={input} value={form.name} onChange={e => setForm(p => ({ ...p, name: e.target.value }))} placeholder="e.g. Last Will & Testament" required />
             </Field>
@@ -1873,6 +2278,36 @@ function MessagesSection({ messages: initialMessages, loading, people, isDemo, p
   )
   const [form, setForm] = useState({ recipient_name: '', recipient_role: '', title: '', type: 'note', content: '' })
   const [saving, setSaving] = useState(false)
+
+  // AI message writer (Feature 5)
+  const [showAIWriter, setShowAIWriter] = useState(false)
+  const [aiWriterForm, setAiWriterForm] = useState({ relationship: '', wants: '', gratitude: '', hopes: '' })
+  const [aiWriterLoading, setAiWriterLoading] = useState(false)
+
+  const handleAIWrite = async (e) => {
+    e.preventDefault()
+    setAiWriterLoading(true)
+    try {
+      const res = await fetch('/api/ai/write-message', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          recipientName: form.recipient_name,
+          relationship: aiWriterForm.relationship,
+          wants: aiWriterForm.wants,
+          gratitude: aiWriterForm.gratitude,
+          hopes: aiWriterForm.hopes,
+        }),
+      })
+      const data = await res.json()
+      if (data.message) {
+        setForm(p => ({ ...p, content: data.message }))
+        setShowAIWriter(false)
+        setAiWriterForm({ relationship: '', wants: '', gratitude: '', hopes: '' })
+      }
+    } catch {}
+    setAiWriterLoading(false)
+  }
 
   // Merge server state with local optimistic released state
   const messages = initialMessages.map(m => ({
@@ -2122,6 +2557,61 @@ function MessagesSection({ messages: initialMessages, loading, people, isDemo, p
         </div>
       ))}
 
+      {/* AI message writer modal (Feature 5) */}
+      {showAIWriter && (
+        <Modal title="✨ Help me write this" onClose={() => setShowAIWriter(false)}>
+          <p className="text-xs text-stone-500 mb-5 leading-relaxed">
+            Answer a few questions and I'll write a warm, heartfelt message for {form.recipient_name || 'your recipient'}.
+          </p>
+          <form onSubmit={handleAIWrite} className="space-y-4">
+            <Field label="Your relationship">
+              <input
+                className={input}
+                placeholder="e.g. My daughter, My oldest friend, My partner"
+                value={aiWriterForm.relationship}
+                onChange={e => setAiWriterForm(p => ({ ...p, relationship: e.target.value }))}
+              />
+            </Field>
+            <Field label="What do you most want them to know?">
+              <textarea
+                className={`${input} resize-none`}
+                rows={2}
+                placeholder="e.g. How proud I am of them, how much they mean to me…"
+                value={aiWriterForm.wants}
+                onChange={e => setAiWriterForm(p => ({ ...p, wants: e.target.value }))}
+              />
+            </Field>
+            <Field label="Anything you're grateful for, or want to say sorry for?">
+              <textarea
+                className={`${input} resize-none`}
+                rows={2}
+                placeholder="e.g. Thank you for always being there. I'm sorry we didn't talk more."
+                value={aiWriterForm.gratitude}
+                onChange={e => setAiWriterForm(p => ({ ...p, gratitude: e.target.value }))}
+              />
+            </Field>
+            <Field label="What are your hopes for their future?">
+              <input
+                className={input}
+                placeholder="e.g. That they find joy, that they follow their dreams…"
+                value={aiWriterForm.hopes}
+                onChange={e => setAiWriterForm(p => ({ ...p, hopes: e.target.value }))}
+              />
+            </Field>
+            <div className="flex gap-3 pt-1">
+              <button
+                type="submit"
+                disabled={aiWriterLoading || !aiWriterForm.wants}
+                className={`${primaryBtn} flex-1 disabled:opacity-50 disabled:cursor-not-allowed`}
+              >
+                {aiWriterLoading ? <><Loader2 size={14} className="animate-spin" />Writing…</> : <><Sparkles size={14} />Write my message</>}
+              </button>
+              <button type="button" onClick={() => setShowAIWriter(false)} className={secondaryBtn}>Cancel</button>
+            </div>
+          </form>
+        </Modal>
+      )}
+
       {/* Release all confirmation modal */}
       {confirmReleaseAll && (
         <Modal title="Release all messages?" onClose={() => setConfirmReleaseAll(false)}>
@@ -2201,7 +2691,19 @@ function MessagesSection({ messages: initialMessages, loading, people, isDemo, p
             </Field>
 
             {form.type === 'note' && (
-              <Field label="Message" required>
+              <div>
+                <div className="flex items-center justify-between mb-1.5">
+                  <label className="block text-xs font-semibold text-stone-600">Message <span className="text-red-400">*</span></label>
+                  {form.recipient_name && (
+                    <button
+                      type="button"
+                      onClick={() => setShowAIWriter(true)}
+                      className="inline-flex items-center gap-1 text-xs font-semibold text-sage-700 bg-sage-50 border border-sage-200 px-2.5 py-1.5 rounded-lg hover:bg-sage-100 transition-colors"
+                    >
+                      <Sparkles size={11} /> Help me write this
+                    </button>
+                  )}
+                </div>
                 <textarea
                   className={`${input} min-h-[140px] resize-y`}
                   placeholder="Write your personal message here. It will be encrypted and only released to the recipient when needed."
@@ -2209,7 +2711,7 @@ function MessagesSection({ messages: initialMessages, loading, people, isDemo, p
                   onChange={e => setForm(p => ({ ...p, content: e.target.value }))}
                   required
                 />
-              </Field>
+              </div>
             )}
 
             {form.type === 'video' && (
@@ -2665,7 +3167,7 @@ function InstructionsSection({ instructions, loading, add, update, remove, profi
   const [form, setForm] = useState(emptyForm)
   const [saving, setSaving] = useState(false)
 
-  // ── AI writing assistant ──
+  // ── AI writing assistant (conversational) ──
   const [showAssistant, setShowAssistant] = useState(false)
   const [assistantMessages, setAssistantMessages] = useState([
     { role: 'assistant', content: 'I\'m here to help you write clear instructions for your family or executor. What do you want to help them with? For example: "What to do in the first 48 hours", "How to access our bank accounts", or "My medical wishes."' }
@@ -2673,6 +3175,42 @@ function InstructionsSection({ instructions, loading, add, update, remove, profi
   const [assistantInput, setAssistantInput] = useState('')
   const [assistantLoading, setAssistantLoading] = useState(false)
   const [parsedSuggestion, setParsedSuggestion] = useState(null)
+
+  // ── AI quick-write (5-question form, Feature 1) ──
+  const [showQuickWrite, setShowQuickWrite] = useState(false)
+  const [quickWriteForm, setQuickWriteForm] = useState({ purpose: '', recipient: '', firstSteps: '', resources: '', additional: '' })
+  const [quickWriteLoading, setQuickWriteLoading] = useState(false)
+
+  const handleQuickWrite = async (e) => {
+    e.preventDefault()
+    setQuickWriteLoading(true)
+    try {
+      const res = await fetch('/api/ai/write-instructions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          ...quickWriteForm,
+          userName: profile?.full_name,
+        }),
+      })
+      const data = await res.json()
+      if (data.instructions) {
+        // Pre-fill the main form with the AI output
+        setForm(prev => ({
+          ...prev,
+          body: data.instructions,
+          title: prev.title || quickWriteForm.purpose.slice(0, 60),
+          category: 'Immediate',
+          audience: quickWriteForm.recipient?.toLowerCase().includes('executor') ? 'Executor' : 'Family',
+        }))
+        setShowQuickWrite(false)
+        setShowAdd(true)
+        setEditingInstruction(null)
+        setQuickWriteForm({ purpose: '', recipient: '', firstSteps: '', resources: '', additional: '' })
+      }
+    } catch {}
+    setQuickWriteLoading(false)
+  }
 
   const sendAssistantMessage = async () => {
     const text = assistantInput.trim()
@@ -2795,6 +3333,12 @@ function InstructionsSection({ instructions, loading, add, update, remove, profi
       action={
         <div className="flex items-center gap-2">
           <button
+            onClick={() => setShowQuickWrite(true)}
+            className="inline-flex items-center gap-1.5 text-xs font-semibold text-sage-700 bg-sage-50 hover:bg-sage-100 border border-sage-200 px-3 py-2 rounded-lg transition-colors"
+          >
+            <Sparkles size={12} /> Write with AI
+          </button>
+          <button
             onClick={() => setShowAssistant(true)}
             className="inline-flex items-center gap-1.5 text-xs font-semibold text-navy-700 bg-navy-50 hover:bg-navy-100 border border-navy-200 px-3 py-2 rounded-lg transition-colors"
           >
@@ -2854,6 +3398,71 @@ function InstructionsSection({ instructions, loading, add, update, remove, profi
             </div>
           ))}
         </div>
+      )}
+
+      {/* ── AI quick-write modal (Feature 1) ── */}
+      {showQuickWrite && (
+        <Modal title="✨ Write with AI" onClose={() => setShowQuickWrite(false)}>
+          <p className="text-xs text-stone-500 mb-5 leading-relaxed">
+            Tell me about the instruction set you'd like to create and I'll draft it for you to review.
+          </p>
+          <form onSubmit={handleQuickWrite} className="space-y-4">
+            <Field label="What is this instruction set about?" required>
+              <input
+                className={input}
+                placeholder="e.g. What to do in the first 48 hours, How to access our finances, My medical wishes"
+                value={quickWriteForm.purpose}
+                onChange={e => setQuickWriteForm(p => ({ ...p, purpose: e.target.value }))}
+                required
+                autoFocus
+              />
+            </Field>
+            <Field label="Who is this for?">
+              <input
+                className={input}
+                placeholder="e.g. My executor, My children, My healthcare proxy"
+                value={quickWriteForm.recipient}
+                onChange={e => setQuickWriteForm(p => ({ ...p, recipient: e.target.value }))}
+              />
+            </Field>
+            <Field label="What should they do first?">
+              <textarea
+                className={`${input} resize-none`}
+                rows={2}
+                placeholder="e.g. Call my solicitor at Smith & Jones (01234 567890), notify the bank…"
+                value={quickWriteForm.firstSteps}
+                onChange={e => setQuickWriteForm(p => ({ ...p, firstSteps: e.target.value }))}
+              />
+            </Field>
+            <Field label="Useful contacts, accounts, or resources to mention">
+              <textarea
+                className={`${input} resize-none`}
+                rows={2}
+                placeholder="e.g. Barclays current account sort code 20-44-15, account 12345678"
+                value={quickWriteForm.resources}
+                onChange={e => setQuickWriteForm(p => ({ ...p, resources: e.target.value }))}
+              />
+            </Field>
+            <Field label="Anything else to include?">
+              <input
+                className={input}
+                placeholder="Any additional wishes or important notes"
+                value={quickWriteForm.additional}
+                onChange={e => setQuickWriteForm(p => ({ ...p, additional: e.target.value }))}
+              />
+            </Field>
+            <div className="flex gap-3 pt-1">
+              <button
+                type="submit"
+                disabled={quickWriteLoading || !quickWriteForm.purpose}
+                className={`${primaryBtn} flex-1 disabled:opacity-50 disabled:cursor-not-allowed`}
+              >
+                {quickWriteLoading ? <><Loader2 size={14} className="animate-spin" />Writing your instructions…</> : <><Sparkles size={14} />Write my instructions</>}
+              </button>
+              <button type="button" onClick={() => setShowQuickWrite(false)} className={secondaryBtn}>Cancel</button>
+            </div>
+          </form>
+        </Modal>
       )}
 
       {/* ── AI writing assistant modal ── */}
@@ -4201,3 +4810,4 @@ function Field({ label, required, children }) {
 const input       = 'w-full border border-stone-200 rounded-lg px-3 py-2 text-sm text-navy-900 focus:outline-none focus:ring-2 focus:ring-navy-300 focus:border-navy-400 transition-colors'
 const primaryBtn  = 'inline-flex items-center gap-2 bg-navy-800 text-white text-sm font-medium px-4 py-2 rounded-lg hover:bg-navy-700 transition-colors'
 const secondaryBtn= 'inline-flex items-center gap-2 bg-white text-stone-700 text-sm font-medium px-4 py-2 rounded-lg border border-stone-200 hover:bg-stone-50 transition-colors'
+const capitaliseFirst = (s) => s ? s.charAt(0).toUpperCase() + s.slice(1) : s
