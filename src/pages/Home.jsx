@@ -26,11 +26,11 @@ const painPoints = [
 
 const featureHighlights = [
   { icon: Folder, title: 'Digital account inventory', desc: 'See every account — banking, investments, subscriptions, and digital assets — in one structured place. No more hunting across apps.' },
-  { icon: FileText, title: 'Secure document vault', desc: 'Upload, tag, and find legal, financial, and personal documents in seconds. Version history included.' },
-  { icon: ClipboardList, title: 'Step-by-step instructions', desc: 'Write clear guidance on your own terms — for everyday reference, and so the people you love know what to do when it counts.' },
+  { icon: FileText, title: 'Secure document vault', desc: 'Upload, tag, and find legal, financial, and personal documents in seconds. Version history included.', ai: 'Upload a document — we extract the key details automatically. ✨' },
+  { icon: ClipboardList, title: 'Step-by-step instructions', desc: 'Write clear guidance on your own terms — for everyday reference, and so the people you love know what to do when it counts.', ai: 'Not sure what to write? We\'ll help you find the words. ✨' },
   { icon: Users, title: 'People & role assignment', desc: 'Give each person access to only what they need — a trusted contact today, a caregiver or executor when required.' },
   { icon: Share2, title: 'Controlled sharing', desc: 'Share by role and category on your terms. Emergency vault access available with a single tap.' },
-  { icon: Heart, title: 'Final wishes', desc: 'Capture personal letters, funeral preferences, and sentimental instructions — warm, private, and on your own timeline.' },
+  { icon: Heart, title: 'Final wishes', desc: 'Capture personal letters, funeral preferences, and sentimental instructions — warm, private, and on your own timeline.', ai: 'We can help you start when the words don\'t come easily. ✨' },
 ]
 
 const steps = [
@@ -153,7 +153,7 @@ export default function Home() {
     <>
     <Helmet>
       <title>Everstead — Your life, organised.</title>
-      <meta name="description" content="Everstead is the secure home for your accounts, documents, and important decisions — organised for you today, and ready for your family when it counts." />
+      <meta name="description" content="Everstead helps UK families securely organise accounts, documents, instructions, and final wishes — with AI that helps you every step of the way. Start your free trial today." />
       <link rel="canonical" href="https://www.everstead.care" />
       <meta property="og:type" content="website" />
       <meta property="og:title" content="Everstead — Your life, organised." />
@@ -229,11 +229,11 @@ export default function Home() {
           {/* Copy */}
           <div>
             <h1 className="font-display text-5xl lg:text-6xl xl:text-7xl font-light text-white leading-[1.08] tracking-tight text-balance animate-fade-up">
-              Everything that matters, in one place.
+              Put your digital life in order, so your family is never left guessing.
             </h1>
 
             <p className="mt-6 text-lg text-stone-300 leading-relaxed max-w-xl animate-fade-up animate-delay-100">
-              Accounts, documents, instructions, and wishes — organised for your life today, and ready for the people you love when it counts.
+              Accounts, documents, instructions, and final wishes — all in one secure place, ready for the people you love.
             </p>
 
             <div className="mt-10 flex flex-wrap gap-3 animate-fade-up animate-delay-200">
@@ -258,6 +258,19 @@ export default function Home() {
             <p className="mt-5 text-xs text-stone-400 animate-fade-up animate-delay-300">
               14-day free trial · Cancel anytime
             </p>
+            <p className="text-xs text-stone-500 mt-2 animate-fade-up animate-delay-300" style={{ letterSpacing: '0.02em' }}>
+              🔒 Bank-level AES-256 encryption &nbsp;·&nbsp; 🇬🇧 UK-based &nbsp;·&nbsp; ICO registered &nbsp;·&nbsp; No. 17166825
+            </p>
+            <div className="inline-flex items-center gap-1.5 mt-4 animate-fade-up animate-delay-300" style={{
+              padding: '4px 10px',
+              borderRadius: '20px',
+              border: '1px solid rgba(76, 125, 71, 0.3)',
+              fontSize: '11px',
+              color: '#4c7d47',
+              letterSpacing: '0.04em',
+            }}>
+              ✨ AI-assisted estate planning
+            </div>
           </div>
 
           {/* Dashboard preview card */}
@@ -459,7 +472,7 @@ export default function Home() {
           </div>
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {featureHighlights.map(({ icon: Icon, title, desc }, i) => (
+            {featureHighlights.map(({ icon: Icon, title, desc, ai }, i) => (
               <div
                 key={title}
                 className={`reveal reveal-delay-${Math.min(i + 1, 5)} bg-white/5 border border-white/10 rounded-xl p-6 hover:bg-white/8 transition-colors`}
@@ -469,6 +482,15 @@ export default function Home() {
                 </div>
                 <h3 className="font-semibold text-white text-sm mb-2">{title}</h3>
                 <p className="text-stone-400 text-sm leading-relaxed">{desc}</p>
+                {ai && (
+                  <span style={{
+                    display: 'block',
+                    fontSize: '12px',
+                    color: '#4c7d47',
+                    marginTop: '6px',
+                    fontStyle: 'italic',
+                  }}>{ai}</span>
+                )}
               </div>
             ))}
           </div>
