@@ -305,6 +305,9 @@ export default function Dashboard() {
     if (mainRef.current) mainRef.current.scrollTop = 0
   }, [activeSection])
 
+  const [lifeEventPrompt, setLifeEventPrompt]       = useState(null)
+  const [showExecutorPreview, setShowExecutorPreview] = useState(false)
+
   const [sidebarOpen, setSidebarOpen]     = useState(false)
   const [trialDismissed, setTrialDismissed] = useState(false)
   const [upgradeError, setUpgradeError]   = useState(null)
@@ -733,9 +736,9 @@ export default function Dashboard() {
             onAddPayment={() => handleUpgrade()}
           />
         )}
-        {activeSection === 'overview'      && <OverviewSection  profile={activeProfile} accounts={accounts} documents={documents} people={people} instructions={instructions} alerts={alerts} markRead={markRead} onNavigate={setActiveSection} planLimits={planLimits} loading={loadingAccounts || loadingDocs} daysSinceLogin={daysSinceLogin} onCelebrate={celebrate} />}
-        {activeSection === 'accounts'      && <AccountsSection  accounts={accounts} loading={loadingAccounts} add={addAccount} update={updateAccount} remove={removeAccount} profile={activeProfile} onUpgrade={() => handleUpgrade('family', 'yearly')} />}
-        {activeSection === 'documents'     && <DocumentsSection documents={documents} loading={loadingDocs} uploadFile={uploadFile} update={updateDocument} remove={removeDocument} planLimits={planLimits} profile={activeProfile} onUpgrade={() => handleUpgrade('family', 'yearly')} updateProfile={isDemo ? undefined : updateProfile} addAlert={isDemo ? undefined : realAlerts.add} />}
+        {activeSection === 'overview'      && <OverviewSection  profile={activeProfile} accounts={accounts} documents={documents} people={people} instructions={instructions} messages={messages} alerts={alerts} markRead={markRead} onNavigate={setActiveSection} planLimits={planLimits} loading={loadingAccounts || loadingDocs} daysSinceLogin={daysSinceLogin} onCelebrate={celebrate} onExecutorPreview={() => setShowExecutorPreview(true)} />}
+        {activeSection === 'accounts'      && <AccountsSection  accounts={accounts} loading={loadingAccounts} add={addAccount} update={updateAccount} remove={removeAccount} profile={activeProfile} onUpgrade={() => handleUpgrade('family', 'yearly')} onLifeEvent={isDemo ? undefined : setLifeEventPrompt} />}
+        {activeSection === 'documents'     && <DocumentsSection documents={documents} loading={loadingDocs} uploadFile={uploadFile} update={updateDocument} remove={removeDocument} planLimits={planLimits} profile={activeProfile} onUpgrade={() => handleUpgrade('family', 'yearly')} updateProfile={isDemo ? undefined : updateProfile} addAlert={isDemo ? undefined : realAlerts.add} onLifeEvent={isDemo ? undefined : setLifeEventPrompt} />}
         {activeSection === 'people'        && <PeopleSection    people={people} loading={loadingPeople} invite={invite} resendInvite={resendInvite} updatePerson={updatePerson} removePerson={removePerson} planLimits={planLimits} profile={activeProfile} onUpgrade={() => handleUpgrade('family', 'yearly')} />}
         {activeSection === 'messages'      && <MessagesSection  messages={messages} loading={loadingMessages} people={people} isDemo={isDemo} planLimits={planLimits} onUpgrade={() => handleUpgrade('family', 'yearly')} addMessage={messagesHook.add} updateMessage={messagesHook.update} uploadVideo={messagesHook.uploadVideo} />}
         {activeSection === 'instructions'  && <InstructionsSection instructions={instructions} loading={loadingInstructions} add={addInstruction} update={updateInstruction} remove={removeInstruction} profile={activeProfile} onUpgrade={() => handleUpgrade('family', 'yearly')} />}
@@ -748,6 +751,23 @@ export default function Dashboard() {
       </main>
       </div>
     </div>
+    {lifeEventPrompt && (
+      <LifeEventPromptModal
+        prompt={lifeEventPrompt}
+        onNavigate={(section) => { setActiveSection(section); setLifeEventPrompt(null) }}
+        onClose={() => setLifeEventPrompt(null)}
+      />
+    )}
+    {showExecutorPreview && (
+      <ExecutorPreviewModal
+        profile={activeProfile}
+        people={people}
+        accounts={accounts}
+        documents={documents}
+        instructions={instructions}
+        onClose={() => setShowExecutorPreview(false)}
+      />
+    )}
     {celebration && (
       <CelebrationToast
         message={celebration}
@@ -1246,7 +1266,7 @@ const PLAN_BADGE = {
   advisor:   { label: 'Advisor',   cls: 'bg-sage-50  text-sage-700  border-sage-200'  },
 }
 
-function OverviewSection({ profile, accounts, documents, people, instructions, alerts, markRead, onNavigate, planLimits, loading, daysSinceLogin, onCelebrate }) {
+function OverviewSection({ profile, accounts, documents, people, instructions, messages, alerts, markRead, onNavigate, planLimits, loading, daysSinceLogin, onCelebrate, onExecutorPreview }) {
   const criticalAlerts = alerts.filter(a => a.severity === 'critical' && !a.is_read)
   const [staleBannerDismissed, setStaleBannerDismissed] = React.useState(false)
   const showStaleBanner = !staleBannerDismissed && daysSinceLogin !== null && daysSinceLogin >= 180
@@ -1303,6 +1323,12 @@ function OverviewSection({ profile, accounts, documents, people, instructions, a
           <p className="text-stone-500 mt-1 text-sm">Here's where everything stands.</p>
         </div>
         <div className="flex items-center gap-3 flex-wrap">
+          <button
+            onClick={onExecutorPreview}
+            className="inline-flex items-center gap-1.5 text-xs font-semibold border border-stone-200 text-stone-500 bg-white px-3 py-1.5 rounded-lg hover:bg-stone-50 hover:text-navy-700 transition-colors"
+          >
+            <Eye size={12} /> Executor view
+          </button>
           <Link
             to="/print"
             target="_blank"
@@ -1437,6 +1463,45 @@ function OverviewSection({ profile, accounts, documents, people, instructions, a
         }}
         onNavigate={onNavigate}
       />
+
+      {/* Legacy messages CTA — Family/Advisor plans */}
+      {planLimits?.personalMessages && (
+        <div className="mb-6">
+          {!messages || messages.length === 0 ? (
+            <div className="bg-gradient-to-br from-stone-50 to-navy-50 border border-stone-200 rounded-2xl p-5 flex items-center gap-4">
+              <div className="w-10 h-10 rounded-xl bg-navy-100 flex items-center justify-center shrink-0">
+                <MessageSquare size={18} className="text-navy-600" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="font-semibold text-navy-900 text-sm">Leave something personal</p>
+                <p className="text-xs text-stone-500 mt-0.5">Write a letter to someone you love — sealed until you choose to release it.</p>
+              </div>
+              <button
+                onClick={() => onNavigate('messages')}
+                className="shrink-0 text-xs font-semibold text-navy-700 bg-white border border-navy-200 px-3 py-2 rounded-xl hover:bg-navy-50 transition-colors whitespace-nowrap"
+              >
+                Write a message →
+              </button>
+            </div>
+          ) : (
+            <div className="bg-white border border-stone-200 rounded-2xl p-5 flex items-center gap-4">
+              <div className="w-10 h-10 rounded-xl bg-navy-50 flex items-center justify-center shrink-0">
+                <MessageSquare size={18} className="text-navy-600" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="font-semibold text-navy-900 text-sm">{messages.length} personal {messages.length === 1 ? 'message' : 'messages'} saved</p>
+                <p className="text-xs text-stone-500 mt-0.5">Your words are sealed — ready to be delivered when the time comes.</p>
+              </div>
+              <button
+                onClick={() => onNavigate('messages')}
+                className="shrink-0 text-xs font-semibold text-navy-700 bg-navy-50 border border-navy-200 px-3 py-2 rounded-xl hover:bg-navy-100 transition-colors whitespace-nowrap"
+              >
+                Add another →
+              </button>
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Family member card — Family plan only */}
       {profile.plan === 'family' && !familyLoading && (
@@ -1576,7 +1641,7 @@ function OverviewSection({ profile, accounts, documents, people, instructions, a
 // ─────────────────────────────────────────────────────────────
 // ACCOUNTS SECTION
 // ─────────────────────────────────────────────────────────────
-function AccountsSection({ accounts, loading, add, update, remove, profile, onUpgrade }) {
+function AccountsSection({ accounts, loading, add, update, remove, profile, onUpgrade, onLifeEvent }) {
   const emptyForm = { institution: '', account_type: '', category: 'Banking', account_number_hint: '', balance_display: '', notes: '' }
   const [showAdd, setShowAdd] = useState(false)
   const [editingAccount, setEditingAccount] = useState(null)
@@ -1624,7 +1689,16 @@ function AccountsSection({ accounts, loading, add, update, remove, profile, onUp
         account_number_hint: form.account_number_hint.replace(/\D/g, '').slice(-4),
       }
       if (editingAccount) await update(editingAccount.id, payload)
-      else await add(payload)
+      else {
+        await add(payload)
+        // Life event prompt — property additions are a key life milestone
+        if (form.category === 'Property') {
+          onLifeEvent?.({
+            message: "You've added a property — a significant asset. It's worth making sure your will and trusted contacts reflect this change.",
+            cta: { label: 'Review trusted contacts →', section: 'people' },
+          })
+        }
+      }
       closeModal()
     } finally {
       setSaving(false)
@@ -1804,7 +1878,7 @@ function OwnerDocViewerModal({ doc, onClose }) {
 // ─────────────────────────────────────────────────────────────
 // DOCUMENTS SECTION
 // ─────────────────────────────────────────────────────────────
-function DocumentsSection({ documents, loading, uploadFile, update, remove, planLimits, profile, onUpgrade, updateProfile, addAlert }) {
+function DocumentsSection({ documents, loading, uploadFile, update, remove, planLimits, profile, onUpgrade, updateProfile, addAlert, onLifeEvent }) {
   const emptyForm = { name: '', doc_type: 'Legal', status: 'current', expires_at: '', notes: '' }
   const [showUpload, setShowUpload] = useState(false)
   const [editingDocument, setEditingDocument] = useState(null)
@@ -1926,6 +2000,19 @@ function DocumentsSection({ documents, loading, uploadFile, update, remove, plan
     setFormError(null)
     try {
       await uploadFile(form, file)
+      // Life event prompt — will and LPA uploads are key estate planning moments
+      const lowerType = form.doc_type?.toLowerCase() ?? ''
+      if (lowerType.includes('will')) {
+        onLifeEvent?.({
+          message: "Great — your will is uploaded. It's worth checking your trusted contacts and instructions still align with your wishes.",
+          cta: { label: 'Review instructions →', section: 'instructions' },
+        })
+      } else if (lowerType.includes('lpa')) {
+        onLifeEvent?.({
+          message: "You've uploaded an LPA — an important document. Make sure your trusted contacts know who holds it, and that your access settings are up to date.",
+          cta: { label: 'Review trusted contacts →', section: 'people' },
+        })
+      }
       // Feature 6: Smart expiry alert creation
       if (form.expires_at && addAlert) {
         const expiryDate = new Date(form.expires_at)
@@ -4765,6 +4852,173 @@ function SettingsSection({ profile, isDemo, updateProfile, refreshProfile, onUpg
 
       </div>
     </SectionShell>
+  )
+}
+
+// ─────────────────────────────────────────────────────────────
+// LIFE EVENT PROMPT MODAL
+// ─────────────────────────────────────────────────────────────
+
+function LifeEventPromptModal({ prompt, onNavigate, onClose }) {
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4" onClick={onClose}>
+      <div className="bg-white rounded-2xl max-w-sm w-full p-6 shadow-xl" onClick={e => e.stopPropagation()}>
+        <div className="flex items-start gap-3 mb-4">
+          <div className="w-9 h-9 rounded-xl bg-amber-50 flex items-center justify-center shrink-0">
+            <Sparkles size={16} className="text-amber-500" />
+          </div>
+          <p className="font-semibold text-navy-900 text-sm pt-1.5">A thought while you're here</p>
+          <button onClick={onClose} className="ml-auto text-stone-300 hover:text-stone-500 transition-colors shrink-0">
+            <X size={14} />
+          </button>
+        </div>
+        <p className="text-sm text-stone-600 leading-relaxed mb-5">{prompt.message}</p>
+        {prompt.cta && (
+          <button
+            onClick={() => onNavigate(prompt.cta.section)}
+            className="w-full bg-navy-800 text-white text-sm font-semibold py-2.5 rounded-xl hover:bg-navy-700 transition-colors"
+          >
+            {prompt.cta.label}
+          </button>
+        )}
+        <button onClick={onClose} className="w-full mt-2 text-xs text-stone-400 hover:text-stone-600 py-1.5 transition-colors">
+          Thanks, I'll do it later
+        </button>
+      </div>
+    </div>
+  )
+}
+
+// ─────────────────────────────────────────────────────────────
+// EXECUTOR PREVIEW MODAL
+// ─────────────────────────────────────────────────────────────
+
+function ExecutorPreviewModal({ profile, people, accounts, documents, instructions, onClose }) {
+  const executor = people.find(p => p.role?.toLowerCase().includes('executor')) || people[0]
+  return (
+    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/50 p-4" onClick={onClose}>
+      <div className="bg-white rounded-2xl max-w-lg w-full max-h-[88vh] overflow-y-auto shadow-2xl" onClick={e => e.stopPropagation()}>
+        {/* Header */}
+        <div className="sticky top-0 bg-navy-950 rounded-t-2xl px-6 py-4 flex items-center justify-between">
+          <div>
+            <p className="text-xs font-semibold text-navy-400 uppercase tracking-widest">Executor view preview</p>
+            <p className="text-white text-sm font-medium mt-0.5">
+              What {executor?.name || 'your executor'} would see
+            </p>
+          </div>
+          <button onClick={onClose} className="text-navy-400 hover:text-white transition-colors">
+            <X size={16} />
+          </button>
+        </div>
+
+        <div className="p-6 space-y-5">
+          {/* Plan owner */}
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-wider text-stone-400 mb-2">Plan owner</p>
+            <div className="bg-stone-50 rounded-xl p-4">
+              <p className="font-semibold text-navy-900">{profile.full_name}</p>
+              <p className="text-xs text-stone-500 mt-0.5">{profile.email}</p>
+              {profile.date_of_birth && (
+                <p className="text-xs text-stone-400 mt-0.5">
+                  DOB: {new Date(profile.date_of_birth).toLocaleDateString('en-GB')}
+                </p>
+              )}
+            </div>
+          </div>
+
+          {/* Trusted contacts */}
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-wider text-stone-400 mb-2">
+              Trusted contacts ({people.length})
+            </p>
+            {people.length === 0 ? (
+              <p className="text-sm text-stone-400 italic">No trusted contacts added yet</p>
+            ) : (
+              <div className="space-y-2">
+                {people.map(p => (
+                  <div key={p.id} className="flex items-center gap-3 bg-stone-50 rounded-xl px-4 py-3">
+                    <div className="w-8 h-8 rounded-full bg-navy-100 flex items-center justify-center shrink-0">
+                      <span className="text-xs font-bold text-navy-700">{p.name?.charAt(0)?.toUpperCase()}</span>
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-semibold text-navy-900">{p.name}</p>
+                      <p className="text-xs text-stone-400 truncate">{p.role} · {p.email}</p>
+                    </div>
+                    <span className={`shrink-0 text-xs font-medium px-2 py-0.5 rounded-full border ${p.invite_status === 'accepted' ? 'bg-sage-50 text-sage-700 border-sage-200' : 'bg-amber-50 text-amber-700 border-amber-200'}`}>
+                      {p.invite_status === 'accepted' ? 'Active' : 'Pending'}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Financial accounts */}
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-wider text-stone-400 mb-2">
+              Financial accounts ({accounts.length})
+            </p>
+            {accounts.length === 0 ? (
+              <p className="text-sm text-stone-400 italic">No accounts documented yet</p>
+            ) : (
+              <div className="divide-y divide-stone-100">
+                {accounts.map(a => (
+                  <div key={a.id} className="flex items-center gap-3 py-2">
+                    <Landmark size={13} className="text-stone-400 shrink-0" />
+                    <span className="text-sm text-navy-800 flex-1">{a.institution}</span>
+                    <span className="text-xs text-stone-400">{a.category}</span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Key documents */}
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-wider text-stone-400 mb-2">
+              Key documents ({documents.length})
+            </p>
+            {documents.length === 0 ? (
+              <p className="text-sm text-stone-400 italic">No documents uploaded yet</p>
+            ) : (
+              <div className="divide-y divide-stone-100">
+                {documents.map(d => (
+                  <div key={d.id} className="flex items-center gap-3 py-2">
+                    <FileText size={13} className="text-stone-400 shrink-0" />
+                    <span className="text-sm text-navy-800 flex-1">{d.name}</span>
+                    <span className="text-xs text-stone-400">{d.doc_type}</span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Instructions */}
+          {instructions.length > 0 && (
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-wider text-stone-400 mb-2">
+                Instructions ({instructions.length})
+              </p>
+              <div className="divide-y divide-stone-100">
+                {instructions.map(i => (
+                  <div key={i.id} className="flex items-center gap-3 py-2">
+                    <BookOpen size={13} className="text-stone-400 shrink-0" />
+                    <span className="text-sm text-navy-800">{i.title}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Footer note */}
+          <div className="bg-amber-50 border border-amber-200 rounded-xl p-4">
+            <p className="text-xs text-amber-800 leading-relaxed">
+              <strong>Preview only.</strong> Your executor sees this view after verifying your incapacity or death, according to the access timing you've set for each contact.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
   )
 }
 
