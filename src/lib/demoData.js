@@ -278,6 +278,16 @@ export const DEMO_ADVISOR_FAMILIES = [
       people: false,
       alerts: true,
     },
+    activity_log: [
+      { id: 'act1', action: 'document.uploaded', resource_name: 'Aviva Life Insurance Policy', created_at: '2026-04-22T16:30:00Z' },
+      { id: 'act2', action: 'account.updated', resource_name: 'Vanguard ISA', created_at: '2026-04-20T11:00:00Z' },
+      { id: 'act3', action: 'instruction.created', resource_name: 'First 48 hours', created_at: '2026-04-15T14:00:00Z' },
+      { id: 'act4', action: 'person.invited', resource_name: 'Emily Thornton', created_at: '2026-04-10T09:00:00Z' },
+      { id: 'act5', action: 'account.created', resource_name: 'Coinbase Wallet', created_at: '2026-03-28T10:20:00Z' },
+    ],
+    advisor_notes: 'Pension nomination form needs updating — discuss in June review. IHT threshold likely to be an issue given property value.',
+    next_review_date: '2026-06-15',
+    meeting_notes: '26 Apr 2026: Discussed LPA registration. Client confirmed Carol is primary attorney. Will follow up on pension nomination next time.',
   },
   {
     id: 'f2',
@@ -313,6 +323,13 @@ export const DEMO_ADVISOR_FAMILIES = [
       people: true,
       alerts: true,
     },
+    activity_log: [
+      { id: 'act6', action: 'document.uploaded', resource_name: 'Mirror Wills', created_at: '2026-04-19T11:00:00Z' },
+      { id: 'act7', action: 'account.created', resource_name: 'Scottish Widows Pension', created_at: '2026-04-05T09:30:00Z' },
+    ],
+    advisor_notes: 'Very organised couple. Review IHT position annually — combined estate well above threshold.',
+    next_review_date: '2026-07-10',
+    meeting_notes: '19 Apr 2026: Annual review complete. Both wills updated. LPA in place for both.',
   },
   {
     id: 'f3',
@@ -331,6 +348,10 @@ export const DEMO_ADVISOR_FAMILIES = [
       { id: 'al3', title: 'Invite not yet accepted', severity: 'warning', is_read: false },
     ],
     trusted_people: [],
+    activity_log: [],
+    advisor_notes: '',
+    next_review_date: '',
+    meeting_notes: '',
   },
 ]
 

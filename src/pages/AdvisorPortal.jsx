@@ -6,7 +6,8 @@ import {
   Plus, Settings, LogOut, Search, CheckCircle2, AlertCircle, AlertTriangle,
   Info, Clock, BarChart2, Landmark, Shield, Lock, UserPlus, X, RefreshCw,
   ChevronDown, Activity, ArrowRight, Mail, Send, Eye, EyeOff, ToggleLeft, ToggleRight, CreditCard,
-  Download, ExternalLink, Loader2,
+  Download, ExternalLink, Loader2, Printer, SortAsc, Filter, LayoutDashboard,
+  CheckSquare, Square, MessageSquare, Calendar,
 } from 'lucide-react'
 import { DEMO_ADVISOR, DEMO_ADVISOR_FAMILIES } from '../lib/demoData'
 import { supabase } from '../lib/supabase'
@@ -17,6 +18,24 @@ import { supabase } from '../lib/supabase'
 const fmtDate = (iso) => {
   if (!iso) return '—'
   try { return new Intl.DateTimeFormat('en-GB', { dateStyle: 'medium' }).format(new Date(iso)) } catch { return '—' }
+}
+
+const STALE_DAYS = 60
+
+function daysSince(iso) {
+  if (!iso) return Infinity
+  return Math.floor((Date.now() - new Date(iso).getTime()) / 86_400_000)
+}
+
+function relativeTime(iso) {
+  if (!iso) return '—'
+  const days = daysSince(iso)
+  if (days === 0) return 'today'
+  if (days === 1) return 'yesterday'
+  if (days < 7)  return `${days} days ago`
+  if (days < 30) return `${Math.floor(days / 7)} week${Math.floor(days / 7) > 1 ? 's' : ''} ago`
+  if (days < 365) return `${Math.floor(days / 30)} month${Math.floor(days / 30) > 1 ? 's' : ''} ago`
+  return `${Math.floor(days / 365)} year${Math.floor(days / 365) > 1 ? 's' : ''} ago`
 }
 
 const primaryBtn = 'inline-flex items-center gap-2 bg-navy-800 text-white text-sm font-semibold px-4 py-2.5 rounded-xl hover:bg-navy-700 transition-colors disabled:opacity-50'
@@ -65,19 +84,38 @@ function Modal({ title, onClose, children }) {
 // ─────────────────────────────────────────────────────────────
 // FAMILY CARD (sidebar item)
 // ─────────────────────────────────────────────────────────────
-function FamilyCard({ family, active, onClick }) {
+function FamilyCard({ family, active, onClick, selectMode, selected, onToggle }) {
   const col = READINESS_COLOR(family.readiness_score)
   const isPending = family.invite_status !== 'accepted'
+  const stale = daysSince(family.last_updated) > STALE_DAYS
+  const daysAgo = daysSince(family.last_updated)
+
+  const handleClick = (e) => {
+    if (selectMode && !isPending) {
+      e.stopPropagation()
+      onToggle(family.id)
+    } else {
+      onClick()
+    }
+  }
+
   return (
     <button
-      onClick={onClick}
+      onClick={handleClick}
       className={`w-full text-left rounded-2xl border px-4 py-3.5 transition-all ${
-        active
+        active && !selectMode
           ? 'border-navy-300 bg-navy-50 ring-1 ring-navy-200'
+          : selected
+          ? 'border-navy-400 bg-navy-50 ring-1 ring-navy-300'
           : 'border-stone-200 bg-white hover:border-navy-200 hover:bg-navy-50/40'
       }`}
     >
       <div className="flex items-center gap-3">
+        {selectMode && !isPending && (
+          <div className="shrink-0 text-navy-600">
+            {selected ? <CheckSquare size={16} /> : <Square size={16} className="text-stone-400" />}
+          </div>
+        )}
         <div className="w-9 h-9 rounded-xl bg-navy-100 text-navy-700 flex items-center justify-center text-sm font-bold shrink-0 uppercase">
           {family.owner_name[0]}
         </div>
@@ -96,8 +134,60 @@ function FamilyCard({ family, active, onClick }) {
           <div className={`h-full rounded-full ${col.bar} transition-all`} style={{ width: `${family.readiness_score}%` }} />
         </div>
       )}
+      {!isPending && family.last_updated && (
+        <p className={`mt-1.5 text-[10px] ${stale ? 'text-amber-600 font-semibold' : 'text-stone-400'}`}>
+          {stale && '⚠ '}Last updated {daysAgo === 0 ? 'today' : daysAgo === 1 ? 'yesterday' : `${daysAgo} days ago`}
+        </p>
+      )}
+      {!isPending && !family.last_updated && (
+        <p className="mt-1.5 text-[10px] text-stone-300">No activity recorded</p>
+      )}
     </button>
   )
+}
+
+// ─────────────────────────────────────────────────────────────
+// PRINT SUMMARY
+// ─────────────────────────────────────────────────────────────
+function printClientSummary(family) {
+  const win = window.open('', '_blank')
+  if (!win) return
+  const fmtList = (arr, fn) => arr.length === 0 ? '<li style="color:#888">None recorded</li>' : arr.map(fn).join('')
+  win.document.write(`<!DOCTYPE html><html><head><title>${family.owner_name} — Plan Summary</title>
+<style>
+  body{font-family:Georgia,serif;max-width:680px;margin:40px auto;color:#1a1a1a;line-height:1.6;}
+  h1{font-size:28px;font-weight:300;margin-bottom:4px;}
+  h2{font-size:14px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#555;margin:28px 0 8px;}
+  .score{display:inline-block;font-size:22px;font-weight:700;padding:4px 14px;border-radius:99px;margin-bottom:16px;}
+  .green{background:#d1fae5;color:#065f46;} .amber{background:#fef3c7;color:#92400e;} .red{background:#fee2e2;color:#991b1b;}
+  ul{margin:0;padding-left:18px;} li{margin:4px 0;font-size:14px;}
+  table{width:100%;border-collapse:collapse;font-size:13px;} td,th{text-align:left;padding:6px 8px;border-bottom:1px solid #eee;}
+  th{font-weight:700;background:#f7f7f5;} .footer{margin-top:40px;font-size:11px;color:#aaa;border-top:1px solid #eee;padding-top:12px;}
+  @media print{body{margin:20px;}}
+</style></head><body>
+<p style="font-size:12px;color:#888;margin-bottom:4px;">Everstead Advisor Portal — Confidential</p>
+<h1>${family.owner_name}</h1>
+<p style="color:#666;font-size:13px;margin-top:2px;">${family.advisor_role} · Plan generated ${new Date().toLocaleDateString('en-GB',{dateStyle:'long'})}</p>
+<span class="score ${family.readiness_score>=80?'green':family.readiness_score>=50?'amber':'red'}">${family.readiness_score}% readiness</span>
+
+<h2>Accounts (${family.accounts.length})</h2>
+<table><tr><th>Institution</th><th>Type</th><th>Account</th><th>Balance</th></tr>
+${family.accounts.length===0?'<tr><td colspan="4" style="color:#888">None shared</td></tr>':family.accounts.map(a=>`<tr><td>${a.institution}</td><td>${a.account_type}</td><td>···· ${a.account_number_hint||'—'}</td><td>${a.balance_display||'—'}</td></tr>`).join('')}
+</table>
+
+<h2>Documents (${family.documents.length})</h2>
+<ul>${fmtList(family.documents,d=>`<li>${d.name} <span style="color:#888">(${d.doc_type} · ${d.status})</span></li>`)}</ul>
+
+<h2>Instructions (${family.instructions.length})</h2>
+<ul>${fmtList(family.instructions,i=>`<li>${i.title} <span style="color:#888">(${i.audience})</span></li>`)}</ul>
+
+<h2>Trusted People (${family.trusted_people.length})</h2>
+<ul>${fmtList(family.trusted_people,p=>`<li>${p.name} — ${p.role} <span style="color:#888">(${p.invite_status})</span></li>`)}</ul>
+
+<div class="footer">Generated by Everstead · everstead.care · This document is confidential and intended for advisor use only.</div>
+<script>window.onload=()=>window.print()</script>
+</body></html>`)
+  win.document.close()
 }
 
 // ─────────────────────────────────────────────────────────────
@@ -108,6 +198,14 @@ function FamilyView({ family, isDemo }) {
   const defaultPerms = family.advisor_permissions ?? { accounts: true, documents: true, instructions: true, people: true, alerts: true }
   const [permissions, setPermissions] = useState(defaultPerms)
 
+  // Notes state (demo: local only)
+  const [advisorNotes, setAdvisorNotes]     = useState(family.advisor_notes ?? '')
+  const [nextReviewDate, setNextReviewDate] = useState(family.next_review_date ?? '')
+  const [meetingNotes, setMeetingNotes]     = useState(family.meeting_notes ?? '')
+  const [notesSaved, setNotesSaved]         = useState(false)
+
+  const hasNotes = advisorNotes.trim() || nextReviewDate || meetingNotes.trim()
+
   const tabs = [
     { id: 'overview',      label: 'Overview',      icon: Shield,    locked: false },
     { id: 'accounts',      label: 'Accounts',      icon: Wallet,    locked: !permissions.accounts },
@@ -115,6 +213,8 @@ function FamilyView({ family, isDemo }) {
     { id: 'instructions',  label: 'Instructions',  icon: BookOpen,  locked: !permissions.instructions },
     { id: 'people',        label: 'People',        icon: Users,     locked: !permissions.people },
     { id: 'alerts',        label: 'Alerts',        icon: Bell,      locked: !permissions.alerts },
+    { id: 'activity',      label: 'Activity',      icon: Activity,  locked: false },
+    { id: 'notes',         label: 'Notes',         icon: MessageSquare, locked: false, dot: hasNotes },
     { id: 'access',        label: 'Advisor access',icon: Eye,       locked: false },
   ]
 
@@ -156,6 +256,13 @@ function FamilyView({ family, isDemo }) {
           </p>
         </div>
         <div className="flex items-center gap-4">
+          <button
+            onClick={() => printClientSummary(family)}
+            className={secondaryBtn}
+            title="Print / Save as PDF"
+          >
+            <Printer size={14} /> Print summary
+          </button>
           <div className="text-right">
             <p className="text-xs text-stone-500 mb-1">Plan readiness</p>
             <div className="flex items-center gap-2">
@@ -170,7 +277,7 @@ function FamilyView({ family, isDemo }) {
 
       {/* Tab nav */}
       <div className="flex gap-1 flex-wrap bg-white border border-stone-200 rounded-2xl p-1.5">
-        {tabs.map(({ id, label, icon: Icon, locked }) => (
+        {tabs.map(({ id, label, icon: Icon, locked, dot }) => (
           <button
             key={id}
             onClick={() => setActiveTab(id)}
@@ -183,6 +290,9 @@ function FamilyView({ family, isDemo }) {
             {id === 'alerts' && !locked && unreadAlerts > 0 && (
               <span className="ml-1 w-4 h-4 rounded-full bg-red-500 text-white text-[10px] font-bold flex items-center justify-center">{unreadAlerts}</span>
             )}
+            {id === 'notes' && dot && activeTab !== 'notes' && (
+              <span className="w-1.5 h-1.5 rounded-full bg-amber-400 ml-0.5" />
+            )}
           </button>
         ))}
       </div>
@@ -194,6 +304,16 @@ function FamilyView({ family, isDemo }) {
       {activeTab === 'instructions' && (!permissions.instructions ? <LockedTabPanel section="Instructions" /> : <FamilyInstructionsTab instructions={family.instructions} />)}
       {activeTab === 'people'       && (!permissions.people       ? <LockedTabPanel section="People" />       : <FamilyPeopleTab people={family.trusted_people} />)}
       {activeTab === 'alerts'       && (!permissions.alerts       ? <LockedTabPanel section="Alerts" />       : <FamilyAlertsTab alerts={family.alerts} />)}
+      {activeTab === 'activity'     && <FamilyActivityTab activityLog={family.activity_log ?? []} />}
+      {activeTab === 'notes'        && (
+        <FamilyNotesTab
+          advisorNotes={advisorNotes} setAdvisorNotes={setAdvisorNotes}
+          nextReviewDate={nextReviewDate} setNextReviewDate={setNextReviewDate}
+          meetingNotes={meetingNotes} setMeetingNotes={setMeetingNotes}
+          saved={notesSaved} setSaved={setNotesSaved}
+          isDemo={isDemo}
+        />
+      )}
       {activeTab === 'access'       && <AdvisorAccessTab family={family} permissions={permissions} setPermissions={setPermissions} isDemo={isDemo} />}
     </div>
   )
@@ -321,6 +441,17 @@ function AdvisorAccessTab({ family, permissions, setPermissions, isDemo }) {
 // ── Overview ──────────────────────────────────────────────────
 function FamilyOverviewTab({ family, setTab, permissions = {} }) {
   const col = READINESS_COLOR(family.readiness_score)
+
+  // Onboarding checklist (feature 8)
+  const onboardingItems = [
+    { label: 'Vault created',        done: true },
+    { label: 'First account added',  done: family.accounts.length > 0 },
+    { label: 'First document added', done: family.documents.length > 0 },
+    { label: 'Executor assigned',    done: family.trusted_people.some(p => (p.role || '').toLowerCase().includes('executor')) },
+    { label: 'Instructions added',   done: family.instructions.length > 0 },
+  ]
+  const doneCount = onboardingItems.filter(i => i.done).length
+
   return (
     <div className="space-y-4">
       <div className="grid sm:grid-cols-2 xl:grid-cols-4 gap-4">
@@ -352,6 +483,25 @@ function FamilyOverviewTab({ family, setTab, permissions = {} }) {
         })}
       </div>
 
+      {/* Onboarding checklist (feature 8) */}
+      <div className="rounded-[1.5rem] border border-stone-200 bg-white p-6 space-y-3">
+        <div className="flex items-center justify-between">
+          <h3 className="text-sm font-semibold text-navy-900">Getting started</h3>
+          <span className="text-xs font-semibold text-stone-500">{doneCount} of {onboardingItems.length} complete</span>
+        </div>
+        <div className="h-1.5 rounded-full bg-stone-100 overflow-hidden">
+          <div className="h-full rounded-full bg-emerald-500 transition-all" style={{ width: `${(doneCount/onboardingItems.length)*100}%` }} />
+        </div>
+        <div className="grid sm:grid-cols-2 gap-1.5 pt-1">
+          {onboardingItems.map(item => (
+            <div key={item.label} className="flex items-center gap-2">
+              <CheckCircle2 size={13} className={item.done ? 'text-emerald-500 shrink-0' : 'text-stone-200 shrink-0'} />
+              <span className={`text-xs ${item.done ? 'text-navy-800' : 'text-stone-400'}`}>{item.label}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
       {/* Recent alerts */}
       {family.alerts.length > 0 && (
         <div className="rounded-[1.5rem] border border-stone-200 bg-white p-6 space-y-3">
@@ -369,7 +519,7 @@ function FamilyOverviewTab({ family, setTab, permissions = {} }) {
         </div>
       )}
 
-      {/* Recent activity */}
+      {/* Trusted people */}
       <div className="rounded-[1.5rem] border border-stone-200 bg-white p-6">
         <h3 className="text-sm font-semibold text-navy-900 mb-3">Trusted people</h3>
         <div className="space-y-2">
@@ -390,6 +540,147 @@ function FamilyOverviewTab({ family, setTab, permissions = {} }) {
             </div>
           ))}
         </div>
+      </div>
+    </div>
+  )
+}
+
+// ── Activity feed tab (feature 5) ─────────────────────────────
+const ACTION_LABELS = {
+  'document.uploaded':  { label: 'Uploaded document',    icon: FileText },
+  'account.updated':    { label: 'Updated account',      icon: Wallet },
+  'account.created':    { label: 'Added account',        icon: Wallet },
+  'instruction.created':{ label: 'Created instruction',  icon: BookOpen },
+  'person.invited':     { label: 'Invited person',       icon: UserPlus },
+}
+
+function groupByDate(items) {
+  const now = new Date()
+  const today     = new Date(now.getFullYear(), now.getMonth(), now.getDate())
+  const yesterday = new Date(today.getTime() - 86_400_000)
+  const groups = {}
+  items.forEach(item => {
+    const d = new Date(item.created_at)
+    const day = new Date(d.getFullYear(), d.getMonth(), d.getDate())
+    let label
+    if (day.getTime() === today.getTime()) label = 'Today'
+    else if (day.getTime() === yesterday.getTime()) label = 'Yesterday'
+    else label = 'Earlier'
+    if (!groups[label]) groups[label] = []
+    groups[label].push(item)
+  })
+  const order = ['Today', 'Yesterday', 'Earlier']
+  return order.filter(k => groups[k]).map(k => ({ label: k, items: groups[k] }))
+}
+
+function FamilyActivityTab({ activityLog }) {
+  if (!activityLog || activityLog.length === 0) {
+    return (
+      <div className="rounded-[1.5rem] border border-stone-200 bg-white py-12 text-center space-y-2">
+        <div className="w-12 h-12 rounded-full bg-navy-50 text-navy-400 flex items-center justify-center mx-auto mb-2">
+          <Activity size={20} />
+        </div>
+        <p className="text-sm font-semibold text-navy-900">No activity recorded yet</p>
+        <p className="text-xs text-stone-400 max-w-xs mx-auto">When this client adds accounts, documents or instructions, their activity will appear here.</p>
+      </div>
+    )
+  }
+
+  const groups = groupByDate(activityLog)
+
+  return (
+    <div className="space-y-5">
+      {groups.map(({ label, items }) => (
+        <div key={label} className="rounded-[1.5rem] border border-stone-200 bg-white p-6 space-y-3">
+          <h3 className="text-xs font-semibold uppercase tracking-[0.15em] text-stone-400">{label}</h3>
+          {items.map(item => {
+            const meta = ACTION_LABELS[item.action] || { label: item.action, icon: Activity }
+            const Icon = meta.icon
+            return (
+              <div key={item.id} className="flex items-start gap-3">
+                <div className="w-8 h-8 rounded-xl bg-navy-50 text-navy-600 flex items-center justify-center shrink-0 mt-0.5">
+                  <Icon size={14} />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium text-navy-900">{meta.label}</p>
+                  <p className="text-xs text-stone-500 truncate">{item.resource_name}</p>
+                </div>
+                <p className="text-xs text-stone-400 shrink-0 mt-0.5">{relativeTime(item.created_at)}</p>
+              </div>
+            )
+          })}
+        </div>
+      ))}
+    </div>
+  )
+}
+
+// ── Notes tab (features 4 & 6) ────────────────────────────────
+function FamilyNotesTab({ advisorNotes, setAdvisorNotes, nextReviewDate, setNextReviewDate, meetingNotes, setMeetingNotes, saved, setSaved, isDemo }) {
+  const handleSave = () => {
+    // In demo mode: local state only
+    setSaved(true)
+    setTimeout(() => setSaved(false), 3000)
+  }
+
+  return (
+    <div className="rounded-[1.5rem] border border-stone-200 bg-white p-7 space-y-6">
+      <div className="flex items-center justify-between">
+        <div>
+          <h3 className="font-semibold text-navy-900 text-base">Advisor notes</h3>
+          <p className="text-xs text-stone-400 mt-0.5">Private — only visible to you. Not shared with the client.</p>
+        </div>
+        {saved && (
+          <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-full px-3 py-1">
+            <CheckCircle2 size={12} /> Saved
+          </span>
+        )}
+      </div>
+
+      <div className="space-y-4">
+        <div className="space-y-1">
+          <label className="block text-xs font-semibold text-stone-600">Advisor notes</label>
+          <textarea
+            className="w-full border border-stone-200 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-navy-300 bg-white min-h-[100px] resize-y"
+            placeholder="Your private notes about this client's situation…"
+            value={advisorNotes}
+            onChange={e => { setAdvisorNotes(e.target.value); setSaved(false) }}
+          />
+        </div>
+
+        <div className="space-y-1">
+          <label className="block text-xs font-semibold text-stone-600 flex items-center gap-1.5">
+            <Calendar size={12} /> Next review date
+          </label>
+          <input
+            type="date"
+            className="w-full border border-stone-200 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-navy-300 bg-white"
+            value={nextReviewDate}
+            onChange={e => { setNextReviewDate(e.target.value); setSaved(false) }}
+          />
+          {nextReviewDate && (
+            <p className="text-xs text-stone-400">
+              Review scheduled for {new Date(nextReviewDate).toLocaleDateString('en-GB', { dateStyle: 'long' })}
+            </p>
+          )}
+        </div>
+
+        <div className="space-y-1">
+          <label className="block text-xs font-semibold text-stone-600">Meeting notes</label>
+          <textarea
+            className="w-full border border-stone-200 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-navy-300 bg-white min-h-[120px] resize-y"
+            placeholder="Notes from your most recent meeting…"
+            value={meetingNotes}
+            onChange={e => { setMeetingNotes(e.target.value); setSaved(false) }}
+          />
+        </div>
+      </div>
+
+      <div className="flex items-center justify-between pt-2 border-t border-stone-100">
+        <p className="text-xs text-stone-400">These notes are stored locally in demo mode and are not persisted.</p>
+        <button onClick={handleSave} className="flex items-center gap-2 bg-navy-800 text-white text-sm font-semibold px-5 py-2.5 rounded-xl hover:bg-navy-700 transition-colors">
+          {saved ? <><CheckCircle2 size={14} /> Saved</> : 'Save notes'}
+        </button>
       </div>
     </div>
   )
@@ -1375,6 +1666,188 @@ function AdvisorMembershipCard({ advisor, families, isDemo, cancelled, setCancel
 }
 
 // ─────────────────────────────────────────────────────────────
+// PORTFOLIO OVERVIEW (feature 1)
+// ─────────────────────────────────────────────────────────────
+function PortfolioOverview({ families, onSelectFamily, setActiveSection }) {
+  const accepted = families.filter(f => f.invite_status === 'accepted')
+  const avgReadiness = accepted.length
+    ? Math.round(accepted.reduce((sum, f) => sum + f.readiness_score, 0) / accepted.length)
+    : 0
+  const belowFifty   = accepted.filter(f => f.readiness_score < 50).length
+  const totalAlerts  = families.reduce((sum, f) => sum + f.alerts.filter(a => !a.is_read).length, 0)
+  const staleClients = accepted.filter(f => daysSince(f.last_updated) > STALE_DAYS)
+
+  const statsCards = [
+    { label: 'Avg readiness',        value: `${avgReadiness}%`, icon: TrendingUp,     color: avgReadiness >= 80 ? 'text-emerald-700 bg-emerald-50' : avgReadiness >= 50 ? 'text-amber-700 bg-amber-50' : 'text-red-700 bg-red-50' },
+    { label: 'Below 50% readiness',  value: belowFifty,         icon: AlertTriangle,  color: belowFifty > 0 ? 'text-red-700 bg-red-50' : 'text-emerald-700 bg-emerald-50' },
+    { label: 'Unread alerts',        value: totalAlerts,        icon: Bell,           color: totalAlerts > 0 ? 'text-amber-700 bg-amber-50' : 'text-emerald-700 bg-emerald-50' },
+    { label: 'Stale plans (60+ days)',value: staleClients.length, icon: Clock,         color: staleClients.length > 0 ? 'text-amber-700 bg-amber-50' : 'text-emerald-700 bg-emerald-50' },
+  ]
+
+  // Clients needing attention: below 80% readiness, has alerts, or stale
+  const needsAttention = accepted.filter(f =>
+    f.readiness_score < 80 || f.alerts.some(a => !a.is_read) || daysSince(f.last_updated) > STALE_DAYS
+  ).sort((a, b) => a.readiness_score - b.readiness_score)
+
+  return (
+    <div className="space-y-5">
+      <div className="rounded-[2rem] border border-stone-200 bg-white px-7 py-5">
+        <h2 className="font-display text-2xl font-light text-navy-950">Portfolio overview</h2>
+        <p className="text-sm text-stone-500 mt-1">A snapshot of all your clients across {families.length} plan{families.length !== 1 ? 's' : ''}.</p>
+      </div>
+
+      {/* Stats grid */}
+      <div className="grid sm:grid-cols-2 xl:grid-cols-4 gap-4">
+        {statsCards.map(({ label, value, icon: Icon, color }) => (
+          <div key={label} className="rounded-[1.5rem] border border-stone-200 bg-white p-5">
+            <div className={`w-9 h-9 rounded-xl flex items-center justify-center mb-3 ${color}`}>
+              <Icon size={16} />
+            </div>
+            <p className="text-3xl font-light font-display text-navy-950">{value}</p>
+            <p className="text-xs text-stone-500 mt-0.5">{label}</p>
+          </div>
+        ))}
+      </div>
+
+      {/* Readiness bar for all accepted clients */}
+      <div className="rounded-[1.5rem] border border-stone-200 bg-white p-6 space-y-3">
+        <h3 className="text-sm font-semibold text-navy-900">Readiness by client</h3>
+        {accepted.length === 0
+          ? <p className="text-xs text-stone-400">No accepted clients yet.</p>
+          : accepted.sort((a, b) => a.readiness_score - b.readiness_score).map(f => {
+            const col = READINESS_COLOR(f.readiness_score)
+            return (
+              <button
+                key={f.id}
+                onClick={() => { onSelectFamily(f.id); setActiveSection('families') }}
+                className="w-full flex items-center gap-4 group text-left"
+              >
+                <p className="text-sm font-medium text-navy-900 w-44 shrink-0 truncate group-hover:text-navy-600 transition-colors">{f.owner_name}</p>
+                <div className="flex-1 h-2 rounded-full bg-stone-100 overflow-hidden">
+                  <div className={`h-full rounded-full ${col.bar}`} style={{ width: `${f.readiness_score}%` }} />
+                </div>
+                <span className={`text-xs font-bold ${col.text} w-10 text-right shrink-0`}>{f.readiness_score}%</span>
+              </button>
+            )
+          })
+        }
+      </div>
+
+      {/* Clients needing attention */}
+      {needsAttention.length > 0 && (
+        <div className="rounded-[1.5rem] border border-amber-200 bg-amber-50 p-6 space-y-3">
+          <h3 className="text-sm font-semibold text-amber-900 flex items-center gap-2">
+            <AlertTriangle size={14} /> Needs attention ({needsAttention.length})
+          </h3>
+          {needsAttention.map(f => (
+            <button
+              key={f.id}
+              onClick={() => { onSelectFamily(f.id); setActiveSection('families') }}
+              className="w-full flex items-center gap-3 bg-white border border-amber-200 rounded-2xl px-4 py-3 text-left hover:border-amber-300 transition-colors"
+            >
+              <div className="w-8 h-8 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center text-xs font-bold uppercase shrink-0">
+                {f.owner_name[0]}
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-semibold text-navy-900 truncate">{f.owner_name}</p>
+                <div className="flex items-center gap-3 mt-0.5">
+                  {f.readiness_score < 80 && <span className="text-[10px] text-amber-700">{f.readiness_score}% readiness</span>}
+                  {f.alerts.some(a => !a.is_read) && <span className="text-[10px] text-red-600">{f.alerts.filter(a=>!a.is_read).length} unread alert{f.alerts.filter(a=>!a.is_read).length !== 1 ? 's' : ''}</span>}
+                  {daysSince(f.last_updated) > STALE_DAYS && <span className="text-[10px] text-stone-500">⚠ {daysSince(f.last_updated)} days inactive</span>}
+                </div>
+              </div>
+              <ChevronRight size={14} className="text-stone-400 shrink-0" />
+            </button>
+          ))}
+        </div>
+      )}
+
+      {/* Stale clients section */}
+      {staleClients.length > 0 && (
+        <div className="rounded-[1.5rem] border border-stone-200 bg-white p-6 space-y-3">
+          <h3 className="text-sm font-semibold text-navy-900 flex items-center gap-2">
+            <Clock size={14} className="text-stone-400" /> Plans not updated in 60+ days
+          </h3>
+          {staleClients.map(f => (
+            <button
+              key={f.id}
+              onClick={() => { onSelectFamily(f.id); setActiveSection('families') }}
+              className="w-full flex items-center gap-3 rounded-xl border border-stone-100 px-4 py-3 text-left hover:bg-stone-50 transition-colors"
+            >
+              <div className="w-8 h-8 rounded-xl bg-stone-100 text-stone-600 flex items-center justify-center text-xs font-bold uppercase shrink-0">{f.owner_name[0]}</div>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-medium text-navy-900">{f.owner_name}</p>
+                <p className="text-xs text-amber-600">Last updated {relativeTime(f.last_updated)}</p>
+              </div>
+              <ChevronRight size={14} className="text-stone-400 shrink-0" />
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}
+
+// ─────────────────────────────────────────────────────────────
+// PORTAL ALERTS FEED (feature 10)
+// ─────────────────────────────────────────────────────────────
+function PortalAlertsSection({ families, onSelectFamily, setActiveSection }) {
+  const allAlerts = families
+    .flatMap(f => (f.alerts || []).map(a => ({ ...a, family_name: f.owner_name, family_id: f.id })))
+    .sort((a, b) => {
+      const order = { critical: 0, warning: 1, info: 2 }
+      const diff = (order[a.severity] ?? 2) - (order[b.severity] ?? 2)
+      if (diff !== 0) return diff
+      return (a.is_read ? 1 : 0) - (b.is_read ? 1 : 0)
+    })
+
+  const unread = allAlerts.filter(a => !a.is_read)
+
+  return (
+    <div className="space-y-5">
+      <div className="rounded-[2rem] border border-stone-200 bg-white px-7 py-5 flex items-center justify-between gap-4">
+        <div>
+          <h2 className="font-display text-2xl font-light text-navy-950">All alerts</h2>
+          <p className="text-sm text-stone-500 mt-1">{unread.length} unread · {allAlerts.length} total across all clients</p>
+        </div>
+      </div>
+
+      {allAlerts.length === 0 ? (
+        <div className="rounded-[1.5rem] border border-stone-200 bg-white py-12 text-center space-y-2">
+          <CheckCircle2 size={28} className="text-emerald-400 mx-auto" />
+          <p className="text-sm font-semibold text-navy-900">No alerts across your portfolio</p>
+          <p className="text-xs text-stone-400">All clients are up to date.</p>
+        </div>
+      ) : (
+        <div className="space-y-3">
+          {allAlerts.map(alert => {
+            const sev = SEVERITY[alert.severity] || SEVERITY.info
+            const SevIcon = sev.icon
+            return (
+              <button
+                key={`${alert.family_id}-${alert.id}`}
+                onClick={() => { onSelectFamily(alert.family_id); setActiveSection('families') }}
+                className={`w-full flex items-start gap-4 rounded-[1.5rem] border px-5 py-4 text-left hover:opacity-90 transition-opacity ${sev.cls}`}
+              >
+                <SevIcon size={16} className="shrink-0 mt-0.5" />
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-semibold">{alert.title}</p>
+                  <p className="text-xs mt-0.5 opacity-75">{alert.family_name}</p>
+                </div>
+                {!alert.is_read && (
+                  <span className="text-[10px] font-bold uppercase tracking-wide bg-white/60 rounded-full px-2 py-0.5 border shrink-0">Unread</span>
+                )}
+                <ChevronRight size={14} className="shrink-0 mt-0.5 opacity-60" />
+              </button>
+            )
+          })}
+        </div>
+      )}
+    </div>
+  )
+}
+
+// ─────────────────────────────────────────────────────────────
 // PORTAL ROOT
 // ─────────────────────────────────────────────────────────────
 export default function AdvisorPortal() {
@@ -1434,9 +1907,14 @@ export default function AdvisorPortal() {
   const families = isDemo ? DEMO_ADVISOR_FAMILIES : realFamilies
 
   const [selectedFamilyId, setSelectedFamilyId] = useState(null)
-  const [activeSection, setActiveSection] = useState('families')
+  const [activeSection, setActiveSection] = useState('overview')
   const [showInvite, setShowInvite] = useState(false)
   const [search, setSearch] = useState('')
+  const [sortBy, setSortBy] = useState('readiness') // readiness | name | updated
+  const [filterStatus, setFilterStatus] = useState('all') // all | accepted | pending
+  const [selectMode, setSelectMode] = useState(false)
+  const [selectedIds, setSelectedIds] = useState(new Set())
+  const [nudgeSent, setNudgeSent] = useState(false)
 
   // Auto-select first family once loaded
   useEffect(() => {
@@ -1445,11 +1923,29 @@ export default function AdvisorPortal() {
     }
   }, [families])
 
-  const filteredFamilies = useMemo(() =>
-    families.filter(f => f.owner_name.toLowerCase().includes(search.toLowerCase())),
-    [families, search]
-  )
+  const toggleSelect = (id) => {
+    setSelectedIds(prev => {
+      const next = new Set(prev)
+      next.has(id) ? next.delete(id) : next.add(id)
+      return next
+    })
+  }
 
+  const handleBulkNudge = () => {
+    setNudgeSent(true)
+    setTimeout(() => { setNudgeSent(false); setSelectMode(false); setSelectedIds(new Set()) }, 3000)
+  }
+
+  const filteredFamilies = useMemo(() => {
+    let list = families.filter(f => f.owner_name.toLowerCase().includes(search.toLowerCase()))
+    if (filterStatus !== 'all') list = list.filter(f => f.invite_status === filterStatus)
+    if (sortBy === 'readiness') list = [...list].sort((a, b) => a.readiness_score - b.readiness_score)
+    else if (sortBy === 'name') list = [...list].sort((a, b) => a.owner_name.localeCompare(b.owner_name))
+    else if (sortBy === 'updated') list = [...list].sort((a, b) => daysSince(a.last_updated) - daysSince(b.last_updated))
+    return list
+  }, [families, search, sortBy, filterStatus])
+
+  const totalUnreadAlerts = families.reduce((sum, f) => sum + (f.alerts||[]).filter(a => !a.is_read).length, 0)
   const selectedFamily = families.find(f => f.id === selectedFamilyId) ?? null
 
   if (!isDemo && dataLoading) {
@@ -1526,25 +2022,27 @@ export default function AdvisorPortal() {
                 ))}
               </div>
             </div>
-            <div className="mt-3 grid grid-cols-3 gap-2">
-              <button
-                onClick={() => setActiveSection('families')}
-                className={`flex items-center gap-2 text-xs font-semibold px-3 py-2 rounded-xl transition-colors ${activeSection === 'families' ? 'bg-navy-800 text-white' : 'border border-stone-200 text-stone-600 hover:bg-stone-50'}`}
-              >
-                <Users size={12} /> Families
-              </button>
-              <button
-                onClick={() => setActiveSection('resources')}
-                className={`flex items-center gap-2 text-xs font-semibold px-3 py-2 rounded-xl transition-colors ${activeSection === 'resources' ? 'bg-navy-800 text-white' : 'border border-stone-200 text-stone-600 hover:bg-stone-50'}`}
-              >
-                <BookOpen size={12} /> Resources
-              </button>
-              <button
-                onClick={() => setActiveSection('settings')}
-                className={`flex items-center gap-2 text-xs font-semibold px-3 py-2 rounded-xl transition-colors ${activeSection === 'settings' ? 'bg-navy-800 text-white' : 'border border-stone-200 text-stone-600 hover:bg-stone-50'}`}
-              >
-                <Settings size={12} /> Settings
-              </button>
+            {/* 5-section nav */}
+            <div className="mt-3 grid grid-cols-5 gap-1.5">
+              {[
+                { id: 'overview',   icon: LayoutDashboard, label: 'Overview' },
+                { id: 'families',   icon: Users,           label: 'Clients' },
+                { id: 'allAlerts',  icon: Bell,            label: 'Alerts',  badge: totalUnreadAlerts },
+                { id: 'resources',  icon: BookOpen,        label: 'Guides' },
+                { id: 'settings',   icon: Settings,        label: 'Settings' },
+              ].map(({ id, icon: Icon, label, badge }) => (
+                <button
+                  key={id}
+                  onClick={() => setActiveSection(id)}
+                  className={`relative flex flex-col items-center gap-1 py-2 rounded-xl text-[10px] font-semibold transition-colors ${activeSection === id ? 'bg-navy-800 text-white' : 'border border-stone-200 text-stone-600 hover:bg-stone-50'}`}
+                >
+                  <Icon size={13} />
+                  {label}
+                  {badge > 0 && (
+                    <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-red-500 text-white text-[9px] font-bold flex items-center justify-center">{badge}</span>
+                  )}
+                </button>
+              ))}
             </div>
           </div>
 
@@ -1553,27 +2051,55 @@ export default function AdvisorPortal() {
             <div className="rounded-[2rem] border border-stone-200 bg-white p-4 space-y-3">
               <div className="flex items-center justify-between px-1">
                 <p className="text-xs font-semibold text-stone-500 uppercase tracking-wide">Client families</p>
-                <button
-                  onClick={() => setShowInvite(true)}
-                  disabled={families.length >= (advisor?.families_limit ?? 5)}
-                  className="inline-flex items-center gap-1.5 text-xs font-semibold text-navy-700 hover:text-navy-900 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
-                >
-                  <Plus size={13} /> Add family
-                </button>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => { setSelectMode(v => !v); setSelectedIds(new Set()) }}
+                    className={`text-[10px] font-semibold px-2 py-1 rounded-lg transition-colors ${selectMode ? 'bg-navy-100 text-navy-700' : 'text-stone-500 hover:text-navy-700'}`}
+                  >
+                    {selectMode ? 'Cancel' : 'Select'}
+                  </button>
+                  <button
+                    onClick={() => setShowInvite(true)}
+                    disabled={families.length >= (advisor?.families_limit ?? 5)}
+                    className="inline-flex items-center gap-1.5 text-xs font-semibold text-navy-700 hover:text-navy-900 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                  >
+                    <Plus size={13} /> Add
+                  </button>
+                </div>
               </div>
 
               {/* Search */}
-              {families.length > 2 && (
-                <div className="relative">
-                  <Search size={13} className="absolute left-3 top-1/2 -translate-y-1/2 text-stone-400" />
-                  <input
-                    className="w-full border border-stone-200 rounded-xl pl-8 pr-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-navy-300"
-                    placeholder="Search families…"
-                    value={search}
-                    onChange={e => setSearch(e.target.value)}
-                  />
-                </div>
-              )}
+              <div className="relative">
+                <Search size={13} className="absolute left-3 top-1/2 -translate-y-1/2 text-stone-400" />
+                <input
+                  className="w-full border border-stone-200 rounded-xl pl-8 pr-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-navy-300"
+                  placeholder="Search families…"
+                  value={search}
+                  onChange={e => setSearch(e.target.value)}
+                />
+              </div>
+
+              {/* Sort + filter */}
+              <div className="flex items-center gap-2">
+                <select
+                  value={sortBy}
+                  onChange={e => setSortBy(e.target.value)}
+                  className="flex-1 border border-stone-200 rounded-lg px-2 py-1.5 text-[11px] text-stone-600 bg-white focus:outline-none focus:ring-1 focus:ring-navy-300"
+                >
+                  <option value="readiness">Sort: Readiness ↑</option>
+                  <option value="name">Sort: Name A–Z</option>
+                  <option value="updated">Sort: Last updated</option>
+                </select>
+                <select
+                  value={filterStatus}
+                  onChange={e => setFilterStatus(e.target.value)}
+                  className="flex-1 border border-stone-200 rounded-lg px-2 py-1.5 text-[11px] text-stone-600 bg-white focus:outline-none focus:ring-1 focus:ring-navy-300"
+                >
+                  <option value="all">All</option>
+                  <option value="accepted">Accepted</option>
+                  <option value="pending">Pending</option>
+                </select>
+              </div>
 
               <div className="space-y-2">
                 {filteredFamilies.length === 0 ? (
@@ -1584,9 +2110,32 @@ export default function AdvisorPortal() {
                     family={family}
                     active={selectedFamilyId === family.id && activeSection === 'families'}
                     onClick={() => { setSelectedFamilyId(family.id); setActiveSection('families') }}
+                    selectMode={selectMode}
+                    selected={selectedIds.has(family.id)}
+                    onToggle={toggleSelect}
                   />
                 ))}
               </div>
+
+              {/* Bulk nudge bar */}
+              {selectMode && (
+                <div className="border-t border-stone-100 pt-3 space-y-2">
+                  {nudgeSent ? (
+                    <div className="flex items-center gap-2 text-xs text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-xl px-3 py-2.5">
+                      <CheckCircle2 size={13} /> Nudge sent to {selectedIds.size} client{selectedIds.size !== 1 ? 's' : ''}.
+                    </div>
+                  ) : (
+                    <button
+                      onClick={handleBulkNudge}
+                      disabled={selectedIds.size === 0}
+                      className="w-full flex items-center justify-center gap-2 bg-navy-800 text-white text-xs font-semibold px-4 py-2.5 rounded-xl hover:bg-navy-700 transition-colors disabled:opacity-40"
+                    >
+                      <Send size={12} /> Send readiness nudge{selectedIds.size > 0 ? ` (${selectedIds.size})` : ''}
+                    </button>
+                  )}
+                  <p className="text-[10px] text-stone-400 text-center">Sends a "your plan needs attention" email to selected clients.</p>
+                </div>
+              )}
 
               {families.length === 0 && (
                 <div className="py-6 text-center space-y-2">
@@ -1612,7 +2161,11 @@ export default function AdvisorPortal() {
 
         {/* ── MAIN CONTENT ──────────────────────────────── */}
         <main>
-          {activeSection === 'settings' ? (
+          {activeSection === 'overview' ? (
+            <PortfolioOverview families={families} onSelectFamily={(id) => { setSelectedFamilyId(id); setActiveSection('families') }} setActiveSection={setActiveSection} />
+          ) : activeSection === 'allAlerts' ? (
+            <PortalAlertsSection families={families} onSelectFamily={(id) => { setSelectedFamilyId(id); setActiveSection('families') }} setActiveSection={setActiveSection} />
+          ) : activeSection === 'settings' ? (
             <AdvisorSettings advisor={advisor} families={families} isDemo={isDemo} />
           ) : activeSection === 'resources' ? (
             <AdvisorResourcesSection />
