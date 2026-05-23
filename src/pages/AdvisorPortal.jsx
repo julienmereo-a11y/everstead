@@ -7,7 +7,7 @@ import {
   Info, Clock, BarChart2, Landmark, Shield, Lock, UserPlus, X, RefreshCw,
   ChevronDown, Activity, ArrowRight, Mail, Send, Eye, EyeOff, ToggleLeft, ToggleRight, CreditCard,
   Download, ExternalLink, Loader2, Printer, SortAsc, Filter, LayoutDashboard,
-  CheckSquare, Square, MessageSquare, Calendar,
+  CheckSquare, Square, MessageSquare, Calendar, TrendingUp,
 } from 'lucide-react'
 import { DEMO_ADVISOR, DEMO_ADVISOR_FAMILIES } from '../lib/demoData'
 import { supabase } from '../lib/supabase'
