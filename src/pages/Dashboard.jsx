@@ -1134,17 +1134,18 @@ function OwnerAIGuide({ userName, plan, accountCount, documentCount, contactCoun
 function ReadinessCoachCard({ profile, stats, onNavigate }) {
   const [coachData, setCoachData] = React.useState(null)
   const [loading, setLoading] = React.useState(false)
+  const [error, setError] = React.useState(false)
   const [dismissed, setDismissed] = React.useState(false)
 
-  React.useEffect(() => {
-    // Only fetch once per session
-    const key = `everstead_coach_${profile?.id}_${JSON.stringify(stats)}`
-    const cached = sessionStorage.getItem(key)
+  const fetchCoach = React.useCallback(() => {
+    const cacheKey = `everstead_coach_${profile?.id}`
+    const cached = sessionStorage.getItem(cacheKey)
     if (cached) {
       try { setCoachData(JSON.parse(cached)); return } catch {}
     }
 
     setLoading(true)
+    setError(false)
     fetch('/api/ai/readiness-coach', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -1158,12 +1159,16 @@ function ReadinessCoachCard({ profile, stats, onNavigate }) {
       .then(data => {
         if (data.coaching) {
           setCoachData(data.coaching)
-          sessionStorage.setItem(key, JSON.stringify(data.coaching))
+          sessionStorage.setItem(cacheKey, JSON.stringify(data.coaching))
+        } else {
+          setError(true)
         }
       })
-      .catch(() => {})
+      .catch(() => setError(true))
       .finally(() => setLoading(false))
   }, [profile?.id]) // eslint-disable-line
+
+  React.useEffect(() => { fetchCoach() }, [fetchCoach])
 
   if (dismissed) return null
 
@@ -1189,6 +1194,18 @@ function ReadinessCoachCard({ profile, stats, onNavigate }) {
         <div className="flex items-center gap-2 py-2">
           <Loader2 size={14} className="animate-spin text-navy-400" />
           <p className="text-sm text-stone-400">Getting your personalised advice…</p>
+        </div>
+      )}
+
+      {error && !loading && (
+        <div className="flex items-center justify-between gap-3">
+          <p className="text-sm text-stone-400">Couldn't load your coaching right now.</p>
+          <button
+            onClick={fetchCoach}
+            className="text-xs font-semibold text-navy-600 hover:text-navy-800 underline underline-offset-2 shrink-0"
+          >
+            Try again
+          </button>
         </div>
       )}
 
