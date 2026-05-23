@@ -44,8 +44,12 @@ export default function Nav() {
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
-  // Close on route change
-  useEffect(() => { setOpen(false); setSwitcherOpen(false) }, [location])
+  // Close on route change + re-check scroll position so nav style is correct immediately
+  useEffect(() => {
+    setOpen(false)
+    setSwitcherOpen(false)
+    setScrolled(window.scrollY > 24)
+  }, [location.pathname])
 
   // Close switcher on outside click
   useEffect(() => {

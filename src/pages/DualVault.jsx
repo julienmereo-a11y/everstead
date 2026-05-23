@@ -106,7 +106,7 @@ export default function DualVault() {
                 See pricing
               </Link>
             </div>
-            <p className="mt-5 text-sm text-stone-400">Family plan from £10/mo. 14-day free trial — no card required.</p>
+            <p className="mt-5 text-sm text-stone-400">Family plan from £10/mo. 14-day free trial.</p>
           </div>
         </section>
 
