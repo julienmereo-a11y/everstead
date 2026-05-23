@@ -71,6 +71,112 @@ The difference is the difference between a map left at home and a map that was a
     competitorPrice: 'Free',
     cta: 'Start your free trial',
   },
+
+  safekeep: {
+    name: 'SafeKeep',
+    category: 'Digital estate planning',
+    tagline: 'Everstead vs SafeKeep',
+    headline: 'SafeKeep stores your information. Everstead organises your whole estate.',
+    subhead: 'Both platforms help you keep important information in one place. The difference is in the depth — Everstead adds a family vault, an advisor portal, an Estate Readiness Score, and tools that actually help executors act when the time comes.',
+    eversteadDesc: 'A secure personal vault for organising everything that matters — accounts, documents, instructions, and final wishes — with controlled access, an advisor portal, and a dual-vault Family plan for couples.',
+    competitorDesc: 'A digital storage platform for important documents and account details. Focused on individuals storing personal data securely, with a clean interface and basic sharing features.',
+    rows: [
+      { feature: 'Secure document vault',                everstead: true,  them: true  },
+      { feature: 'Account & asset register',             everstead: true,  them: true  },
+      { feature: 'Trusted contact access control',       everstead: true,  them: true  },
+      { feature: 'Family plan — two private vaults',     everstead: true,  them: false },
+      { feature: 'Estate Readiness Score',               everstead: true,  them: false },
+      { feature: 'Step-by-step executor instructions',   everstead: true,  them: false },
+      { feature: 'Personal messages & final wishes',     everstead: true,  them: false },
+      { feature: 'Advisor portal & client management',   everstead: true,  them: false },
+      { feature: 'EU data residency (UK GDPR compliant)',everstead: true,  them: false },
+      { feature: 'Smart reminders & progress tracking',  everstead: true,  them: false },
+      { feature: 'Full data export (right to portability)', everstead: true,  them: false },
+    ],
+    positioning: `Everstead and SafeKeep share a basic premise: put your important information somewhere secure and accessible. If that's all you need, both products work.
+
+But Everstead was built around a bigger problem. Families don't just need storage — they need organisation, guidance, and the right people to have the right access at the right time. That's why we built the Estate Readiness Score (so you can see exactly what's missing), step-by-step executor instructions (so your family knows what to do, not just where things are), and role-based access control that goes far beyond a shared password.
+
+The Family plan is the sharpest difference. Two completely private vaults — one subscription. A couple can each organise their own estate, share only what they choose, and never have to combine their private information into a single account. SafeKeep has no equivalent.
+
+The advisor portal is the other. Everstead works as a professional tool for financial planners, IFAs, and estate solicitors managing multiple clients — with a co-branded portal, client progress tracking, and collaboration features that SafeKeep doesn't offer.
+
+If you're looking for a digital vault, both options are worth considering. If you want your family to actually know what to do when it counts, Everstead goes further.`,
+    price: 'From £3/mo yearly (14-day free trial)',
+    competitorPrice: 'From £5.99/mo',
+    cta: 'Start your free trial',
+  },
+
+  'octopus-legacy': {
+    name: 'Octopus Legacy',
+    category: 'Wills & legacy planning',
+    tagline: 'Everstead vs Octopus Legacy',
+    headline: 'Octopus Legacy handles your will. Everstead organises everything else.',
+    subhead: 'Octopus Legacy is a will-writing and legacy planning service. Everstead is a living, updated vault — where everything that matters is organised, secured, and ready for the people you trust.',
+    eversteadDesc: 'A secure personal vault for organising accounts, documents, instructions, and final wishes — updated as your life changes, with controlled access for trusted contacts and a Family plan for couples.',
+    competitorDesc: 'A legal services company offering online wills, LPAs, and probate support. Mission-driven, with a focus on making estate planning accessible. Strong on legal documents; not a data storage or organisation platform.',
+    rows: [
+      { feature: 'Secure document vault',                everstead: true,  them: false },
+      { feature: 'Account & asset register',             everstead: true,  them: false },
+      { feature: 'Trusted contact access control',       everstead: true,  them: false },
+      { feature: 'Ongoing vault — update any time',      everstead: true,  them: false },
+      { feature: 'Family plan — two private vaults',     everstead: true,  them: false },
+      { feature: 'Estate Readiness Score',               everstead: true,  them: false },
+      { feature: 'Step-by-step executor instructions',   everstead: true,  them: false },
+      { feature: 'Personal messages & final wishes',     everstead: true,  them: false },
+      { feature: 'Advisor portal',                       everstead: true,  them: false },
+      { feature: 'Online will drafting',                 everstead: false, them: true  },
+      { feature: 'LPA (power of attorney)',              everstead: false, them: true  },
+      { feature: 'Probate support',                      everstead: false, them: true  },
+    ],
+    positioning: `Octopus Legacy and Everstead solve different problems, and most people who think about estate planning will benefit from both.
+
+Octopus Legacy is a legal services company — they help you draft a will, set up a Lasting Power of Attorney, and navigate probate. That's important work. A legally valid will is essential, and Octopus Legacy does that well.
+
+Everstead is everything around the will. It's where you keep your account details, upload your documents, write your instructions, and tell your family what to do when the time comes. It's updated as your life changes. Your executor doesn't just have a legal document — they have a roadmap.
+
+The Family plan is something Octopus Legacy doesn't offer: two completely private vaults under one subscription, for couples who want to organise their own estates separately without sharing sensitive personal information.
+
+Think of a will as a destination. Everstead is the map that gets your family there.`,
+    price: 'From £3/mo yearly (14-day free trial)',
+    competitorPrice: 'From £90 for a basic will',
+    cta: 'Start your free trial',
+  },
+
+  lyfeguard: {
+    name: 'Lyfeguard',
+    category: 'Digital legacy vault',
+    tagline: 'Everstead vs Lyfeguard',
+    headline: 'Both vaults secure your legacy. Only one keeps your family a step ahead.',
+    subhead: 'Lyfeguard and Everstead both offer secure digital vaults for important information. The difference is what happens next — Everstead adds an Estate Readiness Score, step-by-step executor guidance, and a Family plan with two private vaults.',
+    eversteadDesc: 'A proactive estate planning platform — not just storage, but an active system with readiness tracking, executor instructions, a dual-vault Family plan, and an advisor portal for professionals.',
+    competitorDesc: 'A digital legacy platform for securely storing personal documents, account details, and final wishes — with sharing controls for nominated contacts.',
+    rows: [
+      { feature: 'Secure document vault',                everstead: true,  them: true  },
+      { feature: 'Account & asset register',             everstead: true,  them: true  },
+      { feature: 'Trusted contact access control',       everstead: true,  them: true  },
+      { feature: 'Personal messages & final wishes',     everstead: true,  them: true  },
+      { feature: 'Family plan — two private vaults',     everstead: true,  them: false },
+      { feature: 'Estate Readiness Score',               everstead: true,  them: false },
+      { feature: 'Step-by-step executor instructions',   everstead: true,  them: false },
+      { feature: 'Smart reminders & progress prompts',   everstead: true,  them: false },
+      { feature: 'Advisor portal & client management',   everstead: true,  them: false },
+      { feature: 'EU data residency (UK GDPR compliant)',everstead: true,  them: false },
+      { feature: 'Full data export (right to portability)', everstead: true,  them: false },
+    ],
+    positioning: `Lyfeguard and Everstead both start from the same place: your information should be secure, organised, and accessible to the right people when it matters. Both are honest alternatives to a locked filing cabinet.
+
+The gap opens when you ask: what happens after someone stores their information? Lyfeguard is primarily a vault. Everstead is a vault with direction — an Estate Readiness Score that shows you exactly what's incomplete, step-by-step instructions your executor can follow without guessing, and smart reminders that keep your plan current as your life changes.
+
+The Family plan is the most distinctive difference. Two completely separate, private vaults — one for each person — under a single subscription. A couple can each organise their own estate independently, with no obligation to combine or share their private data. Lyfeguard's sharing model assumes one account per household.
+
+And for advisors: Everstead includes a dedicated portal for financial planners, IFAs, and estate professionals who want to offer estate organisation as part of their client service. Lyfeguard has no equivalent.
+
+If you want a secure place to store important files, both products do the job. If you want your family to know exactly what to do — and to feel genuinely prepared — Everstead is built for that.`,
+    price: 'From £3/mo yearly (14-day free trial)',
+    competitorPrice: 'From £4.99/mo',
+    cta: 'Start your free trial',
+  },
 }
 
 // ─────────────────────────────────────────────────────────────────────────────

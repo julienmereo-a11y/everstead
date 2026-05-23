@@ -18,7 +18,8 @@ const cols = [
       { label: 'For Families', href: '/use-cases/families' },
       { label: 'For Parents', href: '/use-cases/parents' },
       { label: 'For Executors', href: '/use-cases/executors' },
-      { label: 'For Advisors', href: '/use-cases/advisors' },
+      { label: 'For Advisors', href: '/for-advisors' },
+      { label: 'Family Vault', href: '/family-vault' },
     ],
   },
   {
