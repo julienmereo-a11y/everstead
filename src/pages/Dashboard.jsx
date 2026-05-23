@@ -618,12 +618,13 @@ export default function Dashboard() {
 
       {/* ── SIDEBAR ─────────────────────────────────────────── */}
       <aside
-        className={`fixed inset-y-0 left-0 z-40 w-64 bg-navy-950 border-r border-navy-800 flex flex-col shrink-0 transition-transform duration-300 lg:static lg:translate-x-0 lg:z-auto ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}
+        className={`fixed inset-y-0 left-0 z-40 w-64 flex flex-col shrink-0 transition-transform duration-300 lg:static lg:translate-x-0 lg:z-auto ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}
+        style={{ backgroundColor: '#0d1628', borderRight: '1px solid #1a2942' }}
         aria-label="Sidebar"
       >
 
         {/* Logo */}
-        <div className="px-6 py-5 border-b border-navy-800 flex items-center justify-between">
+        <div className="flex items-center justify-between" style={{ padding: '0 20px 24px', borderBottom: '1px solid rgba(255,255,255,0.08)', marginBottom: '8px', paddingTop: '24px' }}>
           <Link to="/">
             <img src="/logo-v2-white.png" alt="Everstead" className="h-10 w-auto" />
           </Link>
@@ -637,7 +638,7 @@ export default function Dashboard() {
         </div>
 
         {/* Nav */}
-        <nav className="flex-1 px-3 py-4 space-y-0.5 overflow-y-auto" aria-label="Dashboard navigation">
+        <nav className="flex-1 py-2 overflow-y-auto" style={{ padding: '8px 0' }} aria-label="Dashboard navigation">
           {NAV_ITEMS.filter(({ familyOnly }) => !familyOnly || activeProfile.plan === 'family').map(({ id, label, icon: Icon }) => {
             const isActive = activeSection === id
             const badge    = id === 'alerts' ? unreadCount : 0
@@ -648,13 +649,28 @@ export default function Dashboard() {
                 onClick={() => { setActiveSection(id); setSidebarOpen(false) }}
                 title={locked ? 'Personal Messages — upgrade to access. Click to see options.' : undefined}
                 aria-current={isActive && !locked ? 'page' : undefined}
-                className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40 ${
+                className={`w-full flex items-center gap-3 text-sm font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40 ${
                   isActive && !locked
-                    ? 'bg-white/10 text-white'
+                    ? 'text-white'
                     : locked
-                    ? 'text-stone-600 cursor-pointer hover:text-stone-400 hover:bg-white/5'
-                    : 'text-stone-400 hover:text-white hover:bg-white/5'
+                    ? 'cursor-pointer'
+                    : ''
                 }`}
+                style={{
+                  margin: '2px 12px',
+                  width: 'calc(100% - 24px)',
+                  borderRadius: '8px',
+                  letterSpacing: '0.01em',
+                  paddingTop: '10px',
+                  paddingBottom: '10px',
+                  paddingRight: '16px',
+                  paddingLeft: '13px',
+                  borderLeft: isActive && !locked ? '3px solid #4c7d47' : '3px solid transparent',
+                  backgroundColor: isActive && !locked ? 'rgba(76,125,71,0.15)' : 'transparent',
+                  color: isActive && !locked ? '#ffffff' : locked ? 'rgba(255,255,255,0.3)' : 'rgba(255,255,255,0.55)',
+                }}
+                onMouseEnter={e => { if (!isActive && !locked) { e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.05)'; e.currentTarget.style.color = 'rgba(255,255,255,0.85)' } }}
+                onMouseLeave={e => { if (!isActive && !locked) { e.currentTarget.style.backgroundColor = 'transparent'; e.currentTarget.style.color = 'rgba(255,255,255,0.55)' } }}
               >
                 <Icon size={16} />
                 <span className="flex-1 text-left">{label}</span>
@@ -670,7 +686,7 @@ export default function Dashboard() {
         </nav>
 
         {/* User footer */}
-        <div className="px-3 py-4 border-t border-navy-800 space-y-1">
+        <div className="px-3 py-4 space-y-1" style={{ borderTop: '1px solid rgba(255,255,255,0.08)' }}>
           <div className="px-3 py-2.5 flex items-center gap-3">
             <div className="w-8 h-8 rounded-full bg-navy-700 flex items-center justify-center text-xs font-bold text-white uppercase">
               {activeProfile.full_name?.[0] ?? activeProfile.email[0]}
@@ -696,7 +712,7 @@ export default function Dashboard() {
       </aside>
 
       {/* ── MAIN CONTENT ────────────────────────────────────── */}
-      <main ref={mainRef} className="flex-1 overflow-auto flex flex-col min-w-0" aria-label="Main content">
+      <main ref={mainRef} className="flex-1 overflow-auto flex flex-col min-w-0" style={{ backgroundColor: '#f8f7f5' }} aria-label="Main content">
 
         {/* Mobile top bar */}
         <div className="lg:hidden sticky top-0 z-20 bg-navy-950 border-b border-navy-800 px-4 py-3 flex items-center gap-3">
@@ -1059,7 +1075,10 @@ function OwnerAIGuide({ userName, plan, accountCount, documentCount, contactCoun
       {/* Floating trigger */}
       <button
         onClick={() => setOpen(v => !v)}
-        className={`fixed bottom-6 right-6 z-50 inline-flex items-center gap-2.5 px-4 py-3 rounded-2xl text-white text-sm font-semibold shadow-lg transition-all bg-sage-600 hover:bg-sage-700 ${open ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}
+        className={`fixed bottom-6 right-6 z-50 inline-flex items-center gap-2.5 px-5 py-3 text-white text-sm font-semibold transition-all ${open ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}
+        style={{ backgroundColor: '#4c7d47', borderRadius: '24px', border: 'none', boxShadow: '0 4px 20px rgba(76, 125, 71, 0.35)', cursor: 'pointer' }}
+        onMouseEnter={e => { e.currentTarget.style.backgroundColor = '#3d6b3a'; e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 8px 28px rgba(76, 125, 71, 0.45)' }}
+        onMouseLeave={e => { e.currentTarget.style.backgroundColor = '#4c7d47'; e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 4px 20px rgba(76, 125, 71, 0.35)' }}
         aria-label="Open planning coach"
       >
         <Sparkles size={16} />
@@ -1198,13 +1217,11 @@ function ReadinessCoachCard({ profile, stats, onNavigate }) {
   if (dismissed) return null
 
   return (
-    <div className="mb-6 bg-gradient-to-br from-navy-50 to-sage-50 border border-navy-100 rounded-2xl p-5">
+    <div className="mb-6 rounded-2xl" style={{ background: '#ffffff', border: '1px solid #e5e2dc', borderLeft: '4px solid #4c7d47', padding: '20px 24px', position: 'relative' }}>
       <div className="flex items-start justify-between gap-4">
-        <div className="flex items-center gap-2.5 mb-3">
-          <div className="w-8 h-8 rounded-xl bg-navy-100 flex items-center justify-center shrink-0">
-            <Sparkles size={15} className="text-navy-600" />
-          </div>
-          <p className="text-xs font-semibold text-navy-700 uppercase tracking-widest">Your Readiness Coach</p>
+        <div className="flex items-center gap-2 mb-2">
+          <Sparkles size={13} style={{ color: '#4c7d47' }} />
+          <p style={{ fontSize: '11px', fontWeight: '700', letterSpacing: '0.1em', color: '#4c7d47', textTransform: 'uppercase' }}>Your Readiness Coach</p>
         </div>
         <button
           onClick={() => setDismissed(true)}
@@ -1236,7 +1253,7 @@ function ReadinessCoachCard({ profile, stats, onNavigate }) {
 
       {coachData && !loading && (
         <>
-          <p className="text-sm text-navy-900 leading-relaxed mb-4">{coachData.message}</p>
+          <p style={{ fontSize: '15px', color: '#44403c', lineHeight: '1.65', fontFamily: 'Georgia, serif', fontStyle: 'italic', margin: '12px 0 16px' }}>{coachData.message}</p>
           {coachData.nextAction && (
             <button
               onClick={() => {
@@ -1245,7 +1262,8 @@ function ReadinessCoachCard({ profile, stats, onNavigate }) {
                 const ROUTE_MAP = { contacts: 'people', wishes: 'messages' }
                 onNavigate(ROUTE_MAP[coachData.nextActionRoute] ?? coachData.nextActionRoute)
               }}
-              className="inline-flex items-center gap-2 bg-navy-800 text-white text-xs font-semibold px-4 py-2.5 rounded-xl hover:bg-navy-700 transition-colors"
+              className="inline-flex items-center gap-2 hover:bg-navy-700 transition-colors"
+              style={{ backgroundColor: '#0d1628', color: '#ffffff', border: 'none', borderRadius: '8px', padding: '10px 20px', fontSize: '14px', fontWeight: '500', cursor: 'pointer' }}
             >
               <ArrowRight size={13} />
               {coachData.nextActionLabel || 'Next step'}
@@ -1295,10 +1313,10 @@ function OverviewSection({ profile, accounts, documents, people, instructions, m
   }, [profile.id, profile.plan, profile.family_id, isSecondaryUser])
 
   const vaultStats = [
-    { label: 'Accounts documented', value: accounts.length, icon: Landmark, target: 5 },
-    { label: 'Documents uploaded', value: documents.filter(d => d.status !== 'missing').length, icon: FileText, target: 5 },
-    { label: `Trusted ${isFamilyPlus ? 'people' : 'contacts'}`, value: people.length, icon: Users, target: isFamilyPlus ? 5 : 2 },
-    { label: 'Instructions written', value: instructions.length, icon: BookOpen, target: 3 },
+    { label: 'Accounts documented', value: accounts.length, icon: Landmark, target: 5, navSection: 'accounts' },
+    { label: 'Documents uploaded', value: documents.filter(d => d.status !== 'missing').length, icon: FileText, target: 5, navSection: 'documents' },
+    { label: `Trusted ${isFamilyPlus ? 'people' : 'contacts'}`, value: people.length, icon: Users, target: isFamilyPlus ? 5 : 2, navSection: 'people' },
+    { label: 'Instructions written', value: instructions.length, icon: BookOpen, target: 3, navSection: 'instructions' },
   ]
 
   const scoreBase = vaultStats.reduce((total, stat) => total + Math.min(stat.value / stat.target, 1), 0) / vaultStats.length
@@ -1313,19 +1331,26 @@ function OverviewSection({ profile, accounts, documents, people, instructions, m
   const scoreLabel = isFamilyPlus ? 'Family readiness' : 'Plan readiness'
 
   return (
-    <div className="p-4 lg:p-8 max-w-5xl mx-auto">
+    <div className="p-4 lg:p-8 max-w-5xl mx-auto" style={{ backgroundColor: '#f8f7f5', minHeight: '100%' }}>
+      <style>{`
+        @keyframes fadeSlideUp {
+          from { opacity: 0; transform: translateY(12px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+      `}</style>
       {/* Header */}
       <div className="mb-8 flex items-start justify-between gap-4 flex-wrap">
         <div>
-          <h1 className="font-display text-3xl font-light text-navy-950">
+          <h1 style={{ fontFamily: 'Georgia, serif', fontSize: '32px', fontWeight: '400', color: '#0d1628', letterSpacing: '-0.02em', marginBottom: '4px', lineHeight: 1.2 }}>
             {(() => { const h = new Date().getHours(); return h < 12 ? 'Good morning' : h < 18 ? 'Good afternoon' : 'Good evening' })()}, {profile.full_name?.split(' ')[0] ?? 'there'}.
           </h1>
-          <p className="text-stone-500 mt-1 text-sm">Here's where everything stands.</p>
+          <p style={{ fontSize: '15px', color: '#78716c', fontWeight: '400' }}>Here's where everything stands.</p>
         </div>
         <div className="flex items-center gap-3 flex-wrap">
           <button
             onClick={onExecutorPreview}
-            className="inline-flex items-center gap-1.5 text-xs font-semibold border border-stone-200 text-stone-500 bg-white px-3 py-1.5 rounded-lg hover:bg-stone-50 hover:text-navy-700 transition-colors"
+            className="inline-flex items-center gap-1.5 transition-colors hover:bg-stone-50 hover:text-navy-700"
+            style={{ border: '1px solid #e5e2dc', backgroundColor: 'transparent', color: '#44403c', borderRadius: '8px', padding: '8px 14px', fontSize: '13px' }}
           >
             <Eye size={12} /> Executor view
           </button>
@@ -1333,7 +1358,8 @@ function OverviewSection({ profile, accounts, documents, people, instructions, m
             to="/print"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 text-xs font-semibold border border-stone-200 text-stone-600 bg-white px-3 py-1.5 rounded-lg hover:bg-stone-50 hover:text-navy-700 transition-colors"
+            className="inline-flex items-center gap-1.5 transition-colors hover:bg-stone-50 hover:text-navy-700"
+            style={{ border: '1px solid #e5e2dc', backgroundColor: 'transparent', color: '#44403c', borderRadius: '8px', padding: '8px 14px', fontSize: '13px' }}
           >
             <FileText size={12} /> Export plan
           </Link>
@@ -1392,35 +1418,45 @@ function OverviewSection({ profile, accounts, documents, people, instructions, m
       {/* Readiness score + stats */}
       <div className="grid lg:grid-cols-[1fr_2fr] gap-6 mb-6">
         {/* Score ring */}
-        <div className="bg-white border border-stone-200 rounded-2xl p-6 flex flex-col items-center justify-center text-center">
-          <p className="text-xs font-semibold uppercase tracking-widest text-stone-400 mb-4">{scoreLabel}</p>
-          <div className="relative w-28 h-28">
-            <svg viewBox="0 0 100 100" className="w-full h-full -rotate-90">
-              <circle cx="50" cy="50" r="40" fill="none" stroke="#e7e5e4" strokeWidth="8" />
+        <div className="rounded-2xl flex flex-col items-center justify-center text-center" style={{ background: 'linear-gradient(135deg, #f8f7f5 0%, #f0ede8 100%)', border: '1px solid #e5e2dc', padding: '32px', gap: '0' }}>
+          <p style={{ fontSize: '11px', fontWeight: '600', letterSpacing: '0.1em', color: '#78716c', textTransform: 'uppercase', marginBottom: '20px' }}>{scoreLabel}</p>
+          <div className="relative" style={{ width: '152px', height: '152px' }}>
+            <svg viewBox="0 0 120 120" className="w-full h-full -rotate-90">
+              <circle cx="60" cy="60" r="48" fill="none" stroke="#e5e2dc" strokeWidth="9" />
               <circle
-                cx="50" cy="50" r="40" fill="none"
+                cx="60" cy="60" r="48" fill="none"
                 stroke={score >= 70 ? '#4c7d47' : score >= 40 ? '#d97706' : '#ef4444'}
-                strokeWidth="8"
-                strokeDasharray={`${2 * Math.PI * 40 * score / 100} ${2 * Math.PI * 40 * (1 - score / 100)}`}
+                strokeWidth="9"
+                strokeDasharray={`${2 * Math.PI * 48 * score / 100} ${2 * Math.PI * 48 * (1 - score / 100)}`}
                 strokeLinecap="round"
+                style={{ transition: 'stroke-dasharray 1s ease' }}
               />
             </svg>
             <div className="absolute inset-0 flex flex-col items-center justify-center">
-              <span className="font-display text-3xl font-light text-navy-950">{score}%</span>
+              {score === 0 ? (
+                <div style={{ textAlign: 'center' }}>
+                  <div style={{ fontSize: '12px', color: '#78716c', fontStyle: 'italic', lineHeight: 1.5 }}>Your plan is<br/>waiting to begin</div>
+                </div>
+              ) : (
+                <span className="font-display" style={{ fontSize: '36px', fontWeight: '300', color: '#0d1628', lineHeight: 1 }}>{score}%</span>
+              )}
             </div>
           </div>
-          <p className="text-xs text-stone-500 mt-3">
+          <p style={{ fontSize: '12px', color: '#78716c', marginTop: '16px', marginBottom: '20px', lineHeight: 1.5 }}>
             {score >= 80 ? 'Excellent — your family is well prepared.' :
              score >= 50 ? 'Good progress — a few items remaining.' :
-             'Getting started — keep building your plan.'}
+             'Every item you add protects the people you love.'}
           </p>
 
           {/* Open planning coach */}
           <button
             onClick={() => window.dispatchEvent(new CustomEvent('everstead:coach', { detail: 'What should I focus on?' }))}
-            className="mt-4 inline-flex items-center gap-1.5 text-xs font-semibold text-navy-700 bg-navy-50 hover:bg-navy-100 border border-navy-200 px-3 py-2 rounded-lg transition-colors"
+            className="inline-flex items-center gap-1.5 transition-all"
+            style={{ backgroundColor: 'transparent', border: '1.5px solid #4c7d47', color: '#4c7d47', borderRadius: '8px', padding: '8px 16px', fontSize: '13px', fontWeight: '500', cursor: 'pointer' }}
+            onMouseEnter={e => { e.currentTarget.style.backgroundColor = '#4c7d47'; e.currentTarget.style.color = '#ffffff' }}
+            onMouseLeave={e => { e.currentTarget.style.backgroundColor = 'transparent'; e.currentTarget.style.color = '#4c7d47' }}
           >
-            <Sparkles size={12} /> What should I focus on?
+            <Sparkles size={13} /> What should I focus on?
           </button>
         </div>
 
@@ -1429,21 +1465,45 @@ function OverviewSection({ profile, accounts, documents, people, instructions, m
           <SkeletonStats count={4} />
         ) : (
           <div className="grid grid-cols-2 gap-4">
-            {vaultStats.map(({ label, value, icon: Icon, target }) => (
-              <div key={label} className="bg-white border border-stone-200 rounded-xl p-5">
+            {vaultStats.map(({ label, value, icon: Icon, target, navSection }, index) => (
+              <div
+                key={label}
+                onClick={() => onNavigate(navSection)}
+                className="relative overflow-hidden"
+                style={{
+                  background: '#ffffff',
+                  border: '1px solid #e5e2dc',
+                  borderRadius: '12px',
+                  padding: '20px',
+                  cursor: 'pointer',
+                  transition: 'box-shadow 0.2s ease, transform 0.2s ease',
+                  animation: 'fadeSlideUp 0.4s ease forwards',
+                  animationDelay: `${index * 0.08}s`,
+                  opacity: 0,
+                }}
+                onMouseEnter={e => { e.currentTarget.style.boxShadow = '0 4px 16px rgba(0,0,0,0.08)'; e.currentTarget.style.transform = 'translateY(-2px)' }}
+                onMouseLeave={e => { e.currentTarget.style.boxShadow = 'none'; e.currentTarget.style.transform = 'translateY(0)' }}
+              >
                 <div className="flex items-center justify-between mb-3">
                   <div className="w-8 h-8 rounded-lg bg-navy-50 flex items-center justify-center">
                     <Icon size={15} className="text-navy-700" />
                   </div>
-                  <span className="text-xs text-stone-400">{value}/{target}+ recommended</span>
+                  <span className="text-xs" style={{ color: value === 0 ? '#4c7d47' : '#a8a29e' }}>
+                    {value === 0 ? 'Start here' : `${value} added · ${target}+ recommended`}
+                  </span>
                 </div>
-                <p className="font-display text-3xl font-light text-navy-950">{value}</p>
-                <p className="text-xs text-stone-500 mt-1">{label}</p>
-                <div className="mt-3 h-1 bg-stone-100 rounded-full overflow-hidden">
-                  <div
-                    className="h-full bg-sage-500 rounded-full transition-all"
-                    style={{ width: `${Math.min(100, (value / target) * 100)}%` }}
-                  />
+                {value === 0 ? (
+                  <div className="mb-1">
+                    <div style={{ width: '32px', height: '32px', borderRadius: '50%', border: '2px dashed #e5e2dc', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#d4cfc9', fontSize: '18px', marginBottom: '8px' }}>+</div>
+                    <p style={{ fontSize: '13px', color: '#4c7d47', fontWeight: '500' }}>Add your first →</p>
+                  </div>
+                ) : (
+                  <p style={{ fontFamily: 'Georgia, serif', fontSize: '36px', color: '#0d1628', fontWeight: '700', lineHeight: 1, marginBottom: '4px' }}>{value}</p>
+                )}
+                <p className="text-xs text-stone-500">{label}</p>
+                {/* Bottom progress bar */}
+                <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '3px', borderRadius: '0 0 12px 12px', backgroundColor: '#f0ede8' }}>
+                  <div style={{ height: '100%', width: `${Math.min((value / target) * 100, 100)}%`, backgroundColor: '#4c7d47', borderRadius: '0 0 0 12px', transition: 'width 0.8s ease' }} />
                 </div>
               </div>
             ))}
