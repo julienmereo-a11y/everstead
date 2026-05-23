@@ -79,6 +79,17 @@ export default function Nav() {
 
   return (
     <>
+      {/* Sage green accent line — top of page */}
+      <div style={{
+        width: '100%',
+        height: '2px',
+        background: 'linear-gradient(90deg, transparent 0%, #4c7d47 30%, #4c7d47 70%, transparent 100%)',
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        zIndex: 1000,
+        pointerEvents: 'none',
+      }} />
       <header
         ref={menuRef}
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${

@@ -106,6 +106,44 @@ const resourceCards = [
   { icon: FileText, title: 'Security and privacy overview', desc: 'See how Everstead handles permissions, encryption, and data access.', href: '/security' },
 ]
 
+function AnimatedHeroScore({ target = 76, duration = 1500 }) {
+  const [count, setCount] = useState(0)
+
+  useEffect(() => {
+    const startTime = Date.now()
+    const timer = setInterval(() => {
+      const elapsed = Date.now() - startTime
+      const progress = Math.min(elapsed / duration, 1)
+      const eased = 1 - Math.pow(1 - progress, 3)
+      setCount(Math.floor(eased * target))
+      if (progress >= 1) clearInterval(timer)
+    }, 16)
+    return () => clearInterval(timer)
+  }, [target, duration])
+
+  const r = 22
+  const circ = 2 * Math.PI * r
+
+  return (
+    <div className="flex items-center justify-between mb-5">
+      <div>
+        <p className="text-xs text-stone-400 font-medium">Plan readiness</p>
+        <p className="text-2xl font-semibold text-white mt-0.5">{count}%</p>
+      </div>
+      <div className="w-14 h-14 relative">
+        <svg viewBox="0 0 56 56" className="w-full h-full -rotate-90">
+          <circle cx="28" cy="28" r={r} fill="none" stroke="rgba(255,255,255,0.1)" strokeWidth="5" />
+          <circle
+            cx="28" cy="28" r={r} fill="none" stroke="#6ea6d8" strokeWidth="5"
+            strokeDasharray={`${circ * count / 100} ${circ * (1 - count / 100)}`}
+            strokeLinecap="round"
+          />
+        </svg>
+      </div>
+    </div>
+  )
+}
+
 export default function Home() {
   useReveal()
   const [annualPricing, setAnnualPricing] = useState(true)
@@ -169,15 +207,23 @@ export default function Home() {
 
       {/* ── HERO ─────────────────────────────────────────────────── */}
       <section className="relative overflow-hidden min-h-screen flex flex-col justify-center pt-24 pb-20">
-        {/* Flat deep navy base */}
-        <div className="absolute inset-0" style={{ backgroundColor: '#0d1628' }} />
-        {/* Grid pattern — matches reference */}
-        <div className="absolute inset-0"
-          style={{
-            backgroundImage: 'linear-gradient(to right, rgba(255,255,255,0.045) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.045) 1px, transparent 1px)',
-            backgroundSize: '48px 48px'
-          }}
-        />
+        {/* Radial gradient background */}
+        <div className="absolute inset-0" style={{
+          background: 'radial-gradient(ellipse at 60% 40%, #0f2040 0%, #0d1628 50%, #080e1a 100%)'
+        }} />
+
+        {/* Sage green glow — behind dashboard card */}
+        <div style={{
+          position: 'absolute',
+          right: '8%',
+          top: '20%',
+          width: '420px',
+          height: '420px',
+          borderRadius: '50%',
+          background: 'radial-gradient(circle, rgba(76, 125, 71, 0.12) 0%, transparent 70%)',
+          pointerEvents: 'none',
+          zIndex: 0,
+        }} />
 
         <div className="relative max-w-7xl mx-auto px-6 lg:px-8 grid lg:grid-cols-2 gap-16 items-center">
           {/* Copy */}
@@ -193,7 +239,10 @@ export default function Home() {
             <div className="mt-10 flex flex-wrap gap-3 animate-fade-up animate-delay-200">
               <Link
                 to="/get-started"
-                className="inline-flex items-center gap-2 bg-white text-navy-900 font-semibold text-sm px-6 py-3 rounded-lg hover:bg-stone-100 transition-colors"
+                className="inline-flex items-center gap-2 font-semibold text-sm px-6 py-3 rounded-lg transition-colors"
+                style={{ backgroundColor: '#4c7d47', color: '#ffffff' }}
+                onMouseEnter={e => e.currentTarget.style.backgroundColor = '#3d6b3a'}
+                onMouseLeave={e => e.currentTarget.style.backgroundColor = '#4c7d47'}
               >
                 Get Started
                 <ArrowRight size={16} />
@@ -212,23 +261,24 @@ export default function Home() {
           </div>
 
           {/* Dashboard preview card */}
-          <div className="animate-fade-up animate-delay-300">
-            <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-6 shadow-2xl">
-              <div className="flex items-center justify-between mb-5">
-                <div>
-                  <p className="text-xs text-stone-400 font-medium">Plan readiness</p>
-                  <p className="text-2xl font-semibold text-white mt-0.5">76%</p>
-                </div>
-                <div className="w-14 h-14 relative">
-                  <svg viewBox="0 0 56 56" className="w-full h-full -rotate-90">
-                    <circle cx="28" cy="28" r="22" fill="none" stroke="rgba(255,255,255,0.1)" strokeWidth="5" />
-                    <circle cx="28" cy="28" r="22" fill="none" stroke="#6ea6d8" strokeWidth="5"
-                      strokeDasharray={`${2 * Math.PI * 22 * 0.76} ${2 * Math.PI * 22 * 0.24}`}
-                      strokeLinecap="round"
-                    />
-                  </svg>
-                </div>
-              </div>
+          <div className="animate-fade-up animate-delay-300" style={{ position: 'relative', zIndex: 1 }}>
+            <div
+              className="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-6"
+              style={{
+                boxShadow: '0 32px 80px rgba(0, 0, 0, 0.4), 0 8px 24px rgba(0, 0, 0, 0.3)',
+                transform: 'translateY(-4px)',
+                transition: 'transform 0.3s ease, box-shadow 0.3s ease',
+              }}
+              onMouseEnter={e => {
+                e.currentTarget.style.transform = 'translateY(-8px)'
+                e.currentTarget.style.boxShadow = '0 40px 100px rgba(0, 0, 0, 0.5), 0 12px 32px rgba(0, 0, 0, 0.35)'
+              }}
+              onMouseLeave={e => {
+                e.currentTarget.style.transform = 'translateY(-4px)'
+                e.currentTarget.style.boxShadow = '0 32px 80px rgba(0, 0, 0, 0.4), 0 8px 24px rgba(0, 0, 0, 0.3)'
+              }}
+            >
+              <AnimatedHeroScore target={76} duration={1500} />
 
               <div className="space-y-2.5">
                 {[
