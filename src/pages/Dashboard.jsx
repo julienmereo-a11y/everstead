@@ -1219,7 +1219,12 @@ function ReadinessCoachCard({ profile, stats, onNavigate }) {
           <p className="text-sm text-navy-900 leading-relaxed mb-4">{coachData.message}</p>
           {coachData.nextAction && (
             <button
-              onClick={() => coachData.nextActionRoute && onNavigate(coachData.nextActionRoute)}
+              onClick={() => {
+                if (!coachData.nextActionRoute) return
+                // Map legacy/AI route names to actual section keys
+                const ROUTE_MAP = { contacts: 'people', wishes: 'messages' }
+                onNavigate(ROUTE_MAP[coachData.nextActionRoute] ?? coachData.nextActionRoute)
+              }}
               className="inline-flex items-center gap-2 bg-navy-800 text-white text-xs font-semibold px-4 py-2.5 rounded-xl hover:bg-navy-700 transition-colors"
             >
               <ArrowRight size={13} />

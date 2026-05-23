@@ -29,7 +29,7 @@ Return a JSON object with exactly these fields:
 - message: string (2–3 sentences, warm and personal, referencing their actual numbers)
 - nextAction: string (one specific, concrete action they should take next — keep it brief)
 - nextActionLabel: string (button label, 3–5 words, e.g. "Add a bank account")
-- nextActionRoute: string (one of: accounts, documents, contacts, instructions, wishes, overview)
+- nextActionRoute: string (one of: accounts, documents, people, instructions, messages, overview)
 
 Rules:
 - Use warm, clear British English
