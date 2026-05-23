@@ -1848,12 +1848,19 @@ function DocumentsSection({ documents, loading, uploadFile, update, remove, plan
           const data = await res.json()
           if (data.extracted) {
             const ex = data.extracted
+            // Build enriched notes from AI-extracted fields the form has no dedicated input for
+            const extraLines = [
+              ex.provider      && `Provider: ${ex.provider}`,
+              ex.accountNumber && `Reference/account no: ${ex.accountNumber}`,
+              ex.value         && `Value: ${ex.value}`,
+              ex.notes,
+            ].filter(Boolean).join('\n')
             setForm(p => ({
               ...p,
               name: ex.documentName || p.name,
               doc_type: ex.documentType ? capitaliseFirst(ex.documentType.replace(/_/g, ' ')) : p.doc_type,
               expires_at: ex.expiryDate || p.expires_at,
-              notes: ex.notes ? (p.notes ? p.notes + '\n' + ex.notes : ex.notes) : p.notes,
+              notes: extraLines ? (p.notes ? p.notes + '\n' + extraLines : extraLines) : p.notes,
             }))
             setAiScanDone(true)
           }
@@ -1957,6 +1964,24 @@ function DocumentsSection({ documents, loading, uploadFile, update, remove, plan
         expires_at: form.expires_at || null,
         notes: form.notes,
       })
+      // Feature 6: also create expiry alert when editing adds/changes an expiry date
+      const prevExpiry = editingDocument.expires_at
+      if (form.expires_at && form.expires_at !== prevExpiry && addAlert) {
+        const expiryDate = new Date(form.expires_at)
+        const today = new Date()
+        today.setHours(0, 0, 0, 0)
+        const daysUntilExpiry = Math.ceil((expiryDate - today) / 86400000)
+        if (daysUntilExpiry > 0 && daysUntilExpiry <= 90) {
+          const severity = daysUntilExpiry <= 30 ? 'critical' : 'warning'
+          const fmtDate = expiryDate.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
+          await addAlert({
+            title: `${form.name || 'Document'} expiry approaching`,
+            message: `Your ${form.name || 'document'} expires on ${fmtDate}. Update it before it lapses.`,
+            severity,
+            category: 'document',
+          }).catch(() => {})
+        }
+      }
       closeModal()
     } catch (err) {
       setFormError(err.message ?? 'Save failed. Please try again.')
