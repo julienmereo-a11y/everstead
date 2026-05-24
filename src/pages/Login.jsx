@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { Helmet } from 'react-helmet-async'
 import { Link, useNavigate, useLocation, useSearchParams } from 'react-router-dom'
 import { Mail, Lock, Eye, EyeOff, ArrowRight, ShieldCheck } from 'lucide-react'
@@ -17,12 +17,54 @@ function GoogleIcon() {
   )
 }
 
+const QUOTES = [
+  {
+    text: "The greatest act of love is to make things easier for the people who will grieve you.",
+    author: null,
+    role: null,
+  },
+  {
+    text: "My father passed suddenly. Everstead made an incredibly painful time so much more manageable.",
+    author: "Margaret T.",
+    role: "Daughter & executor",
+  },
+  {
+    text: "Planning isn't about expecting the worst. It's about protecting what you love most.",
+    author: null,
+    role: null,
+  },
+  {
+    text: "I set up Everstead so my children will never go through what we did when Mum passed. It took one afternoon.",
+    author: "David R.",
+    role: "Father & executor",
+  },
+  {
+    text: "The most thoughtful thing you can leave behind isn't money. It's a plan.",
+    author: null,
+    role: null,
+  },
+]
+
 export default function Login() {
   const navigate = useNavigate()
   const location = useLocation()
   const [searchParams] = useSearchParams()
   const from          = location.state?.from?.pathname ?? null
   const redirectParam = searchParams.get('redirect') ?? null
+
+  const [quoteIndex, setQuoteIndex]   = useState(0)
+  const [quoteVisible, setQuoteVisible] = useState(true)
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setQuoteVisible(false)
+      setTimeout(() => {
+        setQuoteIndex(i => (i + 1) % QUOTES.length)
+        setQuoteVisible(true)
+      }, 400)
+    }, 7000)
+    return () => clearInterval(interval)
+  }, [])
 
   const [step, setStep]         = useState(1)
   const [email, setEmail]       = useState('')
@@ -157,20 +199,40 @@ export default function Login() {
         <img src="/logo-v2-white.png" alt="Everstead" className="h-10 w-auto" />
       </Link>
 
-      {/* Quote */}
-      <div className="relative z-10">
-        {/* Decorative quotation mark */}
-        <div style={{ fontFamily: 'Georgia, serif', fontSize: '96px', lineHeight: 1, color: 'rgba(76,125,71,0.35)', marginBottom: '-20px', marginLeft: '-6px' }}>"</div>
-        <blockquote style={{ fontFamily: 'Georgia, serif', fontSize: '22px', fontWeight: '300', color: '#ffffff', lineHeight: 1.55, marginBottom: '24px' }}>
-          My father passed suddenly. Everstead made an incredibly painful time so much more manageable.
+      {/* Quote — rotates every 7s */}
+      <div className="relative z-10" style={{ opacity: quoteVisible ? 1 : 0, transition: 'opacity 0.4s ease' }}>
+        <div style={{ fontFamily: 'Georgia, serif', fontSize: '80px', lineHeight: 1, color: 'rgba(76,125,71,0.4)', marginBottom: '-16px', marginLeft: '-4px' }}>"</div>
+        <blockquote style={{ fontFamily: 'Georgia, serif', fontSize: '21px', fontWeight: '300', color: '#ffffff', lineHeight: 1.6, marginBottom: '24px' }}>
+          {QUOTES[quoteIndex].text}
         </blockquote>
-        <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-white text-xs font-semibold">M</div>
-          <div>
-            <p className="text-white font-medium text-sm">Margaret T.</p>
-            <p className="text-stone-400 text-xs">Daughter & executor</p>
+        {QUOTES[quoteIndex].author ? (
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-semibold" style={{ backgroundColor: 'rgba(76,125,71,0.3)' }}>
+              {QUOTES[quoteIndex].author[0]}
+            </div>
+            <div>
+              <p className="text-white font-medium text-sm">{QUOTES[quoteIndex].author}</p>
+              <p style={{ fontSize: '12px', color: 'rgba(255,255,255,0.45)' }}>{QUOTES[quoteIndex].role}</p>
+            </div>
           </div>
-        </div>
+        ) : (
+          <div className="flex items-center gap-2">
+            <div className="h-px w-8" style={{ backgroundColor: 'rgba(76,125,71,0.5)' }} />
+            <p style={{ fontSize: '12px', color: 'rgba(255,255,255,0.35)', fontStyle: 'italic' }}>Everstead</p>
+          </div>
+        )}
+      </div>
+
+      {/* Quote dots indicator */}
+      <div className="absolute left-12 bottom-[168px] flex items-center gap-1.5 z-10">
+        {QUOTES.map((_, i) => (
+          <button
+            key={i}
+            onClick={() => { setQuoteVisible(false); setTimeout(() => { setQuoteIndex(i); setQuoteVisible(true) }, 400) }}
+            style={{ width: i === quoteIndex ? '20px' : '6px', height: '6px', borderRadius: '3px', backgroundColor: i === quoteIndex ? '#4c7d47' : 'rgba(255,255,255,0.2)', border: 'none', cursor: 'pointer', transition: 'all 0.3s ease', padding: 0 }}
+            aria-label={`Quote ${i + 1}`}
+          />
+        ))}
       </div>
 
       {/* Trust stats */}
