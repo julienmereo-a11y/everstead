@@ -22,10 +22,8 @@ export default function Login() {
   const location = useLocation()
   const [searchParams] = useSearchParams()
   const from          = location.state?.from?.pathname ?? null
-  // ?redirect= param used by AcceptFamilyInvite "sign in instead" link
   const redirectParam = searchParams.get('redirect') ?? null
 
-  // step 1: email + password  →  step 2: 6-digit code
   const [step, setStep]         = useState(1)
   const [email, setEmail]       = useState('')
   const [password, setPassword] = useState('')
@@ -37,7 +35,6 @@ export default function Login() {
 
   const code = digits.join('')
 
-  // ── Digit input helpers ──────────────────────────────────────
   const handleDigit = (i, val) => {
     const v = val.replace(/\D/g, '').slice(-1)
     const next = [...digits]
@@ -62,9 +59,7 @@ export default function Login() {
     digitRefs.current[Math.min(text.length, 5)]?.focus()
   }
 
-  // ── Google sign-in ───────────────────────────────────────────
   const handleGoogleSignIn = async () => {
-    // If there's a ?redirect= param (e.g. family invite), send user there after OAuth
     const dest = redirectParam
       ? `${window.location.origin}${redirectParam}`
       : `${window.location.origin}/dashboard`
@@ -74,7 +69,6 @@ export default function Login() {
     })
   }
 
-  // ── Step 1: verify password + send code ─────────────────────
   const handleSendCode = async (e) => {
     e.preventDefault()
     setError(null)
@@ -95,7 +89,6 @@ export default function Login() {
     }
   }
 
-  // ── Step 2: verify code + sign in ───────────────────────────
   const handleVerifyCode = async (e) => {
     e.preventDefault()
     setError(null)
@@ -109,14 +102,12 @@ export default function Login() {
       const data = await res.json()
       if (!res.ok) throw new Error(data.error || 'Something went wrong.')
 
-      // Apply the verified session client-side
       const { data: sessionData, error: sessionErr } = await supabase.auth.setSession({
         access_token:  data.access_token,
         refresh_token: data.refresh_token,
       })
       if (sessionErr) throw sessionErr
 
-      // Honour explicit redirect param (e.g. from family invite link) or router state
       if (redirectParam) { navigate(redirectParam, { replace: true }); return }
       if (from) { navigate(from, { replace: true }); return }
 
@@ -148,37 +139,50 @@ export default function Login() {
     }
   }
 
-  // ── Left panel (shared) ──────────────────────────────────────
+  // ── Left panel ───────────────────────────────────────────────
   const LeftPanel = () => (
-    <div className="hidden lg:flex lg:w-1/2 bg-navy-950 relative overflow-hidden flex-col justify-between p-12">
-      <div
-        className="absolute inset-0"
-        style={{
-          backgroundImage: 'linear-gradient(to right,rgba(255,255,255,.04) 1px,transparent 1px),linear-gradient(to bottom,rgba(255,255,255,.04) 1px,transparent 1px)',
-          backgroundSize: '48px 48px',
-        }}
-      />
-      <Link to="/" className="relative">
+    <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden flex-col justify-between p-12" style={{ backgroundColor: '#0d1628' }}>
+      {/* Sage green glow */}
+      <div className="absolute pointer-events-none" style={{
+        bottom: '-80px', left: '-80px', width: '480px', height: '480px',
+        background: 'radial-gradient(circle, rgba(76,125,71,0.12) 0%, transparent 70%)',
+      }} />
+      {/* Decorative rings */}
+      <div className="absolute rounded-full border border-white/5" style={{ top: '-80px', right: '-80px', width: '480px', height: '480px' }} />
+      <div className="absolute rounded-full border border-white/5" style={{ top: '-40px', right: '-40px', width: '320px', height: '320px' }} />
+      <div className="absolute rounded-full border border-white/[0.03]" style={{ bottom: '120px', right: '-120px', width: '400px', height: '400px' }} />
+
+      {/* Logo */}
+      <Link to="/" className="relative z-10">
         <img src="/logo-v2-white.png" alt="Everstead" className="h-10 w-auto" />
       </Link>
-      <div className="relative">
-        <blockquote className="text-2xl font-display font-light text-white leading-relaxed text-balance mb-6">
-          "My father passed suddenly. Everstead made an incredibly painful time so much more manageable."
+
+      {/* Quote */}
+      <div className="relative z-10">
+        {/* Decorative quotation mark */}
+        <div style={{ fontFamily: 'Georgia, serif', fontSize: '96px', lineHeight: 1, color: 'rgba(76,125,71,0.35)', marginBottom: '-20px', marginLeft: '-6px' }}>"</div>
+        <blockquote style={{ fontFamily: 'Georgia, serif', fontSize: '22px', fontWeight: '300', color: '#ffffff', lineHeight: 1.55, marginBottom: '24px' }}>
+          My father passed suddenly. Everstead made an incredibly painful time so much more manageable.
         </blockquote>
-        <div>
-          <p className="text-white font-medium text-sm">Margaret T.</p>
-          <p className="text-stone-400 text-xs">Daughter & executor</p>
+        <div className="flex items-center gap-3">
+          <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-white text-xs font-semibold">M</div>
+          <div>
+            <p className="text-white font-medium text-sm">Margaret T.</p>
+            <p className="text-stone-400 text-xs">Daughter & executor</p>
+          </div>
         </div>
       </div>
-      <div className="relative grid grid-cols-3 gap-4">
+
+      {/* Trust stats */}
+      <div className="relative z-10 grid grid-cols-3 gap-3">
         {[
-          { value: '14 days', label: 'Free trial' },
-          { value: 'AES-256', label: 'Encrypted' },
-          { value: '24/7',    label: 'Access' },
+          { value: '14-day', label: 'Free trial' },
+          { value: 'AES-256', label: 'Encryption' },
+          { value: 'UK-based', label: 'ICO registered' },
         ].map(({ value, label }) => (
-          <div key={label} className="bg-white/5 border border-white/10 rounded-xl p-4 text-center">
-            <p className="font-display text-2xl font-light text-white">{value}</p>
-            <p className="text-xs text-stone-400 mt-1">{label}</p>
+          <div key={label} className="text-center rounded-xl" style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)', padding: '16px 12px' }}>
+            <p style={{ fontFamily: 'Georgia, serif', fontSize: '18px', fontWeight: '300', color: '#ffffff', marginBottom: '4px' }}>{value}</p>
+            <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.45)' }}>{label}</p>
           </div>
         ))}
       </div>
@@ -191,141 +195,173 @@ export default function Login() {
       <title>Sign In — Everstead</title>
       <meta name="robots" content="noindex, nofollow" />
     </Helmet>
-    <div className="min-h-screen bg-stone-50 flex">
+    <div className="min-h-screen flex" style={{ backgroundColor: '#f8f7f5' }}>
       <LeftPanel />
 
-      <div className="flex-1 flex items-center justify-center p-8">
+      {/* Right panel */}
+      <div className="flex-1 flex items-center justify-center p-6 lg:p-12">
         <div className="w-full max-w-sm">
+
           {/* Mobile logo */}
           <Link to="/" className="flex lg:hidden mb-10">
             <img src="/everstead-logo-dark.png" alt="Everstead" className="h-9 w-auto" />
           </Link>
 
-          {/* ── STEP 1: Email + Password ── */}
-          {step === 1 && (
-            <>
-              <h1 className="font-display text-3xl font-light text-navy-950 mb-1">Welcome back</h1>
-              <p className="text-stone-500 text-sm mb-8">Sign in to your account</p>
+          {/* Form card */}
+          <div className="bg-white rounded-2xl p-8 shadow-sm" style={{ border: '1px solid #e5e2dc' }}>
 
-              <button
-                type="button"
-                onClick={handleGoogleSignIn}
-                className="w-full flex items-center justify-center gap-3 border border-stone-200 bg-white text-navy-900 font-medium text-sm py-3 rounded-lg hover:bg-stone-50 transition-colors mb-5"
-              >
-                <GoogleIcon />
-                Continue with Google
-              </button>
+            {/* ── STEP 1: Email + Password ── */}
+            {step === 1 && (
+              <>
+                <h1 style={{ fontFamily: 'Georgia, serif', fontSize: '28px', fontWeight: '400', color: '#0d1628', marginBottom: '6px', letterSpacing: '-0.01em' }}>Welcome back</h1>
+                <p style={{ fontSize: '14px', color: '#78716c', marginBottom: '28px' }}>Sign in to your Everstead account</p>
 
-              <div className="flex items-center gap-3 mb-5">
-                <div className="flex-1 h-px bg-stone-200" />
-                <span className="text-xs text-stone-400">or sign in with email</span>
-                <div className="flex-1 h-px bg-stone-200" />
-              </div>
-
-              <form onSubmit={handleSendCode} className="space-y-4">
-                <div>
-                  <label className="block text-xs font-semibold text-stone-600 mb-1.5">Email address</label>
-                  <div className="relative">
-                    <Mail size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-stone-400 pointer-events-none" />
-                    <input
-                      type="email" required value={email} onChange={e => setEmail(e.target.value)}
-                      placeholder="you@example.com" autoComplete="email"
-                      className="w-full pl-9 pr-4 py-2.5 text-sm border border-stone-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-navy-300 focus:border-navy-400 transition-colors"
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <div className="flex items-center justify-between mb-1.5">
-                    <label className="text-xs font-semibold text-stone-600">Password</label>
-                    <Link to="/forgot-password" className="text-xs text-navy-600 hover:text-navy-900 transition-colors">Forgot password?</Link>
-                  </div>
-                  <div className="relative">
-                    <Lock size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-stone-400 pointer-events-none" />
-                    <input
-                      type={showPw ? 'text' : 'password'} required value={password}
-                      onChange={e => setPassword(e.target.value)}
-                      placeholder="••••••••" autoComplete="current-password"
-                      className="w-full pl-9 pr-10 py-2.5 text-sm border border-stone-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-navy-300 focus:border-navy-400 transition-colors"
-                    />
-                    <button type="button" onClick={() => setShowPw(v => !v)}
-                      aria-label={showPw ? 'Hide password' : 'Show password'}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-stone-400 hover:text-stone-600 transition-colors">
-                      {showPw ? <EyeOff size={15} /> : <Eye size={15} />}
-                    </button>
-                  </div>
-                </div>
-
-                {error && (
-                  <div className="bg-red-50 border border-red-200 rounded-lg px-3.5 py-2.5 text-sm text-red-700">{error}</div>
-                )}
-
-                <button type="submit" disabled={loading}
-                  className="w-full bg-navy-800 text-white font-semibold text-sm py-3 rounded-lg hover:bg-navy-700 transition-colors disabled:opacity-50 flex items-center justify-center gap-2">
-                  {loading ? 'Verifying…' : 'Continue'}
-                  {!loading && <ArrowRight size={16} />}
+                <button
+                  type="button"
+                  onClick={handleGoogleSignIn}
+                  className="w-full flex items-center justify-center gap-3 transition-colors hover:bg-stone-50"
+                  style={{ border: '1px solid #e5e2dc', backgroundColor: '#ffffff', color: '#0d1628', fontWeight: '500', fontSize: '14px', padding: '12px', borderRadius: '10px', marginBottom: '20px', cursor: 'pointer' }}
+                >
+                  <GoogleIcon />
+                  Continue with Google
                 </button>
-              </form>
 
-              <p className="text-center text-xs text-stone-400 mt-6">
-                Don't have an account?{' '}
-                <Link to="/get-started" className="text-navy-700 font-medium hover:text-navy-900 transition-colors">
-                  Get started free
-                </Link>
-              </p>
+                <div className="flex items-center gap-3" style={{ marginBottom: '20px' }}>
+                  <div className="flex-1 h-px bg-stone-200" />
+                  <span style={{ fontSize: '12px', color: '#a8a29e' }}>or sign in with email</span>
+                  <div className="flex-1 h-px bg-stone-200" />
+                </div>
 
-              {/* Preview dashboard — hidden for launch, keep for future use */}
-            </>
-          )}
-
-          {/* ── STEP 2: 6-digit code ── */}
-          {step === 2 && (
-            <>
-              <div className="w-12 h-12 rounded-xl bg-navy-50 flex items-center justify-center mb-6">
-                <ShieldCheck size={22} className="text-navy-700" />
-              </div>
-              <h1 className="font-display text-3xl font-light text-navy-950 mb-1">Check your email</h1>
-              <p className="text-stone-500 text-sm mb-1">We sent a 6-digit code to</p>
-              <p className="text-navy-800 font-medium text-sm mb-8">{email}</p>
-
-              <form onSubmit={handleVerifyCode} className="space-y-5">
-                <div>
-                  <div className="flex gap-2 justify-between" onPaste={handleDigitPaste}>
-                    {digits.map((d, i) => (
+                <form onSubmit={handleSendCode} className="space-y-4">
+                  <div>
+                    <label style={{ display: 'block', fontSize: '12px', fontWeight: '600', color: '#57534e', marginBottom: '6px' }}>Email address</label>
+                    <div className="relative">
+                      <Mail size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-stone-400 pointer-events-none" />
                       <input
-                        key={i}
-                        ref={el => digitRefs.current[i] = el}
-                        type="text" inputMode="numeric" maxLength={1}
-                        value={d}
-                        onChange={e => handleDigit(i, e.target.value)}
-                        onKeyDown={e => handleDigitKey(i, e)}
-                        autoFocus={i === 0}
-                        className="w-12 h-14 text-center text-2xl font-semibold text-navy-900 border border-stone-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-navy-300 focus:border-navy-400 transition-colors bg-white"
+                        type="email" required value={email} onChange={e => setEmail(e.target.value)}
+                        placeholder="you@example.com" autoComplete="email"
+                        style={{ width: '100%', paddingLeft: '40px', paddingRight: '16px', paddingTop: '12px', paddingBottom: '12px', fontSize: '14px', border: '1px solid #e5e2dc', borderRadius: '10px', outline: 'none', boxSizing: 'border-box', transition: 'border-color 0.2s, box-shadow 0.2s', backgroundColor: '#fafaf9' }}
+                        onFocus={e => { e.target.style.borderColor = '#0d1628'; e.target.style.boxShadow = '0 0 0 3px rgba(13,22,40,0.08)'; e.target.style.backgroundColor = '#ffffff' }}
+                        onBlur={e => { e.target.style.borderColor = '#e5e2dc'; e.target.style.boxShadow = 'none'; e.target.style.backgroundColor = '#fafaf9' }}
                       />
-                    ))}
+                    </div>
                   </div>
-                </div>
 
-                {error && (
-                  <div className="bg-red-50 border border-red-200 rounded-lg px-3.5 py-2.5 text-sm text-red-700">{error}</div>
-                )}
+                  <div>
+                    <div className="flex items-center justify-between" style={{ marginBottom: '6px' }}>
+                      <label style={{ fontSize: '12px', fontWeight: '600', color: '#57534e' }}>Password</label>
+                      <Link to="/forgot-password" style={{ fontSize: '12px', color: '#4c7d47', textDecoration: 'none', fontWeight: '500' }}
+                        onMouseEnter={e => e.target.style.color = '#3d6b3a'}
+                        onMouseLeave={e => e.target.style.color = '#4c7d47'}>
+                        Forgot password?
+                      </Link>
+                    </div>
+                    <div className="relative">
+                      <Lock size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-stone-400 pointer-events-none" />
+                      <input
+                        type={showPw ? 'text' : 'password'} required value={password}
+                        onChange={e => setPassword(e.target.value)}
+                        placeholder="••••••••" autoComplete="current-password"
+                        style={{ width: '100%', paddingLeft: '40px', paddingRight: '44px', paddingTop: '12px', paddingBottom: '12px', fontSize: '14px', border: '1px solid #e5e2dc', borderRadius: '10px', outline: 'none', boxSizing: 'border-box', transition: 'border-color 0.2s, box-shadow 0.2s', backgroundColor: '#fafaf9' }}
+                        onFocus={e => { e.target.style.borderColor = '#0d1628'; e.target.style.boxShadow = '0 0 0 3px rgba(13,22,40,0.08)'; e.target.style.backgroundColor = '#ffffff' }}
+                        onBlur={e => { e.target.style.borderColor = '#e5e2dc'; e.target.style.boxShadow = 'none'; e.target.style.backgroundColor = '#fafaf9' }}
+                      />
+                      <button type="button" onClick={() => setShowPw(v => !v)}
+                        aria-label={showPw ? 'Hide password' : 'Show password'}
+                        className="absolute right-3.5 top-1/2 -translate-y-1/2 text-stone-400 hover:text-stone-600 transition-colors">
+                        {showPw ? <EyeOff size={15} /> : <Eye size={15} />}
+                      </button>
+                    </div>
+                  </div>
 
-                <button type="submit" disabled={loading || code.length < 6}
-                  className="w-full bg-navy-800 text-white font-semibold text-sm py-3 rounded-lg hover:bg-navy-700 transition-colors disabled:opacity-50 flex items-center justify-center gap-2">
-                  {loading ? 'Verifying…' : 'Sign in'}
-                  {!loading && <ArrowRight size={16} />}
-                </button>
+                  {error && (
+                    <div style={{ background: '#fef2f2', border: '1px solid #fecaca', borderRadius: '8px', padding: '10px 14px', fontSize: '13px', color: '#b91c1c' }}>{error}</div>
+                  )}
 
-                <p className="text-center text-xs text-stone-400">
-                  Wrong email?{' '}
-                  <button type="button" onClick={() => { setStep(1); setDigits(['','','','','','']); setError(null) }}
-                    className="text-navy-700 font-medium hover:text-navy-900 transition-colors">
-                    Go back
+                  <button
+                    type="submit"
+                    disabled={loading}
+                    className="w-full flex items-center justify-center gap-2 transition-all disabled:opacity-50"
+                    style={{ backgroundColor: '#0d1628', color: '#ffffff', fontWeight: '600', fontSize: '14px', padding: '13px', borderRadius: '10px', border: 'none', cursor: 'pointer', marginTop: '8px' }}
+                    onMouseEnter={e => { if (!loading) e.currentTarget.style.backgroundColor = '#1a2942' }}
+                    onMouseLeave={e => { e.currentTarget.style.backgroundColor = '#0d1628' }}
+                  >
+                    {loading ? 'Verifying…' : 'Continue'}
+                    {!loading && <ArrowRight size={16} />}
                   </button>
+                </form>
+
+                <p style={{ textAlign: 'center', fontSize: '13px', color: '#a8a29e', marginTop: '20px' }}>
+                  Don't have an account?{' '}
+                  <Link to="/get-started" style={{ color: '#4c7d47', fontWeight: '500', textDecoration: 'none' }}>
+                    Get started free
+                  </Link>
                 </p>
-              </form>
-            </>
-          )}
+              </>
+            )}
+
+            {/* ── STEP 2: 6-digit code ── */}
+            {step === 2 && (
+              <>
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-5" style={{ backgroundColor: 'rgba(76,125,71,0.1)' }}>
+                  <ShieldCheck size={22} style={{ color: '#4c7d47' }} />
+                </div>
+                <h1 style={{ fontFamily: 'Georgia, serif', fontSize: '28px', fontWeight: '400', color: '#0d1628', marginBottom: '6px', letterSpacing: '-0.01em' }}>Check your email</h1>
+                <p style={{ fontSize: '14px', color: '#78716c', marginBottom: '4px' }}>We sent a 6-digit code to</p>
+                <p style={{ fontSize: '14px', color: '#0d1628', fontWeight: '600', marginBottom: '28px' }}>{email}</p>
+
+                <form onSubmit={handleVerifyCode} className="space-y-5">
+                  <div>
+                    <div className="flex gap-2 justify-between" onPaste={handleDigitPaste}>
+                      {digits.map((d, i) => (
+                        <input
+                          key={i}
+                          ref={el => digitRefs.current[i] = el}
+                          type="text" inputMode="numeric" maxLength={1}
+                          value={d}
+                          onChange={e => handleDigit(i, e.target.value)}
+                          onKeyDown={e => handleDigitKey(i, e)}
+                          autoFocus={i === 0}
+                          style={{ width: '44px', height: '56px', textAlign: 'center', fontSize: '22px', fontWeight: '600', color: '#0d1628', border: `1px solid ${d ? '#4c7d47' : '#e5e2dc'}`, borderRadius: '10px', outline: 'none', backgroundColor: d ? 'rgba(76,125,71,0.05)' : '#fafaf9', transition: 'all 0.15s ease' }}
+                          onFocus={e => { e.target.style.borderColor = '#0d1628'; e.target.style.boxShadow = '0 0 0 3px rgba(13,22,40,0.08)'; e.target.style.backgroundColor = '#ffffff' }}
+                          onBlur={e => { e.target.style.borderColor = d ? '#4c7d47' : '#e5e2dc'; e.target.style.boxShadow = 'none'; e.target.style.backgroundColor = d ? 'rgba(76,125,71,0.05)' : '#fafaf9' }}
+                        />
+                      ))}
+                    </div>
+                  </div>
+
+                  {error && (
+                    <div style={{ background: '#fef2f2', border: '1px solid #fecaca', borderRadius: '8px', padding: '10px 14px', fontSize: '13px', color: '#b91c1c' }}>{error}</div>
+                  )}
+
+                  <button
+                    type="submit"
+                    disabled={loading || code.length < 6}
+                    className="w-full flex items-center justify-center gap-2 transition-all disabled:opacity-50"
+                    style={{ backgroundColor: '#4c7d47', color: '#ffffff', fontWeight: '600', fontSize: '14px', padding: '13px', borderRadius: '10px', border: 'none', cursor: 'pointer' }}
+                    onMouseEnter={e => { if (!loading && code.length >= 6) e.currentTarget.style.backgroundColor = '#3d6b3a' }}
+                    onMouseLeave={e => { e.currentTarget.style.backgroundColor = '#4c7d47' }}
+                  >
+                    {loading ? 'Verifying…' : 'Sign in'}
+                    {!loading && <ArrowRight size={16} />}
+                  </button>
+
+                  <p style={{ textAlign: 'center', fontSize: '13px', color: '#a8a29e' }}>
+                    Wrong email?{' '}
+                    <button type="button" onClick={() => { setStep(1); setDigits(['','','','','','']); setError(null) }}
+                      style={{ color: '#4c7d47', fontWeight: '500', background: 'none', border: 'none', cursor: 'pointer', fontSize: '13px', padding: 0 }}>
+                      Go back
+                    </button>
+                  </p>
+                </form>
+              </>
+            )}
+          </div>
+
+          {/* Trust badge */}
+          <p style={{ textAlign: 'center', fontSize: '11px', color: '#a8a29e', marginTop: '20px', letterSpacing: '0.01em' }}>
+            🔒 Bank-level AES-256 encryption · UK-registered · ICO No. 17166825
+          </p>
         </div>
       </div>
     </div>
