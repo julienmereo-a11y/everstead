@@ -34,7 +34,7 @@ export default function ForgotPassword() {
   return (
     <>
     <Helmet><meta name="robots" content="noindex, nofollow" /></Helmet>
-    <div className="bg-stone-50 pt-24 min-h-screen flex items-center justify-center px-6">
+    <div style={{ backgroundColor: '#f8f7f5' }} className="pt-24 min-h-screen flex items-center justify-center px-6">
       <div className="w-full max-w-md">
         <div className="bg-white border border-stone-200 rounded-2xl shadow-sm p-8">
           {sent ? (
@@ -42,7 +42,7 @@ export default function ForgotPassword() {
               <div className="w-14 h-14 rounded-full bg-sage-100 flex items-center justify-center mx-auto mb-5">
                 <CheckCircle2 size={24} className="text-sage-600" />
               </div>
-              <h1 className="font-display text-2xl font-light text-navy-950 mb-2">Check your inbox</h1>
+              <h1 className="font-display text-2xl font-light text-navy-950 mb-2" style={{ fontFamily: 'Georgia, serif' }}>Check your inbox</h1>
               <p className="text-stone-500 text-sm leading-relaxed mb-6">
                 We've sent a password reset link to <strong>{email}</strong>. It expires in 1 hour.
               </p>
@@ -56,7 +56,7 @@ export default function ForgotPassword() {
           ) : (
             <>
               <div className="mb-7">
-                <h1 className="font-display text-2xl font-light text-navy-950 mb-1">Forgot your password?</h1>
+                <h1 className="font-display text-2xl font-light text-navy-950 mb-1" style={{ fontFamily: 'Georgia, serif' }}>Forgot your password?</h1>
                 <p className="text-stone-500 text-sm">Enter your email address and we'll send you a reset link.</p>
               </div>
 
@@ -80,7 +80,7 @@ export default function ForgotPassword() {
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="w-full bg-navy-800 text-white font-semibold text-sm py-3.5 rounded-lg hover:bg-navy-700 transition-colors disabled:opacity-60 flex items-center justify-center gap-2"
+                  className="w-full text-white font-semibold text-sm py-3.5 rounded-lg transition-colors disabled:opacity-60 flex items-center justify-center gap-2" style={{ backgroundColor: '#4c7d47' }} onMouseEnter={e => { if (!e.currentTarget.disabled) e.currentTarget.style.backgroundColor = '#3d6b3a' }} onMouseLeave={e => e.currentTarget.style.backgroundColor = '#4c7d47'}
                 >
                   {submitting ? <><Loader2 size={15} className="animate-spin" />Sending…</> : 'Send reset link'}
                 </button>

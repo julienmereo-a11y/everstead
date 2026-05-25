@@ -1,5 +1,6 @@
 import React from 'react'
 import { Link, useParams } from 'react-router-dom'
+import { Helmet } from 'react-helmet-async'
 import { useReveal } from '../components/useReveal'
 import {
   ArrowRight, Users, Heart, User, BookOpen, Briefcase,
@@ -269,6 +270,15 @@ function UseCasePage({ slug }) {
   useReveal()
 
   return (
+    <>
+    <Helmet>
+      <title>{title} — Everstead</title>
+      <meta name="description" content={`${tagline} ${body?.slice(0, 120) ?? ''}`} />
+      <link rel="canonical" href={`https://www.everstead.care/use-cases/${slug}`} />
+      <meta property="og:title" content={`${title} — Everstead`} />
+      <meta property="og:description" content={tagline} />
+      <meta property="og:url" content={`https://www.everstead.care/use-cases/${slug}`} />
+    </Helmet>
     <div className="bg-stone-50 pt-24">
 
       {/* Hero */}
@@ -414,6 +424,7 @@ function UseCasePage({ slug }) {
         </div>
       </section>
     </div>
+    </>
   )
 }
 
@@ -424,6 +435,15 @@ function UseCasePage({ slug }) {
 function UseCasesIndex() {
   useReveal()
   return (
+    <>
+    <Helmet>
+      <title>Use Cases — Everstead for Families, Executors & Advisors</title>
+      <meta name="description" content="Whether you're organising your own affairs, stepping in as an executor, or advising clients — Everstead is built for the role you're in." />
+      <link rel="canonical" href="https://www.everstead.care/use-cases" />
+      <meta property="og:title" content="Use Cases — Everstead" />
+      <meta property="og:description" content="One plan. Every role in a family. See how Everstead works for families, parents, executors, and advisors." />
+      <meta property="og:url" content="https://www.everstead.care/use-cases" />
+    </Helmet>
     <div className="bg-stone-50 pt-24">
 
       {/* Hero */}
@@ -562,6 +582,7 @@ function UseCasesIndex() {
         </div>
       </section>
     </div>
+    </>
   )
 }
 

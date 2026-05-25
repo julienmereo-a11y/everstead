@@ -83,7 +83,8 @@ export default function PrintView() {
       <div className="max-w-3xl mx-auto px-8 py-12 print:py-8 print:px-6">
 
         {/* Header */}
-        <div className="border-b-2 border-navy-950 pb-6 mb-8">
+        <div className="pb-6 mb-8" style={{ borderBottom: '2px solid #0d1628' }}>
+          <div style={{ height: '3px', background: 'linear-gradient(90deg, #4c7d47 0%, #4c7d47 40%, transparent 100%)', marginBottom: '20px' }} className="print:block" />
           <div className="flex items-start justify-between">
             <div>
               <h1 className="text-3xl font-light text-navy-950" style={{ fontFamily: 'Georgia, serif' }}>
@@ -231,9 +232,12 @@ export default function PrintView() {
 
 function Section({ title, count, children }) {
   return (
-    <div className="mb-8 break-inside-avoid-page">
-      <div className="flex items-center gap-3 mb-4">
-        <h2 className="text-base font-semibold text-navy-950">{title}</h2>
+    <div className="mb-10 break-inside-avoid-page">
+      <div
+        className="flex items-center gap-3 mb-5 pb-3"
+        style={{ borderBottom: '1px solid #e8e5e0', borderLeft: '3px solid #4c7d47', paddingLeft: '12px' }}
+      >
+        <h2 style={{ fontFamily: 'Georgia, serif', fontSize: '15px', fontWeight: '400', color: '#0d1628', letterSpacing: '-0.01em' }}>{title}</h2>
         <span className="text-xs text-stone-400 bg-stone-100 px-2 py-0.5 rounded-full">{count}</span>
       </div>
       {children}

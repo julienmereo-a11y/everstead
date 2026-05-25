@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
+import { Helmet } from 'react-helmet-async'
 import { useReveal } from '../components/useReveal'
 import { Mail, MessageSquare, ArrowRight, Loader2 } from 'lucide-react'
 import { sendEnquiry } from '../lib/supabase'
@@ -30,6 +31,15 @@ export default function Contact() {
   }
 
   return (
+    <>
+    <Helmet>
+      <title>Contact — Everstead</title>
+      <meta name="description" content="Get in touch with the Everstead team. Questions, press inquiries, partnership requests, or technical support — we read every message." />
+      <link rel="canonical" href="https://www.everstead.care/contact" />
+      <meta property="og:title" content="Contact — Everstead" />
+      <meta property="og:description" content="Get in touch with the Everstead team. We read every message and reply within one business day." />
+      <meta property="og:url" content="https://www.everstead.care/contact" />
+    </Helmet>
     <div className="bg-stone-50 pt-24 min-h-screen">
       {/* Header */}
       <section className="py-20 lg:py-28 grain relative overflow-hidden">
@@ -142,5 +152,6 @@ export default function Contact() {
         </div>
       </section>
     </div>
+    </>
   )
 }

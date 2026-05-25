@@ -1,5 +1,6 @@
 import React from 'react'
 import { Link, useParams } from 'react-router-dom'
+import { Helmet } from 'react-helmet-async'
 import { useReveal } from '../components/useReveal'
 import { BookOpen, FileText, CheckSquare, HelpCircle, ArrowRight, ChevronDown, ArrowLeft, Check, BookMarked } from 'lucide-react'
 
@@ -2332,6 +2333,15 @@ function ResourceSection({ slug }) {
 function ResourcesIndex() {
   useReveal()
   return (
+    <>
+    <Helmet>
+      <title>Resources — Everstead Guides, Checklists & Estate Planning Insight</title>
+      <meta name="description" content="Free guides, checklists, and tools to help you understand estate planning, prepare your family, and get your affairs in order. Practical, UK-focused resources." />
+      <link rel="canonical" href="https://www.everstead.care/resources" />
+      <meta property="og:title" content="Resources — Everstead" />
+      <meta property="og:description" content="Guides, checklists, and insight. Everything you need to understand estate planning and get your family plan in order." />
+      <meta property="og:url" content="https://www.everstead.care/resources" />
+    </Helmet>
     <div className="bg-stone-50 pt-24">
       <section className="py-20 lg:py-28 grain relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-navy-950 to-navy-800" />
@@ -2408,6 +2418,7 @@ function ResourcesIndex() {
         </div>
       </section>
     </div>
+    </>
   )
 }
 

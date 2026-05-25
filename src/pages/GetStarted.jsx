@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { Helmet } from 'react-helmet-async'
 import { Link, useSearchParams, useNavigate } from 'react-router-dom'
 import {
   CheckCircle2, ArrowRight, Shield, Lock, Users,
@@ -347,6 +348,15 @@ export default function GetStarted() {
   }
 
   return (
+    <>
+    <Helmet>
+      <title>Get Started — Everstead</title>
+      <meta name="description" content="Start your Everstead plan in minutes. Choose your plan, create your account, and begin your 14-day free trial. No charge until the trial ends." />
+      <link rel="canonical" href="https://www.everstead.care/get-started" />
+      <meta property="og:title" content="Get Started — Everstead" />
+      <meta property="og:description" content="Start your estate plan in minutes. 14-day free trial on every plan — card required, no charge until the trial ends." />
+      <meta property="og:url" content="https://www.everstead.care/get-started" />
+    </Helmet>
     <div className="bg-stone-50 pt-24 min-h-screen">
 
       {/* ── HERO ──────────────────────────────────────────────── */}
@@ -508,7 +518,10 @@ export default function GetStarted() {
                 <div className="text-center mt-6">
                   <button
                     onClick={() => setStep(2)}
-                    className="inline-flex items-center gap-2 bg-navy-800 text-white font-semibold text-sm px-8 py-3.5 rounded-lg hover:bg-navy-700 transition-colors"
+                    className="inline-flex items-center gap-2 text-white font-semibold text-sm px-8 py-3.5 rounded-lg transition-colors"
+                    style={{ backgroundColor: '#4c7d47' }}
+                    onMouseEnter={e => e.currentTarget.style.backgroundColor = '#3d6b3a'}
+                    onMouseLeave={e => e.currentTarget.style.backgroundColor = '#4c7d47'}
                   >
                     Continue with {PLAN_OPTIONS.find(p => p.id === selectedPlan)?.name}
                     <ArrowRight size={16} />
@@ -555,7 +568,10 @@ export default function GetStarted() {
                 <button
                   type="submit"
                   disabled={loading || !form.country}
-                  className="w-full bg-navy-800 text-white font-semibold text-sm py-3.5 rounded-lg hover:bg-navy-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                  className="w-full text-white font-semibold text-sm py-3.5 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                  style={{ backgroundColor: '#4c7d47' }}
+                  onMouseEnter={e => { if (!e.currentTarget.disabled) e.currentTarget.style.backgroundColor = '#3d6b3a' }}
+                  onMouseLeave={e => e.currentTarget.style.backgroundColor = '#4c7d47'}
                 >
                   {loading ? (
                     <><Loader2 size={15} className="animate-spin" />Setting up…</>
@@ -692,7 +708,10 @@ export default function GetStarted() {
                 <button
                   type="submit"
                   disabled={loading || !basicFieldsValid}
-                  className="w-full bg-navy-800 text-white font-semibold text-sm py-3.5 rounded-lg hover:bg-navy-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                  className="w-full text-white font-semibold text-sm py-3.5 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                  style={{ backgroundColor: '#4c7d47' }}
+                  onMouseEnter={e => { if (!e.currentTarget.disabled) e.currentTarget.style.backgroundColor = '#3d6b3a' }}
+                  onMouseLeave={e => e.currentTarget.style.backgroundColor = '#4c7d47'}
                 >
                   {loading ? (
                     <><Loader2 size={15} className="animate-spin" />Creating your account…</>
@@ -810,6 +829,7 @@ export default function GetStarted() {
         </div>
       </section>
     </div>
+    </>
   )
 }
 
@@ -890,7 +910,10 @@ function CheckoutForm({ trialDays, plan, billingCycle, customerId, referredBy })
       <button
         type="submit"
         disabled={!stripe || loading}
-        className="w-full bg-navy-800 text-white font-semibold text-sm py-3.5 rounded-lg hover:bg-navy-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+        className="w-full text-white font-semibold text-sm py-3.5 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+        style={{ backgroundColor: '#4c7d47' }}
+        onMouseEnter={e => { if (!e.currentTarget.disabled) e.currentTarget.style.backgroundColor = '#3d6b3a' }}
+        onMouseLeave={e => e.currentTarget.style.backgroundColor = '#4c7d47'}
       >
         {loading ? (
           <><Loader2 size={15} className="animate-spin" />Processing…</>

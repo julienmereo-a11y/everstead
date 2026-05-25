@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
+import { Helmet } from 'react-helmet-async'
 import { useReveal } from '../components/useReveal'
 import { ArrowRight, Briefcase, Calendar, CheckCircle2, ShieldCheck, Users, Loader2 } from 'lucide-react'
 import { sendEnquiry } from '../lib/supabase'
@@ -37,6 +38,15 @@ export default function BookDemo() {
   }
 
   return (
+    <>
+    <Helmet>
+      <title>Book a Demo — Everstead for Advisors</title>
+      <meta name="description" content="Book a guided walkthrough of Everstead for financial advisors, estate lawyers, and private client teams. See the advisor pilot rollout in 30 minutes." />
+      <link rel="canonical" href="https://www.everstead.care/book-demo" />
+      <meta property="og:title" content="Book an Advisor Demo — Everstead" />
+      <meta property="og:description" content="A focused walkthrough for financial advisors, estate lawyers, and private client teams evaluating Everstead as a client-facing readiness service." />
+      <meta property="og:url" content="https://www.everstead.care/book-demo" />
+    </Helmet>
     <div className="bg-stone-50 pt-24 min-h-screen">
       <section className="py-20 lg:py-28 grain relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-navy-950 via-navy-900 to-navy-800" />
@@ -148,6 +158,7 @@ export default function BookDemo() {
         </div>
       </section>
     </div>
+    </>
   )
 }
 

@@ -64,7 +64,7 @@ export default function ResetPassword() {
   return (
     <>
     <Helmet><meta name="robots" content="noindex, nofollow" /></Helmet>
-    <div className="bg-stone-50 pt-24 min-h-screen flex items-center justify-center px-6">
+    <div style={{ backgroundColor: '#f8f7f5' }} className="pt-24 min-h-screen flex items-center justify-center px-6">
       <div className="w-full max-w-md">
         <div className="flex items-center gap-2.5 justify-center mb-8">
           <div className="w-8 h-8 rounded-xl bg-sage-500 flex items-center justify-center">
@@ -79,7 +79,7 @@ export default function ResetPassword() {
               <div className="w-14 h-14 rounded-full bg-sage-100 flex items-center justify-center mx-auto mb-5">
                 <CheckCircle2 size={24} className="text-sage-600" />
               </div>
-              <h1 className="font-display text-2xl font-light text-navy-950 mb-2">Password updated</h1>
+              <h1 className="font-display text-2xl font-light text-navy-950 mb-2" style={{ fontFamily: 'Georgia, serif' }}>Password updated</h1>
               <p className="text-stone-500 text-sm leading-relaxed">
                 Your new password has been set. Redirecting you to the dashboard…
               </p>
@@ -99,7 +99,7 @@ export default function ResetPassword() {
           ) : (
             <>
               <div className="mb-7">
-                <h1 className="font-display text-2xl font-light text-navy-950 mb-1">Set a new password</h1>
+                <h1 className="font-display text-2xl font-light text-navy-950 mb-1" style={{ fontFamily: 'Georgia, serif' }}>Set a new password</h1>
                 <p className="text-stone-500 text-sm">Choose a strong password for your Everstead account.</p>
               </div>
 
@@ -160,7 +160,7 @@ export default function ResetPassword() {
                 <button
                   type="submit"
                   disabled={submitting || mismatch || password.length < 8}
-                  className="w-full bg-navy-800 text-white font-semibold text-sm py-3.5 rounded-lg hover:bg-navy-700 transition-colors disabled:opacity-60 flex items-center justify-center gap-2"
+                  className="w-full text-white font-semibold text-sm py-3.5 rounded-lg transition-colors disabled:opacity-60 flex items-center justify-center gap-2" style={{ backgroundColor: '#4c7d47' }} onMouseEnter={e => { if (!e.currentTarget.disabled) e.currentTarget.style.backgroundColor = '#3d6b3a' }} onMouseLeave={e => e.currentTarget.style.backgroundColor = '#4c7d47'}
                 >
                   {submitting ? <><Loader2 size={15} className="animate-spin" />Updating…</> : 'Set new password'}
                 </button>
