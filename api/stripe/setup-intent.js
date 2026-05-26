@@ -7,12 +7,27 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY
 )
 
-// Sanctioned / restricted countries — must match client-side list in GetStarted.jsx
-const RESTRICTED_COUNTRIES = new Set([
-  'Russia', 'North Korea', 'Iran', 'Syria', 'Belarus', 'Afghanistan',
-  'Myanmar', 'Venezuela', 'Zimbabwe', 'Nicaragua', 'Libya', 'Somalia',
-  'Yemen', 'Sudan', 'Mali', 'Burundi', 'Central African Republic',
-  'Democratic Republic of Congo', 'Iraq', 'Lebanon', 'Bosnia and Herzegovina',
+// ─────────────────────────────────────────────────────────────
+// GEO ENFORCEMENT — mirrors GEO_CONFIG in GetStarted.jsx
+// Uses x-vercel-ip-country (injected by Vercel automatically, zero latency)
+// as a second layer of enforcement. Client-side check handles UX; this
+// handles VPN bypass and direct API calls.
+// ─────────────────────────────────────────────────────────────
+const GEO_SANCTIONED = new Set([
+  'RU', 'BY', 'KP', 'IR', 'SY', 'MM', 'VE', 'AF', 'IQ', 'LY', 'SD', 'YE',
+])
+const GEO_AFRICA = new Set([
+  'DZ','AO','BJ','BW','BF','BI','CM','CV','CF','TD','KM','CD','CG','CI',
+  'DJ','EG','GQ','ER','ET','GA','GM','GH','GN','GW','KE','LS','LR',
+  'MG','MW','ML','MR','MU','MA','MZ','NA','NE','NG','RW','ST','SN',
+  'SC','SL','SO','SS','SZ','TZ','TG','TN','UG','ZM','ZW',
+])
+const GEO_ALLOWED = new Set([
+  'GB','IE','US','CA','AU',
+  'AE','QA','SA','KW','BH','OM',
+  'AT','BE','BG','HR','CY','CZ','DK','EE','FI','FR','DE','GR','HU',
+  'IT','LV','LT','LU','MT','NL','PL','PT','RO','SK','SI','ES','SE',
+  'IS','LI','NO','CH',
 ])
 
 export default async function handler(req, res) {
@@ -21,9 +36,13 @@ export default async function handler(req, res) {
   const { userId, email, name, plan, billingCycle, referredBy, trialPeriodDays = 14, existingCustomerId, country, nationality } = req.body
   if (!userId || !email) return res.status(400).json({ error: 'Missing required fields' })
 
-  // Server-side sanctions enforcement
-  if (RESTRICTED_COUNTRIES.has(country) || RESTRICTED_COUNTRIES.has(nationality)) {
-    return res.status(403).json({ error: 'Service unavailable in your country due to regulatory restrictions.' })
+  // ── IP-based geo enforcement (Vercel injects x-vercel-ip-country, no API call needed)
+  const ipCountry = req.headers['x-vercel-ip-country']
+  if (ipCountry) {
+    if (GEO_SANCTIONED.has(ipCountry) || GEO_AFRICA.has(ipCountry)) {
+      return res.status(403).json({ error: 'Service unavailable in your country due to regulatory restrictions.' })
+    }
+    // Soft-warn markets are allowed to proceed (they dismissed the banner client-side)
   }
 
   try {

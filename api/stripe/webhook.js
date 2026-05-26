@@ -360,42 +360,54 @@ export default async function handler(req, res) {
 
   // ── customer.subscription.trial_will_end ─────────────────
   // Fires 3 days before the trial ends — send a reminder email.
+  // Also stamps reminder_3_sent so the daily cron doesn't send a duplicate.
   if (event.type === 'customer.subscription.trial_will_end') {
     const subscription = event.data.object
 
     const { data: profiles } = await supabase
       .from('profiles')
-      .select('id, full_name, email, plan')
+      .select('id, full_name, email, plan, reminder_3_sent')
       .eq('stripe_subscription_id', subscription.id)
 
     if (profiles?.[0]) {
       const p = profiles[0]
-      const trialEndDate = subscription.trial_end
-        ? new Date(subscription.trial_end * 1000).toLocaleDateString('en-GB', {
-            day: 'numeric', month: 'long', year: 'numeric',
-          })
-        : null
 
-      await resend.emails.send({
-        from:    'Everstead <hello@everstead.care>',
-        to:      p.email,
-        subject: 'Your Everstead trial ends in 3 days',
-        html:    trialEndingReminderHtml(p.full_name, p.plan, trialEndDate),
-      }).catch(console.error)
+      // Skip if the cron already sent this one (shouldn't happen, but guard anyway)
+      if (!p.reminder_3_sent) {
+        const trialEndDate = subscription.trial_end
+          ? new Date(subscription.trial_end * 1000).toLocaleDateString('en-GB', {
+              day: 'numeric', month: 'long', year: 'numeric',
+            })
+          : null
+
+        await resend.emails.send({
+          from:    'Everstead <hello@everstead.care>',
+          to:      p.email,
+          subject: 'Your Everstead trial ends in 3 days',
+          html:    trialEndingReminderHtml(p.full_name, p.plan, trialEndDate),
+        }).catch(console.error)
+
+        // Mark sent so the daily cron skips this user
+        await supabase
+          .from('profiles')
+          .update({ reminder_3_sent: true })
+          .eq('id', p.id)
+      }
     }
   }
 
   // ── invoice.payment_failed ────────────────────────────────
   // Fires when Stripe cannot charge the card — at trial end or renewal.
-  // Mark the profile so the user is shown the payment-failed screen.
   // Guard: do NOT overwrite pending_deletion — Stripe sometimes fires a final
   // failed-payment event after the subscription is cancelled on account deletion.
+  // Use trial_expired for trialing users (starts 30-day deletion clock) but
+  // past_due for active paying customers (card failure at renewal — don't delete).
   if (event.type === 'invoice.payment_failed') {
     const invoice = event.data.object
 
     const { data: existing } = await supabase
       .from('profiles')
-      .select('subscription_status')
+      .select('id, full_name, email, plan, subscription_status')
       .eq('stripe_customer_id', invoice.customer)
       .single()
 
@@ -403,25 +415,56 @@ export default async function handler(req, res) {
       return res.status(200).json({ received: true })
     }
 
+    const wasTrialing = existing?.subscription_status === 'trialing'
+    const newStatus   = wasTrialing ? 'trial_expired' : 'past_due'
+
     await supabase
       .from('profiles')
-      .update({ subscription_status: 'trial_expired' })
+      .update({ subscription_status: newStatus })
       .eq('stripe_customer_id', invoice.customer)
 
-    // Fetch profile to send a notification email
-    const { data: profiles } = await supabase
-      .from('profiles')
-      .select('id, full_name, email, plan')
-      .eq('stripe_customer_id', invoice.customer)
-
-    if (profiles?.[0]) {
-      const p = profiles[0]
+    if (existing?.email) {
       await resend.emails.send({
         from:    'Everstead <hello@everstead.care>',
-        to:      p.email,
+        to:      existing.email,
         subject: 'Action required — payment failed for Everstead',
-        html:    paymentFailedHtml(p.full_name, p.plan),
+        html:    paymentFailedHtml(existing.full_name, existing.plan),
       }).catch(console.error)
+    }
+  }
+
+  // ── invoice.payment_succeeded ─────────────────────────────
+  // Fires when a renewal charge is successfully collected.
+  // Skips the initial $0 trial invoice (billing_reason = subscription_create).
+  // Sends a branded renewal confirmation — Stripe's own receipt is generic.
+  if (event.type === 'invoice.payment_succeeded') {
+    const invoice = event.data.object
+
+    // Only send for real charges, not the $0 trial-start invoice
+    if (invoice.amount_paid > 0 && invoice.billing_reason !== 'subscription_create') {
+      const { data: profiles } = await supabase
+        .from('profiles')
+        .select('id, full_name, email, plan, billing_cycle')
+        .eq('stripe_customer_id', invoice.customer)
+
+      if (profiles?.[0]) {
+        const p = profiles[0]
+        const periodEnd = invoice.lines?.data?.[0]?.period?.end
+        const renewalDate = periodEnd
+          ? new Date(periodEnd * 1000).toLocaleDateString('en-GB', {
+              day: 'numeric', month: 'long', year: 'numeric',
+            })
+          : null
+        const amountPaid = (invoice.amount_paid / 100).toFixed(2)
+        const currency   = (invoice.currency || 'gbp').toUpperCase()
+
+        await resend.emails.send({
+          from:    'Everstead <hello@everstead.care>',
+          to:      p.email,
+          subject: 'Your Everstead subscription has renewed',
+          html:    renewalReceiptHtml(p.full_name, p.plan, p.billing_cycle, amountPaid, currency, renewalDate),
+        }).catch(console.error)
+      }
     }
   }
 
@@ -604,6 +647,41 @@ function referralConversionHtml(referrerName, newMemberName) {
     </p>
     <a href="${APP_URL}/dashboard" style="display:inline-block;background:#0d1628;color:#ffffff;text-decoration:none;padding:14px 28px;border-radius:8px;font-size:15px;">View my dashboard →</a>
     <p style="margin:32px 0 0;color:#6b7280;font-size:14px;line-height:1.6;">— Julien, founder of Everstead</p>
+  `)
+}
+
+function renewalReceiptHtml(name, plan, billingCycle, amountPaid, currency, nextRenewalDate) {
+  const firstName = name?.split(' ')[0] || 'there'
+  const planName  = plan ? plan.charAt(0).toUpperCase() + plan.slice(1) : 'Essential'
+  const cycleLabel = billingCycle === 'yearly' ? 'annual' : 'monthly'
+  const APP_URL   = process.env.VITE_APP_URL || 'https://www.everstead.care'
+  return emailShell(`
+    <h1 style="margin:0 0 16px;color:#0d1628;font-size:24px;font-weight:normal;">
+      Subscription renewed, ${firstName}.
+    </h1>
+    <p style="margin:0 0 24px;color:#4a5568;font-size:16px;line-height:1.7;">
+      Your <strong>${planName}</strong> plan (${cycleLabel}) has renewed successfully.
+      ${currency} ${amountPaid} has been charged to your card on file.
+    </p>
+    <table width="100%" cellpadding="0" cellspacing="0"
+           style="background:#f8f7f5;border:1px solid #e8e5e0;border-radius:10px;margin-bottom:32px;">
+      <tr>
+        <td style="padding:16px 20px;color:#6b7280;font-size:14px;">Plan</td>
+        <td style="padding:16px 20px;color:#0d1628;font-size:14px;font-weight:600;text-align:right;">${planName} · ${cycleLabel}</td>
+      </tr>
+      <tr style="border-top:1px solid #e8e5e0;">
+        <td style="padding:16px 20px;color:#6b7280;font-size:14px;">Amount charged</td>
+        <td style="padding:16px 20px;color:#0d1628;font-size:14px;font-weight:600;text-align:right;">${currency} ${amountPaid}</td>
+      </tr>
+      ${nextRenewalDate ? `<tr style="border-top:1px solid #e8e5e0;">
+        <td style="padding:16px 20px;color:#6b7280;font-size:14px;">Next renewal</td>
+        <td style="padding:16px 20px;color:#0d1628;font-size:14px;font-weight:600;text-align:right;">${nextRenewalDate}</td>
+      </tr>` : ''}
+    </table>
+    <a href="${APP_URL}/dashboard" style="display:inline-block;background:#0d1628;color:#ffffff;text-decoration:none;padding:14px 28px;border-radius:8px;font-size:15px;">Go to my vault →</a>
+    <p style="margin:32px 0 0;color:#6b7280;font-size:14px;line-height:1.6;">
+      To manage your subscription or update your card, visit your account settings.
+    </p>
   `)
 }
 
