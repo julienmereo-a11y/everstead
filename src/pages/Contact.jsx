@@ -10,11 +10,13 @@ export default function Contact() {
   const [form, setForm] = useState({ name: '', email: '', subject: '', message: '' })
   const [sent, setSent] = useState(false)
   const [submitting, setSubmitting] = useState(false)
+  const [error, setError] = useState(null)
 
   const handleChange = e => setForm(v => ({ ...v, [e.target.name]: e.target.value }))
   const handleSubmit = async e => {
     e.preventDefault()
     setSubmitting(true)
+    setError(null)
     try {
       await sendEnquiry('contact', {
         'Name':    form.name,
@@ -24,7 +26,7 @@ export default function Contact() {
       })
       setSent(true)
     } catch (err) {
-      console.error('Contact form error:', err)
+      setError('Something went wrong sending your message. Please email us directly at hello@everstead.care.')
     } finally {
       setSubmitting(false)
     }
@@ -142,8 +144,17 @@ export default function Contact() {
                     placeholder="How can we help?"
                     className="w-full border border-stone-300 rounded-lg px-4 py-3 text-sm text-navy-900 placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-navy-400 focus:border-navy-400 bg-white transition resize-none" />
                 </div>
+                {error && (
+                  <div className="flex items-start gap-3 bg-red-50 border border-red-200 rounded-xl px-4 py-3">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="mt-0.5 flex-shrink-0"><circle cx="8" cy="8" r="7" stroke="#ef4444" strokeWidth="1.5"/><path d="M8 5v3.5M8 10.5v.5" stroke="#ef4444" strokeWidth="1.5" strokeLinecap="round"/></svg>
+                    <p className="text-sm text-red-700">{error}</p>
+                  </div>
+                )}
                 <button type="submit" disabled={submitting}
-                  className="w-full bg-navy-800 text-white font-semibold text-sm py-3.5 rounded-lg hover:bg-navy-700 transition-colors disabled:opacity-60 flex items-center justify-center gap-2">
+                  className="w-full text-white font-semibold text-sm py-3.5 rounded-lg transition-colors disabled:opacity-60 flex items-center justify-center gap-2"
+                  style={{ backgroundColor: '#4c7d47' }}
+                  onMouseEnter={e => { if (!e.currentTarget.disabled) e.currentTarget.style.backgroundColor = '#3d6b3a' }}
+                  onMouseLeave={e => e.currentTarget.style.backgroundColor = '#4c7d47'}>
                   {submitting ? <><Loader2 size={15} className="animate-spin" />Sending…</> : 'Send message'}
                 </button>
               </form>

@@ -146,7 +146,7 @@ export default function BookDemo() {
                 <Field label="What matters most in the conversation?">
                   <textarea name="notes" rows={5} value={form.notes} onChange={handleChange} placeholder="Security questions, pilot rollout, delegate access, annual reviews…" className={inputClass} />
                 </Field>
-                <button type="submit" disabled={submitting} className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-navy-800 px-5 py-3.5 text-sm font-semibold text-white hover:bg-navy-700 transition-colors disabled:opacity-60">
+                <button type="submit" disabled={submitting} className="inline-flex w-full items-center justify-center gap-2 rounded-xl px-5 py-3.5 text-sm font-semibold text-white transition-colors disabled:opacity-60" style={{ backgroundColor: '#4c7d47' }} onMouseEnter={e => { if (!e.currentTarget.disabled) e.currentTarget.style.backgroundColor = '#3d6b3a' }} onMouseLeave={e => e.currentTarget.style.backgroundColor = '#4c7d47'}>
                   {submitting ? <><Loader2 size={15} className="animate-spin" />Sending…</> : <>Request advisor pilot demo <ArrowRight size={15} /></>}
                 </button>
                 <p className="text-xs leading-relaxed text-stone-500">
