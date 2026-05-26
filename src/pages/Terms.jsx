@@ -46,6 +46,18 @@ You are responsible for the accuracy and legality of content you upload. Do not 
 We reserve the right to suspend or terminate accounts that violate these terms or engage in conduct that harms other users or the integrity of the platform.`,
   },
   {
+    title: 'Geographic restrictions and sanctioned jurisdictions',
+    content: `Everstead is currently available to users in the United Kingdom, Ireland, the United States, Canada, the European Economic Area, Switzerland, and select Gulf Cooperation Council countries (United Arab Emirates, Qatar, Saudi Arabia, Kuwait, Bahrain, and Oman).
+
+The Service is not available to, and may not be used by, individuals or entities located in, ordinarily resident in, or organised under the laws of any jurisdiction subject to comprehensive international sanctions or export controls. Restricted jurisdictions include, without limitation:
+
+Russia, Belarus, North Korea, Iran, Syria, Myanmar (Burma), Venezuela, Afghanistan, Iraq, Libya, Sudan, and Yemen.
+
+Using the Service in violation of these geographic restrictions is prohibited. We reserve the right to suspend or terminate any account we reasonably believe is being accessed from a restricted jurisdiction, without notice. Circumventing geographic restrictions through the use of proxies, VPNs, or similar technologies does not make access lawful and remains a violation of these terms.
+
+This list of restricted jurisdictions may be updated at any time to reflect changes in applicable sanctions law or our operational risk assessment.`,
+  },
+  {
     title: 'Limitation of liability',
     content: `To the fullest extent permitted by law, Everstead is provided "as is" without warranties of any kind, express or implied. We are not liable for any indirect, incidental, or consequential damages arising from your use of the Service.
 
