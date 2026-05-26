@@ -55,6 +55,7 @@ export default async function handler(req, res) {
     .is('abandoned_checkout_email_sent_at', null) // not already emailed
     .not('email', 'is', null)                     // has an email address
     .neq('role', 'delegate')                      // not a delegate user
+    .neq('marketing_emails_enabled', false)       // respect unsubscribe
     .lte('checkout_started_at', oneHourAgo)       // started > 1h ago
     .gte('checkout_started_at', fortyEightHrsAgo) // started < 48h ago
 
@@ -99,7 +100,9 @@ export default async function handler(req, res) {
 // EMAIL TEMPLATE
 // ─────────────────────────────────────────────────────────────
 function buildEmail(user) {
-  const firstName = user.full_name?.split(' ')[0] || 'there'
+  const firstName  = user.full_name?.split(' ')[0] || 'there'
+  const unsubToken = Buffer.from(user.id).toString('base64url')
+  const unsubUrl   = `${APP_URL}/api/email/unsubscribe?token=${unsubToken}`
   const plan      = PLAN_META[user.plan] ?? PLAN_META.essential
   const resumeUrl = `${APP_URL}/get-started?resume=true`
 
@@ -209,7 +212,7 @@ function buildEmail(user) {
               <br>
               EVERSTEAD DIGITAL LTD · London, England, United Kingdom
               <br><br>
-              <a href="mailto:hello@everstead.care?subject=Unsubscribe%20from%20checkout%20reminders"
+              <a href="${unsubUrl}"
                  style="color:#9ca3af;text-decoration:underline;">Unsubscribe from these emails</a>
             </p>
           </td>

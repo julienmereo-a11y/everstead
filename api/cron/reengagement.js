@@ -46,6 +46,7 @@ export default async function handler(req, res) {
     .lte('created_at', sevenDaysAgo)
     .or(`reengagement_nudge_sent_at.is.null,reengagement_nudge_sent_at.lte.${fourteenDaysAgo}`)
     .neq('notify_reengagement', false)
+    .neq('marketing_emails_enabled', false) // respect unsubscribe
 
   if (error) {
     console.error('reengagement query error:', error)
@@ -90,7 +91,7 @@ export default async function handler(req, res) {
         from:    'Everstead <hello@everstead.care>',
         to:      user.email,
         subject: nudgeSubject(missing),
-        html:    nudgeHtml(user.full_name, user.plan, hasAccounts, hasContacts, hasDocuments),
+        html:    nudgeHtml(user.full_name, user.plan, hasAccounts, hasContacts, hasDocuments, user.id),
       })
 
       await supabase
@@ -128,8 +129,11 @@ function nudgeSubject(missing) {
 // ─────────────────────────────────────────────────────────────────────────────
 // Personalised nudge email
 // ─────────────────────────────────────────────────────────────────────────────
-function nudgeHtml(name, plan, hasAccounts, hasContacts, hasDocuments) {
+function nudgeHtml(name, plan, hasAccounts, hasContacts, hasDocuments, userId) {
   const first    = name?.split(' ')[0] || 'there'
+  const unsubUrl = userId
+    ? `${APP_URL}/api/email/unsubscribe?token=${Buffer.from(userId).toString('base64url')}`
+    : `mailto:hello@everstead.care?subject=Unsubscribe`
   const planName = plan ? plan.charAt(0).toUpperCase() + plan.slice(1) : 'Essential'
 
   // Build a checklist showing what's done and what's missing
@@ -198,7 +202,7 @@ function nudgeHtml(name, plan, hasAccounts, hasContacts, hasDocuments) {
         <tr><td style="padding:24px 40px;border-top:1px solid #e8e5e0;">
           <p style="margin:0;color:#9ca3af;font-size:13px;line-height:1.5;">
             Questions? Reply to this email or write to <a href="mailto:hello@everstead.care" style="color:#4c7d47;">hello@everstead.care</a>
-            · <a href="mailto:hello@everstead.care?subject=Unsubscribe" style="color:#9ca3af;">Unsubscribe</a>
+            · <a href="${unsubUrl}" style="color:#9ca3af;">Unsubscribe</a>
           </p>
         </td></tr>
       </table>

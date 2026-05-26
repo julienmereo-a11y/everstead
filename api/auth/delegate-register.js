@@ -1,12 +1,45 @@
 import { createClient } from '@supabase/supabase-js'
+import { captureException } from '../lib/sentry.js'
 
 const supabase = createClient(process.env.VITE_SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY)
+
+// Rate limit: max 5 registration attempts per IP per 15 minutes.
+// Stored in Supabase so it works across serverless instances.
+async function checkRateLimit(ip) {
+  const windowStart = new Date(Date.now() - 15 * 60 * 1000).toISOString()
+  const { count, error } = await supabase
+    .from('rate_limit_log')
+    .select('id', { count: 'exact', head: true })
+    .eq('ip', ip)
+    .eq('endpoint', 'delegate-register')
+    .gte('created_at', windowStart)
+
+  if (error) return false // fail open — don't block on DB error
+  return (count ?? 0) >= 5
+}
+
+async function logRateLimit(ip) {
+  await supabase
+    .from('rate_limit_log')
+    .insert({ ip, endpoint: 'delegate-register' })
+    .catch(() => {}) // non-fatal
+}
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).end()
 
   const { email, password, name, mode, wantsTrial, token } = req.body
   if (!email || !password) return res.status(400).json({ error: 'Missing fields' })
+
+  // Rate limit — only applies to new account registration, not sign-in
+  if (mode === 'register') {
+    const ip        = (req.headers['x-forwarded-for'] || '').split(',')[0].trim() || 'unknown'
+    const throttled = await checkRateLimit(ip)
+    if (throttled) {
+      return res.status(429).json({ error: 'Too many requests. Please try again in 15 minutes.' })
+    }
+    await logRateLimit(ip)
+  }
 
   if (mode === 'admin') {
     // Validate the admin invite token before creating the user

@@ -78,6 +78,7 @@ export default async function handler(req, res) {
       .not('stripe_subscription_id', 'is', null)
       .neq('role', 'delegate')
       .not('email', 'is', null)
+      .neq('marketing_emails_enabled', false) // respect unsubscribe
       .is(step.field, null)
       .lte('created_at', earliestCutoff) // broad pre-filter; refined per-user below
 
@@ -109,9 +110,9 @@ export default async function handler(req, res) {
             supabase.from('documents')     .select('id', { count: 'exact', head: true }).eq('user_id', user.id),
             supabase.from('trusted_people').select('id', { count: 'exact', head: true }).eq('user_id', user.id),
           ])
-          html = step.html(user.full_name, user.plan, accountCount ?? 0, documentCount ?? 0, contactCount ?? 0)
+          html = step.html(user.full_name, user.plan, accountCount ?? 0, documentCount ?? 0, contactCount ?? 0, user.id)
         } else {
-          html = step.html(user.full_name, user.plan)
+          html = step.html(user.full_name, user.plan, user.id)
         }
 
         await resend.emails.send({
@@ -140,7 +141,14 @@ export default async function handler(req, res) {
 // ─────────────────────────────────────────────────────────────────────────────
 // SHARED LAYOUT
 // ─────────────────────────────────────────────────────────────────────────────
-function layout(body) {
+function unsubToken(userId) {
+  return Buffer.from(userId).toString('base64url')
+}
+
+function layout(body, userId) {
+  const unsubUrl = userId
+    ? `${APP_URL}/api/email/unsubscribe?token=${unsubToken(userId)}`
+    : `mailto:hello@everstead.care?subject=Unsubscribe`
   return `<!DOCTYPE html>
 <html>
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
@@ -155,7 +163,7 @@ function layout(body) {
         <tr><td style="padding:24px 40px;border-top:1px solid #e8e5e0;">
           <p style="margin:0;color:#9ca3af;font-size:13px;line-height:1.5;">
             Questions? Reply to this email or write to <a href="mailto:hello@everstead.care" style="color:#4c7d47;">hello@everstead.care</a>
-            · <a href="mailto:hello@everstead.care?subject=Unsubscribe" style="color:#9ca3af;">Unsubscribe</a>
+            · <a href="${unsubUrl}" style="color:#9ca3af;">Unsubscribe</a>
           </p>
         </td></tr>
       </table>
@@ -179,7 +187,7 @@ function tip(icon, text) {
 // ─────────────────────────────────────────────────────────────────────────────
 // EMAIL 1 — Day 2: Add your first account
 // ─────────────────────────────────────────────────────────────────────────────
-function email1Html(name) {
+function email1Html(name, _plan, userId) {
   const first = name?.split(' ')[0] || 'there'
   return layout(`
     <h1 style="margin:0 0 16px;color:#0d1628;font-size:24px;font-weight:normal;">
@@ -199,13 +207,13 @@ function email1Html(name) {
     </table>
     ${cta(`${APP_URL}/dashboard`, 'Add my first account →')}
     <p style="margin:32px 0 0;color:#6b7280;font-size:14px;line-height:1.6;">— Julien, founder of Everstead</p>
-  `)
+  `, userId)
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
 // EMAIL 2 — Day 4: Trusted contacts
 // ─────────────────────────────────────────────────────────────────────────────
-function email2Html(name) {
+function email2Html(name, _plan, userId) {
   const first = name?.split(' ')[0] || 'there'
   return layout(`
     <h1 style="margin:0 0 16px;color:#0d1628;font-size:24px;font-weight:normal;">
@@ -222,13 +230,13 @@ function email2Html(name) {
     </p>
     ${cta(`${APP_URL}/dashboard`, 'Add a trusted contact →')}
     <p style="margin:32px 0 0;color:#6b7280;font-size:14px;line-height:1.6;">— Julien, founder of Everstead</p>
-  `)
+  `, userId)
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
 // EMAIL 3 — Day 7: Document vault
 // ─────────────────────────────────────────────────────────────────────────────
-function email3Html(name) {
+function email3Html(name, _plan, userId) {
   const first = name?.split(' ')[0] || 'there'
   return layout(`
     <h1 style="margin:0 0 16px;color:#0d1628;font-size:24px;font-weight:normal;">
@@ -248,13 +256,13 @@ function email3Html(name) {
     </table>
     ${cta(`${APP_URL}/dashboard`, 'Upload my first document →')}
     <p style="margin:32px 0 0;color:#6b7280;font-size:14px;line-height:1.6;">— Julien, founder of Everstead</p>
-  `)
+  `, userId)
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
 // EMAIL 4 — Day 10: Instructions feature
 // ─────────────────────────────────────────────────────────────────────────────
-function email4Html(name) {
+function email4Html(name, _plan, userId) {
   const first = name?.split(' ')[0] || 'there'
   return layout(`
     <h1 style="margin:0 0 16px;color:#0d1628;font-size:24px;font-weight:normal;">
@@ -274,13 +282,13 @@ function email4Html(name) {
     </p>
     ${cta(`${APP_URL}/dashboard`, 'Write my first instruction →')}
     <p style="margin:32px 0 0;color:#6b7280;font-size:14px;line-height:1.6;">— Julien, founder of Everstead</p>
-  `)
+  `, userId)
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
 // EMAIL 5 — Day 13: Personal check-in from Julien (data-driven)
 // ─────────────────────────────────────────────────────────────────────────────
-function email5Html(name, plan, accountCount = 0, documentCount = 0, contactCount = 0) {
+function email5Html(name, plan, accountCount = 0, documentCount = 0, contactCount = 0, userId) {
   const first    = name?.split(' ')[0] || 'there'
   const planName = plan ? plan.charAt(0).toUpperCase() + plan.slice(1) : 'Essential'
 
@@ -323,5 +331,5 @@ function email5Html(name, plan, accountCount = 0, documentCount = 0, contactCoun
     </p>
     ${cta(`${APP_URL}/dashboard`, 'Go to my vault →')}
     <p style="margin:32px 0 0;color:#6b7280;font-size:14px;line-height:1.6;">— Julien, founder of Everstead</p>
-  `)
+  `, userId)
 }
