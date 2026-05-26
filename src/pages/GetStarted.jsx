@@ -67,10 +67,14 @@ const COUNTRIES = [
   { name: 'Canada',         code: 'CA', dial: '+1'  },
   { name: 'New Zealand',    code: 'NZ', dial: '+64' },
   { name: 'South Africa',   code: 'ZA', dial: '+27' },
+  { name: 'Nigeria',        code: 'NG', dial: '+234'},
+  { name: 'Ghana',          code: 'GH', dial: '+233'},
+  { name: 'Kenya',          code: 'KE', dial: '+254'},
   { name: 'India',          code: 'IN', dial: '+91' },
   { name: 'Singapore',      code: 'SG', dial: '+65' },
   { name: 'UAE',            code: 'AE', dial: '+971'},
   { name: 'Brazil',         code: 'BR', dial: '+55' },
+  { name: 'Other',          code: 'ZZ', dial: ''    },
 ]
 
 // Password strength checker
@@ -233,9 +237,10 @@ export default function GetStarted() {
       const { data: { session } } = await supabase.auth.getSession()
       if (!session) throw new Error('Session expired. Please sign in again.')
 
-      await supabase.from('profiles').update({
-        country: form.country || null,
-      }).eq('id', session.user.id)
+      await supabase.from('profiles').upsert(
+        { id: session.user.id, country: form.country || null },
+        { onConflict: 'id', ignoreDuplicates: false }
+      )
 
       const { data: profile } = await supabase
         .from('profiles')
@@ -308,10 +313,14 @@ export default function GetStarted() {
 
       const { data: { user } } = await supabase.auth.getUser()
 
-      // 1b. Save country to profile (trigger only creates basic row)
-      await supabase.from('profiles').update({
-        country: form.country || null,
-      }).eq('id', user?.id)
+      // 1b. Save country to profile (trigger only creates basic row).
+      // Use upsert so this works even if the trigger row isn't written yet.
+      if (user?.id) {
+        await supabase.from('profiles').upsert(
+          { id: user.id, country: form.country || null },
+          { onConflict: 'id', ignoreDuplicates: false }
+        )
+      }
 
       // 2. Create Stripe customer + subscription with trial → get client secret
       //    for the inline PaymentElement (no redirect to Stripe)
