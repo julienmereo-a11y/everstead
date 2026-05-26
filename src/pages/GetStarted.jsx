@@ -4,7 +4,7 @@ import { Link, useSearchParams, useNavigate } from 'react-router-dom'
 import {
   CheckCircle2, ArrowRight, Shield, Lock, Users,
   Eye, EyeOff, AlertCircle, Loader2, CheckCheck,
-  CreditCard, Zap, Star,
+  CreditCard, Zap, Star, X,
 } from 'lucide-react'
 import { Elements, PaymentElement, useStripe, useElements } from '@stripe/react-stripe-js'
 import { useAuth } from '../contexts/AuthContext'
@@ -49,33 +49,70 @@ const RESTRICTED_COUNTRIES = new Set([
 ])
 
 const COUNTRIES = [
-  { name: 'United Kingdom', code: 'GB', dial: '+44' },
-  { name: 'United States',  code: 'US', dial: '+1'  },
-  { name: 'France',         code: 'FR', dial: '+33' },
-  { name: 'Germany',        code: 'DE', dial: '+49' },
-  { name: 'Spain',          code: 'ES', dial: '+34' },
-  { name: 'Italy',          code: 'IT', dial: '+39' },
-  { name: 'Portugal',       code: 'PT', dial: '+351'},
-  { name: 'Netherlands',    code: 'NL', dial: '+31' },
-  { name: 'Belgium',        code: 'BE', dial: '+32' },
-  { name: 'Switzerland',    code: 'CH', dial: '+41' },
-  { name: 'Sweden',         code: 'SE', dial: '+46' },
-  { name: 'Norway',         code: 'NO', dial: '+47' },
-  { name: 'Denmark',        code: 'DK', dial: '+45' },
-  { name: 'Ireland',        code: 'IE', dial: '+353'},
-  { name: 'Australia',      code: 'AU', dial: '+61' },
-  { name: 'Canada',         code: 'CA', dial: '+1'  },
-  { name: 'New Zealand',    code: 'NZ', dial: '+64' },
-  { name: 'South Africa',   code: 'ZA', dial: '+27' },
-  { name: 'Nigeria',        code: 'NG', dial: '+234'},
-  { name: 'Ghana',          code: 'GH', dial: '+233'},
-  { name: 'Kenya',          code: 'KE', dial: '+254'},
-  { name: 'India',          code: 'IN', dial: '+91' },
-  { name: 'Singapore',      code: 'SG', dial: '+65' },
-  { name: 'UAE',            code: 'AE', dial: '+971'},
-  { name: 'Brazil',         code: 'BR', dial: '+55' },
-  { name: 'Other',          code: 'ZZ', dial: ''    },
+  // Primary markets
+  { name: 'United Kingdom', code: 'GB', dial: '+44'  },
+  { name: 'Ireland',        code: 'IE', dial: '+353' },
+  { name: 'United States',  code: 'US', dial: '+1'   },
+  { name: 'Canada',         code: 'CA', dial: '+1'   },
+  // Europe
+  { name: 'Austria',        code: 'AT', dial: '+43'  },
+  { name: 'Belgium',        code: 'BE', dial: '+32'  },
+  { name: 'Denmark',        code: 'DK', dial: '+45'  },
+  { name: 'Finland',        code: 'FI', dial: '+358' },
+  { name: 'France',         code: 'FR', dial: '+33'  },
+  { name: 'Germany',        code: 'DE', dial: '+49'  },
+  { name: 'Greece',         code: 'GR', dial: '+30'  },
+  { name: 'Italy',          code: 'IT', dial: '+39'  },
+  { name: 'Luxembourg',     code: 'LU', dial: '+352' },
+  { name: 'Netherlands',    code: 'NL', dial: '+31'  },
+  { name: 'Norway',         code: 'NO', dial: '+47'  },
+  { name: 'Poland',         code: 'PL', dial: '+48'  },
+  { name: 'Portugal',       code: 'PT', dial: '+351' },
+  { name: 'Spain',          code: 'ES', dial: '+34'  },
+  { name: 'Sweden',         code: 'SE', dial: '+46'  },
+  { name: 'Switzerland',    code: 'CH', dial: '+41'  },
+  // Middle East
+  { name: 'UAE',            code: 'AE', dial: '+971' },
+  { name: 'Qatar',          code: 'QA', dial: '+974' },
+  { name: 'Saudi Arabia',   code: 'SA', dial: '+966' },
 ]
+
+// ─────────────────────────────────────────────────────────────
+// GEO-ACCESS CONFIG
+// Edit these lists here — they drive all three access tiers.
+//
+// ⚠️  CLIENT-SIDE ONLY — trivially bypassed with a VPN.
+//     A matching server-side check via a Supabase Edge Function
+//     should be added before production launch for full enforcement.
+// ─────────────────────────────────────────────────────────────
+const GEO_CONFIG = {
+  // Tier 1 — Hard block: sanctioned / compliance-restricted nations
+  sanctioned: new Set([
+    'RU', 'BY', 'KP', 'IR', 'SY', 'MM', 'VE', 'AF', 'IQ', 'LY', 'SD', 'YE',
+  ]),
+
+  // Tier 2 — Hard block: Africa (except South Africa)
+  africa: new Set([
+    'DZ','AO','BJ','BW','BF','BI','CM','CV','CF','TD','KM','CD','CG','CI',
+    'DJ','EG','GQ','ER','ET','GA','GM','GH','GN','GW','KE','LS','LR',
+    'MG','MW','ML','MR','MU','MA','MZ','NA','NE','NG','RW','ST','SN',
+    'SC','SL','SO','SS','SZ','TZ','TG','TN','UG','ZM','ZW',
+    // LY and SD are already caught by Tier 1
+  ]),
+
+  // Tier 3 — Allowed markets (no warning shown).
+  // Everyone else gets a soft dismissible notice.
+  allowed: new Set([
+    'GB','IE',                          // Primary
+    'US','CA','AU',                     // English-speaking
+    'AE','QA','SA','KW','BH','OM',      // Gulf
+    // EU
+    'AT','BE','BG','HR','CY','CZ','DK','EE','FI','FR','DE','GR','HU',
+    'IT','LV','LT','LU','MT','NL','PL','PT','RO','SK','SI','ES','SE',
+    // EEA + Switzerland
+    'IS','LI','NO','CH',
+  ]),
+}
 
 // Password strength checker
 function getPasswordStrength(pw) {
@@ -100,6 +137,10 @@ export default function GetStarted() {
   const [searchParams] = useSearchParams()
   const navigate       = useNavigate()
 
+  // Geo access control — 'loading' | 'allowed' | 'soft-warn' | 'blocked-africa' | 'blocked-sanctioned'
+  const [geoStatus, setGeoStatus]     = useState('loading')
+  const [geoDismissed, setGeoDismissed] = useState(false)
+
   const [step, setStep]               = useState(1) // 1 = plan, 2 = account, 3 = payment
   const [selectedPlan, setSelectedPlan] = useState('family')
   const [annualBilling, setAnnualBilling] = useState(true)
@@ -119,6 +160,25 @@ export default function GetStarted() {
   // Referral code from ?ref= URL param — gives the new user a 21-day trial
   const referralCode = searchParams.get('ref') || null
   const trialDays    = referralCode ? 21 : 14
+
+  // Geo access check — runs once on mount, 3-second timeout, fails open
+  useEffect(() => {
+    const controller = new AbortController()
+    const timer = setTimeout(() => controller.abort(), 3000)
+    fetch('https://ipapi.co/json/', { signal: controller.signal })
+      .then(r => r.json())
+      .then(data => {
+        const cc = data?.country_code
+        if (!cc) { setGeoStatus('allowed'); return }
+        if (GEO_CONFIG.sanctioned.has(cc))    setGeoStatus('blocked-sanctioned')
+        else if (GEO_CONFIG.africa.has(cc))   setGeoStatus('blocked-africa')
+        else if (!GEO_CONFIG.allowed.has(cc)) setGeoStatus('soft-warn')
+        else                                  setGeoStatus('allowed')
+      })
+      .catch(() => setGeoStatus('allowed')) // API failed / timed out — allow silently
+      .finally(() => clearTimeout(timer))
+    return () => { controller.abort(); clearTimeout(timer) }
+  }, [])
 
   // Resume checkout — handles ?resume=true (dashboard gate) and localStorage flag (Google OAuth callback)
   useEffect(() => {
@@ -387,6 +447,66 @@ export default function GetStarted() {
 
       <section className="py-16 lg:py-24">
         <div className="max-w-4xl mx-auto px-6 lg:px-8">
+
+          {/* ── GEO GATE ─────────────────────────────────────────── */}
+
+          {/* Loading — form hidden until geo resolves */}
+          {geoStatus === 'loading' && (
+            <div className="flex flex-col items-center justify-center py-24 gap-4">
+              <div className="w-8 h-8 rounded-full border-2 border-stone-200 border-t-navy-600 animate-spin" />
+              <p className="text-stone-400 text-sm">Just a moment…</p>
+            </div>
+          )}
+
+          {/* Tier 1 — Sanctioned country */}
+          {geoStatus === 'blocked-sanctioned' && (
+            <div className="max-w-md mx-auto text-center py-20">
+              <div className="w-14 h-14 rounded-full bg-red-50 border border-red-100 flex items-center justify-center mx-auto mb-6">
+                <Shield size={22} className="text-red-400" />
+              </div>
+              <h2 className="font-display text-2xl font-light text-navy-950 mb-3" style={{ fontFamily: 'Georgia, serif' }}>
+                Everstead is not available in your country.
+              </h2>
+              <p className="text-stone-500 text-sm leading-relaxed">
+                We're unable to offer our services in your location due to regulatory restrictions.
+              </p>
+            </div>
+          )}
+
+          {/* Tier 2 — Africa (except South Africa) */}
+          {geoStatus === 'blocked-africa' && (
+            <div className="max-w-md mx-auto text-center py-20">
+              <div className="w-14 h-14 rounded-full bg-stone-100 border border-stone-200 flex items-center justify-center mx-auto mb-6">
+                <Shield size={22} className="text-stone-400" />
+              </div>
+              <h2 className="font-display text-2xl font-light text-navy-950 mb-3" style={{ fontFamily: 'Georgia, serif' }}>
+                Everstead is not currently available in your location.
+              </h2>
+              <p className="text-stone-500 text-sm leading-relaxed">
+                We're focused on a small number of markets right now. We hope to expand — check back soon.
+              </p>
+            </div>
+          )}
+
+          {/* Tier 3 — Soft warning, dismissible */}
+          {geoStatus === 'soft-warn' && !geoDismissed && (
+            <div className="mb-8 flex items-start gap-3 bg-amber-50 border border-amber-200 rounded-2xl px-5 py-4">
+              <div className="flex-1 text-sm text-amber-800 leading-relaxed">
+                <span className="font-semibold">Everstead is currently designed for people in the UK and Ireland.</span>{' '}
+                Some features may not match the legal requirements in your country — but we're expanding, so this may change.
+              </div>
+              <button
+                onClick={() => setGeoDismissed(true)}
+                aria-label="Dismiss"
+                className="text-amber-500 hover:text-amber-700 transition-colors flex-shrink-0 mt-0.5"
+              >
+                <X size={16} />
+              </button>
+            </div>
+          )}
+
+          {/* Form — hidden while loading or hard-blocked */}
+          {(geoStatus === 'allowed' || geoStatus === 'soft-warn') && (<>
 
           {/* Billing toggle — visible only on step 1 */}
           {step === 1 && (
@@ -816,6 +936,8 @@ export default function GetStarted() {
               </div>
             </div>
           )}
+
+        </>)}
 
         </div>
       </section>
