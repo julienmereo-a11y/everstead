@@ -51,10 +51,16 @@ export default async function handler(req, res) {
       },
     })
 
-    // Save only customer ID to profile — no subscription_status change yet
+    // Save customer ID to profile.
+    // Also stamp checkout_started_at on first creation (not on resume) so the
+    // abandoned-checkout cron can reliably detect who reached the payment step.
+    const profileUpdate = { stripe_customer_id: customer.id }
+    if (!existingCustomerId) {
+      profileUpdate.checkout_started_at = new Date().toISOString()
+    }
     await supabase
       .from('profiles')
-      .update({ stripe_customer_id: customer.id })
+      .update(profileUpdate)
       .eq('id', userId)
 
     return res.status(200).json({
