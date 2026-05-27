@@ -40,7 +40,7 @@ export default function Nav() {
 
   const isLightPage = lightBgPages.some(p => location.pathname.startsWith(p))
   const isDarkHeroPage = darkHeroPages.some(p => location.pathname.startsWith(p))
-  const scrollThreshold = isDarkHeroPage ? 400 : 24
+  const scrollThreshold = isDarkHeroPage ? 150 : 24
   const useDarkStyle = scrollY > scrollThreshold || isLightPage
 
   useEffect(() => {
