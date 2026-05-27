@@ -1,4 +1,7 @@
 {
+  "redirects": [
+    { "source": "/for-advisors", "destination": "/for-advisers", "permanent": true }
+  ],
   "rewrites": [
     { "source": "/((?!api/).*)", "destination": "/index.html" }
   ],

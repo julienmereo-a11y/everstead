@@ -17,7 +17,7 @@ const navLinks = [
 const lightBgPages = ['/pricing', '/security', '/features', '/how-it-works', '/use-cases', '/login', '/get-started', '/resources', '/about', '/contact', '/book-demo', '/privacy', '/terms', '/forgot-password', '/reset-password']
 
 // Pages with a dark hero — keep white logo/nav until scrolled past the hero (~400px)
-const darkHeroPages = ['/for-advisors', '/family-vault', '/what-to-do-when-someone-dies']
+const darkHeroPages = ['/for-advisers', '/family-vault', '/what-to-do-when-someone-dies']
 
 // Compute the correct dark-style value for a given pathname + scrollY
 // Extracted so we can use it both in the initialiser and in the render

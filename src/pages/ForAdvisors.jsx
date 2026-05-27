@@ -104,11 +104,11 @@ export default function ForAdvisors() {
       <Helmet>
         <title>Everstead for Advisers — Estate Organisation for Your Clients</title>
         <meta name="description" content="Give your clients a co-branded estate vault they'll actually use. Everstead for advisers includes a client portal, readiness tracking, and document access — built for IFAs, solicitors, and wealth managers." />
-        <link rel="canonical" href="https://www.everstead.care/for-advisors" />
+        <link rel="canonical" href="https://www.everstead.care/for-advisers" />
         <meta property="og:type" content="website" />
         <meta property="og:title" content="Everstead for Advisers — Estate Organisation for Your Clients" />
         <meta property="og:description" content="Give your clients a co-branded estate vault they'll actually use. Everstead for advisers includes a client portal, readiness tracking, and document access." />
-        <meta property="og:url" content="https://www.everstead.care/for-advisors" />
+        <meta property="og:url" content="https://www.everstead.care/for-advisers" />
         <meta property="og:image" content="https://www.everstead.care/og-image.png" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:image" content="https://www.everstead.care/og-image.png" />

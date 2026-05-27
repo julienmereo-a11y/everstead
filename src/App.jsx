@@ -198,7 +198,7 @@ export default function App() {
               <Route path="/compare/:slug" element={<Layout><Compare /></Layout>} />
               <Route path="/what-to-do-when-someone-dies" element={<WhenSomeoneDies />} />
               <Route path="/data-promise"  element={<Layout><DataPromise /></Layout>} />
-              <Route path="/for-advisors" element={<Layout><ForAdvisors /></Layout>} />
+              <Route path="/for-advisers" element={<Layout><ForAdvisors /></Layout>} />
               <Route path="/family-vault" element={<Layout><DualVault /></Layout>} />
               <Route path="*"           element={<Layout><NotFound /></Layout>} />
             </Routes>
