@@ -91,7 +91,7 @@ The authoritative, up-to-date list is maintained at https://www.everstead.care/s
 
 International transfers to sub-processors located outside the UK are made under the UK International Data Transfer Agreement (UK IDTA) or EU Standard Contractual Clauses with the UK Addendum, as applicable.
 
-${COMPANY} will notify Controllers of any intended changes to sub-processors (additions or replacements) by email or platform notice at least 30 days in advance, giving the Controller the opportunity to object. If the Controller objects and the parties cannot resolve the matter within a reasonable period, the Controller may terminate the Agreement without penalty for that reason.`,
+${COMPANY} will notify Controllers of any intended changes to sub-processors (additions or replacements) at least 30 days in advance. Notifications are sent (a) directly by email to the Adviser account contact on file and (b) to subscribers of the subprocessor notification list, which any Controller may join at https://www.everstead.care/subprocessors. Controllers are given the opportunity to object during the 30-day notice period; if the Controller objects and the parties cannot resolve the matter within a reasonable period, the Controller may terminate the Agreement without penalty for that reason.`,
   },
   {
     title: '7. International transfers',

@@ -1,8 +1,8 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Helmet } from 'react-helmet-async'
 import { Link } from 'react-router-dom'
 import { useReveal } from '../components/useReveal'
-import { ArrowRight, ShieldCheck } from 'lucide-react'
+import { ArrowRight, ShieldCheck, CheckCircle2 } from 'lucide-react'
 
 const EFFECTIVE_DATE = '27 May 2026'
 const COMPANY        = 'Everstead Digital Ltd'
@@ -55,6 +55,34 @@ const subprocessors = [
 
 export default function Subprocessors() {
   useReveal()
+  const [email, setEmail] = useState('')
+  const [status, setStatus] = useState('idle') // idle | submitting | success | error
+  const [errorMsg, setErrorMsg] = useState('')
+
+  const handleSubscribe = async (e) => {
+    e.preventDefault()
+    if (status === 'submitting') return
+    setStatus('submitting')
+    setErrorMsg('')
+    try {
+      const res = await fetch('/api/subprocessors/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      })
+      const data = await res.json().catch(() => ({}))
+      if (!res.ok) {
+        setStatus('error')
+        setErrorMsg(data.error || 'Could not subscribe. Please try again.')
+        return
+      }
+      setStatus('success')
+      setEmail('')
+    } catch (err) {
+      setStatus('error')
+      setErrorMsg('Could not subscribe. Please try again.')
+    }
+  }
 
   return (
     <>
@@ -135,8 +163,41 @@ export default function Subprocessors() {
                     We will notify customers — by email and a notice on this page — at least <strong>30 days before</strong> adding or replacing a subprocessor. Adviser-plan customers may object to a change within that window; if we cannot resolve the objection, the customer may terminate their subscription for that reason without penalty.
                   </p>
                   <p className="text-sm text-stone-700 leading-relaxed">
-                    To receive change notifications by email, write to <a href="mailto:privacy@everstead.care" className="text-sage-700 underline hover:text-sage-800">privacy@everstead.care</a> and ask to be added to the subprocessor notification list.
+                    Subscribe below to receive change notifications by email. We only use your address for subprocessor-change notices — never marketing.
                   </p>
+
+                  {status === 'success' ? (
+                    <div className="flex items-start gap-2.5 mt-3 rounded-xl bg-white border border-sage-200 px-4 py-3">
+                      <CheckCircle2 size={18} className="text-sage-700 shrink-0 mt-0.5" />
+                      <div>
+                        <p className="text-sm font-medium text-navy-900">You're subscribed.</p>
+                        <p className="text-xs text-stone-500 mt-0.5">A confirmation email is on its way. You can unsubscribe at any time from any notification email.</p>
+                      </div>
+                    </div>
+                  ) : (
+                    <form onSubmit={handleSubscribe} className="mt-3 flex flex-col sm:flex-row gap-2.5" noValidate>
+                      <input
+                        type="email"
+                        required
+                        value={email}
+                        onChange={(e) => { setEmail(e.target.value); if (status === 'error') setStatus('idle') }}
+                        placeholder="you@example.com"
+                        aria-label="Email address for subprocessor notifications"
+                        className="flex-1 min-w-0 px-4 py-2.5 text-sm rounded-xl border border-stone-300 bg-white placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-sage-500/40 focus:border-sage-500"
+                        disabled={status === 'submitting'}
+                      />
+                      <button
+                        type="submit"
+                        disabled={status === 'submitting' || !email}
+                        className="px-5 py-2.5 text-sm font-medium rounded-xl bg-sage-700 text-white hover:bg-sage-800 transition-colors disabled:bg-stone-300 disabled:cursor-not-allowed shrink-0"
+                      >
+                        {status === 'submitting' ? 'Subscribing…' : 'Subscribe'}
+                      </button>
+                    </form>
+                  )}
+                  {status === 'error' && (
+                    <p className="text-xs text-red-700 mt-2">{errorMsg}</p>
+                  )}
                 </div>
               </div>
             </div>
