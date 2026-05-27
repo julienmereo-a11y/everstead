@@ -87,7 +87,7 @@ export default function Subprocessors() {
                 To operate the Everstead platform we rely on a small number of trusted third-party providers ("subprocessors"). Each one has signed a Data Processing Agreement with {COMPANY} and provides appropriate safeguards under UK GDPR.
               </p>
               <p className="text-sm text-stone-700 leading-relaxed">
-                This page is the authoritative, up-to-date list. It is incorporated by reference into the <Link to="/advisor-dpa" className="text-sage-700 underline hover:text-sage-800">Adviser DPA</Link> (clause 6) and the <Link to="/privacy" className="text-sage-700 underline hover:text-sage-800">Privacy Policy</Link>.
+                This page is the authoritative, up-to-date list. It is incorporated by reference into the <Link to="/adviser-dpa" className="text-sage-700 underline hover:text-sage-800">Adviser DPA</Link> (clause 6) and the <Link to="/privacy" className="text-sage-700 underline hover:text-sage-800">Privacy Policy</Link>.
               </p>
             </div>
 
@@ -143,13 +143,13 @@ export default function Subprocessors() {
             {/* Footer note + cross-links */}
             <div className="reveal space-y-4">
               <p className="text-xs text-stone-500 leading-relaxed">
-                {COMPANY} is the controller of Everstead member account data and the processor of vault content uploaded by members or by Advisers on behalf of their clients. For full details see the <Link to="/privacy" className="text-sage-700 underline hover:text-sage-800">Privacy Policy</Link> and the <Link to="/advisor-dpa" className="text-sage-700 underline hover:text-sage-800">Adviser DPA</Link>.
+                {COMPANY} is the controller of Everstead member account data and the processor of vault content uploaded by members or by Advisers on behalf of their clients. For full details see the <Link to="/privacy" className="text-sage-700 underline hover:text-sage-800">Privacy Policy</Link> and the <Link to="/adviser-dpa" className="text-sage-700 underline hover:text-sage-800">Adviser DPA</Link>.
               </p>
               <div className="flex flex-wrap gap-4 text-sm">
                 <Link to="/privacy" className="inline-flex items-center gap-1.5 text-navy-800 hover:text-navy-900 font-medium">
                   Privacy Policy <ArrowRight size={13} />
                 </Link>
-                <Link to="/advisor-dpa" className="inline-flex items-center gap-1.5 text-navy-800 hover:text-navy-900 font-medium">
+                <Link to="/adviser-dpa" className="inline-flex items-center gap-1.5 text-navy-800 hover:text-navy-900 font-medium">
                   Adviser DPA <ArrowRight size={13} />
                 </Link>
                 <Link to="/security" className="inline-flex items-center gap-1.5 text-navy-800 hover:text-navy-900 font-medium">

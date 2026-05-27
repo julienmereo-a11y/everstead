@@ -53,7 +53,7 @@ const RedeemGift            = lazy(() => import('./pages/RedeemGift'))
 const Cookies               = lazy(() => import('./pages/Cookies'))
 const Accessibility         = lazy(() => import('./pages/Accessibility'))
 const Press                 = lazy(() => import('./pages/Press'))
-const AdvisorDPA            = lazy(() => import('./pages/AdvisorDPA'))
+const AdviserDPA            = lazy(() => import('./pages/AdviserDPA'))
 const Subprocessors         = lazy(() => import('./pages/Subprocessors'))
 const Changelog             = lazy(() => import('./pages/Changelog'))
 const Compare               = lazy(() => import('./pages/Compare'))
@@ -194,7 +194,7 @@ export default function App() {
               <Route path="/cookies"      element={<Layout><Cookies /></Layout>} />
               <Route path="/accessibility" element={<Layout><Accessibility /></Layout>} />
               <Route path="/press"        element={<Layout><Press /></Layout>} />
-              <Route path="/advisor-dpa"  element={<Layout><AdvisorDPA /></Layout>} />
+              <Route path="/adviser-dpa"  element={<Layout><AdviserDPA /></Layout>} />
               <Route path="/subprocessors" element={<Layout><Subprocessors /></Layout>} />
               <Route path="/changelog"    element={<Layout><Changelog /></Layout>} />
               <Route path="/compare/:slug" element={<Layout><Compare /></Layout>} />

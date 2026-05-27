@@ -13,7 +13,7 @@ const entries = [
       'Added /press page with company facts, founder bio, and media contact',
       'Added standalone /cookies page with full cookie category breakdown',
       'Added /accessibility statement (WCAG 2.1 AA)',
-      'Added Advisor Data Processing Agreement (/advisor-dpa)',
+      'Added Adviser Data Processing Agreement (/adviser-dpa)',
       'Unsubscribe links added to all marketing emails (UK GDPR compliance)',
       'Structured data updated: price, applicationCategory, FAQ schema',
       'noindex tags added to auth and redemption pages',

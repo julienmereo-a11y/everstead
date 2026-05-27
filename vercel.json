@@ -1,6 +1,7 @@
 {
   "redirects": [
-    { "source": "/for-advisors", "destination": "/for-advisers", "permanent": true }
+    { "source": "/for-advisors", "destination": "/for-advisers", "permanent": true },
+    { "source": "/advisor-dpa",  "destination": "/adviser-dpa",  "permanent": true }
   ],
   "rewrites": [
     { "source": "/((?!api/).*)", "destination": "/index.html" }

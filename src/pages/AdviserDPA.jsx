@@ -12,31 +12,31 @@ const clauses = [
     title: '1. Definitions',
     body: `"Agreement" means these Data Processing Terms, incorporated by reference into the Everstead Terms of Service.
 
-"Controller" means the Advisor (the natural or legal person using an Everstead Advisor plan) who determines the purposes and means of processing personal data of their clients.
+"Controller" means the Adviser (the natural or legal person using an Everstead Adviser plan) who determines the purposes and means of processing personal data of their clients.
 
 "Processor" means ${COMPANY} (company number ${COMPANY_NO}), registered in England and Wales, which processes personal data on behalf of the Controller.
 
 "Personal Data", "Processing", "Data Subject", "Supervisory Authority" and "Data Breach" have the meanings given in UK GDPR.
 
-"Client Families" means the end-user families whose data is organised within client vaults created or managed by the Advisor through the Everstead platform.`,
+"Client Families" means the end-user families whose data is organised within client vaults created or managed by the Adviser through the Everstead platform.`,
   },
   {
     title: '2. Scope and application',
-    body: `These Data Processing Terms apply to all processing of personal data carried out by ${COMPANY} on behalf of Advisors in connection with the Everstead Advisor plan.
+    body: `These Data Processing Terms apply to all processing of personal data carried out by ${COMPANY} on behalf of Advisers in connection with the Everstead Adviser plan.
 
-By activating an Advisor account, the Advisor (as Controller) agrees to these terms. These terms supplement and, where inconsistent, take precedence over the Everstead Terms of Service with respect to data processing activities.
+By activating an Adviser account, the Adviser (as Controller) agrees to these terms. These terms supplement and, where inconsistent, take precedence over the Everstead Terms of Service with respect to data processing activities.
 
-The Advisor warrants that they have a lawful basis to provide client personal data to ${COMPANY} for processing under this Agreement, and that doing so complies with all applicable data protection laws.`,
+The Adviser warrants that they have a lawful basis to provide client personal data to ${COMPANY} for processing under this Agreement, and that doing so complies with all applicable data protection laws.`,
   },
   {
     title: '3. Details of processing (Schedule 1)',
     body: `Subject matter: Provision of the Everstead secure vault platform for estate organisation.
 
-Duration: For the term of the Advisor's subscription, plus any retention periods set out in these terms.
+Duration: For the term of the Adviser's subscription, plus any retention periods set out in these terms.
 
-Nature of processing: Storage, retrieval, display, and deletion of personal data entered into the Everstead platform by the Advisor and/or Client Families.
+Nature of processing: Storage, retrieval, display, and deletion of personal data entered into the Everstead platform by the Adviser and/or Client Families.
 
-Purpose: Enabling Client Families to organise accounts, documents, instructions, and wishes; enabling Advisors to support clients with estate readiness; facilitating trusted contact access.
+Purpose: Enabling Client Families to organise accounts, documents, instructions, and wishes; enabling Advisers to support clients with estate readiness; facilitating trusted contact access.
 
 Categories of personal data: Full name, email address, date of birth, home address, financial account details (reference numbers only — no card or banking credentials), identity document references, will and probate information, pension and insurance policy details, personal instructions and wishes.
 
@@ -109,11 +109,11 @@ The Controller is responsible for determining whether notification to the Superv
     title: '9. Data subject rights',
     body: `${COMPANY} will, to the extent technically feasible, assist the Controller in fulfilling its obligations to respond to data subject requests. Where a data subject contacts ${COMPANY} directly regarding personal data processed on behalf of the Controller, ${COMPANY} will promptly refer the request to the Controller.
 
-Data subjects whose data is held in client vaults may request access, rectification, erasure, or portability of their data by contacting the Advisor (Controller) directly or writing to ${COMPANY} at privacy@everstead.care, who will coordinate with the relevant Controller.`,
+Data subjects whose data is held in client vaults may request access, rectification, erasure, or portability of their data by contacting the Adviser (Controller) directly or writing to ${COMPANY} at privacy@everstead.care, who will coordinate with the relevant Controller.`,
   },
   {
     title: '10. Retention and deletion',
-    body: `On termination of an Advisor's subscription, client vault data is retained for 30 days to allow the Controller to retrieve it, then permanently deleted from ${COMPANY}'s systems.
+    body: `On termination of an Adviser's subscription, client vault data is retained for 30 days to allow the Controller to retrieve it, then permanently deleted from ${COMPANY}'s systems.
 
 The Controller may request earlier deletion by contacting privacy@everstead.care. ${COMPANY} will confirm deletion in writing within 30 days.
 
@@ -164,21 +164,21 @@ function Clause({ title, body }) {
   )
 }
 
-export default function AdvisorDPA() {
+export default function AdviserDPA() {
   useReveal()
   return (
     <>
       <Helmet>
-        <title>Data Processing Agreement — Everstead Advisors</title>
-        <meta name="description" content="Everstead's Data Processing Agreement for Advisor accounts — UK GDPR Article 28 compliant terms governing how Everstead processes client family data on behalf of advisors." />
-        <link rel="canonical" href="https://www.everstead.care/advisor-dpa" />
+        <title>Data Processing Agreement — Everstead Advisers</title>
+        <meta name="description" content="Everstead's Data Processing Agreement for Adviser accounts — UK GDPR Article 28 compliant terms governing how Everstead processes client family data on behalf of advisers." />
+        <link rel="canonical" href="https://www.everstead.care/adviser-dpa" />
       </Helmet>
 
       <div className="bg-stone-50 pt-24 min-h-screen">
         <section className="py-16 lg:py-20 grain relative overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-br from-navy-950 to-navy-800" />
           <div className="relative max-w-3xl mx-auto px-6 lg:px-8 text-center">
-            <p className="text-xs font-semibold uppercase tracking-widest text-sage-400 mb-4 animate-fade-in">Legal · Advisors</p>
+            <p className="text-xs font-semibold uppercase tracking-widest text-sage-400 mb-4 animate-fade-in">Legal · Advisers</p>
             <h1 className="font-display text-4xl lg:text-5xl font-light text-white leading-tight text-balance animate-fade-up">
               Data Processing Agreement
             </h1>
@@ -191,7 +191,7 @@ export default function AdvisorDPA() {
 
             <div className="reveal rounded-2xl bg-navy-50 border border-navy-100 px-6 py-5">
               <p className="text-sm text-navy-800 leading-relaxed">
-                <strong>Who this applies to:</strong> These Data Processing Terms apply to all Advisor plan accounts on Everstead. By activating an Advisor account, you (the Advisor, acting as Data Controller) agree to these terms. Everstead Digital Ltd acts as Data Processor. These terms are automatically incorporated into your Everstead subscription agreement.
+                <strong>Who this applies to:</strong> These Data Processing Terms apply to all Adviser plan accounts on Everstead. By activating an Adviser account, you (the Adviser, acting as Data Controller) agree to these terms. Everstead Digital Ltd acts as Data Processor. These terms are automatically incorporated into your Everstead subscription agreement.
               </p>
             </div>
 
@@ -203,7 +203,7 @@ export default function AdvisorDPA() {
 
             <div className="reveal space-y-3">
               <p className="text-stone-500 text-xs leading-relaxed">
-                These Data Processing Terms were last updated on {EFFECTIVE_DATE}. {COMPANY} reserves the right to update these terms to reflect changes in sub-processors, applicable law, or platform capabilities. Material changes will be communicated to Advisors at least 30 days in advance by email.
+                These Data Processing Terms were last updated on {EFFECTIVE_DATE}. {COMPANY} reserves the right to update these terms to reflect changes in sub-processors, applicable law, or platform capabilities. Material changes will be communicated to Advisers at least 30 days in advance by email.
               </p>
               <p className="text-stone-500 text-xs leading-relaxed">
                 {COMPANY} · Registered in England and Wales · Company No. {COMPANY_NO} · ICO Reg. 00013988672 · privacy@everstead.care

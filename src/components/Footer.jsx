@@ -48,7 +48,7 @@ const cols = [
       { label: 'Privacy Policy', href: '/privacy' },
       { label: 'Terms of Service', href: '/terms' },
       { label: 'Data Promise', href: '/data-promise' },
-      { label: 'Adviser DPA', href: '/advisor-dpa' },
+      { label: 'Adviser DPA', href: '/adviser-dpa' },
       { label: 'Subprocessors', href: '/subprocessors' },
       { label: 'Cookie Policy', href: '/cookies' },
       { label: 'Accessibility', href: '/accessibility' },
