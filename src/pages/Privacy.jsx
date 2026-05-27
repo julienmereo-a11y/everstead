@@ -68,9 +68,9 @@ export default function Privacy() {
       <meta name="description" content="How Everstead collects, uses, and protects your personal information. Your data is encrypted, never sold, and always under your control." />
       <link rel="canonical" href="https://www.everstead.care/privacy" />
     </Helmet>
-    <div className="bg-stone-50 pt-24 min-h-screen">
+    <div className="bg-stone-50 min-h-screen">
       {/* Header */}
-      <section className="py-16 lg:py-20 grain relative overflow-hidden">
+      <section className="pt-40 pb-16 lg:pt-44 lg:pb-20 grain relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-navy-950 to-navy-800" />
         <div className="relative max-w-3xl mx-auto px-6 lg:px-8 text-center">
           <p className="text-xs font-semibold uppercase tracking-widest text-sage-400 mb-4 animate-fade-in">Legal</p>

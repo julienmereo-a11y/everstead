@@ -64,10 +64,11 @@ export default function Subprocessors() {
         <link rel="canonical" href="https://www.everstead.care/subprocessors" />
       </Helmet>
 
-      <div className="bg-stone-50 pt-24 min-h-screen">
+      <div className="bg-stone-50 min-h-screen">
 
-        {/* Hero */}
-        <section className="py-16 lg:py-20 grain relative overflow-hidden">
+        {/* Hero — extends under the fixed nav (no top padding on wrapper);
+            internal pt-40 lifts the content below the 96px nav strip */}
+        <section className="pt-40 pb-16 lg:pt-44 lg:pb-20 grain relative overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-br from-navy-950 to-navy-800" />
           <div className="relative max-w-3xl mx-auto px-6 lg:px-8 text-center">
             <p className="text-xs font-semibold uppercase tracking-widest text-sage-400 mb-4">Legal · Data protection</p>

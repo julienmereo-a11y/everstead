@@ -57,10 +57,10 @@ export default function DataPromise() {
         <meta name="twitter:image" content="https://www.everstead.care/og-image.png" />
       </Helmet>
 
-      <div className="bg-stone-50 pt-24">
+      <div className="bg-stone-50">
 
-        {/* ── Hero ── */}
-        <section className="py-20 lg:py-28 grain relative overflow-hidden">
+        {/* ── Hero — extends under the fixed nav ── */}
+        <section className="pt-44 pb-20 lg:pt-52 lg:pb-28 grain relative overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-br from-navy-950 via-navy-900 to-navy-800" />
           <div className="relative max-w-3xl mx-auto px-6 text-center">
             <p className="reveal text-xs font-semibold uppercase tracking-[0.22em] text-sage-300 mb-5">
