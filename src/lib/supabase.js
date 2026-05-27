@@ -53,25 +53,14 @@ export async function removeStorageFile(storagePath) {
  * @param {Record<string, string>} fields  All form fields
  */
 export async function sendEnquiry(type, fields) {
-  // Build a plain-text summary of all fields
-  const lines = Object.entries(fields)
-    .map(([k, v]) => `${k}: ${v}`)
-    .join('\n')
-
-  try {
-    const { error } = await supabase.functions.invoke('send-enquiry', {
-      body: { type, fields, to: 'sales@everstead.care' },
-    })
-    if (error) throw error
-  } catch {
-    // Edge function not deployed yet — open mailto as reliable fallback
-    const subject = encodeURIComponent(
-      type === 'book-demo'
-        ? `[Book Demo] ${fields.firm || fields.name || 'New request'}`
-        : `[Contact] ${fields.subject || 'New message'}`
-    )
-    const body = encodeURIComponent(lines)
-    window.open(`mailto:sales@everstead.care?subject=${subject}&body=${body}`)
+  const res = await fetch('/api/contact/enquiry', {
+    method:  'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body:    JSON.stringify({ type, fields }),
+  })
+  if (!res.ok) {
+    const data = await res.json().catch(() => ({}))
+    throw new Error(data.error || 'Failed to send enquiry')
   }
 }
 

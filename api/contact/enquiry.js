@@ -1,0 +1,60 @@
+import { Resend } from 'resend'
+
+const resend = new Resend(process.env.RESEND_API_KEY)
+const TO     = process.env.ENQUIRY_TO || 'hello@everstead.care'
+
+export default async function handler(req, res) {
+  if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' })
+
+  const { type, fields } = req.body || {}
+  if (!type || !fields) return res.status(400).json({ error: 'Missing type or fields' })
+
+  // Build subject
+  const subject =
+    type === 'book-demo'
+      ? `New adviser demo request — ${fields['Firm'] || fields['Full name'] || 'Unknown firm'}`
+      : `New contact form message — ${fields['Subject'] || fields['Name'] || 'No subject'}`
+
+  // Build plain HTML body from fields
+  const rows = Object.entries(fields)
+    .map(([k, v]) => `<tr><td style="padding:6px 12px;font-weight:600;color:#374151;white-space:nowrap;vertical-align:top;">${k}</td><td style="padding:6px 12px;color:#4b5563;">${v || '—'}</td></tr>`)
+    .join('')
+
+  const html = `
+<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"></head>
+<body style="margin:0;padding:32px;background:#f9fafb;font-family:system-ui,sans-serif;">
+  <table style="max-width:560px;width:100%;background:#ffffff;border-radius:12px;border:1px solid #e5e7eb;overflow:hidden;">
+    <tr><td style="background:#0d1628;padding:20px 24px;">
+      <p style="margin:0;color:#ffffff;font-size:16px;font-weight:600;">Everstead — ${type === 'book-demo' ? 'Adviser Demo Request' : 'Contact Form'}</p>
+    </td></tr>
+    <tr><td style="padding:24px;">
+      <table style="width:100%;border-collapse:collapse;">
+        ${rows}
+      </table>
+    </td></tr>
+    <tr><td style="padding:16px 24px;background:#f9fafb;border-top:1px solid #e5e7eb;">
+      <p style="margin:0;font-size:12px;color:#9ca3af;">Sent via everstead.care · Reply directly to respond</p>
+    </td></tr>
+  </table>
+</body>
+</html>`
+
+  // Use submitter's email as reply-to if available
+  const replyTo = fields['Work email'] || fields['Email'] || undefined
+
+  try {
+    await resend.emails.send({
+      from:     'Everstead <hello@everstead.care>',
+      to:       TO,
+      replyTo,
+      subject,
+      html,
+    })
+    return res.status(200).json({ ok: true })
+  } catch (err) {
+    console.error('[enquiry] send error:', err)
+    return res.status(500).json({ error: 'Failed to send email' })
+  }
+}

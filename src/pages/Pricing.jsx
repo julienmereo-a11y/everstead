@@ -246,7 +246,6 @@ export default function Pricing() {
                     >
                       Book a demo <ArrowRight size={15} />
                     </Link>
-                    <p className="mt-3 text-center text-xs text-stone-400">No contract. No setup fees.</p>
                   </div>
                 ) : (
                   <>
