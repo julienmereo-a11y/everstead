@@ -284,7 +284,7 @@ export default function Security() {
                 { name: 'Sarah (Executor)',   access: ['Accounts', 'Documents', 'Instructions'] },
                 { name: 'David (Attorney)',   access: ['Legal documents'] },
                 { name: 'Emma (Daughter)',    access: ['Wishes', 'Instructions'] },
-                { name: 'James (Advisor)',    access: ['Financial accounts', 'Financial docs'] },
+                { name: 'James (Adviser)',    access: ['Financial accounts', 'Financial docs'] },
               ].map(({ name, access }) => (
                 <div key={name} className="flex items-start gap-3 py-2.5 border-b border-stone-50 last:border-0">
                   <div className="w-7 h-7 rounded-full bg-navy-100 flex items-center justify-center text-xs font-bold text-navy-700 shrink-0 mt-0.5">

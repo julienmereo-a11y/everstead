@@ -26,8 +26,8 @@ const faqs = [
     a: 'The Family plan gives two people their own private vaults under one subscription — each person keeps their own private data, but you can organise and plan together. It increases trusted contacts from 1 to 10, adds emergency vault sharing, expands storage from 1 GB to 25 GB, and includes a family-wide readiness score. Think of it as joint planning with individual privacy.',
   },
   {
-    q: 'What is the Advisor plan for?',
-    a: 'The Advisor plan is designed for financial advisers, solicitors, and other professionals who want to offer estate organisation as a service to clients. It includes a multi-client workspace, a co-branded client portal, collaboration tools, and priority support. Contact us to discuss a pilot rollout.',
+    q: 'What is the Adviser plan for?',
+    a: 'The Adviser plan is designed for financial advisers, solicitors, and other professionals who want to offer estate organisation as a service to clients. It includes a multi-client workspace, a co-branded client portal, collaboration tools, and priority support. Contact us to discuss a pilot rollout.',
   },
   {
     q: 'Is Everstead a legal service?',
@@ -105,9 +105,9 @@ const plans = [
   },
   {
     id: 'advisor',
-    name: 'Advisor',
+    name: 'Adviser',
     description: 'For professionals managing client estate organisation. Pricing on application.',
-    features: ['Everything in Family', 'Multi-client workspace', 'Co-branded client portal', 'Advisor collaboration tools', 'Priority support'],
+    features: ['Everything in Family', 'Multi-client workspace', 'Co-branded client portal', 'Adviser collaboration tools', 'Priority support'],
     cta: 'Book a demo',
   },
 ]
@@ -124,7 +124,7 @@ const comparisonRows = [
   ['Readiness score and review prompts', true, true, true],
   ['Trusted people and delegate access', true, true, true],
   ['Household collaboration', false, true, true],
-  ['Advisor rollout support', false, false, true],
+  ['Adviser rollout support', false, false, true],
   ['Pilot partner onboarding', false, false, true],
 ]
 
@@ -146,11 +146,11 @@ export default function Pricing() {
     <>
     <Helmet>
       <title>Pricing — Everstead</title>
-      <meta name="description" content="Simple, transparent pricing for individuals, families, and professional advisors. Start your 14-day free trial — card required, no charge until trial ends." />
+      <meta name="description" content="Simple, transparent pricing for individuals, families, and professional advisers. Start your 14-day free trial — card required, no charge until trial ends." />
       <link rel="canonical" href="https://www.everstead.care/pricing" />
       <meta property="og:type" content="website" />
       <meta property="og:title" content="Pricing — Everstead" />
-      <meta property="og:description" content="Simple, transparent pricing for individuals, families, and professional advisors. Start your 14-day free trial — card required, no charge until trial ends." />
+      <meta property="og:description" content="Simple, transparent pricing for individuals, families, and professional advisers. Start your 14-day free trial — card required, no charge until trial ends." />
       <meta property="og:url" content="https://www.everstead.care/pricing" />
       <meta property="og:image" content="https://www.everstead.care/og-image.png" />
       <meta name="twitter:card" content="summary_large_image" />
@@ -338,7 +338,7 @@ export default function Pricing() {
               <div className="px-5 py-4">Capability</div>
               <div className="px-5 py-4 text-center">Essential</div>
               <div className="px-5 py-4 text-center">Family</div>
-              <div className="px-5 py-4 text-center">Advisor</div>
+              <div className="px-5 py-4 text-center">Adviser</div>
             </div>
             {comparisonRows.map(([label, essential, family, advisor]) => (
               <div key={label} className="grid grid-cols-4 border-t border-stone-200 text-sm">
@@ -367,7 +367,7 @@ export default function Pricing() {
                 Read terms <ArrowRight size={15} />
               </Link>
               <Link to="/book-demo" className="inline-flex items-center gap-2 text-sm font-semibold text-navy-700 hover:text-navy-900 transition-colors">
-                Discuss advisor rollout <ArrowRight size={15} />
+                Discuss adviser rollout <ArrowRight size={15} />
               </Link>
             </div>
           </div>

@@ -20,7 +20,7 @@ const lightBgPages = ['/pricing', '/security', '/features', '/how-it-works', '/u
 const darkHeroPages = ['/for-advisors', '/family-vault', '/what-to-do-when-someone-dies']
 
 export default function Nav() {
-  const [scrollY, setScrollY] = useState(() => window.scrollY)
+  const [scrollY, setScrollY] = useState(0)
   const [open, setOpen] = useState(false)
   const location = useLocation()
   const navigate  = useNavigate()
@@ -56,7 +56,7 @@ export default function Nav() {
   useEffect(() => {
     setOpen(false)
     setSwitcherOpen(false)
-    setScrollY(window.scrollY)
+    setScrollY(0)
   }, [location.pathname])
 
   // Close switcher on outside click

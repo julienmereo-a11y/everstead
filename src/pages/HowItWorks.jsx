@@ -73,7 +73,7 @@ const steps = [
     title: 'Decide who sees what — and when.',
     body: "This is what makes Everstead different from a folder on your desktop. You invite specific people — your spouse, your executor, your solicitor — and choose exactly which sections they can see. They only get access to what you choose, and only when you grant it. Role-based permissions mean your children might see your wishes but not your financial details; your solicitor might see legal documents but nothing else.",
     bullets: [
-      'Invite family members, advisors, or solicitors',
+      'Invite family members, advisers, or solicitors',
       'Set access by category — not all-or-nothing',
       'Grant emergency vault access for urgent situations',
       'Revoke or update access at any time',

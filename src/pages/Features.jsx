@@ -190,7 +190,7 @@ const whoItsFor = [
   },
   {
     icon: FileText,
-    title: 'Estate Advisors',
+    title: 'Estate Advisers',
     desc: 'Offer clients a secure, organised estate record they can maintain themselves — and that dramatically reduces your administration burden.',
   },
 ]
@@ -547,7 +547,7 @@ export default function Features() {
               Everstead is not a legal service and does not replace professional advice.
             </h2>
             <p className="mt-4 text-stone-700 text-sm leading-relaxed">
-              Everstead is an organisation and planning platform. It helps you store references to documents, record instructions, and share access with trusted people. It does <strong>not</strong> draft wills, prepare legal instruments, give legal or financial advice, or replace a solicitor, estate lawyer, accountant, or family advisor. If you need legal or financial guidance, please consult a qualified professional.
+              Everstead is an organisation and planning platform. It helps you store references to documents, record instructions, and share access with trusted people. It does <strong>not</strong> draft wills, prepare legal instruments, give legal or financial advice, or replace a solicitor, estate lawyer, accountant, or family adviser. If you need legal or financial guidance, please consult a qualified professional.
             </p>
             <div className="mt-5 flex flex-wrap gap-4">
               <Link to="/terms" className="inline-flex items-center gap-2 text-sm font-medium text-navy-700 hover:text-navy-900 transition-colors">

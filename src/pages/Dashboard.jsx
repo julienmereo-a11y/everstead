@@ -1281,7 +1281,7 @@ function ReadinessCoachCard({ profile, stats, onNavigate }) {
 const PLAN_BADGE = {
   essential: { label: 'Essential', cls: 'bg-stone-100 text-stone-600 border-stone-200' },
   family:    { label: 'Family',    cls: 'bg-navy-50  text-navy-700  border-navy-200'  },
-  advisor:   { label: 'Advisor',   cls: 'bg-sage-50  text-sage-700  border-sage-200'  },
+  advisor:   { label: 'Adviser',   cls: 'bg-sage-50  text-sage-700  border-sage-200'  },
 }
 
 function OverviewSection({ profile, accounts, documents, people, instructions, messages, alerts, markRead, onNavigate, planLimits, loading, daysSinceLogin, onCelebrate, onExecutorPreview }) {

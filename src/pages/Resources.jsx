@@ -1134,9 +1134,9 @@ const sections = {
       },
       {
         slug: 'what-advisors-can-offer-beyond-portfolio',
-        title: 'What financial advisors can offer beyond the portfolio',
+        title: 'What financial advisers can offer beyond the portfolio',
         date: 'December 2025',
-        tag: 'Advisors',
+        tag: 'Advisers',
         desc: 'Estate organisation is an emerging service offering that deepens client relationships and differentiates practices.',
         readTime: '5 min read',
         body: [
@@ -1177,7 +1177,7 @@ const sections = {
           },
           {
             type: 'cta',
-            text: 'Everstead for Advisors gives practices a co-branded client portal to manage estate organisation as a formal service, with role-based access and per-client visibility controls.',
+            text: 'Everstead for Advisers gives practices a co-branded client portal to manage estate organisation as a formal service, with role-based access and per-client visibility controls.',
           },
         ],
       },
@@ -1930,7 +1930,7 @@ const sections = {
               },
               {
                 q: 'What are the plans and prices?',
-                a: 'Essential is £7/month (or £5/month billed yearly). Family is £15/month (or £12/month billed yearly). Advisor is £60/month (or £48/month billed yearly). All prices are in pounds sterling and include VAT where applicable.',
+                a: 'Essential is £7/month (or £5/month billed yearly). Family is £15/month (or £12/month billed yearly). Adviser pricing is on application. All prices are in pounds sterling and include VAT where applicable.',
               },
               {
                 q: 'Can I switch plans?',

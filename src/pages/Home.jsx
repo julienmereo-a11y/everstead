@@ -11,7 +11,7 @@ import {
 const trustItems = [
   { icon: Lock,       label: 'AES-256 encrypted storage' },
   { icon: ShieldCheck, label: 'Payments secured by Stripe' },
-  { icon: Users,      label: 'Trusted by families & advisors' },
+  { icon: Users,      label: 'Trusted by families & advisers' },
   { icon: FileText,   label: 'Hosted in Europe (EU data residency)' },
   { icon: ShieldCheck, label: 'Zero data selling — ever' },
 ]
@@ -70,9 +70,9 @@ const plans = [
   },
   {
     id: 'advisor',
-    name: 'Advisor',
+    name: 'Adviser',
     desc: 'For professionals managing client estate organisation. Pricing on application.',
-    features: ['Everything in Family', 'Multi-client workspace', 'Co-branded client portal', 'Advisor collaboration tools', 'Priority support'],
+    features: ['Everything in Family', 'Multi-client workspace', 'Co-branded client portal', 'Adviser collaboration tools', 'Priority support'],
     cta: 'Book a demo',
     highlight: false,
   },
@@ -82,7 +82,7 @@ const faqs = [
   { q: 'Is my information actually secure?', a: 'Yes. All data is encrypted at rest and in transit with AES-256 encryption. Role-based access ensures only people you authorize can see specific sections. We never sell your data.' },
   { q: 'What happens to my account if I pass away?', a: 'You assign trusted people in advance — giving them access only to the sections you\'ve chosen, nothing more. But Everstead is useful long before that moment. Most members use it regularly to keep everything organised, knowing the access is there if it\'s ever needed.' },
   { q: 'Can I start before I have everything organised?', a: 'Absolutely. Most people start with just a few accounts and build over time. Our readiness score shows progress and highlights what\'s still missing.' },
-  { q: 'Is this a legal document service?', a: 'No. Everstead is an organisation and planning platform — not a legal service. It does not draft wills, prepare legal documents, give legal or financial advice, or replace a solicitor, estate lawyer, accountant, or family advisor. It helps families organise information, instructions, and controlled access in one place.' },
+  { q: 'Is this a legal document service?', a: 'No. Everstead is an organisation and planning platform — not a legal service. It does not draft wills, prepare legal documents, give legal or financial advice, or replace a solicitor, estate lawyer, accountant, or family adviser. It helps families organise information, instructions, and controlled access in one place.' },
 ]
 
 const proofStats = [
@@ -559,7 +559,7 @@ export default function Home() {
               { title: 'For Parents', desc: 'Leave guidance, not guesswork, for practical and personal decisions.', href: '/use-cases/parents' },
               { title: 'For Aging Adults', desc: 'Organise with dignity and clarity while assigning trusted support.', href: '/use-cases/aging-adults' },
               { title: 'For Executors', desc: 'A clearer path through responsibilities, documents, and timing.', href: '/use-cases/executors' },
-              { title: 'For Advisors', desc: 'Offer estate organization as a modern client service.', href: '/use-cases/advisors' },
+              { title: 'For Advisers', desc: 'Offer estate organisation as a modern client service.', href: '/use-cases/advisors' },
               {
                 title: 'See all use cases',
                 desc: 'Explore the full range of ways Everstead supports families and professionals.',
@@ -868,7 +868,7 @@ export default function Home() {
             </div>
             <div className="flex flex-wrap gap-3">
               <Link to="/get-started?plan=family&billing=yearly" className="inline-flex items-center gap-2 bg-white text-navy-900 font-semibold text-sm px-6 py-3 rounded-lg hover:bg-stone-100 transition-colors">Start a family plan <ArrowRight size={15} /></Link>
-              <Link to="/book-demo" className="inline-flex items-center gap-2 bg-white/10 text-white border border-white/20 font-medium text-sm px-6 py-3 rounded-lg hover:bg-white/20 transition-colors">Book an advisor demo</Link>
+              <Link to="/book-demo" className="inline-flex items-center gap-2 bg-white/10 text-white border border-white/20 font-medium text-sm px-6 py-3 rounded-lg hover:bg-white/20 transition-colors">Book an adviser demo</Link>
             </div>
           </div>
         </div>
@@ -883,7 +883,7 @@ export default function Home() {
               Everstead is not a legal service and does not replace professional advice.
             </h2>
             <p className="mt-4 text-stone-700 text-sm leading-relaxed">
-              Everstead is an organisation and planning platform. It helps you store references to documents, record instructions, and share access with trusted people. It does <strong>not</strong> draft wills, prepare legal instruments, give legal or financial advice, or replace a solicitor, estate lawyer, accountant, or family advisor. If you need legal or financial guidance, please consult a qualified professional.
+              Everstead is an organisation and planning platform. It helps you store references to documents, record instructions, and share access with trusted people. It does <strong>not</strong> draft wills, prepare legal instruments, give legal or financial advice, or replace a solicitor, estate lawyer, accountant, or family adviser. If you need legal or financial guidance, please consult a qualified professional.
             </p>
             <div className="mt-5 flex flex-wrap gap-4">
               <Link to="/terms" className="inline-flex items-center gap-2 text-sm font-medium text-navy-700 hover:text-navy-900 transition-colors">
@@ -936,7 +936,7 @@ export default function Home() {
               to="/book-demo"
               className="inline-flex items-center gap-2 bg-white/10 text-white font-medium text-sm px-7 py-3.5 rounded-lg border border-white/20 hover:bg-white/20 transition-colors"
             >
-              Book an advisor demo
+              Book an adviser demo
             </Link>
           </div>
         </div>

@@ -33,7 +33,7 @@ const PLAN_OPTIONS = [
   },
   {
     id: 'advisor',
-    name: 'Advisor',
+    name: 'Adviser',
     desc: 'For professionals with multiple clients. Pricing on application.',
     features: ['Multi-client workspace', 'Co-branded portal', 'Client dashboards', '100 GB storage'],
   },
@@ -935,7 +935,7 @@ export default function GetStarted() {
             {[
               { icon: Lock,   label: 'AES-256 encryption'          },
               { icon: Shield, label: '14-day free trial'            },
-              { icon: Users,  label: 'Trusted by families & advisors' },
+              { icon: Users,  label: 'Trusted by families & advisers' },
             ].map(({ icon: Icon, label }) => (
               <div key={label} className="flex items-center gap-2 text-stone-500">
                 <Icon size={15} className="text-navy-600" />

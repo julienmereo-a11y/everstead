@@ -77,8 +77,8 @@ The difference is the difference between a map left at home and a map that was a
     category: 'Digital estate planning',
     tagline: 'Everstead vs SafeKeep',
     headline: 'SafeKeep stores your information. Everstead organises your whole estate.',
-    subhead: 'Both platforms help you keep important information in one place. The difference is in the depth — Everstead adds a family vault, an advisor portal, an Estate Readiness Score, and tools that actually help executors act when the time comes.',
-    eversteadDesc: 'A secure personal vault for organising everything that matters — accounts, documents, instructions, and final wishes — with controlled access, an advisor portal, and a dual-vault Family plan for couples.',
+    subhead: 'Both platforms help you keep important information in one place. The difference is in the depth — Everstead adds a family vault, an adviser portal, an Estate Readiness Score, and tools that actually help executors act when the time comes.',
+    eversteadDesc: 'A secure personal vault for organising everything that matters — accounts, documents, instructions, and final wishes — with controlled access, an adviser portal, and a dual-vault Family plan for couples.',
     competitorDesc: 'A digital storage platform for important documents and account details. Focused on individuals storing personal data securely, with a clean interface and basic sharing features.',
     rows: [
       { feature: 'Secure document vault',                everstead: true,  them: true  },
@@ -88,7 +88,7 @@ The difference is the difference between a map left at home and a map that was a
       { feature: 'Estate Readiness Score',               everstead: true,  them: false },
       { feature: 'Step-by-step executor instructions',   everstead: true,  them: false },
       { feature: 'Personal messages & final wishes',     everstead: true,  them: false },
-      { feature: 'Advisor portal & client management',   everstead: true,  them: false },
+      { feature: 'Adviser portal & client management',   everstead: true,  them: false },
       { feature: 'EU data residency (UK GDPR compliant)',everstead: true,  them: false },
       { feature: 'Smart reminders & progress tracking',  everstead: true,  them: false },
       { feature: 'Full data export (right to portability)', everstead: true,  them: false },
@@ -99,7 +99,7 @@ But Everstead was built around a bigger problem. Families don't just need storag
 
 The Family plan is the sharpest difference. Two completely private vaults — one subscription. A couple can each organise their own estate, share only what they choose, and never have to combine their private information into a single account. SafeKeep has no equivalent.
 
-The advisor portal is the other. Everstead works as a professional tool for financial planners, IFAs, and estate solicitors managing multiple clients — with a co-branded portal, client progress tracking, and collaboration features that SafeKeep doesn't offer.
+The adviser portal is the other. Everstead works as a professional tool for financial planners, IFAs, and estate solicitors managing multiple clients — with a co-branded portal, client progress tracking, and collaboration features that SafeKeep doesn't offer.
 
 If you're looking for a digital vault, both options are worth considering. If you want your family to actually know what to do when it counts, Everstead goes further.`,
     price: 'From £3/mo yearly (14-day free trial)',
@@ -124,7 +124,7 @@ If you're looking for a digital vault, both options are worth considering. If yo
       { feature: 'Estate Readiness Score',               everstead: true,  them: false },
       { feature: 'Step-by-step executor instructions',   everstead: true,  them: false },
       { feature: 'Personal messages & final wishes',     everstead: true,  them: false },
-      { feature: 'Advisor portal',                       everstead: true,  them: false },
+      { feature: 'Adviser portal',                       everstead: true,  them: false },
       { feature: 'Online will drafting',                 everstead: false, them: true  },
       { feature: 'LPA (power of attorney)',              everstead: false, them: true  },
       { feature: 'Probate support',                      everstead: false, them: true  },
@@ -149,7 +149,7 @@ Think of a will as a destination. Everstead is the map that gets your family the
     tagline: 'Everstead vs Lyfeguard',
     headline: 'Both vaults secure your legacy. Only one keeps your family a step ahead.',
     subhead: 'Lyfeguard and Everstead both offer secure digital vaults for important information. The difference is what happens next — Everstead adds an Estate Readiness Score, step-by-step executor guidance, and a Family plan with two private vaults.',
-    eversteadDesc: 'A proactive estate planning platform — not just storage, but an active system with readiness tracking, executor instructions, a dual-vault Family plan, and an advisor portal for professionals.',
+    eversteadDesc: 'A proactive estate planning platform — not just storage, but an active system with readiness tracking, executor instructions, a dual-vault Family plan, and an adviser portal for professionals.',
     competitorDesc: 'A digital legacy platform for securely storing personal documents, account details, and final wishes — with sharing controls for nominated contacts.',
     rows: [
       { feature: 'Secure document vault',                everstead: true,  them: true  },
@@ -160,7 +160,7 @@ Think of a will as a destination. Everstead is the map that gets your family the
       { feature: 'Estate Readiness Score',               everstead: true,  them: false },
       { feature: 'Step-by-step executor instructions',   everstead: true,  them: false },
       { feature: 'Smart reminders & progress prompts',   everstead: true,  them: false },
-      { feature: 'Advisor portal & client management',   everstead: true,  them: false },
+      { feature: 'Adviser portal & client management',   everstead: true,  them: false },
       { feature: 'EU data residency (UK GDPR compliant)',everstead: true,  them: false },
       { feature: 'Full data export (right to portability)', everstead: true,  them: false },
     ],
@@ -170,7 +170,7 @@ The gap opens when you ask: what happens after someone stores their information?
 
 The Family plan is the most distinctive difference. Two completely separate, private vaults — one for each person — under a single subscription. A couple can each organise their own estate independently, with no obligation to combine or share their private data. Lyfeguard's sharing model assumes one account per household.
 
-And for advisors: Everstead includes a dedicated portal for financial planners, IFAs, and estate professionals who want to offer estate organisation as part of their client service. Lyfeguard has no equivalent.
+And for advisers: Everstead includes a dedicated portal for financial planners, IFAs, and estate professionals who want to offer estate organisation as part of their client service. Lyfeguard has no equivalent.
 
 If you want a secure place to store important files, both products do the job. If you want your family to know exactly what to do — and to feel genuinely prepared — Everstead is built for that.`,
     price: 'From £3/mo yearly (14-day free trial)',

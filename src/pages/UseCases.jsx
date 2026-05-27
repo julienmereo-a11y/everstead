@@ -200,15 +200,15 @@ const cases = {
   advisors: {
     icon: Briefcase,
     color: 'indigo',
-    title: 'For Advisors & Professionals',
+    title: 'For Advisers & Professionals',
     hero: 'Offer estate organisation as a genuine client service.',
     tagline: 'The gap between legal planning and practical preparation is where clients need you most.',
-    body: "Financial advisors, estate attorneys, and wealth managers help clients plan their futures — but practical estate organisation often falls through the gap. Everstead gives professionals the tools to bridge that gap: collaborative access, client progress visibility, and a structured framework that turns intentions into an organised plan.",
+    body: "Financial advisers, estate attorneys, and wealth managers help clients plan their futures — but practical estate organisation often falls through the gap. Everstead gives professionals the tools to bridge that gap: collaborative access, client progress visibility, and a structured framework that turns intentions into an organised plan.",
     scenario: "You've had the conversation. The client has a will, pension nominations are updated, and the IHT strategy is in place. But if something happened tomorrow, would their family know where anything is? Would your firm be called at 8pm by a bereaved spouse asking where to start? Everstead is the practical layer that makes your advice actionable.",
     painPoints: [
       "Clients have plans but no organised record of where things actually are",
       'Families left without a clear starting point despite professional advice',
-      'No structured handover between advisor and client estate',
+      'No structured handover between adviser and client estate',
       'Difficult to verify that clients have followed through on action items',
       "Your firm's value isn't visible until it's too late to demonstrate it",
     ],
@@ -224,7 +224,7 @@ const cases = {
       {
         icon: Users,
         title: 'Multi-client workspace',
-        body: "Manage plans for all your clients from a single advisor dashboard. See readiness scores, completion status, and recent activity at a glance.",
+        body: "Manage plans for all your clients from a single adviser dashboard. See readiness scores, completion status, and recent activity at a glance.",
       },
       {
         icon: Eye,
@@ -250,7 +250,7 @@ const allCases = [
   { slug: 'parents',       label: 'For Parents' },
   { slug: 'aging-adults',  label: 'For Aging Adults' },
   { slug: 'executors',     label: 'For Executors' },
-  { slug: 'advisors',      label: 'For Advisors & Professionals' },
+  { slug: 'advisors',      label: 'For Advisers & Professionals' },
 ]
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -437,11 +437,11 @@ function UseCasesIndex() {
   return (
     <>
     <Helmet>
-      <title>Use Cases — Everstead for Families, Executors & Advisors</title>
+      <title>Use Cases — Everstead for Families, Executors & Advisers</title>
       <meta name="description" content="Whether you're organising your own affairs, stepping in as an executor, or advising clients — Everstead is built for the role you're in." />
       <link rel="canonical" href="https://www.everstead.care/use-cases" />
       <meta property="og:title" content="Use Cases — Everstead" />
-      <meta property="og:description" content="One plan. Every role in a family. See how Everstead works for families, parents, executors, and advisors." />
+      <meta property="og:description" content="One plan. Every role in a family. See how Everstead works for families, parents, executors, and advisers." />
       <meta property="og:url" content="https://www.everstead.care/use-cases" />
     </Helmet>
     <div className="bg-stone-50 pt-24">
@@ -534,7 +534,7 @@ function UseCasesIndex() {
                 Every role works from the same plan — with access only to what they need.
               </h2>
               <p className="text-stone-600 text-sm leading-relaxed mb-6">
-                You build the plan. You decide what each trusted person can see. An executor might see the account inventory and step-by-step instructions. A family member might see personal letters and emergency contacts. An advisor might see the financial overview. Everyone gets exactly what they need — and nothing more.
+                You build the plan. You decide what each trusted person can see. An executor might see the account inventory and step-by-step instructions. A family member might see personal letters and emergency contacts. An adviser might see the financial overview. Everyone gets exactly what they need — and nothing more.
               </p>
               <Link to="/how-it-works" className="inline-flex items-center gap-2 text-navy-700 font-semibold text-sm hover:text-navy-900 transition-colors">
                 See how access works <ArrowRight size={14} />
@@ -545,7 +545,7 @@ function UseCasesIndex() {
                 { icon: Eye,          role: 'You',             desc: 'Full control. Build, edit, and manage everything.' },
                 { icon: Users,        role: 'Family members',  desc: 'See accounts, documents, and instructions you share.' },
                 { icon: BookOpen,     role: 'Executor',        desc: 'Step-by-step instructions and account inventory.' },
-                { icon: Briefcase,    role: 'Advisor',         desc: 'Financial overview and readiness status.' },
+                { icon: Briefcase,    role: 'Adviser',         desc: 'Financial overview and readiness status.' },
               ].map(({ icon: RIcon, role, desc }) => (
                 <div key={role} className="flex items-start gap-4 bg-stone-50 border border-stone-100 rounded-xl p-4">
                   <div className="w-8 h-8 rounded-lg bg-navy-50 flex items-center justify-center flex-shrink-0">

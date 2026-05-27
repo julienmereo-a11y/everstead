@@ -7,7 +7,7 @@ const sections = [
     title: 'Acceptance of terms',
     content: `By accessing or using Everstead ("the Service"), you agree to be bound by these Terms of Service. If you do not agree to these terms, please do not use the Service.
 
-These terms apply to all users of the Service, including individuals, families, and professional advisors.`,
+These terms apply to all users of the Service, including individuals, families, and professional advisers.`,
   },
   {
     title: 'Description of service',

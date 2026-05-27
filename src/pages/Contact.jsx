@@ -93,7 +93,7 @@ export default function Contact() {
                 to="/book-demo"
                 className="inline-flex items-center gap-2 text-navy-700 font-medium text-sm hover:text-navy-900 transition-colors"
               >
-                Book an advisor demo <ArrowRight size={13} />
+                Book an adviser demo <ArrowRight size={13} />
               </Link>
             </div>
           </div>
@@ -133,7 +133,7 @@ export default function Contact() {
                     <option value="">Select a topic</option>
                     <option>General question</option>
                     <option>Technical support</option>
-                    <option>Advisor / partnership inquiry</option>
+                    <option>Adviser / partnership inquiry</option>
                     <option>Press or media</option>
                     <option>Other</option>
                   </select>

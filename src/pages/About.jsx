@@ -13,7 +13,7 @@ const values = [
   {
     icon: Shield,
     title: 'Trust is the product',
-    desc: 'Security and privacy are not features we added on. They are the reason the platform exists. We hold your information with the same weight a trusted solicitor or family advisor would. We earn that trust every day.',
+    desc: 'Security and privacy are not features we added on. They are the reason the platform exists. We hold your information with the same weight a trusted solicitor or family adviser would. We earn that trust every day.',
   },
   {
     icon: Clock,
