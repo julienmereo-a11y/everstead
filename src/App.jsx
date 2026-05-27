@@ -54,6 +54,7 @@ const Cookies               = lazy(() => import('./pages/Cookies'))
 const Accessibility         = lazy(() => import('./pages/Accessibility'))
 const Press                 = lazy(() => import('./pages/Press'))
 const AdvisorDPA            = lazy(() => import('./pages/AdvisorDPA'))
+const Subprocessors         = lazy(() => import('./pages/Subprocessors'))
 const Changelog             = lazy(() => import('./pages/Changelog'))
 const Compare               = lazy(() => import('./pages/Compare'))
 const WhenSomeoneDies       = lazy(() => import('./pages/WhenSomeoneDies'))
@@ -194,6 +195,7 @@ export default function App() {
               <Route path="/accessibility" element={<Layout><Accessibility /></Layout>} />
               <Route path="/press"        element={<Layout><Press /></Layout>} />
               <Route path="/advisor-dpa"  element={<Layout><AdvisorDPA /></Layout>} />
+              <Route path="/subprocessors" element={<Layout><Subprocessors /></Layout>} />
               <Route path="/changelog"    element={<Layout><Changelog /></Layout>} />
               <Route path="/compare/:slug" element={<Layout><Compare /></Layout>} />
               <Route path="/what-to-do-when-someone-dies" element={<WhenSomeoneDies />} />

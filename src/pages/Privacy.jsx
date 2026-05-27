@@ -25,7 +25,7 @@ We operate on infrastructure with SOC 2-aligned controls, automated backups, and
     title: 'Sharing and disclosure',
     content: `We do not sell, rent, or share your personal information with third parties for marketing or advertising purposes.
 
-We may share minimal data with service providers who help us operate the platform (e.g. cloud infrastructure providers), under strict data processing agreements. We may disclose information if required by law or to protect the rights, property, or safety of Everstead, our users, or the public.`,
+We may share minimal data with service providers (subprocessors) who help us operate the platform — including hosting, database, email delivery, payments, error monitoring, and AI-assisted guidance. Each subprocessor is bound by a written Data Processing Agreement and provides appropriate UK GDPR safeguards. The full, up-to-date list is published at /subprocessors. We may disclose information if required by law or to protect the rights, property, or safety of Everstead, our users, or the public.`,
   },
   {
     title: 'Your rights and controls',

@@ -78,14 +78,20 @@ Categories of data subjects: Client Families and their designated trusted contac
   },
   {
     title: '6. Sub-processors',
-    body: `The Controller provides general written authorisation for ${COMPANY} to engage the following sub-processors, each of whom has provided appropriate data protection guarantees:
+    body: `The Controller provides general written authorisation for ${COMPANY} to engage the sub-processors listed in the Subprocessors Annex, each of whom has provided appropriate data protection guarantees and is bound by a written Data Processing Agreement with ${COMPANY}.
 
-— Supabase Inc. (database infrastructure and storage) — USA, processed under standard contractual clauses
-— Stripe Inc. (payment processing) — USA, processed under standard contractual clauses
-— Resend Inc. (transactional email delivery) — USA, processed under standard contractual clauses
-— Vercel Inc. (hosting and edge infrastructure) — USA, processed under standard contractual clauses
+The authoritative, up-to-date list is maintained at https://www.everstead.care/subprocessors and is incorporated into this Agreement by reference as if set out in full. The current list as at the effective date of these terms is:
 
-${COMPANY} will notify Controllers of any intended changes to sub-processors (additions or replacements) by email or platform notice at least 30 days in advance, giving the Controller the opportunity to object. If the Controller objects and the parties cannot resolve the matter, the Controller may terminate the Agreement.`,
+— Supabase Inc. — managed database, authentication, and encrypted file storage (EU, Ireland)
+— Vercel Inc. — web hosting and serverless functions (USA / global edge)
+— Stripe Payments Europe Ltd. — subscription billing and payment processing (Ireland)
+— Resend Inc. — transactional email delivery (USA)
+— Functional Software, Inc. (Sentry) — error monitoring and crash reporting; technical context only, no vault content (USA)
+— Anthropic, PBC — AI-powered chat assistant and in-product guidance; processes only the messages members send to the assistant, never the contents of their vault (USA)
+
+International transfers to sub-processors located outside the UK are made under the UK International Data Transfer Agreement (UK IDTA) or EU Standard Contractual Clauses with the UK Addendum, as applicable.
+
+${COMPANY} will notify Controllers of any intended changes to sub-processors (additions or replacements) by email or platform notice at least 30 days in advance, giving the Controller the opportunity to object. If the Controller objects and the parties cannot resolve the matter within a reasonable period, the Controller may terminate the Agreement without penalty for that reason.`,
   },
   {
     title: '7. International transfers',

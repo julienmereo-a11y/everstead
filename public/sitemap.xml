@@ -91,6 +91,11 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://www.everstead.care/subprocessors</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.3</priority>
+  </url>
+  <url>
     <loc>https://www.everstead.care/family-vault</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
