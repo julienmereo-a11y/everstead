@@ -298,7 +298,7 @@ export default function ForAdvisors() {
                   Join the first cohort of adviser partners.
                 </h2>
                 <p className="text-stone-600 text-sm leading-relaxed mb-6">
-                  We're working personally with our first adviser firms — no contracts, no setup fees, and a direct line to the founding team. You help shape the product. We handle everything else.
+                  We're working personally with our first adviser firms — with a direct line to the founding team. You help shape the product. We handle everything else.
                 </p>
                 <div className="space-y-3">
                   {[

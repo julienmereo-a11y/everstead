@@ -618,7 +618,7 @@ export default function GetStarted() {
               {selectedPlan === 'advisor' && (
                 <div className="mt-6 bg-navy-50 border border-navy-200 rounded-2xl p-6 text-center max-w-md mx-auto">
                   <p className="font-semibold text-navy-900 text-sm mb-2">Adviser accounts are set up personally.</p>
-                  <p className="text-xs text-stone-500 mb-5">Book a 20-minute call and we'll get you onboarded — no contract, no setup fees.</p>
+                  <p className="text-xs text-stone-500 mb-5">Book a 20-minute call and we'll get you onboarded.</p>
                   <button
                     onClick={() => navigate('/book-demo')}
                     className="inline-flex items-center justify-center gap-2 text-white font-semibold text-sm px-8 py-3.5 rounded-lg transition-colors bg-navy-900 hover:bg-navy-800 w-full"
