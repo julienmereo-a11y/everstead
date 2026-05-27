@@ -41,7 +41,10 @@ export default function Nav() {
   const isLightPage = lightBgPages.some(p => location.pathname.startsWith(p))
   const isDarkHeroPage = darkHeroPages.some(p => location.pathname.startsWith(p))
   const scrollThreshold = isDarkHeroPage ? 150 : 24
-  const useDarkStyle = scrollY > scrollThreshold || isLightPage
+  // Dark hero pages override isLightPage — stay transparent until threshold
+  const useDarkStyle = isDarkHeroPage
+    ? scrollY > scrollThreshold
+    : scrollY > scrollThreshold || isLightPage
 
   useEffect(() => {
     const onScroll = () => setScrollY(window.scrollY)
