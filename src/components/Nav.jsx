@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useLayoutEffect, useRef } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { Menu, X, ChevronDown, Users } from 'lucide-react'
 import { useAuth } from '../contexts/AuthContext'
@@ -52,8 +52,10 @@ export default function Nav() {
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
-  // Reset scroll position on route change so nav style is correct immediately
-  useEffect(() => {
+  // Reset scroll position synchronously before browser paints so nav style is
+  // always correct on the very first frame of a new route (useLayoutEffect runs
+  // before paint, unlike useEffect which runs after — prevents one-frame flash)
+  useLayoutEffect(() => {
     setOpen(false)
     setSwitcherOpen(false)
     setScrollY(0)
