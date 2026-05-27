@@ -135,7 +135,6 @@ export default function ForAdvisors() {
                 See how it works
               </a>
             </div>
-            <p className="mt-5 text-sm text-stone-400">First 50 advisory firms — onboarded personally, no contract required.</p>
           </div>
         </section>
 
@@ -328,7 +327,6 @@ export default function ForAdvisors() {
                 >
                   Book a 20-minute demo <ArrowRight size={14} />
                 </Link>
-                <p className="mt-4 text-xs text-center text-stone-400">No contract. No setup fees. No commitment.</p>
               </div>
             </div>
           </div>

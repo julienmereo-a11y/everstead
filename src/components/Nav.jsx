@@ -20,7 +20,7 @@ const lightBgPages = ['/pricing', '/security', '/features', '/how-it-works', '/u
 const darkHeroPages = ['/for-advisors', '/family-vault', '/what-to-do-when-someone-dies']
 
 export default function Nav() {
-  const [scrolled, setScrolled] = useState(false)
+  const [scrollY, setScrollY] = useState(() => window.scrollY)
   const [open, setOpen] = useState(false)
   const location = useLocation()
   const navigate  = useNavigate()
@@ -41,20 +41,20 @@ export default function Nav() {
   const isLightPage = lightBgPages.some(p => location.pathname.startsWith(p))
   const isDarkHeroPage = darkHeroPages.some(p => location.pathname.startsWith(p))
   const scrollThreshold = isDarkHeroPage ? 400 : 24
-  const useDarkStyle = scrolled || isLightPage
+  const useDarkStyle = scrollY > scrollThreshold || isLightPage
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > scrollThreshold)
-    window.addEventListener('scroll', onScroll)
+    const onScroll = () => setScrollY(window.scrollY)
+    window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
-  }, [scrollThreshold])
+  }, [])
 
-  // Close on route change + re-check scroll position so nav style is correct immediately
+  // Reset scroll position on route change so nav style is correct immediately
   useEffect(() => {
     setOpen(false)
     setSwitcherOpen(false)
-    setScrolled(window.scrollY > scrollThreshold)
-  }, [location.pathname, scrollThreshold])
+    setScrollY(window.scrollY)
+  }, [location.pathname])
 
   // Close switcher on outside click
   useEffect(() => {
