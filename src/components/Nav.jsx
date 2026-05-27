@@ -19,8 +19,22 @@ const lightBgPages = ['/pricing', '/security', '/features', '/how-it-works', '/u
 // Pages with a dark hero — keep white logo/nav until scrolled past the hero (~400px)
 const darkHeroPages = ['/for-advisors', '/family-vault', '/what-to-do-when-someone-dies']
 
+// Compute the correct dark-style value for a given pathname + scrollY
+// Extracted so we can use it both in the initialiser and in the render
+function computeDarkStyle(pathname, scrollY) {
+  const isDark = darkHeroPages.some(p => pathname.startsWith(p))
+  const isLight = lightBgPages.some(p => pathname.startsWith(p))
+  if (isDark) return scrollY > 150   // transparent until scrolled on dark-hero pages
+  if (isLight) return true           // always solid on light pages
+  return scrollY > 24                // standard threshold elsewhere
+}
+
 export default function Nav() {
-  const [scrollY, setScrollY] = useState(0)
+  // Initialise directly from window.location so the very first render is correct
+  // even before React Router has had a chance to set location state.
+  const [useDarkStyle, setUseDarkStyle] = useState(
+    () => computeDarkStyle(window.location.pathname, 0)
+  )
   const [open, setOpen] = useState(false)
   const location = useLocation()
   const navigate  = useNavigate()
@@ -38,27 +52,20 @@ export default function Nav() {
     navigate('/login')
   }
 
-  const isLightPage = lightBgPages.some(p => location.pathname.startsWith(p))
-  const isDarkHeroPage = darkHeroPages.some(p => location.pathname.startsWith(p))
-  const scrollThreshold = isDarkHeroPage ? 150 : 24
-  // Dark hero pages override isLightPage — stay transparent until threshold
-  const useDarkStyle = isDarkHeroPage
-    ? scrollY > scrollThreshold
-    : scrollY > scrollThreshold || isLightPage
-
-  useEffect(() => {
-    const onScroll = () => setScrollY(window.scrollY)
-    window.addEventListener('scroll', onScroll, { passive: true })
-    return () => window.removeEventListener('scroll', onScroll)
-  }, [])
-
-  // Reset scroll position synchronously before browser paints so nav style is
-  // always correct on the very first frame of a new route (useLayoutEffect runs
-  // before paint, unlike useEffect which runs after — prevents one-frame flash)
+  // On route change: reset nav style synchronously BEFORE browser paints
+  // so there is never a single-frame flash of the wrong style
   useLayoutEffect(() => {
     setOpen(false)
     setSwitcherOpen(false)
-    setScrollY(0)
+    setUseDarkStyle(computeDarkStyle(location.pathname, 0))
+  }, [location.pathname])
+
+  // Scroll listener — re-wires whenever the route changes so the threshold
+  // is always correct for the current page type
+  useEffect(() => {
+    const onScroll = () => setUseDarkStyle(computeDarkStyle(location.pathname, window.scrollY))
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
   }, [location.pathname])
 
   // Close switcher on outside click
