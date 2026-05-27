@@ -10,24 +10,23 @@
 //   import { captureException } from '../lib/sentry.js'
 //   try { ... } catch (err) { captureException(err, { userId, endpoint: 'webhook' }); throw err }
 
+import * as SentryNode from '@sentry/node'
+
 let _sentry = null
 
 function getSentry() {
   if (!process.env.SENTRY_DSN) return null
   if (_sentry) return _sentry
   try {
-    // Dynamic require — only loads if @sentry/node is installed
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
-    const S = require('@sentry/node')
-    S.init({
-      dsn:               process.env.SENTRY_DSN,
-      environment:       process.env.NODE_ENV || 'production',
-      tracesSampleRate:  0.05, // 5% of requests — enough for perf insight, low cost
-      release:           process.env.VERCEL_GIT_COMMIT_SHA,
+    SentryNode.init({
+      dsn:              process.env.SENTRY_DSN,
+      environment:      process.env.NODE_ENV || 'production',
+      tracesSampleRate: 0.05,
+      release:          process.env.VERCEL_GIT_COMMIT_SHA,
     })
-    _sentry = S
+    _sentry = SentryNode
   } catch {
-    // @sentry/node not installed — silent no-op
+    // init failed — silent no-op
   }
   return _sentry
 }

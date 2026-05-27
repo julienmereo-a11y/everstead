@@ -34,8 +34,7 @@ const PLAN_OPTIONS = [
   {
     id: 'advisor',
     name: 'Advisor',
-    monthly: 60, yearly: 48,
-    desc: 'For professionals with multiple clients.',
+    desc: 'For professionals with multiple clients. Pricing on application.',
     features: ['Multi-client workspace', 'Co-branded portal', 'Client dashboards', '100 GB storage'],
   },
 ]
@@ -615,35 +614,22 @@ export default function GetStarted() {
                 ))}
               </div>
 
-              {/* Advisor family count gate */}
-              {selectedPlan === 'advisor' && advisorFamilyCount === null && (
-                <div className="mt-6 bg-navy-50 border border-navy-200 rounded-2xl p-6 space-y-4 max-w-md mx-auto">
-                  <div>
-                    <p className="font-semibold text-navy-900 text-sm">How many client families are you managing?</p>
-                    <p className="text-xs text-stone-500 mt-1">This helps us set you up on the right plan.</p>
-                  </div>
-                  <div className="grid grid-cols-2 gap-3">
-                    <button
-                      onClick={() => setAdvisorFamilyCount('lte5')}
-                      className="flex flex-col items-center gap-1 border-2 border-stone-200 bg-white rounded-xl p-4 hover:border-navy-400 transition-all"
-                    >
-                      <span className="font-display text-2xl font-light text-navy-950">≤ 5</span>
-                      <span className="text-xs text-stone-500">Up to 5 families</span>
-                    </button>
-                    <button
-                      onClick={() => navigate('/book-demo?reason=advisor-large')}
-                      className="flex flex-col items-center gap-1 border-2 border-stone-200 bg-white rounded-xl p-4 hover:border-navy-400 transition-all"
-                    >
-                      <span className="font-display text-2xl font-light text-navy-950">5+</span>
-                      <span className="text-xs text-stone-500">More than 5 families</span>
-                    </button>
-                  </div>
-                  <p className="text-xs text-stone-400 text-center">Managing more than 5 families? We'll connect you with our team for a tailored setup.</p>
+              {/* Advisor — redirect straight to book-demo */}
+              {selectedPlan === 'advisor' && (
+                <div className="mt-6 bg-navy-50 border border-navy-200 rounded-2xl p-6 text-center max-w-md mx-auto">
+                  <p className="font-semibold text-navy-900 text-sm mb-2">Adviser accounts are set up personally.</p>
+                  <p className="text-xs text-stone-500 mb-5">Book a 20-minute call and we'll get you onboarded — no contract, no setup fees.</p>
+                  <button
+                    onClick={() => navigate('/book-demo')}
+                    className="inline-flex items-center justify-center gap-2 text-white font-semibold text-sm px-8 py-3.5 rounded-lg transition-colors bg-navy-900 hover:bg-navy-800 w-full"
+                  >
+                    Book a demo →
+                  </button>
                 </div>
               )}
 
-              {/* Standard continue — shown when not advisor, or advisor has selected ≤5 */}
-              {(selectedPlan !== 'advisor' || advisorFamilyCount === 'lte5') && (
+              {/* Standard continue — shown only for non-advisor plans */}
+              {selectedPlan !== 'advisor' && (
                 <div className="text-center mt-6">
                   <button
                     onClick={() => setStep(2)}

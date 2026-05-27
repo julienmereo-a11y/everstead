@@ -106,11 +106,7 @@ const plans = [
   {
     id: 'advisor',
     name: 'Advisor',
-    monthly: 60,
-    yearly: 48,
-    yearlyTotal: 576,
-    description: 'For professionals managing client estate organisation.',
-    reframe: '£48 a month — less than one billable hour.',
+    description: 'For professionals managing client estate organisation. Pricing on application.',
     features: ['Everything in Family', 'Multi-client workspace', 'Co-branded client portal', 'Advisor collaboration tools', 'Priority support'],
     cta: 'Book a demo',
   },
@@ -217,17 +213,23 @@ export default function Pricing() {
                   <p className={`text-sm font-semibold ${plan.highlight ? 'text-sage-300' : 'text-navy-700'}`}>{plan.name}</p>
                   <p className={`mt-3 text-sm leading-relaxed ${plan.highlight ? 'text-stone-300' : 'text-stone-600'}`}>{plan.description}</p>
                 </div>
-                <div className="mt-8">
-                  <div className="flex items-end gap-2">
-                    <span className="font-display text-5xl font-light">£{price}</span>
-                    <span className={`pb-2 text-sm ${plan.highlight ? 'text-stone-400' : 'text-stone-500'}`}>/ month</span>
+                {isAdvisor ? (
+                  <div className="mt-8">
+                    <p className="text-stone-400 text-xs mb-6">Pricing on application — we're working personally with our first adviser cohort.</p>
                   </div>
-                  {annual && (
-                    <p className={`mt-1.5 text-[11px] ${plan.highlight ? 'text-stone-400' : 'text-stone-400'}`}>
-                      Save £{(plan.monthly - plan.yearly) * 12}/yr vs monthly
-                    </p>
-                  )}
-                </div>
+                ) : (
+                  <div className="mt-8">
+                    <div className="flex items-end gap-2">
+                      <span className="font-display text-5xl font-light">£{plan.yearly && annual ? plan.yearly : plan.monthly}</span>
+                      <span className={`pb-2 text-sm ${plan.highlight ? 'text-stone-400' : 'text-stone-500'}`}>/ month</span>
+                    </div>
+                    {annual && plan.monthly && plan.yearly && (
+                      <p className={`mt-1.5 text-[11px] ${plan.highlight ? 'text-stone-400' : 'text-stone-400'}`}>
+                        Save £{(plan.monthly - plan.yearly) * 12}/yr vs monthly
+                      </p>
+                    )}
+                  </div>
+                )}
                 <ul className="mt-8 space-y-3 flex-1">
                   {plan.features.map(feature => (
                     <li key={feature} className="flex items-start gap-3 text-sm leading-relaxed">
@@ -237,19 +239,14 @@ export default function Pricing() {
                   ))}
                 </ul>
                 {isAdvisor ? (
-                  <div className="mt-8 space-y-3">
-                    <Link
-                      to={`/get-started?plan=advisor&billing=${annual ? 'yearly' : 'monthly'}`}
-                      className="inline-flex items-center justify-center gap-2 w-full rounded-xl px-5 py-3.5 text-sm font-semibold transition-colors bg-navy-800 text-white hover:bg-navy-700"
-                    >
-                      Get started free — up to 5 families <ArrowRight size={15} />
-                    </Link>
+                  <div className="mt-8">
                     <Link
                       to="/book-demo"
-                      className="inline-flex items-center justify-center gap-2 w-full rounded-xl border border-stone-200 px-5 py-3.5 text-sm font-medium transition-colors text-stone-600 hover:border-navy-300 hover:text-navy-800"
+                      className="inline-flex items-center justify-center gap-2 w-full rounded-xl px-5 py-3.5 text-sm font-semibold transition-colors bg-navy-800 text-white hover:bg-navy-700"
                     >
-                      Managing more than 5 families? Talk to us
+                      Book a demo <ArrowRight size={15} />
                     </Link>
+                    <p className="mt-3 text-center text-xs text-stone-400">No contract. No setup fees.</p>
                   </div>
                 ) : (
                   <>

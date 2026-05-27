@@ -71,9 +71,7 @@ const plans = [
   {
     id: 'advisor',
     name: 'Advisor',
-    monthly: 60,
-    annual: 48,
-    desc: 'For professionals managing client estate organisation.',
+    desc: 'For professionals managing client estate organisation. Pricing on application.',
     features: ['Everything in Family', 'Multi-client workspace', 'Co-branded client portal', 'Advisor collaboration tools', 'Priority support'],
     cta: 'Book a demo',
     highlight: false,
@@ -785,11 +783,18 @@ export default function Home() {
                 )}
                 <h3 className={`font-semibold text-lg mb-1 ${highlight ? 'text-navy-900' : 'text-white'}`}>{name}</h3>
                 <p className={`text-sm mb-5 ${highlight ? 'text-stone-500' : 'text-stone-400'}`}>{desc}</p>
-                <div className="flex items-end gap-1 mb-6">
-                  <span className={`font-display text-4xl font-light ${highlight ? 'text-navy-950' : 'text-white'}`}>£{annualPricing ? annual : monthly}</span>
-                  <span className={`text-sm mb-1.5 ${highlight ? 'text-stone-400' : 'text-stone-500'}`}>/mo</span>
-                </div>
-                <p className={`text-xs mb-4 ${highlight ? 'text-stone-400' : 'text-stone-500'}`}>{annualPricing ? 'Billed yearly' : 'Billed monthly'}</p>
+                {id !== 'advisor' && (
+                  <>
+                    <div className="flex items-end gap-1 mb-6">
+                      <span className={`font-display text-4xl font-light ${highlight ? 'text-navy-950' : 'text-white'}`}>£{annualPricing ? annual : monthly}</span>
+                      <span className={`text-sm mb-1.5 ${highlight ? 'text-stone-400' : 'text-stone-500'}`}>/mo</span>
+                    </div>
+                    <p className={`text-xs mb-4 ${highlight ? 'text-stone-400' : 'text-stone-500'}`}>{annualPricing ? 'Billed yearly' : 'Billed monthly'}</p>
+                  </>
+                )}
+                {id === 'advisor' && (
+                  <p className="text-stone-400 text-xs mb-6">Pricing on application — we're working personally with our first adviser cohort.</p>
+                )}
                 <ul className="space-y-2.5 mb-8">
                   {features.map(f => (
                     <li key={f} className="flex items-start gap-2.5">
@@ -799,20 +804,12 @@ export default function Home() {
                   ))}
                 </ul>
                 {id === 'advisor' ? (
-                  <div className="space-y-2.5">
-                    <Link
-                      to={`/get-started?plan=advisor&billing=${annualPricing ? 'yearly' : 'monthly'}`}
-                      className="block text-center py-2.5 px-4 rounded-lg text-sm font-semibold transition-colors bg-white/10 text-white border border-white/20 hover:bg-white/20"
-                    >
-                      Get started — up to 5 families
-                    </Link>
-                    <Link
-                      to="/book-demo"
-                      className="block text-center py-2.5 px-4 rounded-lg text-sm font-medium transition-colors text-stone-400 hover:text-stone-200"
-                    >
-                      Managing 5+ families? Talk to us
-                    </Link>
-                  </div>
+                  <Link
+                    to="/book-demo"
+                    className="block text-center py-2.5 px-4 rounded-lg text-sm font-semibold transition-colors bg-white/10 text-white border border-white/20 hover:bg-white/20"
+                  >
+                    Book a demo <ArrowRight size={13} className="inline ml-1" />
+                  </Link>
                 ) : (
                   <Link
                     to={`/get-started?plan=${id}&billing=${annualPricing ? 'yearly' : 'monthly'}`}

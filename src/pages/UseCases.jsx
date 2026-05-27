@@ -241,7 +241,7 @@ const cases = {
     quoteAuthor: '— Certified Financial Planner',
     ctaText: 'Book a demo for your practice',
     ctaHref: '/book-demo',
-    ctaNote: 'Advisor plans available for practices of all sizes',
+    ctaNote: 'Early access — working personally with our first adviser partners',
   },
 }
 

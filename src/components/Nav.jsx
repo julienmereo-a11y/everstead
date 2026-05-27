@@ -16,6 +16,9 @@ const navLinks = [
 // Pages that have a light background at the top — nav should always use dark style on these
 const lightBgPages = ['/pricing', '/security', '/features', '/how-it-works', '/use-cases', '/login', '/get-started', '/resources', '/about', '/contact', '/book-demo', '/privacy', '/terms', '/forgot-password', '/reset-password']
 
+// Pages with a dark hero — keep white logo/nav until scrolled past the hero (~400px)
+const darkHeroPages = ['/for-advisors', '/family-vault', '/what-to-do-when-someone-dies']
+
 export default function Nav() {
   const [scrolled, setScrolled] = useState(false)
   const [open, setOpen] = useState(false)
@@ -36,20 +39,22 @@ export default function Nav() {
   }
 
   const isLightPage = lightBgPages.some(p => location.pathname.startsWith(p))
+  const isDarkHeroPage = darkHeroPages.some(p => location.pathname.startsWith(p))
+  const scrollThreshold = isDarkHeroPage ? 400 : 24
   const useDarkStyle = scrolled || isLightPage
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 24)
+    const onScroll = () => setScrolled(window.scrollY > scrollThreshold)
     window.addEventListener('scroll', onScroll)
     return () => window.removeEventListener('scroll', onScroll)
-  }, [])
+  }, [scrollThreshold])
 
   // Close on route change + re-check scroll position so nav style is correct immediately
   useEffect(() => {
     setOpen(false)
     setSwitcherOpen(false)
-    setScrolled(window.scrollY > 24)
-  }, [location.pathname])
+    setScrolled(window.scrollY > scrollThreshold)
+  }, [location.pathname, scrollThreshold])
 
   // Close switcher on outside click
   useEffect(() => {
