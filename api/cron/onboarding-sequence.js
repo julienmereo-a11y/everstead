@@ -89,6 +89,7 @@ export default async function handler(req, res) {
     }
 
     let stepSent = 0
+    let stepSkipped = 0
     for (const user of users ?? []) {
       // Use trial start (trial_ends_at - 14 days) as anchor when available
       const trialStart = user.trial_ends_at
@@ -98,27 +99,40 @@ export default async function handler(req, res) {
       if (now < sendAfter) continue // not yet time for this user
 
       try {
-        let html
-        if (step.n === 5) {
-          // Fetch personalised counts for the day-13 check-in email
-          const [
-            { count: accountCount },
-            { count: documentCount },
-            { count: contactCount },
-          ] = await Promise.all([
-            supabase.from('accounts')      .select('id', { count: 'exact', head: true }).eq('user_id', user.id),
-            supabase.from('documents')     .select('id', { count: 'exact', head: true }).eq('user_id', user.id),
-            supabase.from('trusted_people').select('id', { count: 'exact', head: true }).eq('user_id', user.id),
-          ])
-          html = step.html(user.full_name, user.plan, accountCount ?? 0, documentCount ?? 0, contactCount ?? 0, user.id)
+        // ── State-aware progress check (always fetch — needed for skip/recovery logic) ──
+        const progress = await getUserProgress(user.id)
+
+        // Per-step skip rules: don't tell users to do things they've already done.
+        // We stamp the field as sent anyway so the cron doesn't retry tomorrow.
+        const skipReason = shouldSkipForProgress(step.n, progress)
+        if (skipReason) {
+          await supabase
+            .from('profiles')
+            .update({ [step.field]: now.toISOString() })
+            .eq('id', user.id)
+          stepSkipped++
+          continue
+        }
+
+        // ── Choose template ──
+        let html, subject
+        if (step.n === 3 && progress.total === 0) {
+          // Recovery branch: D7 with zero progress → re-engagement
+          subject = "Is something getting in the way?"
+          html = recoveryHtml(user.full_name, user.id)
+        } else if (step.n === 5) {
+          // Personalised day-13 check-in
+          html = step.html(user.full_name, user.plan, progress.accounts, progress.documents, progress.contacts, user.id)
+          subject = step.subject
         } else {
           html = step.html(user.full_name, user.plan, user.id)
+          subject = step.subject
         }
 
         await resend.emails.send({
           from:    'Everstead <hello@everstead.care>',
           to:      user.email,
-          subject: step.subject,
+          subject,
           html,
         })
         await supabase
@@ -132,6 +146,7 @@ export default async function handler(req, res) {
       }
     }
     results.sent[`email_${step.n}`] = stepSent
+    results.sent[`email_${step.n}_skipped`] = stepSkipped
   }
 
   console.log('onboarding-sequence:', results)
@@ -330,6 +345,79 @@ function email5Html(name, plan, accountCount = 0, documentCount = 0, contactCoun
       And if your trial is ending soon — everything you've built is still here, ready to go.
     </p>
     ${cta(`${APP_URL}/dashboard`, 'Go to my vault →')}
+    <p style="margin:32px 0 0;color:#6b7280;font-size:14px;line-height:1.6;">— Julien, founder of Everstead</p>
+  `, userId)
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+//  State-aware helpers
+// ─────────────────────────────────────────────────────────────────────────────
+
+/**
+ * Fetch the user's current progress across the four key dimensions.
+ * Returns counts AND a total so callers can branch on "zero progress".
+ */
+async function getUserProgress(userId) {
+  const [accountsRes, documentsRes, contactsRes, instructionsRes] = await Promise.all([
+    supabase.from('accounts')      .select('id', { count: 'exact', head: true }).eq('user_id', userId),
+    supabase.from('documents')     .select('id', { count: 'exact', head: true }).eq('user_id', userId),
+    supabase.from('trusted_people').select('id', { count: 'exact', head: true }).eq('user_id', userId),
+    supabase.from('instructions')  .select('id', { count: 'exact', head: true }).eq('user_id', userId),
+  ])
+  const accounts     = accountsRes.count     ?? 0
+  const documents    = documentsRes.count    ?? 0
+  const contacts     = contactsRes.count     ?? 0
+  const instructions = instructionsRes.count ?? 0
+  return {
+    accounts,
+    documents,
+    contacts,
+    instructions,
+    total: accounts + documents + contacts + instructions,
+  }
+}
+
+/**
+ * Skip rules per step. Returns a string reason (for logging) or null if we
+ * should send. The stamp-as-sent happens at the caller so the cron doesn't
+ * keep retrying tomorrow.
+ *
+ * Email 5 is always sent (it's the personalised check-in regardless of state).
+ * Recovery branch on email 3 is handled at the caller, not here.
+ */
+function shouldSkipForProgress(stepN, progress) {
+  if (stepN === 1 && progress.accounts > 0)     return 'accounts already added'
+  if (stepN === 2 && progress.contacts > 0)     return 'trusted contact already added'
+  if (stepN === 3 && progress.documents > 0)    return 'document already uploaded'
+  if (stepN === 4 && progress.instructions > 0) return 'instruction already written'
+  return null
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+//  Recovery email — sent at D7 if the user has done literally nothing
+// ─────────────────────────────────────────────────────────────────────────────
+function recoveryHtml(name, userId) {
+  const first = name?.split(' ')[0] || 'there'
+  return layout(`
+    <h1 style="margin:0 0 16px;color:#0d1628;font-size:24px;font-weight:normal;">
+      Is something getting in the way?
+    </h1>
+    <p style="margin:0 0 16px;color:#4a5568;font-size:16px;line-height:1.7;">
+      Hi ${first}, it's Julien — I'm writing personally because I noticed you signed up a week ago and haven't added anything to your vault yet. That's pretty common, and usually for one of three reasons:
+    </p>
+    <p style="margin:0 0 14px;color:#4a5568;font-size:16px;line-height:1.7;">
+      <strong>1. You're not sure where to start.</strong> Honestly, the easiest first step is adding one account — a current account, a savings account, your work pension. It takes about 90 seconds and the rest gets easier from there.
+    </p>
+    <p style="margin:0 0 14px;color:#4a5568;font-size:16px;line-height:1.7;">
+      <strong>2. The timing isn't right.</strong> You meant to come back to it. Life got busy. That's OK — your account is here whenever you're ready, and your trial doesn't start counting against you until you actually use the platform.
+    </p>
+    <p style="margin:0 0 24px;color:#4a5568;font-size:16px;line-height:1.7;">
+      <strong>3. Something's broken or confusing.</strong> If anything didn't work the way you expected — sign-in, navigation, finding where to add things — please just reply and tell me. I'll either fix it or walk you through it.
+    </p>
+    <p style="margin:0 0 28px;color:#4a5568;font-size:16px;line-height:1.7;">
+      Hit reply if you want a hand. Otherwise, the simplest possible next step is below.
+    </p>
+    ${cta(`${APP_URL}/dashboard`, 'Add one account in 90 seconds →')}
     <p style="margin:32px 0 0;color:#6b7280;font-size:14px;line-height:1.6;">— Julien, founder of Everstead</p>
   `, userId)
 }
