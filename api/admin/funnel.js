@@ -26,10 +26,13 @@ const supabase = createClient(
 
 export default async function handler(req, res) {
   // ── Auth ────────────────────────────────────────────────────────────────
+  // Accepts either CRON_SECRET (used by cron jobs) OR ADMIN_TOKEN
+  // (separate non-sensitive token for browser/admin convenience).
   const bearerToken = (req.headers.authorization || '').replace(/^Bearer\s+/i, '')
   const queryToken  = (req.query.token || '').toString()
   const provided    = bearerToken || queryToken
-  if (!process.env.CRON_SECRET || provided !== process.env.CRON_SECRET) {
+  const validTokens = [process.env.ADMIN_TOKEN, process.env.CRON_SECRET].filter(Boolean)
+  if (validTokens.length === 0 || !validTokens.includes(provided)) {
     return res.status(401).json({ error: 'Unauthorised' })
   }
 
