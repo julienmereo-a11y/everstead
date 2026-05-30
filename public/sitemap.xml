@@ -121,6 +121,36 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://www.everstead.care/compare/safekeep</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.everstead.care/compare/lyfeguard</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.everstead.care/compare/trust-and-will</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.everstead.care/compare/everplans</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.everstead.care/compare/cake</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.everstead.care/compare/doing-nothing</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://www.everstead.care/adviser-dpa</loc>
     <changefreq>yearly</changefreq>
     <priority>0.5</priority>

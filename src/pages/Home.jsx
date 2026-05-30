@@ -897,6 +897,30 @@ export default function Home() {
         </div>
       </section>
 
+      {/* ── Gift strip ─────────────────────────────────────────────── */}
+      <section className="py-16 lg:py-20 bg-stone-50 border-y border-stone-100">
+        <div className="max-w-5xl mx-auto px-6 lg:px-8">
+          <div className="reveal grid md:grid-cols-[auto_1fr_auto] items-center gap-6 rounded-3xl bg-white border border-stone-200 px-8 py-8 lg:px-10 lg:py-9">
+            <div className="text-5xl lg:text-6xl select-none" aria-hidden="true">🎁</div>
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-widest text-sage-700 mb-2">A gift that says: I've sorted it.</p>
+              <h2 className="font-display text-2xl lg:text-3xl font-light text-navy-950 leading-snug mb-2 text-balance">
+                Give Everstead to a parent, partner, or someone you love.
+              </h2>
+              <p className="text-sm text-stone-600 leading-relaxed max-w-xl">
+                The kind of present they'd never buy themselves — and the one that genuinely takes weight off their family one day. Sent as a digital gift, redeemable any time.
+              </p>
+            </div>
+            <Link
+              to="/gift"
+              className="inline-flex items-center justify-center gap-2 bg-sage-700 hover:bg-sage-800 text-white text-sm font-semibold px-5 py-3 rounded-xl transition-colors whitespace-nowrap shrink-0"
+            >
+              Give as a gift <ArrowRight size={14} />
+            </Link>
+          </div>
+        </div>
+      </section>
+
       {/* ── FAQ ──────────────────────────────────────────────────── */}
       <section className="py-24 lg:py-32">
         <div className="max-w-3xl mx-auto px-6 lg:px-8">

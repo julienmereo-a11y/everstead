@@ -177,6 +177,134 @@ If you want a secure place to store important files, both products do the job. I
     competitorPrice: 'From £4.99/mo',
     cta: 'Start your free trial',
   },
+
+  'trust-and-will': {
+    name: 'Trust & Will',
+    category: 'Online estate planning (US)',
+    tagline: 'Everstead vs Trust & Will',
+    headline: 'Trust & Will is built for the US. Everstead is built for the UK.',
+    subhead: 'Trust & Will is an online platform for US wills, trusts, and guardianship. Everstead is a UK-first secure vault — built around UK inheritance tax, probate, LPAs, and the institutions your family will actually have to deal with.',
+    eversteadDesc: 'A UK-focused secure personal vault for organising every part of your estate — accounts, documents, instructions, and wishes — with controlled access for the people you trust. Built around UK probate, IHT, and LPAs.',
+    competitorDesc: 'A US-focused online estate-planning service offering wills, revocable living trusts, and guardianship plans. Their forms, jurisdiction, and tax framing assume a US estate.',
+    rows: [
+      { feature: 'UK-jurisdiction estate planning',         everstead: true,  them: false },
+      { feature: 'IHT-aware organisation',                  everstead: true,  them: false },
+      { feature: 'LPA (Lasting Power of Attorney) record',  everstead: true,  them: false },
+      { feature: 'Secure document vault',                   everstead: true,  them: true  },
+      { feature: 'Ongoing — update any time',               everstead: true,  them: true  },
+      { feature: 'Trusted contact access control',          everstead: true,  them: false },
+      { feature: 'Estate Readiness Score',                  everstead: true,  them: false },
+      { feature: 'Step-by-step executor instructions',      everstead: true,  them: false },
+      { feature: 'Personal messages & final wishes',        everstead: true,  them: false },
+      { feature: 'Family plan — two private vaults',        everstead: true,  them: false },
+      { feature: 'EU data residency (UK GDPR)',             everstead: true,  them: false },
+      { feature: 'US-state will drafting',                  everstead: false, them: true  },
+      { feature: 'Revocable living trust drafting',         everstead: false, them: true  },
+    ],
+    positioning: `Trust & Will is a respected US estate-planning brand. The problem for a UK reader is that almost everything it does — the will format, the trust mechanics, the tax assumptions — is calibrated to a different legal system.
+
+A UK estate has its own moving parts: inheritance tax thresholds and the residence nil-rate band, probate via the Probate Registry, Lasting Powers of Attorney, ISAs, SIPPs, the Tell-Us-Once service. None of that is what Trust & Will is built around.
+
+Everstead is built in the UK, for the UK. We won't draft your will — instruct a solicitor or use a UK will-writing service for that. But we will give you and your family the structured record of everything else: accounts, documents, contacts, instructions, and wishes — already organised, already accessible, already ready when it counts.`,
+    price: 'From £3/mo yearly (14-day free trial)',
+    competitorPrice: 'From $159 one-time (US)',
+    cta: 'Start your free trial',
+  },
+
+  everplans: {
+    name: 'Everplans',
+    category: 'Digital estate planning',
+    tagline: 'Everstead vs Everplans',
+    headline: 'Everplans is the US category leader. Everstead is the UK answer.',
+    subhead: 'Everplans is a long-running US end-of-life planning platform with a checklist and document vault. Everstead is a UK-first version of that idea — with sharper organisation, a Family plan, an adviser portal, and UK-specific guidance baked in.',
+    eversteadDesc: 'A UK-built secure personal vault for organising every part of an estate, with role-based access for trusted contacts, a dual-vault Family plan, an Estate Readiness Score, and an adviser portal for IFAs and solicitors.',
+    competitorDesc: 'A US end-of-life planning platform with a comprehensive checklist, document storage, and deputy access. Strong in the US market; not localised for UK inheritance law, probate, or IHT.',
+    rows: [
+      { feature: 'UK-jurisdiction guidance (IHT, probate, LPAs)', everstead: true,  them: false },
+      { feature: 'Family plan — two private vaults',              everstead: true,  them: false },
+      { feature: 'Adviser portal for IFAs & solicitors',          everstead: true,  them: false },
+      { feature: 'Estate Readiness Score',                        everstead: true,  them: false },
+      { feature: 'Secure document vault',                         everstead: true,  them: true  },
+      { feature: 'Deputies / trusted contact access',             everstead: true,  them: true  },
+      { feature: 'Step-by-step instructions for your family',     everstead: true,  them: true  },
+      { feature: 'Personal messages & final wishes',              everstead: true,  them: true  },
+      { feature: 'Sharing controlled section by section',         everstead: true,  them: true  },
+      { feature: 'EU/UK data residency under UK GDPR',            everstead: true,  them: false },
+      { feature: 'US-focused checklists and resources',           everstead: false, them: true  },
+    ],
+    positioning: `Everplans pioneered the end-of-life planning category in the US — and they're good at it. If you live in the US, they're a credible choice.
+
+For a UK family, though, the rough edges add up. Their checklists reference US estate-tax thresholds, not the £325k nil-rate band. Their guidance assumes a probate court system that isn't ours. Their deputies are designed around US power-of-attorney instruments, not LPAs registered with the Office of the Public Guardian. Their data sits in the US.
+
+Everstead takes the Everplans idea — a structured, lifelong record your family can act on — and rebuilds it for the UK: with the right tax framing, the right legal vocabulary, EU data residency, a dual-vault Family plan that Everplans doesn't offer, and an adviser portal designed for UK IFAs and solicitors.`,
+    price: 'From £3/mo yearly (14-day free trial)',
+    competitorPrice: 'From $75/year (US)',
+    cta: 'Start your free trial',
+  },
+
+  cake: {
+    name: 'Cake',
+    category: 'End-of-life planning (US)',
+    tagline: 'Everstead vs Cake',
+    headline: 'Cake is a free wishes tool. Everstead is the organised record your family will actually use.',
+    subhead: 'Cake offers a free questionnaire-based end-of-life planning tool focused on preferences and wishes. Everstead is a secure, structured vault for the whole estate — wishes, accounts, documents, instructions, and trusted contacts — built for the UK.',
+    eversteadDesc: 'A UK-built secure personal vault with encrypted document storage, account inventory, trusted contact access, an adviser portal, and step-by-step executor instructions. Built for use today and for when it matters.',
+    competitorDesc: 'A US end-of-life planning platform offering free preference and wishes questionnaires, healthcare directives, and limited document storage. Focused on the wishes side rather than full estate organisation.',
+    rows: [
+      { feature: 'UK-jurisdiction guidance (IHT, probate, LPAs)', everstead: true,  them: false },
+      { feature: 'Encrypted document vault',                      everstead: true,  them: true  },
+      { feature: 'Account & asset register',                      everstead: true,  them: false },
+      { feature: 'Granular role-based trusted contact access',    everstead: true,  them: false },
+      { feature: 'Step-by-step executor instructions',            everstead: true,  them: false },
+      { feature: 'Estate Readiness Score',                        everstead: true,  them: false },
+      { feature: 'Family plan — two private vaults',              everstead: true,  them: false },
+      { feature: 'Adviser portal for IFAs & solicitors',          everstead: true,  them: false },
+      { feature: 'Wishes & final letters',                        everstead: true,  them: true  },
+      { feature: 'Healthcare preferences questionnaire',          everstead: false, them: true  },
+      { feature: 'Free tier',                                     everstead: false, them: true  },
+    ],
+    positioning: `Cake does one thing well — it helps you articulate end-of-life preferences and healthcare wishes. The questionnaire format is approachable and free.
+
+But Cake is built around wishes, not the operational reality of an estate. When someone dies, the family doesn't just need to know what the person wanted — they need to know where the accounts are, where the documents live, who the solicitor is, what's owed, and what to do first. Cake doesn't fully cover that.
+
+Everstead does both. Your wishes and personal letters live alongside an account inventory, a document vault, role-based access for the people you trust, and step-by-step instructions for whoever ends up acting. It's the difference between a sentiment document and a working operating manual for your estate.`,
+    price: 'From £3/mo yearly (14-day free trial)',
+    competitorPrice: 'Free (with paid healthcare directives in the US)',
+    cta: 'Start your free trial',
+  },
+
+  'doing-nothing': {
+    name: 'a spreadsheet',
+    category: 'The shoebox or the laptop folder',
+    tagline: 'Everstead vs. doing nothing',
+    headline: "Most people leave their family a spreadsheet, a shoebox, or nothing at all.",
+    subhead: "You're not really choosing between Everstead and a competitor. You're choosing between an organised plan and the version of this you're doing today — usually a half-finished spreadsheet, a stack of paperwork, and a mental note to 'sort it out one day'.",
+    eversteadDesc: 'A secure, encrypted, role-based plan your family can actually use. Updates as your life changes. Shareable section by section. AES-256 encrypted, UK-hosted, UK GDPR compliant — and built so the right people see the right things at the right time, and nothing more.',
+    competitorDesc: "Sticky notes, a Word doc on the laptop, a printed list in a desk drawer, a spreadsheet that hasn't been updated in two years, account passwords in someone's head, or — most commonly — the assumption that 'it'll work itself out'.",
+    rows: [
+      { feature: 'Everything in one place',                       everstead: true,  them: false },
+      { feature: 'Trusted contacts know where to look',           everstead: true,  them: false },
+      { feature: 'Updated as your life changes',                  everstead: true,  them: false },
+      { feature: 'Encrypted and access-controlled',               everstead: true,  them: false },
+      { feature: 'Section-by-section sharing',                    everstead: true,  them: false },
+      { feature: 'Step-by-step executor guidance',                everstead: true,  them: false },
+      { feature: 'Readiness score so you know what is missing',   everstead: true,  them: false },
+      { feature: 'Personal letters and final wishes preserved',   everstead: true,  them: false },
+      { feature: 'Works when your laptop is locked or lost',      everstead: true,  them: false },
+      { feature: 'Recoverable when memory fails',                 everstead: true,  them: false },
+      { feature: 'Free — for the first month',                    everstead: true,  them: true  },
+    ],
+    positioning: `Almost no one fails to plan because they think planning is unimportant. They fail because the alternatives are all bad.
+
+A spreadsheet is private but useless to anyone else when it matters. A printed folder gets out of date the moment a password changes. A pile of paperwork in a drawer assumes everyone will know which drawer. Telling your spouse "it's all on my laptop" assumes they'll remember the password, find the right folder, and recognise what they're looking at while grieving.
+
+Everstead exists because the status quo isn't actually working for most families. The cost when nothing is in place is measured in weeks of admin, lost accounts, missed deadlines, and family stress in the worst possible moment.
+
+For less than the price of a coffee a week, Everstead becomes the structured version of what you would have written down anyway — secure, sharable, updated, and ready. The hardest part is starting; everything after that is just keeping it current.`,
+    price: 'From £3/mo yearly (14-day free trial)',
+    competitorPrice: 'Free — and very expensive when it counts',
+    cta: 'Start organising your estate',
+  },
 }
 
 // ─────────────────────────────────────────────────────────────────────────────

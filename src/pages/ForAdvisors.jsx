@@ -4,8 +4,36 @@ import { Link } from 'react-router-dom'
 import { useReveal } from '../components/useReveal'
 import {
   Users, ShieldCheck, BarChart2, Briefcase, ArrowRight,
-  CheckCircle2, Building2, FileText, Clock, Shield
+  CheckCircle2, Building2, FileText, Clock, Shield, BookOpen
 } from 'lucide-react'
+import EmailCaptureCard from '../components/EmailCaptureCard'
+
+const adviserLeadMagnets = [
+  {
+    source: 'adviser-inheritance-conversations',
+    icon: Users,
+    label: 'Conversations',
+    title: "The Adviser's Guide to Inheritance Conversations",
+    summary: 'Seven framings IFAs and solicitors use to open the estate conversation with clients — without sounding morbid or salesy. Drawn from pilot practices.',
+    buttonLabel: 'Email me the guide',
+  },
+  {
+    source: 'adviser-pre-bereavement-checklist',
+    icon: FileText,
+    label: 'Template',
+    title: 'Pre-bereavement client checklist',
+    summary: 'A working six-section template covering identity, financial inventory, documents, the family map, emotional preparation, and your firm-side process. Use as-is or adapt for your practice.',
+    buttonLabel: 'Email me the checklist',
+  },
+  {
+    source: 'adviser-positioning-playbook',
+    icon: BookOpen,
+    label: 'Playbook',
+    title: 'Estate organisation as a value-add: pricing & positioning playbook',
+    summary: "How UK practices are positioning, pricing (£300-£1,500), and delivering estate organisation as a structured service — including the retention math at the generational transition.",
+    buttonLabel: 'Email me the playbook',
+  },
+]
 
 const benefits = [
   {
@@ -273,6 +301,27 @@ export default function ForAdvisors() {
           </div>
         </section>
 
+        {/* Lead magnets — written content for advisers */}
+        <section id="resources" className="py-20 bg-stone-50 border-t border-stone-100">
+          <div className="max-w-5xl mx-auto px-6 lg:px-8">
+            <div className="text-center mb-12 reveal">
+              <p className="text-xs font-semibold uppercase tracking-[0.22em] text-sage-600 mb-4">Adviser resources</p>
+              <h2 className="font-display text-3xl lg:text-4xl font-light text-navy-950 leading-tight max-w-2xl mx-auto">
+                Practical content, written for practitioners.
+              </h2>
+              <p className="mt-4 text-stone-500 text-sm leading-relaxed max-w-xl mx-auto">
+                No registration to read — just give us an email and we'll send it. We won't pass it on, and you can unsubscribe at any time.
+              </p>
+            </div>
+
+            <div className="grid md:grid-cols-3 gap-5 reveal">
+              {adviserLeadMagnets.map((lm) => (
+                <AdviserLeadMagnetCard key={lm.source} {...lm} />
+              ))}
+            </div>
+          </div>
+        </section>
+
         {/* Early access — replaces testimonial */}
         <section className="py-20 bg-white">
           <div className="max-w-2xl mx-auto px-6 lg:px-8 text-center reveal">
@@ -355,5 +404,41 @@ export default function ForAdvisors() {
 
       </div>
     </>
+  )
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+//  AdviserLeadMagnetCard — collapsed card + inline email capture on expand
+// ─────────────────────────────────────────────────────────────────────────────
+function AdviserLeadMagnetCard({ source, icon: Icon, label, title, summary, buttonLabel }) {
+  const [open, setOpen] = useState(false)
+
+  return (
+    <div className="rounded-2xl bg-white border border-stone-200 p-6 flex flex-col">
+      <div className="flex items-center gap-2.5 mb-4">
+        <div className="w-9 h-9 rounded-xl bg-sage-50 text-sage-700 flex items-center justify-center">
+          <Icon size={17} />
+        </div>
+        <p className="text-xs font-semibold uppercase tracking-widest text-stone-400">{label}</p>
+      </div>
+      <h3 className="font-display text-lg text-navy-950 leading-snug mb-3">{title}</h3>
+      <p className="text-sm text-stone-600 leading-relaxed mb-5 flex-1">{summary}</p>
+
+      {open ? (
+        <EmailCaptureCard
+          source={source}
+          title="Where should we send it?"
+          subtitle="One email. No registration. Unsubscribe any time."
+          buttonLabel={buttonLabel}
+        />
+      ) : (
+        <button
+          onClick={() => setOpen(true)}
+          className="mt-auto inline-flex items-center justify-center gap-2 bg-navy-900 text-white text-sm font-semibold px-4 py-2.5 rounded-xl hover:bg-navy-800 transition-colors"
+        >
+          {buttonLabel} <ArrowRight size={14} />
+        </button>
+      )}
+    </div>
   )
 }

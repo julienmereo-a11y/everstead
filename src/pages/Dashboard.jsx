@@ -12,6 +12,7 @@ import {
   Gift, Check, Copy, Sparkles, ChevronUp
 } from 'lucide-react'
 import { useAuth }          from '../contexts/AuthContext'
+import ReferralCard         from '../components/ReferralCard'
 import { redirectToCheckout, redirectToCustomerPortal, PLANS } from '../lib/stripe'
 import { isAtLimit, getLimit, canUseFeature } from '../lib/planLimits'
 import { useAccounts }      from '../hooks/useData'
@@ -1677,22 +1678,8 @@ function OverviewSection({ profile, accounts, documents, people, instructions, m
       </div>
 
       {/* ── Referral nudge ── */}
-      <div className="mt-6 bg-sage-50 border border-sage-200 rounded-xl p-5 flex items-center justify-between gap-4 flex-wrap">
-        <div className="flex items-center gap-3">
-          <div className="w-9 h-9 bg-sage-100 rounded-full flex items-center justify-center shrink-0">
-            <Gift size={16} className="text-sage-700" />
-          </div>
-          <div>
-            <p className="font-semibold text-navy-900 text-sm">Know someone who'd benefit from Everstead?</p>
-            <p className="text-xs text-stone-500 mt-0.5">Share your link — they get a 21-day free trial instead of 14.</p>
-          </div>
-        </div>
-        <button
-          onClick={() => onNavigate('settings')}
-          className="text-xs font-semibold text-sage-700 border border-sage-300 rounded-lg px-4 py-2 hover:bg-sage-100 transition-colors whitespace-nowrap"
-        >
-          Get my referral link →
-        </button>
+      <div className="mt-6">
+        <ReferralCard userId={profile?.id} />
       </div>
     </div>
   )
