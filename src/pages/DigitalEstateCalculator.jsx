@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react'
 import { Helmet } from 'react-helmet-async'
 import { Link } from 'react-router-dom'
 import { ArrowRight, RotateCcw, Copy, CheckCheck } from 'lucide-react'
+import EmailCaptureCard from '../components/EmailCaptureCard'
 
 // ─── Asset categories & fields ────────────────────────────────────────────────
 
@@ -563,6 +564,22 @@ export default function DigitalEstateCalculator() {
                 </button>
               </div>
             </div>
+
+            {/* Email capture — only show once they have a result */}
+            {grandTotal > 0 && (
+              <EmailCaptureCard
+                source="digital-estate-calculator"
+                title="Email me my estimate"
+                subtitle="We'll send a clean summary of your digital estate value and where it sits — useful to share with a spouse, executor, or financial adviser."
+                buttonLabel="Send my estimate"
+                metadata={{
+                  total: grandTotal,
+                  breakdown: CATEGORIES
+                    .map(cat => ({ label: cat.label || cat.id, value: new Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP', maximumFractionDigits: 0 }).format(categoryTotals[cat.id] || 0) }))
+                    .filter((row, i) => (categoryTotals[CATEGORIES[i].id] || 0) > 0),
+                }}
+              />
+            )}
 
             {/* CTA card */}
             <div className="rounded-2xl bg-navy-950 border border-navy-800 px-6 py-7 text-center">

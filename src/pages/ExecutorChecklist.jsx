@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react'
 import { Helmet } from 'react-helmet-async'
 import { Link } from 'react-router-dom'
 import { Printer, RotateCcw, CheckCircle2, Circle } from 'lucide-react'
+import EmailCaptureCard from '../components/EmailCaptureCard'
 
 // ─── Checklist data ───────────────────────────────────────────────────────────
 
@@ -399,6 +400,16 @@ export default function ExecutorChecklist() {
             <p className="text-xs text-stone-500 leading-relaxed">
               <strong className="text-stone-600">Important:</strong> This checklist is for general guidance only and applies to England &amp; Wales. It is not legal or financial advice. Estate administration can be complex — particularly where inheritance tax, trusts, or disputes are involved. Always consult a qualified solicitor or probate specialist for advice specific to your circumstances.
             </p>
+          </div>
+
+          {/* ── Email capture ── */}
+          <div className="print:hidden mb-10">
+            <EmailCaptureCard
+              source="executor-checklist"
+              title="Want the full checklist by email?"
+              subtitle="We'll send it to your inbox so you have it when you need it — printable, foldable, shareable."
+              buttonLabel="Email me the checklist"
+            />
           </div>
 
           {/* ── Soft CTA ── */}

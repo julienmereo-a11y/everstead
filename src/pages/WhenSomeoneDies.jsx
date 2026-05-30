@@ -1,7 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { Helmet } from 'react-helmet-async'
 import { Link } from 'react-router-dom'
-import { Send, Loader2, ArrowLeft, Heart } from 'lucide-react'
+import { Send, Loader2, ArrowLeft, Heart, Mail } from 'lucide-react'
+import EmailCaptureCard from '../components/EmailCaptureCard'
 
 // ─────────────────────────────────────────────────────────────────────────────
 // WHEN SOMEONE DIES — Free public AI guide
@@ -27,6 +28,7 @@ export default function WhenSomeoneDies() {
   ])
   const [input, setInput]     = useState('')
   const [loading, setLoading] = useState(false)
+  const [showEmailCapture, setShowEmailCapture] = useState(false)
   const messagesEndRef        = useRef(null)
   const inputRef              = useRef(null)
 
@@ -158,6 +160,24 @@ export default function WhenSomeoneDies() {
               A free, compassionate guide through the practical steps after a death in the UK.
               No sign-up needed — just ask.
             </p>
+
+            {!showEmailCapture ? (
+              <button
+                onClick={() => setShowEmailCapture(true)}
+                className="mt-4 inline-flex items-center gap-1.5 text-xs font-medium text-sage-700 hover:text-sage-800 underline underline-offset-2 transition-colors"
+              >
+                <Mail size={12} /> Or have the full written guide emailed to you
+              </button>
+            ) : (
+              <div className="mt-5 max-w-xl mx-auto text-left">
+                <EmailCaptureCard
+                  source="when-someone-dies"
+                  title="Get the full guide by email"
+                  subtitle="A clear, sequenced step-by-step you can save or forward. Save it for when you need it — or for someone who does."
+                  buttonLabel="Email me the guide"
+                />
+              </div>
+            )}
           </div>
         )}
 
