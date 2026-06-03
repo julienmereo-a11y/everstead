@@ -160,6 +160,30 @@ export default function GetStarted() {
   const referralCode = searchParams.get('ref') || null
   const trialDays    = referralCode ? 21 : 14
 
+  // Promo code from ?promo= URL param (e.g. FOUNDING50 — first year free).
+  // Validated against Stripe on mount; threaded into create-subscription.
+  const promoCode = (searchParams.get('promo') || '').trim().toUpperCase() || null
+  const [promoState, setPromoState] = useState({ status: 'idle', label: null, reason: null })
+
+  useEffect(() => {
+    if (!promoCode) return
+    let cancelled = false
+    setPromoState({ status: 'checking', label: null, reason: null })
+    fetch('/api/stripe/validate-promo', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ code: promoCode }),
+    })
+      .then(r => r.json())
+      .then(data => {
+        if (cancelled) return
+        if (data?.valid) setPromoState({ status: 'valid', label: data.label, reason: null })
+        else             setPromoState({ status: 'invalid', label: null, reason: data?.reason || 'Code not valid' })
+      })
+      .catch(() => { if (!cancelled) setPromoState({ status: 'invalid', label: null, reason: 'Could not validate code' }) })
+    return () => { cancelled = true }
+  }, [promoCode])
+
   // Geo access check — runs once on mount, 3-second timeout, fails open
   useEffect(() => {
     const controller = new AbortController()
@@ -441,6 +465,25 @@ export default function GetStarted() {
               : `${trialDays}-day free trial on every plan. Enter your card details — you won't be charged until the trial ends.`
             }
           </p>
+
+          {/* Promo banner — only when ?promo= is present */}
+          {promoCode && promoState.status === 'valid' && (
+            <div className="mt-6 inline-flex items-center gap-2 rounded-full bg-sage-500/15 border border-sage-400/30 px-5 py-2.5 text-sm">
+              <span aria-hidden="true">🎉</span>
+              <span className="text-sage-200 font-semibold">Founding offer applied — {promoState.label.toLowerCase()}.</span>
+              <span className="text-stone-400 hidden sm:inline">Code {promoCode}</span>
+            </div>
+          )}
+          {promoCode && promoState.status === 'invalid' && (
+            <div className="mt-6 inline-flex items-center gap-2 rounded-full bg-amber-500/10 border border-amber-400/30 px-5 py-2.5 text-sm">
+              <span className="text-amber-200">Code {promoCode} couldn't be applied — {promoState.reason.toLowerCase()}. You can still start your free trial.</span>
+            </div>
+          )}
+          {promoCode && promoState.status === 'checking' && (
+            <div className="mt-6 inline-flex items-center gap-2 rounded-full bg-white/5 border border-white/10 px-5 py-2.5 text-sm">
+              <span className="text-stone-400">Checking your code…</span>
+            </div>
+          )}
         </div>
       </section>
 
@@ -911,6 +954,7 @@ export default function GetStarted() {
                   billingCycle={annualBilling ? 'yearly' : 'monthly'}
                   customerId={stripeCustomerId}
                   referredBy={referralCode}
+                  promoCode={promoState.status === 'valid' ? promoCode : null}
                 />
               </Elements>
 
@@ -953,7 +997,7 @@ export default function GetStarted() {
 // ─────────────────────────────────────────────────────────────
 // INLINE CHECKOUT FORM (step 3)
 // ─────────────────────────────────────────────────────────────
-function CheckoutForm({ trialDays, plan, billingCycle, customerId, referredBy }) {
+function CheckoutForm({ trialDays, plan, billingCycle, customerId, referredBy, promoCode }) {
   const stripe   = useStripe()
   const elements = useElements()
   const [loading, setLoading] = useState(false)
@@ -998,6 +1042,7 @@ function CheckoutForm({ trialDays, plan, billingCycle, customerId, referredBy })
           userId:          user?.id,
           trialPeriodDays: trialDays,
           referredBy,
+          promoCode,
         }),
       })
 

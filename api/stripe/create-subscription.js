@@ -16,7 +16,7 @@ const PRICE_IDS = {
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' })
 
-  const { customerId, paymentMethodId, plan, billingCycle, userId, trialPeriodDays = 14, referredBy } = req.body
+  const { customerId, paymentMethodId, plan, billingCycle, userId, trialPeriodDays = 14, referredBy, promoCode } = req.body
   if (!customerId || !paymentMethodId || !plan || !billingCycle || !userId) {
     return res.status(400).json({ error: 'Missing required fields' })
   }
@@ -31,8 +31,24 @@ export default async function handler(req, res) {
       invoice_settings: { default_payment_method: paymentMethodId },
     })
 
+    // Resolve an optional promotion code (e.g. FOUNDING50) to its ID.
+    // Best-effort: if the code is invalid/exhausted we proceed WITHOUT the
+    // discount rather than failing the signup after the card is confirmed.
+    let promotionCodeId = null
+    if (promoCode) {
+      try {
+        const list = await stripe.promotionCodes.list({ code: String(promoCode).trim(), active: true, limit: 1 })
+        const promo = list.data[0]
+        const exhausted = promo?.max_redemptions != null && promo.times_redeemed >= promo.max_redemptions
+        const expired   = promo?.expires_at && promo.expires_at * 1000 < Date.now()
+        if (promo && !exhausted && !expired) promotionCodeId = promo.id
+      } catch (e) {
+        console.error('create-subscription promo lookup failed:', e.message)
+      }
+    }
+
     // Now create the subscription — card is confirmed so no payment risk
-    const subscription = await stripe.subscriptions.create({
+    const subParams = {
       customer:        customerId,
       items:           [{ price: priceId }],
       trial_period_days: trialPeriodDays,
@@ -42,8 +58,26 @@ export default async function handler(req, res) {
         billing_cycle: billingCycle,
         user_id:       userId,
         ...(referredBy ? { referred_by: referredBy } : {}),
+        ...(promotionCodeId ? { promo_code: String(promoCode).trim() } : {}),
       },
-    })
+    }
+    if (promotionCodeId) subParams.discounts = [{ promotion_code: promotionCodeId }]
+
+    let subscription
+    try {
+      subscription = await stripe.subscriptions.create(subParams)
+    } catch (e) {
+      // If the discount raced to its redemption limit between validation and
+      // now, retry once without it so the user still gets an account.
+      if (promotionCodeId) {
+        console.error('create-subscription with discount failed, retrying without:', e.message)
+        delete subParams.discounts
+        delete subParams.metadata.promo_code
+        subscription = await stripe.subscriptions.create(subParams)
+      } else {
+        throw e
+      }
+    }
 
     const isTrialing      = subscription.status === 'trialing'
     const trialEndsAt     = subscription.trial_end
