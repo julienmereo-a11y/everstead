@@ -1,7 +1,10 @@
 {
   "redirects": [
     { "source": "/for-advisors", "destination": "/for-advisers", "permanent": true },
-    { "source": "/advisor-dpa",  "destination": "/adviser-dpa",  "permanent": true }
+    { "source": "/advisor-dpa",  "destination": "/adviser-dpa",  "permanent": true },
+    { "source": "/compare/trust-and-will", "destination": "/compare", "permanent": true },
+    { "source": "/compare/everplans",      "destination": "/compare", "permanent": true },
+    { "source": "/compare/cake",           "destination": "/compare", "permanent": true }
   ],
   "rewrites": [
     { "source": "/((?!api/).*)", "destination": "/index.html" }
