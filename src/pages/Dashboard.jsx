@@ -13,6 +13,7 @@ import {
 } from 'lucide-react'
 import { useAuth }          from '../contexts/AuthContext'
 import ReferralCard         from '../components/ReferralCard'
+import FeedbackWidget       from '../components/FeedbackWidget'
 import { redirectToCheckout, redirectToCustomerPortal, PLANS } from '../lib/stripe'
 import { isAtLimit, getLimit, canUseFeature } from '../lib/planLimits'
 import { useAccounts }      from '../hooks/useData'
@@ -564,6 +565,7 @@ export default function Dashboard() {
       <meta name="robots" content="noindex, nofollow" />
     </Helmet>
     <div className="min-h-screen bg-stone-50 flex flex-col">
+      {!isDemo && <FeedbackWidget profile={activeProfile} />}
       {/* Trial expired overlay */}
       {trialExpired && <TrialExpiredModal profile={activeProfile} onUpgrade={handleUpgrade} />}
       {/* Advisor grace period expired overlay */}
