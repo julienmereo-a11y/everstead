@@ -409,7 +409,7 @@ function CompareIndex() {
     <>
       <Helmet>
         <title>How Everstead compares — Everstead vs the alternatives</title>
-        <meta name="description" content="See how Everstead compares to will-writing services, US estate platforms, document vaults, and the do-nothing status quo. Side-by-side feature comparisons for UK families." />
+        <meta name="description" content="See how Everstead compares to will-writing services, document vaults, and the do-nothing status quo — and why families choose it. Side-by-side feature comparisons for UK families." />
         <link rel="canonical" href="https://www.everstead.care/compare" />
         <meta property="og:title" content="How Everstead compares" />
         <meta property="og:description" content="Everstead vs the alternatives — side-by-side comparisons for UK families." />
@@ -426,10 +426,10 @@ function CompareIndex() {
           <div className="relative max-w-3xl mx-auto px-6 lg:px-8 text-center reveal">
             <p className="text-xs font-semibold uppercase tracking-[0.22em] text-sage-300 mb-5">How we compare</p>
             <h1 className="font-display text-4xl lg:text-6xl font-light text-white leading-tight text-balance">
-              Everstead vs the alternatives.
+              Why families choose Everstead.
             </h1>
             <p className="mt-5 text-lg leading-relaxed text-stone-300 max-w-2xl mx-auto">
-              Whether you're weighing up a will-writing service, a US estate platform, a document vault — or just a spreadsheet — here's an honest, side-by-side look at where Everstead fits.
+              Weighing up a will-writing service, a document vault, or just a spreadsheet? Here's an honest, side-by-side look at how Everstead compares — and why it comes out ahead.
             </p>
           </div>
         </section>
