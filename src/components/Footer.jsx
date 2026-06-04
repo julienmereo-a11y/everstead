@@ -30,6 +30,7 @@ const cols = [
       { label: 'Checklists', href: '/resources/checklists' },
       { label: 'FAQs', href: '/resources/faqs' },
       { label: 'Free Tools', href: '/resources#tools' },
+      { label: 'How We Compare', href: '/compare' },
     ],
   },
   {

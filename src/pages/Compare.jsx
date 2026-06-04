@@ -310,9 +310,19 @@ For less than the price of a coffee a week, Everstead becomes the structured ver
 // ─────────────────────────────────────────────────────────────────────────────
 // Component
 // ─────────────────────────────────────────────────────────────────────────────
+// Display order for the index grid
+const COMPARE_ORDER = [
+  'doing-nothing', 'farewill', 'trust-and-will', 'everplans',
+  'cake', 'safekeep', 'lyfeguard', 'settld',
+]
+
 export default function Compare() {
   useReveal()
   const { slug } = useParams()
+
+  // No slug → render the comparison index
+  if (!slug) return <CompareIndex />
+
   const data = competitors[slug]
   if (!data) return <NotFound />
 
@@ -333,10 +343,10 @@ export default function Compare() {
         <meta name="twitter:image" content="https://www.everstead.care/og-image.png" />
       </Helmet>
 
-      <div className="bg-stone-50 pt-24 min-h-screen">
+      <div className="bg-stone-50 min-h-screen">
 
-        {/* Hero */}
-        <section className="py-20 lg:py-28 grain relative overflow-hidden">
+        {/* Hero — extends under the fixed nav */}
+        <section className="pt-44 pb-20 lg:pt-52 lg:pb-28 grain relative overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-br from-navy-950 via-navy-900 to-navy-800" />
           <div className="relative max-w-4xl mx-auto px-6 lg:px-8 text-center reveal">
             <p className="text-xs font-semibold uppercase tracking-[0.22em] text-sage-300 mb-5">Everstead vs {name}</p>
@@ -441,6 +451,88 @@ export default function Compare() {
               </Link>
             </div>
 
+          </div>
+        </section>
+      </div>
+    </>
+  )
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Compare index — /compare
+// ─────────────────────────────────────────────────────────────────────────────
+function CompareIndex() {
+  useReveal()
+  const cards = COMPARE_ORDER
+    .filter(slug => competitors[slug])
+    .map(slug => ({ slug, ...competitors[slug] }))
+
+  return (
+    <>
+      <Helmet>
+        <title>How Everstead compares — Everstead vs the alternatives</title>
+        <meta name="description" content="See how Everstead compares to will-writing services, US estate platforms, document vaults, and the do-nothing status quo. Side-by-side feature comparisons for UK families." />
+        <link rel="canonical" href="https://www.everstead.care/compare" />
+        <meta property="og:title" content="How Everstead compares" />
+        <meta property="og:description" content="Everstead vs the alternatives — side-by-side comparisons for UK families." />
+        <meta property="og:url" content="https://www.everstead.care/compare" />
+        <meta property="og:image" content="https://www.everstead.care/og-image.png" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:image" content="https://www.everstead.care/og-image.png" />
+      </Helmet>
+
+      <div className="bg-stone-50 min-h-screen">
+        {/* Hero */}
+        <section className="pt-44 pb-16 lg:pt-52 lg:pb-20 grain relative overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-br from-navy-950 via-navy-900 to-navy-800" />
+          <div className="relative max-w-3xl mx-auto px-6 lg:px-8 text-center reveal">
+            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-sage-300 mb-5">How we compare</p>
+            <h1 className="font-display text-4xl lg:text-6xl font-light text-white leading-tight text-balance">
+              Everstead vs the alternatives.
+            </h1>
+            <p className="mt-5 text-lg leading-relaxed text-stone-300 max-w-2xl mx-auto">
+              Whether you're weighing up a will-writing service, a US estate platform, a document vault — or just a spreadsheet — here's an honest, side-by-side look at where Everstead fits.
+            </p>
+          </div>
+        </section>
+
+        {/* Grid */}
+        <section className="py-20 lg:py-24">
+          <div className="max-w-5xl mx-auto px-6 lg:px-8">
+            <div className="grid sm:grid-cols-2 gap-5 reveal">
+              {cards.map(({ slug, name, category, headline }) => (
+                <Link
+                  key={slug}
+                  to={`/compare/${slug}`}
+                  className="group rounded-2xl border border-stone-200 bg-white p-6 hover:border-navy-300 hover:shadow-sm transition-all flex flex-col"
+                >
+                  <div className="flex items-center gap-2.5 mb-3">
+                    <span className="font-semibold text-navy-900">Everstead</span>
+                    <span className="text-stone-300">vs</span>
+                    <span className="font-semibold text-navy-900">{name}</span>
+                  </div>
+                  <p className="text-xs font-medium uppercase tracking-widest text-stone-400 mb-3">{category}</p>
+                  <p className="text-sm text-stone-600 leading-relaxed flex-1">{headline}</p>
+                  <span className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-navy-800 group-hover:gap-2.5 transition-all">
+                    See the comparison <ArrowRight size={14} />
+                  </span>
+                </Link>
+              ))}
+            </div>
+
+            {/* CTA */}
+            <div className="reveal mt-14 rounded-2xl bg-navy-950 px-8 py-9 text-center">
+              <h2 className="font-display text-2xl font-light text-white mb-3">The simplest comparison is trying it.</h2>
+              <p className="text-stone-400 text-sm leading-relaxed mb-6 max-w-md mx-auto">
+                14-day free trial. Full access. Cancel before it ends and pay nothing.
+              </p>
+              <Link
+                to="/get-started"
+                className="inline-flex items-center gap-2 bg-white text-navy-900 px-6 py-3 rounded-xl text-sm font-semibold hover:bg-stone-100 transition-colors"
+              >
+                Start your free trial <ArrowRight size={14} />
+              </Link>
+            </div>
           </div>
         </section>
       </div>

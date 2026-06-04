@@ -197,6 +197,7 @@ export default function App() {
               <Route path="/adviser-dpa"  element={<Layout><AdviserDPA /></Layout>} />
               <Route path="/subprocessors" element={<Layout><Subprocessors /></Layout>} />
               <Route path="/changelog"    element={<Layout><Changelog /></Layout>} />
+              <Route path="/compare"       element={<Layout><Compare /></Layout>} />
               <Route path="/compare/:slug" element={<Layout><Compare /></Layout>} />
               <Route path="/what-to-do-when-someone-dies" element={<WhenSomeoneDies />} />
               <Route path="/data-promise"  element={<Layout><DataPromise /></Layout>} />
