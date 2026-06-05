@@ -1,5 +1,5 @@
 import { createClient } from '@supabase/supabase-js'
-import { captureException } from '../lib/sentry.js'
+import { withSentry } from '../lib/sentry.js'
 
 const supabase = createClient(process.env.VITE_SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY)
 
@@ -30,7 +30,7 @@ async function logRateLimit(ip) {
   }
 }
 
-export default async function handler(req, res) {
+async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).end()
 
   const { email, password, name, mode, wantsTrial, token } = req.body
@@ -114,3 +114,8 @@ export default async function handler(req, res) {
   const { access_token, refresh_token } = await authRes.json()
   res.status(200).json({ access_token, refresh_token })
 }
+
+// Wrapped so any uncaught error is reported to Sentry and returns a JSON 500
+// (instead of a bare crash with no body, which surfaces as a generic
+// "Could not create account" on the client and is invisible in monitoring).
+export default withSentry(handler)
