@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { MessageSquare, X, Star, CheckCircle2 } from 'lucide-react'
 
 const CATEGORIES = [
@@ -21,6 +21,14 @@ export default function FeedbackWidget({ profile }) {
   const [message, setMessage] = useState('')
   const [status, setStatus] = useState('idle') // idle | submitting | success | error
   const [errorMsg, setErrorMsg] = useState('')
+  const [coachOpen, setCoachOpen] = useState(false)
+
+  // Hide the launcher while the planning coach panel is open (same corner)
+  useEffect(() => {
+    const handler = (e) => setCoachOpen(!!e.detail?.open)
+    window.addEventListener('everstead:coach-state', handler)
+    return () => window.removeEventListener('everstead:coach-state', handler)
+  }, [])
 
   const reset = () => {
     setRating(0); setHover(0); setCategory(null); setMessage(''); setStatus('idle'); setErrorMsg('')
@@ -59,12 +67,12 @@ export default function FeedbackWidget({ profile }) {
 
   return (
     <>
-      {/* Floating launcher */}
-      {!open && (
+      {/* Floating launcher — hidden while the coach panel is open */}
+      {!open && !coachOpen && (
         <button
           onClick={() => setOpen(true)}
           aria-label="Send feedback"
-          className="fixed bottom-5 right-5 z-40 inline-flex items-center gap-2 bg-navy-900 text-white text-sm font-medium pl-4 pr-5 py-3 rounded-full shadow-lg hover:bg-navy-800 transition-colors"
+          className="fixed bottom-24 right-6 z-40 inline-flex items-center gap-2 bg-navy-900 text-white text-sm font-medium pl-4 pr-5 py-3 rounded-full shadow-lg hover:bg-navy-800 transition-colors"
         >
           <MessageSquare size={16} />
           Feedback

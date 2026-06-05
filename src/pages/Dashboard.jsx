@@ -1073,6 +1073,12 @@ function OwnerAIGuide({ userName, plan, accountCount, documentCount, contactCoun
     return () => window.removeEventListener('everstead:coach', handler)
   }, [])
 
+  // Broadcast coach open/close so the feedback button can hide while the
+  // coach panel occupies the bottom-right corner.
+  React.useEffect(() => {
+    window.dispatchEvent(new CustomEvent('everstead:coach-state', { detail: { open } }))
+  }, [open])
+
   return (
     <>
       {/* Floating trigger */}
