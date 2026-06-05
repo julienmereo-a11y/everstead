@@ -19,10 +19,15 @@ async function checkRateLimit(ip) {
 }
 
 async function logRateLimit(ip) {
-  await supabase
-    .from('rate_limit_log')
-    .insert({ ip, endpoint: 'delegate-register' })
-    .catch(() => {}) // non-fatal
+  // NB: a PostgREST query builder is a thenable, not a real Promise — it has
+  // no .catch(). Calling .catch() on it throws a TypeError. Use try/catch.
+  try {
+    await supabase
+      .from('rate_limit_log')
+      .insert({ ip, endpoint: 'delegate-register' })
+  } catch {
+    // non-fatal — never block registration on a logging failure
+  }
 }
 
 export default async function handler(req, res) {
