@@ -383,6 +383,7 @@ export default function GetStarted() {
           email:      form.email,
           password:   form.password,
           name:       form.fullName,
+          plan:       selectedPlan,
         }),
       })
 
