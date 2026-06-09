@@ -41,16 +41,19 @@ import {
 const NAV_ITEMS = [
   { id: 'overview',       label: 'Overview',         icon: Home },
   { id: 'aboutme',        label: 'About Me',         icon: UserCircle },
-  { id: 'accounts',       label: 'Accounts',         icon: Landmark },
-  { id: 'documents',      label: 'Documents',        icon: FileText },
-  { id: 'people',         label: 'People',           icon: Users },
-  { id: 'family',         label: 'Family Plan',      icon: Heart,        familyOnly: true },
-  { id: 'messages',       label: 'Personal Messages',icon: MessageSquare },
-  { id: 'instructions',   label: 'Instructions',     icon: BookOpen },
-  { id: 'subscriptions',  label: 'Subscriptions',    icon: CreditCard },
-  { id: 'alerts',         label: 'Alerts',           icon: Bell },
-  { id: 'activity',       label: 'Activity',         icon: Activity },
-  { id: 'resources',      label: 'Help & Resources',  icon: BookOpen },
+
+  { id: 'accounts',       label: 'Accounts',         icon: Landmark,     group: 'Your vault' },
+  { id: 'documents',      label: 'Documents',        icon: FileText,     group: 'Your vault' },
+  { id: 'subscriptions',  label: 'Subscriptions',    icon: CreditCard,   group: 'Your vault' },
+
+  { id: 'people',         label: 'People',           icon: Users,        group: 'People & wishes' },
+  { id: 'family',         label: 'Family Plan',      icon: Heart,        group: 'People & wishes', familyOnly: true },
+  { id: 'messages',       label: 'Personal Messages',icon: MessageSquare,group: 'People & wishes' },
+  { id: 'instructions',   label: 'Instructions',     icon: BookOpen,     group: 'People & wishes' },
+
+  { id: 'alerts',         label: 'Alerts',           icon: Bell,         group: 'More' },
+  { id: 'activity',       label: 'Activity',         icon: Activity,     group: 'More' },
+  { id: 'resources',      label: 'Help & Resources', icon: BookOpen,     group: 'More' },
 ]
 
 const CATEGORY_ICONS = {
@@ -647,13 +650,21 @@ export default function Dashboard() {
 
         {/* Nav */}
         <nav className="flex-1 py-2 overflow-y-auto" style={{ padding: '8px 0' }} aria-label="Dashboard navigation">
-          {NAV_ITEMS.filter(({ familyOnly }) => !familyOnly || activeProfile.plan === 'family').map(({ id, label, icon: Icon }) => {
+          {(() => {
+            const items = NAV_ITEMS.filter(({ familyOnly }) => !familyOnly || activeProfile.plan === 'family')
+            return items.map(({ id, label, icon: Icon, group }, idx) => {
             const isActive = activeSection === id
             const badge    = id === 'alerts' ? unreadCount : 0
             const locked   = id === 'messages' && !planLimits.personalMessages
+            const showHeader = group && group !== (idx > 0 ? items[idx - 1].group : undefined)
             return (
+              <React.Fragment key={id}>
+              {showHeader && (
+                <p style={{ paddingLeft: '25px', margin: '14px 0 4px' }} className="text-[10px] font-semibold uppercase tracking-widest text-white/30 select-none">
+                  {group}
+                </p>
+              )}
               <button
-                key={id}
                 onClick={() => { setActiveSection(id); setSidebarOpen(false) }}
                 title={locked ? 'Personal Messages — upgrade to access. Click to see options.' : undefined}
                 aria-current={isActive && !locked ? 'page' : undefined}
@@ -689,8 +700,10 @@ export default function Dashboard() {
                   </span>
                 )}
               </button>
+              </React.Fragment>
             )
-          })}
+          })
+          })()}
         </nav>
 
         {/* User footer */}
