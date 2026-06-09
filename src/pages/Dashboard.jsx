@@ -40,11 +40,11 @@ import {
 // ─────────────────────────────────────────────────────────────
 const NAV_ITEMS = [
   { id: 'overview',       label: 'Overview',         icon: Home },
+  { id: 'aboutme',        label: 'About Me',         icon: UserCircle },
   { id: 'accounts',       label: 'Accounts',         icon: Landmark },
   { id: 'documents',      label: 'Documents',        icon: FileText },
   { id: 'people',         label: 'People',           icon: Users },
   { id: 'family',         label: 'Family Plan',      icon: Heart,        familyOnly: true },
-  { id: 'aboutme',        label: 'About Me',         icon: UserCircle },
   { id: 'messages',       label: 'Personal Messages',icon: MessageSquare },
   { id: 'instructions',   label: 'Instructions',     icon: BookOpen },
   { id: 'subscriptions',  label: 'Subscriptions',    icon: CreditCard },
@@ -764,7 +764,7 @@ export default function Dashboard() {
         {activeSection === 'accounts'      && <AccountsSection  accounts={accounts} loading={loadingAccounts} add={addAccount} update={updateAccount} remove={removeAccount} profile={activeProfile} onUpgrade={() => handleUpgrade('family', 'yearly')} onLifeEvent={isDemo ? undefined : setLifeEventPrompt} />}
         {activeSection === 'documents'     && <DocumentsSection documents={documents} loading={loadingDocs} uploadFile={uploadFile} update={updateDocument} remove={removeDocument} planLimits={planLimits} profile={activeProfile} onUpgrade={() => handleUpgrade('family', 'yearly')} updateProfile={isDemo ? undefined : updateProfile} addAlert={isDemo ? undefined : realAlerts.add} onLifeEvent={isDemo ? undefined : setLifeEventPrompt} />}
         {activeSection === 'people'        && <PeopleSection    people={people} loading={loadingPeople} invite={invite} resendInvite={resendInvite} updatePerson={updatePerson} removePerson={removePerson} planLimits={planLimits} profile={activeProfile} onUpgrade={() => handleUpgrade('family', 'yearly')} />}
-        {activeSection === 'aboutme'       && <AboutMeSection   aboutMe={aboutMe} loading={isDemo ? false : aboutMeHook.loading} save={aboutMeHook.save} profile={activeProfile} people={people} isDemo={isDemo} onCelebrate={celebrate} />}
+        {activeSection === 'aboutme'       && <AboutMeSection   aboutMe={aboutMe} loading={isDemo ? false : aboutMeHook.loading} save={aboutMeHook.save} uploadAvatar={aboutMeHook.uploadAvatar} profile={activeProfile} people={people} isDemo={isDemo} onCelebrate={celebrate} />}
         {activeSection === 'messages'      && <MessagesSection  messages={messages} loading={loadingMessages} people={people} isDemo={isDemo} planLimits={planLimits} onUpgrade={() => handleUpgrade('family', 'yearly')} addMessage={messagesHook.add} updateMessage={messagesHook.update} uploadVideo={messagesHook.uploadVideo} />}
         {activeSection === 'instructions'  && <InstructionsSection instructions={instructions} loading={loadingInstructions} add={addInstruction} update={updateInstruction} remove={removeInstruction} profile={activeProfile} onUpgrade={() => handleUpgrade('family', 'yearly')} />}
         {activeSection === 'subscriptions' && <SubscriptionsSection subscriptions={subscriptions} loading={loadingSubs} add={addSubscription} update={updateSubscription} remove={removeSubscription} />}
@@ -2485,12 +2485,14 @@ function spotifyEmbedUrl(url) {
   return `https://open.spotify.com/embed/${m[1]}/${m[2]}`
 }
 
-const aboutInput = 'w-full text-sm bg-stone-50 border border-stone-200 rounded-xl px-3.5 py-2.5 outline-none focus:ring-2 focus:ring-navy-300 focus:border-navy-300 placeholder:text-stone-300'
+const aboutInputBase = 'text-sm bg-stone-50 border border-stone-200 rounded-xl px-3.5 py-2.5 outline-none focus:ring-2 focus:ring-navy-300 focus:border-navy-300 placeholder:text-stone-300'
+const aboutInput = `w-full ${aboutInputBase}`
 
-function AboutMeSection({ aboutMe, loading, save, profile, people, isDemo, onCelebrate }) {
+function AboutMeSection({ aboutMe, loading, save, uploadAvatar, profile, people, isDemo, onCelebrate }) {
   const [form, setForm] = useState({
     full_name:     '',
     date_of_birth: '',
+    avatar_url:    '',
     life_events:   [],
     passions:      '',
     spotify_url:   '',
@@ -2502,6 +2504,8 @@ function AboutMeSection({ aboutMe, loading, save, profile, people, isDemo, onCel
   const [saved, setSaved]   = useState(false)
   const [error, setError]   = useState(null)
   const [hydrated, setHydrated] = useState(false)
+  const [uploadingAvatar, setUploadingAvatar] = useState(false)
+  const fileInputRef = React.useRef(null)
 
   // Hydrate the form once data has loaded (prefer saved row, fall back to profile name).
   useEffect(() => {
@@ -2509,6 +2513,7 @@ function AboutMeSection({ aboutMe, loading, save, profile, people, isDemo, onCel
     setForm({
       full_name:     aboutMe?.full_name     ?? profile?.full_name ?? '',
       date_of_birth: aboutMe?.date_of_birth ?? '',
+      avatar_url:    aboutMe?.avatar_url    ?? '',
       life_events:   Array.isArray(aboutMe?.life_events) ? aboutMe.life_events : [],
       passions:      aboutMe?.passions      ?? '',
       spotify_url:   aboutMe?.spotify_url    ?? '',
@@ -2530,6 +2535,23 @@ function AboutMeSection({ aboutMe, loading, save, profile, people, isDemo, onCel
 
   const toggleRecipient = (id) =>
     set('recipients', form.recipients.includes(id) ? form.recipients.filter(r => r !== id) : [...form.recipients, id])
+
+  const handleAvatarPick = async (e) => {
+    const file = e.target.files?.[0]
+    e.target.value = '' // allow re-selecting the same file
+    if (!file || isDemo || !uploadAvatar) return
+    if (!file.type.startsWith('image/')) { setError('Please choose an image file (JPG or PNG).'); return }
+    if (file.size > 5 * 1024 * 1024) { setError('That image is over 5 MB — please choose a smaller one.'); return }
+    setUploadingAvatar(true); setError(null)
+    try {
+      const url = await uploadAvatar(file)
+      set('avatar_url', url)
+    } catch (err) {
+      setError(err.message || 'Could not upload the photo. Please try again.')
+    } finally {
+      setUploadingAvatar(false)
+    }
+  }
 
   const spotifyValid   = !form.spotify_url || !!spotifyEmbedUrl(form.spotify_url)
   const embedUrl       = spotifyEmbedUrl(form.spotify_url)
@@ -2572,14 +2594,40 @@ function AboutMeSection({ aboutMe, loading, save, profile, people, isDemo, onCel
 
       <div className="space-y-6">
         {/* Basics */}
-        <div className="bg-white border border-stone-200 rounded-2xl p-6 space-y-4">
-          <div className="grid sm:grid-cols-2 gap-4">
-            <Field label="Full name">
-              <input className={aboutInput} value={form.full_name} onChange={e => set('full_name', e.target.value)} placeholder="Your full name" />
-            </Field>
-            <Field label="Date of birth">
-              <input type="date" className={aboutInput} value={form.date_of_birth || ''} onChange={e => set('date_of_birth', e.target.value)} />
-            </Field>
+        <div className="bg-white border border-stone-200 rounded-2xl p-6">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-5">
+            {/* Profile picture */}
+            <div className="flex flex-col items-center gap-2 shrink-0">
+              <div className="relative w-24 h-24 rounded-2xl overflow-hidden bg-stone-100 border border-stone-200 flex items-center justify-center">
+                {form.avatar_url
+                  ? <img src={form.avatar_url} alt="Your profile" className="w-full h-full object-cover" />
+                  : <UserCircle size={40} className="text-stone-300" />}
+                {uploadingAvatar && (
+                  <div className="absolute inset-0 bg-white/70 flex items-center justify-center">
+                    <Loader2 size={20} className="text-navy-600 animate-spin" />
+                  </div>
+                )}
+              </div>
+              <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={handleAvatarPick} />
+              <button
+                type="button"
+                onClick={() => fileInputRef.current?.click()}
+                disabled={uploadingAvatar || isDemo}
+                className="text-xs font-semibold text-sage-700 hover:text-sage-800 disabled:text-stone-400 disabled:cursor-not-allowed"
+              >
+                {form.avatar_url ? 'Change photo' : 'Add photo'}
+              </button>
+            </div>
+
+            {/* Name + DOB */}
+            <div className="flex-1 grid sm:grid-cols-2 gap-4 w-full">
+              <Field label="Full name">
+                <input className={aboutInput} value={form.full_name} onChange={e => set('full_name', e.target.value)} placeholder="Your full name" />
+              </Field>
+              <Field label="Date of birth">
+                <input type="date" className={aboutInput} value={form.date_of_birth || ''} onChange={e => set('date_of_birth', e.target.value)} />
+              </Field>
+            </div>
           </div>
         </div>
 
@@ -2597,22 +2645,29 @@ function AboutMeSection({ aboutMe, loading, save, profile, people, isDemo, onCel
               + Add your first life event
             </button>
           ) : (
-            <div className="space-y-2.5">
+            <div className="space-y-3">
               {form.life_events.map((ev, i) => (
-                <div key={i} className="flex items-start gap-2.5">
-                  <input
-                    className={`${aboutInput} w-24 shrink-0`}
-                    value={ev.year}
-                    onChange={e => updateLifeEvent(i, 'year', e.target.value)}
-                    placeholder="Year"
-                  />
-                  <input
-                    className={aboutInput}
-                    value={ev.description}
-                    onChange={e => updateLifeEvent(i, 'description', e.target.value)}
-                    placeholder="What happened?"
-                  />
-                  <button onClick={() => removeLifeEvent(i)} aria-label="Remove" className="mt-2 text-stone-300 hover:text-red-500 transition-colors shrink-0">
+                <div key={i} className="flex items-end gap-2.5">
+                  <div className="w-24 shrink-0">
+                    <label className="block text-[11px] font-semibold text-stone-500 mb-1">Year</label>
+                    <input
+                      className={`${aboutInputBase} w-full`}
+                      value={ev.year}
+                      onChange={e => updateLifeEvent(i, 'year', e.target.value)}
+                      placeholder="1985"
+                      inputMode="numeric"
+                    />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <label className="block text-[11px] font-semibold text-stone-500 mb-1">Description</label>
+                    <input
+                      className={`${aboutInputBase} w-full`}
+                      value={ev.description}
+                      onChange={e => updateLifeEvent(i, 'description', e.target.value)}
+                      placeholder="Married in Edinburgh"
+                    />
+                  </div>
+                  <button onClick={() => removeLifeEvent(i)} aria-label="Remove event" className="shrink-0 mb-2.5 text-stone-300 hover:text-red-500 transition-colors">
                     <Trash2 size={16} />
                   </button>
                 </div>

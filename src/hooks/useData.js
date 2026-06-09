@@ -399,5 +399,17 @@ export function useAboutMe() {
     return row
   }
 
-  return { data, loading, save, refresh: load }
+  // Upload a profile picture to the public `avatars` bucket and return its URL.
+  // Path is namespaced by user id so each user only writes their own folder.
+  const uploadAvatar = async (file) => {
+    if (!user) throw new Error('Not signed in')
+    const ext  = (file.name.split('.').pop() || 'jpg').toLowerCase()
+    const path = `${user.id}/avatar-${Date.now()}.${ext}`
+    const { error } = await supabase.storage.from('avatars').upload(path, file, { upsert: true })
+    if (error) throw error
+    const { data: { publicUrl } } = supabase.storage.from('avatars').getPublicUrl(path)
+    return publicUrl
+  }
+
+  return { data, loading, save, uploadAvatar, refresh: load }
 }
