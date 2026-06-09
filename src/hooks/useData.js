@@ -363,3 +363,41 @@ export function useActivityLog(limit = 20) {
 
   return { data, loading }
 }
+
+// ─────────────────────────────────────────────────────────────
+// ABOUT ME (single row per user)
+// ─────────────────────────────────────────────────────────────
+export function useAboutMe() {
+  const { user } = useAuth()
+  const [data, setData]       = useState(null)
+  const [loading, setLoading] = useState(true)
+
+  const load = useCallback(async () => {
+    if (!user) { setLoading(false); return }
+    const { data: row } = await supabase
+      .from('about_me')
+      .select('*')
+      .eq('user_id', user.id)
+      .maybeSingle()
+    setData(row ?? null)
+    setLoading(false)
+  }, [user])
+
+  useEffect(() => { load() }, [load])
+
+  // Upsert the single about_me row for this user. Returns the saved row.
+  const save = async (values) => {
+    if (!user) return null
+    const payload = { ...values, user_id: user.id, updated_at: new Date().toISOString() }
+    const { data: row, error } = await supabase
+      .from('about_me')
+      .upsert(payload, { onConflict: 'user_id' })
+      .select()
+      .single()
+    if (error) throw error
+    setData(row)
+    return row
+  }
+
+  return { data, loading, save, refresh: load }
+}

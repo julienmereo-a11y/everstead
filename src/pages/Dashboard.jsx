@@ -9,7 +9,7 @@ import {
   Landmark, Building2, Wallet, Key, Activity, MoreHorizontal,
   Pencil, Trash2, Star, Crown, Zap, RefreshCw, ExternalLink, Download,
   Filter, CheckCheck, MessageSquare, Video, Play, FileEdit, Send, Menu, ShieldCheck, Loader2,
-  Gift, Check, Copy, Sparkles, ChevronUp
+  Gift, Check, Copy, Sparkles, ChevronUp, UserCircle, Music
 } from 'lucide-react'
 import { useAuth }          from '../contexts/AuthContext'
 import ReferralCard         from '../components/ReferralCard'
@@ -26,6 +26,7 @@ import { useSubscriptions } from '../hooks/useData'
 import { useAlerts }        from '../hooks/useData'
 import { useActivityLog }   from '../hooks/useData'
 import { useMessages }      from '../hooks/useData'
+import { useAboutMe }       from '../hooks/useData'
 import { FamilySection }    from './Settings'
 import {
   DEMO_PROFILE, DEMO_ACCOUNTS, DEMO_DOCUMENTS, DEMO_PEOPLE,
@@ -43,6 +44,7 @@ const NAV_ITEMS = [
   { id: 'documents',      label: 'Documents',        icon: FileText },
   { id: 'people',         label: 'People',           icon: Users },
   { id: 'family',         label: 'Family Plan',      icon: Heart,        familyOnly: true },
+  { id: 'aboutme',        label: 'About Me',         icon: UserCircle },
   { id: 'messages',       label: 'Personal Messages',icon: MessageSquare },
   { id: 'instructions',   label: 'Instructions',     icon: BookOpen },
   { id: 'subscriptions',  label: 'Subscriptions',    icon: CreditCard },
@@ -450,6 +452,9 @@ export default function Dashboard() {
   const messages        = isDemo ? DEMO_MESSAGES : messagesHook.data
   const loadingMessages = isDemo ? false : messagesHook.loading
 
+  const aboutMeHook     = useAboutMe()
+  const aboutMe         = isDemo ? null : aboutMeHook.data
+
   if (!activeProfile) {
     return (
       <div className="min-h-screen bg-stone-50 flex items-center justify-center">
@@ -755,10 +760,11 @@ export default function Dashboard() {
             onAddPayment={() => handleUpgrade()}
           />
         )}
-        {activeSection === 'overview'      && <OverviewSection  profile={activeProfile} accounts={accounts} documents={documents} people={people} instructions={instructions} messages={messages} alerts={alerts} markRead={markRead} onNavigate={setActiveSection} planLimits={planLimits} loading={loadingAccounts || loadingDocs} daysSinceLogin={daysSinceLogin} onCelebrate={celebrate} onExecutorPreview={() => setShowExecutorPreview(true)} />}
+        {activeSection === 'overview'      && <OverviewSection  profile={activeProfile} accounts={accounts} documents={documents} people={people} instructions={instructions} messages={messages} alerts={alerts} markRead={markRead} onNavigate={setActiveSection} planLimits={planLimits} loading={loadingAccounts || loadingDocs} daysSinceLogin={daysSinceLogin} onCelebrate={celebrate} onExecutorPreview={() => setShowExecutorPreview(true)} aboutMe={aboutMe} />}
         {activeSection === 'accounts'      && <AccountsSection  accounts={accounts} loading={loadingAccounts} add={addAccount} update={updateAccount} remove={removeAccount} profile={activeProfile} onUpgrade={() => handleUpgrade('family', 'yearly')} onLifeEvent={isDemo ? undefined : setLifeEventPrompt} />}
         {activeSection === 'documents'     && <DocumentsSection documents={documents} loading={loadingDocs} uploadFile={uploadFile} update={updateDocument} remove={removeDocument} planLimits={planLimits} profile={activeProfile} onUpgrade={() => handleUpgrade('family', 'yearly')} updateProfile={isDemo ? undefined : updateProfile} addAlert={isDemo ? undefined : realAlerts.add} onLifeEvent={isDemo ? undefined : setLifeEventPrompt} />}
         {activeSection === 'people'        && <PeopleSection    people={people} loading={loadingPeople} invite={invite} resendInvite={resendInvite} updatePerson={updatePerson} removePerson={removePerson} planLimits={planLimits} profile={activeProfile} onUpgrade={() => handleUpgrade('family', 'yearly')} />}
+        {activeSection === 'aboutme'       && <AboutMeSection   aboutMe={aboutMe} loading={isDemo ? false : aboutMeHook.loading} save={aboutMeHook.save} profile={activeProfile} people={people} isDemo={isDemo} onCelebrate={celebrate} />}
         {activeSection === 'messages'      && <MessagesSection  messages={messages} loading={loadingMessages} people={people} isDemo={isDemo} planLimits={planLimits} onUpgrade={() => handleUpgrade('family', 'yearly')} addMessage={messagesHook.add} updateMessage={messagesHook.update} uploadVideo={messagesHook.uploadVideo} />}
         {activeSection === 'instructions'  && <InstructionsSection instructions={instructions} loading={loadingInstructions} add={addInstruction} update={updateInstruction} remove={removeInstruction} profile={activeProfile} onUpgrade={() => handleUpgrade('family', 'yearly')} />}
         {activeSection === 'subscriptions' && <SubscriptionsSection subscriptions={subscriptions} loading={loadingSubs} add={addSubscription} update={updateSubscription} remove={removeSubscription} />}
@@ -1293,7 +1299,7 @@ const PLAN_BADGE = {
   advisor:   { label: 'Adviser',   cls: 'bg-sage-50  text-sage-700  border-sage-200'  },
 }
 
-function OverviewSection({ profile, accounts, documents, people, instructions, messages, alerts, markRead, onNavigate, planLimits, loading, daysSinceLogin, onCelebrate, onExecutorPreview }) {
+function OverviewSection({ profile, accounts, documents, people, instructions, messages, alerts, markRead, onNavigate, planLimits, loading, daysSinceLogin, onCelebrate, onExecutorPreview, aboutMe }) {
   const criticalAlerts = alerts.filter(a => a.severity === 'critical' && !a.is_read)
   const [staleBannerDismissed, setStaleBannerDismissed] = React.useState(false)
   const showStaleBanner = !staleBannerDismissed && daysSinceLogin !== null && daysSinceLogin >= 180
@@ -1377,6 +1383,24 @@ function OverviewSection({ profile, accounts, documents, people, instructions, m
           </span>
         </div>
       </div>
+
+      {/* Recommended first step — About Me (until it's been filled in) */}
+      {!aboutMe && (
+        <button
+          onClick={() => onNavigate('aboutme')}
+          className="w-full mb-6 text-left rounded-2xl border border-sage-200 bg-gradient-to-br from-sage-50 to-white p-5 flex items-center gap-4 hover:border-sage-300 transition-colors group"
+        >
+          <div className="w-12 h-12 rounded-2xl bg-sage-100 text-sage-700 flex items-center justify-center shrink-0">
+            <UserCircle size={22} />
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="text-xs font-semibold uppercase tracking-widest text-sage-700 mb-0.5">Start here</p>
+            <h3 className="font-display text-lg font-light text-navy-950 leading-snug">Tell your story — start with “About Me”.</h3>
+            <p className="text-sm text-stone-500 mt-0.5">The easiest, most personal part of your plan. Takes a few minutes, and it's yours to share with the people you love.</p>
+          </div>
+          <ArrowRight size={18} className="text-sage-600 shrink-0 group-hover:translate-x-0.5 transition-transform" />
+        </button>
+      )}
 
       {/* Critical alerts banner */}
       {criticalAlerts.length > 0 && (
@@ -2447,6 +2471,301 @@ function DocumentsSection({ documents, loading, uploadFile, update, remove, plan
     </SectionShell>
   )
 }
+// ─────────────────────────────────────────────────────────────
+// ABOUT ME SECTION
+// ─────────────────────────────────────────────────────────────
+// Roles that should NOT see a personal "About Me" — professional/legal contacts.
+const ABOUT_ME_EXCLUDED_ROLES = ['Estate Attorney', 'Financial Advisor', 'Healthcare Proxy']
+
+// Turn a Spotify share URL into an embeddable player URL. Returns null if not a Spotify URL.
+function spotifyEmbedUrl(url) {
+  if (!url) return null
+  const m = String(url).trim().match(/^https?:\/\/open\.spotify\.com\/(playlist|album|track|artist)\/([A-Za-z0-9]+)/)
+  if (!m) return null
+  return `https://open.spotify.com/embed/${m[1]}/${m[2]}`
+}
+
+const aboutInput = 'w-full text-sm bg-stone-50 border border-stone-200 rounded-xl px-3.5 py-2.5 outline-none focus:ring-2 focus:ring-navy-300 focus:border-navy-300 placeholder:text-stone-300'
+
+function AboutMeSection({ aboutMe, loading, save, profile, people, isDemo, onCelebrate }) {
+  const [form, setForm] = useState({
+    full_name:     '',
+    date_of_birth: '',
+    life_events:   [],
+    passions:      '',
+    spotify_url:   '',
+    reflections:   '',
+    recipients:    [],
+    share_timing:  'on_activation',
+  })
+  const [saving, setSaving] = useState(false)
+  const [saved, setSaved]   = useState(false)
+  const [error, setError]   = useState(null)
+  const [hydrated, setHydrated] = useState(false)
+
+  // Hydrate the form once data has loaded (prefer saved row, fall back to profile name).
+  useEffect(() => {
+    if (loading || hydrated) return
+    setForm({
+      full_name:     aboutMe?.full_name     ?? profile?.full_name ?? '',
+      date_of_birth: aboutMe?.date_of_birth ?? '',
+      life_events:   Array.isArray(aboutMe?.life_events) ? aboutMe.life_events : [],
+      passions:      aboutMe?.passions      ?? '',
+      spotify_url:   aboutMe?.spotify_url    ?? '',
+      reflections:   aboutMe?.reflections    ?? '',
+      recipients:    Array.isArray(aboutMe?.recipients) ? aboutMe.recipients : [],
+      share_timing:  aboutMe?.share_timing   ?? 'on_activation',
+    })
+    setHydrated(true)
+  }, [loading, hydrated, aboutMe, profile])
+
+  // Trusted people eligible to receive the About Me (family/partners/friends/executors — not professionals).
+  const eligiblePeople = (people || []).filter(p => !ABOUT_ME_EXCLUDED_ROLES.includes(p.role))
+
+  const set = (k, v) => { setForm(f => ({ ...f, [k]: v })); setSaved(false) }
+
+  const addLifeEvent    = () => set('life_events', [...form.life_events, { year: '', description: '' }])
+  const updateLifeEvent = (i, k, v) => set('life_events', form.life_events.map((e, idx) => idx === i ? { ...e, [k]: v } : e))
+  const removeLifeEvent = (i) => set('life_events', form.life_events.filter((_, idx) => idx !== i))
+
+  const toggleRecipient = (id) =>
+    set('recipients', form.recipients.includes(id) ? form.recipients.filter(r => r !== id) : [...form.recipients, id])
+
+  const spotifyValid   = !form.spotify_url || !!spotifyEmbedUrl(form.spotify_url)
+  const embedUrl       = spotifyEmbedUrl(form.spotify_url)
+
+  const handleSave = async () => {
+    if (isDemo) return
+    if (!spotifyValid) { setError('That doesn\'t look like a Spotify link. It should start with open.spotify.com/…'); return }
+    setSaving(true); setError(null)
+    try {
+      // Drop empty life events
+      const cleanEvents = form.life_events.filter(e => (e.year || '').trim() || (e.description || '').trim())
+      const wasEmpty = !aboutMe
+      await save({ ...form, life_events: cleanEvents })
+      setSaved(true)
+      if (wasEmpty && onCelebrate) onCelebrate('about_me_done', '💚', 'Your story is saved.', 'Thank you for sharing a little of who you are.')
+    } catch (err) {
+      setError(err.message || 'Could not save. Please try again.')
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  if (loading) return <SectionShell title="About Me"><LoadingSpinner /></SectionShell>
+
+  return (
+    <SectionShell
+      title="About Me"
+      subtitle="A personal page about who you are — shared only with the people you choose."
+    >
+      {/* Intro */}
+      <div className="rounded-2xl border border-sage-200 bg-sage-50 p-5 mb-6 flex items-start gap-3">
+        <div className="w-9 h-9 rounded-xl bg-sage-100 text-sage-700 flex items-center justify-center shrink-0">
+          <Heart size={17} />
+        </div>
+        <p className="text-sm text-stone-700 leading-relaxed">
+          This is the easiest, most personal part of your plan — your story, your passions, the moments that shaped you.
+          You choose who sees it, and whether it's shared now or kept for when your plan is activated. It's never shown to solicitors or professional advisers.
+        </p>
+      </div>
+
+      <div className="space-y-6">
+        {/* Basics */}
+        <div className="bg-white border border-stone-200 rounded-2xl p-6 space-y-4">
+          <div className="grid sm:grid-cols-2 gap-4">
+            <Field label="Full name">
+              <input className={aboutInput} value={form.full_name} onChange={e => set('full_name', e.target.value)} placeholder="Your full name" />
+            </Field>
+            <Field label="Date of birth">
+              <input type="date" className={aboutInput} value={form.date_of_birth || ''} onChange={e => set('date_of_birth', e.target.value)} />
+            </Field>
+          </div>
+        </div>
+
+        {/* Life events */}
+        <div className="bg-white border border-stone-200 rounded-2xl p-6">
+          <div className="flex items-center justify-between mb-1">
+            <h3 className="font-display text-lg font-light text-navy-950">Life events</h3>
+            <button onClick={addLifeEvent} className="inline-flex items-center gap-1.5 text-xs font-semibold text-sage-700 hover:text-sage-800">
+              <Plus size={14} /> Add event
+            </button>
+          </div>
+          <p className="text-stone-500 text-xs mb-4">The moments that mattered. e.g. "1985 — Married in Edinburgh"</p>
+          {form.life_events.length === 0 ? (
+            <button onClick={addLifeEvent} className="w-full border border-dashed border-stone-200 rounded-xl py-5 text-sm text-stone-400 hover:border-sage-300 hover:text-sage-700 transition-colors">
+              + Add your first life event
+            </button>
+          ) : (
+            <div className="space-y-2.5">
+              {form.life_events.map((ev, i) => (
+                <div key={i} className="flex items-start gap-2.5">
+                  <input
+                    className={`${aboutInput} w-24 shrink-0`}
+                    value={ev.year}
+                    onChange={e => updateLifeEvent(i, 'year', e.target.value)}
+                    placeholder="Year"
+                  />
+                  <input
+                    className={aboutInput}
+                    value={ev.description}
+                    onChange={e => updateLifeEvent(i, 'description', e.target.value)}
+                    placeholder="What happened?"
+                  />
+                  <button onClick={() => removeLifeEvent(i)} aria-label="Remove" className="mt-2 text-stone-300 hover:text-red-500 transition-colors shrink-0">
+                    <Trash2 size={16} />
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Passions */}
+        <div className="bg-white border border-stone-200 rounded-2xl p-6">
+          <Field label="Passions & interests">
+            <textarea
+              rows={3}
+              className={`${aboutInput} resize-none`}
+              value={form.passions}
+              onChange={e => set('passions', e.target.value)}
+              placeholder="The things you love — hobbies, places, people, causes…"
+            />
+          </Field>
+        </div>
+
+        {/* Spotify */}
+        <div className="bg-white border border-stone-200 rounded-2xl p-6">
+          <Field label="A playlist that's you (Spotify)">
+            <div className="relative">
+              <Music size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-stone-400" />
+              <input
+                className={`${aboutInput} pl-9`}
+                value={form.spotify_url}
+                onChange={e => set('spotify_url', e.target.value)}
+                placeholder="https://open.spotify.com/playlist/…"
+              />
+            </div>
+          </Field>
+          {!spotifyValid && (
+            <p className="text-xs text-red-600 mt-2">That doesn't look like a Spotify link — it should start with open.spotify.com/…</p>
+          )}
+          {embedUrl && (
+            <div className="mt-4 rounded-xl overflow-hidden border border-stone-200">
+              <iframe
+                title="Spotify preview"
+                src={embedUrl}
+                width="100%"
+                height="152"
+                frameBorder="0"
+                allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+                loading="lazy"
+              />
+            </div>
+          )}
+        </div>
+
+        {/* Reflections */}
+        <div className="bg-white border border-stone-200 rounded-2xl p-6">
+          <Field label="Thoughts & reflections">
+            <textarea
+              rows={6}
+              className={`${aboutInput} resize-none`}
+              value={form.reflections}
+              onChange={e => set('reflections', e.target.value)}
+              placeholder="Anything you'd want the people you love to know. There's no wrong way to write this."
+            />
+          </Field>
+        </div>
+
+        {/* Sharing */}
+        <div className="bg-white border border-stone-200 rounded-2xl p-6 space-y-5">
+          <div>
+            <h3 className="font-display text-lg font-light text-navy-950 mb-1">Who can see this?</h3>
+            <p className="text-stone-500 text-xs">Only the people you tick below. Solicitors and professional advisers are never included.</p>
+          </div>
+
+          {eligiblePeople.length === 0 ? (
+            <p className="text-sm text-stone-500 bg-stone-50 border border-stone-200 rounded-xl px-4 py-3">
+              You haven't added any family, partners, or friends yet. Add trusted people under <strong>People</strong> first, then choose who sees your story.
+            </p>
+          ) : (
+            <div className="grid sm:grid-cols-2 gap-2">
+              {eligiblePeople.map(p => {
+                const checked = form.recipients.includes(p.id)
+                return (
+                  <button
+                    key={p.id}
+                    type="button"
+                    onClick={() => toggleRecipient(p.id)}
+                    className={`flex items-center gap-3 text-left px-3.5 py-2.5 rounded-xl border transition-colors ${
+                      checked ? 'border-sage-400 bg-sage-50' : 'border-stone-200 bg-white hover:border-stone-300'
+                    }`}
+                  >
+                    <span className={`w-4 h-4 rounded flex items-center justify-center shrink-0 ${checked ? 'bg-sage-600' : 'border border-stone-300'}`}>
+                      {checked && <Check size={11} className="text-white" />}
+                    </span>
+                    <span className="min-w-0">
+                      <span className="block text-sm font-medium text-navy-900 truncate">{p.name}</span>
+                      {p.role && <span className="block text-xs text-stone-400 truncate">{p.role}</span>}
+                    </span>
+                  </button>
+                )
+              })}
+            </div>
+          )}
+
+          {/* Timing */}
+          <div>
+            <h3 className="font-display text-lg font-light text-navy-950 mb-2">When is it shared?</h3>
+            <div className="space-y-2.5">
+              {[
+                { id: 'on_activation', title: 'Share when my plan is activated', desc: 'Kept private until your trusted people are given access (recommended).' },
+                { id: 'now',           title: 'Share now',                        desc: 'Available to the people above as soon as you save.' },
+              ].map(opt => {
+                const active = form.share_timing === opt.id
+                return (
+                  <button
+                    key={opt.id}
+                    type="button"
+                    onClick={() => set('share_timing', opt.id)}
+                    className={`w-full flex items-start gap-3 text-left px-4 py-3 rounded-xl border transition-colors ${
+                      active ? 'border-navy-400 bg-navy-50' : 'border-stone-200 bg-white hover:border-stone-300'
+                    }`}
+                  >
+                    <span className={`mt-0.5 w-4 h-4 rounded-full border-2 flex items-center justify-center shrink-0 ${active ? 'border-navy-600' : 'border-stone-300'}`}>
+                      {active && <span className="w-2 h-2 rounded-full bg-navy-600" />}
+                    </span>
+                    <span>
+                      <span className="block text-sm font-medium text-navy-900">{opt.title}</span>
+                      <span className="block text-xs text-stone-500 mt-0.5">{opt.desc}</span>
+                    </span>
+                  </button>
+                )
+              })}
+            </div>
+          </div>
+        </div>
+
+        {/* Save bar */}
+        <div className="flex items-center justify-between gap-4 sticky bottom-4">
+          <div className="text-sm">
+            {error && <span className="text-red-600">{error}</span>}
+            {saved && !error && <span className="text-sage-700 inline-flex items-center gap-1.5"><CheckCircle2 size={15} /> Saved</span>}
+          </div>
+          <button
+            onClick={handleSave}
+            disabled={saving || isDemo}
+            className={`${primaryBtn} disabled:bg-stone-300 disabled:cursor-not-allowed shadow-sm`}
+          >
+            {saving ? 'Saving…' : isDemo ? 'Sign in to edit' : <><Check size={15} /> Save About Me</>}
+          </button>
+        </div>
+      </div>
+    </SectionShell>
+  )
+}
+
 // ─────────────────────────────────────────────────────────────
 // PERSONAL MESSAGES SECTION
 // ─────────────────────────────────────────────────────────────
