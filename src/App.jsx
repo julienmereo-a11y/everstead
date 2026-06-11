@@ -10,6 +10,8 @@ import Nav from './components/Nav'
 import Footer from './components/Footer'
 import ChatWidget from './components/ChatWidget'
 import CookieBanner from './components/CookieBanner'
+import InstallPrompt from './components/InstallPrompt'
+import OfflineBanner from './components/OfflineBanner'
 
 // ── Lazy-loaded pages ─────────────────────────────────────────────────────────
 // Each route is code-split into its own chunk, reducing the initial JS bundle
@@ -208,6 +210,8 @@ export default function App() {
           </Suspense>
         </ErrorBoundary>
         <CookieBanner />
+        <OfflineBanner />
+        <InstallPrompt />
       </BrowserRouter>
     </AuthProvider>
   )

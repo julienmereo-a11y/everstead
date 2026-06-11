@@ -30,3 +30,6 @@ yarn-error.log*
 .vercel
 .env.vercel
 .env*
+
+# vite-plugin-pwa dev artifacts
+dev-dist/
