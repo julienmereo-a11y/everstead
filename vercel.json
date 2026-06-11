@@ -18,6 +18,7 @@
     { "path": "/api/cron/onboarding-sequence","schedule": "0 10 * * *"  },
     { "path": "/api/cron/reengagement",       "schedule": "0 10 * * 1"  },
     { "path": "/api/cron/annual-review",      "schedule": "0 9 1 * *"   },
+    { "path": "/api/cron/plan-checkin",       "schedule": "0 10 1 * *"  },
     { "path": "/api/cron/birthday",            "schedule": "0 8 * * *"   },
     { "path": "/api/cron/gift-delivery",       "schedule": "0 * * * *"   },
     { "path": "/api/cron/document-expiry",    "schedule": "30 9 * * *"  }
