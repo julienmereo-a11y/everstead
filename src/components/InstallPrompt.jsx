@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { X, Share, Plus, Download } from 'lucide-react'
+import { useAuth } from '../contexts/AuthContext'
 
 const DISMISS_KEY = 'everstead_install_dismissed'
 
@@ -28,6 +29,7 @@ function dismissed() {
  * Shows once; dismissal is remembered in localStorage.
  */
 export default function InstallPrompt() {
+  const { user } = useAuth()
   const [deferredPrompt, setDeferredPrompt] = useState(null)
   const [show, setShow] = useState(false)
   const ios = isIos()
@@ -66,7 +68,10 @@ export default function InstallPrompt() {
     close()
   }
 
-  if (!show) return null
+  // Only surface the prompt to logged-in users (higher intent than marketing
+  // visitors). The beforeinstallprompt event is still captured above regardless,
+  // so we don't lose it if it fires before sign-in.
+  if (!show || !user) return null
 
   return (
     <div
