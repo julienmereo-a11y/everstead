@@ -209,10 +209,13 @@ export default function GetStarted() {
     const isResume  = searchParams.get('resume') === 'true'
     const isOAuth   = localStorage.getItem('everstead_oauth_pending') === 'true'
     if (!isResume && !isOAuth) return
-    if (isOAuth) localStorage.removeItem('everstead_oauth_pending')
     ;(async () => {
       const { data: { session } } = await supabase.auth.getSession()
       if (!session) return
+      // Clear the OAuth flag only AFTER the session is confirmed — otherwise a
+      // null session on the first post-redirect run would consume the flag and
+      // strand the Google user on step 1 with no retry.
+      if (isOAuth) localStorage.removeItem('everstead_oauth_pending')
 
       const { data: profile } = await supabase
         .from('profiles')
@@ -652,10 +655,16 @@ export default function GetStarted() {
                     </div>
                     <p className="text-stone-500 text-xs mb-4 leading-relaxed">{plan.desc}</p>
                     <div className="mb-5">
-                      <span className="font-display text-2xl font-light text-navy-950">
-                        £{annualBilling ? plan.yearly : plan.monthly}
-                      </span>
-                      <span className="text-xs text-stone-400 ml-1.5">/mo · {annualBilling ? 'billed annually (save 20%)' : 'billed monthly'}</span>
+                      {plan.id === 'advisor' ? (
+                        <span className="font-display text-2xl font-light text-navy-950">Pricing on application</span>
+                      ) : (
+                        <>
+                          <span className="font-display text-2xl font-light text-navy-950">
+                            £{annualBilling ? plan.yearly : plan.monthly}
+                          </span>
+                          <span className="text-xs text-stone-400 ml-1.5">/mo · {annualBilling ? 'billed annually (save 20%)' : 'billed monthly'}</span>
+                        </>
+                      )}
                     </div>
                     <ul className="space-y-1.5">
                       {plan.features.map(f => (

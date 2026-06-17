@@ -51,7 +51,7 @@ export default async function handler(req, res) {
 
   // Send gifter confirmation email
   const planName   = PLAN_NAMES[plan] || plan
-  const totalGBP   = (intent.amount / 100).toFixed(0)
+  const totalGBP   = (intent.amount / 100).toFixed(2)
   const deliveryStr = sendNow
     ? 'We\'ve sent the gift to ' + (recipientName || recipientEmail) + ' right away.'
     : `It's scheduled to arrive on ${new Date(scheduledSendAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}.`

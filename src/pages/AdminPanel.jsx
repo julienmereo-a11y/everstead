@@ -775,9 +775,10 @@ function AdminActions({ u, onTrialExtended }) {
   const extendTrial = async () => {
     setTrialState('sending')
     try {
+      const { data: { session } } = await supabase.auth.getSession()
       const res = await fetch('/api/stripe/cancel-subscription', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${session?.access_token}` },
         body: JSON.stringify({ subscriptionId: u.stripe_subscription_id || null, userId: u.id, action: 'extend-trial', days: extendDays }),
       })
       if (!res.ok) throw new Error()
@@ -792,9 +793,10 @@ function AdminActions({ u, onTrialExtended }) {
     if (!u.stripe_subscription_id || !window.confirm(`Cancel subscription for ${u.full_name ?? u.email}? They will keep access until the billing period ends.`)) return
     setCancelState('sending')
     try {
+      const { data: { session } } = await supabase.auth.getSession()
       const res = await fetch('/api/stripe/cancel-subscription', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${session?.access_token}` },
         body: JSON.stringify({ subscriptionId: u.stripe_subscription_id, userId: u.id }),
       })
       if (!res.ok) throw new Error()
@@ -811,9 +813,10 @@ function AdminActions({ u, onTrialExtended }) {
     )) return
     setSuspendState('sending')
     try {
+      const { data: { session } } = await supabase.auth.getSession()
       const res = await fetch('/api/stripe/cancel-subscription', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${session?.access_token}` },
         body: JSON.stringify({ userId: u.id, action: newSuspended ? 'suspend-user' : 'unsuspend-user' }),
       })
       if (!res.ok) throw new Error()

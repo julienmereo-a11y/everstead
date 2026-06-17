@@ -169,11 +169,13 @@ export default async function handler(req, res) {
       updatedProfile = data
     }
 
-    // User confirmation email — sent HERE (not in setup_intent.succeeded) because
-    // this event has the fully-formed subscription: correct plan, billing cycle,
-    // and trial status. setup_intent.succeeded fires before the subscription
-    // exists, so it can't know the plan or whether the user is trialing.
-    if (updatedProfile?.email) {
+    // User confirmation + owner emails — sent HERE (not in setup_intent.succeeded)
+    // because this event has the fully-formed subscription: correct plan, billing
+    // cycle, and trial status. Gated on metaUserId so they fire ONLY for the inline
+    // SetupIntent signup flow. The hosted-Checkout re-subscribe path (create-checkout.js,
+    // no user_id in metadata) also triggers checkout.session.completed, which sends
+    // these same emails — gating here prevents a duplicate pair on re-subscribe.
+    if (metaUserId && updatedProfile?.email) {
       const trialDays = subscription.trial_end && subscription.created
         ? Math.round((subscription.trial_end - subscription.created) / 86400)
         : 14
@@ -195,7 +197,8 @@ export default async function handler(req, res) {
 
     // Owner notification — fired here (not in setup_intent.succeeded) so it
     // always has a fully-formed subscription object and no race conditions.
-    if (updatedProfile) {
+    // Gated on metaUserId (inline flow) for the same de-dup reason as above.
+    if (metaUserId && updatedProfile) {
       await resend.emails.send({
         from:    'Everstead <hello@everstead.care>',
         to:      'julien@everstead.care',

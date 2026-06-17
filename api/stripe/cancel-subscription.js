@@ -12,8 +12,40 @@ const resend = new Resend(process.env.RESEND_API_KEY)
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' })
 
+  // ── Authenticate the caller ───────────────────────────────────
+  // This endpoint can ban accounts, extend trials, and cancel subscriptions —
+  // never trust the userId/subscriptionId in the body without proving who's asking.
+  const token = (req.headers.authorization || '').replace(/^Bearer\s+/i, '')
+  if (!token) return res.status(401).json({ error: 'Unauthorized' })
+  const { data: { user: authUser }, error: authErr } = await supabase.auth.getUser(token)
+  if (authErr || !authUser) return res.status(401).json({ error: 'Unauthorized' })
+
   const { subscriptionId, userId, action, days } = req.body
   if (!userId) return res.status(400).json({ error: 'Missing userId' })
+
+  // Look up the CALLER's own profile to determine privileges + ownership.
+  const { data: caller } = await supabase
+    .from('profiles')
+    .select('role, stripe_subscription_id')
+    .eq('id', authUser.id)
+    .single()
+  const isAdmin = caller?.role === 'admin'
+
+  // ── Authorize by action ───────────────────────────────────────
+  // Admin-only: suspend/unsuspend any account, extend any trial.
+  const ADMIN_ONLY = ['suspend-user', 'unsuspend-user', 'extend-trial']
+  if (ADMIN_ONLY.includes(action)) {
+    if (!isAdmin) return res.status(403).json({ error: 'Forbidden' })
+  } else {
+    // Self-service (cancel / reactivate): a non-admin may only act on their OWN
+    // subscription. Admins may act on anyone's.
+    if (!isAdmin) {
+      if (authUser.id !== userId) return res.status(403).json({ error: 'Forbidden' })
+      if (!subscriptionId || caller?.stripe_subscription_id !== subscriptionId) {
+        return res.status(403).json({ error: 'Forbidden' })
+      }
+    }
+  }
 
   // ── Suspend user (admin only) ─────────────────────────────────
   if (action === 'suspend-user') {

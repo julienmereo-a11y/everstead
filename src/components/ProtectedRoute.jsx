@@ -26,6 +26,21 @@ export default function ProtectedRoute({ children }) {
   const isDelegateOnly   = profile.role === 'delegate'
   const onTrialEndedPage = location.pathname === '/trial-ended'
 
+  // Redirect expired-trial users to the /trial-ended choice screen FIRST — before
+  // the no-subscription bounce below. Otherwise a trial_expired user without their
+  // own stripe_subscription_id (e.g. a removed/departed secondary family member)
+  // would be wrongly sent to /get-started's card step instead of /trial-ended.
+  if (!isDelegateOnly && !onTrialEndedPage && !isCheckout) {
+    const trialExpiredByStatus = profile.subscription_status === 'trial_expired'
+    const trialExpiredByDate   =
+      profile.subscription_status === 'trialing' &&
+      profile.trial_ends_at &&
+      new Date(profile.trial_ends_at) < new Date()
+    if (trialExpiredByStatus || trialExpiredByDate) {
+      return <Navigate to="/trial-ended" replace />
+    }
+  }
+
   // Gate: user created an account but never completed checkout (no subscription).
   // Delegates are excluded — they don't go through checkout.
   // Skip if already mid-checkout (?checkout=success) to avoid redirect loop.
@@ -38,18 +53,6 @@ export default function ProtectedRoute({ children }) {
     ['trialing', 'active', 'cancelling', 'past_due'].includes(profile.subscription_status)
   if (!isDelegateOnly && !isCheckout && !hasSubscription) {
     return <Navigate to="/get-started?resume=true" replace />
-  }
-
-  // Redirect expired trial owners to the /trial-ended choice screen.
-  if (!isDelegateOnly && !onTrialEndedPage && !isCheckout) {
-    const trialExpiredByStatus = profile.subscription_status === 'trial_expired'
-    const trialExpiredByDate   =
-      profile.subscription_status === 'trialing' &&
-      profile.trial_ends_at &&
-      new Date(profile.trial_ends_at) < new Date()
-    if (trialExpiredByStatus || trialExpiredByDate) {
-      return <Navigate to="/trial-ended" replace />
-    }
   }
 
   return children
