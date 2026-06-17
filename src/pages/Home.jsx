@@ -598,14 +598,14 @@ export default function Home() {
             <div className="reveal">
               <p className="text-xs font-semibold uppercase tracking-widest text-navy-600 mb-4">Security & privacy</p>
               {/* A/B alternates to try later:
-                // "The most private details of your life deserve real protection."
-                // "Your trust is the whole product."
+                // "Bank-grade security. Total control. Always yours."
+                // "Protected to the highest standards — and only ever yours."
               */}
               <h2 className="font-display text-4xl lg:text-5xl font-light text-navy-950 text-balance leading-tight">
-                You're trusting us with the most private details of your life.
+                Built on the highest security standards — and controlled entirely by you.
               </h2>
               <p className="mt-5 text-stone-600 leading-relaxed">
-                So we protect them the way you'd want — every entry encrypted, access controlled by you, and never shared with anyone without your say-so.
+                Everstead runs on bank-grade AES-256 encryption and EU-based, UK GDPR-compliant infrastructure. Your information stays private by default — visible only to the people you choose, only the parts you choose, and only when you decide. It's your vault, and you decide who ever gets in.
               </p>
               <div className="mt-8 flex flex-wrap gap-x-6 gap-y-3">
                 <Link to="/security" className="inline-flex items-center gap-2 text-navy-700 font-medium text-sm hover:text-navy-900 transition-colors">
