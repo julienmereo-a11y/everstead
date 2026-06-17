@@ -29,8 +29,7 @@ const featureHighlights = [
   { icon: Folder, title: 'Digital account inventory', desc: 'See every account — banking, investments, subscriptions, and digital assets — in one structured place. No more hunting across apps.' },
   { icon: FileText, title: 'Secure document vault', desc: 'Upload, tag, and find legal, financial, and personal documents in seconds. Version history included.', ai: 'Upload a document — we extract the key details automatically. ✨' },
   { icon: ClipboardList, title: 'Step-by-step instructions', desc: 'Write clear guidance on your own terms — for everyday reference, and so the people you love know what to do when it counts.', ai: 'Not sure what to write? We\'ll help you find the words. ✨' },
-  { icon: Users, title: 'People & role assignment', desc: 'Give each person access to only what they need — a trusted contact today, a caregiver or executor when required.' },
-  { icon: Share2, title: 'Controlled sharing', desc: 'Share by role and category on your terms. Emergency vault access available with a single tap.' },
+  { icon: Users, title: 'Trusted people & sharing', desc: 'Give each person access to only what they need — a trusted contact today, an executor when it counts. Share by role and category on your terms, with emergency vault access in a single tap.' },
   { icon: Heart, title: 'Final wishes', desc: 'Capture personal letters, funeral preferences, and sentimental instructions — warm, private, and on your own timeline.', ai: 'We can help you start when the words don\'t come easily. ✨' },
 ]
 
@@ -472,8 +471,8 @@ export default function Home() {
         <div className="relative max-w-7xl mx-auto px-6 lg:px-8">
           <div className="text-center mb-16 reveal">
             <p className="text-xs font-semibold uppercase tracking-widest text-sage-400 mb-4">One platform</p>
-            <h2 className="font-display text-4xl lg:text-5xl font-light text-white text-balance max-w-2xl mx-auto leading-tight">
-              Everything that matters, in one place.
+            <h2 className="font-display text-4xl lg:text-5xl font-light text-white max-w-2xl mx-auto leading-tight">
+              Everything that matters,<br className="hidden sm:block" /> in one place.
             </h2>
           </div>
 
