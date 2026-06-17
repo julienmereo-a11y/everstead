@@ -226,12 +226,17 @@ export default function Home() {
         <div className="relative max-w-7xl mx-auto px-6 lg:px-8 grid lg:grid-cols-2 gap-16 items-center">
           {/* Copy */}
           <div>
+            {/* A/B alternates to try later:
+              // "The most thoughtful thing you'll sort out this year."
+              // "Stop carrying it all in your head."
+              // "Everything your family would need, gathered in one place — with love."
+            */}
             <h1 className="font-display text-5xl lg:text-6xl xl:text-7xl font-light text-white leading-[1.08] tracking-tight text-balance animate-fade-up">
-              Put your digital life in order, so your family is never left guessing.
+              Give the people you love one less thing to worry about.
             </h1>
 
             <p className="mt-6 text-lg text-stone-300 leading-relaxed max-w-xl animate-fade-up animate-delay-100">
-              Accounts, documents, instructions, and final wishes — all in one secure place, ready for the people you love.
+              Everstead gathers the accounts, documents, and details your family would otherwise have to chase down — organised, encrypted, and ready when it matters. Peace of mind for you now; clarity for them later.
             </p>
 
             <div className="mt-10 flex flex-wrap gap-3 animate-fade-up animate-delay-200">
@@ -242,7 +247,7 @@ export default function Home() {
                 onMouseEnter={e => e.currentTarget.style.backgroundColor = '#3d6b3a'}
                 onMouseLeave={e => e.currentTarget.style.backgroundColor = '#4c7d47'}
               >
-                Get Started
+                Get started free
                 <ArrowRight size={16} />
               </Link>
               <Link
@@ -289,29 +294,27 @@ export default function Home() {
                 e.currentTarget.style.boxShadow = '0 32px 80px rgba(0, 0, 0, 0.4), 0 8px 24px rgba(0, 0, 0, 0.3)'
               }}
             >
-              <AnimatedHeroScore target={76} duration={1500} />
+              <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-sage-300/90">For my family</p>
 
-              <div className="space-y-2.5">
+              <p className="mt-3 text-lg leading-relaxed text-stone-100" style={{ fontFamily: 'Georgia, serif' }}>
+                For when you need it — everything's in one place, and you won't have to work it out alone.
+              </p>
+
+              <div className="mt-6 space-y-3.5">
                 {[
-                  { label: '18 accounts documented', done: true },
-                  { label: '4 important contacts assigned', done: true },
-                  { label: 'Funeral preferences completed', done: true },
-                  { label: 'Emergency vault shared with spouse', done: true },
-                  { label: 'Review will document', done: false },
-                  { label: 'Add property insurance policy', done: false },
+                  { icon: '🎵', label: 'The music I’d want played' },
+                  { icon: '💌', label: 'A letter for the kids' },
+                  { icon: '🔑', label: 'Where everything important lives' },
                 ].map((item, i) => (
                   <div key={i} className="flex items-center gap-3">
-                    <div className={`w-4 h-4 rounded-full flex-shrink-0 flex items-center justify-center ${item.done ? 'bg-sage-500' : 'bg-white/10 border border-white/20'}`}>
-                      {item.done && <CheckCircle2 size={10} className="text-white" />}
-                    </div>
-                    <span className={`text-sm ${item.done ? 'text-stone-300' : 'text-stone-400'}`}>{item.label}</span>
+                    <span className="w-9 h-9 rounded-xl bg-white/10 border border-white/15 flex items-center justify-center text-base flex-shrink-0" aria-hidden="true">{item.icon}</span>
+                    <span className="text-sm text-stone-200">{item.label}</span>
                   </div>
                 ))}
               </div>
 
-              <div className="mt-5 pt-4 border-t border-white/10 flex items-center justify-between">
-                <span className="text-xs text-stone-400">Last updated today</span>
-                <span className="text-xs text-sage-400 font-medium">2 items need attention →</span>
+              <div className="mt-6 pt-4 border-t border-white/10">
+                <span className="text-xs text-stone-400">🔒 AES-256 encrypted · shared only with people you choose</span>
               </div>
             </div>
           </div>

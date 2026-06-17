@@ -5,7 +5,13 @@
       "name": "everstead-dev",
       "runtimeExecutable": "npm",
       "runtimeArgs": ["run", "dev"],
-      "port": 5173
+      "port": 4173
+    },
+    {
+      "name": "course-au-cringe",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["--yes", "http-server", "course-au-cringe", "-p", "4727", "-c-1"],
+      "port": 4727
     }
   ]
 }
