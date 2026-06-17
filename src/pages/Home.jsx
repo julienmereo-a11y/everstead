@@ -25,6 +25,7 @@ const painPoints = [
 ]
 
 const featureHighlights = [
+  { icon: UserCircle, title: 'About Me', desc: 'The music you\'d want played, a letter for the people you love, the story only you can tell — gathered in one place and shared with whom you choose.' },
   { icon: Folder, title: 'Digital account inventory', desc: 'See every account — banking, investments, subscriptions, and digital assets — in one structured place. No more hunting across apps.' },
   { icon: FileText, title: 'Secure document vault', desc: 'Upload, tag, and find legal, financial, and personal documents in seconds. Version history included.', ai: 'Upload a document — we extract the key details automatically. ✨' },
   { icon: ClipboardList, title: 'Step-by-step instructions', desc: 'Write clear guidance on your own terms — for everyday reference, and so the people you love know what to do when it counts.', ai: 'Not sure what to write? We\'ll help you find the words. ✨' },
@@ -472,7 +473,7 @@ export default function Home() {
           <div className="text-center mb-16 reveal">
             <p className="text-xs font-semibold uppercase tracking-widest text-sage-400 mb-4">One platform</p>
             <h2 className="font-display text-4xl lg:text-5xl font-light text-white text-balance max-w-2xl mx-auto leading-tight">
-              Everything that matters, gathered with care.
+              Everything that matters, in one place.
             </h2>
           </div>
 
