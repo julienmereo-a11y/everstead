@@ -677,13 +677,15 @@ export default function GetStarted() {
               {selectedPlan !== 'advisor' && (
                 <div className="text-center mt-6">
                   <button
-                    onClick={() => setStep(2)}
+                    onClick={() => setStep(clientSecret ? 3 : 2)}
                     className="inline-flex items-center gap-2 text-white font-semibold text-sm px-8 py-3.5 rounded-lg transition-colors"
                     style={{ backgroundColor: '#4c7d47' }}
                     onMouseEnter={e => e.currentTarget.style.backgroundColor = '#3d6b3a'}
                     onMouseLeave={e => e.currentTarget.style.backgroundColor = '#4c7d47'}
                   >
-                    Continue with {PLAN_OPTIONS.find(p => p.id === selectedPlan)?.name}
+                    {clientSecret
+                      ? <>Back to payment with {PLAN_OPTIONS.find(p => p.id === selectedPlan)?.name}</>
+                      : <>Continue with {PLAN_OPTIONS.find(p => p.id === selectedPlan)?.name}</>}
                     <ArrowRight size={16} />
                   </button>
                   <p className="mt-3 text-xs text-stone-400">{trialDays}-day free trial · Cancel before it ends and pay nothing</p>
@@ -904,8 +906,18 @@ export default function GetStarted() {
           {step === 3 && clientSecret && (
             <div className="max-w-md mx-auto">
               <h2 className="font-display text-3xl font-light text-navy-950 text-center mb-2">Add your card</h2>
-              <p className="text-center text-stone-500 text-sm mb-8">
+              <p className="text-center text-stone-500 text-sm mb-3">
                 Your card won't be charged for {trialDays} days. Cancel any time before then and pay nothing.
+              </p>
+              <p className="text-center text-sm text-stone-600 mb-8">
+                {PLAN_OPTIONS.find(p => p.id === selectedPlan)?.name} plan · {annualBilling ? 'billed annually' : 'billed monthly'}
+                {' · '}
+                <button
+                  onClick={() => setStep(1)}
+                  className="text-navy-700 underline underline-offset-2 font-medium hover:text-navy-900"
+                >
+                  Change plan
+                </button>
               </p>
 
               {!annualBilling && (() => {
