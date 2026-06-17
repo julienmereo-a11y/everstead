@@ -169,6 +169,30 @@ export default async function handler(req, res) {
       updatedProfile = data
     }
 
+    // User confirmation email — sent HERE (not in setup_intent.succeeded) because
+    // this event has the fully-formed subscription: correct plan, billing cycle,
+    // and trial status. setup_intent.succeeded fires before the subscription
+    // exists, so it can't know the plan or whether the user is trialing.
+    if (updatedProfile?.email) {
+      const trialDays = subscription.trial_end && subscription.created
+        ? Math.round((subscription.trial_end - subscription.created) / 86400)
+        : 14
+      await resend.emails.send({
+        from:    'Everstead <hello@everstead.care>',
+        to:      updatedProfile.email,
+        subject: isTrialing
+          ? 'Your Everstead trial has started — card saved'
+          : 'Your Everstead subscription is confirmed',
+        html: paymentConfirmedHtml(
+          updatedProfile.full_name,
+          metaPlan || updatedProfile.plan,
+          isTrialing,
+          subscription.trial_end ?? subscription.current_period_end,
+          trialDays
+        ),
+      }).catch(err => console.error('user confirmation email error:', err.message))
+    }
+
     // Owner notification — fired here (not in setup_intent.succeeded) so it
     // always has a fully-formed subscription object and no race conditions.
     if (updatedProfile) {
@@ -192,48 +216,13 @@ export default async function handler(req, res) {
   }
 
   // ── setup_intent.succeeded ────────────────────────────────
-  // Fires when the user confirms their card in the inline checkout.
-  // Sends the welcome/confirmation email to the user.
-  // Owner notification is handled in customer.subscription.created instead
-  // to avoid the race condition where stripe_subscription_id may not be in
-  // the profile yet when this event fires.
-  if (event.type === 'setup_intent.succeeded') {
-    const setupIntent = event.data.object
-
-    // Only handle setup intents linked to a customer (subscription flow)
-    if (!setupIntent.customer) return res.status(200).json({ received: true })
-
-    const { data: profiles } = await supabase
-      .from('profiles')
-      .select('id, full_name, email, plan, billing_cycle, stripe_subscription_id')
-      .eq('stripe_customer_id', setupIntent.customer)
-
-    if (profiles?.[0]) {
-      const p = profiles[0]
-
-      let subscription = null
-      if (p.stripe_subscription_id) {
-        try { subscription = await stripe.subscriptions.retrieve(p.stripe_subscription_id) } catch {}
-      }
-      const isTrialing = subscription?.status === 'trialing'
-      const periodEnd  = subscription?.trial_end || subscription?.current_period_end
-
-      // Welcome / payment confirmation email to user
-      await resend.emails.send({
-        from:    'Everstead <hello@everstead.care>',
-        to:      p.email,
-        subject: isTrialing
-          ? 'Your Everstead trial has started — card saved'
-          : 'Your Everstead subscription is confirmed',
-        html: paymentConfirmedHtml(
-          p.full_name, p.plan, isTrialing, periodEnd,
-          subscription?.trial_end && subscription?.created
-            ? Math.round((subscription.trial_end - subscription.created) / 86400)
-            : 14
-        ),
-      }).catch(err => console.error('welcome email error:', err.message))
-    }
-  }
+  // Fires when the user confirms their card — BEFORE the subscription is
+  // created by create-subscription.js. We deliberately do NOT send the user
+  // confirmation email here: at this point the subscription doesn't exist yet,
+  // so we can't know the plan or trial status (it would wrongly report
+  // "subscription active / Essential"). The confirmation email is sent from
+  // customer.subscription.created, which has the fully-formed subscription.
+  // (No-op retained for clarity / future card-saved hooks.)
 
   // ── customer.subscription.deleted ────────────────────────
   // Fires at period end when cancel_at_period_end subscription expires.

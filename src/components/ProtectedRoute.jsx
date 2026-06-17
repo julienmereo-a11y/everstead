@@ -29,7 +29,14 @@ export default function ProtectedRoute({ children }) {
   // Gate: user created an account but never completed checkout (no subscription).
   // Delegates are excluded — they don't go through checkout.
   // Skip if already mid-checkout (?checkout=success) to avoid redirect loop.
-  if (!isDelegateOnly && !isCheckout && !profile.stripe_subscription_id) {
+  // Treat an active/trialing subscription_status as "has access" too — covers the
+  // brief window after checkout where stripe_subscription_id may not yet be synced
+  // into the cached profile, so a refresh doesn't wrongly bounce a paid user to
+  // the card step.
+  const hasSubscription =
+    !!profile.stripe_subscription_id ||
+    ['trialing', 'active', 'cancelling', 'past_due'].includes(profile.subscription_status)
+  if (!isDelegateOnly && !isCheckout && !hasSubscription) {
     return <Navigate to="/get-started?resume=true" replace />
   }
 

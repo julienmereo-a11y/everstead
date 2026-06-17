@@ -216,11 +216,21 @@ export default function GetStarted() {
 
       const { data: profile } = await supabase
         .from('profiles')
-        .select('stripe_customer_id, full_name, email, plan, billing_cycle, country')
+        .select('stripe_customer_id, stripe_subscription_id, subscription_status, full_name, email, plan, billing_cycle, country')
         .eq('id', session.user.id)
         .single()
 
       if (!profile) return
+
+      // Already subscribed — nothing to resume. Go straight to the dashboard
+      // rather than recreating a SetupIntent and showing the card step again.
+      if (
+        profile.stripe_subscription_id ||
+        ['trialing', 'active', 'cancelling', 'past_due'].includes(profile.subscription_status)
+      ) {
+        navigate('/dashboard')
+        return
+      }
 
       // Restore plan from localStorage if coming from Google OAuth
       let oauthPlan = null

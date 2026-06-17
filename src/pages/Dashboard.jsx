@@ -15,6 +15,7 @@ import { useAuth }          from '../contexts/AuthContext'
 import ReferralCard         from '../components/ReferralCard'
 import FeedbackWidget       from '../components/FeedbackWidget'
 import { redirectToCheckout, redirectToCustomerPortal, PLANS } from '../lib/stripe'
+import { PRICING } from '../config/pricing'
 import { isAtLimit, getLimit, canUseFeature } from '../lib/planLimits'
 import { useAccounts }      from '../hooks/useData'
 import { useDocuments }     from '../hooks/useData'
@@ -108,9 +109,9 @@ function TrialBanner({ daysLeft, onUpgrade }) {
     : warning ? 'bg-stone-700 text-white hover:bg-stone-800'
     : 'bg-navy-800 text-white hover:bg-navy-700'
   const msg = daysLeft === 1
-    ? 'Your free trial ends tomorrow — add your card to keep access.'
+    ? "Your free trial ends tomorrow — your card on file will be charged unless you cancel."
     : daysLeft <= 7
-    ? `Your free trial ends in ${daysLeft} days. Add payment details to continue.`
+    ? `Your free trial ends in ${daysLeft} days — your card on file will be charged automatically.`
     : `You're on a free trial — ${daysLeft} days remaining.`
   return (
     <div className={`flex items-center justify-between gap-4 px-6 py-3 text-sm ${cls}`}>
@@ -118,12 +119,14 @@ function TrialBanner({ daysLeft, onUpgrade }) {
         <Clock size={15} className={iconCls} />
         <span className={textCls}>{msg}</span>
       </div>
-      <button
-        onClick={onUpgrade}
-        className={`shrink-0 text-xs font-semibold px-4 py-1.5 rounded-lg transition-colors ${btnCls}`}
-      >
-        {daysLeft > 7 ? 'View plans →' : 'Add payment details →'}
-      </button>
+      {daysLeft <= 7 && (
+        <button
+          onClick={onUpgrade}
+          className={`shrink-0 text-xs font-semibold px-4 py-1.5 rounded-lg transition-colors ${btnCls}`}
+        >
+          Manage plan →
+        </button>
+      )}
     </div>
   )
 }
@@ -4590,8 +4593,8 @@ function ReferralLinkBox({ referralCode }) {
 
 function SettingsSection({ profile, isDemo, updateProfile, refreshProfile, onUpgrade, onDeleteAccount, upgradeError }) {
   const PLANS = [
-    { id: 'essential', name: 'Essential', tier: 1, monthly: PLANS.essential.monthly, yearly: PLANS.essential.yearly, desc: 'For individuals. 2 trusted contacts, 5 GB storage.' },
-    { id: 'family',    name: 'Family',    tier: 2, monthly: PLANS.family.monthly,    yearly: PLANS.family.yearly,    desc: 'Household members, up to 10 trusted contacts, 25 GB storage.' },
+    { id: 'essential', name: 'Essential', tier: 1, monthly: PRICING.essential.monthly.perMonth, yearly: PRICING.essential.annual.perMonth, desc: 'For individuals. 2 trusted contacts, 5 GB storage.' },
+    { id: 'family',    name: 'Family',    tier: 2, monthly: PRICING.family.monthly.perMonth,    yearly: PRICING.family.annual.perMonth,    desc: 'Household members, up to 10 trusted contacts, 25 GB storage.' },
   ]
   const PLAN_TIERS = { essential: 1, family: 2, advisor: 3 }
   const currentTier   = PLAN_TIERS[profile.plan] ?? 1
