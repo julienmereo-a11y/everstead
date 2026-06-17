@@ -5,6 +5,21 @@ import { Link } from 'react-router-dom'
 
 const entries = [
   {
+    date: 'June 2026',
+    tag: 'Update',
+    tagColor: 'bg-amber-100 text-amber-700',
+    title: 'Save 20% with annual billing + a smoother sign-up',
+    items: [
+      'New annual pricing — pay yearly and save 20%: Essential £3.19/month (£38.28/year), Family £7.99/month (£95.88/year). Monthly stays £3.99 and £9.99.',
+      'Already subscribed? Nothing changes — existing members keep their current price.',
+      'Change your plan or switch between monthly and annual right from the payment step, before you confirm.',
+      'Refreshing during sign-up no longer loses your place or your saved card.',
+      'Clearer trial messaging on the dashboard — your card on file is shown, with no duplicate "add payment" prompts.',
+      'Fixes: accurate plan name in confirmation emails, correct totals on gift receipts, and a more reliable Settings page.',
+      'Account and subscription controls hardened behind stricter access checks.',
+    ],
+  },
+  {
     date: 'May 2026',
     tag: 'New',
     tagColor: 'bg-sage-100 text-sage-700',
