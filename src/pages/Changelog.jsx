@@ -6,6 +6,21 @@ import { Link } from 'react-router-dom'
 const entries = [
   {
     date: 'June 2026',
+    tag: 'New',
+    tagColor: 'bg-sage-100 text-sage-700',
+    title: 'About Me — the story only you can tell',
+    items: [
+      'New "About Me" section in your vault — the warm, human heart of your plan, beyond accounts and admin.',
+      'Capture the life events that shaped you, your passions, and the reflections you want remembered.',
+      'Write letters and messages for the people you love — kept private until you choose to share them.',
+      'Add a profile photo and a playlist that\'s unmistakably yours.',
+      'Shared only with the people you choose — never with solicitors or advisers — now or when your plan is one day activated.',
+      'Install Everstead as an app — add it to your home screen and open your vault straight from your phone, even offline.',
+      'Redesigned dashboard navigation, grouped into clear sections (Your vault · People & wishes) so everything is easier to find.',
+    ],
+  },
+  {
+    date: 'June 2026',
     tag: 'Update',
     tagColor: 'bg-amber-100 text-amber-700',
     title: 'Save 20% with annual billing + a smoother sign-up',
@@ -14,9 +29,8 @@ const entries = [
       'Already subscribed? Nothing changes — existing members keep their current price.',
       'Change your plan or switch between monthly and annual right from the payment step, before you confirm.',
       'Refreshing during sign-up no longer loses your place or your saved card.',
-      'Clearer trial messaging on the dashboard — your card on file is shown, with no duplicate "add payment" prompts.',
-      'Fixes: accurate plan name in confirmation emails, correct totals on gift receipts, and a more reliable Settings page.',
-      'Account and subscription controls hardened behind stricter access checks.',
+      'A 6-month check-in email helps you keep your plan current as life changes.',
+      'Behind-the-scenes reliability and security improvements across billing and account controls.',
     ],
   },
   {
