@@ -392,11 +392,15 @@ export default function Home() {
         />
         <div className="relative max-w-4xl mx-auto px-6 lg:px-8 text-center">
           <div className="reveal mb-12">
+            {/* A/B alternates to try later:
+              // "If something happened tomorrow, would they know where to look?"
+              // "The people you love shouldn't have to go searching."
+            */}
             <h2 className="font-display text-4xl lg:text-6xl font-bold text-white leading-tight text-balance mb-6">
-              Your life is scattered across dozens of places — and only you know where everything is.
+              Right now, it's all in your head — or scattered in a dozen places.
             </h2>
             <p className="text-stone-400 text-lg leading-relaxed max-w-2xl mx-auto">
-              Accounts, documents, subscriptions, passwords — all in different places, and none of it easy for the people who depend on you.
+              Not because you're disorganised — because life is busy. But if anything happened, the people you love would be left searching for what only you know.
             </p>
           </div>
 
@@ -404,18 +408,18 @@ export default function Home() {
             {[
               {
                 icon: AlertCircle,
-                title: "Important documents live everywhere",
-                desc: "Insurance policies, property records, contracts — saved across email, drives, drawers, and apps you've long forgotten."
+                title: "The paperwork no one can find",
+                desc: "Insurance, property records, the will — scattered across email, drives, drawers, and apps. Easy for you to overlook; impossible for them to track down."
               },
               {
                 icon: CreditCard,
-                title: "Accounts pile up invisibly",
-                desc: "Subscriptions, investments, pension pots, digital accounts — most people have no single view of where everything stands."
+                title: "Accounts only you remember",
+                desc: "Subscriptions, investments, pensions, digital accounts — there's no single picture of what exists, except the one in your head."
               },
               {
                 icon: Clock,
-                title: "Wishes stay in your head",
-                desc: "Preferences, personal messages, and key decisions — rarely written down, never easy to find when it counts."
+                title: "The things you'd want to say",
+                desc: "Your wishes, your reasons, a few words for the people you love — rarely written down, and dearly missed when they're not."
               }
             ].map(({ icon: Icon, title, desc }, i) => (
               <div key={title} className={`reveal reveal-delay-${i + 1} bg-white/5 border border-white/10 rounded-2xl p-6`}>
@@ -468,7 +472,7 @@ export default function Home() {
           <div className="text-center mb-16 reveal">
             <p className="text-xs font-semibold uppercase tracking-widest text-sage-400 mb-4">One platform</p>
             <h2 className="font-display text-4xl lg:text-5xl font-light text-white text-balance max-w-2xl mx-auto leading-tight">
-              Everything that matters, finally in one place.
+              Everything that matters, gathered with care.
             </h2>
           </div>
 
@@ -504,8 +508,11 @@ export default function Home() {
           <div className="text-center mb-16 reveal">
             <p className="text-xs font-semibold uppercase tracking-widest text-navy-600 mb-4">Getting started</p>
             <h2 className="font-display text-4xl lg:text-5xl font-light text-navy-950 text-balance">
-              Simple to set up, simple to maintain.
+              Easier than you'd think — and never for nothing.
             </h2>
+            <p className="mt-4 text-stone-500 text-lg leading-relaxed max-w-xl mx-auto">
+              A few quiet minutes now means the people you love won't spend weeks piecing it together later.
+            </p>
           </div>
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -552,7 +559,7 @@ export default function Home() {
           <div className="text-center mb-14 reveal">
             <p className="text-xs font-semibold uppercase tracking-widest text-navy-600 mb-4">Who it's for</p>
             <h2 className="font-display text-4xl font-light text-navy-950 text-balance">
-              Designed for every role in a family plan.
+              However your family is shaped, there's a place for everyone.
             </h2>
           </div>
 
@@ -590,11 +597,15 @@ export default function Home() {
           <div className="grid lg:grid-cols-2 gap-16 items-center mb-16">
             <div className="reveal">
               <p className="text-xs font-semibold uppercase tracking-widest text-navy-600 mb-4">Security & privacy</p>
+              {/* A/B alternates to try later:
+                // "The most private details of your life deserve real protection."
+                // "Your trust is the whole product."
+              */}
               <h2 className="font-display text-4xl lg:text-5xl font-light text-navy-950 text-balance leading-tight">
-                Built for privacy, control, and trust.
+                You're trusting us with the most private details of your life.
               </h2>
               <p className="mt-5 text-stone-600 leading-relaxed">
-                Every piece of information you add is encrypted, access-controlled, and never shared without your explicit permission.
+                So we protect them the way you'd want — every entry encrypted, access controlled by you, and never shared with anyone without your say-so.
               </p>
               <Link to="/security" className="inline-flex items-center gap-2 mt-8 text-navy-700 font-medium text-sm hover:text-navy-900 transition-colors">
                 Read our security practices <ArrowRight size={15} />
@@ -946,7 +957,7 @@ export default function Home() {
         />
         <div className="relative max-w-3xl mx-auto px-6 lg:px-8 text-center reveal">
           <h2 className="font-display text-4xl lg:text-5xl font-light text-white text-balance leading-tight">
-            Get organised in an afternoon. Stay protected for life.
+            Spend an afternoon now. Give them a lifetime of less worry.
           </h2>
           <p className="mt-5 text-stone-300 text-lg leading-relaxed">
             Start with what you have and build as you go. Most people are up and running in under an hour — and the people they love are protected from that moment on.
