@@ -10,7 +10,7 @@ import {
 
 const trustItems = [
   { icon: Lock,       label: 'AES-256 encrypted storage' },
-  { icon: ShieldCheck, label: 'Payments secured by Stripe' },
+  { icon: ShieldCheck, label: 'Only you control who can access it' },
   { icon: Users,      label: 'Trusted by families & advisers' },
   { icon: FileText,   label: 'Hosted in Europe (EU data residency)' },
   { icon: ShieldCheck, label: 'Zero data selling — ever' },
@@ -337,7 +337,7 @@ export default function Home() {
             <span className="hidden sm:block w-px h-4 bg-stone-200" />
             <div className="flex items-center gap-2 text-stone-500">
               <ShieldCheck size={15} className="text-navy-600 flex-shrink-0" />
-              <span className="text-sm font-medium">Payments secured by Stripe</span>
+              <span className="text-sm font-medium">Only you control who can access it</span>
             </div>
             <span className="hidden sm:block w-px h-4 bg-stone-200" />
             <div className="flex items-center gap-2 text-stone-500">
@@ -636,14 +636,14 @@ export default function Home() {
             <div className="flex flex-wrap justify-center gap-4 lg:gap-6">
               {[
                 {
-                  label: 'Stripe',
-                  sublabel: 'Payment security',
-                  desc: 'All card data is handled exclusively by Stripe — a PCI DSS Level 1 certified provider trusted by millions of businesses worldwide. Your card details never touch our servers.',
-                },
-                {
                   label: 'AES-256',
                   sublabel: 'Encryption standard',
                   desc: 'The same encryption standard used by governments and major banks globally. Every document and account record you store is encrypted at rest and in transit.',
+                },
+                {
+                  label: 'Stripe',
+                  sublabel: 'Payment security',
+                  desc: 'When you subscribe, card details are handled exclusively by Stripe — a PCI DSS Level 1 certified provider. Your card information never touches our servers.',
                 },
                 {
                   label: 'EU data residency',
@@ -699,8 +699,8 @@ export default function Home() {
                   body: 'Your personal data is stored on EU infrastructure and governed by UK GDPR. We do not transfer your data to countries outside the UK or EEA without legal safeguards in place.',
                 },
                 {
-                  title: 'Payments go directly to Stripe',
-                  body: 'We never see or store your card details. Payment processing is handled entirely by Stripe, which is PCI DSS Level 1 certified — the highest level of payment security available.',
+                  title: 'Encrypted at every layer',
+                  body: 'Everything you add is encrypted with AES-256 at rest and protected with TLS in transit — so your information stays safe whether it\'s sitting in your vault or moving between your devices.',
                 },
               ].map(({ title, body }) => (
                 <div key={title} className="bg-white/5 border border-white/10 rounded-xl p-5">
