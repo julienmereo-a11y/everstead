@@ -231,11 +231,11 @@ export default function Home() {
               // "Stop carrying it all in your head."
               // "Everything your family would need, gathered in one place — with love."
             */}
-            <h1 className="font-display text-5xl lg:text-6xl xl:text-7xl font-light text-white leading-[1.08] tracking-tight text-balance animate-fade-up">
+            <h1 className="font-display text-[2.5rem] leading-[1.12] sm:text-5xl sm:leading-[1.08] lg:text-6xl xl:text-7xl font-light text-white tracking-tight text-balance animate-fade-up">
               Give the people you love one less thing to worry about.
             </h1>
 
-            <p className="mt-6 text-lg text-stone-300 leading-relaxed max-w-xl animate-fade-up animate-delay-100">
+            <p className="mt-4 sm:mt-6 text-base sm:text-lg text-stone-300 leading-relaxed max-w-xl animate-fade-up animate-delay-100">
               Everstead gathers the accounts, documents, and details your family would otherwise have to chase down — organised, encrypted, and ready when it matters. Peace of mind for you now; clarity for them later.
             </p>
 
