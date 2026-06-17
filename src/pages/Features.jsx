@@ -6,12 +6,28 @@ import {
   ArrowRight, Folder, FileText, ClipboardList, Users, Share2, Heart,
   CreditCard, BarChart3, Lock, ShieldCheck, Bell, BookOpen, CheckCircle2,
   Eye, Clock, AlertTriangle, Key, Globe, RefreshCw, Layers, Zap, Star,
-  ChevronDown, ChevronRight, UserCheck, Archive, MessageSquare
+  ChevronDown, ChevronRight, UserCheck, Archive, MessageSquare, UserCircle
 } from 'lucide-react'
 
 /* ─── Data ────────────────────────────────────────────────────────────── */
 
 const coreFeatures = [
+  {
+    icon: UserCircle,
+    tag: 'About Me',
+    title: 'About Me',
+    headline: 'The story only you can tell — kept for the people you love.',
+    body: 'More than accounts and admin. The music you\'d want played, a letter to your children, the life events that shaped you, a playlist that\'s unmistakably yours. It\'s the warm, human heart of your plan — written on your own terms and shared only with the people you choose, either now or when your plan is one day activated.',
+    bullets: [
+      'Life events, passions, and personal reflections',
+      'Letters and messages for the people you love',
+      'A profile photo and a playlist that capture who you are',
+      'Shared only with chosen people — never with solicitors or advisers',
+    ],
+    accent: 'bg-sage-50 border-sage-100',
+    iconBg: 'bg-sage-100',
+    iconColor: 'text-sage-700',
+  },
   {
     icon: Folder,
     tag: 'Accounts',
@@ -289,7 +305,7 @@ export default function Features() {
           <div className="text-center mb-16 reveal">
             <p className="text-xs font-semibold uppercase tracking-widest text-navy-600 mb-4">What's inside</p>
             <h2 className="font-display text-4xl lg:text-5xl font-light text-navy-950 text-balance">
-              Nine features. One complete plan.
+              Ten features. One complete plan.
             </h2>
             <p className="mt-4 text-stone-500 max-w-xl mx-auto text-sm leading-relaxed">
               Each feature is designed around the questions families actually ask after a loss — and the answers they struggle to find.
