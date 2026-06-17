@@ -12,17 +12,17 @@ const APP_URL = process.env.VITE_APP_URL || 'https://www.everstead.care'
 const PLAN_META = {
   essential: {
     label:    'Essential',
-    price:    '£3/month (billed yearly) or £5/month',
+    price:    '£3.19/month (billed annually) or £3.99/month',
     features: ['Up to 10 accounts & documents', '1 trusted contact', '1 GB storage'],
   },
   family: {
     label:    'Family',
-    price:    '£10/month (billed yearly) or £12/month',
+    price:    '£7.99/month (billed annually) or £9.99/month',
     features: ['Two private vaults — one subscription', 'Share only what you choose', '10 trusted contacts', '25 GB storage'],
   },
   advisor: {
     label:    'Advisor',
-    price:    '£48/month (billed yearly) or £60/month',
+    price:    '£48/month (billed annually) or £60/month',
     features: ['Multi-client workspace', 'Co-branded portal', 'Client dashboards', '100 GB storage'],
   },
 }

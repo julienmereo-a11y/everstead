@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom'
 import {
   ArrowRight, CheckCheck, Lock, AlertCircle, Loader2, CreditCard, Gift as GiftIcon,
 } from 'lucide-react'
+import { PRICING } from '../config/pricing'
 import { Elements, PaymentElement, useStripe, useElements } from '@stripe/react-stripe-js'
 import { getStripe } from '../lib/stripe'
 
@@ -15,7 +16,7 @@ const GIFT_PLANS = [
   {
     id: 'essential',
     name: 'Essential',
-    yearlyPrice: 36,
+    yearlyPrice: PRICING.essential.annual.perYear,
     desc: 'For individuals getting organised.',
     features: [
       'Unlimited accounts & documents',
@@ -28,7 +29,7 @@ const GIFT_PLANS = [
   {
     id: 'family',
     name: 'Family',
-    yearlyPrice: 120,
+    yearlyPrice: PRICING.family.annual.perYear,
     desc: 'Two private vaults, one subscription.',
     badge: 'Most popular gift',
     features: [
@@ -77,7 +78,7 @@ function GiftPaymentForm({ plan, years, gifterName, gifterEmail, recipientName, 
   const [error,   setError]   = useState(null)
 
   const planObj    = GIFT_PLANS.find(p => p.id === plan)
-  const totalGBP   = (amountPence / 100).toFixed(0)
+  const totalGBP   = (amountPence / 100).toFixed(2)
   const yearsLabel = years === 1 ? '1 year' : `${years} years`
 
   const handleSubmit = async (e) => {
@@ -206,7 +207,7 @@ export default function Gift() {
   const handleChange = e => setForm(v => ({ ...v, [e.target.name]: e.target.value }))
 
   const planObj    = GIFT_PLANS.find(p => p.id === selectedPlan)
-  const totalGBP   = planObj ? planObj.yearlyPrice * selectedYears : 0
+  const totalGBP   = planObj ? (planObj.yearlyPrice * selectedYears).toFixed(2) : '0.00'
   const yearsLabel = selectedYears === 1 ? '1 year' : `${selectedYears} years`
 
   // Step 1 → Step 2
@@ -370,7 +371,7 @@ export default function Gift() {
                         ))}
                       </ul>
                       <p className="font-display text-xl font-light text-navy-950">
-                        £{plan.yearlyPrice}<span className="text-xs text-stone-400 ml-1">/year</span>
+                        £{plan.yearlyPrice.toFixed(2)}<span className="text-xs text-stone-400 ml-1">/year</span>
                       </p>
                     </button>
                   ))}
@@ -397,7 +398,7 @@ export default function Gift() {
                         )}
                         <p className="font-display text-xl font-light text-navy-950">{opt.label}</p>
                         <p className="text-xs text-stone-400 mt-0.5">
-                          £{(planObj?.yearlyPrice || 0) * opt.years}
+                          £{((planObj?.yearlyPrice || 0) * opt.years).toFixed(2)}
                         </p>
                       </button>
                     ))}

@@ -1062,9 +1062,11 @@ function UserRow({ u }) {
 // ─────────────────────────────────────────────────────────────
 // OVERVIEW SECTION
 // ─────────────────────────────────────────────────────────────
+// New-signup rates (20% annual structure). Existing subscribers may be on older
+// prices, so MRR is an estimate. `yearly` = per-month-when-billed-annually.
 const MRR_RATES = {
-  essential: { monthly: 7,  yearly: 5  },
-  family:    { monthly: 15, yearly: 12 },
+  essential: { monthly: 3.99, yearly: 3.19 },
+  family:    { monthly: 9.99, yearly: 7.99 },
   advisor:   { monthly: 60, yearly: 48 },
 }
 

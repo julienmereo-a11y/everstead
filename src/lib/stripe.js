@@ -1,5 +1,6 @@
 import { loadStripe } from '@stripe/stripe-js'
 import { createClient } from '@supabase/supabase-js'
+import { PRICING } from '../config/pricing'
 
 const supabase = createClient(
   import.meta.env.VITE_SUPABASE_URL,
@@ -20,11 +21,13 @@ export const getStripe = (() => {
 // ─────────────────────────────────────────────────────────────
 // PLAN CONFIG — single source of truth
 // ─────────────────────────────────────────────────────────────
+// Display amounts come from the pricing SSOT (src/config/pricing.js).
+// `yearly` is the per-month-when-billed-annually figure (display only).
 export const PLANS = {
   essential: {
     name: 'Essential',
-    monthly: 5,
-    yearly:  3,
+    monthly: PRICING.essential.monthly.perMonth, // 3.99
+    yearly:  PRICING.essential.annual.perMonth,  // 3.19 (/mo billed annually)
     priceIds: {
       monthly: import.meta.env.VITE_STRIPE_ESSENTIAL_MONTHLY,
       yearly:  import.meta.env.VITE_STRIPE_ESSENTIAL_YEARLY,
@@ -41,8 +44,8 @@ export const PLANS = {
   },
   family: {
     name: 'Family',
-    monthly: 12,
-    yearly:  10,
+    monthly: PRICING.family.monthly.perMonth, // 9.99
+    yearly:  PRICING.family.annual.perMonth,  // 7.99 (/mo billed annually)
     priceIds: {
       monthly: import.meta.env.VITE_STRIPE_FAMILY_MONTHLY,
       yearly:  import.meta.env.VITE_STRIPE_FAMILY_YEARLY,

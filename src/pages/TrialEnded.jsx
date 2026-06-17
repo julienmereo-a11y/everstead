@@ -177,7 +177,7 @@ export default function TrialEnded() {
                 <div className="bg-white border border-stone-200 rounded-2xl p-6">
                   <p className="font-semibold text-navy-900 text-base mb-0.5">Downgrade to Essential</p>
                   <p className="text-stone-500 text-sm mb-5">
-                    Keep your plan at £{PLANS.essential.yearly}/mo billed yearly — fewer features, same security
+                    Keep your plan at £{PLANS.essential.yearly}/mo billed annually — fewer features, same security
                   </p>
                   <button
                     onClick={handleDowngrade}

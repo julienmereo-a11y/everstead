@@ -3,6 +3,7 @@ import { Helmet } from 'react-helmet-async'
 import { Link } from 'react-router-dom'
 import { useReveal } from '../components/useReveal'
 import { ArrowRight, Briefcase, CheckCircle2, ShieldCheck, ChevronDown } from 'lucide-react'
+import { PRICING } from '../config/pricing'
 
 const faqs = [
   {
@@ -19,7 +20,7 @@ const faqs = [
   },
   {
     q: 'Is there a discount for annual billing?',
-    a: 'Yes — choosing yearly billing saves £24 per year on the Essential and Family plans compared to monthly billing. The discounted rate is applied immediately and locked in for the year.',
+    a: 'Yes — billing annually saves 20% on both plans compared to monthly: about £9.50/year on Essential and £24/year on Family. The discounted rate is applied immediately and locked in for the year.',
   },
   {
     q: 'What does the Family plan include that Essential does not?',
@@ -80,23 +81,23 @@ const plans = [
   {
     id: 'essential',
     name: 'Essential',
-    monthly: 5,
-    yearly: 3,
-    yearlyTotal: 36,
+    monthly: PRICING.essential.monthly.perMonth,
+    yearly: PRICING.essential.annual.perMonth,
+    yearlyTotal: PRICING.essential.annual.perYear,
     promo: 'LAUNCH OFFER',
     description: 'For individuals getting their accounts, documents, and wishes in order.',
-    reframe: '£0.69 a week — less than a coffee.',
+    reframe: '£3.19/mo billed annually — less than a coffee.',
     features: ['Up to 10 accounts & documents', '1 trusted contact', '1 instruction set', '1 GB secure storage', 'Readiness score'],
     cta: 'Get started free',
   },
   {
     id: 'family',
     name: 'Family',
-    monthly: 12,
-    yearly: 10,
-    yearlyTotal: 120,
+    monthly: PRICING.family.monthly.perMonth,
+    yearly: PRICING.family.annual.perMonth,
+    yearlyTotal: PRICING.family.annual.perYear,
     description: 'For couples and families — two private vaults, shared protection.',
-    reframe: '£10/mo billed yearly · Two vaults · Just £5 per person',
+    reframe: '£7.99/mo billed annually · Two vaults · Just £4 per person',
     features: ['Two private vaults — one subscription', 'Unlimited accounts & documents', 'Up to 10 trusted contacts', 'Unlimited instructions & wishes', 'Personal messages & final wishes', '25 GB secure storage'],
     cta: 'Get started free',
     highlight: true,
@@ -136,10 +137,10 @@ export default function Pricing() {
   const yearlyDiscount = Math.round((1 - familyPlan.yearly / familyPlan.monthly) * 100)
 
   const billingNote = useMemo(() => {
-    const saving = (familyPlan.monthly - familyPlan.yearly) * 12
+    const saving = Math.round((familyPlan.monthly - familyPlan.yearly) * 12)
     return annual
-      ? `Billed yearly. You're saving £${saving}/yr on the Family plan compared to monthly. ✓`
-      : `Billed monthly. Switch to yearly and save £${saving} on the Family plan.`
+      ? `Billed annually. You're saving £${saving}/yr on the Family plan compared to monthly. ✓`
+      : `Billed monthly. Switch to annual and save £${saving} on the Family plan.`
   }, [annual])
 
   return (
@@ -220,12 +221,12 @@ export default function Pricing() {
                 ) : (
                   <div className="mt-8">
                     <div className="flex items-end gap-2">
-                      <span className="font-display text-5xl font-light">£{plan.yearly && annual ? plan.yearly : plan.monthly}</span>
+                      <span className="font-display text-5xl font-light">£{annual ? plan.yearly : plan.monthly}</span>
                       <span className={`pb-2 text-sm ${plan.highlight ? 'text-stone-400' : 'text-stone-500'}`}>/ month</span>
                     </div>
-                    {annual && plan.monthly && plan.yearly && (
+                    {annual && plan.yearlyTotal && (
                       <p className={`mt-1.5 text-[11px] ${plan.highlight ? 'text-stone-400' : 'text-stone-400'}`}>
-                        Save £{(plan.monthly - plan.yearly) * 12}/yr vs monthly
+                        billed annually (£{plan.yearlyTotal.toFixed(2)}/year) · Save 20%
                       </p>
                     )}
                   </div>
@@ -254,7 +255,7 @@ export default function Pricing() {
                     </Link>
                     {plan.id === 'essential' && (
                       <p className="mt-3 text-center text-xs text-stone-400 leading-relaxed">
-                        Need more? Family includes two private vaults — just £5 per person.
+                        Need more? Family includes two private vaults — just £4 per person.
                       </p>
                     )}
                   </>
@@ -307,7 +308,7 @@ export default function Pricing() {
             <div className="reveal reveal-delay-2 bg-navy-950 rounded-2xl border border-navy-800 p-6">
               <p className="text-2xl mb-3">🔒</p>
               <p className="font-semibold text-sage-300 text-sm mb-1">Everstead Family</p>
-              <p className="font-display text-2xl font-light text-white mb-3">£120 / yr</p>
+              <p className="font-display text-2xl font-light text-white mb-3">£{PRICING.family.annual.perYear.toFixed(2)} / yr</p>
               <p className="text-xs text-stone-300 leading-relaxed">Everything organised, updated, and shared — for as long as you need it. Two private vaults included.</p>
             </div>
           </div>

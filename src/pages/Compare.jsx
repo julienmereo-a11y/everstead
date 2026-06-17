@@ -34,7 +34,7 @@ const competitors = {
 Most people need both. A will tells the court what happens to your assets. Everstead tells your family how to find everything else — and keeps it updated as your life changes.
 
 If you already have a will, Everstead is the natural next step: a secure, living record that makes your estate genuinely manageable.`,
-    price: 'From £3/mo yearly (14-day free trial)',
+    price: 'From £3.99/month (14-day free trial)',
     competitorPrice: 'From £90 one-time for a basic will',
     cta: 'Start your free trial',
   },
@@ -66,7 +66,7 @@ Everstead is proactive. It's where you record your accounts, upload your documen
 When the worst does happen, a family with an Everstead vault already knows where everything is. They still might use Settld to notify institutions — but they won't spend weeks piecing together a life from scratch.
 
 The difference is the difference between a map left at home and a map that was already in their hands.`,
-    price: 'From £3/mo yearly (14-day free trial)',
+    price: 'From £3.99/month (14-day free trial)',
     competitorPrice: 'Free',
     cta: 'Start your free trial',
   },
@@ -102,7 +102,7 @@ The adviser portal is the other. Everstead works as a professional tool for fina
 
 If you're looking for a digital vault, both options are worth considering. If you want your family to actually know what to do when it counts, Everstead goes further.`,
     verdict: 'Both store your information — only Everstead turns it into a plan your family can act on. On every dimension that matters after storage, Everstead is the stronger choice.',
-    price: 'From £3/mo yearly (14-day free trial)',
+    price: 'From £3.99/month (14-day free trial)',
     competitorPrice: 'From £5.99/mo',
     cta: 'Start your free trial',
   },
@@ -137,7 +137,7 @@ Everstead is everything around the will. It's where you keep your account detail
 The Family plan is something Octopus Legacy doesn't offer: two completely private vaults under one subscription, for couples who want to organise their own estates separately without sharing sensitive personal information.
 
 Think of a will as a destination. Everstead is the map that gets your family there.`,
-    price: 'From £3/mo yearly (14-day free trial)',
+    price: 'From £3.99/month (14-day free trial)',
     competitorPrice: 'From £90 for a basic will',
     cta: 'Start your free trial',
   },
@@ -173,7 +173,7 @@ And for advisers: Everstead includes a dedicated portal for financial planners, 
 
 If you want a secure place to store important files, both products do the job. If you want your family to know exactly what to do — and to feel genuinely prepared — Everstead is built for that.`,
     verdict: 'Two secure vaults — but only Everstead tells your family what to do next, scores your readiness, and gives couples two private vaults in one plan. Everstead is the more complete solution.',
-    price: 'From £3/mo yearly (14-day free trial)',
+    price: 'From £3.99/month (14-day free trial)',
     competitorPrice: 'From £4.99/mo',
     cta: 'Start your free trial',
   },
@@ -207,7 +207,7 @@ Everstead exists because the status quo isn't actually working for most families
 
 For less than the price of a coffee a week, Everstead becomes the structured version of what you would have written down anyway — secure, sharable, updated, and ready. The hardest part is starting; everything after that is just keeping it current.`,
     verdict: 'There is no real contest here. A spreadsheet or a drawer of papers fails your family at the worst possible moment. Everstead is the organised, secure, shareable version of everything you would otherwise have meant to write down.',
-    price: 'From £3/mo yearly (14-day free trial)',
+    price: 'From £3.99/month (14-day free trial)',
     competitorPrice: 'Free — and very expensive when it counts',
     cta: 'Start organising your estate',
   },
