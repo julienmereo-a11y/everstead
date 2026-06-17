@@ -236,7 +236,7 @@ export default function Home() {
             </h1>
 
             <p className="mt-4 sm:mt-6 text-base sm:text-lg text-stone-300 leading-relaxed max-w-xl animate-fade-up animate-delay-100">
-              Everstead gathers the accounts, documents, and details your family would otherwise have to chase down — organised, encrypted, and ready when it matters. Peace of mind for you now; clarity for them later.
+              One secure place for the accounts, documents, and wishes your family would otherwise have to piece together — so nothing is lost, and no one is left guessing. Peace of mind for you now; clarity for them later.
             </p>
 
             <div className="mt-10 flex flex-wrap gap-3 animate-fade-up animate-delay-200">
