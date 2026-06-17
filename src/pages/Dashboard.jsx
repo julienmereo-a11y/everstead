@@ -141,8 +141,8 @@ function TrialExpiredModal({ profile, onUpgrade }) {
         </p>
         <div className="space-y-3 mb-8">
           {[
-            { name: 'Essential', price: '£5/mo', note: 'or £3/mo yearly (£36/yr) · Launch offer', id: 'essential' },
-            { name: 'Family', price: '£12/mo', note: 'or £10/mo yearly (£120/yr) — two private vaults', id: 'family', highlight: profile.plan !== 'advisor' },
+            { name: 'Essential', price: '£3.99/mo', note: 'or £3.19/mo billed annually (£38.28/yr · save 20%)', id: 'essential' },
+            { name: 'Family', price: '£9.99/mo', note: 'or £7.99/mo billed annually (£95.88/yr · save 20%) — two private vaults', id: 'family', highlight: profile.plan !== 'advisor' },
             ...(profile.plan === 'advisor' ? [{ name: 'Advisor', price: '£60/mo', note: 'or £48/mo yearly · For estate advisors', id: 'advisor', highlight: true }] : []),
           ].map(plan => (
             <button
@@ -221,8 +221,8 @@ function AdvisorCancelledModal({ advisorName, onAddPayment }) {
         </p>
         <div className="space-y-3 mb-8">
           {[
-            { name: 'Essential', price: '£5/mo', note: 'or £3/mo yearly (£36/yr) · Launch offer', id: 'essential' },
-            { name: 'Family', price: '£12/mo', note: 'or £10/mo yearly (£120/yr) — all household members', id: 'family', highlight: true },
+            { name: 'Essential', price: '£3.99/mo', note: 'or £3.19/mo billed annually (£38.28/yr · save 20%)', id: 'essential' },
+            { name: 'Family', price: '£9.99/mo', note: 'or £7.99/mo billed annually (£95.88/yr · save 20%) — all household members', id: 'family', highlight: true },
           ].map(plan => (
             <button
               key={plan.id}
@@ -4590,8 +4590,8 @@ function ReferralLinkBox({ referralCode }) {
 
 function SettingsSection({ profile, isDemo, updateProfile, refreshProfile, onUpgrade, onDeleteAccount, upgradeError }) {
   const PLANS = [
-    { id: 'essential', name: 'Essential', tier: 1, monthly: 5,  yearly: 3,  desc: 'For individuals. 2 trusted contacts, 5 GB storage.' },
-    { id: 'family',    name: 'Family',    tier: 2, monthly: 12, yearly: 10, desc: 'Household members, up to 10 trusted contacts, 25 GB storage.' },
+    { id: 'essential', name: 'Essential', tier: 1, monthly: PLANS.essential.monthly, yearly: PLANS.essential.yearly, desc: 'For individuals. 2 trusted contacts, 5 GB storage.' },
+    { id: 'family',    name: 'Family',    tier: 2, monthly: PLANS.family.monthly,    yearly: PLANS.family.yearly,    desc: 'Household members, up to 10 trusted contacts, 25 GB storage.' },
   ]
   const PLAN_TIERS = { essential: 1, family: 2, advisor: 3 }
   const currentTier   = PLAN_TIERS[profile.plan] ?? 1
@@ -5041,7 +5041,7 @@ function SettingsSection({ profile, isDemo, updateProfile, refreshProfile, onUpg
                       </div>
                       <p className="text-lg font-display font-light text-navy-950">
                         £{price}/mo
-                        {billingCycle === 'yearly' && <span className="text-xs text-stone-400 ml-1">billed yearly</span>}
+                        {billingCycle === 'yearly' && <span className="text-xs text-stone-400 ml-1">billed annually · save 20%</span>}
                       </p>
                       <p className="text-xs text-stone-500 mt-1 leading-snug flex-1">{plan.desc}</p>
                       {isCurrent && isTrialing && (

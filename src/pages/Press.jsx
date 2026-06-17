@@ -9,7 +9,7 @@ const facts = [
   { label: 'Headquarters', value: 'London, United Kingdom' },
   { label: 'Company number', value: '17166825 (England & Wales)' },
   { label: 'Category', value: 'Personal vault & estate readiness' },
-  { label: 'Pricing', value: 'From £3/mo (yearly) · Free trial' },
+  { label: 'Pricing', value: 'From £3.99/month · Free trial' },
   { label: 'Website', value: 'everstead.care' },
 ]
 

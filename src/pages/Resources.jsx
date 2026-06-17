@@ -1930,7 +1930,7 @@ const sections = {
               },
               {
                 q: 'What are the plans and prices?',
-                a: 'Essential is £7/month (or £5/month billed yearly). Family is £15/month (or £12/month billed yearly). Adviser pricing is on application. All prices are in pounds sterling and include VAT where applicable.',
+                a: 'Essential is £3.99/month, or £3.19/month billed annually (£38.28/year). Family is £9.99/month, or £7.99/month billed annually (£95.88/year). Billing annually saves 20%. Adviser pricing is on application. All prices are in pounds sterling and include VAT where applicable.',
               },
               {
                 q: 'Can I switch plans?',

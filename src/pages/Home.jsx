@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Helmet } from 'react-helmet-async'
 import { Link } from 'react-router-dom'
 import { useReveal } from '../components/useReveal'
+import { PRICING } from '../config/pricing'
 import {
   ShieldCheck, Lock, Users, FileText, CheckCircle2, ArrowRight,
   Star, ChevronDown, Folder, Bell, Share2, ClipboardList, BookOpen, Heart,
@@ -50,8 +51,8 @@ const plans = [
   {
     id: 'essential',
     name: 'Essential',
-    monthly: 5,
-    annual: 3,
+    monthly: PRICING.essential.monthly.perMonth,
+    annual: PRICING.essential.annual.perMonth,
     promo: true,
     desc: 'For individuals who want their accounts, documents, and wishes in one secure place.',
     features: ['Up to 10 accounts & documents', 'Step-by-step instructions', '1 trusted contact', 'Readiness score', '1 GB storage'],
@@ -61,8 +62,8 @@ const plans = [
   {
     id: 'family',
     name: 'Family',
-    monthly: 12,
-    annual: 10,
+    monthly: PRICING.family.monthly.perMonth,
+    annual: PRICING.family.annual.perMonth,
     desc: 'For couples and families — two private vaults, one subscription. Organised together, private separately.',
     features: ['Everything in Essential', 'Two private vaults — one subscription', 'Each person keeps their own private data', 'Up to 10 trusted contacts', '25 GB storage', 'Share only what you choose'],
     cta: 'Get started free',
@@ -720,7 +721,7 @@ export default function Home() {
                       <span className={`font-display text-4xl font-light ${highlight ? 'text-navy-950' : 'text-white'}`}>£{annualPricing ? annual : monthly}</span>
                       <span className={`text-sm mb-1.5 ${highlight ? 'text-stone-400' : 'text-stone-500'}`}>/mo</span>
                     </div>
-                    <p className={`text-xs mb-4 ${highlight ? 'text-stone-400' : 'text-stone-500'}`}>{annualPricing ? 'Billed yearly' : 'Billed monthly'}</p>
+                    <p className={`text-xs mb-4 ${highlight ? 'text-stone-400' : 'text-stone-500'}`}>{annualPricing ? 'Billed annually · Save 20%' : 'Billed monthly'}</p>
                   </>
                 )}
                 {id === 'advisor' && (

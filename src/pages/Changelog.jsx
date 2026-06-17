@@ -95,7 +95,7 @@ const entries = [
       'Trusted contact system with granular permission control',
       'Readiness score: 0–100 across five estate categories',
       'MFA, audit log, role-based access control',
-      '14-day free trial · Essential from £3/mo yearly · Family from £10/mo yearly',
+      '14-day free trial · Essential from £3.99/month · Family from £9.99/month',
       'UK GDPR compliant · AES-256 encryption · Supabase infrastructure · ICO registered',
     ],
   },

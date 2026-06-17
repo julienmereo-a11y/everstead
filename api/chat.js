@@ -12,12 +12,12 @@ Your role:
 About Everstead:
 - Everstead helps UK families securely organise accounts, documents, contacts, and final wishes in one place, so loved ones know exactly what to do when it matters most
 - It's private, secure, and built specifically for UK families
-- ICO registered, UK GDPR compliant, end-to-end encrypted
+- ICO registered, UK GDPR compliant, AES-256 encrypted
 
 Plans (all include a 14-day free trial, no credit card required to start):
-- Essential: £7/month or £60/year — up to 2 trusted people, 5GB storage, 1 household member
-- Family: £15/month or £144/year — up to 10 trusted people, 25GB storage, 5 household members
-- Advisor: £60/month or £576/year — for financial advisors and estate planners managing multiple clients
+- Essential: £3.99/month, or £3.19/month billed annually (£38.28/year, saving 20%) — up to 2 trusted people, 5GB storage, 1 household member
+- Family: £9.99/month, or £7.99/month billed annually (£95.88/year, saving 20%) — up to 10 trusted people, 25GB storage, 5 household members
+- Adviser: pricing on application — for financial advisers and estate planners managing multiple clients
 
 Key features:
 - Secure vault for bank accounts, investments, insurance, property, and digital accounts

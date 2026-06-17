@@ -9,6 +9,7 @@ import {
 import { Elements, PaymentElement, useStripe, useElements } from '@stripe/react-stripe-js'
 import { useAuth } from '../contexts/AuthContext'
 import { PLANS, getStripe } from '../lib/stripe'
+import { PRICING } from '../config/pricing'
 import { supabase } from '../lib/supabase'
 
 // ─────────────────────────────────────────────────────────────
@@ -19,14 +20,14 @@ const PLAN_OPTIONS = [
   {
     id: 'essential',
     name: 'Essential',
-    monthly: 5, yearly: 3, promo: true,
+    monthly: PRICING.essential.monthly.perMonth, yearly: PRICING.essential.annual.perMonth, promo: true,
     desc: 'For individuals getting started. Up to 10 accounts, 1 trusted contact, 1 GB storage.',
     features: ['Up to 10 accounts & documents', 'Step-by-step instructions', '1 trusted contact', '1 GB storage'],
   },
   {
     id: 'family',
     name: 'Family',
-    monthly: 12, yearly: 10,
+    monthly: PRICING.family.monthly.perMonth, yearly: PRICING.family.annual.perMonth,
     desc: 'For couples and households planning together.',
     features: ['Two private vaults — one subscription', 'Each person keeps their own private data', 'Share only what you choose', '10 trusted contacts', '25 GB storage'],
     badge: 'Most popular',
@@ -644,7 +645,7 @@ export default function GetStarted() {
                       <span className="font-display text-2xl font-light text-navy-950">
                         £{annualBilling ? plan.yearly : plan.monthly}
                       </span>
-                      <span className="text-xs text-stone-400 ml-1.5">/mo · {annualBilling ? 'billed yearly' : 'billed monthly'}</span>
+                      <span className="text-xs text-stone-400 ml-1.5">/mo · {annualBilling ? 'billed annually (save 20%)' : 'billed monthly'}</span>
                     </div>
                     <ul className="space-y-1.5">
                       {plan.features.map(f => (
@@ -909,17 +910,17 @@ export default function GetStarted() {
 
               {!annualBilling && (() => {
                 const plan = PLAN_OPTIONS.find(p => p.id === selectedPlan)
-                const saving = plan ? (plan.monthly - plan.yearly) * 12 : 0
+                const saving = plan ? Math.round((plan.monthly - plan.yearly) * 12) : 0
                 return (
                   <div className="mb-5 flex items-center justify-between bg-sage-50 border border-sage-200 rounded-xl px-4 py-3">
                     <p className="text-xs text-sage-700">
-                      💡 Switch to yearly and save <strong>£{saving}/yr</strong>
+                      💡 Switch to annual and save <strong>£{saving}/yr (20%)</strong>
                     </p>
                     <button
                       onClick={() => setAnnualBilling(true)}
                       className="text-xs font-semibold text-sage-700 hover:text-sage-900 underline underline-offset-2 ml-3 whitespace-nowrap"
                     >
-                      Switch to yearly →
+                      Switch to annual →
                     </button>
                   </div>
                 )
