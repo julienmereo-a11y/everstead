@@ -147,7 +147,8 @@ export default function AIAssistantSection({
 
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: 'smooth' })
-  }, [messages, loading])
+    // depend on cards.length (not cards) so editing a field doesn't yank the scroll
+  }, [messages, loading, cards.length, keepFile])
 
   // Defensive: if AI is off, this section shouldn't be reachable (nav + route
   // are gated), but render a clear state just in case.
@@ -315,7 +316,7 @@ export default function AIAssistantSection({
     .filter(g => g.items.length)
 
   return (
-    <div className="max-w-3xl mx-auto">
+    <div className="p-4 lg:p-8 max-w-3xl mx-auto">
       {/* Header */}
       <div className="flex items-start gap-3 mb-6">
         <div className="w-11 h-11 rounded-2xl bg-navy-950 flex items-center justify-center shrink-0">
@@ -331,7 +332,7 @@ export default function AIAssistantSection({
 
       {/* Conversation */}
       <div className="bg-white border border-stone-200 rounded-2xl overflow-hidden">
-        <div ref={scrollRef} className="px-5 py-5 space-y-4 max-h-[420px] overflow-y-auto">
+        <div ref={scrollRef} className="px-5 py-5 space-y-4 max-h-[min(60vh,560px)] overflow-y-auto">
           {/* Greeting */}
           <div className="flex gap-3">
             <div className="w-7 h-7 rounded-full bg-navy-950 flex items-center justify-center shrink-0">
@@ -366,6 +367,75 @@ export default function AIAssistantSection({
               </div>
               <div className="bg-stone-50 rounded-2xl rounded-tl-sm px-4 py-3 text-sm text-stone-400 flex items-center gap-2">
                 <Loader2 size={14} className="animate-spin" /> Thinking…
+              </div>
+            </div>
+          )}
+
+          {/* Keep / discard an uploaded document — inline in the conversation */}
+          {keepFile && (
+            <div className="bg-sage-50 border border-sage-200 rounded-2xl p-4 flex items-center justify-between gap-4">
+              <div className="flex items-center gap-3 min-w-0">
+                <Paperclip size={16} className="text-sage-700 shrink-0" />
+                <div className="min-w-0">
+                  <p className="text-sm font-medium text-navy-900 truncate">Keep “{keepFile.name}” in your vault?</p>
+                  <p className="text-xs text-stone-500">It isn't stored unless you choose to keep it.</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-2 shrink-0">
+                {keepStatus === 'saved' ? (
+                  <span className="text-xs text-emerald-600 font-medium flex items-center gap-1"><CheckCircle2 size={14} /> Kept</span>
+                ) : (
+                  <>
+                    <button onClick={() => setKeepFile(null)} className="text-xs font-medium text-stone-500 hover:text-stone-800 px-3 py-2">Discard</button>
+                    <button
+                      onClick={keepDocument}
+                      disabled={keepStatus === 'saving'}
+                      className="text-xs font-semibold bg-navy-800 text-white px-4 py-2 rounded-xl hover:bg-navy-700 transition-colors disabled:opacity-50"
+                    >
+                      {keepStatus === 'saving' ? 'Keeping…' : keepStatus === 'error' ? 'Try again' : 'Keep in vault'}
+                    </button>
+                  </>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* Suggested entries — inline in the conversation, right under the message */}
+          {grouped.length > 0 && (
+            <div className="border-t border-stone-100 pt-4">
+              <div className="flex items-center gap-2 mb-3 flex-wrap">
+                <span className="text-xs font-semibold uppercase tracking-wide text-sage-700 bg-sage-50 px-2 py-0.5 rounded-full">Suggested entries</span>
+                <span className="text-xs text-stone-400">Tick what you'd like, edit anything, then add.</span>
+              </div>
+              <div className="space-y-5">
+                {grouped.map(group => (
+                  <div key={group.type}>
+                    <p className="text-xs font-semibold uppercase tracking-wide text-stone-400 mb-2">{TYPE_META[group.type].label}</p>
+                    <div className="space-y-3">
+                      {group.items.map(card => (
+                        <ProposalCard
+                          key={card.id}
+                          card={card}
+                          onEdit={editField}
+                          onToggle={toggleApprove}
+                          onDismiss={dismissCard}
+                          onDropLifeEvent={dropLifeEvent}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <div className="flex items-center gap-3 mt-5">
+                <button
+                  onClick={addConfirmed}
+                  disabled={approvedCount === 0}
+                  className="inline-flex items-center gap-2 text-white text-sm font-semibold px-5 py-2.5 rounded-xl transition-colors disabled:opacity-40"
+                  style={{ backgroundColor: '#4c7d47' }}
+                >
+                  <Check size={16} /> Add {approvedCount > 0 ? `${approvedCount} ` : ''}confirmed item{approvedCount === 1 ? '' : 's'}
+                </button>
+                <span className="text-xs text-stone-400">Only ticked items are saved.</span>
               </div>
             </div>
           )}
@@ -423,77 +493,6 @@ export default function AIAssistantSection({
 
       {isDemo && (
         <p className="text-xs text-amber-600 mt-2 px-1">Demo mode — the assistant is read-only here. Start your own plan to use it for real.</p>
-      )}
-
-      {/* Keep / discard an uploaded document */}
-      {keepFile && (
-        <div className="mt-5 bg-white border border-stone-200 rounded-2xl p-4 flex items-center justify-between gap-4">
-          <div className="flex items-center gap-3 min-w-0">
-            <Paperclip size={16} className="text-navy-500 shrink-0" />
-            <div className="min-w-0">
-              <p className="text-sm font-medium text-navy-900 truncate">Keep “{keepFile.name}” in your vault?</p>
-              <p className="text-xs text-stone-400">It isn't stored unless you choose to keep it.</p>
-            </div>
-          </div>
-          <div className="flex items-center gap-2 shrink-0">
-            {keepStatus === 'saved' ? (
-              <span className="text-xs text-emerald-600 font-medium flex items-center gap-1"><CheckCircle2 size={14} /> Kept</span>
-            ) : (
-              <>
-                <button onClick={() => setKeepFile(null)} className="text-xs font-medium text-stone-500 hover:text-stone-800 px-3 py-2">Discard</button>
-                <button
-                  onClick={keepDocument}
-                  disabled={keepStatus === 'saving'}
-                  className="text-xs font-semibold bg-navy-800 text-white px-4 py-2 rounded-xl hover:bg-navy-700 transition-colors disabled:opacity-50"
-                >
-                  {keepStatus === 'saving' ? 'Keeping…' : keepStatus === 'error' ? 'Try again' : 'Keep in vault'}
-                </button>
-              </>
-            )}
-          </div>
-        </div>
-      )}
-
-      {/* Proposals */}
-      {grouped.length > 0 && (
-        <div className="mt-6">
-          <div className="flex items-center justify-between mb-3">
-            <h2 className="font-display text-lg font-light text-navy-950">Suggested entries</h2>
-            <span className="text-xs text-stone-400">Tick the ones you'd like to keep, edit anything, then add them.</span>
-          </div>
-
-          <div className="space-y-5">
-            {grouped.map(group => (
-              <div key={group.type}>
-                <p className="text-xs font-semibold uppercase tracking-wide text-stone-400 mb-2">{TYPE_META[group.type].label}</p>
-                <div className="space-y-3">
-                  {group.items.map(card => (
-                    <ProposalCard
-                      key={card.id}
-                      card={card}
-                      onEdit={editField}
-                      onToggle={toggleApprove}
-                      onDismiss={dismissCard}
-                      onDropLifeEvent={dropLifeEvent}
-                    />
-                  ))}
-                </div>
-              </div>
-            ))}
-          </div>
-
-          <div className="flex items-center gap-3 mt-5">
-            <button
-              onClick={addConfirmed}
-              disabled={approvedCount === 0}
-              className="inline-flex items-center gap-2 bg-sage-600 text-white text-sm font-semibold px-5 py-2.5 rounded-xl hover:bg-sage-700 transition-colors disabled:opacity-40"
-              style={{ backgroundColor: approvedCount === 0 ? undefined : '#4c7d47' }}
-            >
-              <Check size={16} /> Add {approvedCount > 0 ? `${approvedCount} ` : ''}confirmed item{approvedCount === 1 ? '' : 's'}
-            </button>
-            <span className="text-xs text-stone-400">Only ticked items are saved.</span>
-          </div>
-        </div>
       )}
     </div>
   )

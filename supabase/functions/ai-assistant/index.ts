@@ -179,7 +179,13 @@ Deno.serve(async (req: Request) => {
       .trim()
     return json({ reply })
   } catch (err) {
-    console.error('ai-assistant error:', err)
-    return json({ error: 'The assistant is unavailable right now. Please try again.' }, 502)
+    // Log the upstream (Anthropic) status + message server-side so failures stay
+    // diagnosable from the request logs (401 = bad key, 429 = rate limit, etc.),
+    // but don't surface internal error detail to the client.
+    // deno-lint-ignore no-explicit-any
+    const e = err as any
+    const status = typeof e?.status === 'number' ? e.status : 502
+    console.error('ai-assistant error:', status, typeof e?.message === 'string' ? e.message : 'unknown error')
+    return json({ error: 'The assistant is unavailable right now. Please try again.' }, status)
   }
 })
