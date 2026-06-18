@@ -1,9 +1,13 @@
 import Anthropic from '@anthropic-ai/sdk'
+import { aiGuard } from '../_lib/ai-guard'
 
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' })
+
+  const blocked = await aiGuard(req)
+  if (blocked) return res.status(blocked.status).json({ error: blocked.error })
 
   const { firstName, plan, stats } = req.body
   // stats: { accountsCount, documentsCount, contactsCount, instructionsCount, wishesCount }
