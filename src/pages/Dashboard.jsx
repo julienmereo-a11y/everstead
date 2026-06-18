@@ -28,6 +28,8 @@ import { useAlerts }        from '../hooks/useData'
 import { useActivityLog }   from '../hooks/useData'
 import { useMessages }      from '../hooks/useData'
 import { useAboutMe }       from '../hooks/useData'
+import { useWishes }        from '../hooks/useData'
+import AIAssistantSection   from '../components/AIAssistantSection'
 import { FamilySection }    from './Settings'
 import {
   DEMO_PROFILE, DEMO_ACCOUNTS, DEMO_DOCUMENTS, DEMO_PEOPLE,
@@ -42,6 +44,7 @@ import {
 const NAV_ITEMS = [
   { id: 'overview',       label: 'Overview',         icon: Home },
   { id: 'aboutme',        label: 'About Me',         icon: UserCircle },
+  { id: 'assistant',      label: 'Your AI Assistant',icon: Sparkles,     aiOnly: true },
 
   { id: 'accounts',       label: 'Accounts',         icon: Landmark,     group: 'Your vault' },
   { id: 'documents',      label: 'Documents',        icon: FileText,     group: 'Your vault' },
@@ -306,7 +309,7 @@ export default function Dashboard() {
   // Honour ?tab= param so /settings and other deep-links open the right section
   const tabParam = searchParams.get('tab')
   const [activeSection, setActiveSection] = useState(
-    tabParam && ['overview','accounts','documents','people','family','messages','instructions','subscriptions','alerts','activity','resources','settings'].includes(tabParam)
+    tabParam && ['overview','aboutme','assistant','accounts','documents','people','family','messages','instructions','subscriptions','alerts','activity','resources','settings'].includes(tabParam)
       ? tabParam
       : 'overview'
   )
@@ -334,6 +337,7 @@ export default function Dashboard() {
   const realSubscriptions = useSubscriptions()
   const realAlerts        = useAlerts()
   const realActivity      = useActivityLog()
+  const realWishes        = useWishes()
 
   const navigate = useNavigate()
 
@@ -384,6 +388,14 @@ export default function Dashboard() {
   // In demo mode, use seed data; otherwise require a real profile
   const activeProfile = isDemo ? DEMO_PROFILE : profile
 
+  // AI features master switch (default on). When off: hide the assistant nav
+  // item and block its route. The Edge Function enforces the same flag server-side.
+  const aiEnabled = activeProfile?.ai_features_enabled !== false
+
+  useEffect(() => {
+    if (activeSection === 'assistant' && !aiEnabled) setActiveSection('overview')
+  }, [activeSection, aiEnabled])
+
   const accounts      = isDemo ? DEMO_ACCOUNTS      : realAccounts.data
   const loadingAccounts = isDemo ? false             : realAccounts.loading
   const addAccount    = isDemo ? () => {}            : realAccounts.add
@@ -395,6 +407,11 @@ export default function Dashboard() {
   const uploadFile    = isDemo ? () => {}            : realDocuments.uploadFile
   const updateDocument = isDemo ? () => {}           : realDocuments.update
   const removeDocument = isDemo ? () => {}           : realDocuments.remove
+
+  // Raw insert handles for the AI Assistant's confirmed entries (demo-safe).
+  const addPersonRow   = isDemo ? () => {}           : realPeople.add
+  const addDocumentRow = isDemo ? () => {}           : realDocuments.add
+  const addWish        = isDemo ? () => {}           : realWishes.add
 
   const people        = isDemo ? demoPeople          : realPeople.data
   const loadingPeople = isDemo ? false               : realPeople.loading
@@ -654,7 +671,8 @@ export default function Dashboard() {
         {/* Nav */}
         <nav className="flex-1 py-2 overflow-y-auto" style={{ padding: '8px 0' }} aria-label="Dashboard navigation">
           {(() => {
-            const items = NAV_ITEMS.filter(({ familyOnly }) => !familyOnly || activeProfile.plan === 'family')
+            const items = NAV_ITEMS.filter(({ familyOnly, aiOnly }) =>
+              (!familyOnly || activeProfile.plan === 'family') && (!aiOnly || aiEnabled))
             return items.map(({ id, label, icon: Icon, group }, idx) => {
             const isActive = activeSection === id
             const badge    = id === 'alerts' ? unreadCount : 0
@@ -781,7 +799,8 @@ export default function Dashboard() {
         {activeSection === 'documents'     && <DocumentsSection documents={documents} loading={loadingDocs} uploadFile={uploadFile} update={updateDocument} remove={removeDocument} planLimits={planLimits} profile={activeProfile} onUpgrade={() => handleUpgrade('family', 'yearly')} updateProfile={isDemo ? undefined : updateProfile} addAlert={isDemo ? undefined : realAlerts.add} onLifeEvent={isDemo ? undefined : setLifeEventPrompt} />}
         {activeSection === 'people'        && <PeopleSection    people={people} loading={loadingPeople} invite={invite} resendInvite={resendInvite} updatePerson={updatePerson} removePerson={removePerson} planLimits={planLimits} profile={activeProfile} onUpgrade={() => handleUpgrade('family', 'yearly')} />}
         {activeSection === 'aboutme'       && <AboutMeSection   aboutMe={aboutMe} loading={isDemo ? false : aboutMeHook.loading} save={aboutMeHook.save} uploadAvatar={aboutMeHook.uploadAvatar} profile={activeProfile} people={people} isDemo={isDemo} onCelebrate={celebrate} />}
-        {activeSection === 'messages'      && <MessagesSection  messages={messages} loading={loadingMessages} people={people} isDemo={isDemo} planLimits={planLimits} onUpgrade={() => handleUpgrade('family', 'yearly')} addMessage={messagesHook.add} updateMessage={messagesHook.update} uploadVideo={messagesHook.uploadVideo} />}
+        {activeSection === 'assistant' && aiEnabled && <AIAssistantSection profile={activeProfile} isDemo={isDemo} addAccount={addAccount} addPerson={addPersonRow} addDocument={addDocumentRow} addWish={addWish} uploadFile={uploadFile} saveAboutMe={aboutMeHook.save} aboutMe={aboutMe} />}
+        {activeSection === 'messages'      && <MessagesSection  messages={messages} loading={loadingMessages} people={people} isDemo={isDemo} planLimits={planLimits} onUpgrade={() => handleUpgrade('family', 'yearly')} addMessage={messagesHook.add} updateMessage={messagesHook.update} uploadVideo={messagesHook.uploadVideo} aiEnabled={aiEnabled} />}
         {activeSection === 'instructions'  && <InstructionsSection instructions={instructions} loading={loadingInstructions} add={addInstruction} update={updateInstruction} remove={removeInstruction} profile={activeProfile} onUpgrade={() => handleUpgrade('family', 'yearly')} />}
         {activeSection === 'subscriptions' && <SubscriptionsSection subscriptions={subscriptions} loading={loadingSubs} add={addSubscription} update={updateSubscription} remove={removeSubscription} />}
         {activeSection === 'alerts'        && <AlertsSection    alerts={alerts} markRead={markRead} markAllRead={markAllRead} />}
@@ -899,12 +918,15 @@ function AIOnboardingOverlay({ userName, onClose, onComplete }) {
     const finalAnswers = { ...answers }
     if (step >= 0) finalAnswers[QUESTIONS[step].key] = input.trim() || 'Not provided'
     try {
+      const { supabase: sb } = await import('../lib/supabase')
+      const { data: { session } } = await sb.auth.getSession()
       const res = await fetch('/api/ai/process-onboarding', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${session?.access_token}` },
         body: JSON.stringify({ answers: finalAnswers, firstName }),
       })
-      const data = await res.json()
+      // res.ok === false includes the AI-off case (403) — fall back gracefully.
+      const data = res.ok ? await res.json() : {}
       setSummary(data.onboardingSummary || "I've set up some draft entries based on what you shared. You can review and edit everything in your vault.")
       setDone(true)
       await onComplete(data)
@@ -1219,28 +1241,33 @@ function ReadinessCoachCard({ profile, stats, onNavigate }) {
       try { setCoachData(JSON.parse(cached)); return } catch {}
     }
 
+    // Respect the AI master switch — skip entirely when AI is off.
+    if (profile?.ai_features_enabled === false) { setLoading(false); return }
     setLoading(true)
     setError(false)
-    fetch('/api/ai/readiness-coach', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        firstName: profile?.full_name?.split(' ')[0],
-        plan: profile?.plan,
-        stats,
-      }),
-    })
-      .then(r => r.json())
-      .then(data => {
+    ;(async () => {
+      try {
+        const { supabase: sb } = await import('../lib/supabase')
+        const { data: { session } } = await sb.auth.getSession()
+        const r = await fetch('/api/ai/readiness-coach', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${session?.access_token}` },
+          body: JSON.stringify({
+            firstName: profile?.full_name?.split(' ')[0],
+            plan: profile?.plan,
+            stats,
+          }),
+        })
+        const data = await r.json()
         if (data.coaching) {
           setCoachData(data.coaching)
           sessionStorage.setItem(cacheKey, JSON.stringify(data.coaching))
         } else {
           setError(true)
         }
-      })
-      .catch(() => setError(true))
-      .finally(() => setLoading(false))
+      } catch { setError(true) }
+      finally { setLoading(false) }
+    })()
   }, [profile?.id]) // eslint-disable-line
 
   React.useEffect(() => { fetchCoach() }, [fetchCoach])
@@ -1996,6 +2023,8 @@ function DocumentsSection({ documents, loading, uploadFile, update, remove, plan
 
   const handleAIScan = async () => {
     if (!file) return
+    // Respect the AI master switch — never scan when AI is off.
+    if (profile?.ai_features_enabled === false) return
     setAiScanning(true)
     try {
       const reader = new FileReader()
@@ -2008,9 +2037,11 @@ function DocumentsSection({ documents, loading, uploadFile, update, remove, plan
           return
         }
         try {
+          const { supabase: sb } = await import('../lib/supabase')
+          const { data: { session } } = await sb.auth.getSession()
           const res = await fetch('/api/ai/extract-document', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${session?.access_token}` },
             body: JSON.stringify({ fileBase64: base64, mimeType, fileName: file.name }),
           })
           const data = await res.json()
@@ -2840,7 +2871,7 @@ function AboutMeSection({ aboutMe, loading, save, uploadAvatar, profile, people,
 // ─────────────────────────────────────────────────────────────
 // PERSONAL MESSAGES SECTION
 // ─────────────────────────────────────────────────────────────
-function MessagesSection({ messages: initialMessages, loading, people, isDemo, planLimits, onUpgrade, addMessage, updateMessage, uploadVideo }) {
+function MessagesSection({ messages: initialMessages, loading, people, isDemo, planLimits, onUpgrade, addMessage, updateMessage, uploadVideo, aiEnabled }) {
   const [showCompose, setShowCompose]   = useState(false)
   const [expanded, setExpanded]         = useState(null)
   const [confirmRelease, setConfirmRelease] = useState(null)  // message id to confirm
@@ -2859,11 +2890,14 @@ function MessagesSection({ messages: initialMessages, loading, people, isDemo, p
 
   const handleAIWrite = async (e) => {
     e.preventDefault()
+    if (aiEnabled === false) return
     setAiWriterLoading(true)
     try {
+      const { supabase: sb } = await import('../lib/supabase')
+      const { data: { session } } = await sb.auth.getSession()
       const res = await fetch('/api/ai/write-message', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${session?.access_token}` },
         body: JSON.stringify({
           recipientName: form.recipient_name,
           relationship: aiWriterForm.relationship,
@@ -3267,7 +3301,7 @@ function MessagesSection({ messages: initialMessages, loading, people, isDemo, p
               <div>
                 <div className="flex items-center justify-between mb-1.5">
                   <label className="block text-xs font-semibold text-stone-600">Message <span className="text-red-400">*</span></label>
-                  {form.recipient_name && (
+                  {form.recipient_name && aiEnabled !== false && (
                     <button
                       type="button"
                       onClick={() => setShowAIWriter(true)}
@@ -3756,11 +3790,14 @@ function InstructionsSection({ instructions, loading, add, update, remove, profi
 
   const handleQuickWrite = async (e) => {
     e.preventDefault()
+    if (profile?.ai_features_enabled === false) return
     setQuickWriteLoading(true)
     try {
+      const { supabase: sb } = await import('../lib/supabase')
+      const { data: { session } } = await sb.auth.getSession()
       const res = await fetch('/api/ai/write-instructions', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${session?.access_token}` },
         body: JSON.stringify({
           ...quickWriteForm,
           userName: profile?.full_name,
@@ -3905,12 +3942,14 @@ function InstructionsSection({ instructions, loading, add, update, remove, profi
       subtitle={`${instructions.length} instruction sets`}
       action={
         <div className="flex items-center gap-2">
+          {profile?.ai_features_enabled !== false && (
           <button
             onClick={() => setShowQuickWrite(true)}
             className="inline-flex items-center gap-1.5 text-xs font-semibold text-sage-700 bg-sage-50 hover:bg-sage-100 border border-sage-200 px-3 py-2 rounded-lg transition-colors"
           >
             <Sparkles size={12} /> Write with AI
           </button>
+          )}
           <button
             onClick={() => setShowAssistant(true)}
             className="inline-flex items-center gap-1.5 text-xs font-semibold text-navy-700 bg-navy-50 hover:bg-navy-100 border border-navy-200 px-3 py-2 rounded-lg transition-colors"
@@ -4781,6 +4820,19 @@ function SettingsSection({ profile, isDemo, updateProfile, refreshProfile, onUpg
     catch {}
     finally { setNotifSaving(false) }
   }
+
+  // AI features master switch (default on). Persists immediately on toggle.
+  const [aiEnabled, setAiEnabled] = useState(profile.ai_features_enabled !== false)
+  const [aiSaving, setAiSaving]   = useState(false)
+  const toggleAi = async () => {
+    const next = !aiEnabled
+    setAiEnabled(next)
+    if (isDemo) return
+    setAiSaving(true)
+    try { await updateProfile({ ai_features_enabled: next }) }
+    catch { setAiEnabled(!next) } // revert on failure
+    finally { setAiSaving(false) }
+  }
   const [profileSaving, setProfileSaving] = useState(false)
   const [profileSaved,  setProfileSaved]  = useState(false)
 
@@ -5136,6 +5188,32 @@ function SettingsSection({ profile, isDemo, updateProfile, refreshProfile, onUpg
             Share your unique link — your friend gets a <span className="font-semibold text-navy-700">21-day free trial</span> instead of 14 days. Estate planning is a team effort.
           </p>
           <ReferralLinkBox referralCode={profile.referral_code || profile.id} />
+        </div>
+
+        {/* ── AI features ── */}
+        <div className="bg-white border border-stone-200 rounded-2xl p-6">
+          <h2 className="font-semibold text-navy-950 text-sm mb-1 flex items-center gap-2">
+            <Sparkles size={15} className="text-navy-600" /> AI features
+          </h2>
+          <div className="flex items-start justify-between gap-4 mt-4">
+            <p className="text-xs text-stone-500 leading-relaxed max-w-md">
+              Everstead's AI Assistant can help you set up your account and answer questions, using a secure AI provider. Turn this off and no AI is used anywhere in your account — your data is never sent to an AI provider. You can turn it back on any time.
+            </p>
+            <label className="relative shrink-0 cursor-pointer mt-0.5">
+              <input
+                type="checkbox"
+                className="sr-only peer"
+                checked={aiEnabled}
+                disabled={aiSaving}
+                onChange={toggleAi}
+              />
+              <div className="w-11 h-6 rounded-full bg-stone-200 peer-checked:bg-navy-700 transition-colors" />
+              <div className="absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white shadow transition-transform peer-checked:translate-x-5" />
+            </label>
+          </div>
+          <p className="text-xs text-stone-400 mt-3">
+            AI-powered features are currently <span className={`font-semibold ${aiEnabled ? 'text-sage-700' : 'text-stone-600'}`}>{aiEnabled ? 'on' : 'off'}</span>.
+          </p>
         </div>
 
         {/* ── Notification preferences ── */}
