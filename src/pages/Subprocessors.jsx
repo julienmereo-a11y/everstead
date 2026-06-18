@@ -46,9 +46,9 @@ const subprocessors = [
   },
   {
     name: 'Anthropic, PBC',
-    purpose: 'AI-powered chat assistant and in-product guidance. Processes only the messages members send to the assistant — never the contents of their vault.',
+    purpose: 'AI-powered assistant, document scanning, and in-product guidance. Processes the messages and any documents or images a member chooses to submit to an AI feature — it is not given blanket access to a member’s vault, and runs only while AI features are switched on.',
     location: 'USA',
-    transferMechanism: 'UK IDTA / EU SCCs · zero data retention agreement (Anthropic does not train on Everstead traffic)',
+    transferMechanism: 'UK IDTA / EU SCCs · processed under Anthropic’s commercial API terms; Anthropic does not train on Everstead traffic',
     website: 'https://www.anthropic.com/legal/privacy',
   },
 ]
