@@ -179,6 +179,9 @@ export default function GetStarted() {
   const [promoState, setPromoState] = useState({ status: 'idle', label: null, reason: null })
   // The founding offer is a Family-plan offer, so an active promo locks the plan to Family.
   const planLocked = !!promoCode
+  // Once the discount is confirmed valid, lead the copy with the free year
+  // (the 14-day trial stays only as a quiet cancel-anytime safety).
+  const foundingActive = planLocked && promoState.status === 'valid'
 
   useEffect(() => {
     if (!promoCode) return
@@ -494,7 +497,9 @@ export default function GetStarted() {
             Start your plan in minutes.
           </h1>
           <p className="mt-4 text-stone-300 text-base leading-relaxed max-w-md mx-auto">
-            {referralCode
+            {foundingActive
+              ? <><span className="text-sage-300 font-semibold">Your first year is free.</span> Add your card to claim your founding place — you won't be charged during your first year, and you can cancel any time.</>
+              : referralCode
               ? <><span className="text-sage-300 font-semibold">You've been referred — enjoy a 21-day free trial.</span> Enter your card details and you won't be charged until day 21.</>
               : `${trialDays}-day free trial on every plan. Enter your card details — you won't be charged until the trial ends.`
             }
@@ -956,7 +961,9 @@ export default function GetStarted() {
             <div className="max-w-md mx-auto">
               <h2 className="font-display text-3xl font-light text-navy-950 text-center mb-2">Add your card</h2>
               <p className="text-center text-stone-500 text-sm mb-3">
-                Your card won't be charged for {trialDays} days. Cancel any time before then and pay nothing.
+                {foundingActive
+                  ? <>You won't be charged during your free first year. Add your card to claim your founding place — cancel any time.</>
+                  : `Your card won't be charged for ${trialDays} days. Cancel any time before then and pay nothing.`}
               </p>
               <p className={`text-center text-sm text-stone-600 ${promoCode && promoState.status === 'valid' ? 'mb-3' : 'mb-8'}`}>
                 {PLAN_OPTIONS.find(p => p.id === selectedPlan)?.name} plan · {annualBilling ? 'billed annually' : 'billed monthly'}
@@ -1151,12 +1158,14 @@ function CheckoutForm({ trialDays, plan, billingCycle, customerId, referredBy, p
         {loading ? (
           <><Loader2 size={15} className="animate-spin" />Processing…</>
         ) : (
-          <><CreditCard size={15} />Start my {trialDays}-day free trial</>
+          <><CreditCard size={15} />{promoCode ? 'Claim my free year' : `Start my ${trialDays}-day free trial`}</>
         )}
       </button>
 
       <p className="text-center text-xs text-stone-400">
-        You won't be charged until day {trialDays}. Cancel any time before then.
+        {promoCode
+          ? 'Your first year is free — cancel any time before it ends.'
+          : `You won't be charged until day ${trialDays}. Cancel any time before then.`}
       </p>
     </form>
   )
