@@ -6,7 +6,7 @@ import { PRICING } from '../config/pricing'
 import {
   ShieldCheck, Lock, Users, FileText, CheckCircle2, ArrowRight,
   Star, ChevronDown, Folder, Bell, Share2, ClipboardList, BookOpen, Heart,
-  AlertCircle, CreditCard, Clock, UserCircle
+  AlertCircle, CreditCard, Clock, UserCircle, Sparkles
 } from 'lucide-react'
 
 const trustItems = [
@@ -27,6 +27,7 @@ const painPoints = [
 
 const featureHighlights = [
   { icon: UserCircle, title: 'About Me', desc: 'The music you\'d want played, a letter for the people you love, the story only you can tell — gathered in one place and shared with whom you choose.' },
+  { icon: Sparkles, title: 'Your AI Assistant', desc: 'New to this, or find admin daunting? A calm, private assistant helps you set things up one small step at a time — chat or drop in a document, and it suggests entries for you to confirm. Nothing is saved until you say so.', ai: 'It suggests, you decide — and you can switch AI off any time. ✨' },
   { icon: Folder, title: 'Digital account inventory', desc: 'See every account — banking, investments, subscriptions, and digital assets — in one structured place. No more hunting across apps.' },
   { icon: FileText, title: 'Secure document vault', desc: 'Upload, tag, and find legal, financial, and personal documents in seconds. Version history included.', ai: 'Upload a document — we extract the key details automatically. ✨' },
   { icon: ClipboardList, title: 'Step-by-step instructions', desc: 'Write clear guidance on your own terms — for everyday reference, and so the people you love know what to do when it counts.', ai: 'Not sure what to write? We\'ll help you find the words. ✨' },

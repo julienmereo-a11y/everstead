@@ -8,6 +8,19 @@ const entries = [
     date: 'June 2026',
     tag: 'New',
     tagColor: 'bg-sage-100 text-sage-700',
+    title: 'Your AI Assistant — a private helper for the admin',
+    items: [
+      'A calm, private assistant inside your account — for anyone who finds this kind of admin daunting. It helps you set things up one small step at a time, at your own pace.',
+      'Chat in plain English, or simply drop in a document — it reads it and suggests entries for you to review.',
+      'Nothing is saved until you confirm it — it suggests, you decide, and you can edit every suggestion first.',
+      'It can also answer practical questions about how Everstead works.',
+      'Private to your account, never used to train AI or for advertising — and you can switch AI features off any time in Settings.',
+    ],
+  },
+  {
+    date: 'June 2026',
+    tag: 'New',
+    tagColor: 'bg-sage-100 text-sage-700',
     title: 'About Me — the story only you can tell',
     items: [
       'New "About Me" section in your vault — the warm, human heart of your plan, beyond accounts and admin.',

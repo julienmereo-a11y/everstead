@@ -6,7 +6,7 @@ import {
   ArrowRight, Folder, FileText, ClipboardList, Users, Share2, Heart,
   CreditCard, BarChart3, Lock, ShieldCheck, Bell, BookOpen, CheckCircle2,
   Eye, Clock, AlertTriangle, Key, Globe, RefreshCw, Layers, Zap, Star,
-  ChevronDown, ChevronRight, UserCheck, Archive, MessageSquare, UserCircle
+  ChevronDown, ChevronRight, UserCheck, Archive, MessageSquare, UserCircle, Sparkles
 } from 'lucide-react'
 
 /* ─── Data ────────────────────────────────────────────────────────────── */
@@ -27,6 +27,22 @@ const coreFeatures = [
     accent: 'bg-sage-50 border-sage-100',
     iconBg: 'bg-sage-100',
     iconColor: 'text-sage-700',
+  },
+  {
+    icon: Sparkles,
+    tag: 'AI Assistant',
+    title: 'Your AI Assistant',
+    headline: 'A private helper, for when admin feels like too much.',
+    body: 'If getting this sorted has ever felt overwhelming, you don\'t have to do it alone. Your AI Assistant is a calm, private helper inside your account — chat in plain English, or simply drop in a document and it will read it and suggest entries for you. It works one small step at a time, and nothing is ever saved until you review and confirm it. It can also answer practical questions about how Everstead works.',
+    bullets: [
+      'Chat, or drop in a document — it suggests entries for you to review',
+      'Nothing is saved until you confirm — it suggests, you decide',
+      'Helps you begin even when the words, or the energy, don\'t come easily',
+      'Private to your account; switch AI off any time in Settings',
+    ],
+    accent: 'bg-navy-50 border-navy-100',
+    iconBg: 'bg-navy-100',
+    iconColor: 'text-navy-700',
   },
   {
     icon: Folder,
