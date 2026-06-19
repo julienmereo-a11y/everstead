@@ -224,7 +224,7 @@ export default function Home() {
           zIndex: 0,
         }} />
 
-        <div className="relative max-w-7xl mx-auto px-6 lg:px-8 grid lg:grid-cols-2 gap-16 items-center">
+        <div className="relative max-w-7xl mx-auto px-6 lg:px-8 grid lg:grid-cols-[1.25fr_1fr] gap-16 items-center">
           {/* Copy */}
           <div>
             {/* A/B alternates to try later:
@@ -280,9 +280,9 @@ export default function Home() {
           {/* Dashboard preview — app mockup */}
           <div className="animate-fade-up animate-delay-300" style={{ position: 'relative', zIndex: 1 }}>
             <img
-              src="/hero-app.png"
+              src="/hero-app-2.png"
               alt="The Everstead app — your plan organised: accounts and assets, documents and wishes, and the people you trust"
-              className="w-full rounded-3xl"
+              className="w-full lg:max-w-[460px] lg:ml-auto rounded-3xl"
               style={{ boxShadow: '0 32px 80px rgba(0, 0, 0, 0.45)' }}
             />
           </div>
