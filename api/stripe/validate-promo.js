@@ -39,8 +39,14 @@ export default async function handler(req, res) {
       return res.status(200).json({ valid: false, reason: 'This code has expired' })
     }
 
-    // Build a human label from the coupon
-    const coupon = promo.coupon
+    // Build a human label from the coupon. The coupon lives at promo.coupon on
+    // older Stripe API versions and at promo.promotion.coupon on newer ones —
+    // resolve across both (retrieving it if only an ID is present).
+    let coupon = promo.coupon
+    const nested = promo.promotion?.coupon
+    if (!coupon && nested) {
+      coupon = typeof nested === 'string' ? await stripe.coupons.retrieve(nested) : nested
+    }
     let label = 'Discount applied'
     if (coupon) {
       if (coupon.percent_off === 100 && coupon.duration === 'repeating' && coupon.duration_in_months === 12) {
