@@ -56,7 +56,7 @@ const plans = [
     promo: true,
     desc: 'For individuals who want their accounts, documents, and wishes in one secure place.',
     features: ['Up to 10 accounts & documents', 'Step-by-step instructions', '1 trusted contact', 'Readiness score', '1 GB storage', 'Your AI Assistant'],
-    cta: 'Get started free',
+    cta: 'Start Your Everstead',
     highlight: false,
   },
   {
@@ -66,7 +66,7 @@ const plans = [
     annual: PRICING.family.annual.perMonth,
     desc: 'For couples and families — two private vaults, one subscription. Organised together, private separately.',
     features: ['Everything in Essential', 'Two private vaults — one subscription', 'Each person keeps their own private data', 'Up to 10 trusted contacts', '25 GB storage', 'Share only what you choose'],
-    cta: 'Get started free',
+    cta: 'Start Your Everstead',
     highlight: true,
   },
   {
@@ -233,11 +233,11 @@ export default function Home() {
               // "Everything your family would need, gathered in one place — with love."
             */}
             <h1 className="font-display text-[2.5rem] leading-[1.12] sm:text-5xl sm:leading-[1.08] lg:text-6xl xl:text-7xl font-light text-white tracking-tight text-balance animate-fade-up">
-              Give the people you love one less thing to worry about.
+              Everything that matters, <em>gathered</em> in one secure place.
             </h1>
 
             <p className="mt-4 sm:mt-6 text-base sm:text-lg text-stone-300 leading-relaxed max-w-xl animate-fade-up animate-delay-100">
-              One secure place for the accounts, documents, and wishes your family would otherwise have to piece together — so nothing is lost, and no one is left guessing. Peace of mind for you now; clarity for them later.
+              Everstead helps UK families bring their accounts, documents and wishes together — Peace of mind for you now; clarity for the people you love later.
             </p>
 
             <div className="mt-10 flex flex-wrap gap-3 animate-fade-up animate-delay-200">
@@ -248,7 +248,7 @@ export default function Home() {
                 onMouseEnter={e => e.currentTarget.style.backgroundColor = '#3d6b3a'}
                 onMouseLeave={e => e.currentTarget.style.backgroundColor = '#4c7d47'}
               >
-                Get started free
+                Start Your Everstead
                 <ArrowRight size={16} />
               </Link>
               <Link
@@ -277,47 +277,14 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Dashboard preview card */}
+          {/* Dashboard preview — app mockup */}
           <div className="animate-fade-up animate-delay-300" style={{ position: 'relative', zIndex: 1 }}>
-            <div
-              className="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-6"
-              style={{
-                boxShadow: '0 32px 80px rgba(0, 0, 0, 0.4), 0 8px 24px rgba(0, 0, 0, 0.3)',
-                transform: 'translateY(-4px)',
-                transition: 'transform 0.3s ease, box-shadow 0.3s ease',
-              }}
-              onMouseEnter={e => {
-                e.currentTarget.style.transform = 'translateY(-8px)'
-                e.currentTarget.style.boxShadow = '0 40px 100px rgba(0, 0, 0, 0.5), 0 12px 32px rgba(0, 0, 0, 0.35)'
-              }}
-              onMouseLeave={e => {
-                e.currentTarget.style.transform = 'translateY(-4px)'
-                e.currentTarget.style.boxShadow = '0 32px 80px rgba(0, 0, 0, 0.4), 0 8px 24px rgba(0, 0, 0, 0.3)'
-              }}
-            >
-              <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-sage-300/90">For my family</p>
-
-              <p className="mt-3 text-lg leading-relaxed text-stone-100" style={{ fontFamily: 'Georgia, serif' }}>
-                For when you need it — everything's in one place, and you won't have to work it out alone.
-              </p>
-
-              <div className="mt-6 space-y-3.5">
-                {[
-                  { icon: '🎵', label: 'The music I’d want played' },
-                  { icon: '💌', label: 'A letter for the kids' },
-                  { icon: '🔑', label: 'Where everything important lives' },
-                ].map((item, i) => (
-                  <div key={i} className="flex items-center gap-3">
-                    <span className="w-9 h-9 rounded-xl bg-white/10 border border-white/15 flex items-center justify-center text-base flex-shrink-0" aria-hidden="true">{item.icon}</span>
-                    <span className="text-sm text-stone-200">{item.label}</span>
-                  </div>
-                ))}
-              </div>
-
-              <div className="mt-6 pt-4 border-t border-white/10">
-                <span className="text-xs text-stone-400">🔒 AES-256 encrypted · shared only with people you choose</span>
-              </div>
-            </div>
+            <img
+              src="/hero-app.png"
+              alt="The Everstead app — your plan organised: accounts and assets, documents and wishes, and the people you trust"
+              className="w-full rounded-3xl"
+              style={{ boxShadow: '0 32px 80px rgba(0, 0, 0, 0.45)' }}
+            />
           </div>
         </div>
 
@@ -885,7 +852,7 @@ export default function Home() {
               to="/get-started"
               className="inline-flex items-center gap-2 bg-white text-navy-900 font-semibold text-sm px-7 py-3.5 rounded-lg hover:bg-stone-100 transition-colors"
             >
-              Get started free
+              Start Your Everstead
               <ArrowRight size={16} />
             </Link>
             <Link

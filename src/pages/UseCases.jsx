@@ -517,7 +517,7 @@ function UseCasesIndex() {
                 to="/get-started"
                 className="inline-flex items-center gap-2 bg-white text-navy-900 font-semibold text-sm px-5 py-2.5 rounded-lg hover:bg-stone-50 transition-colors mt-7 self-start"
               >
-                Get started free <ArrowRight size={14} />
+                Start Your Everstead <ArrowRight size={14} />
               </Link>
             </div>
           </div>
@@ -573,7 +573,7 @@ function UseCasesIndex() {
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <Link to="/get-started" className="inline-flex items-center justify-center gap-2 bg-navy-800 text-white font-semibold text-sm px-7 py-3.5 rounded-lg hover:bg-navy-700 transition-colors">
-              Get started free <ArrowRight size={15} />
+              Start Your Everstead <ArrowRight size={15} />
             </Link>
             <Link to="/book-demo" className="inline-flex items-center justify-center gap-2 bg-white text-navy-800 font-semibold text-sm px-7 py-3.5 rounded-lg border border-stone-200 hover:border-navy-300 hover:bg-stone-50 transition-colors">
               Book a demo

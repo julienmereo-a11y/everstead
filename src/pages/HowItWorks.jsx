@@ -498,7 +498,7 @@ export default function HowItWorks() {
               onMouseEnter={e => e.currentTarget.style.backgroundColor = '#3d6b3a'}
               onMouseLeave={e => e.currentTarget.style.backgroundColor = '#4c7d47'}
             >
-              Get started free <ArrowRight size={15} />
+              Start Your Everstead <ArrowRight size={15} />
             </Link>
             <Link
               to="/features"

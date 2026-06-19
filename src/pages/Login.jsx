@@ -356,7 +356,7 @@ export default function Login() {
                 <p style={{ textAlign: 'center', fontSize: '13px', color: '#a8a29e', marginTop: '20px' }}>
                   Don't have an account?{' '}
                   <Link to="/get-started" style={{ color: '#4c7d47', fontWeight: '500', textDecoration: 'none' }}>
-                    Get started free
+                    Start Your Everstead
                   </Link>
                 </p>
               </>

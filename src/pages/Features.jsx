@@ -286,7 +286,7 @@ export default function Features() {
               onMouseEnter={e => e.currentTarget.style.backgroundColor = '#3d6b3a'}
               onMouseLeave={e => e.currentTarget.style.backgroundColor = '#4c7d47'}
             >
-              Get started free <ArrowRight size={15} />
+              Start Your Everstead <ArrowRight size={15} />
             </Link>
             <Link to="/how-it-works" className="inline-flex items-center gap-2 bg-white/10 text-white font-medium text-sm px-6 py-3 rounded-lg border border-white/20 hover:bg-white/20 transition-colors">
               See how it works
@@ -613,7 +613,7 @@ export default function Features() {
               onMouseEnter={e => e.currentTarget.style.backgroundColor = '#3d6b3a'}
               onMouseLeave={e => e.currentTarget.style.backgroundColor = '#4c7d47'}
             >
-              Get started free <ArrowRight size={16} />
+              Start Your Everstead <ArrowRight size={16} />
             </Link>
             <Link to="/pricing" className="inline-flex items-center gap-2 bg-white/10 text-white font-medium text-sm px-7 py-3.5 rounded-lg border border-white/20 hover:bg-white/20 transition-colors">
               View pricing

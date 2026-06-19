@@ -275,7 +275,7 @@ export default function About() {
                 to="/get-started"
                 className="inline-flex items-center gap-2 bg-sage-500 hover:bg-sage-400 text-white font-semibold text-sm px-7 py-3.5 rounded-lg transition-colors"
               >
-                Get started free <ArrowRight size={15} />
+                Start Your Everstead <ArrowRight size={15} />
               </Link>
               <Link
                 to="/contact"

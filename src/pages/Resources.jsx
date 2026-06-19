@@ -2232,7 +2232,7 @@ function ArticleDetail({ sectionSlug, postSlug }) {
                     to="/get-started"
                     className="inline-flex items-center gap-2 mt-4 bg-navy-800 text-white text-sm font-semibold px-5 py-2.5 rounded-lg hover:bg-navy-700 transition-colors"
                   >
-                    Get started free <ArrowRight size={14} />
+                    Start Your Everstead <ArrowRight size={14} />
                   </Link>
                 </div>
               )
@@ -2252,7 +2252,7 @@ function ArticleDetail({ sectionSlug, postSlug }) {
               to="/get-started"
               className="inline-flex items-center gap-2 bg-navy-800 text-white text-sm font-semibold px-5 py-2.5 rounded-lg hover:bg-navy-700 transition-colors"
             >
-              Get started free <ArrowRight size={14} />
+              Start Your Everstead <ArrowRight size={14} />
             </Link>
           </div>
         </div>
