@@ -163,10 +163,21 @@ export default function GetStarted() {
 
   // Promo code from ?promo= URL param (e.g. FOUNDING50 — first year free).
   // Validated against Stripe on mount; threaded into create-subscription.
-  const promoCode = (searchParams.get('promo') || '').trim().toUpperCase() || null
+  // Persisted in sessionStorage so it survives OAuth and ?resume= round-trips
+  // that bring the user back to /get-started WITHOUT the query param — otherwise
+  // the founding discount would be silently dropped at checkout.
+  const urlPromo = (searchParams.get('promo') || '').trim().toUpperCase() || null
+  const [promoCode, setPromoCode] = useState(() => {
+    if (urlPromo) return urlPromo
+    try { return sessionStorage.getItem('everstead_promo') || null } catch { return null }
+  })
+  useEffect(() => {
+    if (!urlPromo) return
+    setPromoCode(urlPromo)
+    try { sessionStorage.setItem('everstead_promo', urlPromo) } catch {}
+  }, [urlPromo])
   const [promoState, setPromoState] = useState({ status: 'idle', label: null, reason: null })
-  // The founding offer (FOUNDING50 — first year free) is a Family-plan offer, so
-  // a ?promo= link locks the plan to Family.
+  // The founding offer is a Family-plan offer, so an active promo locks the plan to Family.
   const planLocked = !!promoCode
 
   useEffect(() => {
@@ -246,9 +257,11 @@ export default function GetStarted() {
       // URL param plan always wins over profile default (prevents race condition
       // where async resume effect overwrites plan set by the URL param effect)
       const urlPlan    = searchParams.get('plan')
-      const resumePlan = (urlPlan && PLAN_OPTIONS.find(p => p.id === urlPlan))
-        ? urlPlan
-        : (oauthPlan?.plan || profile.plan || 'essential')
+      const resumePlan = planLocked
+        ? 'family'                                              // founding offer is Family-only
+        : (urlPlan && PLAN_OPTIONS.find(p => p.id === urlPlan))
+          ? urlPlan
+          : (oauthPlan?.plan || profile.plan || 'essential')
       const resumeBilling = profile.billing_cycle
         ? profile.billing_cycle === 'yearly'
         : (oauthPlan?.billing ?? true)
@@ -945,7 +958,7 @@ export default function GetStarted() {
               <p className="text-center text-stone-500 text-sm mb-3">
                 Your card won't be charged for {trialDays} days. Cancel any time before then and pay nothing.
               </p>
-              <p className="text-center text-sm text-stone-600 mb-8">
+              <p className={`text-center text-sm text-stone-600 ${promoCode && promoState.status === 'valid' ? 'mb-3' : 'mb-8'}`}>
                 {PLAN_OPTIONS.find(p => p.id === selectedPlan)?.name} plan · {annualBilling ? 'billed annually' : 'billed monthly'}
                 {' · '}
                 <button
@@ -955,6 +968,13 @@ export default function GetStarted() {
                   Change plan
                 </button>
               </p>
+              {promoCode && promoState.status === 'valid' && (
+                <div className="mb-8 mx-auto max-w-sm flex items-center justify-center gap-2 rounded-xl bg-sage-50 border border-sage-200 px-4 py-2.5 text-sm">
+                  <span aria-hidden="true">🎉</span>
+                  <span className="text-sage-700 font-semibold">{promoState.label}</span>
+                  <span className="text-stone-400">· applied at checkout</span>
+                </div>
+              )}
 
               {!annualBilling && (() => {
                 const plan = PLAN_OPTIONS.find(p => p.id === selectedPlan)
@@ -1101,6 +1121,7 @@ function CheckoutForm({ trialDays, plan, billingCycle, customerId, referredBy, p
         throw new Error(error || 'Could not activate your subscription. Please contact support.')
       }
 
+      try { sessionStorage.removeItem('everstead_promo') } catch {}
       window.location.href = '/dashboard?checkout=success'
     } catch (err) {
       setError(err.message)
