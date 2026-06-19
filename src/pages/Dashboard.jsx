@@ -14,6 +14,7 @@ import {
 import { useAuth }          from '../contexts/AuthContext'
 import ReferralCard         from '../components/ReferralCard'
 import FeedbackWidget       from '../components/FeedbackWidget'
+import WelcomeOnboarding    from '../components/WelcomeOnboarding'
 import { redirectToCheckout, redirectToCustomerPortal, PLANS } from '../lib/stripe'
 import { PRICING } from '../config/pricing'
 import { isAtLimit, getLimit, canUseFeature } from '../lib/planLimits'
@@ -326,8 +327,8 @@ export default function Dashboard() {
   const [upgradeError, setUpgradeError]   = useState(null)
   // Demo-mode mutable people state (so invite/edit/remove reflect in UI)
   const [demoPeople, setDemoPeople] = useState(DEMO_PEOPLE)
-  // AI onboarding overlay — shown once on first login for brand-new users
-  const [showAIOnboarding, setShowAIOnboarding] = useState(false)
+  // First-run "Welcome to Everstead" guided onboarding — shown once on first login
+  const [showWelcome, setShowWelcome] = useState(false)
 
   // Real data hooks — only used when not in demo mode
   const realAccounts      = useAccounts()
@@ -515,19 +516,16 @@ export default function Dashboard() {
 
   const planLimits = PLANS[activeProfile.plan]?.limits ?? PLANS.essential.limits
 
-  // Trigger AI onboarding for brand-new users (no accounts, profile < 7 days old, not demo)
+  // First-run welcome — shown once for brand-new users, gated on
+  // profiles.onboarding_completed (existing users were marked done by migration).
   React.useEffect(() => {
     if (isDemo || !activeProfile?.id) return
-    const key = `everstead_ai_onboarding_shown_${activeProfile.id}`
-    if (localStorage.getItem(key)) return
-    const createdAt = new Date(activeProfile.created_at || Date.now())
-    const ageInDays = (Date.now() - createdAt.getTime()) / 86400000
-    if (ageInDays < 7 && accounts.length === 0) {
-      // Small delay so the dashboard renders first
-      const t = setTimeout(() => { setShowAIOnboarding(true) }, 1800)
-      return () => clearTimeout(t)
-    }
-  }, [activeProfile?.id, accounts.length]) // eslint-disable-line
+    if (activeProfile.role === 'delegate') return
+    if (activeProfile.onboarding_completed) return
+    // Small delay so the dashboard renders first
+    const t = setTimeout(() => setShowWelcome(true), 700)
+    return () => clearTimeout(t)
+  }, [activeProfile?.id, activeProfile?.onboarding_completed]) // eslint-disable-line
 
   const handleUpgrade = async (planId, billingCycle = 'yearly') => {
     if (isDemo) { navigate('/get-started'); return }
@@ -844,30 +842,12 @@ export default function Dashboard() {
         instructionCount={instructions.length}
       />
     )}
-    {showAIOnboarding && (
-      <AIOnboardingOverlay
-        userName={activeProfile.full_name}
-        onClose={() => {
-          setShowAIOnboarding(false)
-          localStorage.setItem(`everstead_ai_onboarding_shown_${activeProfile.id}`, '1')
-        }}
-        onComplete={async (result) => {
-          setShowAIOnboarding(false)
-          localStorage.setItem(`everstead_ai_onboarding_shown_${activeProfile.id}`, '1')
-          // Create vault entries from AI-processed answers
-          try {
-            if (result.accounts?.length) {
-              for (const acc of result.accounts) {
-                await realAccounts.add({ name: acc.name, category: acc.type, institution: acc.institution, notes: acc.notes })
-              }
-            }
-            if (result.people?.length) {
-              for (const person of result.people) {
-                await realPeople.invite({ name: person.name, email: '', role: person.role, notes: person.notes, accessAreas: ['accounts','documents','instructions'] })
-              }
-            }
-          } catch {}
-        }}
+    {showWelcome && !isDemo && (
+      <WelcomeOnboarding
+        profile={activeProfile}
+        updateProfile={updateProfile}
+        onClose={() => setShowWelcome(false)}
+        onGoToAboutMe={() => { setShowWelcome(false); setActiveSection('aboutme') }}
       />
     )}
     </>
