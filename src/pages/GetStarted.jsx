@@ -165,6 +165,9 @@ export default function GetStarted() {
   // Validated against Stripe on mount; threaded into create-subscription.
   const promoCode = (searchParams.get('promo') || '').trim().toUpperCase() || null
   const [promoState, setPromoState] = useState({ status: 'idle', label: null, reason: null })
+  // The founding offer (FOUNDING50 — first year free) is a Family-plan offer, so
+  // a ?promo= link locks the plan to Family.
+  const planLocked = !!promoCode
 
   useEffect(() => {
     if (!promoCode) return
@@ -286,17 +289,20 @@ export default function GetStarted() {
     })()
   }, [])
 
-  // Pre-select plan from URL params (e.g. from Pricing page CTA)
+  // Pre-select plan from URL params (e.g. from Pricing page CTA).
+  // A founding-offer promo link locks the plan to Family, overriding ?plan=.
   useEffect(() => {
     const plan    = searchParams.get('plan')
     const billing = searchParams.get('billing')
-    if (plan && PLAN_OPTIONS.find(p => p.id === plan)) {
+    if (planLocked) {
+      setSelectedPlan('family')
+    } else if (plan && PLAN_OPTIONS.find(p => p.id === plan)) {
       setSelectedPlan(plan)
       setStep(2)
     }
     if (billing === 'monthly') setAnnualBilling(false)
     if (billing === 'yearly')  setAnnualBilling(true)
-  }, [searchParams])
+  }, [searchParams, planLocked])
 
   const handleChange = e => setForm(v => ({ ...v, [e.target.name]: e.target.value }))
 
@@ -619,17 +625,27 @@ export default function GetStarted() {
           {/* ── STEP 1: Plan selection ─────────────────────── */}
           {step === 1 && (
             <div>
-              <h2 className="font-display text-3xl font-light text-navy-950 text-center mb-10">Choose your plan</h2>
+              <h2 className="font-display text-3xl font-light text-navy-950 text-center mb-4">
+                {planLocked ? 'Your founding offer' : 'Choose your plan'}
+              </h2>
+              {planLocked && (
+                <p className="text-center text-stone-500 text-sm mb-8 max-w-md mx-auto">
+                  The founding offer applies to the <span className="font-semibold text-navy-800">Family</span> plan — your first year is free. The plan is set for you below.
+                </p>
+              )}
               <div className="grid md:grid-cols-3 gap-5 mb-10">
-                {PLAN_OPTIONS.map(plan => (
+                {PLAN_OPTIONS.map(plan => {
+                  const locked = planLocked && plan.id !== 'family'
+                  return (
                   <button
                     key={plan.id}
-                    onClick={() => { setSelectedPlan(plan.id); if (plan.id !== 'advisor') setAdvisorFamilyCount(null) }}
+                    disabled={locked}
+                    onClick={() => { if (locked) return; setSelectedPlan(plan.id); if (plan.id !== 'advisor') setAdvisorFamilyCount(null) }}
                     className={`text-left rounded-2xl border-2 p-6 transition-all ${
                       selectedPlan === plan.id
                         ? 'border-navy-700 bg-navy-50 ring-2 ring-navy-200'
                         : 'border-stone-200 bg-white hover:border-navy-300'
-                    }`}
+                    } ${locked ? 'opacity-40 cursor-not-allowed pointer-events-none' : ''}`}
                   >
                     {(plan.badge || plan.promo) && (
                       <div className="flex items-center gap-2 flex-wrap mb-3">
@@ -675,7 +691,8 @@ export default function GetStarted() {
                       ))}
                     </ul>
                   </button>
-                ))}
+                  )
+                })}
               </div>
 
               {/* Advisor — redirect straight to book-demo */}
