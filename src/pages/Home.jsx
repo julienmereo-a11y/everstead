@@ -236,7 +236,7 @@ export default function Home() {
               Everything that matters, <em>gathered</em> in one secure place.
             </h1>
 
-            <p className="mt-5 sm:mt-6 text-lg sm:text-xl text-stone-300 leading-relaxed max-w-2xl animate-fade-up animate-delay-100">
+            <p className="mt-5 sm:mt-6 text-lg sm:text-xl text-stone-300 leading-relaxed max-w-[600px] animate-fade-up animate-delay-100">
               Everstead helps UK families bring their accounts, documents and wishes together — Peace of mind for you now; clarity for the people you love later.
             </p>
 
