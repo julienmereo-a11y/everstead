@@ -224,7 +224,7 @@ export default function Home() {
           zIndex: 0,
         }} />
 
-        <div className="relative max-w-7xl mx-auto px-6 lg:px-8 grid lg:grid-cols-[1.25fr_1fr] gap-16 items-center">
+        <div className="relative max-w-7xl mx-auto px-6 lg:px-8 grid lg:grid-cols-[1.45fr_1fr] gap-12 lg:gap-14 items-center">
           {/* Copy */}
           <div>
             {/* A/B alternates to try later:
@@ -232,11 +232,11 @@ export default function Home() {
               // "Stop carrying it all in your head."
               // "Everything your family would need, gathered in one place — with love."
             */}
-            <h1 className="font-display text-[2.5rem] leading-[1.12] sm:text-5xl sm:leading-[1.08] lg:text-6xl xl:text-7xl font-light text-white tracking-tight text-balance animate-fade-up">
+            <h1 className="font-display text-[2.75rem] leading-[1.1] sm:text-6xl sm:leading-[1.06] lg:text-7xl xl:text-[5rem] xl:leading-[1.04] font-light text-white tracking-tight text-balance animate-fade-up">
               Everything that matters, <em>gathered</em> in one secure place.
             </h1>
 
-            <p className="mt-4 sm:mt-6 text-base sm:text-lg text-stone-300 leading-relaxed max-w-xl animate-fade-up animate-delay-100">
+            <p className="mt-5 sm:mt-6 text-lg sm:text-xl text-stone-300 leading-relaxed max-w-2xl animate-fade-up animate-delay-100">
               Everstead helps UK families bring their accounts, documents and wishes together — Peace of mind for you now; clarity for the people you love later.
             </p>
 
