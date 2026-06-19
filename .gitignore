@@ -33,3 +33,7 @@ yarn-error.log*
 
 # vite-plugin-pwa dev artifacts
 dev-dist/
+
+# design-sync build output (reproducible)
+/ds-bundle/
+/.ds-tw/

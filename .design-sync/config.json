@@ -1,0 +1,8 @@
+{
+  "projectId": "3162c59e-377e-44a4-9f65-96f3f8c7ac0e",
+  "projectName": "Everstead",
+  "shape": "package",
+  "scope": "brand-tokens-only",
+  "pkg": "everstead",
+  "readmeHeader": ".design-sync/conventions.md"
+}
