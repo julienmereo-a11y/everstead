@@ -96,7 +96,7 @@ export default function About() {
               {/* Photo / avatar */}
               <div className="flex flex-col items-center lg:items-start gap-5">
                 <div className="w-40 h-40 rounded-2xl overflow-hidden flex-shrink-0 shadow-lg bg-stone-100">
-                  <img src="/julien-thuy.png" alt="Julien Thuy, Founder of Everstead" className="w-full h-full object-cover object-top" />
+                  <img src="/julien-thuy-2026.jpeg" alt="Julien Thuy, Founder of Everstead" className="w-full h-full object-cover object-top" />
                 </div>
                 <div>
                   <p className="font-semibold text-navy-900 text-lg">Julien Thuy</p>
