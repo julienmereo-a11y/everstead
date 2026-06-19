@@ -56,7 +56,7 @@ const plans = [
     annual: PRICING.essential.annual.perMonth,
     promo: true,
     desc: 'For individuals who want their accounts, documents, and wishes in one secure place.',
-    features: ['Up to 10 accounts & documents', 'Step-by-step instructions', '1 trusted contact', 'Readiness score', '1 GB storage'],
+    features: ['Up to 10 accounts & documents', 'Step-by-step instructions', '1 trusted contact', 'Readiness score', '1 GB storage', 'Your AI Assistant'],
     cta: 'Get started free',
     highlight: false,
   },

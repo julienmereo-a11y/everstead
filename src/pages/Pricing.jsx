@@ -87,7 +87,7 @@ const plans = [
     promo: 'LAUNCH OFFER',
     description: 'For individuals getting their accounts, documents, and wishes in order.',
     reframe: '£3.19/mo billed annually — less than a coffee.',
-    features: ['Up to 10 accounts & documents', '1 trusted contact', '1 instruction set', '1 GB secure storage', 'Readiness score'],
+    features: ['Up to 10 accounts & documents', '1 trusted contact', '1 instruction set', '1 GB secure storage', 'Readiness score', 'Your AI Assistant'],
     cta: 'Get started free',
   },
   {
@@ -98,7 +98,7 @@ const plans = [
     yearlyTotal: PRICING.family.annual.perYear,
     description: 'For couples and families — two private vaults, shared protection.',
     reframe: '£7.99/mo billed annually · Two vaults · Just £4 per person',
-    features: ['Two private vaults — one subscription', 'Unlimited accounts & documents', 'Up to 10 trusted contacts', 'Unlimited instructions & wishes', 'Personal messages & final wishes', '25 GB secure storage'],
+    features: ['Two private vaults — one subscription', 'Unlimited accounts & documents', 'Up to 10 trusted contacts', 'Unlimited instructions & wishes', 'Personal messages & final wishes', '25 GB secure storage', 'Your AI Assistant'],
     cta: 'Get started free',
     highlight: true,
     badge: 'Most popular',

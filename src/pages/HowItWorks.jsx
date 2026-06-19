@@ -19,7 +19,7 @@ const steps = [
     id: 'step-1',
     label: 'Build your inventory',
     title: 'Start by mapping everything you own.',
-    body: "Most people have more accounts than they realise — and most families can't find them when they need to. Everstead gives you a structured place to record every financial account, property, insurance policy, and digital asset. You're not uploading statements or linking bank feeds. You're creating a clear, human-readable map that a non-expert family member could follow.",
+    body: "Most people have more accounts than they realise — and most families can't find them when they need to. Everstead gives you a structured place to record every financial account, property, insurance policy, and digital asset. You're not uploading statements or linking bank feeds. You're creating a clear, human-readable map that a non-expert family member could follow. Prefer not to do it alone? Your AI Assistant can help — tell it about an account in plain English, or drop in a document, and it'll suggest the entry for you to review and confirm.",
     bullets: [
       'Bank accounts, savings, and ISAs',
       'Pensions — workplace, personal, and state',
