@@ -742,7 +742,11 @@ export default function GetStarted() {
                       : <>Continue with {PLAN_OPTIONS.find(p => p.id === selectedPlan)?.name}</>}
                     <ArrowRight size={16} />
                   </button>
-                  <p className="mt-3 text-xs text-stone-400">{trialDays}-day free trial · Cancel before it ends and pay nothing</p>
+                  <p className="mt-3 text-xs text-stone-400">
+                    {foundingActive
+                      ? 'Your first year is free · Cancel any time and pay nothing'
+                      : `${trialDays}-day free trial · Cancel before it ends and pay nothing`}
+                  </p>
                 </div>
               )}
             </div>
@@ -1055,7 +1059,7 @@ export default function GetStarted() {
           <div className="flex flex-wrap justify-center gap-8">
             {[
               { icon: Lock,   label: 'AES-256 encryption'          },
-              { icon: Shield, label: '14-day free trial'            },
+              { icon: Shield, label: foundingActive ? 'First year free' : '14-day free trial' },
               { icon: Users,  label: 'Trusted by families & advisers' },
             ].map(({ icon: Icon, label }) => (
               <div key={label} className="flex items-center gap-2 text-stone-500">
