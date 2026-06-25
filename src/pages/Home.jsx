@@ -86,18 +86,6 @@ const faqs = [
   { q: 'Is this a legal document service?', a: 'No. Everstead is an organisation and planning platform — not a legal service. It does not draft wills, prepare legal documents, give legal or financial advice, or replace a solicitor, estate lawyer, accountant, or family adviser. It helps families organise information, instructions, and controlled access in one place.' },
 ]
 
-const proofStats = [
-  { value: '14 days', label: 'Free trial to get organised' },
-  { value: 'Role-based', label: 'Access control for family and executors' },
-  { value: '24/7', label: 'Access to your plan when it matters' },
-]
-
-const assuranceBadges = [
-  { icon: ShieldCheck, label: 'Equal security across all plans' },
-  { icon: Lock, label: 'Encrypted document and account storage' },
-  { icon: FileText, label: 'Privacy-first handling and export-ready backups' },
-]
-
 const resourceCards = [
   { icon: Heart, title: 'What to do when someone dies', desc: 'A free, compassionate AI guide through the practical steps after a death in the UK — from the first hours to closing the estate.', href: '/what-to-do-when-someone-dies' },
   { icon: BookOpen, title: 'Executor starter guide', desc: 'A practical guide to the first steps families face after a death.', href: '/resources/guides' },
@@ -220,7 +208,7 @@ export default function Home() {
             </h1>
 
             <p className="mt-5 sm:mt-6 text-lg sm:text-xl text-stone-300 leading-relaxed max-w-[600px] animate-fade-up animate-delay-100">
-              Everstead helps UK families bring their accounts, documents and wishes together — Peace of mind for you now; clarity for the people you love later.
+              Everstead helps families bring their accounts, documents and wishes together — Peace of mind for you now; clarity for the people you love later.
             </p>
 
             <div className="mt-10 flex flex-wrap gap-3 animate-fade-up animate-delay-200">
@@ -296,38 +284,6 @@ export default function Home() {
             <div className="flex items-center gap-2 text-stone-500">
               <ShieldCheck size={15} className="text-navy-600 flex-shrink-0" />
               <span className="text-sm font-medium">Zero data selling — ever</span>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ── TRUST SIGNALS ─────────────────────────────────────────── */}
-      <section className="py-16 lg:py-20 bg-stone-50">
-        <div className="max-w-6xl mx-auto px-6 lg:px-8">
-          <div className="grid lg:grid-cols-[0.95fr_1.05fr] gap-6 items-stretch">
-            <div className="reveal bg-white rounded-2xl border border-stone-200 p-6">
-              <p className="text-xs font-semibold uppercase tracking-widest text-navy-600 mb-4">Why families trust it</p>
-              <div className="grid sm:grid-cols-3 gap-3">
-                {proofStats.map((item) => (
-                  <div key={item.label} className="rounded-xl bg-stone-50 border border-stone-200 p-4">
-                    <p className="font-display text-3xl font-light text-navy-950">{item.value}</p>
-                    <p className="text-sm text-stone-500 mt-1 leading-snug">{item.label}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-            <div className="reveal reveal-delay-1 bg-navy-950 rounded-2xl border border-navy-800 p-6 text-white">
-              <p className="text-xs font-semibold uppercase tracking-widest text-sage-400 mb-4">Security baseline</p>
-              <div className="space-y-3">
-                {assuranceBadges.map(({ icon: Icon, label }) => (
-                  <div key={label} className="flex items-start gap-3 rounded-xl bg-white/5 border border-white/10 p-4">
-                    <div className="w-9 h-9 rounded-xl bg-white/10 flex items-center justify-center shrink-0">
-                      <Icon size={16} className="text-sage-300" />
-                    </div>
-                    <p className="text-sm text-stone-200 leading-relaxed">{label}</p>
-                  </div>
-                ))}
-              </div>
             </div>
           </div>
         </div>
