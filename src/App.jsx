@@ -60,6 +60,7 @@ const Subprocessors         = lazy(() => import('./pages/Subprocessors'))
 const Changelog             = lazy(() => import('./pages/Changelog'))
 const Compare               = lazy(() => import('./pages/Compare'))
 const WhenSomeoneDies       = lazy(() => import('./pages/WhenSomeoneDies'))
+const MessageView           = lazy(() => import('./pages/MessageView'))
 const DataPromise           = lazy(() => import('./pages/DataPromise'))
 const ForAdvisors           = lazy(() => import('./pages/ForAdvisors'))
 const DualVault             = lazy(() => import('./pages/DualVault'))
@@ -202,6 +203,7 @@ export default function App() {
               <Route path="/compare"       element={<Layout><Compare /></Layout>} />
               <Route path="/compare/:slug" element={<Layout><Compare /></Layout>} />
               <Route path="/what-to-do-when-someone-dies" element={<WhenSomeoneDies />} />
+              <Route path="/m/:token" element={<MessageView />} />
               <Route path="/data-promise"  element={<Layout><DataPromise /></Layout>} />
               <Route path="/for-advisers" element={<Layout><ForAdvisors /></Layout>} />
               <Route path="/family-vault" element={<Layout><DualVault /></Layout>} />

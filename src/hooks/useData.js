@@ -336,7 +336,43 @@ export function useMessages() {
     return publicUrl
   }
 
-  return { data, loading, add, update, uploadVideo, refresh: load }
+  // Upload recorded or selected media (video / photo) for a message and store
+  // the public URL in media_url. Handles recorded Blobs (which have no filename).
+  const uploadMedia = async (messageId, file) => {
+    const { supabase } = await import('../lib/supabase')
+    const { data: { session } } = await supabase.auth.getSession()
+    const ext = (file.name && file.name.includes('.'))
+      ? file.name.split('.').pop().toLowerCase()
+      : (file.type?.split('/')[1] || 'bin')
+    const path = `${session.user.id}/${messageId}/media.${ext}`
+    const { error } = await supabase.storage.from('messages').upload(path, file, {
+      upsert: true,
+      contentType: file.type || undefined,
+    })
+    if (error) throw error
+    const { data: { publicUrl } } = supabase.storage.from('messages').getPublicUrl(path)
+    await update(messageId, { media_url: publicUrl })
+    return publicUrl
+  }
+
+  // Release a message to an unregistered email recipient — mints a secure view
+  // token and emails them a private link (server-side, no account needed).
+  const releaseExternal = async (messageId) => {
+    const { supabase } = await import('../lib/supabase')
+    const { data: { session } } = await supabase.auth.getSession()
+    const res = await fetch('/api/messages/release-link', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${session?.access_token}` },
+      body: JSON.stringify({ messageId }),
+    })
+    if (!res.ok) {
+      const { error } = await res.json().catch(() => ({}))
+      throw new Error(error || 'Could not send the message')
+    }
+    return res.json()
+  }
+
+  return { data, loading, add, update, uploadVideo, uploadMedia, releaseExternal, refresh: load }
 }
 
 // ─────────────────────────────────────────────────────────────
