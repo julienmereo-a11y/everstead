@@ -46,7 +46,7 @@ function familyAccessRevokedHtml(secondaryName, appUrl) {
   <table width="100%" cellpadding="0" cellspacing="0" style="background:#f5f4f0;padding:40px 0;">
     <tr><td align="center">
       <table width="560" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:12px;overflow:hidden;max-width:560px;width:100%;">
-        <tr><td style="background:#0d1628;padding:28px 40px;text-align:center;">
+        <tr><td style="background:#2d5082;background:linear-gradient(100deg,#2d5082 0%,#6f6bc6 50%,#6e9b6a 100%);padding:28px 40px;text-align:center;">
           <img src="https://www.everstead.care/logo-v2-white.png" alt="Everstead" width="160" style="display:block;margin:0 auto;height:auto;max-width:160px;" />
         </td></tr>
         <tr><td style="padding:40px;">
@@ -63,7 +63,7 @@ function familyAccessRevokedHtml(secondaryName, appUrl) {
             If you'd like to continue, you can start your own plan in minutes. Your existing data will be preserved.
           </p>
           <table cellpadding="0" cellspacing="0" style="margin:0 0 24px;">
-            <tr><td style="background:#4c7d47;border-radius:8px;">
+            <tr><td style="background:#2d5082;background:linear-gradient(100deg,#2d5082 0%,#6f6bc6 50%,#6e9b6a 100%);border-radius:9999px;">
               <a href="${appUrl}/get-started" style="display:inline-block;padding:14px 32px;color:#ffffff;text-decoration:none;font-size:15px;">Start your own plan →</a>
             </td></tr>
           </table>

@@ -96,8 +96,8 @@ function confirmationHtml(unsubLink) {
 <head><meta charset="utf-8"></head>
 <body style="margin:0;padding:32px;background:#f9fafb;font-family:system-ui,-apple-system,'Segoe UI',sans-serif;color:#1f2937;">
   <table style="max-width:560px;margin:0 auto;background:#ffffff;border-radius:12px;border:1px solid #e5e7eb;overflow:hidden;">
-    <tr><td style="background:#0d1628;padding:24px;">
-      <p style="margin:0;color:#ffffff;font-size:16px;font-weight:600;">Everstead — subprocessor updates</p>
+    <tr><td style="background:#2d5082;background:linear-gradient(100deg,#2d5082 0%,#6f6bc6 50%,#6e9b6a 100%);padding:24px;">
+      <img src="https://www.everstead.care/logo-v2-white.png" alt="Everstead" width="140" style="display:block;height:auto;" /><p style="margin:10px 0 0;color:#ffffff;font-size:13px;opacity:.8;letter-spacing:.04em;">Subprocessor updates</p>
     </td></tr>
     <tr><td style="padding:28px 24px;">
       <p style="margin:0 0 16px;font-size:15px;line-height:1.6;">You're confirmed.</p>

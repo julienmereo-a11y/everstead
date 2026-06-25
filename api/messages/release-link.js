@@ -79,7 +79,7 @@ function messageLinkHtml(senderName, recipientName, viewUrl) {
   return `<!DOCTYPE html><html><body style="margin:0;background:#fafaf9;font-family:'DM Sans',Helvetica,Arial,sans-serif;color:#1c1917;">
   <div style="max-width:520px;margin:0 auto;padding:32px 24px;">
     <div style="background:linear-gradient(100deg,#2d5082 0%,#6f6bc6 50%,#6e9b6a 100%);border-radius:16px;padding:28px;text-align:center;">
-      <p style="margin:0;color:#fff;font-size:13px;letter-spacing:.16em;text-transform:uppercase;opacity:.85;">Everstead</p>
+      <img src="https://www.everstead.care/logo-v2-white.png" alt="Everstead" width="150" style="display:block;margin:0 auto;height:auto;max-width:150px;" />
       <h1 style="margin:14px 0 0;color:#fff;font-family:Georgia,serif;font-weight:400;font-size:26px;line-height:1.2;">${escapeHtml(senderName)} has left you a personal message.</h1>
     </div>
     <div style="background:#fff;border:1px solid #e7e5e4;border-top:0;border-radius:0 0 16px 16px;padding:28px;">

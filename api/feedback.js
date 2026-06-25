@@ -54,7 +54,7 @@ export default async function handler(req, res) {
 <!DOCTYPE html><html><head><meta charset="utf-8"></head>
 <body style="margin:0;padding:32px;background:#f9fafb;font-family:system-ui,sans-serif;">
   <table style="max-width:600px;margin:0 auto;background:#fff;border-radius:12px;border:1px solid #e5e7eb;overflow:hidden;">
-    <tr><td style="background:#0d1628;padding:20px 24px;"><p style="margin:0;color:#fff;font-size:16px;font-weight:600;">New in-app feedback</p></td></tr>
+    <tr><td style="background:#2d5082;background:linear-gradient(100deg,#2d5082 0%,#6f6bc6 50%,#6e9b6a 100%);padding:20px 24px;"><p style="margin:0;color:#fff;font-size:16px;font-weight:600;">New in-app feedback</p></td></tr>
     <tr><td style="padding:22px 24px;">
       <table style="width:100%;border-collapse:collapse;margin-bottom:16px;">${rows}</table>
       <div style="background:#f9f8f6;border-left:3px solid #4c7d47;border-radius:4px;padding:16px 18px;">

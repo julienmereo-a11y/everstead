@@ -23,7 +23,7 @@ async function notifyFounderOfSignup({ name, email, plan }) {
       html: `<!DOCTYPE html><html><head><meta charset="utf-8"></head>
 <body style="margin:0;padding:32px;background:#f9fafb;font-family:system-ui,sans-serif;">
   <table style="max-width:560px;margin:0 auto;background:#fff;border-radius:12px;border:1px solid #e5e7eb;overflow:hidden;">
-    <tr><td style="background:#0d1628;padding:20px 24px;"><p style="margin:0;color:#fff;font-size:16px;font-weight:600;">New registration</p></td></tr>
+    <tr><td style="background:#2d5082;background:linear-gradient(100deg,#2d5082 0%,#6f6bc6 50%,#6e9b6a 100%);padding:20px 24px;"><p style="margin:0;color:#fff;font-size:16px;font-weight:600;">New registration</p></td></tr>
     <tr><td style="padding:22px 24px;">
       <table style="width:100%;border-collapse:collapse;">
         <tr><td style="padding:6px 0;color:#6b7280;font-size:14px;width:120px;">Name</td><td style="padding:6px 0;color:#0d1628;font-size:14px;font-weight:500;">${name || '—'}</td></tr>

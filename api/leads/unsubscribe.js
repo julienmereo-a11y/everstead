@@ -49,7 +49,7 @@ function page(title, message) {
     .card { max-width:480px; background:#ffffff; border:1px solid #e7e5e4; border-radius:16px; padding:40px 32px; text-align:center; box-shadow: 0 1px 2px rgba(0,0,0,0.04); }
     h1 { font-family: Georgia, serif; font-weight: 400; font-size: 28px; margin: 0 0 16px; color:#0d1628; }
     p { font-size: 15px; line-height: 1.6; color: #4b5563; margin: 0 0 20px; }
-    a { display:inline-block; background:#4c7d47; color:#fff; padding:10px 22px; border-radius:10px; text-decoration:none; font-weight:500; font-size:14px; }
+    a { display:inline-block; background:#2d5082;background:linear-gradient(100deg,#2d5082 0%,#6f6bc6 50%,#6e9b6a 100%); color:#fff; padding:10px 22px; border-radius:9999px; text-decoration:none; font-weight:500; font-size:14px; }
     a:hover { background:#3f6a3b; }
   </style>
 </head>

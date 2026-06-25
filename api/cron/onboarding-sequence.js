@@ -171,7 +171,7 @@ function layout(body, userId) {
   <table width="100%" cellpadding="0" cellspacing="0" style="background:#f5f4f0;padding:40px 0;">
     <tr><td align="center">
       <table width="560" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:12px;overflow:hidden;max-width:560px;width:100%;">
-        <tr><td style="background:#0d1628;padding:28px 40px;text-align:center;">
+        <tr><td style="background:#2d5082;background:linear-gradient(100deg,#2d5082 0%,#6f6bc6 50%,#6e9b6a 100%);padding:28px 40px;text-align:center;">
           <img src="https://www.everstead.care/logo-v2-white.png" alt="Everstead" width="160" style="display:block;margin:0 auto;height:auto;max-width:160px;" />
         </td></tr>
         <tr><td style="padding:40px;">${body}</td></tr>
@@ -189,7 +189,7 @@ function layout(body, userId) {
 }
 
 function cta(href, label) {
-  return `<a href="${href}" style="display:inline-block;background:#0d1628;color:#ffffff;text-decoration:none;padding:14px 28px;border-radius:8px;font-size:15px;">${label}</a>`
+  return `<a href="${href}" style="display:inline-block;background:#2d5082;background:linear-gradient(100deg,#2d5082 0%,#6f6bc6 50%,#6e9b6a 100%);color:#ffffff;text-decoration:none;padding:14px 28px;border-radius:9999px;font-size:15px;">${label}</a>`
 }
 
 function tip(icon, text) {
@@ -312,9 +312,9 @@ function email5Html(name, plan, accountCount = 0, documentCount = 0, contactCoun
 
   // Identify gaps to surface
   const gaps = []
-  if (accountCount === 0) gaps.push('You haven't added any financial accounts yet — it only takes 2 minutes.')
+  if (accountCount === 0) gaps.push("You haven't added any financial accounts yet — it only takes 2 minutes.")
   if (documentCount === 0) gaps.push('Your document vault is empty — uploading your will or pension statement is a great first step.')
-  if (contactCount === 0) gaps.push('You haven't named a trusted contact yet — this is the person who'd act on your behalf if needed.')
+  if (contactCount === 0) gaps.push("You haven't named a trusted contact yet — this is the person who'd act on your behalf if needed.")
 
   const gapsHtml = gaps.length > 0
     ? `<table cellpadding="0" cellspacing="0" style="margin:16px 0 24px;width:100%;background:#fdf8f0;border-radius:10px;padding:8px;">

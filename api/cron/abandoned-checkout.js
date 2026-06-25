@@ -131,8 +131,8 @@ function buildEmail(user) {
 
         <!-- Header -->
         <tr>
-          <td style="background:#0d1628;padding:32px 40px;text-align:center;">
-            <p style="margin:0;color:#ffffff;font-family:Georgia,serif;font-size:22px;font-weight:normal;letter-spacing:0.5px;">Everstead</p>
+          <td style="background:#2d5082;background:linear-gradient(100deg,#2d5082 0%,#6f6bc6 50%,#6e9b6a 100%);padding:32px 40px;text-align:center;">
+            <img src="https://www.everstead.care/logo-v2-white.png" alt="Everstead" width="150" style="display:block;margin:0 auto;height:auto;max-width:150px;" />
             <p style="margin:6px 0 0;color:#94a3b8;font-size:12px;font-weight:normal;letter-spacing:0.1em;text-transform:uppercase;">Estate planning, done thoughtfully</p>
           </td>
         </tr>
@@ -170,7 +170,7 @@ function buildEmail(user) {
             <!-- CTA -->
             <table cellpadding="0" cellspacing="0" role="presentation" style="margin-bottom:32px;">
               <tr>
-                <td style="border-radius:8px;background:#4c7d47;">
+                <td style="background:#2d5082;background:linear-gradient(100deg,#2d5082 0%,#6f6bc6 50%,#6e9b6a 100%);border-radius:9999px;">
                   <a href="${resumeUrl}"
                      style="display:inline-block;padding:15px 32px;color:#ffffff;font-family:Georgia,serif;font-size:16px;font-weight:normal;text-decoration:none;border-radius:8px;letter-spacing:0.01em;">
                     Complete my free trial →

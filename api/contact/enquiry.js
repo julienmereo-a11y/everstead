@@ -26,7 +26,7 @@ export default async function handler(req, res) {
 <head><meta charset="utf-8"></head>
 <body style="margin:0;padding:32px;background:#f9fafb;font-family:system-ui,sans-serif;">
   <table style="max-width:560px;width:100%;background:#ffffff;border-radius:12px;border:1px solid #e5e7eb;overflow:hidden;">
-    <tr><td style="background:#0d1628;padding:20px 24px;">
+    <tr><td style="background:#2d5082;background:linear-gradient(100deg,#2d5082 0%,#6f6bc6 50%,#6e9b6a 100%);padding:20px 24px;">
       <p style="margin:0;color:#ffffff;font-size:16px;font-weight:600;">Everstead — ${type === 'book-demo' ? 'Adviser Demo Request' : 'Contact Form'}</p>
     </td></tr>
     <tr><td style="padding:24px;">

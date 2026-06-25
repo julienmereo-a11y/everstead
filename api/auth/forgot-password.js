@@ -38,7 +38,7 @@ function resetHtml(resetLink) {
   <table width="100%" cellpadding="0" cellspacing="0" style="background:#f5f4f0;padding:48px 16px;">
     <tr><td align="center">
       <table width="560" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:12px;overflow:hidden;max-width:560px;width:100%;">
-        <tr><td style="background:#0d1628;padding:28px 40px;text-align:center;">
+        <tr><td style="background:#2d5082;background:linear-gradient(100deg,#2d5082 0%,#6f6bc6 50%,#6e9b6a 100%);padding:28px 40px;text-align:center;">
           <img src="https://www.everstead.care/logo-v2-white.png" alt="Everstead" width="160"
                style="display:block;margin:0 auto;height:auto;max-width:160px;" />
         </td></tr>
@@ -50,7 +50,7 @@ function resetHtml(resetLink) {
             We received a request to reset your Everstead password. Click the button below to choose a new one.
           </p>
           <table cellpadding="0" cellspacing="0" style="margin:32px 0;">
-            <tr><td style="background:#0d1628;border-radius:8px;">
+            <tr><td style="background:#2d5082;background:linear-gradient(100deg,#2d5082 0%,#6f6bc6 50%,#6e9b6a 100%);border-radius:9999px;">
               <a href="${resetLink}" style="display:inline-block;padding:14px 32px;color:#ffffff;text-decoration:none;font-family:Georgia,serif;font-size:15px;letter-spacing:0.3px;">
                 Reset my password →
               </a>
