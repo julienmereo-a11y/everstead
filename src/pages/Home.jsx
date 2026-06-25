@@ -6,15 +6,14 @@ import { PRICING } from '../config/pricing'
 import {
   ShieldCheck, Lock, Users, FileText, CheckCircle2, ArrowRight,
   Star, ChevronDown, Bell, Share2, ClipboardList, BookOpen, Heart,
-  UserCircle, Sparkles
+  UserCircle, Sparkles, UserCheck, MapPin, EyeOff
 } from 'lucide-react'
 
 const trustItems = [
-  { icon: Lock,       label: 'AES-256 encrypted storage' },
-  { icon: ShieldCheck, label: 'Only you control who can access it' },
-  { icon: Users,      label: 'Trusted by families & advisers' },
-  { icon: FileText,   label: 'Hosted in Europe (EU data residency)' },
-  { icon: ShieldCheck, label: 'Zero data selling — ever' },
+  { icon: Lock,      label: 'AES-256 encryption', sub: 'Bank-level, on every plan' },
+  { icon: UserCheck, label: 'You control access', sub: 'Only you decide who can see it' },
+  { icon: MapPin,    label: 'EU data residency',  sub: 'Fully GDPR compliant' },
+  { icon: EyeOff,    label: 'Never sold',         sub: "We don't sell your data, ever" },
 ]
 
 const painPoints = [
@@ -263,28 +262,20 @@ export default function Home() {
       </section>
 
       {/* ── TRUST BAR ────────────────────────────────────────────── */}
-      <section className="bg-white border-y border-stone-100 py-5">
+      <section className="bg-white border-y border-stone-100 py-8 lg:py-9">
         <div className="max-w-5xl mx-auto px-6 lg:px-8">
-          <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-3 lg:gap-x-12">
-            <div className="flex items-center gap-2 text-stone-500">
-              <Lock size={15} className="text-navy-600 flex-shrink-0" />
-              <span className="text-sm font-medium">AES-256 bank-level encryption</span>
-            </div>
-            <span className="hidden sm:block w-px h-4 bg-stone-200" />
-            <div className="flex items-center gap-2 text-stone-500">
-              <ShieldCheck size={15} className="text-navy-600 flex-shrink-0" />
-              <span className="text-sm font-medium">Only you control who can access it</span>
-            </div>
-            <span className="hidden sm:block w-px h-4 bg-stone-200" />
-            <div className="flex items-center gap-2 text-stone-500">
-              <FileText size={15} className="text-navy-600 flex-shrink-0" />
-              <span className="text-sm font-medium">EU data residency · GDPR compliant</span>
-            </div>
-            <span className="hidden sm:block w-px h-4 bg-stone-200" />
-            <div className="flex items-center gap-2 text-stone-500">
-              <ShieldCheck size={15} className="text-navy-600 flex-shrink-0" />
-              <span className="text-sm font-medium">Zero data selling — ever</span>
-            </div>
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-7">
+            {trustItems.map(({ icon: Icon, label, sub }) => (
+              <div key={label} className="flex items-start gap-3">
+                <div className="w-9 h-9 rounded-xl bg-sage-50 flex items-center justify-center shrink-0">
+                  <Icon size={17} className="text-sage-600" strokeWidth={2} />
+                </div>
+                <div className="min-w-0">
+                  <p className="text-sm font-semibold text-navy-900 leading-snug">{label}</p>
+                  <p className="text-xs text-stone-500 mt-0.5 leading-snug">{sub}</p>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </section>
