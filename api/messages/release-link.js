@@ -37,8 +37,11 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'This message has no valid external email recipient' })
   }
 
-  // Reuse an existing token if already released once, else mint a new one
-  const viewToken = msg.view_token || crypto.randomBytes(24).toString('base64url')
+  // Reuse an existing token if already released once, else mint a new one.
+  // Use lowercase hex (not base64url) so the token survives case-mangling by
+  // corporate email link-rewriters (Safe Links / Proofpoint), which can change
+  // the case of a path and would otherwise break a case-sensitive token.
+  const viewToken = msg.view_token || crypto.randomBytes(24).toString('hex')
 
   const { error: updErr } = await supabase
     .from('messages')

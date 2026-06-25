@@ -16,10 +16,12 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'Missing token' })
   }
 
+  // Lowercase the token before lookup — new tokens are lowercase hex, and email
+  // link-rewriters can change case in transit. Stored tokens are lowercase.
   const { data: msg, error } = await supabase
     .from('messages')
     .select('user_id, title, content, type, media_url, video_url, recipient_name, released, released_at')
-    .eq('view_token', token)
+    .eq('view_token', token.toLowerCase())
     .maybeSingle()
 
   if (error) return res.status(500).json({ error: 'Could not load the message' })
