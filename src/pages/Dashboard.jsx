@@ -202,7 +202,7 @@ function AdvisorCancelledBanner({ daysLeft, advisorName, onAddPayment }) {
       </div>
       <button
         onClick={onAddPayment}
-        className={`shrink-0 text-xs font-semibold px-4 py-2 rounded-lg transition-colors whitespace-nowrap ${urgent ? 'bg-red-600 text-white hover:bg-red-700' : 'bg-orange-500 text-white hover:bg-orange-600'}`}
+        className={`shrink-0 text-xs font-semibold px-4 py-2 rounded-full transition-colors whitespace-nowrap ${urgent ? 'bg-red-600 text-white hover:bg-red-700' : 'bg-orange-500 text-white hover:bg-orange-600'}`}
       >
         Add payment method
       </button>
@@ -738,13 +738,13 @@ export default function Dashboard() {
           </div>
           <button
             onClick={() => { setActiveSection('settings'); setSidebarOpen(false) }}
-            className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-stone-400 hover:text-white hover:bg-white/5 text-sm transition-colors"
+            className="w-full flex items-center gap-3 px-3 py-2 rounded-full text-stone-400 hover:text-white hover:bg-white/5 text-sm transition-colors"
           >
             <Settings size={15} /> Settings
           </button>
           <button
             onClick={handleSignOut}
-            className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-stone-400 hover:text-red-400 hover:bg-white/5 text-sm transition-colors"
+            className="w-full flex items-center gap-3 px-3 py-2 rounded-full text-stone-400 hover:text-red-400 hover:bg-white/5 text-sm transition-colors"
           >
             <LogOut size={15} /> Sign out
           </button>
@@ -1172,7 +1172,7 @@ function OwnerAIGuide({ userName, plan, accountCount, documentCount, contactCoun
                 <button
                   key={prompt}
                   onClick={() => setInput(prompt)}
-                  className="text-xs text-navy-700 bg-navy-50 border border-navy-200 px-2.5 py-1.5 rounded-xl hover:bg-navy-100 transition-colors"
+                  className="text-xs text-navy-700 bg-navy-50 border border-navy-200 px-2.5 py-1.5 rounded-full hover:bg-navy-100 transition-colors"
                 >
                   {prompt}
                 </button>
@@ -1601,7 +1601,7 @@ function OverviewSection({ profile, accounts, documents, people, instructions, m
               </div>
               <button
                 onClick={() => onNavigate('messages')}
-                className="shrink-0 text-xs font-semibold text-navy-700 bg-white border border-navy-200 px-3 py-2 rounded-xl hover:bg-navy-50 transition-colors whitespace-nowrap"
+                className="shrink-0 text-xs font-semibold text-navy-700 bg-white border border-navy-200 px-3 py-2 rounded-full hover:bg-navy-50 transition-colors whitespace-nowrap"
               >
                 Write a message →
               </button>
@@ -1617,7 +1617,7 @@ function OverviewSection({ profile, accounts, documents, people, instructions, m
               </div>
               <button
                 onClick={() => onNavigate('messages')}
-                className="shrink-0 text-xs font-semibold text-navy-700 bg-navy-50 border border-navy-200 px-3 py-2 rounded-xl hover:bg-navy-100 transition-colors whitespace-nowrap"
+                className="shrink-0 text-xs font-semibold text-navy-700 bg-navy-50 border border-navy-200 px-3 py-2 rounded-full hover:bg-navy-100 transition-colors whitespace-nowrap"
               >
                 Add another →
               </button>
@@ -1659,7 +1659,7 @@ function OverviewSection({ profile, accounts, documents, people, instructions, m
               </div>
               <button
                 onClick={() => onNavigate('family')}
-                className="shrink-0 text-xs font-semibold text-amber-700 bg-white border border-amber-300 px-3 py-1.5 rounded-lg hover:bg-amber-50 transition-colors"
+                className="shrink-0 text-xs font-semibold text-amber-700 bg-white border border-amber-300 px-3 py-1.5 rounded-full hover:bg-amber-50 transition-colors"
               >
                 Manage →
               </button>
@@ -1954,7 +1954,7 @@ function OwnerDocViewerModal({ doc, onClose }) {
             {url && (
               <>
                 <a href={url} target="_blank" rel="noopener noreferrer"
-                  className="flex items-center gap-1.5 text-xs font-medium text-navy-700 bg-navy-50 hover:bg-navy-100 px-3 py-2 rounded-xl transition-colors">
+                  className="flex items-center gap-1.5 text-xs font-medium text-navy-700 bg-navy-50 hover:bg-navy-100 px-3 py-2 rounded-full transition-colors">
                   <ExternalLink size={13} /> Open in tab
                 </a>
                 <a href={url} download={doc.name}
@@ -2252,7 +2252,7 @@ function DocumentsSection({ documents, loading, uploadFile, update, remove, plan
                   <p className="font-semibold text-navy-900 text-sm mb-1">Last Will &amp; Testament</p>
                   <p className="text-xs text-stone-500 mb-3 leading-relaxed">The most important document in any estate plan. Without one, UK intestacy rules decide who gets what.</p>
                   <div className="flex items-center gap-3 flex-wrap">
-                    <button onClick={openUpload} className="text-xs font-semibold text-navy-700 bg-navy-50 border border-navy-200 px-3 py-1.5 rounded-lg hover:bg-navy-100 transition-colors">Upload yours</button>
+                    <button onClick={openUpload} className="text-xs font-semibold text-navy-700 bg-navy-50 border border-navy-200 px-3 py-1.5 rounded-full hover:bg-navy-100 transition-colors">Upload yours</button>
                     <a href="https://www.gov.uk/make-will" target="_blank" rel="noopener noreferrer" className="text-xs text-stone-400 hover:text-navy-600 transition-colors">gov.uk guidance →</a>
                   </div>
                 </div>
@@ -2262,7 +2262,7 @@ function DocumentsSection({ documents, loading, uploadFile, update, remove, plan
                   <p className="font-semibold text-navy-900 text-sm mb-1">Lasting Power of Attorney</p>
                   <p className="text-xs text-stone-500 mb-3 leading-relaxed">Grants someone you trust the legal authority to act for you if you lose mental capacity. Must be registered before it's needed.</p>
                   <div className="flex items-center gap-3 flex-wrap">
-                    <button onClick={openUpload} className="text-xs font-semibold text-navy-700 bg-navy-50 border border-navy-200 px-3 py-1.5 rounded-lg hover:bg-navy-100 transition-colors">Upload yours</button>
+                    <button onClick={openUpload} className="text-xs font-semibold text-navy-700 bg-navy-50 border border-navy-200 px-3 py-1.5 rounded-full hover:bg-navy-100 transition-colors">Upload yours</button>
                     <a href="https://www.gov.uk/power-of-attorney" target="_blank" rel="noopener noreferrer" className="text-xs text-stone-400 hover:text-navy-600 transition-colors">gov.uk guidance →</a>
                   </div>
                 </div>
@@ -2432,7 +2432,7 @@ function DocumentsSection({ documents, loading, uploadFile, update, remove, plan
                   type="button"
                   onClick={handleAIScan}
                   disabled={aiScanning}
-                  className="shrink-0 inline-flex items-center gap-1.5 text-xs font-semibold text-sage-700 bg-white border border-sage-300 px-3 py-1.5 rounded-lg hover:bg-sage-50 transition-colors disabled:opacity-50"
+                  className="shrink-0 inline-flex items-center gap-1.5 text-xs font-semibold text-sage-700 bg-white border border-sage-300 px-3 py-1.5 rounded-full hover:bg-sage-50 transition-colors disabled:opacity-50"
                 >
                   {aiScanning ? <><Loader2 size={12} className="animate-spin" />Scanning…</> : 'Scan document'}
                 </button>
@@ -2976,7 +2976,7 @@ function MessagesSection({ messages: initialMessages, loading, people, isDemo, p
           {unreleased.length > 1 && (
             <button
               onClick={() => setConfirmReleaseAll(true)}
-              className="inline-flex items-center gap-2 text-xs font-semibold bg-amber-100 text-amber-800 border border-amber-200 px-3 py-2 rounded-lg hover:bg-amber-200 transition-colors"
+              className="inline-flex items-center gap-2 text-xs font-semibold bg-amber-100 text-amber-800 border border-amber-200 px-3 py-2 rounded-full hover:bg-amber-200 transition-colors"
             >
               <Send size={13} /> Release all
             </button>
@@ -3058,7 +3058,7 @@ function MessagesSection({ messages: initialMessages, loading, people, isDemo, p
                       <button
                         onClick={() => setConfirmRelease(msg.id)}
                         disabled={isReleasingThis}
-                        className="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg border border-navy-200 bg-navy-50 text-navy-700 hover:bg-navy-100 transition-colors disabled:opacity-50"
+                        className="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full border border-navy-200 bg-navy-50 text-navy-700 hover:bg-navy-100 transition-colors disabled:opacity-50"
                       >
                         {isReleasingThis ? <RefreshCw size={12} className="animate-spin" /> : <Send size={12} />}
                         {isReleasingThis ? 'Releasing…' : 'Release now'}
@@ -3089,7 +3089,7 @@ function MessagesSection({ messages: initialMessages, loading, people, isDemo, p
                       </button>
                       <button
                         onClick={() => setConfirmRelease(null)}
-                        className="text-xs font-semibold text-stone-600 border border-stone-200 px-3 py-2 rounded-lg hover:bg-stone-100 transition-colors"
+                        className="text-xs font-semibold text-stone-600 border border-stone-200 px-3 py-2 rounded-full hover:bg-stone-100 transition-colors"
                       >
                         Cancel
                       </button>
@@ -3109,7 +3109,7 @@ function MessagesSection({ messages: initialMessages, loading, people, isDemo, p
                           {isDemo ? 'Video message stored securely — playback available in your real plan.' : 'No video uploaded yet.'}
                         </p>
                         {!isDemo && (
-                          <label className="cursor-pointer mt-2 inline-flex items-center gap-2 bg-white text-navy-900 text-xs font-semibold px-4 py-2 rounded-lg hover:bg-stone-100 transition-colors">
+                          <label className="cursor-pointer mt-2 inline-flex items-center gap-2 bg-white text-navy-900 text-xs font-semibold px-4 py-2 rounded-full hover:bg-stone-100 transition-colors">
                             <Upload size={13} /> Upload video
                             <input type="file" accept="video/*" className="sr-only" onChange={async (e) => { const file = e.target.files?.[0]; if (!file) return; await uploadVideo(msg.id, file) }} />
                           </label>
@@ -3132,7 +3132,7 @@ function MessagesSection({ messages: initialMessages, loading, people, isDemo, p
                           onClick={() => {}}
                           disabled={isDemo}
                           title={isDemo ? 'Not available in demo' : undefined}
-                          className="inline-flex items-center gap-2 text-xs font-semibold text-red-600 border border-red-200 bg-red-50 px-3 py-2 rounded-lg hover:bg-red-100 transition-colors"
+                          className="inline-flex items-center gap-2 text-xs font-semibold text-red-600 border border-red-200 bg-red-50 px-3 py-2 rounded-full hover:bg-red-100 transition-colors"
                         >
                           <Trash2 size={13} /> Delete
                         </button>
@@ -3292,7 +3292,7 @@ function MessagesSection({ messages: initialMessages, loading, people, isDemo, p
                     <button
                       type="button"
                       onClick={() => setShowAIWriter(true)}
-                      className="inline-flex items-center gap-1 text-xs font-semibold text-sage-700 bg-sage-50 border border-sage-200 px-2.5 py-1.5 rounded-lg hover:bg-sage-100 transition-colors"
+                      className="inline-flex items-center gap-1 text-xs font-semibold text-sage-700 bg-sage-50 border border-sage-200 px-2.5 py-1.5 rounded-full hover:bg-sage-100 transition-colors"
                     >
                       <Sparkles size={11} /> Help me write this
                     </button>
@@ -3639,7 +3639,7 @@ function PeopleSection({ people, loading, invite, resendInvite, updatePerson, re
           ? (
             <button
               onClick={onUpgrade}
-              className="inline-flex items-center gap-2 rounded-xl bg-amber-50 border border-amber-200 text-amber-700 text-sm font-semibold px-4 py-2 hover:bg-amber-100 transition-colors"
+              className="inline-flex items-center gap-2 rounded-full bg-amber-50 border border-amber-200 text-amber-700 text-sm font-semibold px-4 py-2 hover:bg-amber-100 transition-colors"
             >
               <Lock size={14} /> Limit reached — upgrade
             </button>
@@ -3692,7 +3692,7 @@ function PeopleSection({ people, loading, invite, resendInvite, updatePerson, re
               </div>
               <div className="flex items-center gap-1 shrink-0">
                 {person.invite_status === 'pending' && (
-                  <button onClick={() => resendInvite(person.id)} className="text-xs text-navy-600 hover:text-navy-900 font-medium px-2 py-1 rounded-lg hover:bg-navy-50 transition-colors">
+                  <button onClick={() => resendInvite(person.id)} className="text-xs text-navy-600 hover:text-navy-900 font-medium px-2 py-1 rounded-full hover:bg-navy-50 transition-colors">
                     Resend
                   </button>
                 )}
@@ -3932,14 +3932,14 @@ function InstructionsSection({ instructions, loading, add, update, remove, profi
           {profile?.ai_features_enabled !== false && (
           <button
             onClick={() => setShowQuickWrite(true)}
-            className="inline-flex items-center gap-1.5 text-xs font-semibold text-sage-700 bg-sage-50 hover:bg-sage-100 border border-sage-200 px-3 py-2 rounded-lg transition-colors"
+            className="inline-flex items-center gap-1.5 text-xs font-semibold text-sage-700 bg-sage-50 hover:bg-sage-100 border border-sage-200 px-3 py-2 rounded-full transition-colors"
           >
             <Sparkles size={12} /> Write with AI
           </button>
           )}
           <button
             onClick={() => setShowAssistant(true)}
-            className="inline-flex items-center gap-1.5 text-xs font-semibold text-navy-700 bg-navy-50 hover:bg-navy-100 border border-navy-200 px-3 py-2 rounded-lg transition-colors"
+            className="inline-flex items-center gap-1.5 text-xs font-semibold text-navy-700 bg-navy-50 hover:bg-navy-100 border border-navy-200 px-3 py-2 rounded-full transition-colors"
           >
             <Zap size={12} /> Help me write this
           </button>
@@ -4372,7 +4372,7 @@ function AlertsSection({ alerts, markRead, markAllRead }) {
                   {!a.is_read && (
                     <button
                       onClick={(e) => { e.stopPropagation(); markRead(a.id) }}
-                      className="inline-flex items-center gap-1.5 text-xs font-semibold text-navy-700 border border-navy-200 bg-navy-50 hover:bg-navy-100 px-3 py-2 rounded-xl transition-colors"
+                      className="inline-flex items-center gap-1.5 text-xs font-semibold text-navy-700 border border-navy-200 bg-navy-50 hover:bg-navy-100 px-3 py-2 rounded-full transition-colors"
                     >
                       <CheckCircle2 size={13} /> Mark as read
                     </button>
@@ -4550,10 +4550,10 @@ function ResourcesSection() {
           <p className="text-xs text-stone-500 mt-1 leading-relaxed">Our support team is available Monday–Friday, 9am–5pm GMT. We also have guides and FAQs on the resources page.</p>
         </div>
         <div className="flex gap-3 shrink-0">
-          <a href="mailto:support@everstead.care" className="inline-flex items-center gap-2 text-xs font-semibold text-navy-700 border border-navy-300 rounded-lg px-3 py-2 hover:bg-navy-100 transition-colors">
+          <a href="mailto:support@everstead.care" className="inline-flex items-center gap-2 text-xs font-semibold text-navy-700 border border-navy-300 rounded-full px-3 py-2 hover:bg-navy-100 transition-colors">
             <MessageSquare size={13} /> Email support
           </a>
-          <a href="/resources" className="inline-flex items-center gap-2 text-xs font-semibold text-navy-700 border border-navy-300 rounded-lg px-3 py-2 hover:bg-navy-100 transition-colors">
+          <a href="/resources" className="inline-flex items-center gap-2 text-xs font-semibold text-navy-700 border border-navy-300 rounded-full px-3 py-2 hover:bg-navy-100 transition-colors">
             <ExternalLink size={13} /> Resources
           </a>
         </div>
@@ -4579,7 +4579,7 @@ function ManageBillingButton() {
       <button
         onClick={handleClick}
         disabled={loading}
-        className="inline-flex items-center gap-2 text-xs font-semibold text-navy-700 border border-navy-200 rounded-lg px-3 py-2 hover:bg-navy-50 transition-colors disabled:opacity-50"
+        className="inline-flex items-center gap-2 text-xs font-semibold text-navy-700 border border-navy-200 rounded-full px-3 py-2 hover:bg-navy-50 transition-colors disabled:opacity-50"
       >
         <ExternalLink size={13} /> {loading ? 'Opening billing portal…' : 'Manage billing & billing cycle'}
       </button>
@@ -4609,7 +4609,7 @@ function ReferralLinkBox({ referralCode }) {
       </div>
       <button
         onClick={handleCopy}
-        className="shrink-0 inline-flex items-center gap-1.5 text-xs font-semibold bg-navy-900 text-white px-3.5 py-2.5 rounded-xl hover:bg-navy-800 transition-colors"
+        className="shrink-0 inline-flex items-center gap-1.5 text-xs font-semibold btn-aurora text-white px-3.5 py-2.5 rounded-full hover:bg-navy-800 transition-colors"
       >
         {copied ? <><Check size={13} />Copied!</> : <><Copy size={13} />Copy link</>}
       </button>
@@ -4974,7 +4974,7 @@ function SettingsSection({ profile, isDemo, updateProfile, refreshProfile, onUpg
           </p>
           <a
             href="/setup-mfa"
-            className="inline-flex items-center gap-2 text-xs font-semibold text-navy-700 border border-navy-200 rounded-lg px-3 py-2 hover:bg-navy-50 transition-colors"
+            className="inline-flex items-center gap-2 text-xs font-semibold text-navy-700 border border-navy-200 rounded-full px-3 py-2 hover:bg-navy-50 transition-colors"
           >
             <ShieldCheck size={13} /> Set up authenticator app
           </a>
@@ -5144,7 +5144,7 @@ function SettingsSection({ profile, isDemo, updateProfile, refreshProfile, onUpg
                       <button
                         onClick={handleCancelSubscription}
                         disabled={cancelling}
-                        className="flex-1 text-stone-500 text-sm font-medium px-4 py-2.5 rounded-lg border border-stone-200 hover:border-stone-300 hover:text-stone-700 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+                        className="flex-1 text-stone-500 text-sm font-medium px-4 py-2.5 rounded-full border border-stone-200 hover:border-stone-300 hover:text-stone-700 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
                       >
                         {cancelling
                           ? <><Loader2 size={13} className="animate-spin" />Cancelling…</>
@@ -5304,7 +5304,7 @@ function SettingsSection({ profile, isDemo, updateProfile, refreshProfile, onUpg
               </p>
               <button
                 onClick={() => setDeleteStep(1)}
-                className="text-xs font-semibold text-red-600 border border-red-200 rounded-lg px-4 py-2 hover:bg-red-50 transition-colors"
+                className="text-xs font-semibold text-red-600 border border-red-200 rounded-full px-4 py-2 hover:bg-red-50 transition-colors"
               >
                 Delete my account
               </button>
@@ -5345,7 +5345,7 @@ function SettingsSection({ profile, isDemo, updateProfile, refreshProfile, onUpg
                 <button
                   onClick={handleConfirmDelete}
                   disabled={!deleteChecks.data || !deleteChecks.confirm || deleting}
-                  className="text-xs font-semibold bg-red-600 text-white rounded-lg px-4 py-2 hover:bg-red-700 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                  className="text-xs font-semibold bg-red-600 text-white rounded-full px-4 py-2 hover:bg-red-700 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
                 >
                   {deleting ? 'Deleting…' : 'Permanently delete my account'}
                 </button>
@@ -5614,5 +5614,5 @@ function Field({ label, required, children }) {
 // Style constants
 const input       = 'w-full border border-stone-200 rounded-lg px-3 py-2 text-sm text-navy-900 focus:outline-none focus:ring-2 focus:ring-navy-300 focus:border-navy-400 transition-colors'
 const primaryBtn  = 'inline-flex items-center gap-2 btn-aurora text-white text-sm font-medium px-4 py-2 rounded-full hover:bg-navy-700 transition-colors'
-const secondaryBtn= 'inline-flex items-center gap-2 bg-white text-stone-700 text-sm font-medium px-4 py-2 rounded-lg border border-stone-200 hover:bg-stone-50 transition-colors'
+const secondaryBtn= 'inline-flex items-center gap-2 bg-white text-stone-700 text-sm font-medium px-4 py-2 rounded-full border border-stone-200 hover:bg-stone-50 transition-colors'
 const capitaliseFirst = (s) => s ? s.charAt(0).toUpperCase() + s.slice(1) : s
