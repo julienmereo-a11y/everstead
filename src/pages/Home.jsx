@@ -452,38 +452,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── TESTIMONIALS ─────────────────────────────────────────── */}
-      <section className="py-14 lg:py-20">
-        <div className="max-w-7xl mx-auto px-6 lg:px-8">
-          <div className="text-center mb-14 reveal">
-            <p className="text-xs font-semibold uppercase tracking-widest text-navy-600 mb-4">Trustpilot reviews</p>
-            <h2 className="font-display text-4xl font-light text-navy-950">What members say.</h2>
-            <a href="https://www.trustpilot.com/review/everstead.care" target="_blank" rel="noopener noreferrer" className="inline-block mt-4 text-xs text-stone-400 hover:text-navy-700 transition-colors underline underline-offset-2">
-              See all reviews on Trustpilot →
-            </a>
-          </div>
-          <div className="grid md:grid-cols-3 gap-6">
-            {testimonials.map(({ quote, name, role, badge }, i) => (
-              <div key={name} className={`reveal reveal-delay-${i + 1} bg-white border border-stone-200 rounded-2xl p-7`}>
-                <div className="flex items-center justify-between mb-5">
-                  <div className="flex gap-0.5">
-                    {[...Array(5)].map((_, j) => <Star key={j} size={13} className="text-amber-400 fill-amber-400" />)}
-                  </div>
-                  {badge && (
-                    <span className="text-xs text-stone-400 border border-stone-200 px-2 py-0.5 rounded-full">{badge}</span>
-                  )}
-                </div>
-                <p className="text-stone-700 text-sm leading-relaxed mb-6 italic">"{quote}"</p>
-                <div>
-                  <p className="font-semibold text-navy-900 text-sm">{name}</p>
-                  <p className="text-stone-500 text-xs mt-0.5">{role}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* ── PRICING PREVIEW ──────────────────────────────────────── */}
       <section className="py-24 lg:py-32 aurora-field aurora-dim relative overflow-hidden">
         <div className="relative max-w-7xl mx-auto px-6 lg:px-8">
@@ -572,6 +540,38 @@ export default function Home() {
             All plans include a 14-day free trial. Your card won't be charged until the trial ends.{' '}
             <Link to="/pricing" className="text-stone-400 hover:text-white underline underline-offset-2 transition-colors">Full pricing details →</Link>
           </p>
+        </div>
+      </section>
+
+      {/* ── TESTIMONIALS ─────────────────────────────────────────── */}
+      <section className="py-14 lg:py-20 bg-stone-50 border-t border-stone-100">
+        <div className="max-w-7xl mx-auto px-6 lg:px-8">
+          <div className="text-center mb-14 reveal">
+            <p className="text-xs font-semibold uppercase tracking-widest text-navy-600 mb-4">Trustpilot reviews</p>
+            <h2 className="font-display text-4xl font-light text-navy-950">What members say.</h2>
+            <a href="https://www.trustpilot.com/review/everstead.care" target="_blank" rel="noopener noreferrer" className="inline-block mt-4 text-xs text-stone-400 hover:text-navy-700 transition-colors underline underline-offset-2">
+              See all reviews on Trustpilot →
+            </a>
+          </div>
+          <div className="grid md:grid-cols-3 gap-6">
+            {testimonials.map(({ quote, name, role, badge }, i) => (
+              <div key={name} className={`reveal reveal-delay-${i + 1} bg-white border border-stone-200 rounded-2xl p-7`}>
+                <div className="flex items-center justify-between mb-5">
+                  <div className="flex gap-0.5">
+                    {[...Array(5)].map((_, j) => <Star key={j} size={13} className="text-amber-400 fill-amber-400" />)}
+                  </div>
+                  {badge && (
+                    <span className="text-xs text-stone-400 border border-stone-200 px-2 py-0.5 rounded-full">{badge}</span>
+                  )}
+                </div>
+                <p className="text-stone-700 text-sm leading-relaxed mb-6 italic">"{quote}"</p>
+                <div>
+                  <p className="font-semibold text-navy-900 text-sm">{name}</p>
+                  <p className="text-stone-500 text-xs mt-0.5">{role}</p>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
