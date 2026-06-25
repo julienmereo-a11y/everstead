@@ -183,7 +183,7 @@ export default function Login() {
 
   // ── Left panel ───────────────────────────────────────────────
   const LeftPanel = () => (
-    <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden flex-col justify-between p-12" style={{ backgroundColor: '#0d1628' }}>
+    <div className="hidden lg:flex lg:w-1/2 aurora-gradient relative overflow-hidden flex-col justify-between p-12">
       {/* Sage green glow */}
       <div className="absolute pointer-events-none" style={{
         bottom: '-80px', left: '-80px', width: '480px', height: '480px',
@@ -282,7 +282,7 @@ export default function Login() {
                   type="button"
                   onClick={handleGoogleSignIn}
                   className="w-full flex items-center justify-center gap-3 transition-colors hover:bg-stone-50"
-                  style={{ border: '1px solid #e5e2dc', backgroundColor: '#ffffff', color: '#0d1628', fontWeight: '500', fontSize: '14px', padding: '12px', borderRadius: '10px', marginBottom: '20px', cursor: 'pointer' }}
+                  style={{ border: '1px solid #e5e2dc', backgroundColor: '#ffffff', color: '#0d1628', fontWeight: '500', fontSize: '14px', padding: '12px', borderRadius: '9999px', marginBottom: '20px', cursor: 'pointer' }}
                 >
                   <GoogleIcon />
                   Continue with Google
@@ -343,10 +343,8 @@ export default function Login() {
                   <button
                     type="submit"
                     disabled={loading}
-                    className="w-full flex items-center justify-center gap-2 transition-all disabled:opacity-50"
-                    style={{ backgroundColor: '#0d1628', color: '#ffffff', fontWeight: '600', fontSize: '14px', padding: '13px', borderRadius: '10px', border: 'none', cursor: 'pointer', marginTop: '8px' }}
-                    onMouseEnter={e => { if (!loading) e.currentTarget.style.backgroundColor = '#1a2942' }}
-                    onMouseLeave={e => { e.currentTarget.style.backgroundColor = '#0d1628' }}
+                    className="btn-aurora w-full flex items-center justify-center gap-2 transition-all disabled:opacity-50"
+                    style={{ color: '#ffffff', fontWeight: '600', fontSize: '14px', padding: '13px', borderRadius: '9999px', border: 'none', cursor: 'pointer', marginTop: '8px' }}
                   >
                     {loading ? 'Verifying…' : 'Continue'}
                     {!loading && <ArrowRight size={16} />}
@@ -399,10 +397,8 @@ export default function Login() {
                   <button
                     type="submit"
                     disabled={loading || code.length < 6}
-                    className="w-full flex items-center justify-center gap-2 transition-all disabled:opacity-50"
-                    style={{ backgroundColor: '#4c7d47', color: '#ffffff', fontWeight: '600', fontSize: '14px', padding: '13px', borderRadius: '10px', border: 'none', cursor: 'pointer' }}
-                    onMouseEnter={e => { if (!loading && code.length >= 6) e.currentTarget.style.backgroundColor = '#3d6b3a' }}
-                    onMouseLeave={e => { e.currentTarget.style.backgroundColor = '#4c7d47' }}
+                    className="btn-aurora w-full flex items-center justify-center gap-2 transition-all disabled:opacity-50"
+                    style={{ color: '#ffffff', fontWeight: '600', fontSize: '14px', padding: '13px', borderRadius: '9999px', border: 'none', cursor: 'pointer' }}
                   >
                     {loading ? 'Verifying…' : 'Sign in'}
                     {!loading && <ArrowRight size={16} />}

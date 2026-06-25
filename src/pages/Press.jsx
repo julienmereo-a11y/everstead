@@ -44,7 +44,7 @@ export default function Press() {
       <div className="min-h-screen">
         {/* Hero */}
         <section className="pt-40 pb-20 lg:pt-48 lg:pb-28 grain relative overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-br from-navy-950 via-navy-900 to-navy-800" />
+          <div className="absolute inset-0 aurora-bg" />
           <div className="relative max-w-4xl mx-auto px-6 lg:px-8 text-center reveal">
             <p className="text-xs font-semibold uppercase tracking-[0.22em] text-sage-300 mb-5">Press & Media</p>
             <h1 className="font-display text-5xl lg:text-6xl font-light text-white leading-tight text-balance">
@@ -55,7 +55,7 @@ export default function Press() {
             </p>
             <a
               href="mailto:hello@everstead.care?subject=Press%20enquiry"
-              className="inline-flex items-center gap-2 mt-8 bg-white text-navy-900 px-6 py-3 rounded-xl text-sm font-semibold hover:bg-stone-100 transition-colors"
+              className="inline-flex items-center gap-2 mt-8 bg-white text-navy-900 px-6 py-3 rounded-full text-sm font-semibold hover:bg-stone-100 transition-colors"
             >
               <Mail size={15} />
               hello@everstead.care
@@ -138,7 +138,7 @@ export default function Press() {
             </div>
 
             {/* Contact */}
-            <div className="reveal rounded-2xl bg-navy-950 px-10 py-10 text-center">
+            <div className="reveal aurora-field aurora-dim rounded-2xl px-10 py-10 text-center">
               <h2 className="font-display text-2xl font-light text-white mb-3">Media enquiries</h2>
               <p className="text-stone-400 text-sm leading-relaxed mb-6 max-w-md mx-auto">
                 For press, interview, and speaking requests, contact Julien directly. We respond to all media enquiries within one business day.

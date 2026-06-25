@@ -299,7 +299,7 @@ export default function ExecutorChecklist() {
 
       <div className="min-h-screen bg-stone-50 print:bg-white">
         {/* ── Hero ── */}
-        <div className="bg-navy-950 print:hidden">
+        <div className="aurora-field print:hidden">
           <div className="max-w-3xl mx-auto px-6 py-16 sm:py-20">
             <p className="text-xs font-semibold tracking-widest text-stone-400 uppercase mb-4">Free resource · England &amp; Wales</p>
             <h1 className="font-display text-4xl sm:text-5xl font-bold text-white leading-tight mb-5">
@@ -323,7 +323,7 @@ export default function ExecutorChecklist() {
                 <button
                   type="button"
                   onClick={() => setShowResetConfirm(true)}
-                  className="inline-flex items-center gap-1.5 text-sm text-stone-500 hover:text-stone-700 px-3 py-2 rounded-lg border border-stone-200 bg-white hover:bg-stone-50 transition-colors"
+                  className="inline-flex items-center gap-1.5 text-sm text-stone-500 hover:text-stone-700 px-3 py-2 rounded-full border border-stone-200 bg-white hover:bg-stone-50 transition-colors"
                 >
                   <RotateCcw className="w-4 h-4" />
                   Reset
@@ -351,7 +351,7 @@ export default function ExecutorChecklist() {
               <button
                 type="button"
                 onClick={() => window.print()}
-                className="inline-flex items-center gap-1.5 text-sm font-medium text-white bg-navy-800 hover:bg-navy-700 px-4 py-2 rounded-lg transition-colors"
+                className="inline-flex items-center gap-1.5 text-sm font-medium text-white bg-navy-800 hover:bg-navy-700 px-4 py-2 rounded-full transition-colors"
               >
                 <Printer className="w-4 h-4" />
                 Print / Export
@@ -423,7 +423,7 @@ export default function ExecutorChecklist() {
             </p>
             <Link
               to="/get-started"
-              className="inline-flex items-center gap-2 bg-navy-800 hover:bg-navy-700 text-white text-sm font-semibold px-5 py-2.5 rounded-lg transition-colors"
+              className="btn-aurora inline-flex items-center gap-2 text-sm font-semibold px-5 py-2.5 rounded-full transition-colors"
             >
               Start organising your estate
               <span aria-hidden="true">→</span>

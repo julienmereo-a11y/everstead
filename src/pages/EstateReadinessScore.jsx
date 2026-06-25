@@ -280,7 +280,7 @@ export default function EstateReadinessScore() {
 
         {/* ── Hero header ── */}
         <section className="relative overflow-hidden grain">
-          <div className="absolute inset-0 bg-gradient-to-br from-navy-950 via-navy-900 to-navy-800" />
+          <div className="absolute inset-0 aurora-bg" />
           <div className="relative max-w-3xl mx-auto px-6 pt-28 pb-16 lg:pt-32 lg:pb-20 text-center">
             <p className="text-xs font-semibold uppercase tracking-[0.22em] text-sage-300 mb-4">
               Free tool — no sign-up needed
@@ -510,7 +510,7 @@ export default function EstateReadinessScore() {
                         <button
                           type="submit"
                           disabled={submitting}
-                          className="w-full flex items-center justify-center gap-2 bg-navy-950 hover:bg-navy-800 text-white rounded-lg px-5 py-3 text-sm font-medium transition-colors duration-150 disabled:opacity-60 focus:outline-none focus-visible:ring-2 focus-visible:ring-navy-700 focus-visible:ring-offset-2"
+                          className="w-full flex items-center justify-center gap-2 bg-navy-950 hover:bg-navy-800 text-white rounded-full px-5 py-3 text-sm font-medium transition-colors duration-150 disabled:opacity-60 focus:outline-none focus-visible:ring-2 focus-visible:ring-navy-700 focus-visible:ring-offset-2"
                         >
                           {submitting
                             ? <><Loader2 size={15} className="animate-spin" /> Sending…</>
@@ -536,7 +536,7 @@ export default function EstateReadinessScore() {
                       </p>
                       <Link
                         to="/get-started"
-                        className="inline-flex items-center gap-2 bg-navy-950 hover:bg-navy-800 text-white rounded-lg px-5 py-3 text-sm font-medium transition-colors duration-150"
+                        className="btn-aurora inline-flex items-center gap-2 rounded-full px-5 py-3 text-sm font-medium transition-colors duration-150"
                       >
                         Start your estate plan with Everstead
                         <ArrowRight size={15} />

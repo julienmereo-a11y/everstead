@@ -160,7 +160,7 @@ export default function Pricing() {
     </Helmet>
     <div className="bg-stone-50 pt-24">
       <section className="py-20 lg:py-28 grain relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-navy-950 via-navy-900 to-navy-800" />
+        <div className="absolute inset-0 aurora-bg" />
         <div className="relative max-w-5xl mx-auto px-6 lg:px-8 text-center reveal">
           <p className="text-xs font-semibold uppercase tracking-[0.22em] text-sage-300 mb-5">Pricing</p>
           <h1 className="font-display text-5xl lg:text-6xl font-light text-white leading-tight text-balance">
@@ -243,14 +243,14 @@ export default function Pricing() {
                   <div className="mt-8">
                     <Link
                       to="/book-demo"
-                      className="inline-flex items-center justify-center gap-2 w-full rounded-xl px-5 py-3.5 text-sm font-semibold transition-colors bg-navy-800 text-white hover:bg-navy-700"
+                      className="inline-flex items-center justify-center gap-2 w-full rounded-full px-5 py-3.5 text-sm font-semibold transition-colors bg-navy-800 text-white hover:bg-navy-700"
                     >
                       Book a demo <ArrowRight size={15} />
                     </Link>
                   </div>
                 ) : (
                   <>
-                    <Link to={href} className={`inline-flex items-center justify-center gap-2 mt-8 w-full rounded-xl px-5 py-3.5 text-sm font-semibold transition-colors ${plan.highlight ? 'bg-white text-navy-900 hover:bg-stone-100' : 'bg-navy-800 text-white hover:bg-navy-700'}`}>
+                    <Link to={href} className="btn-aurora inline-flex items-center justify-center gap-2 mt-8 w-full rounded-full px-5 py-3.5 text-sm font-semibold">
                       {plan.cta} <ArrowRight size={15} />
                     </Link>
                     {plan.id === 'essential' && (

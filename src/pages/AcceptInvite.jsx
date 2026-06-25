@@ -103,7 +103,7 @@ export default function AcceptInvite() {
 
           {state === 'found' && invite && (
             <>
-              <div className="bg-navy-950 p-7">
+              <div className="aurora-field aurora-dim p-7">
                 <p className="font-display text-xl font-light text-white leading-snug">
                   {owner?.full_name} has invited you to their Everstead plan.
                 </p>
@@ -138,7 +138,7 @@ export default function AcceptInvite() {
 
                 <button
                   onClick={handleAccept}
-                  className="w-full bg-navy-800 text-white font-semibold text-sm py-3.5 rounded-lg hover:bg-navy-700 transition-colors flex items-center justify-center gap-2 mb-3"
+                  className="btn-aurora w-full text-white font-semibold text-sm py-3.5 rounded-full transition-colors flex items-center justify-center gap-2 mb-3"
                 >
                   Accept invitation <ArrowRight size={15} />
                 </button>
@@ -170,7 +170,7 @@ export default function AcceptInvite() {
               </p>
               <Link
                 to={`/delegate-dashboard?token=${token}`}
-                className="inline-flex items-center gap-2 rounded-lg bg-navy-800 px-5 py-3 text-sm text-white font-medium hover:bg-navy-700 transition-colors"
+                className="inline-flex items-center gap-2 rounded-full bg-navy-800 px-5 py-3 text-sm text-white font-medium hover:bg-navy-700 transition-colors"
               >
                 Open delegate dashboard <ArrowRight size={14} />
               </Link>

@@ -45,7 +45,7 @@ export default function Contact() {
     <div className="bg-stone-50 pt-24 min-h-screen">
       {/* Header */}
       <section className="py-20 lg:py-28 grain relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-navy-950 to-navy-800" />
+        <div className="absolute inset-0 aurora-bg" />
         <div className="relative max-w-4xl mx-auto px-6 lg:px-8 text-center">
           <p className="text-xs font-semibold uppercase tracking-widest text-sage-400 mb-5 animate-fade-in">Contact</p>
           <h1 className="font-display text-5xl lg:text-6xl font-light text-white leading-tight text-balance animate-fade-up">
@@ -151,10 +151,7 @@ export default function Contact() {
                   </div>
                 )}
                 <button type="submit" disabled={submitting}
-                  className="w-full text-white font-semibold text-sm py-3.5 rounded-lg transition-colors disabled:opacity-60 flex items-center justify-center gap-2"
-                  style={{ backgroundColor: '#4c7d47' }}
-                  onMouseEnter={e => { if (!e.currentTarget.disabled) e.currentTarget.style.backgroundColor = '#3d6b3a' }}
-                  onMouseLeave={e => e.currentTarget.style.backgroundColor = '#4c7d47'}>
+                  className="btn-aurora w-full text-white font-semibold text-sm py-3.5 rounded-full transition-colors disabled:opacity-60 flex items-center justify-center gap-2">
                   {submitting ? <><Loader2 size={15} className="animate-spin" />Sending…</> : 'Send message'}
                 </button>
               </form>

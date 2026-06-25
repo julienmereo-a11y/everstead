@@ -212,7 +212,7 @@ export default function Nav() {
                 )}
                 <button
                   onClick={handleSignOut}
-                  className={`text-sm font-medium px-4 py-2 rounded-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-navy-400 ${useDarkStyle ? 'bg-navy-800 text-white hover:bg-navy-700' : 'bg-white/20 text-white border border-white/30 hover:bg-white/30'}`}
+                  className={`text-sm font-medium px-4 py-2 rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-navy-400 ${useDarkStyle ? 'bg-navy-800 text-white hover:bg-navy-700' : 'bg-white/20 text-white border border-white/30 hover:bg-white/30'}`}
                 >
                   Log Out
                 </button>
@@ -227,7 +227,7 @@ export default function Nav() {
                 </Link>
                 <Link
                   to="/get-started"
-                  className={`text-sm font-medium px-4 py-2 rounded-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-navy-400 ${useDarkStyle ? 'bg-navy-800 text-white hover:bg-navy-700' : 'bg-white/20 text-white border border-white/30 hover:bg-white/30'}`}
+                  className="btn-aurora text-sm font-semibold px-4 py-2 rounded-full transition-transform hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-navy-400"
                 >
                   Get Started
                 </Link>
@@ -287,7 +287,7 @@ export default function Nav() {
                 <>
                   <Link
                     to="/dashboard"
-                    className="flex items-center justify-center px-4 py-3 text-sm font-semibold text-navy-800 border border-stone-200 rounded-xl hover:bg-stone-50 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy-400"
+                    className="flex items-center justify-center px-4 py-3 text-sm font-semibold text-navy-800 border border-stone-200 rounded-full hover:bg-stone-50 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy-400"
                   >
                     My plan
                   </Link>
@@ -295,14 +295,14 @@ export default function Nav() {
                     <Link
                       key={inv.id}
                       to={`/delegate-dashboard?token=${inv.invite_token}`}
-                      className="flex items-center justify-center px-4 py-3 text-sm font-semibold text-navy-800 border border-stone-200 rounded-xl hover:bg-stone-50 transition-colors"
+                      className="flex items-center justify-center px-4 py-3 text-sm font-semibold text-navy-800 border border-stone-200 rounded-full hover:bg-stone-50 transition-colors"
                     >
                       {inv.ownerName ?? 'Shared plan'}
                     </Link>
                   ))}
                   <button
                     onClick={handleSignOut}
-                    className="flex items-center justify-center bg-navy-800 text-white text-sm font-semibold px-4 py-3 rounded-xl hover:bg-navy-700 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-navy-400"
+                    className="flex items-center justify-center bg-navy-800 text-white text-sm font-semibold px-4 py-3 rounded-full hover:bg-navy-700 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-navy-400"
                   >
                     Log Out
                   </button>
@@ -311,13 +311,13 @@ export default function Nav() {
                 <>
                   <Link
                     to="/login"
-                    className="flex items-center justify-center px-4 py-3 text-sm font-semibold text-navy-800 border border-stone-200 rounded-xl hover:bg-stone-50 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy-400"
+                    className="flex items-center justify-center px-4 py-3 text-sm font-semibold text-navy-800 border border-stone-200 rounded-full hover:bg-stone-50 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy-400"
                   >
                     Login
                   </Link>
                   <Link
                     to="/get-started"
-                    className="flex items-center justify-center bg-navy-800 text-white text-sm font-semibold px-4 py-3 rounded-xl hover:bg-navy-700 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-navy-400"
+                    className="flex items-center justify-center btn-aurora text-sm font-semibold px-4 py-3 rounded-full transition-transform hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-navy-400"
                   >
                     Get Started
                   </Link>

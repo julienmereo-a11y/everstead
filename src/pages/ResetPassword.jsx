@@ -160,7 +160,7 @@ export default function ResetPassword() {
                 <button
                   type="submit"
                   disabled={submitting || mismatch || password.length < 8}
-                  className="w-full text-white font-semibold text-sm py-3.5 rounded-lg transition-colors disabled:opacity-60 flex items-center justify-center gap-2" style={{ backgroundColor: '#4c7d47' }} onMouseEnter={e => { if (!e.currentTarget.disabled) e.currentTarget.style.backgroundColor = '#3d6b3a' }} onMouseLeave={e => e.currentTarget.style.backgroundColor = '#4c7d47'}
+                  className="btn-aurora w-full text-white font-semibold text-sm py-3.5 rounded-full transition-colors disabled:opacity-60 flex items-center justify-center gap-2"
                 >
                   {submitting ? <><Loader2 size={15} className="animate-spin" />Updating…</> : 'Set new password'}
                 </button>

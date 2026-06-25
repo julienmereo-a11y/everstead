@@ -47,7 +47,7 @@ export default function BookDemo() {
     </Helmet>
     <div className="bg-stone-50 pt-24 min-h-screen">
       <section className="py-20 lg:py-28 grain relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-navy-950 via-navy-900 to-navy-800" />
+        <div className="absolute inset-0 aurora-bg" />
         <div className="relative max-w-4xl mx-auto px-6 lg:px-8 text-center reveal">
           <p className="text-xs font-semibold uppercase tracking-[0.22em] text-sage-300 mb-5">Early access</p>
           <h1 className="font-display text-5xl lg:text-6xl font-light text-white leading-tight text-balance">
@@ -132,10 +132,7 @@ export default function BookDemo() {
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="inline-flex w-full items-center justify-center gap-2 rounded-xl px-5 py-3.5 text-sm font-semibold text-white transition-colors disabled:opacity-60"
-                  style={{ backgroundColor: '#4c7d47' }}
-                  onMouseEnter={e => { if (!e.currentTarget.disabled) e.currentTarget.style.backgroundColor = '#3d6b3a' }}
-                  onMouseLeave={e => e.currentTarget.style.backgroundColor = '#4c7d47'}
+                  className="btn-aurora inline-flex w-full items-center justify-center gap-2 rounded-full px-5 py-3.5 text-sm font-semibold text-white transition-colors disabled:opacity-60"
                 >
                   {submitting ? <><Loader2 size={15} className="animate-spin" />Sending…</> : <>Book a 20-minute call <ArrowRight size={15} /></>}
                 </button>

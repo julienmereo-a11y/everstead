@@ -157,13 +157,13 @@ export default function TrialEnded() {
             <div className="space-y-3 mb-6">
 
               {/* Option 1 — Update payment method */}
-              <div className="bg-navy-800 rounded-2xl p-6 text-white">
+              <div className="aurora-field aurora-dim rounded-2xl p-6 text-white">
                 <p className="font-semibold text-base mb-0.5">Update your payment method</p>
                 <p className="text-navy-300 text-sm mb-5">{priceLabel}</p>
                 <button
                   onClick={handleContinue}
                   disabled={!!busy}
-                  className="flex items-center gap-2 bg-white text-navy-900 font-semibold text-sm px-5 py-2.5 rounded-lg hover:bg-stone-100 transition-colors disabled:opacity-50"
+                  className="btn-aurora flex items-center gap-2 text-white font-semibold text-sm px-5 py-2.5 rounded-full transition-colors disabled:opacity-50"
                 >
                   {busy === 'continue'
                     ? <><Loader2 size={14} className="animate-spin" /> Opening billing portal…</>
@@ -182,7 +182,7 @@ export default function TrialEnded() {
                   <button
                     onClick={handleDowngrade}
                     disabled={!!busy}
-                    className="flex items-center gap-2 border border-navy-200 text-navy-800 font-semibold text-sm px-5 py-2.5 rounded-lg hover:bg-navy-50 transition-colors disabled:opacity-50"
+                    className="flex items-center gap-2 border border-navy-200 text-navy-800 font-semibold text-sm px-5 py-2.5 rounded-full hover:bg-navy-50 transition-colors disabled:opacity-50"
                   >
                     {busy === 'downgrade'
                       ? <><Loader2 size={14} className="animate-spin" /> Setting up payment…</>
@@ -225,7 +225,7 @@ export default function TrialEnded() {
               <button
                 onClick={handleDelete}
                 disabled={!!busy}
-                className="w-full py-3 rounded-xl border border-red-200 text-red-700 text-sm font-semibold hover:bg-red-50 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+                className="w-full py-3 rounded-full border border-red-200 text-red-700 text-sm font-semibold hover:bg-red-50 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
               >
                 {busy === 'delete'
                   ? <><Loader2 size={14} className="animate-spin" /> Scheduling deletion…</>
@@ -234,7 +234,7 @@ export default function TrialEnded() {
               </button>
               <button
                 onClick={() => { setStep('choose'); setError(null) }}
-                className="w-full py-3 rounded-xl bg-navy-800 text-white text-sm font-semibold hover:bg-navy-700 transition-colors"
+                className="w-full py-3 rounded-full bg-navy-800 text-white text-sm font-semibold hover:bg-navy-700 transition-colors"
               >
                 Go back
               </button>

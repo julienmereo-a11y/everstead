@@ -45,7 +45,7 @@ export default function AdminGate({ children }) {
   }
 
   return (
-    <div className="min-h-screen bg-navy-950 flex items-center justify-center p-6">
+    <div className="min-h-screen aurora-field aurora-dim flex items-center justify-center p-6">
       <div className="bg-white rounded-3xl shadow-2xl w-full max-w-sm p-10 space-y-7">
 
         {/* Icon */}

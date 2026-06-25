@@ -6,7 +6,7 @@ import { PRICING } from '../config/pricing'
 import {
   ShieldCheck, Lock, Users, FileText, CheckCircle2, ArrowRight,
   Star, ChevronDown, Bell, Share2, ClipboardList, BookOpen, Heart,
-  AlertCircle, CreditCard, Clock, UserCircle, Sparkles
+  UserCircle, Sparkles
 } from 'lucide-react'
 
 const trustItems = [
@@ -205,24 +205,7 @@ export default function Home() {
     <div className="bg-stone-50">
 
       {/* ── HERO ─────────────────────────────────────────────────── */}
-      <section className="relative overflow-hidden min-h-screen flex flex-col justify-center pt-24 pb-20">
-        {/* Radial gradient background */}
-        <div className="absolute inset-0" style={{
-          background: 'radial-gradient(ellipse at 60% 40%, #0f2040 0%, #0d1628 50%, #080e1a 100%)'
-        }} />
-
-        {/* Sage green glow — behind dashboard card */}
-        <div style={{
-          position: 'absolute',
-          right: '8%',
-          top: '20%',
-          width: '420px',
-          height: '420px',
-          borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(76, 125, 71, 0.12) 0%, transparent 70%)',
-          pointerEvents: 'none',
-          zIndex: 0,
-        }} />
+      <section className="aurora-field overflow-hidden min-h-screen flex flex-col justify-center pt-24 pb-20">
 
         <div className="relative max-w-7xl mx-auto px-6 lg:px-8 grid lg:grid-cols-[1.45fr_1fr] gap-12 lg:gap-14 items-center">
           {/* Copy */}
@@ -233,7 +216,7 @@ export default function Home() {
               // "Everything your family would need, gathered in one place — with love."
             */}
             <h1 className="font-display text-[2.75rem] leading-[1.18] sm:text-6xl sm:leading-[1.14] lg:text-7xl lg:leading-[1.12] xl:text-[5rem] xl:leading-[1.1] font-light text-white text-balance animate-fade-up">
-              Everything that matters, <em>gathered</em> in one secure place.
+              Everything that matters, <em className="aurora-text">gathered</em> in one secure place.
             </h1>
 
             <p className="mt-5 sm:mt-6 text-lg sm:text-xl text-stone-300 leading-relaxed max-w-[600px] animate-fade-up animate-delay-100">
@@ -243,17 +226,14 @@ export default function Home() {
             <div className="mt-10 flex flex-wrap gap-3 animate-fade-up animate-delay-200">
               <Link
                 to="/get-started"
-                className="inline-flex items-center gap-2 font-semibold text-sm px-6 py-3 rounded-lg transition-colors"
-                style={{ backgroundColor: '#4c7d47', color: '#ffffff' }}
-                onMouseEnter={e => e.currentTarget.style.backgroundColor = '#3d6b3a'}
-                onMouseLeave={e => e.currentTarget.style.backgroundColor = '#4c7d47'}
+                className="btn-aurora inline-flex items-center gap-2 font-semibold text-sm px-6 py-3 rounded-full transition-transform hover:-translate-y-0.5"
               >
                 Start Your Everstead
                 <ArrowRight size={16} />
               </Link>
               <Link
                 to="/how-it-works"
-                className="inline-flex items-center gap-2 bg-white/10 text-white font-medium text-sm px-6 py-3 rounded-lg border border-white/20 hover:bg-white/20 transition-colors"
+                className="inline-flex items-center gap-2 bg-white/10 text-white font-medium text-sm px-6 py-3 rounded-full border border-white/20 hover:bg-white/20 transition-colors"
               >
                 See How It Works
               </Link>
@@ -353,94 +333,13 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── PROBLEM ──────────────────────────────────────────────── */}
-      <section className="py-24 lg:py-32 bg-navy-950 grain relative overflow-hidden">
-        <div className="absolute inset-0 opacity-5"
-          style={{ backgroundImage: 'radial-gradient(circle at 20% 50%, #6ea6d8 0%, transparent 60%)' }}
-        />
-        <div className="relative max-w-4xl mx-auto px-6 lg:px-8 text-center">
-          <div className="reveal mb-12">
-            {/* A/B alternates to try later:
-              // "If something happened tomorrow, would they know where to look?"
-              // "The people you love shouldn't have to go searching."
-            */}
-            <h2 className="font-display text-4xl lg:text-6xl font-bold text-white leading-tight text-balance mb-6">
-              Right now, it's all in your head — or scattered in a dozen places.
-            </h2>
-            <p className="text-stone-400 text-lg leading-relaxed max-w-2xl mx-auto">
-              Not because you're disorganised — because life is busy. But if anything happened, the people you love would be left searching for what only you know.
-            </p>
-          </div>
-
-          <div className="grid sm:grid-cols-3 gap-6 text-left">
-            {[
-              {
-                icon: AlertCircle,
-                title: "The paperwork no one can find",
-                desc: "Insurance, property records, the will — scattered across email, drives, drawers, and apps. Easy for you to overlook; impossible for them to track down."
-              },
-              {
-                icon: CreditCard,
-                title: "Accounts only you remember",
-                desc: "Subscriptions, investments, pensions, digital accounts — there's no single picture of what exists, except the one in your head."
-              },
-              {
-                icon: Clock,
-                title: "The things you'd want to say",
-                desc: "Your wishes, your reasons, a few words for the people you love — rarely written down, and dearly missed when they're not."
-              }
-            ].map(({ icon: Icon, title, desc }, i) => (
-              <div key={title} className={`reveal reveal-delay-${i + 1} bg-white/5 border border-white/10 rounded-2xl p-6`}>
-                <div className="w-10 h-10 rounded-full bg-red-900/60 flex items-center justify-center mb-5">
-                  <Icon size={18} className="text-red-400" />
-                </div>
-                <h3 className="font-bold text-white text-base mb-3 leading-snug">{title}</h3>
-                <p className="text-stone-400 text-sm leading-relaxed">{desc}</p>
-              </div>
-            ))}
-          </div>
-
-          {/* second row */}
-          <div className="grid sm:grid-cols-3 gap-6 text-left mt-6">
-            <div className="reveal reveal-delay-1 bg-white/5 border border-white/10 rounded-2xl p-6">
-              <div className="w-10 h-10 rounded-full bg-red-900/60 flex items-center justify-center mb-5">
-                <UserCircle size={18} className="text-red-400" />
-              </div>
-              <h3 className="font-bold text-white text-base mb-3 leading-snug">The people you love are left guessing</h3>
-              <p className="text-stone-400 text-sm leading-relaxed">Without a clear record, your partner, children, or executor face weeks of searching through scattered information.</p>
-            </div>
-
-            <div className="reveal reveal-delay-2 bg-white/5 border border-white/10 rounded-2xl p-6">
-              <div className="w-10 h-10 rounded-full bg-red-900/60 flex items-center justify-center mb-5">
-                <Clock size={18} className="text-red-400" />
-              </div>
-              <h3 className="font-bold text-white text-base mb-3 leading-snug">Disorganisation costs more than you think</h3>
-              <p className="text-stone-400 text-sm leading-relaxed">Forgotten subscriptions, missed renewals, overlooked accounts — the real price of not having one place for everything.</p>
-            </div>
-
-            <div className="reveal reveal-delay-3 bg-white/5 border border-white/10 rounded-2xl p-6 flex flex-col items-center justify-center text-center gap-5">
-              <p className="text-stone-300 text-lg leading-snug">There's a better way to stay organised — for you today, and for the people you love when it counts.</p>
-              <Link
-                to="/get-started"
-                className="w-full py-3 px-6 rounded-xl border border-white/30 text-white font-bold text-base hover:bg-white/10 transition-colors"
-              >
-                Discover Everstead
-              </Link>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* ── SOLUTION ─────────────────────────────────────────────── */}
-      <section className="pt-4 pb-24 lg:pt-6 lg:pb-32 bg-navy-950 grain relative overflow-hidden">
-        <div className="absolute inset-0 opacity-5"
-          style={{ backgroundImage: 'radial-gradient(circle at 80% 50%, #6ea6d8 0%, transparent 60%)' }}
-        />
+      <section className="pt-4 pb-24 lg:pt-6 lg:pb-32 aurora-field aurora-dim relative overflow-hidden">
         <div className="relative max-w-7xl mx-auto px-6 lg:px-8">
           <div className="text-center mb-16 reveal">
             <p className="text-xs font-semibold uppercase tracking-widest text-sage-400 mb-4">One platform</p>
             <h2 className="font-display text-4xl lg:text-5xl font-light text-white max-w-2xl mx-auto leading-tight">
-              Everything that matters,<br className="hidden sm:block" /> in one place.
+              A calm home for your accounts,<br className="hidden sm:block" /> documents, and wishes.
             </h2>
           </div>
 
@@ -507,7 +406,7 @@ export default function Home() {
       </section>
 
       {/* ── REASSURANCE ──────────────────────────────────────────── */}
-      <section className="py-24 lg:py-32 bg-navy-950 grain relative overflow-hidden">
+      <section className="py-24 lg:py-32 aurora-field aurora-dim relative overflow-hidden">
         <div className="relative max-w-3xl mx-auto px-6 lg:px-8 text-center reveal">
           <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-white/10 mb-8">
             <Heart size={22} className="text-sage-400" />
@@ -639,10 +538,7 @@ export default function Home() {
       </section>
 
       {/* ── PRICING PREVIEW ──────────────────────────────────────── */}
-      <section className="py-24 lg:py-32 bg-navy-950 grain relative overflow-hidden">
-        <div className="absolute inset-0 opacity-5"
-          style={{ backgroundImage: 'radial-gradient(circle at 20% 60%, #4c7d47 0%, transparent 50%)' }}
-        />
+      <section className="py-24 lg:py-32 aurora-field aurora-dim relative overflow-hidden">
         <div className="relative max-w-7xl mx-auto px-6 lg:px-8">
           <div className="text-center mb-14 reveal">
             <p className="text-xs font-semibold uppercase tracking-widest text-sage-400 mb-4">Pricing</p>
@@ -705,16 +601,16 @@ export default function Home() {
                 {id === 'advisor' ? (
                   <Link
                     to="/book-demo"
-                    className="block text-center py-2.5 px-4 rounded-lg text-sm font-semibold transition-colors bg-white/10 text-white border border-white/20 hover:bg-white/20"
+                    className="block text-center py-2.5 px-4 rounded-full text-sm font-semibold transition-colors bg-white/10 text-white border border-white/20 hover:bg-white/20"
                   >
                     Book a demo <ArrowRight size={13} className="inline ml-1" />
                   </Link>
                 ) : (
                   <Link
                     to={`/get-started?plan=${id}&billing=${annualPricing ? 'yearly' : 'monthly'}`}
-                    className={`block text-center py-2.5 px-4 rounded-lg text-sm font-semibold transition-colors ${
+                    className={`block text-center py-2.5 px-4 rounded-full text-sm font-semibold transition-colors ${
                       highlight
-                        ? 'bg-navy-800 text-white hover:bg-navy-700'
+                        ? 'btn-aurora'
                         : 'bg-white/10 text-white border border-white/20 hover:bg-white/20'
                     }`}
                   >
@@ -759,16 +655,40 @@ export default function Home() {
       {/* ── REFERRAL CTA ─────────────────────────────────────────── */}
       <section className="py-20 lg:py-24 bg-stone-50">
         <div className="max-w-5xl mx-auto px-6 lg:px-8">
-          <div className="reveal rounded-3xl bg-gradient-to-br from-navy-900 to-navy-950 border border-navy-800 p-8 lg:p-10 text-white flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+          <div className="reveal rounded-3xl aurora-field aurora-dim border border-navy-800 p-8 lg:p-10 text-white flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
             <div className="max-w-2xl">
               <p className="text-xs font-semibold uppercase tracking-widest text-sage-400 mb-3">Share Everstead</p>
               <h2 className="font-display text-3xl lg:text-4xl font-light leading-tight">Help a parent, partner, or client get organised before a crisis.</h2>
               <p className="text-sm text-stone-300 mt-3 leading-relaxed">Everstead works especially well when one family member starts the process and invites others in with the right permissions.</p>
             </div>
             <div className="flex flex-wrap gap-3">
-              <Link to="/get-started?plan=family&billing=yearly" className="inline-flex items-center gap-2 bg-white text-navy-900 font-semibold text-sm px-6 py-3 rounded-lg hover:bg-stone-100 transition-colors">Start a family plan <ArrowRight size={15} /></Link>
-              <Link to="/book-demo" className="inline-flex items-center gap-2 bg-white/10 text-white border border-white/20 font-medium text-sm px-6 py-3 rounded-lg hover:bg-white/20 transition-colors">Book an adviser demo</Link>
+              <Link to="/get-started?plan=family&billing=yearly" className="inline-flex items-center gap-2 bg-white text-navy-900 font-semibold text-sm px-6 py-3 rounded-full hover:bg-stone-100 transition-colors">Start a family plan <ArrowRight size={15} /></Link>
+              <Link to="/book-demo" className="inline-flex items-center gap-2 bg-white/10 text-white border border-white/20 font-medium text-sm px-6 py-3 rounded-full hover:bg-white/20 transition-colors">Book an adviser demo</Link>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Gift strip ─────────────────────────────────────────────── */}
+      <section className="py-16 lg:py-20 bg-stone-50 border-y border-stone-100">
+        <div className="max-w-5xl mx-auto px-6 lg:px-8">
+          <div className="reveal grid md:grid-cols-[auto_1fr_auto] items-center gap-6 rounded-3xl bg-white border border-stone-200 px-8 py-8 lg:px-10 lg:py-9">
+            <div className="text-5xl lg:text-6xl select-none" aria-hidden="true">🎁</div>
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-widest text-sage-700 mb-2">A gift that says: I've sorted it.</p>
+              <h2 className="font-display text-2xl lg:text-3xl font-light text-navy-950 leading-snug mb-2 text-balance">
+                Give Everstead to a parent, partner, or someone you love.
+              </h2>
+              <p className="text-sm text-stone-600 leading-relaxed max-w-xl">
+                The kind of present they'd never buy themselves — and the one that genuinely takes weight off their family one day. Sent as a digital gift, redeemable any time.
+              </p>
+            </div>
+            <Link
+              to="/gift"
+              className="btn-aurora inline-flex items-center justify-center gap-2 text-white text-sm font-semibold px-5 py-3 rounded-full transition-transform hover:-translate-y-0.5 whitespace-nowrap shrink-0"
+            >
+              Give as a gift <ArrowRight size={14} />
+            </Link>
           </div>
         </div>
       </section>
@@ -796,30 +716,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── Gift strip ─────────────────────────────────────────────── */}
-      <section className="py-16 lg:py-20 bg-stone-50 border-y border-stone-100">
-        <div className="max-w-5xl mx-auto px-6 lg:px-8">
-          <div className="reveal grid md:grid-cols-[auto_1fr_auto] items-center gap-6 rounded-3xl bg-white border border-stone-200 px-8 py-8 lg:px-10 lg:py-9">
-            <div className="text-5xl lg:text-6xl select-none" aria-hidden="true">🎁</div>
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-widest text-sage-700 mb-2">A gift that says: I've sorted it.</p>
-              <h2 className="font-display text-2xl lg:text-3xl font-light text-navy-950 leading-snug mb-2 text-balance">
-                Give Everstead to a parent, partner, or someone you love.
-              </h2>
-              <p className="text-sm text-stone-600 leading-relaxed max-w-xl">
-                The kind of present they'd never buy themselves — and the one that genuinely takes weight off their family one day. Sent as a digital gift, redeemable any time.
-              </p>
-            </div>
-            <Link
-              to="/gift"
-              className="inline-flex items-center justify-center gap-2 bg-sage-700 hover:bg-sage-800 text-white text-sm font-semibold px-5 py-3 rounded-xl transition-colors whitespace-nowrap shrink-0"
-            >
-              Give as a gift <ArrowRight size={14} />
-            </Link>
-          </div>
-        </div>
-      </section>
-
       {/* ── FAQ ──────────────────────────────────────────────────── */}
       <section className="py-24 lg:py-32">
         <div className="max-w-3xl mx-auto px-6 lg:px-8">
@@ -835,35 +731,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── FINAL CTA ────────────────────────────────────────────── */}
-      <section className="py-24 lg:py-32 bg-gradient-to-br from-navy-900 to-navy-950 grain relative overflow-hidden">
-        <div className="absolute inset-0 opacity-10"
-          style={{ backgroundImage: 'radial-gradient(circle at 50% 50%, #6ea6d8 0%, transparent 60%)' }}
-        />
-        <div className="relative max-w-3xl mx-auto px-6 lg:px-8 text-center reveal">
-          <h2 className="font-display text-4xl lg:text-5xl font-light text-white text-balance leading-tight">
-            Spend an afternoon now. Give them a lifetime of less worry.
-          </h2>
-          <p className="mt-5 text-stone-300 text-lg leading-relaxed">
-            Start with what you have and build as you go. Most people are up and running in under an hour — and the people they love are protected from that moment on.
-          </p>
-          <div className="mt-10 flex flex-wrap gap-3 justify-center">
-            <Link
-              to="/get-started"
-              className="inline-flex items-center gap-2 bg-white text-navy-900 font-semibold text-sm px-7 py-3.5 rounded-lg hover:bg-stone-100 transition-colors"
-            >
-              Start Your Everstead
-              <ArrowRight size={16} />
-            </Link>
-            <Link
-              to="/book-demo"
-              className="inline-flex items-center gap-2 bg-white/10 text-white font-medium text-sm px-7 py-3.5 rounded-lg border border-white/20 hover:bg-white/20 transition-colors"
-            >
-              Book an adviser demo
-            </Link>
-          </div>
-        </div>
-      </section>
     </div>
     </>
   )

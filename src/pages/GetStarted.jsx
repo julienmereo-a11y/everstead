@@ -490,7 +490,7 @@ export default function GetStarted() {
 
       {/* ── HERO ──────────────────────────────────────────────── */}
       <section className="py-16 lg:py-20 grain relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-navy-950 to-navy-800" />
+        <div className="absolute inset-0 aurora-bg" />
         <div className="relative max-w-3xl mx-auto px-6 text-center">
           <p className="text-xs font-semibold uppercase tracking-widest text-sage-400 mb-4">Get started</p>
           <h1 className="font-display text-4xl lg:text-5xl font-light text-white leading-tight text-balance">
@@ -720,7 +720,7 @@ export default function GetStarted() {
                   <p className="text-xs text-stone-500 mb-5">Book a 20-minute call and we'll get you onboarded.</p>
                   <button
                     onClick={() => navigate('/book-demo')}
-                    className="inline-flex items-center justify-center gap-2 text-white font-semibold text-sm px-8 py-3.5 rounded-lg transition-colors bg-navy-900 hover:bg-navy-800 w-full"
+                    className="inline-flex items-center justify-center gap-2 text-white font-semibold text-sm px-8 py-3.5 rounded-full transition-colors bg-navy-900 hover:bg-navy-800 w-full"
                   >
                     Book a demo →
                   </button>
@@ -732,10 +732,7 @@ export default function GetStarted() {
                 <div className="text-center mt-6">
                   <button
                     onClick={() => setStep(clientSecret ? 3 : 2)}
-                    className="inline-flex items-center gap-2 text-white font-semibold text-sm px-8 py-3.5 rounded-lg transition-colors"
-                    style={{ backgroundColor: '#4c7d47' }}
-                    onMouseEnter={e => e.currentTarget.style.backgroundColor = '#3d6b3a'}
-                    onMouseLeave={e => e.currentTarget.style.backgroundColor = '#4c7d47'}
+                    className="btn-aurora inline-flex items-center gap-2 text-white font-semibold text-sm px-8 py-3.5 rounded-full transition-transform hover:-translate-y-0.5"
                   >
                     {clientSecret
                       ? <>Back to payment with {PLAN_OPTIONS.find(p => p.id === selectedPlan)?.name}</>
@@ -788,7 +785,7 @@ export default function GetStarted() {
                 <button
                   type="submit"
                   disabled={loading || !form.country}
-                  className="w-full text-white font-semibold text-sm py-3.5 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                  className="w-full text-white font-semibold text-sm py-3.5 rounded-full transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                   style={{ backgroundColor: '#4c7d47' }}
                   onMouseEnter={e => { if (!e.currentTarget.disabled) e.currentTarget.style.backgroundColor = '#3d6b3a' }}
                   onMouseLeave={e => e.currentTarget.style.backgroundColor = '#4c7d47'}
@@ -822,7 +819,7 @@ export default function GetStarted() {
               <button
                 type="button"
                 onClick={handleGoogleSignup}
-                className="w-full flex items-center justify-center gap-3 border border-stone-300 bg-white text-navy-900 font-medium text-sm py-3 rounded-lg hover:bg-stone-50 transition-colors mb-5"
+                className="w-full flex items-center justify-center gap-3 border border-stone-300 bg-white text-navy-900 font-medium text-sm py-3 rounded-full hover:bg-stone-50 transition-colors mb-5"
               >
                 <GoogleIcon />
                 Continue with Google
@@ -928,7 +925,7 @@ export default function GetStarted() {
                 <button
                   type="submit"
                   disabled={loading || !basicFieldsValid}
-                  className="w-full text-white font-semibold text-sm py-3.5 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                  className="w-full text-white font-semibold text-sm py-3.5 rounded-full transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                   style={{ backgroundColor: '#4c7d47' }}
                   onMouseEnter={e => { if (!e.currentTarget.disabled) e.currentTarget.style.backgroundColor = '#3d6b3a' }}
                   onMouseLeave={e => e.currentTarget.style.backgroundColor = '#4c7d47'}
@@ -1154,10 +1151,7 @@ function CheckoutForm({ trialDays, plan, billingCycle, customerId, referredBy, p
       <button
         type="submit"
         disabled={!stripe || loading}
-        className="w-full text-white font-semibold text-sm py-3.5 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-        style={{ backgroundColor: '#4c7d47' }}
-        onMouseEnter={e => { if (!e.currentTarget.disabled) e.currentTarget.style.backgroundColor = '#3d6b3a' }}
-        onMouseLeave={e => e.currentTarget.style.backgroundColor = '#4c7d47'}
+        className="btn-aurora w-full text-white font-semibold text-sm py-3.5 rounded-full transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
       >
         {loading ? (
           <><Loader2 size={15} className="animate-spin" />Processing…</>

@@ -135,7 +135,7 @@ export default function DelegateRegister() {
 
   return (
     <Shell>
-      <div className="bg-navy-950 px-7 py-6">
+      <div className="aurora-field aurora-dim px-7 py-6">
         <p className="font-display text-lg font-light text-white leading-snug">
           {owner?.full_name} invited you as their <strong className="text-sage-400">{invite?.role}</strong>
         </p>
@@ -252,7 +252,7 @@ export default function DelegateRegister() {
           <button
             type="submit"
             disabled={submitting || !password}
-            className="w-full bg-navy-800 text-white font-semibold text-sm py-3.5 rounded-lg hover:bg-navy-700 transition-colors disabled:opacity-50 flex items-center justify-center gap-2 mt-2"
+            className="btn-aurora w-full text-white font-semibold text-sm py-3.5 rounded-full transition-colors disabled:opacity-50 flex items-center justify-center gap-2 mt-2"
           >
             {submitting
               ? <><Loader2 size={15} className="animate-spin" />{mode === 'register' ? 'Creating account…' : 'Signing in…'}</>

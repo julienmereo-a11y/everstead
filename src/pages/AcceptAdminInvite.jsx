@@ -127,7 +127,7 @@ export default function AcceptAdminInvite() {
   }
 
   return (
-    <div className="min-h-screen bg-navy-950 flex items-center justify-center p-6">
+    <div className="min-h-screen aurora-field aurora-dim flex items-center justify-center p-6">
       <div className="bg-white rounded-3xl shadow-2xl w-full max-w-sm p-10">
 
         {/* Logo */}
@@ -202,7 +202,7 @@ export default function AcceptAdminInvite() {
             <button
               type="submit"
               disabled={formLoading}
-              className="inline-flex items-center justify-center gap-2 w-full bg-navy-900 text-white text-sm font-semibold py-3 rounded-xl hover:bg-navy-800 transition-colors disabled:opacity-60"
+              className="btn-aurora inline-flex items-center justify-center gap-2 w-full text-white text-sm font-semibold py-3 rounded-full transition-colors disabled:opacity-60"
             >
               {formLoading ? <Loader2 size={15} className="animate-spin" /> : null}
               {formLoading ? 'Creating account…' : 'Create account & get access'}
@@ -232,7 +232,7 @@ export default function AcceptAdminInvite() {
             </div>
             <Link
               to="/admin"
-              className="inline-flex items-center justify-center w-full bg-navy-900 text-white text-sm font-semibold py-3 rounded-xl hover:bg-navy-800 transition-colors"
+              className="inline-flex items-center justify-center w-full bg-navy-900 text-white text-sm font-semibold py-3 rounded-full hover:bg-navy-800 transition-colors"
             >
               Go to admin panel
             </Link>
@@ -254,7 +254,7 @@ export default function AcceptAdminInvite() {
             </p>
             <Link
               to="/"
-              className="inline-flex items-center justify-center w-full border border-stone-200 text-navy-800 text-sm font-semibold py-3 rounded-xl hover:bg-stone-50 transition-colors"
+              className="inline-flex items-center justify-center w-full border border-stone-200 text-navy-800 text-sm font-semibold py-3 rounded-full hover:bg-stone-50 transition-colors"
             >
               Back to home
             </Link>

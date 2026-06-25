@@ -383,7 +383,7 @@ export default function DelegateDashboard() {
         </div>
       )}
       {!isDemo && myRole === 'delegate' && (
-        <div className="bg-navy-950 border-b border-navy-900 px-6 py-3 flex flex-wrap items-center justify-between gap-3">
+        <div className="border-b border-navy-900 px-6 py-3 flex flex-wrap items-center justify-between gap-3" style={{ background: 'linear-gradient(100deg, #0d1628 0%, #1d3052 38%, #2a2a55 70%, #18301f 100%)' }}>
           <p className="text-xs text-stone-400">
             Want to protect your own family the same way {owner?.full_name} is protecting theirs?
           </p>
@@ -1701,7 +1701,7 @@ function DelegateMessageCard({ msg, ownerName }) {
       {open && (
         <div className="border-t border-stone-100 px-5 py-5 bg-stone-50 space-y-4">
           {msg.type === 'video' ? (
-            <div className="flex flex-col items-center justify-center gap-3 py-10 bg-navy-950 rounded-xl text-white">
+            <div className="flex flex-col items-center justify-center gap-3 py-10 aurora-field aurora-dim rounded-xl text-white">
               <div className="w-16 h-16 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors cursor-pointer">
                 <Play size={26} className="text-white ml-1" />
               </div>

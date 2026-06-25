@@ -97,7 +97,7 @@ export default function Subprocessors() {
         {/* Hero — extends under the fixed nav (no top padding on wrapper);
             internal pt-40 lifts the content below the 96px nav strip */}
         <section className="pt-40 pb-16 lg:pt-44 lg:pb-20 grain relative overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-br from-navy-950 to-navy-800" />
+          <div className="absolute inset-0 aurora-bg" />
           <div className="relative max-w-3xl mx-auto px-6 lg:px-8 text-center">
             <p className="text-xs font-semibold uppercase tracking-widest text-sage-400 mb-4">Legal · Data protection</p>
             <h1 className="font-display text-4xl lg:text-5xl font-light text-white leading-tight text-balance">
@@ -189,7 +189,7 @@ export default function Subprocessors() {
                       <button
                         type="submit"
                         disabled={status === 'submitting' || !email}
-                        className="px-5 py-2.5 text-sm font-medium rounded-xl bg-sage-700 text-white hover:bg-sage-800 transition-colors disabled:bg-stone-300 disabled:cursor-not-allowed shrink-0"
+                        className="px-5 py-2.5 text-sm font-medium rounded-full bg-sage-700 text-white hover:bg-sage-800 transition-colors disabled:bg-stone-300 disabled:cursor-not-allowed shrink-0"
                       >
                         {status === 'submitting' ? 'Subscribing…' : 'Subscribe'}
                       </button>

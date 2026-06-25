@@ -89,7 +89,7 @@ export default function DualVault() {
 
         {/* Hero */}
         <section className="py-20 lg:py-28 grain relative overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-br from-navy-950 via-navy-900 to-navy-800" />
+          <div className="absolute inset-0 aurora-bg" />
           <div className="relative max-w-4xl mx-auto px-6 lg:px-8 text-center reveal">
             <p className="text-xs font-semibold uppercase tracking-[0.22em] text-sage-300 mb-5">Family plan</p>
             <h1 className="font-display text-4xl lg:text-6xl font-light text-white leading-tight text-balance">
@@ -99,10 +99,10 @@ export default function DualVault() {
               Most estate planning tools assume couples share everything. Everstead doesn't. The Family plan gives each person a completely private vault — organised separately, shared only by choice.
             </p>
             <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
-              <Link to="/get-started" className="inline-flex items-center justify-center gap-2 bg-white text-navy-900 px-6 py-3 rounded-xl text-sm font-semibold hover:bg-stone-100 transition-colors">
+              <Link to="/get-started" className="btn-aurora inline-flex items-center justify-center gap-2 text-white px-6 py-3 rounded-full text-sm font-semibold transition-colors">
                 Start your free trial <ArrowRight size={14} />
               </Link>
-              <Link to="/pricing" className="inline-flex items-center justify-center gap-2 border border-white/20 text-white px-6 py-3 rounded-xl text-sm font-semibold hover:bg-white/10 transition-colors">
+              <Link to="/pricing" className="inline-flex items-center justify-center gap-2 border border-white/20 text-white px-6 py-3 rounded-full text-sm font-semibold hover:bg-white/10 transition-colors">
                 See pricing
               </Link>
             </div>
@@ -289,7 +289,7 @@ export default function DualVault() {
         </section>
 
         {/* Pricing CTA */}
-        <section className="py-20 lg:py-28 bg-navy-950">
+        <section className="py-20 lg:py-28 aurora-field aurora-dim relative overflow-hidden">
           <div className="max-w-3xl mx-auto px-6 lg:px-8 text-center reveal">
             <p className="text-xs font-semibold uppercase tracking-[0.2em] text-sage-300 mb-5">Family plan</p>
             <h2 className="font-display text-3xl lg:text-4xl font-light text-white mb-4 text-balance">
@@ -299,10 +299,10 @@ export default function DualVault() {
               One subscription for both of you. Each person gets a full, private vault — accounts, documents, instructions, trusted contacts, and final wishes — kept completely separate unless you choose to share.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center mb-6">
-              <Link to="/get-started" className="inline-flex items-center justify-center gap-2 bg-white text-navy-900 px-6 py-3 rounded-xl text-sm font-semibold hover:bg-stone-100 transition-colors">
+              <Link to="/get-started" className="btn-aurora inline-flex items-center justify-center gap-2 text-white px-6 py-3 rounded-full text-sm font-semibold transition-colors">
                 Start free trial <ArrowRight size={14} />
               </Link>
-              <Link to="/pricing" className="inline-flex items-center justify-center gap-2 border border-white/20 text-white px-6 py-3 rounded-xl text-sm font-semibold hover:bg-white/10 transition-colors">
+              <Link to="/pricing" className="inline-flex items-center justify-center gap-2 border border-white/20 text-white px-6 py-3 rounded-full text-sm font-semibold hover:bg-white/10 transition-colors">
                 Compare all plans
               </Link>
             </div>

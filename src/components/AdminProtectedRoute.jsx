@@ -27,7 +27,7 @@ export default function AdminProtectedRoute({ children }) {
 
   if (profile.role !== 'admin') {
     return (
-      <div className="min-h-screen bg-navy-950 flex items-center justify-center p-6">
+      <div className="min-h-screen aurora-field aurora-dim flex items-center justify-center p-6">
         <div className="bg-white rounded-3xl shadow-2xl w-full max-w-sm p-10 text-center space-y-5">
           <div className="w-14 h-14 rounded-full bg-red-50 text-red-600 flex items-center justify-center mx-auto">
             <Shield size={24} />

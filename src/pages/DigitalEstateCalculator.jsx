@@ -404,7 +404,7 @@ export default function DigitalEstateCalculator() {
 
       {/* ── Hero ── */}
       <section className="relative overflow-hidden grain">
-        <div className="absolute inset-0 bg-gradient-to-br from-navy-950 via-navy-900 to-navy-800" />
+        <div className="absolute inset-0 aurora-bg" />
         <div className="relative max-w-3xl mx-auto px-6 pt-28 pb-16 lg:pt-32 lg:pb-20 text-center">
           <p className="text-xs font-semibold uppercase tracking-[0.22em] text-sage-300 mb-4">
             Free tool — no sign-up needed
@@ -420,7 +420,7 @@ export default function DigitalEstateCalculator() {
       </section>
 
       {/* ── Main content ── */}
-      <section className="max-w-5xl mx-auto px-4 sm:px-6 pb-24 -mt-6">
+      <section className="max-w-5xl mx-auto px-4 sm:px-6 pb-24 pt-8">
 
         <div className="grid lg:grid-cols-[1fr_360px] gap-6 items-start">
 
@@ -556,7 +556,7 @@ export default function DigitalEstateCalculator() {
                 <button
                   onClick={handleShare}
                   disabled={!hasAnyValue}
-                  className="w-full flex items-center justify-center gap-2 rounded-xl border-2 border-navy-200 bg-navy-50 hover:bg-navy-100 hover:border-navy-300 text-navy-800 text-sm font-medium px-4 py-3 transition-colors duration-150 disabled:opacity-40 disabled:cursor-not-allowed focus:outline-none focus-visible:ring-2 focus-visible:ring-navy-700 focus-visible:ring-offset-2"
+                  className="w-full flex items-center justify-center gap-2 rounded-full border-2 border-navy-200 bg-navy-50 hover:bg-navy-100 hover:border-navy-300 text-navy-800 text-sm font-medium px-4 py-3 transition-colors duration-150 disabled:opacity-40 disabled:cursor-not-allowed focus:outline-none focus-visible:ring-2 focus-visible:ring-navy-700 focus-visible:ring-offset-2"
                   aria-label="Copy a shareable link with your result total to the clipboard"
                 >
                   <Copy size={15} />
@@ -582,7 +582,7 @@ export default function DigitalEstateCalculator() {
             )}
 
             {/* CTA card */}
-            <div className="rounded-2xl bg-navy-950 border border-navy-800 px-6 py-7 text-center">
+            <div className="aurora-field aurora-dim rounded-2xl border border-navy-800 px-6 py-7 text-center">
               <p className="font-display text-xl font-light text-white leading-snug mb-2">
                 Now make it official
               </p>
@@ -591,7 +591,7 @@ export default function DigitalEstateCalculator() {
               </p>
               <Link
                 to="/get-started"
-                className="inline-flex items-center gap-2 bg-white hover:bg-stone-100 text-navy-950 rounded-xl px-5 py-3 text-sm font-semibold transition-colors duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-navy-950"
+                className="btn-aurora inline-flex items-center gap-2 rounded-full px-5 py-3 text-sm font-semibold transition-colors duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-navy-950"
               >
                 Start your estate plan — free
                 <ArrowRight size={15} />

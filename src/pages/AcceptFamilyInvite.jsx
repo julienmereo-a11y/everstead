@@ -191,7 +191,7 @@ export default function AcceptFamilyInvite() {
           {/* FOUND — show invitation details */}
           {state === 'found' && membership && (
             <>
-              <div className="bg-navy-950 p-7">
+              <div className="aurora-field aurora-dim p-7">
                 <p className="font-display text-xl font-light text-white leading-snug">
                   You've been invited to Everstead
                 </p>
@@ -225,7 +225,7 @@ export default function AcceptFamilyInvite() {
                     <button
                       onClick={handleLoggedInAccept}
                       disabled={loading}
-                      className="w-full bg-navy-800 text-white font-semibold text-sm py-3.5 rounded-lg hover:bg-navy-700 transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
+                      className="btn-aurora w-full text-white font-semibold text-sm py-3.5 rounded-full transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
                     >
                       {loading ? <Loader2 size={15} className="animate-spin" /> : <ArrowRight size={15} />}
                       Accept invitation
@@ -301,7 +301,7 @@ export default function AcceptFamilyInvite() {
                       <button
                         type="submit"
                         disabled={loading || !form.fullName.trim() || form.password.length < 8}
-                        className="w-full bg-navy-800 text-white font-semibold text-sm py-3.5 rounded-lg hover:bg-navy-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                        className="btn-aurora w-full text-white font-semibold text-sm py-3.5 rounded-full transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                       >
                         {loading ? (
                           <><Loader2 size={15} className="animate-spin" />Creating your vault…</>
@@ -353,7 +353,7 @@ export default function AcceptFamilyInvite() {
               </p>
               <Link
                 to="/dashboard?welcome=family"
-                className="inline-flex items-center gap-2 rounded-lg bg-navy-800 px-5 py-3 text-sm text-white font-medium hover:bg-navy-700 transition-colors"
+                className="inline-flex items-center gap-2 rounded-full bg-navy-800 px-5 py-3 text-sm text-white font-medium hover:bg-navy-700 transition-colors"
               >
                 Go to your dashboard <ArrowRight size={14} />
               </Link>
@@ -372,7 +372,7 @@ export default function AcceptFamilyInvite() {
               </p>
               <Link
                 to="/login"
-                className="inline-flex items-center gap-2 rounded-lg bg-navy-800 px-5 py-3 text-sm text-white font-medium hover:bg-navy-700 transition-colors"
+                className="inline-flex items-center gap-2 rounded-full bg-navy-800 px-5 py-3 text-sm text-white font-medium hover:bg-navy-700 transition-colors"
               >
                 Sign in <ArrowRight size={14} />
               </Link>

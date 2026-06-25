@@ -110,7 +110,7 @@ export default function AdminLogin() {
         <title>Admin — Everstead</title>
         <meta name="robots" content="noindex, nofollow" />
       </Helmet>
-      <div className="min-h-screen bg-navy-950 flex items-center justify-center p-6">
+      <div className="min-h-screen aurora-field aurora-dim flex items-center justify-center p-6">
         <div className="w-full max-w-sm">
 
           {/* Logo + label */}
@@ -170,7 +170,7 @@ export default function AdminLogin() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full bg-sage-600 hover:bg-sage-500 text-white font-semibold text-sm py-3 rounded-xl transition-colors disabled:opacity-60 flex items-center justify-center gap-2"
+                  className="btn-aurora w-full text-white font-semibold text-sm py-3 rounded-full transition-colors disabled:opacity-60 flex items-center justify-center gap-2"
                 >
                   {loading && <Loader2 size={15} className="animate-spin" />}
                   {loading ? 'Checking…' : 'Continue'}
@@ -209,7 +209,7 @@ export default function AdminLogin() {
                 <button
                   type="submit"
                   disabled={loading || code.length < 6}
-                  className="w-full bg-sage-600 hover:bg-sage-500 text-white font-semibold text-sm py-3 rounded-xl transition-colors disabled:opacity-60 flex items-center justify-center gap-2"
+                  className="btn-aurora w-full text-white font-semibold text-sm py-3 rounded-full transition-colors disabled:opacity-60 flex items-center justify-center gap-2"
                 >
                   {loading && <Loader2 size={15} className="animate-spin" />}
                   {loading ? 'Verifying…' : 'Sign in to admin panel'}

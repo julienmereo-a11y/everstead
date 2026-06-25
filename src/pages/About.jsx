@@ -36,10 +36,7 @@ export default function About() {
 
         {/* ── Hero ── */}
         <section className="relative py-24 lg:py-36 overflow-hidden grain">
-          <div className="absolute inset-0 bg-gradient-to-br from-navy-950 via-navy-900 to-navy-800" />
-          {/* Sage glow */}
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[480px] h-[480px] rounded-full pointer-events-none"
-            style={{ background: 'radial-gradient(circle, rgba(76,125,71,0.10) 0%, transparent 70%)' }} />
+          <div className="absolute inset-0 aurora-bg" />
           <div className="absolute -top-32 -right-32 w-[600px] h-[600px] rounded-full border border-white/5" />
           <div className="absolute -bottom-24 -left-24 w-[500px] h-[500px] rounded-full border border-white/5" />
 
@@ -56,13 +53,13 @@ export default function About() {
             <div className="mt-10 flex flex-wrap gap-4 animate-fade-up" style={{ animationDelay: '200ms' }}>
               <Link
                 to="/get-started"
-                className="inline-flex items-center gap-2 bg-sage-500 hover:bg-sage-400 text-white font-semibold text-sm px-6 py-3.5 rounded-lg transition-colors"
+                className="btn-aurora inline-flex items-center gap-2 text-white font-semibold text-sm px-6 py-3.5 rounded-full transition-colors"
               >
                 Start organising <ArrowRight size={15} />
               </Link>
               <Link
                 to="/how-it-works"
-                className="inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 text-white font-medium text-sm px-6 py-3.5 rounded-lg transition-colors border border-white/10"
+                className="inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 text-white font-medium text-sm px-6 py-3.5 rounded-full transition-colors border border-white/10"
               >
                 See how it works
               </Link>
@@ -258,10 +255,8 @@ export default function About() {
         </section>
 
         {/* ── CTA ── */}
-        <section className="py-24 lg:py-32 bg-navy-950 grain relative overflow-hidden">
+        <section className="py-24 lg:py-32 aurora-field aurora-dim relative overflow-hidden">
           <div className="absolute -top-40 -right-40 w-[700px] h-[700px] rounded-full border border-white/5" />
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full pointer-events-none"
-            style={{ background: 'radial-gradient(circle, rgba(76,125,71,0.08) 0%, transparent 70%)' }} />
           <div className="relative max-w-3xl mx-auto px-6 lg:px-8 text-center reveal">
             <p className="text-xs font-semibold uppercase tracking-widest text-sage-400 mb-6">Ready to start?</p>
             <h2 className="font-display text-4xl lg:text-5xl font-light text-white mb-6 text-balance">
@@ -273,13 +268,13 @@ export default function About() {
             <div className="flex flex-wrap gap-4 justify-center">
               <Link
                 to="/get-started"
-                className="inline-flex items-center gap-2 bg-sage-500 hover:bg-sage-400 text-white font-semibold text-sm px-7 py-3.5 rounded-lg transition-colors"
+                className="btn-aurora inline-flex items-center gap-2 text-white font-semibold text-sm px-7 py-3.5 rounded-full transition-colors"
               >
                 Start Your Everstead <ArrowRight size={15} />
               </Link>
               <Link
                 to="/contact"
-                className="inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 text-white font-medium text-sm px-7 py-3.5 rounded-lg transition-colors border border-white/10"
+                className="inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 text-white font-medium text-sm px-7 py-3.5 rounded-full transition-colors border border-white/10"
               >
                 Talk to us
               </Link>

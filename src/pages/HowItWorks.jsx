@@ -188,7 +188,7 @@ export default function HowItWorks() {
 
       {/* ── HERO ──────────────────────────────────────────────────── */}
       <section className="py-20 lg:py-28 grain relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-navy-950 to-navy-800" />
+        <div className="absolute inset-0 aurora-bg" />
         <div className="relative max-w-4xl mx-auto px-6 lg:px-8 text-center">
           <p className="text-xs font-semibold uppercase tracking-widest text-sage-400 mb-5 animate-fade-in">
             How it works
@@ -348,9 +348,7 @@ export default function HowItWorks() {
       })}
 
       {/* ── WHAT YOUR FAMILY SEES ─────────────────────────────────── */}
-      <section className="py-24 lg:py-32 bg-navy-950 grain relative overflow-hidden">
-        <div className="absolute inset-0 opacity-5"
-          style={{ backgroundImage: 'radial-gradient(circle at 20% 50%, #6ea6d8, transparent 60%)' }} />
+      <section className="py-24 lg:py-32 aurora-field aurora-dim relative overflow-hidden">
         <div className="relative max-w-6xl mx-auto px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
             <div className="reveal">
@@ -477,9 +475,7 @@ export default function HowItWorks() {
       </section>
 
       {/* ── CTA ───────────────────────────────────────────────────── */}
-      <section className="py-24 lg:py-32 bg-gradient-to-br from-navy-900 to-navy-950 grain relative overflow-hidden">
-        <div className="absolute inset-0 opacity-10"
-          style={{ backgroundImage: 'radial-gradient(circle at 50% 0%, #6ea6d8, transparent 60%)' }} />
+      <section className="py-24 lg:py-32 aurora-field aurora-dim relative overflow-hidden">
         <div className="relative max-w-3xl mx-auto px-6 text-center reveal">
           <div className="flex justify-center gap-1 mb-6">
             {[...Array(5)].map((_, i) => <Star key={i} size={16} className="text-amber-400 fill-amber-400" />)}
@@ -493,16 +489,13 @@ export default function HowItWorks() {
           <div className="flex flex-wrap gap-3 justify-center">
             <Link
               to="/get-started"
-              className="inline-flex items-center gap-2 font-semibold text-sm px-7 py-3.5 rounded-lg transition-colors"
-              style={{ backgroundColor: '#4c7d47', color: '#ffffff' }}
-              onMouseEnter={e => e.currentTarget.style.backgroundColor = '#3d6b3a'}
-              onMouseLeave={e => e.currentTarget.style.backgroundColor = '#4c7d47'}
+              className="btn-aurora inline-flex items-center gap-2 font-semibold text-sm px-7 py-3.5 rounded-full"
             >
               Start Your Everstead <ArrowRight size={15} />
             </Link>
             <Link
               to="/features"
-              className="inline-flex items-center gap-2 bg-white/10 text-white font-medium text-sm px-7 py-3.5 rounded-lg border border-white/20 hover:bg-white/20 transition-colors"
+              className="inline-flex items-center gap-2 bg-white/10 text-white font-medium text-sm px-7 py-3.5 rounded-full border border-white/20 hover:bg-white/20 transition-colors"
             >
               Explore all features
             </Link>

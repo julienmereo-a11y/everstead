@@ -253,7 +253,7 @@ export default function Compare() {
 
         {/* Hero — extends under the fixed nav */}
         <section className="pt-44 pb-20 lg:pt-52 lg:pb-28 grain relative overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-br from-navy-950 via-navy-900 to-navy-800" />
+          <div className="absolute inset-0 aurora-bg" />
           <div className="relative max-w-4xl mx-auto px-6 lg:px-8 text-center reveal">
             <p className="text-xs font-semibold uppercase tracking-[0.22em] text-sage-300 mb-5">Everstead vs {name}</p>
             <h1 className="font-display text-4xl lg:text-6xl font-light text-white leading-tight text-balance">
@@ -263,10 +263,10 @@ export default function Compare() {
               {subhead}
             </p>
             <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
-              <Link to="/get-started" className="inline-flex items-center justify-center gap-2 bg-white text-navy-900 px-6 py-3 rounded-xl text-sm font-semibold hover:bg-stone-100 transition-colors">
+              <Link to="/get-started" className="btn-aurora inline-flex items-center justify-center gap-2 text-white px-6 py-3 rounded-full text-sm font-semibold transition-colors">
                 {cta} <ArrowRight size={14} />
               </Link>
-              <Link to="/pricing" className="inline-flex items-center justify-center gap-2 border border-white/20 text-white px-6 py-3 rounded-xl text-sm font-semibold hover:bg-white/10 transition-colors">
+              <Link to="/pricing" className="inline-flex items-center justify-center gap-2 border border-white/20 text-white px-6 py-3 rounded-full text-sm font-semibold hover:bg-white/10 transition-colors">
                 See pricing
               </Link>
             </div>
@@ -376,14 +376,14 @@ export default function Compare() {
             </div>
 
             {/* CTA */}
-            <div className="reveal rounded-2xl bg-navy-950 px-10 py-10 text-center">
+            <div className="reveal rounded-2xl aurora-field aurora-dim px-10 py-10 text-center">
               <h2 className="font-display text-2xl font-light text-white mb-3">Try Everstead free for 14 days</h2>
               <p className="text-stone-400 text-sm leading-relaxed mb-6 max-w-md mx-auto">
                 No commitment. Full access. Cancel before the trial ends and pay nothing.
               </p>
               <Link
                 to="/get-started"
-                className="inline-flex items-center gap-2 bg-white text-navy-900 px-6 py-3 rounded-xl text-sm font-semibold hover:bg-stone-100 transition-colors"
+                className="btn-aurora inline-flex items-center gap-2 text-white px-6 py-3 rounded-full text-sm font-semibold transition-colors"
               >
                 {cta} <ArrowRight size={14} />
               </Link>
@@ -422,7 +422,7 @@ function CompareIndex() {
       <div className="bg-stone-50 min-h-screen">
         {/* Hero */}
         <section className="pt-44 pb-16 lg:pt-52 lg:pb-20 grain relative overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-br from-navy-950 via-navy-900 to-navy-800" />
+          <div className="absolute inset-0 aurora-bg" />
           <div className="relative max-w-3xl mx-auto px-6 lg:px-8 text-center reveal">
             <p className="text-xs font-semibold uppercase tracking-[0.22em] text-sage-300 mb-5">How we compare</p>
             <h1 className="font-display text-4xl lg:text-6xl font-light text-white leading-tight text-balance">
@@ -459,14 +459,14 @@ function CompareIndex() {
             </div>
 
             {/* CTA */}
-            <div className="reveal mt-14 rounded-2xl bg-navy-950 px-8 py-9 text-center">
+            <div className="reveal mt-14 rounded-2xl aurora-field aurora-dim px-8 py-9 text-center">
               <h2 className="font-display text-2xl font-light text-white mb-3">The simplest comparison is trying it.</h2>
               <p className="text-stone-400 text-sm leading-relaxed mb-6 max-w-md mx-auto">
                 14-day free trial. Full access. Cancel before it ends and pay nothing.
               </p>
               <Link
                 to="/get-started"
-                className="inline-flex items-center gap-2 bg-white text-navy-900 px-6 py-3 rounded-xl text-sm font-semibold hover:bg-stone-100 transition-colors"
+                className="btn-aurora inline-flex items-center gap-2 text-white px-6 py-3 rounded-full text-sm font-semibold transition-colors"
               >
                 Start your free trial <ArrowRight size={14} />
               </Link>

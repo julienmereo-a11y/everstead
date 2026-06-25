@@ -147,7 +147,7 @@ export default function ForAdvisors() {
         {/* Hero — extends under the fixed nav (no top padding on wrapper);
             internal pt-44 lifts the content below the 96px nav strip */}
         <section className="pt-44 pb-20 lg:pt-52 lg:pb-28 grain relative overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-br from-navy-950 via-navy-900 to-navy-800" />
+          <div className="absolute inset-0 aurora-bg" />
           <div className="relative max-w-4xl mx-auto px-6 lg:px-8 text-center reveal">
             <p className="text-xs font-semibold uppercase tracking-[0.22em] text-sage-300 mb-5">For advisers</p>
             <h1 className="font-display text-4xl lg:text-6xl font-light text-white leading-tight text-balance">
@@ -157,10 +157,10 @@ export default function ForAdvisors() {
               Everstead gives advisers a co-branded client vault — with readiness tracking, document access, and a portal your clients open between every meeting.
             </p>
             <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
-              <Link to="/book-demo" className="inline-flex items-center justify-center gap-2 bg-white text-navy-900 px-6 py-3 rounded-xl text-sm font-semibold hover:bg-stone-100 transition-colors">
+              <Link to="/book-demo" className="btn-aurora inline-flex items-center justify-center gap-2 text-white px-6 py-3 rounded-full text-sm font-semibold transition-transform hover:-translate-y-0.5">
                 Book a demo <ArrowRight size={14} />
               </Link>
-              <a href="#benefits" onClick={scrollToBenefits} className="inline-flex items-center justify-center gap-2 border border-white/20 text-white px-6 py-3 rounded-xl text-sm font-semibold hover:bg-white/10 transition-colors">
+              <a href="#benefits" onClick={scrollToBenefits} className="inline-flex items-center justify-center gap-2 border border-white/20 text-white px-6 py-3 rounded-full text-sm font-semibold hover:bg-white/10 transition-colors">
                 See how it works
               </a>
             </div>
@@ -331,7 +331,7 @@ export default function ForAdvisors() {
             <p className="text-stone-500 text-sm leading-relaxed mb-8">
               Everstead is in early access. We're working directly with a small cohort of IFAs, solicitors, and estate planners to shape how the adviser portal develops. If you work with clients on estate or later life planning, we'd like to hear from you.
             </p>
-            <Link to="/book-demo" className="inline-flex items-center justify-center gap-2 bg-navy-900 text-white px-6 py-3 rounded-xl text-sm font-semibold hover:bg-navy-800 transition-colors">
+            <Link to="/book-demo" className="inline-flex items-center justify-center gap-2 btn-aurora text-white px-6 py-3 rounded-full text-sm font-semibold transition-transform hover:-translate-y-0.5">
               Book a 20-minute call <ArrowRight size={14} />
             </Link>
           </div>
@@ -373,7 +373,7 @@ export default function ForAdvisors() {
                 </p>
                 <Link
                   to="/book-demo"
-                  className="w-full inline-flex items-center justify-center gap-2 bg-navy-900 text-white px-6 py-3 rounded-xl text-sm font-semibold hover:bg-navy-800 transition-colors"
+                  className="w-full inline-flex items-center justify-center gap-2 btn-aurora text-white px-6 py-3 rounded-full text-sm font-semibold transition-transform hover:-translate-y-0.5"
                 >
                   Book a 20-minute demo <ArrowRight size={14} />
                 </Link>
@@ -392,10 +392,10 @@ export default function ForAdvisors() {
               Estate planning software built around advisers, not just individuals. Give your clients a vault they'll return to — and a tool that makes your practice more efficient.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link to="/book-demo" className="inline-flex items-center justify-center gap-2 bg-navy-900 text-white px-6 py-3 rounded-xl text-sm font-semibold hover:bg-navy-800 transition-colors">
+              <Link to="/book-demo" className="inline-flex items-center justify-center gap-2 btn-aurora text-white px-6 py-3 rounded-full text-sm font-semibold transition-transform hover:-translate-y-0.5">
                 Book a demo <ArrowRight size={14} />
               </Link>
-              <Link to="/contact" className="inline-flex items-center justify-center gap-2 border border-stone-200 text-navy-900 px-6 py-3 rounded-xl text-sm font-semibold hover:bg-stone-50 transition-colors">
+              <Link to="/contact" className="inline-flex items-center justify-center gap-2 border border-stone-200 text-navy-900 px-6 py-3 rounded-full text-sm font-semibold hover:bg-stone-50 transition-colors">
                 Send us a message
               </Link>
             </div>
@@ -434,7 +434,7 @@ function AdviserLeadMagnetCard({ source, icon: Icon, label, title, summary, butt
       ) : (
         <button
           onClick={() => setOpen(true)}
-          className="mt-auto inline-flex items-center justify-center gap-2 bg-navy-900 text-white text-sm font-semibold px-4 py-2.5 rounded-xl hover:bg-navy-800 transition-colors"
+          className="btn-aurora mt-auto inline-flex items-center justify-center gap-2 text-white text-sm font-semibold px-4 py-2.5 rounded-full transition-transform hover:-translate-y-0.5"
         >
           {buttonLabel} <ArrowRight size={14} />
         </button>

@@ -71,7 +71,7 @@ export default function Privacy() {
     <div className="bg-stone-50 min-h-screen">
       {/* Header */}
       <section className="pt-40 pb-16 lg:pt-44 lg:pb-20 grain relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-navy-950 to-navy-800" />
+        <div className="absolute inset-0 aurora-bg" />
         <div className="relative max-w-3xl mx-auto px-6 lg:px-8 text-center">
           <p className="text-xs font-semibold uppercase tracking-widest text-sage-400 mb-4 animate-fade-in">Legal</p>
           <h1 className="font-display text-4xl lg:text-5xl font-light text-white leading-tight text-balance animate-fade-up">

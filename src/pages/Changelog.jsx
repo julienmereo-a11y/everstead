@@ -162,7 +162,7 @@ export default function Changelog() {
 
       <div className="bg-stone-50 pt-24 min-h-screen">
         <section className="py-16 lg:py-20 grain relative overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-br from-navy-950 to-navy-800" />
+          <div className="absolute inset-0 aurora-bg" />
           <div className="relative max-w-3xl mx-auto px-6 lg:px-8 text-center">
             <p className="text-xs font-semibold uppercase tracking-widest text-sage-400 mb-4 animate-fade-in">What's new</p>
             <h1 className="font-display text-4xl lg:text-5xl font-light text-white leading-tight text-balance animate-fade-up">
@@ -204,14 +204,14 @@ export default function Changelog() {
               </div>
             </div>
 
-            <div className="reveal mt-20 rounded-2xl bg-navy-950 px-8 py-8 text-center">
+            <div className="reveal mt-20 rounded-2xl aurora-field aurora-dim px-8 py-8 text-center">
               <p className="text-white font-display text-xl font-light mb-2">Something you'd like to see?</p>
               <p className="text-stone-400 text-sm leading-relaxed mb-5 max-w-sm mx-auto">
                 Everstead is built alongside its members. If there's a feature, integration, or improvement you'd find valuable, tell us.
               </p>
               <Link
                 to="/contact"
-                className="inline-flex items-center gap-2 bg-white text-navy-900 px-5 py-2.5 rounded-xl text-sm font-semibold hover:bg-stone-100 transition-colors"
+                className="inline-flex items-center gap-2 bg-white text-navy-900 px-5 py-2.5 rounded-full text-sm font-semibold hover:bg-stone-100 transition-colors"
               >
                 Share feedback
               </Link>

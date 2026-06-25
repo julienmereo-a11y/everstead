@@ -208,7 +208,7 @@ export default function SetupMFA() {
 
               <button
                 onClick={() => { setStep('verify'); setTimeout(() => digitRefs.current[0]?.focus(), 50) }}
-                className="w-full bg-navy-800 text-white font-semibold text-sm py-3 rounded-lg hover:bg-navy-700 transition-colors flex items-center justify-center gap-2"
+                className="btn-aurora w-full text-white font-semibold text-sm py-3 rounded-full transition-colors flex items-center justify-center gap-2"
               >
                 I've scanned it — continue <ArrowRight size={16} />
               </button>
@@ -256,7 +256,7 @@ export default function SetupMFA() {
                 <button
                   type="submit"
                   disabled={loading || code.length < 6}
-                  className="w-full bg-navy-800 text-white font-semibold text-sm py-3 rounded-lg hover:bg-navy-700 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+                  className="btn-aurora w-full text-white font-semibold text-sm py-3 rounded-full transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
                 >
                   {loading ? <><Loader2 size={16} className="animate-spin" /> Verifying…</> : <>Confirm &amp; continue <ArrowRight size={16} /></>}
                 </button>

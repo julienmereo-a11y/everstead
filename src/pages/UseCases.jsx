@@ -283,7 +283,7 @@ function UseCasePage({ slug }) {
 
       {/* Hero */}
       <section className="py-20 lg:py-28 grain relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-navy-950 to-navy-800" />
+        <div className="absolute inset-0 aurora-bg" />
         <div className="relative max-w-4xl mx-auto px-6 lg:px-8 text-center">
           <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-white/10 mb-6 animate-fade-in">
             <Icon size={28} className="text-white" />
@@ -381,13 +381,13 @@ function UseCasePage({ slug }) {
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <Link
               to={ctaHref || '/get-started'}
-              className="inline-flex items-center justify-center gap-2 bg-navy-800 text-white font-semibold text-sm px-7 py-3.5 rounded-lg hover:bg-navy-700 transition-colors"
+              className="btn-aurora inline-flex items-center justify-center gap-2 font-semibold text-sm px-7 py-3.5 rounded-full"
             >
               {ctaText} <ArrowRight size={15} />
             </Link>
             <Link
               to="/how-it-works"
-              className="inline-flex items-center justify-center gap-2 bg-white text-navy-800 font-semibold text-sm px-7 py-3.5 rounded-lg border border-stone-200 hover:border-navy-300 hover:bg-stone-50 transition-colors"
+              className="inline-flex items-center justify-center gap-2 bg-white text-navy-800 font-semibold text-sm px-7 py-3.5 rounded-full border border-stone-200 hover:border-navy-300 hover:bg-stone-50 transition-colors"
             >
               See how it works
             </Link>
@@ -448,7 +448,7 @@ function UseCasesIndex() {
 
       {/* Hero */}
       <section className="py-20 lg:py-28 grain relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-navy-950 to-navy-800" />
+        <div className="absolute inset-0 aurora-bg" />
         <div className="relative max-w-4xl mx-auto px-6 lg:px-8 text-center">
           <p className="text-xs font-semibold uppercase tracking-widest text-sage-400 mb-5 animate-fade-in">Who it's for</p>
           <h1 className="font-display text-5xl lg:text-6xl font-light text-white leading-tight text-balance animate-fade-up mb-6">
@@ -503,7 +503,7 @@ function UseCasesIndex() {
             })}
 
             {/* CTA card */}
-            <div className="reveal bg-gradient-to-br from-navy-900 to-navy-800 rounded-2xl p-7 flex flex-col justify-between">
+            <div className="reveal aurora-field aurora-dim rounded-2xl p-7 flex flex-col justify-between">
               <div>
                 <p className="text-xs font-semibold uppercase tracking-widest text-sage-400 mb-3">Not sure where to start?</p>
                 <h3 className="font-display text-xl font-light text-white mb-3">
@@ -515,7 +515,7 @@ function UseCasesIndex() {
               </div>
               <Link
                 to="/get-started"
-                className="inline-flex items-center gap-2 bg-white text-navy-900 font-semibold text-sm px-5 py-2.5 rounded-lg hover:bg-stone-50 transition-colors mt-7 self-start"
+                className="btn-aurora inline-flex items-center gap-2 font-semibold text-sm px-5 py-2.5 rounded-full mt-7 self-start"
               >
                 Start Your Everstead <ArrowRight size={14} />
               </Link>
@@ -572,10 +572,10 @@ function UseCasesIndex() {
             14-day free trial. Set up in about 45 minutes. No charge until your trial ends.
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
-            <Link to="/get-started" className="inline-flex items-center justify-center gap-2 bg-navy-800 text-white font-semibold text-sm px-7 py-3.5 rounded-lg hover:bg-navy-700 transition-colors">
+            <Link to="/get-started" className="btn-aurora inline-flex items-center justify-center gap-2 font-semibold text-sm px-7 py-3.5 rounded-full">
               Start Your Everstead <ArrowRight size={15} />
             </Link>
-            <Link to="/book-demo" className="inline-flex items-center justify-center gap-2 bg-white text-navy-800 font-semibold text-sm px-7 py-3.5 rounded-lg border border-stone-200 hover:border-navy-300 hover:bg-stone-50 transition-colors">
+            <Link to="/book-demo" className="inline-flex items-center justify-center gap-2 bg-white text-navy-800 font-semibold text-sm px-7 py-3.5 rounded-full border border-stone-200 hover:border-navy-300 hover:bg-stone-50 transition-colors">
               Book a demo
             </Link>
           </div>

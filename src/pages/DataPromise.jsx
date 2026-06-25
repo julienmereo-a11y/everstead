@@ -61,7 +61,7 @@ export default function DataPromise() {
 
         {/* ── Hero — extends under the fixed nav ── */}
         <section className="pt-44 pb-20 lg:pt-52 lg:pb-28 grain relative overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-br from-navy-950 via-navy-900 to-navy-800" />
+          <div className="absolute inset-0 aurora-bg" />
           <div className="relative max-w-3xl mx-auto px-6 text-center">
             <p className="reveal text-xs font-semibold uppercase tracking-[0.22em] text-sage-300 mb-5">
               Data Promise
@@ -136,7 +136,7 @@ export default function DataPromise() {
             <div className="reveal reveal-delay-2 mt-10 flex flex-col sm:flex-row items-center gap-4">
               <Link
                 to="/dashboard?tab=settings"
-                className="inline-flex items-center gap-2 bg-navy-800 text-white text-sm font-semibold px-5 py-3 rounded-xl hover:bg-navy-700 transition-colors"
+                className="inline-flex items-center gap-2 bg-navy-800 text-white text-sm font-semibold px-5 py-3 rounded-full hover:bg-navy-700 transition-colors"
               >
                 <Download size={15} /> Export my data
               </Link>

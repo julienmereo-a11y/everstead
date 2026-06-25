@@ -156,7 +156,7 @@ export default function RedeemGift() {
 
         {/* ── HERO ── */}
         <section className="py-16 lg:py-20 grain relative overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-br from-navy-950 to-navy-800" />
+          <div className="absolute inset-0 aurora-bg" />
           <div className="relative max-w-3xl mx-auto px-6 text-center">
             <p className="text-xs font-semibold uppercase tracking-widest text-sage-400 mb-4">You've received a gift</p>
             <h1 className="font-display text-4xl lg:text-5xl font-light text-white leading-tight text-balance">
@@ -289,7 +289,7 @@ export default function RedeemGift() {
                   <button
                     type="submit"
                     disabled={loading || !isFormValid}
-                    className="w-full bg-navy-800 text-white font-semibold text-sm py-3.5 rounded-lg hover:bg-navy-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                    className="btn-aurora w-full text-white font-semibold text-sm py-3.5 rounded-full transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                   >
                     {loading ? (
                       <><Loader2 size={15} className="animate-spin" />Activating your gift…</>

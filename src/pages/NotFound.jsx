@@ -13,12 +13,7 @@ export default function NotFound() {
 
       <div className="min-h-screen grain relative overflow-hidden flex flex-col">
         {/* Dark background */}
-        <div className="absolute inset-0 bg-gradient-to-br from-navy-950 via-navy-900 to-navy-800" />
-        {/* Sage glow */}
-        <div
-          className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full pointer-events-none"
-          style={{ background: 'radial-gradient(circle, rgba(76,125,71,0.10) 0%, transparent 70%)' }}
-        />
+        <div className="absolute inset-0 aurora-bg" />
         <div className="absolute -top-40 -right-40 w-[700px] h-[700px] rounded-full border border-white/5" />
         <div className="absolute -bottom-32 -left-32 w-[500px] h-[500px] rounded-full border border-white/5" />
 
@@ -59,10 +54,7 @@ export default function NotFound() {
             {/* Primary CTA */}
             <Link
               to="/"
-              className="inline-flex items-center gap-2 text-white font-semibold text-sm px-7 py-3.5 rounded-xl transition-colors mb-12"
-              style={{ backgroundColor: '#4c7d47' }}
-              onMouseEnter={e => e.currentTarget.style.backgroundColor = '#3d6b3a'}
-              onMouseLeave={e => e.currentTarget.style.backgroundColor = '#4c7d47'}
+              className="btn-aurora inline-flex items-center gap-2 text-white font-semibold text-sm px-7 py-3.5 rounded-full mb-12"
             >
               <Home size={15} />
               Back to home

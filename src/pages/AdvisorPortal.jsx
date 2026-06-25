@@ -1969,7 +1969,7 @@ export default function AdvisorPortal() {
       )}
 
       {/* ── Top bar ──────────────────────────────── */}
-      <header className="bg-navy-950 border-b border-navy-800">
+      <header className="border-b border-navy-800" style={{ background: 'linear-gradient(100deg, #0d1628 0%, #1d3052 38%, #2a2a55 70%, #18301f 100%)' }}>
         <div className="max-w-screen-2xl mx-auto px-6 py-4 flex items-center justify-between gap-4">
           <div className="flex items-center gap-4">
             <Link to="/">

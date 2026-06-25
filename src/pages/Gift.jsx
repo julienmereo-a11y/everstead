@@ -160,7 +160,7 @@ function GiftPaymentForm({ plan, years, gifterName, gifterEmail, recipientName, 
       <button
         type="submit"
         disabled={!stripe || loading}
-        className="w-full bg-navy-800 text-white font-semibold text-sm py-3.5 rounded-lg hover:bg-navy-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+        className="btn-aurora w-full text-white font-semibold text-sm py-3.5 rounded-full transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
       >
         {loading ? (
           <><Loader2 size={15} className="animate-spin" />Processing…</>
@@ -289,7 +289,7 @@ export default function Gift() {
 
         {/* ── HERO ── */}
         <section className="pt-32 pb-16 lg:pt-40 lg:pb-20 grain relative overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-br from-navy-950 to-navy-800" />
+          <div className="absolute inset-0 aurora-bg" />
           <div className="relative max-w-3xl mx-auto px-6 text-center">
             <p className="text-xs font-semibold uppercase tracking-widest text-sage-400 mb-4">Gift an Everstead plan</p>
             <h1 className="font-display text-4xl lg:text-5xl font-light text-white leading-tight text-balance">
@@ -418,7 +418,7 @@ export default function Gift() {
 
                 <button
                   onClick={handleContinueToDetails}
-                  className="w-full flex items-center justify-center gap-2 bg-navy-800 text-white font-semibold text-sm px-8 py-3.5 rounded-lg hover:bg-navy-700 transition-colors"
+                  className="btn-aurora w-full flex items-center justify-center gap-2 text-white font-semibold text-sm px-8 py-3.5 rounded-full transition-transform hover:-translate-y-0.5"
                 >
                   Continue <ArrowRight size={16} />
                 </button>
@@ -533,7 +533,7 @@ export default function Gift() {
                   <button
                     type="submit"
                     disabled={loading || !step2Valid}
-                    className="w-full bg-navy-800 text-white font-semibold text-sm py-3.5 rounded-lg hover:bg-navy-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                    className="btn-aurora w-full text-white font-semibold text-sm py-3.5 rounded-full transition-transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                   >
                     {loading ? (
                       <><Loader2 size={15} className="animate-spin" />Setting up…</>
@@ -614,7 +614,7 @@ export default function Gift() {
                   <p className="text-xs text-stone-500 mb-4 leading-relaxed">Start your own Everstead account and get 14 days free.</p>
                   <Link
                     to="/get-started"
-                    className="inline-flex items-center gap-2 bg-navy-800 text-white font-semibold text-sm px-5 py-2.5 rounded-lg hover:bg-navy-700 transition-colors"
+                    className="btn-aurora inline-flex items-center gap-2 text-white font-semibold text-sm px-5 py-2.5 rounded-full transition-transform hover:-translate-y-0.5"
                   >
                     Start your free trial <ArrowRight size={14} />
                   </Link>

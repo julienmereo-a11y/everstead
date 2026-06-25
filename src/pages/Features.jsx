@@ -269,7 +269,7 @@ export default function Features() {
 
       {/* ── Hero ───────────────────────────────────────────────────────── */}
       <section className="py-24 lg:py-32 grain relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-navy-950 via-navy-800 to-navy-700" />
+        <div className="absolute inset-0 aurora-bg" />
         <div className="relative max-w-4xl mx-auto px-6 text-center">
           <p className="text-xs font-semibold uppercase tracking-widest text-sage-400 mb-5">Features</p>
           <h1 className="font-display text-5xl lg:text-6xl font-light text-white leading-tight text-balance">
@@ -281,14 +281,11 @@ export default function Features() {
           <div className="mt-10 flex flex-wrap gap-3 justify-center">
             <Link
               to="/get-started"
-              className="inline-flex items-center gap-2 font-semibold text-sm px-6 py-3 rounded-lg transition-colors"
-              style={{ backgroundColor: '#4c7d47', color: '#ffffff' }}
-              onMouseEnter={e => e.currentTarget.style.backgroundColor = '#3d6b3a'}
-              onMouseLeave={e => e.currentTarget.style.backgroundColor = '#4c7d47'}
+              className="btn-aurora inline-flex items-center gap-2 font-semibold text-sm px-6 py-3 rounded-full"
             >
               Start Your Everstead <ArrowRight size={15} />
             </Link>
-            <Link to="/how-it-works" className="inline-flex items-center gap-2 bg-white/10 text-white font-medium text-sm px-6 py-3 rounded-lg border border-white/20 hover:bg-white/20 transition-colors">
+            <Link to="/how-it-works" className="inline-flex items-center gap-2 bg-white/10 text-white font-medium text-sm px-6 py-3 rounded-full border border-white/20 hover:bg-white/20 transition-colors">
               See how it works
             </Link>
           </div>
@@ -380,10 +377,7 @@ export default function Features() {
       </section>
 
       {/* ── Visual feature grid ────────────────────────────────────────── */}
-      <section className="py-24 lg:py-32 bg-navy-950 grain relative overflow-hidden">
-        <div className="absolute inset-0 opacity-5"
-          style={{ backgroundImage: 'radial-gradient(circle at 80% 50%, #6ea6d8, transparent 50%)' }}
-        />
+      <section className="py-24 lg:py-32 aurora-field aurora-dim relative overflow-hidden">
         <div className="relative max-w-6xl mx-auto px-6 lg:px-8">
           <div className="text-center mb-16 reveal">
             <p className="text-xs font-semibold uppercase tracking-widest text-sage-400 mb-4">Security</p>
@@ -459,7 +453,7 @@ export default function Features() {
                 { label: 'Spreadsheet', highlight: false },
                 { label: 'Solicitor', highlight: false },
               ].map(({ label, highlight }) => (
-                <div key={label} className={`p-4 text-center ${highlight ? 'bg-navy-950' : ''}`}>
+                <div key={label} className="p-4 text-center" style={highlight ? { background: 'linear-gradient(100deg, #2d5082 0%, #6f6bc6 50%, #6e9b6a 100%)' } : undefined}>
                   <span className={`text-xs font-semibold ${highlight ? 'text-white' : 'text-stone-500'}`}>{label}</span>
                 </div>
               ))}
@@ -508,7 +502,7 @@ export default function Features() {
       {/* ── Readiness callout ──────────────────────────────────────────── */}
       <section className="py-20 lg:py-24 bg-white border-y border-stone-100">
         <div className="max-w-5xl mx-auto px-6 lg:px-8">
-          <div className="reveal rounded-3xl bg-gradient-to-br from-navy-900 to-navy-950 border border-navy-800 p-8 lg:p-12 grid lg:grid-cols-2 gap-10 items-center">
+          <div className="reveal aurora-field aurora-dim rounded-3xl border border-navy-800 p-8 lg:p-12 grid lg:grid-cols-2 gap-10 items-center">
             {/* Left: score mock */}
             <div className="flex flex-col gap-5">
               <div className="flex items-center justify-between">
@@ -518,8 +512,15 @@ export default function Features() {
                 </div>
                 <div className="w-16 h-16 relative">
                   <svg viewBox="0 0 64 64" className="w-full h-full -rotate-90">
+                    <defs>
+                      <linearGradient id="featReadiness" x1="0" y1="0" x2="1" y2="1">
+                        <stop offset="0" stopColor="#2d5082" />
+                        <stop offset="0.5" stopColor="#6f6bc6" />
+                        <stop offset="1" stopColor="#6e9b6a" />
+                      </linearGradient>
+                    </defs>
                     <circle cx="32" cy="32" r="26" fill="none" stroke="rgba(255,255,255,0.1)" strokeWidth="5" />
-                    <circle cx="32" cy="32" r="26" fill="none" stroke="#6ea6d8" strokeWidth="5"
+                    <circle cx="32" cy="32" r="26" fill="none" stroke="url(#featReadiness)" strokeWidth="5"
                       strokeDasharray={`${2 * Math.PI * 26 * 0.76} ${2 * Math.PI * 26 * 0.24}`}
                       strokeLinecap="round"
                     />
@@ -594,10 +595,7 @@ export default function Features() {
       </section>
 
       {/* ── CTA ────────────────────────────────────────────────────────── */}
-      <section className="py-24 lg:py-32 bg-navy-950 grain relative overflow-hidden">
-        <div className="absolute inset-0 opacity-10"
-          style={{ backgroundImage: 'radial-gradient(circle at 50% 50%, #6ea6d8 0%, transparent 60%)' }}
-        />
+      <section className="py-24 lg:py-32 aurora-field aurora-dim relative overflow-hidden">
         <div className="relative max-w-3xl mx-auto px-6 text-center reveal">
           <h2 className="font-display text-4xl lg:text-5xl font-light text-white text-balance leading-tight">
             Give your family clarity, not chaos.
@@ -608,14 +606,11 @@ export default function Features() {
           <div className="mt-10 flex flex-wrap gap-3 justify-center">
             <Link
               to="/get-started"
-              className="inline-flex items-center gap-2 font-semibold text-sm px-7 py-3.5 rounded-lg transition-colors"
-              style={{ backgroundColor: '#4c7d47', color: '#ffffff' }}
-              onMouseEnter={e => e.currentTarget.style.backgroundColor = '#3d6b3a'}
-              onMouseLeave={e => e.currentTarget.style.backgroundColor = '#4c7d47'}
+              className="btn-aurora inline-flex items-center gap-2 font-semibold text-sm px-7 py-3.5 rounded-full"
             >
               Start Your Everstead <ArrowRight size={16} />
             </Link>
-            <Link to="/pricing" className="inline-flex items-center gap-2 bg-white/10 text-white font-medium text-sm px-7 py-3.5 rounded-lg border border-white/20 hover:bg-white/20 transition-colors">
+            <Link to="/pricing" className="inline-flex items-center gap-2 bg-white/10 text-white font-medium text-sm px-7 py-3.5 rounded-full border border-white/20 hover:bg-white/20 transition-colors">
               View pricing
             </Link>
           </div>

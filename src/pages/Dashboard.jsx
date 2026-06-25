@@ -648,7 +648,7 @@ export default function Dashboard() {
       {/* ── SIDEBAR ─────────────────────────────────────────── */}
       <aside
         className={`fixed inset-y-0 left-0 z-40 w-64 flex flex-col shrink-0 transition-transform duration-300 lg:static lg:translate-x-0 lg:z-auto ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}
-        style={{ backgroundColor: '#0d1628', borderRight: '1px solid #1a2942' }}
+        style={{ background: 'linear-gradient(170deg, #0d1628 0%, #182a4d 38%, #2a2a55 66%, #18301f 100%)', borderRight: '1px solid #1a2942' }}
         aria-label="Sidebar"
       >
 
@@ -703,8 +703,8 @@ export default function Dashboard() {
                   paddingBottom: '10px',
                   paddingRight: '16px',
                   paddingLeft: '13px',
-                  borderLeft: isActive && !locked ? '3px solid #4c7d47' : '3px solid transparent',
-                  backgroundColor: isActive && !locked ? 'rgba(76,125,71,0.15)' : 'transparent',
+                  borderLeft: isActive && !locked ? '3px solid #8e8ad8' : '3px solid transparent',
+                  backgroundColor: isActive && !locked ? 'rgba(142,138,216,0.18)' : 'transparent',
                   color: isActive && !locked ? '#ffffff' : locked ? 'rgba(255,255,255,0.3)' : 'rgba(255,255,255,0.55)',
                 }}
                 onMouseEnter={e => { if (!isActive && !locked) { e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.05)'; e.currentTarget.style.color = 'rgba(255,255,255,0.85)' } }}
@@ -1109,9 +1109,9 @@ function OwnerAIGuide({ userName, plan, accountCount, documentCount, contactCoun
       <button
         onClick={() => setOpen(v => !v)}
         className={`fixed bottom-6 right-6 z-50 inline-flex items-center gap-2.5 px-5 py-3 text-white text-sm font-semibold transition-all ${open ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}
-        style={{ backgroundColor: '#4c7d47', borderRadius: '24px', border: 'none', boxShadow: '0 4px 20px rgba(76, 125, 71, 0.35)', cursor: 'pointer' }}
-        onMouseEnter={e => { e.currentTarget.style.backgroundColor = '#3d6b3a'; e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 8px 28px rgba(76, 125, 71, 0.45)' }}
-        onMouseLeave={e => { e.currentTarget.style.backgroundColor = '#4c7d47'; e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 4px 20px rgba(76, 125, 71, 0.35)' }}
+        style={{ background: 'linear-gradient(100deg, #2d5082 0%, #6f6bc6 50%, #6e9b6a 100%)', borderRadius: '24px', border: 'none', boxShadow: '0 8px 24px -6px rgba(111, 107, 198, 0.5)', cursor: 'pointer' }}
+        onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 12px 30px -6px rgba(111, 107, 198, 0.62)' }}
+        onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 8px 24px -6px rgba(111, 107, 198, 0.5)' }}
         aria-label="Open planning coach"
       >
         <Sparkles size={16} />
@@ -1413,7 +1413,7 @@ function OverviewSection({ profile, accounts, documents, people, instructions, m
           onClick={() => onNavigate('aboutme')}
           className="w-full mb-6 text-left rounded-2xl border border-sage-200 bg-gradient-to-br from-sage-50 to-white p-5 flex items-center gap-4 hover:border-sage-300 transition-colors group"
         >
-          <div className="w-12 h-12 rounded-2xl bg-sage-100 text-sage-700 flex items-center justify-center shrink-0">
+          <div className="w-12 h-12 rounded-2xl text-white flex items-center justify-center shrink-0" style={{ background: 'linear-gradient(135deg, #2d5082 0%, #6f6bc6 55%, #6e9b6a 100%)' }}>
             <UserCircle size={22} />
           </div>
           <div className="flex-1 min-w-0">
@@ -1478,10 +1478,17 @@ function OverviewSection({ profile, accounts, documents, people, instructions, m
           <p style={{ fontSize: '11px', fontWeight: '600', letterSpacing: '0.1em', color: '#78716c', textTransform: 'uppercase', marginBottom: '20px' }}>{scoreLabel}</p>
           <div className="relative" style={{ width: '152px', height: '152px' }}>
             <svg viewBox="0 0 120 120" className="w-full h-full -rotate-90">
+              <defs>
+                <linearGradient id="auroraRing" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0" stopColor="#2d5082" />
+                  <stop offset="0.5" stopColor="#6f6bc6" />
+                  <stop offset="1" stopColor="#6e9b6a" />
+                </linearGradient>
+              </defs>
               <circle cx="60" cy="60" r="48" fill="none" stroke="#e5e2dc" strokeWidth="9" />
               <circle
                 cx="60" cy="60" r="48" fill="none"
-                stroke={score >= 70 ? '#4c7d47' : score >= 40 ? '#d97706' : '#ef4444'}
+                stroke={score >= 70 ? 'url(#auroraRing)' : score >= 40 ? '#d97706' : '#ef4444'}
                 strokeWidth="9"
                 strokeDasharray={`${2 * Math.PI * 48 * score / 100} ${2 * Math.PI * 48 * (1 - score / 100)}`}
                 strokeLinecap="round"
@@ -1508,9 +1515,9 @@ function OverviewSection({ profile, accounts, documents, people, instructions, m
           <button
             onClick={() => window.dispatchEvent(new CustomEvent('everstead:coach', { detail: 'What should I focus on?' }))}
             className="inline-flex items-center gap-1.5 transition-all"
-            style={{ backgroundColor: 'transparent', border: '1.5px solid #4c7d47', color: '#4c7d47', borderRadius: '8px', padding: '8px 16px', fontSize: '13px', fontWeight: '500', cursor: 'pointer' }}
-            onMouseEnter={e => { e.currentTarget.style.backgroundColor = '#4c7d47'; e.currentTarget.style.color = '#ffffff' }}
-            onMouseLeave={e => { e.currentTarget.style.backgroundColor = 'transparent'; e.currentTarget.style.color = '#4c7d47' }}
+            style={{ background: 'linear-gradient(100deg, #2d5082 0%, #6f6bc6 50%, #6e9b6a 100%)', border: 'none', color: '#ffffff', borderRadius: '9999px', padding: '9px 18px', fontSize: '13px', fontWeight: '600', cursor: 'pointer', boxShadow: '0 6px 18px -6px rgba(111,107,198,0.5)' }}
+            onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-1px)' }}
+            onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)' }}
           >
             <Sparkles size={13} /> What should I focus on?
           </button>

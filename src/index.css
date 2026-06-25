@@ -59,6 +59,66 @@
   border-radius: inherit;
 }
 
+/* ── Aurora — Brand Evolution (Direction A) ─────────────────────
+   Additive: keeps navy/sage/stone, adds the iris bridge hue and a
+   living aurora gradient. Nothing above is changed. */
+:root {
+  --iris-200:#d6d4f2; --iris-300:#b3b0e6; --iris-400:#8e8ad8;
+  --iris-500:#6f6bc6; --iris-600:#5a55a8;
+  --aurora-line: linear-gradient(100deg, #2d5082 0%, #6f6bc6 50%, #6e9b6a 100%);
+  --aurora-soft: linear-gradient(120deg, #253f67 0%, #8e8ad8 52%, #9dbc9a 100%);
+}
+
+/* Aurora field — soft navy/iris/sage mesh for dark hero sections */
+.aurora-field { position: relative; background: #0d1628; overflow: hidden; isolation: isolate; }
+/* Aurora background layer — drop-in for `absolute inset-0` dark hero backgrounds */
+.aurora-bg { background: #0d1628; overflow: hidden; isolation: isolate; }
+.aurora-field::before, .aurora-bg::before {
+  content: ''; position: absolute; inset: -20%; z-index: -2; pointer-events: none;
+  background:
+    radial-gradient(48% 38% at 50% 50%, rgba(111,107,198,0.28) 0%, transparent 72%),
+    radial-gradient(38% 50% at 18% 22%, rgba(92,132,180,0.55) 0%, transparent 60%),
+    radial-gradient(42% 55% at 82% 12%, rgba(111,107,198,0.62) 0%, transparent 58%),
+    radial-gradient(50% 60% at 72% 92%, rgba(110,155,106,0.42) 0%, transparent 60%),
+    radial-gradient(45% 55% at 30% 95%, rgba(45,80,130,0.55) 0%, transparent 62%);
+  filter: saturate(1.05);
+  animation: aurora-drift 22s ease-in-out infinite alternate;
+}
+/* Grain layer — folded in so .aurora-field replaces .grain on dark sections */
+.aurora-field::after, .aurora-bg::after {
+  content: ''; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.035'/%3E%3C/svg%3E");
+}
+/* Mesh + grain are at negative z-index inside the isolated stacking context, so
+   all content (static OR absolutely-positioned) paints above them — no forced
+   positioning on children, which previously collapsed decorative absolute elements. */
+/* Softer aurora for sections below the hero — keeps the hero as the focal point */
+.aurora-field.aurora-dim::before, .aurora-bg.aurora-dim::before { opacity: 0.6; }
+@keyframes aurora-drift {
+  0%   { transform: translate3d(0,0,0) scale(1); }
+  100% { transform: translate3d(-3%,2%,0) scale(1.08); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .aurora-field::before, .aurora-bg::before { animation: none; }
+}
+
+/* Aurora gradient text — for the single key headline word on dark */
+.aurora-text {
+  background: linear-gradient(100deg, #9ab6e0 0%, #b3b0e6 48%, #9dbc9a 100%);
+  -webkit-background-clip: text; background-clip: text;
+  color: transparent; padding-right: 0.06em;
+}
+/* Aurora primary button */
+.btn-aurora {
+  background: var(--aurora-line); color: #fff;
+  box-shadow: 0 8px 24px -8px rgba(111,107,198,0.6);
+}
+/* Aurora gradient — smooth diagonal fill for tall panels (e.g. the login side panel),
+   darkened through the middle so white text stays readable. */
+.aurora-gradient {
+  background: linear-gradient(160deg, #0d1628 0%, #1d3052 32%, #393869 60%, #234231 100%);
+}
+
 /* ── Scroll-triggered reveal ────────────────────────────────── */
 .reveal {
   opacity: 1;

@@ -59,7 +59,7 @@ const cols = [
 
 export default function Footer() {
   return (
-    <footer className="bg-navy-950 text-stone-400">
+    <footer className="aurora-field aurora-dim text-stone-400">
       <div className="max-w-7xl mx-auto px-6 lg:px-8 py-16 lg:py-20">
         <div className="grid grid-cols-2 lg:grid-cols-6 gap-10">
           {/* Brand */}

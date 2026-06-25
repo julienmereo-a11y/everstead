@@ -139,10 +139,7 @@ export default function Security() {
 
       {/* ── HERO ─────────────────────────────────────────────── */}
       <section className="py-20 lg:py-28 grain relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-navy-950 to-navy-800" />
-        <div className="absolute inset-0 opacity-10"
-          style={{ backgroundImage: 'radial-gradient(circle at 30% 50%, #3b659d 0%, transparent 55%)' }}
-        />
+        <div className="absolute inset-0 aurora-bg" />
         <div className="relative max-w-4xl mx-auto px-6 lg:px-8 text-center">
           <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-white/10 mb-8 animate-fade-in">
             <Shield size={32} className="text-white" />
@@ -229,7 +226,7 @@ export default function Security() {
       </section>
 
       {/* ── GDPR / DATA RESIDENCY ────────────────────────────── */}
-      <section className="py-20 lg:py-24 bg-navy-950 grain">
+      <section className="py-20 lg:py-24 aurora-field aurora-dim relative overflow-hidden">
         <div className="max-w-5xl mx-auto px-6 lg:px-8 grid lg:grid-cols-2 gap-14 items-center">
           <div className="reveal">
             <p className="text-xs font-semibold uppercase tracking-widest text-sage-400 mb-4">UK GDPR & Data residency</p>
@@ -343,10 +340,7 @@ export default function Security() {
           </p>
           <a
             href="mailto:security@everstead.care"
-            className="inline-flex items-center gap-2 font-semibold text-sm px-6 py-3 rounded-lg transition-colors"
-            style={{ backgroundColor: '#4c7d47', color: '#ffffff' }}
-            onMouseEnter={e => e.currentTarget.style.backgroundColor = '#3d6b3a'}
-            onMouseLeave={e => e.currentTarget.style.backgroundColor = '#4c7d47'}
+            className="btn-aurora inline-flex items-center gap-2 font-semibold text-sm px-6 py-3 rounded-full transition-colors text-white"
           >
             security@everstead.care
             <ArrowRight size={15} />
