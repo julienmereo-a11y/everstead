@@ -6,14 +6,14 @@ import { PRICING } from '../config/pricing'
 import {
   ShieldCheck, Lock, Users, FileText, CheckCircle2, ArrowRight,
   Star, ChevronDown, Bell, Share2, ClipboardList, BookOpen, Heart,
-  UserCircle, Sparkles, UserCheck, MapPin, EyeOff
+  UserCircle, Sparkles, UserCheck, MapPin, BadgeCheck
 } from 'lucide-react'
 
 const trustItems = [
-  { icon: Lock,      label: 'AES-256 encryption', sub: 'Bank-level, on every plan' },
-  { icon: UserCheck, label: 'You control access', sub: 'Only you decide who can see it' },
-  { icon: MapPin,    label: 'EU data residency',  sub: 'Fully GDPR compliant' },
-  { icon: EyeOff,    label: 'Never sold',         sub: "We don't sell your data, ever" },
+  { icon: Lock,       label: 'Bank-level security', sub: 'AES-256 encryption' },
+  { icon: UserCheck,  label: 'Access management',   sub: 'You decide who can see what' },
+  { icon: MapPin,     label: 'UK data residency',   sub: 'Fully GDPR compliant' },
+  { icon: BadgeCheck, label: 'SOC 2 compliant',     sub: 'Built on SOC 2 infrastructure' },
 ]
 
 const painPoints = [
