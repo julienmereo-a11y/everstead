@@ -111,7 +111,7 @@ function TrialBanner({ daysLeft, onUpgrade }) {
   const btnCls = critical ? 'bg-red-600 text-white hover:bg-red-700'
     : urgent  ? 'bg-amber-500 text-white hover:bg-amber-600'
     : warning ? 'bg-stone-700 text-white hover:bg-stone-800'
-    : 'bg-navy-800 text-white hover:bg-navy-700'
+    : 'btn-aurora text-white hover:bg-navy-700'
   const msg = daysLeft === 1
     ? "Your free trial ends tomorrow — your card on file will be charged unless you cancel."
     : daysLeft <= 7
@@ -957,7 +957,7 @@ function AIOnboardingOverlay({ userName, onClose, onComplete }) {
               <div className="flex flex-col gap-3">
                 <button
                   onClick={() => setStep(0)}
-                  className="w-full bg-navy-800 text-white font-semibold text-sm py-3.5 rounded-xl hover:bg-navy-700 transition-colors flex items-center justify-center gap-2"
+                  className="w-full btn-aurora text-white font-semibold text-sm py-3.5 rounded-full hover:bg-navy-700 transition-colors flex items-center justify-center gap-2"
                 >
                   <Sparkles size={15} /> Let's go
                 </button>
@@ -995,7 +995,7 @@ function AIOnboardingOverlay({ userName, onClose, onComplete }) {
                 </button>
                 <button
                   onClick={handleNext}
-                  className="inline-flex items-center gap-2 bg-navy-800 text-white font-semibold text-sm px-5 py-2.5 rounded-xl hover:bg-navy-700 transition-colors"
+                  className="inline-flex items-center gap-2 btn-aurora text-white font-semibold text-sm px-5 py-2.5 rounded-full hover:bg-navy-700 transition-colors"
                 >
                   {step < QUESTIONS.length - 1 ? 'Next' : 'Set up my vault'}
                   <ArrowRight size={15} />
@@ -1023,7 +1023,7 @@ function AIOnboardingOverlay({ userName, onClose, onComplete }) {
               <p className="text-stone-500 text-sm leading-relaxed mb-8">{summary}</p>
               <button
                 onClick={onClose}
-                className="w-full bg-navy-800 text-white font-semibold text-sm py-3.5 rounded-xl hover:bg-navy-700 transition-colors"
+                className="w-full btn-aurora text-white font-semibold text-sm py-3.5 rounded-full hover:bg-navy-700 transition-colors"
               >
                 View my vault
               </button>
@@ -1193,7 +1193,7 @@ function OwnerAIGuide({ userName, plan, accountCount, documentCount, contactCoun
             <button
               onClick={send}
               disabled={!input.trim() || loading}
-              className="shrink-0 bg-navy-800 text-white p-2.5 rounded-xl hover:bg-navy-700 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+              className="shrink-0 btn-aurora text-white p-2.5 rounded-full hover:bg-navy-700 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
               aria-label="Send"
             >
               <Send size={15} />
@@ -1675,7 +1675,7 @@ function OverviewSection({ profile, accounts, documents, people, instructions, m
               </div>
               <button
                 onClick={() => onNavigate('family')}
-                className="shrink-0 text-xs font-semibold text-white bg-navy-800 px-3 py-1.5 rounded-lg hover:bg-navy-700 transition-colors"
+                className="shrink-0 text-xs font-semibold text-white btn-aurora px-3 py-1.5 rounded-full hover:bg-navy-700 transition-colors"
               >
                 Invite →
               </button>
@@ -1958,7 +1958,7 @@ function OwnerDocViewerModal({ doc, onClose }) {
                   <ExternalLink size={13} /> Open in tab
                 </a>
                 <a href={url} download={doc.name}
-                  className="flex items-center gap-1.5 text-xs font-medium text-white bg-navy-800 hover:bg-navy-900 px-3 py-2 rounded-xl transition-colors">
+                  className="flex items-center gap-1.5 text-xs font-medium text-white btn-aurora hover:bg-navy-900 px-3 py-2 rounded-full transition-colors">
                   <Download size={13} /> Download
                 </a>
               </>
@@ -2321,7 +2321,7 @@ function DocumentsSection({ documents, loading, uploadFile, update, remove, plan
             <button
               type="submit"
               disabled={willSaving || !updateProfile}
-              className="inline-flex items-center gap-2 bg-navy-800 text-white text-sm font-semibold px-4 py-2 rounded-xl hover:bg-navy-700 transition-colors disabled:opacity-50"
+              className="inline-flex items-center gap-2 btn-aurora text-white text-sm font-semibold px-4 py-2 rounded-full hover:bg-navy-700 transition-colors disabled:opacity-50"
             >
               {willSaving ? 'Saving…' : willSaved ? '✓ Saved' : 'Save details'}
             </button>
@@ -2996,7 +2996,7 @@ function MessagesSection({ messages: initialMessages, loading, people, isDemo, p
           </p>
           <button
             onClick={onUpgrade}
-            className="inline-flex items-center gap-2 bg-navy-800 text-white font-semibold text-sm px-6 py-3 rounded-xl hover:bg-navy-700 transition-colors"
+            className="inline-flex items-center gap-2 btn-aurora text-white font-semibold text-sm px-6 py-3 rounded-full hover:bg-navy-700 transition-colors"
           >
             Upgrade to Family →
           </button>
@@ -3083,7 +3083,7 @@ function MessagesSection({ messages: initialMessages, loading, people, isDemo, p
                       <button
                         onClick={() => doRelease(msg.id)}
                         disabled={isReleasingThis}
-                        className="inline-flex items-center gap-1.5 bg-navy-800 text-white text-xs font-semibold px-4 py-2 rounded-lg hover:bg-navy-700 transition-colors disabled:opacity-50"
+                        className="inline-flex items-center gap-1.5 btn-aurora text-white text-xs font-semibold px-4 py-2 rounded-full hover:bg-navy-700 transition-colors disabled:opacity-50"
                       >
                         {isReleasingThis ? 'Releasing…' : 'Yes, release'}
                       </button>
@@ -4099,7 +4099,7 @@ function InstructionsSection({ instructions, loading, add, update, remove, profi
                 </div>
                 <button
                   onClick={applyAssistantSuggestion}
-                  className="shrink-0 text-xs font-semibold text-white bg-sage-600 hover:bg-sage-700 px-3 py-1.5 rounded-lg transition-colors"
+                  className="shrink-0 text-xs font-semibold text-white bg-sage-600 hover:bg-sage-700 px-3 py-1.5 rounded-full transition-colors"
                 >
                   Use this →
                 </button>
@@ -4119,7 +4119,7 @@ function InstructionsSection({ instructions, loading, add, update, remove, profi
               <button
                 onClick={sendAssistantMessage}
                 disabled={!assistantInput.trim() || assistantLoading}
-                className="shrink-0 bg-navy-800 text-white px-3 py-2 rounded-lg hover:bg-navy-700 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                className="shrink-0 btn-aurora text-white px-3 py-2 rounded-full hover:bg-navy-700 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
                 aria-label="Send"
               >
                 <Send size={14} />
@@ -5021,7 +5021,7 @@ function SettingsSection({ profile, isDemo, updateProfile, refreshProfile, onUpg
                 <button
                   onClick={handleReactivate}
                   disabled={reactivating}
-                  className="inline-flex items-center gap-2 text-sm font-semibold bg-navy-800 text-white px-4 py-2 rounded-lg hover:bg-navy-700 transition-colors disabled:opacity-50"
+                  className="inline-flex items-center gap-2 text-sm font-semibold btn-aurora text-white px-4 py-2 rounded-full hover:bg-navy-700 transition-colors disabled:opacity-50"
                 >
                   {reactivating ? <><Loader2 size={13} className="animate-spin" />Reactivating…</> : 'Reactivate my plan'}
                 </button>
@@ -5041,7 +5041,7 @@ function SettingsSection({ profile, isDemo, updateProfile, refreshProfile, onUpg
               </div>
               <button
                 onClick={() => onUpgrade(profile.plan || 'essential', 'yearly')}
-                className="inline-flex items-center gap-2 text-sm font-semibold bg-navy-800 text-white px-4 py-2 rounded-lg hover:bg-navy-700 transition-colors"
+                className="inline-flex items-center gap-2 text-sm font-semibold btn-aurora text-white px-4 py-2 rounded-full hover:bg-navy-700 transition-colors"
               >
                 Reactivate Everstead
               </button>
@@ -5089,7 +5089,7 @@ function SettingsSection({ profile, isDemo, updateProfile, refreshProfile, onUpg
                       {isCurrent && isTrialing && (
                         <button
                           onClick={() => onUpgrade(plan.id, billingCycle)}
-                          className="mt-3 w-full text-xs font-semibold bg-navy-800 text-white rounded-lg py-1.5 hover:bg-navy-700 transition-colors"
+                          className="mt-3 w-full text-xs font-semibold btn-aurora text-white rounded-full py-1.5 hover:bg-navy-700 transition-colors"
                         >
                           Activate {plan.name} plan
                         </button>
@@ -5097,7 +5097,7 @@ function SettingsSection({ profile, isDemo, updateProfile, refreshProfile, onUpg
                       {wantsDiffCycle && (
                         <button
                           onClick={() => onUpgrade(plan.id, billingCycle)}
-                          className="mt-3 w-full text-xs font-semibold bg-sage-600 text-white rounded-lg py-1.5 hover:bg-sage-700 transition-colors"
+                          className="mt-3 w-full text-xs font-semibold bg-sage-600 text-white rounded-full py-1.5 hover:bg-sage-700 transition-colors"
                         >
                           Switch to {billingCycle === 'yearly' ? 'yearly billing' : 'monthly billing'}
                         </button>
@@ -5137,7 +5137,7 @@ function SettingsSection({ profile, isDemo, updateProfile, refreshProfile, onUpg
                     <div className="flex gap-3 pt-1">
                       <button
                         onClick={() => { setCancelConfirm(false); setCancelError(null) }}
-                        className="flex-1 bg-navy-800 text-white text-sm font-semibold px-4 py-2.5 rounded-lg hover:bg-navy-700 transition-colors"
+                        className="flex-1 btn-aurora text-white text-sm font-semibold px-4 py-2.5 rounded-full hover:bg-navy-700 transition-colors"
                       >
                         Keep my plan
                       </button>
@@ -5243,7 +5243,7 @@ function SettingsSection({ profile, isDemo, updateProfile, refreshProfile, onUpg
               type="button"
               onClick={handleNotifSave}
               disabled={notifSaving}
-              className="inline-flex items-center gap-2 bg-navy-800 text-white text-sm font-semibold px-4 py-2 rounded-xl hover:bg-navy-700 transition-colors disabled:opacity-50"
+              className="inline-flex items-center gap-2 btn-aurora text-white text-sm font-semibold px-4 py-2 rounded-full hover:bg-navy-700 transition-colors disabled:opacity-50"
             >
               {notifSaving ? 'Saving…' : notifSaved ? '✓ Saved' : 'Save preferences'}
             </button>
@@ -5268,7 +5268,7 @@ function SettingsSection({ profile, isDemo, updateProfile, refreshProfile, onUpg
               <button
                 onClick={handleExport}
                 disabled={exporting}
-                className="inline-flex items-center gap-2 bg-navy-800 text-white text-sm font-semibold px-4 py-2.5 rounded-xl hover:bg-navy-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="inline-flex items-center gap-2 btn-aurora text-white text-sm font-semibold px-4 py-2.5 rounded-full hover:bg-navy-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {exporting ? (
                   <><Loader2 size={14} className="animate-spin" /> Preparing your export…</>
@@ -5386,7 +5386,7 @@ function LifeEventPromptModal({ prompt, onNavigate, onClose }) {
         {prompt.cta && (
           <button
             onClick={() => onNavigate(prompt.cta.section)}
-            className="w-full bg-navy-800 text-white text-sm font-semibold py-2.5 rounded-xl hover:bg-navy-700 transition-colors"
+            className="w-full btn-aurora text-white text-sm font-semibold py-2.5 rounded-full hover:bg-navy-700 transition-colors"
           >
             {prompt.cta.label}
           </button>
@@ -5613,6 +5613,6 @@ function Field({ label, required, children }) {
 
 // Style constants
 const input       = 'w-full border border-stone-200 rounded-lg px-3 py-2 text-sm text-navy-900 focus:outline-none focus:ring-2 focus:ring-navy-300 focus:border-navy-400 transition-colors'
-const primaryBtn  = 'inline-flex items-center gap-2 bg-navy-800 text-white text-sm font-medium px-4 py-2 rounded-lg hover:bg-navy-700 transition-colors'
+const primaryBtn  = 'inline-flex items-center gap-2 btn-aurora text-white text-sm font-medium px-4 py-2 rounded-full hover:bg-navy-700 transition-colors'
 const secondaryBtn= 'inline-flex items-center gap-2 bg-white text-stone-700 text-sm font-medium px-4 py-2 rounded-lg border border-stone-200 hover:bg-stone-50 transition-colors'
 const capitaliseFirst = (s) => s ? s.charAt(0).toUpperCase() + s.slice(1) : s

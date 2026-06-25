@@ -369,7 +369,7 @@ export default function DelegateDashboard() {
       <EmptyState
         title="Accept the invitation first"
         body="This workspace becomes available after the invite is accepted. Return to the invitation link to confirm your role."
-        action={<Link to={`/accept-invite?token=${token}`} className="inline-flex items-center gap-2 rounded-xl bg-navy-800 px-5 py-3 text-sm font-semibold text-white hover:bg-navy-700 transition-colors">Review invitation <ArrowRight size={15} /></Link>}
+        action={<Link to={`/accept-invite?token=${token}`} className="inline-flex items-center gap-2 rounded-full btn-aurora px-5 py-3 text-sm font-semibold text-white hover:bg-navy-700 transition-colors">Review invitation <ArrowRight size={15} /></Link>}
       />
     )
   }
@@ -470,7 +470,7 @@ export default function DelegateDashboard() {
               <Link to="/security" className="hidden sm:inline-flex items-center gap-2 rounded-xl border border-stone-300 px-3.5 py-2.5 text-sm font-semibold text-navy-800 hover:bg-stone-100 transition-colors">
                 Why protected
               </Link>
-              <Link to="/" className="inline-flex items-center gap-2 rounded-xl bg-navy-800 px-4 py-2.5 text-sm font-semibold text-white hover:bg-navy-700 transition-colors">
+              <Link to="/" className="inline-flex items-center gap-2 rounded-full btn-aurora px-4 py-2.5 text-sm font-semibold text-white hover:bg-navy-700 transition-colors">
                 <LogOut size={15} /> Exit
               </Link>
             </div>
@@ -892,7 +892,7 @@ export default function DelegateDashboard() {
                                 <button
                                   onClick={() => handleDownload(item)}
                                   disabled={downloadingId === item.id}
-                                  className="inline-flex items-center gap-2 rounded-xl bg-navy-800 px-4 py-2.5 text-sm font-semibold text-white hover:bg-navy-700 transition-colors disabled:opacity-50"
+                                  className="inline-flex items-center gap-2 rounded-full btn-aurora px-4 py-2.5 text-sm font-semibold text-white hover:bg-navy-700 transition-colors disabled:opacity-50"
                                 >
                                   <ExternalLink size={15} /> {downloadingId === item.id ? 'Opening…' : 'Open / preview'}
                                 </button>
@@ -1562,7 +1562,7 @@ function DelegateSettingsPanel({ invite, isDemo }) {
             <button
               type="submit"
               disabled={profileSaving}
-              className="inline-flex items-center gap-2 bg-navy-800 text-white text-sm font-semibold px-5 py-2.5 rounded-xl hover:bg-navy-700 transition-colors disabled:opacity-50"
+              className="inline-flex items-center gap-2 btn-aurora text-white text-sm font-semibold px-5 py-2.5 rounded-full hover:bg-navy-700 transition-colors disabled:opacity-50"
             >
               {profileSaving ? 'Saving…' : 'Save changes'}
             </button>
@@ -1602,7 +1602,7 @@ function DelegateSettingsPanel({ invite, isDemo }) {
           <button
             type="submit"
             disabled={pwSaving}
-            className="inline-flex items-center gap-2 bg-navy-800 text-white text-sm font-semibold px-5 py-2.5 rounded-xl hover:bg-navy-700 transition-colors disabled:opacity-50"
+            className="inline-flex items-center gap-2 btn-aurora text-white text-sm font-semibold px-5 py-2.5 rounded-full hover:bg-navy-700 transition-colors disabled:opacity-50"
           >
             {pwSaving ? 'Updating…' : 'Update password'}
           </button>
@@ -1654,7 +1654,7 @@ function DelegateSettingsPanel({ invite, isDemo }) {
         <button
           type="button"
           onClick={handleNotifSave}
-          className="mt-5 inline-flex items-center gap-2 bg-navy-800 text-white text-sm font-semibold px-5 py-2.5 rounded-xl hover:bg-navy-700 transition-colors"
+          className="mt-5 inline-flex items-center gap-2 btn-aurora text-white text-sm font-semibold px-5 py-2.5 rounded-full hover:bg-navy-700 transition-colors"
         >
           Save preferences
         </button>
@@ -2546,7 +2546,7 @@ function DelegateAIGuide({ ownerName, delegateName, role, ownerStatus, docCount,
     ? 'bg-stone-900 hover:bg-stone-800'
     : ownerStatus === 'incapacitated'
       ? 'bg-amber-700 hover:bg-amber-600'
-      : 'bg-navy-800 hover:bg-navy-700'
+      : 'btn-aurora hover:bg-navy-700'
 
   return (
     <>
@@ -2642,7 +2642,7 @@ function DelegateAIGuide({ ownerName, delegateName, role, ownerStatus, docCount,
             <button
               onClick={send}
               disabled={!input.trim() || loading}
-              className="shrink-0 bg-navy-800 text-white p-2.5 rounded-xl hover:bg-navy-700 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+              className="shrink-0 btn-aurora text-white p-2.5 rounded-full hover:bg-navy-700 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
               aria-label="Send"
             >
               <Send size={15} />

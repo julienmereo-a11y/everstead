@@ -100,10 +100,7 @@ export default function WelcomeOnboarding({ profile, updateProfile, onClose, onG
 
             <button
               onClick={() => setStep(2)}
-              className="w-full inline-flex items-center justify-center gap-2 text-white font-semibold text-sm py-3.5 rounded-xl transition-colors"
-              style={{ backgroundColor: '#4c7d47' }}
-              onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#3d6b3a')}
-              onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = '#4c7d47')}
+              className="btn-aurora w-full inline-flex items-center justify-center gap-2 text-white font-semibold text-sm py-3.5 rounded-full transition-transform hover:-translate-y-0.5"
             >
               Get started <ArrowRight size={16} />
             </button>
@@ -161,10 +158,7 @@ export default function WelcomeOnboarding({ profile, updateProfile, onClose, onG
               <button
                 onClick={saveDetails}
                 disabled={saving}
-                className="flex-1 inline-flex items-center justify-center gap-2 text-white font-semibold text-sm py-3.5 rounded-xl transition-colors disabled:opacity-60"
-                style={{ backgroundColor: '#4c7d47' }}
-                onMouseEnter={(e) => { if (!e.currentTarget.disabled) e.currentTarget.style.backgroundColor = '#3d6b3a' }}
-                onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = '#4c7d47')}
+                className="btn-aurora flex-1 inline-flex items-center justify-center gap-2 text-white font-semibold text-sm py-3.5 rounded-full transition-transform hover:-translate-y-0.5 disabled:opacity-60"
               >
                 {saving ? <><Loader2 size={15} className="animate-spin" /> Saving…</> : <>Looks right — continue <ArrowRight size={16} /></>}
               </button>
@@ -190,10 +184,7 @@ export default function WelcomeOnboarding({ profile, updateProfile, onClose, onG
 
             <button
               onClick={finishToAboutMe}
-              className="w-full inline-flex items-center justify-center gap-2 text-white font-semibold text-sm py-3.5 rounded-xl transition-colors"
-              style={{ backgroundColor: '#4c7d47' }}
-              onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#3d6b3a')}
-              onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = '#4c7d47')}
+              className="btn-aurora w-full inline-flex items-center justify-center gap-2 text-white font-semibold text-sm py-3.5 rounded-full transition-transform hover:-translate-y-0.5"
             >
               Set up About Me <ArrowRight size={16} />
             </button>

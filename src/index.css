@@ -112,6 +112,7 @@
 .btn-aurora {
   background: var(--aurora-line); color: #fff;
   box-shadow: 0 8px 24px -8px rgba(111,107,198,0.6);
+  border-radius: 9999px;
 }
 /* Aurora gradient — smooth diagonal fill for tall panels (e.g. the login side panel),
    darkened through the middle so white text stays readable. */

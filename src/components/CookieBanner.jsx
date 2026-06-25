@@ -51,7 +51,7 @@ export default function CookieBanner() {
             style={{
               background:   'transparent',
               border:       '1px solid #d1cec8',
-              borderRadius: '6px',
+              borderRadius: '9999px',
               padding:      '7px 14px',
               fontSize:     '12px',
               color:        '#5a6475',
@@ -64,9 +64,9 @@ export default function CookieBanner() {
           <button
             onClick={accept}
             style={{
-              background:   '#4c7d47',
+              background:   'linear-gradient(100deg, #2d5082 0%, #6f6bc6 50%, #6e9b6a 100%)',
               border:       'none',
-              borderRadius: '6px',
+              borderRadius: '9999px',
               padding:      '7px 16px',
               fontSize:     '12px',
               color:        '#ffffff',

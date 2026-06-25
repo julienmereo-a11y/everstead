@@ -38,7 +38,7 @@ function relativeTime(iso) {
   return `${Math.floor(days / 365)} year${Math.floor(days / 365) > 1 ? 's' : ''} ago`
 }
 
-const primaryBtn = 'inline-flex items-center gap-2 bg-navy-800 text-white text-sm font-semibold px-4 py-2.5 rounded-xl hover:bg-navy-700 transition-colors disabled:opacity-50'
+const primaryBtn = 'inline-flex items-center gap-2 btn-aurora text-white text-sm font-semibold px-4 py-2.5 rounded-full hover:bg-navy-700 transition-colors disabled:opacity-50'
 const secondaryBtn = 'inline-flex items-center gap-2 border border-stone-300 text-stone-700 text-sm font-semibold px-4 py-2.5 rounded-xl hover:bg-stone-100 transition-colors'
 const inputCls = 'w-full border border-stone-200 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-navy-300 bg-white'
 
@@ -429,7 +429,7 @@ function AdvisorAccessTab({ family, permissions, setPermissions, isDemo }) {
         <button
           onClick={handleSave}
           disabled={saving}
-          className="flex items-center gap-2 bg-navy-800 text-white text-sm font-semibold px-5 py-2.5 rounded-xl hover:bg-navy-700 transition-colors disabled:opacity-60"
+          className="flex items-center gap-2 btn-aurora text-white text-sm font-semibold px-5 py-2.5 rounded-full hover:bg-navy-700 transition-colors disabled:opacity-60"
         >
           {saving ? <><Loader2 size={14} className="animate-spin" /> Saving…</> : saved ? <><CheckCircle2 size={14} /> Saved</> : 'Save changes'}
         </button>
@@ -678,7 +678,7 @@ function FamilyNotesTab({ advisorNotes, setAdvisorNotes, nextReviewDate, setNext
 
       <div className="flex items-center justify-between pt-2 border-t border-stone-100">
         <p className="text-xs text-stone-400">These notes are stored locally in demo mode and are not persisted.</p>
-        <button onClick={handleSave} className="flex items-center gap-2 bg-navy-800 text-white text-sm font-semibold px-5 py-2.5 rounded-xl hover:bg-navy-700 transition-colors">
+        <button onClick={handleSave} className="flex items-center gap-2 btn-aurora text-white text-sm font-semibold px-5 py-2.5 rounded-full hover:bg-navy-700 transition-colors">
           {saved ? <><CheckCircle2 size={14} /> Saved</> : 'Save notes'}
         </button>
       </div>
@@ -745,7 +745,7 @@ function DocumentViewerModal({ doc, onClose }) {
                 <a
                   href={doc.file_url}
                   download={doc.name}
-                  className="flex items-center gap-1.5 text-xs font-medium text-white bg-navy-800 hover:bg-navy-900 px-3 py-2 rounded-xl transition-colors"
+                  className="flex items-center gap-1.5 text-xs font-medium text-white btn-aurora hover:bg-navy-900 px-3 py-2 rounded-full transition-colors"
                 >
                   <Download size={13} /> Download
                 </a>
@@ -2128,7 +2128,7 @@ export default function AdvisorPortal() {
                     <button
                       onClick={handleBulkNudge}
                       disabled={selectedIds.size === 0}
-                      className="w-full flex items-center justify-center gap-2 bg-navy-800 text-white text-xs font-semibold px-4 py-2.5 rounded-xl hover:bg-navy-700 transition-colors disabled:opacity-40"
+                      className="w-full flex items-center justify-center gap-2 btn-aurora text-white text-xs font-semibold px-4 py-2.5 rounded-full hover:bg-navy-700 transition-colors disabled:opacity-40"
                     >
                       <Send size={12} /> Send readiness nudge{selectedIds.size > 0 ? ` (${selectedIds.size})` : ''}
                     </button>
