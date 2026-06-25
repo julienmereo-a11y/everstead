@@ -106,7 +106,12 @@
 .aurora-text {
   background: linear-gradient(100deg, #9ab6e0 0%, #b3b0e6 48%, #9dbc9a 100%);
   -webkit-background-clip: text; background-clip: text;
-  color: transparent; padding-right: 0.06em;
+  color: transparent;
+  /* Italic glyphs (e.g. the leading "g" in "gathered") overhang the inline box;
+     pad both sides so background-clip:text doesn't clip them, and pull the margin
+     back by the same amount so word spacing is unchanged. */
+  padding: 0 0.1em;
+  margin: 0 -0.1em;
 }
 /* Aurora primary button */
 .btn-aurora {
