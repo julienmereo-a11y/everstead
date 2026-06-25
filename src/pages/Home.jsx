@@ -260,7 +260,7 @@ export default function Home() {
           {/* Dashboard preview — app mockup */}
           <div className="animate-fade-up animate-delay-300" style={{ position: 'relative', zIndex: 1 }}>
             <img
-              src="/hero-app-2.png"
+              src="/hero-app-3.png"
               alt="The Everstead app — your plan organised: accounts and assets, documents and wishes, and the people you trust"
               className="w-full lg:max-w-[460px] lg:ml-auto rounded-3xl"
               style={{ boxShadow: '0 32px 80px rgba(0, 0, 0, 0.45)' }}
