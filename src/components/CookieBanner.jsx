@@ -1,28 +1,49 @@
 import React, { useState, useEffect } from 'react'
 
+// Local fallback flag. Cookiebot stores consent in a cookie, but iOS Safari
+// (ITP / private browsing) can refuse to persist it — which previously left the
+// bar reappearing or never dismissing. We mirror "they've answered" in
+// localStorage so the bar's visibility never depends on that cookie surviving.
+const CONSENT_KEY = 'everstead_cookie_consent'
+
+const hasStoredConsent = () => {
+  try { return localStorage.getItem(CONSENT_KEY) === '1' } catch { return false }
+}
+const storeConsent = () => {
+  try { localStorage.setItem(CONSENT_KEY, '1') } catch { /* private mode: ignore */ }
+}
+
 export default function CookieBanner() {
   const [visible, setVisible] = useState(false)
 
   useEffect(() => {
+    if (hasStoredConsent()) return // already answered on this device — never show again
+
     const check = () => {
-      if (window.Cookiebot && !window.Cookiebot.hasResponse) {
-        setVisible(true)
-      }
+      if (hasStoredConsent() || window.Cookiebot?.hasResponse) { setVisible(false); return }
+      if (window.Cookiebot) setVisible(true)
     }
     window.addEventListener('CookiebotOnLoad', check)
+    window.addEventListener('CookiebotOnAccept', check)
+    window.addEventListener('CookiebotOnDecline', check)
     // In case Cookiebot already loaded before this component mounted
     if (window.Cookiebot) check()
-    return () => window.removeEventListener('CookiebotOnLoad', check)
+    return () => {
+      window.removeEventListener('CookiebotOnLoad', check)
+      window.removeEventListener('CookiebotOnAccept', check)
+      window.removeEventListener('CookiebotOnDecline', check)
+    }
   }, [])
 
-  const accept = () => {
-    window.Cookiebot?.submitCustomConsent(true, true, true)
+  // Dismiss the bar FIRST and persist the local flag, then tell Cookiebot.
+  // If submitCustomConsent throws or reloads the page (iOS), the bar is already
+  // gone and the flag keeps it gone — the user's tap is never "lost".
+  const respond = (consent) => {
     setVisible(false)
-  }
-
-  const decline = () => {
-    window.Cookiebot?.submitCustomConsent(false, false, false)
-    setVisible(false)
+    storeConsent()
+    try {
+      window.Cookiebot?.submitCustomConsent(consent, consent, consent)
+    } catch { /* UI already dismissed; nothing else to do */ }
   }
 
   if (!visible) return null
@@ -47,7 +68,7 @@ export default function CookieBanner() {
         </p>
         <div style={{ display: 'flex', gap: '8px', flexShrink: 0 }}>
           <button
-            onClick={decline}
+            onClick={() => respond(false)}
             style={{
               background:   'transparent',
               border:       '1px solid #d1cec8',
@@ -62,7 +83,7 @@ export default function CookieBanner() {
             Essential only
           </button>
           <button
-            onClick={accept}
+            onClick={() => respond(true)}
             style={{
               background:   'linear-gradient(100deg, #2d5082 0%, #6f6bc6 50%, #6e9b6a 100%)',
               border:       'none',
