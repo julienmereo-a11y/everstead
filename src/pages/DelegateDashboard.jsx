@@ -98,6 +98,21 @@ export default function DelegateDashboard() {
   const [searchParams] = useSearchParams()
   const token = searchParams.get('token')
   const isDemo = searchParams.get('demo') === 'true'
+
+  // Real death/incident report submission (demo mode keeps the in-memory stub).
+  const submitRealReport = async (payload) => {
+    const res = await fetch('/api/reports/submit', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify({ inviteToken: token, ...payload }),
+    })
+    if (!res.ok) {
+      const e = await res.json().catch(() => ({}))
+      throw new Error(e.error || 'Report could not be submitted')
+    }
+    return res.json()
+  }
+
   const [activeTab, setActiveTab] = useState('overview')
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
@@ -1216,11 +1231,11 @@ export default function DelegateDashboard() {
           )}
 
           {!searchResults && activeTab === 'report-death' && (
-            <ReportDeathPanel owner={owner} invite={invite} isDemo={isDemo} onSubmit={submitReport} />
+            <ReportDeathPanel owner={owner} invite={invite} isDemo={isDemo} onSubmit={isDemo ? submitReport : submitRealReport} />
           )}
 
           {!searchResults && activeTab === 'report-incident' && (
-            <ReportIncidentPanel owner={owner} invite={invite} isDemo={isDemo} onSubmit={submitReport} />
+            <ReportIncidentPanel owner={owner} invite={invite} isDemo={isDemo} onSubmit={isDemo ? submitReport : submitRealReport} />
           )}
         </main>
       </div>
