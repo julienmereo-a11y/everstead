@@ -34,3 +34,9 @@ create table if not exists public.reports (
 alter table public.reports enable row level security;
 
 create index if not exists reports_status_idx on public.reports (status, created_at desc);
+
+-- Owner lifecycle status, set by /api/admin/reports when an admin verifies a report
+-- (death → 'deceased', incapacity → 'incapacitated'). The Delegate Dashboard reads
+-- profiles.owner_status to reflect the passing and auto-release sealed messages.
+alter table public.profiles
+  add column if not exists owner_status text not null default 'active';

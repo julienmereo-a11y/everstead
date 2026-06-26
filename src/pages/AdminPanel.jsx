@@ -115,15 +115,10 @@ function ReportDetail({ report, onClose, onAction }) {
 
   const action = async (newStatus, timelineEvent) => {
     setActioning(newStatus)
-    await new Promise(r => setTimeout(r, 600))
-    if (newStatus === 'verified') {
-      // verifyReport sets owner_status + appends timeline in one call
-      verifyReport(report.id)
-      onAction(report.id, 'verified',
-        `Report verified — owner status set to "${report.type === 'death' ? 'deceased' : 'incapacitated'}" and after-death access grants unlocked`)
-    } else {
-      onAction(report.id, newStatus, timelineEvent)
-    }
+    const event = newStatus === 'verified'
+      ? `Report verified — owner status set to "${report.type === 'death' ? 'deceased' : 'incapacitated'}" and after-death access grants unlocked`
+      : timelineEvent
+    try { await onAction(report.id, newStatus, event) } catch { /* parent surfaces failure; reset spinner */ }
     setActioning(null)
     if (newStatus === 'rejected') onClose()
   }
@@ -1400,17 +1395,47 @@ export default function AdminPanel() {
   const isDemo = searchParams.get('demo') === 'true'
 
   const [activeTab, setActiveTab]           = useState('overview')
-  const [reports, setReports]               = useState(() => getLiveReports())
+  const [reports, setReports]               = useState(() => isDemo ? getLiveReports() : [])
   const [selected, setSelected]             = useState(null)
   const [filterType, setFilterType]         = useState('all')
   const [filterStatus, setFilterStatus]     = useState('all')
 
-  const handleAction = (id, newStatus, timelineEvent) => {
-    updateReportStatus(id, newStatus, timelineEvent)
-    const updated = getLiveReports()
-    setReports(updated)
-    const updatedReport = updated.find(r => r.id === id)
-    if (updatedReport) setSelected(updatedReport)
+  // Real reports load from the admin API (service-role, gated by the admin JWT).
+  const adminReportsCall = async (body) => {
+    const { data: { session } } = await supabase.auth.getSession()
+    const res = await fetch('/api/admin/reports', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${session?.access_token || ''}` },
+      body:    JSON.stringify(body),
+    })
+    if (!res.ok) throw new Error((await res.json().catch(() => ({}))).error || 'Request failed')
+    return res.json()
+  }
+
+  useEffect(() => {
+    if (isDemo) return
+    let active = true
+    adminReportsCall({ action: 'list' })
+      .then(json => { if (active) setReports(json.reports || []) })
+      .catch(() => { if (active) setReports([]) })
+    return () => { active = false }
+  }, [isDemo])
+
+  const handleAction = async (id, newStatus, timelineEvent) => {
+    if (isDemo) {
+      if (newStatus === 'verified') verifyReport(id)
+      else updateReportStatus(id, newStatus, timelineEvent)
+      const updated = getLiveReports()
+      setReports(updated)
+      const ur = updated.find(r => r.id === id)
+      if (ur) setSelected(ur)
+      return
+    }
+    const { report } = await adminReportsCall({ action: newStatus === 'verified' ? 'verify' : 'reject', id })
+    if (report) {
+      setReports(prev => prev.map(r => (r.id === id ? report : r)))
+      setSelected(report)
+    }
   }
 
   const handleSignOut = async () => {
