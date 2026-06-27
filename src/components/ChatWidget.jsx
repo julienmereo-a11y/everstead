@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { MessageCircle, X, Send, Loader2 } from 'lucide-react'
 import { useAuth } from '../contexts/AuthContext'
+import Markdown from './Markdown'
 
 export default function ChatWidget() {
   const { user, profile } = useAuth()
@@ -123,7 +124,7 @@ export default function ChatWidget() {
                   lineHeight:   '1.6',
                   whiteSpace:   'pre-wrap',
                 }}>
-                  {m.content}
+                  {m.role === 'assistant' ? <Markdown>{m.content}</Markdown> : m.content}
                 </div>
               </div>
             ))}

@@ -12,6 +12,7 @@ import {
   Gift, Check, Copy, Sparkles, ChevronUp, UserCircle, Music, Image as ImageIcon, Camera, Square, CircleStop
 } from 'lucide-react'
 import { useAuth }          from '../contexts/AuthContext'
+import Markdown            from '../components/Markdown'
 import ReferralCard         from '../components/ReferralCard'
 import FeedbackWidget       from '../components/FeedbackWidget'
 import WelcomeOnboarding    from '../components/WelcomeOnboarding'
@@ -286,7 +287,7 @@ function CelebrationToast({ message, onDone }) {
     return () => clearTimeout(t)
   }, [onDone])
   return (
-    <div className={`fixed bottom-6 right-6 z-50 max-w-sm bg-white border border-sage-200 rounded-2xl shadow-xl p-5 flex items-start gap-4 transition-all duration-300 ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
+    <div className={`fixed bottom-6 left-1/2 -translate-x-1/2 z-[55] max-w-sm bg-white border border-sage-200 rounded-2xl shadow-xl p-5 flex items-start gap-4 transition-opacity duration-300 ${visible ? 'opacity-100' : 'opacity-0'}`}>
       <div className="w-10 h-10 bg-sage-100 rounded-full flex items-center justify-center shrink-0 text-xl">
         {message.emoji}
       </div>
@@ -309,15 +310,30 @@ export default function Dashboard() {
 
   // Honour ?tab= param so /settings and other deep-links open the right section
   const tabParam = searchParams.get('tab')
+  const DASHBOARD_TABS = ['overview','aboutme','assistant','accounts','documents','people','family','messages','instructions','subscriptions','alerts','activity','resources','settings']
   const [activeSection, setActiveSection] = useState(
-    tabParam && ['overview','aboutme','assistant','accounts','documents','people','family','messages','instructions','subscriptions','alerts','activity','resources','settings'].includes(tabParam)
-      ? tabParam
-      : 'overview'
+    tabParam && DASHBOARD_TABS.includes(tabParam) ? tabParam : 'overview'
   )
   const mainRef = React.useRef(null)
   React.useEffect(() => {
     if (mainRef.current) mainRef.current.scrollTop = 0
   }, [activeSection])
+
+  // Keep the active section in the URL so the browser Back button steps through
+  // dashboard sections instead of jumping straight back to the public site
+  // (which made people feel logged out). First sync replaces; later ones push.
+  const tabSynced = React.useRef(false)
+  React.useEffect(() => {
+    if (searchParams.get('tab') === activeSection) { tabSynced.current = true; return }
+    const next = new URLSearchParams(searchParams)
+    next.set('tab', activeSection)
+    setSearchParams(next, { replace: !tabSynced.current })
+    tabSynced.current = true
+  }, [activeSection]) // eslint-disable-line
+  // Respond to browser Back/Forward (URL change) by switching section.
+  React.useEffect(() => {
+    if (tabParam && tabParam !== activeSection && DASHBOARD_TABS.includes(tabParam)) setActiveSection(tabParam)
+  }, [tabParam]) // eslint-disable-line
 
   const [lifeEventPrompt, setLifeEventPrompt]       = useState(null)
   const [showExecutorPreview, setShowExecutorPreview] = useState(false)
@@ -522,6 +538,7 @@ export default function Dashboard() {
     if (isDemo || !activeProfile?.id) return
     if (activeProfile.role === 'delegate') return
     if (activeProfile.onboarding_completed) return
+    try { if (localStorage.getItem(`everstead_welcome_done_${activeProfile.id}`) === '1') return } catch { /* ignore */ }
     // Small delay so the dashboard renders first
     const t = setTimeout(() => setShowWelcome(true), 700)
     return () => clearTimeout(t)
@@ -1145,12 +1162,12 @@ function OwnerAIGuide({ userName, plan, accountCount, documentCount, contactCoun
           <div className="flex-1 overflow-y-auto px-4 py-4 space-y-3">
             {messages.map((msg, i) => (
               <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                <div className={`max-w-[88%] px-3.5 py-2.5 rounded-2xl text-sm leading-relaxed whitespace-pre-line ${
+                <div className={`max-w-[88%] px-3.5 py-2.5 rounded-2xl text-sm leading-relaxed ${
                   msg.role === 'user'
-                    ? 'bg-navy-800 text-white rounded-br-sm'
+                    ? 'bg-navy-800 text-white rounded-br-sm whitespace-pre-line'
                     : 'bg-stone-100 text-navy-900 rounded-bl-sm'
                 }`}>
-                  {msg.content}
+                  {msg.role === 'assistant' ? <Markdown>{msg.content}</Markdown> : msg.content}
                 </div>
               </div>
             ))}
@@ -1279,12 +1296,12 @@ function ReadinessCoachCard({ profile, stats, onNavigate }) {
 
       {error && !loading && (
         <div className="flex items-center justify-between gap-3">
-          <p className="text-sm text-stone-400">Couldn't load your coaching right now.</p>
+          <p className="text-sm text-stone-500">Your coach is taking a moment — your plan is safe and all your data is right here.</p>
           <button
             onClick={fetchCoach}
             className="text-xs font-semibold text-navy-600 hover:text-navy-800 underline underline-offset-2 shrink-0"
           >
-            Try again
+            Refresh
           </button>
         </div>
       )}
@@ -1557,8 +1574,8 @@ function OverviewSection({ profile, accounts, documents, people, instructions, m
                 </div>
                 {value === 0 ? (
                   <div className="mb-1">
-                    <div style={{ width: '32px', height: '32px', borderRadius: '50%', border: '2px dashed #e5e2dc', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#d4cfc9', fontSize: '18px', marginBottom: '8px' }}>+</div>
-                    <p style={{ fontSize: '13px', color: '#4c7d47', fontWeight: '500' }}>Add your first →</p>
+                    <div style={{ width: '32px', height: '32px', borderRadius: '50%', border: '2px dashed #b9d3b5', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#4c7d47', fontSize: '18px', marginBottom: '8px' }}>+</div>
+                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', fontSize: '13px', fontWeight: '600', color: '#ffffff', background: '#4c7d47', borderRadius: '9999px', padding: '5px 12px' }}>Add your first →</span>
                   </div>
                 ) : (
                   <p style={{ fontFamily: 'Georgia, serif', fontSize: '36px', color: '#0d1628', fontWeight: '700', lineHeight: 1, marginBottom: '4px' }}>{value}</p>

@@ -3,6 +3,7 @@ import { Helmet } from 'react-helmet-async'
 import { Link } from 'react-router-dom'
 import { Send, Loader2, ArrowLeft, Heart, Mail } from 'lucide-react'
 import EmailCaptureCard from '../components/EmailCaptureCard'
+import Markdown from '../components/Markdown'
 
 // ─────────────────────────────────────────────────────────────────────────────
 // WHEN SOMEONE DIES — Free public AI guide
@@ -191,13 +192,13 @@ export default function WhenSomeoneDies() {
                   <img src="/favicon.png" alt="" className="w-7 h-7 rounded-xl object-cover shrink-0 mr-2.5 mt-0.5" />
                 )}
                 <div
-                  className={`max-w-[86%] sm:max-w-[75%] px-4 py-3 rounded-2xl text-sm leading-relaxed whitespace-pre-line ${
+                  className={`max-w-[86%] sm:max-w-[75%] px-4 py-3 rounded-2xl text-sm leading-relaxed ${
                     msg.role === 'user'
-                      ? 'bg-navy-800 text-white rounded-br-sm'
+                      ? 'bg-navy-800 text-white rounded-br-sm whitespace-pre-line'
                       : 'bg-white border border-stone-200 text-navy-900 rounded-bl-sm shadow-sm'
                   }`}
                 >
-                  {msg.content}
+                  {msg.role === 'assistant' ? <Markdown>{msg.content}</Markdown> : msg.content}
                 </div>
               </div>
             ))}

@@ -38,8 +38,11 @@ export default function WelcomeOnboarding({ profile, updateProfile, onClose, onG
   })
   const set = (k) => (e) => setForm((p) => ({ ...p, [k]: e.target.value }))
 
-  // Mark onboarding done so the welcome never reappears (best-effort).
+  // Mark onboarding done so the welcome never reappears. localStorage first, so
+  // it reliably sticks even if the DB write fails (the cause of it nagging
+  // returning users); the DB flag follows best-effort.
   const markDone = async () => {
+    try { if (profile?.id) localStorage.setItem(`everstead_welcome_done_${profile.id}`, '1') } catch { /* ignore */ }
     try { await updateProfile({ onboarding_completed: true }) } catch { /* non-blocking */ }
   }
   const finish = async () => { await markDone(); onClose() }

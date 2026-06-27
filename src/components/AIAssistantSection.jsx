@@ -4,6 +4,7 @@ import {
   CheckCircle2, Lock, Trash2,
 } from 'lucide-react'
 import { supabase } from '../lib/supabase'
+import Markdown from './Markdown'
 
 // ─────────────────────────────────────────────────────────────────────────────
 // YOUR AI ASSISTANT
@@ -134,7 +135,19 @@ export default function AIAssistantSection({
 }) {
   const aiEnabled = profile?.ai_features_enabled !== false
 
-  const [messages, setMessages] = useState([]) // API history: {role,content}
+  // Persist the conversation so it survives closing/reopening (per user).
+  const chatKey = profile?.id && !isDemo ? `everstead_ai_chat_${profile.id}` : null
+  const [messages, setMessages] = useState(() => {
+    if (!chatKey) return []
+    try { return JSON.parse(localStorage.getItem(chatKey) || '[]') } catch { return [] }
+  }) // API history: {role,content}
+  useEffect(() => {
+    if (!chatKey) return
+    try {
+      if (messages.length) localStorage.setItem(chatKey, JSON.stringify(messages.slice(-40)))
+      else localStorage.removeItem(chatKey)
+    } catch { /* storage unavailable — non-fatal */ }
+  }, [messages, chatKey])
   const [input, setInput] = useState('')
   const [pendingFile, setPendingFile] = useState(null) // { file, name, media_type, base64 }
   const [loading, setLoading] = useState(false)
@@ -350,12 +363,12 @@ export default function AIAssistantSection({
                   <Sparkles size={13} className="text-sage-300" />
                 </div>
               )}
-              <div className={`rounded-2xl px-4 py-3 text-sm leading-relaxed max-w-[85%] whitespace-pre-wrap ${
+              <div className={`rounded-2xl px-4 py-3 text-sm leading-relaxed max-w-[85%] ${
                 m.role === 'user'
-                  ? 'bg-navy-800 text-white rounded-tr-sm'
+                  ? 'bg-navy-800 text-white rounded-tr-sm whitespace-pre-wrap'
                   : 'bg-stone-50 text-navy-900 rounded-tl-sm'
               }`}>
-                {m.content}
+                {m.role === 'assistant' ? <Markdown>{m.content}</Markdown> : m.content}
               </div>
             </div>
           ))}
