@@ -35,23 +35,33 @@ export default async function handler(req, res) {
     // Best-effort: if the code is invalid/exhausted we proceed WITHOUT the
     // discount rather than failing the signup after the card is confirmed.
     let promotionCodeId = null
+    let couponFullyFree = false // a 100%-off promo (e.g. FOUNDING50) IS the free period
     if (promoCode) {
       try {
-        const list = await stripe.promotionCodes.list({ code: String(promoCode).trim(), active: true, limit: 1 })
+        const list = await stripe.promotionCodes.list({
+          code: String(promoCode).trim(), active: true, limit: 1, expand: ['data.coupon'],
+        })
         const promo = list.data[0]
         const exhausted = promo?.max_redemptions != null && promo.times_redeemed >= promo.max_redemptions
         const expired   = promo?.expires_at && promo.expires_at * 1000 < Date.now()
-        if (promo && !exhausted && !expired) promotionCodeId = promo.id
+        if (promo && !exhausted && !expired) {
+          promotionCodeId = promo.id
+          couponFullyFree = promo.coupon?.percent_off === 100
+        }
       } catch (e) {
         console.error('create-subscription promo lookup failed:', e.message)
       }
     }
 
-    // Now create the subscription — card is confirmed so no payment risk
+    // Now create the subscription — card is confirmed so no payment risk.
+    // A 100%-off promo (FOUNDING50 = first year free) REPLACES the trial: the
+    // discounted period is the free time, so adding a 14-day trial on top just
+    // makes Stripe show a "14-day trial" instead of the free year. We drop the
+    // trial only when Stripe confirms the coupon is genuinely 100% off, so a
+    // misconfigured/partial coupon can never turn the trial off and surprise-charge.
     const subParams = {
       customer:        customerId,
       items:           [{ price: priceId }],
-      trial_period_days: trialPeriodDays,
       default_payment_method: paymentMethodId,
       metadata: {
         plan,
@@ -61,6 +71,7 @@ export default async function handler(req, res) {
         ...(promotionCodeId ? { promo_code: String(promoCode).trim() } : {}),
       },
     }
+    if (!couponFullyFree) subParams.trial_period_days = trialPeriodDays
     if (promotionCodeId) subParams.discounts = [{ promotion_code: promotionCodeId }]
 
     let subscription
