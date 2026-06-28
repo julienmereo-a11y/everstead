@@ -135,19 +135,31 @@ export default function AIAssistantSection({
 }) {
   const aiEnabled = profile?.ai_features_enabled !== false
 
-  // Persist the conversation so it survives closing/reopening (per user).
-  const chatKey = profile?.id && !isDemo ? `everstead_ai_chat_${profile.id}` : null
+  // Remembering the conversation is the user's choice (saved on this device).
+  // Default on so they don't have to start over; they can turn it off or reset.
+  const chatKey     = profile?.id && !isDemo ? `everstead_ai_chat_${profile.id}` : null
+  const rememberKey = profile?.id && !isDemo ? `everstead_ai_remember_${profile.id}` : null
+  const [remember, setRemember] = useState(() => {
+    if (!rememberKey) return false
+    try { return localStorage.getItem(rememberKey) !== '0' } catch { return true } // default on
+  })
   const [messages, setMessages] = useState(() => {
     if (!chatKey) return []
-    try { return JSON.parse(localStorage.getItem(chatKey) || '[]') } catch { return [] }
+    try {
+      const on = rememberKey ? localStorage.getItem(rememberKey) !== '0' : false
+      return on ? JSON.parse(localStorage.getItem(chatKey) || '[]') : []
+    } catch { return [] }
   }) // API history: {role,content}
+  useEffect(() => {
+    if (rememberKey) { try { localStorage.setItem(rememberKey, remember ? '1' : '0') } catch { /* ignore */ } }
+  }, [remember, rememberKey])
   useEffect(() => {
     if (!chatKey) return
     try {
-      if (messages.length) localStorage.setItem(chatKey, JSON.stringify(messages.slice(-40)))
-      else localStorage.removeItem(chatKey)
+      if (remember && messages.length) localStorage.setItem(chatKey, JSON.stringify(messages.slice(-40)))
+      else localStorage.removeItem(chatKey) // off (or empty) → keep nothing
     } catch { /* storage unavailable — non-fatal */ }
-  }, [messages, chatKey])
+  }, [messages, remember, chatKey])
   const [input, setInput] = useState('')
   const [pendingFile, setPendingFile] = useState(null) // { file, name, media_type, base64 }
   const [loading, setLoading] = useState(false)
@@ -162,6 +174,13 @@ export default function AIAssistantSection({
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: 'smooth' })
     // depend on cards.length (not cards) so editing a field doesn't yank the scroll
   }, [messages, loading, cards.length, keepFile])
+
+  const clearChat = () => {
+    setMessages([])
+    setCards([])
+    setError(null)
+    if (chatKey) { try { localStorage.removeItem(chatKey) } catch { /* ignore */ } }
+  }
 
   // Defensive: if AI is off, this section shouldn't be reachable (nav + route
   // are gated), but render a clear state just in case.
@@ -345,6 +364,22 @@ export default function AIAssistantSection({
 
       {/* Conversation */}
       <div className="bg-white border border-stone-200 rounded-2xl overflow-hidden">
+        {/* Memory controls — let the user choose whether this chat is remembered */}
+        <div className="flex items-center justify-between gap-3 px-5 py-2.5 border-b border-stone-100 bg-stone-50/60">
+          <label className="flex items-center gap-2 cursor-pointer select-none" title="Saved on this device only. Turn off to keep nothing.">
+            <span className="relative shrink-0">
+              <input type="checkbox" className="sr-only peer" checked={remember} onChange={() => setRemember(v => !v)} disabled={!rememberKey} />
+              <span className="block w-8 h-[18px] rounded-full bg-stone-300 peer-checked:bg-sage-500 peer-disabled:opacity-50 transition-colors" />
+              <span className="absolute top-0.5 left-0.5 w-3.5 h-3.5 rounded-full bg-white shadow transition-transform peer-checked:translate-x-[14px]" />
+            </span>
+            <span className="text-xs font-medium text-stone-600">Remember this conversation</span>
+          </label>
+          {messages.length > 0 && (
+            <button onClick={clearChat} className="text-xs text-stone-400 hover:text-stone-700 flex items-center gap-1 transition-colors">
+              <Trash2 size={12} /> New conversation
+            </button>
+          )}
+        </div>
         <div ref={scrollRef} className="px-5 py-5 space-y-4 max-h-[min(60vh,560px)] overflow-y-auto">
           {/* Greeting */}
           <div className="flex gap-3">
