@@ -959,6 +959,88 @@ const sections = {
         ],
       },
       {
+        slug: 'how-to-set-up-digital-legacy',
+        title: 'How to set up your digital legacy: Apple, Google, Facebook and more',
+        date: 'June 2026',
+        tag: 'Digital life',
+        desc: 'A 20-minute, platform-by-platform guide to appointing someone you trust on Apple, Google, Facebook and beyond — before it is ever needed.',
+        readTime: '7 min read',
+        body: [
+          {
+            type: 'intro',
+            text: "Most of the big platforms now let you name someone to look after your account after you die — yet almost no one sets it up, because it is buried in settings you never visit. The catch is that nearly all of these tools only work if you switch them on while you are alive. Spend twenty minutes now and you spare the people you love weeks of locked screens, support tickets and guesswork later. Here is how, platform by platform.",
+          },
+          {
+            type: 'heading',
+            text: 'Apple — Legacy Contact',
+          },
+          {
+            type: 'text',
+            text: "Apple lets you name up to five Legacy Contacts who can access your account data after you die — photos, messages, notes, files and contacts (though not the passwords saved in your Keychain, or films and music you only licensed). On your iPhone or iPad, open Settings, tap your name at the top, then Sign-In & Security, and choose Legacy Contact. Each person you add gets an access key — keep a copy with your important papers. When the time comes, they give Apple that key and a copy of your death certificate to unlock the account.",
+          },
+          {
+            type: 'heading',
+            text: 'Google — Inactive Account Manager',
+          },
+          {
+            type: 'text',
+            text: "Google's Inactive Account Manager is the most flexible of the lot. You decide how long Google should wait after your account goes quiet (three, six, twelve or eighteen months), then choose up to ten trusted people to notify — and exactly which data each of them can download, from Gmail to Drive to Photos. You can also tell Google to delete the account automatically afterwards. Find it at myaccount.google.com under Data & privacy, then 'Make a plan for your digital legacy.' Because email is usually the key that resets every other account, this is one of the most important to set up.",
+          },
+          {
+            type: 'heading',
+            text: 'Facebook and Instagram — a legacy contact or a memorial',
+          },
+          {
+            type: 'text',
+            text: "On Facebook you can either name a legacy contact — someone who can manage your memorialised profile (pin a post, respond to new friend requests, update your photo) but who can never read your messages — or ask for the account to be deleted when you die. Both options live in your settings under account ownership and control. Instagram does not offer a legacy contact, but a family member can ask for the account to be memorialised or removed with proof of death.",
+          },
+          {
+            type: 'heading',
+            text: 'The platforms with no plan',
+          },
+          {
+            type: 'text',
+            text: "Plenty of services still have no formal tool — Microsoft, LinkedIn, X (formerly Twitter) and most banks and retailers among them. For these, a family member usually has to contact support after a death with a death certificate and proof they are entitled to act, then wait. There is nothing to switch on in advance, so the most useful thing you can do is make sure someone knows the account exists and what you would want done with it.",
+          },
+          {
+            type: 'heading',
+            text: 'Your password manager is the master key',
+          },
+          {
+            type: 'text',
+            text: "If you use a password manager — 1Password, Bitwarden, Dashlane or similar — it is the single most useful thing to plan for, because it unlocks almost everything else. Most offer an emergency-access or family-sharing feature: you nominate a trusted person who can request access, and after a waiting period that you set (and can cancel) they are let in. Doing this once is far more reliable than leaving a list of passwords that will be out of date within months.",
+          },
+          {
+            type: 'heading',
+            text: 'Crypto — the one you cannot undo',
+          },
+          {
+            type: 'text',
+            text: "Cryptocurrency is the exception where getting it wrong is permanent. There is no legacy contact, no support line, and no way to recover a wallet without its recovery phrase. If you hold any crypto, the access details need to be written down and kept somewhere a trusted person can reach them when needed — without being exposed while you are alive. Treat it with the same care as the deeds to your house.",
+          },
+          {
+            type: 'list',
+            heading: 'Your 20-minute digital-legacy checklist:',
+            items: [
+              'Apple: add a Legacy Contact and save the access key',
+              'Google: set up Inactive Account Manager and pick your trusted people',
+              'Facebook: name a legacy contact (or choose deletion)',
+              'Password manager: turn on emergency access for one trusted person',
+              'Crypto: securely record how each wallet can be accessed',
+              'Write down which accounts exist and what you want done — and tell someone where to find it',
+            ],
+          },
+          {
+            type: 'heading',
+            text: 'Pull it all together in one place',
+          },
+          {
+            type: 'text',
+            text: "Setting up each platform is only half the job. The other half is making sure one trusted person knows the full picture — which accounts exist, where you have set up the legacy tools, and what you would like done with each. That inventory is exactly what Everstead is built to hold: a single, secure place for your accounts and instructions, shared only with the people you choose and only when you decide. You do not need to store a single password to make it work — knowing what is there, and what to do, is what spares your family the guesswork.",
+          },
+        ],
+      },
+      {
         slug: 'estate-conversation-aging-parents',
         title: "How to have the 'estate conversation' with aging parents",
         date: 'February 2026',
