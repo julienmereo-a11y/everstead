@@ -88,6 +88,10 @@ const infrastructure = [
 
 const faqItems = [
   {
+    q: 'How is access released after I die?',
+    a: 'There is no silent timer or automatic “inactivity” trigger. A trusted person you have named reports the passing from their own access and provides the death-certificate details. Our team then reviews and verifies the report — usually within two business days — and only then does the access you arranged open to your trusted people, with any sealed personal messages delivered. While you are alive, nothing is released without your say-so, and every step is recorded in your audit trail.',
+  },
+  {
     q: 'Can Everstead employees read my documents?',
     a: 'No. Documents are encrypted at rest using AES-256. Access to the storage layer requires service-role credentials which are restricted to automated systems only. No Everstead employee has routine access to your documents or personal data.',
   },
@@ -299,6 +303,38 @@ export default function Security() {
               ))}
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* ── ACCESS RELEASE ───────────────────────────────────── */}
+      <section className="py-20 lg:py-28 aurora-field aurora-dim relative overflow-hidden">
+        <div className="relative max-w-5xl mx-auto px-6 lg:px-8">
+          <div className="max-w-2xl mb-14 reveal">
+            <p className="text-xs font-semibold uppercase tracking-widest text-sage-400 mb-4">How access is released</p>
+            <h2 className="font-display text-3xl lg:text-4xl font-light text-white text-balance leading-tight mb-5">
+              Nothing unlocks on its own. A person decides, and a person verifies.
+            </h2>
+            <p className="text-navy-200 leading-relaxed">
+              The most important question families ask is how — and when — their plan opens to the people they trust. Here is exactly how it works. There is no silent timer and no automatic “inactivity” trigger.
+            </p>
+          </div>
+          <div className="grid md:grid-cols-3 gap-5">
+            {[
+              { n: '1', title: 'While you’re alive', body: 'Your trusted people only ever see what you’ve granted them — and you can change or revoke it any time. Nothing is released without your say-so.' },
+              { n: '2', title: 'A trusted person reports the passing', body: 'Someone you’ve named notifies Everstead from their own access, with the death-certificate details. The report never unlocks anything by itself.' },
+              { n: '3', title: 'We verify, then release', body: 'Our team reviews and confirms the report — usually within two business days. Only then does the access you arranged open, and any sealed personal messages are delivered.' },
+            ].map(({ n, title, body }, i) => (
+              <div key={n} className={`reveal reveal-delay-${i + 1} bg-white/[0.06] border border-white/10 rounded-2xl p-6`}>
+                <div className="w-9 h-9 rounded-xl bg-white/10 flex items-center justify-center text-sage-300 font-semibold mb-4">{n}</div>
+                <p className="text-white font-semibold mb-2">{title}</p>
+                <p className="text-navy-200 text-sm leading-relaxed">{body}</p>
+              </div>
+            ))}
+          </div>
+          <p className="text-navy-300 text-sm mt-8 reveal flex items-start gap-2 max-w-2xl">
+            <CheckCircle2 size={16} className="text-sage-400 mt-0.5 shrink-0" />
+            Every report, verification, and access change is recorded in your audit trail. Access only ever reflects what you decided — never more.
+          </p>
         </div>
       </section>
 
