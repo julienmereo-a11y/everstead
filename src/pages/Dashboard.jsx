@@ -3821,6 +3821,14 @@ function PeopleSection({ people, loading, invite, resendInvite, updatePerson, re
           : <button onClick={() => setShowInvite(true)} className={primaryBtn}><Plus size={15} />Invite person</button>
       }
     >
+      {/* How access is released — reassurance at the moment of assigning access */}
+      <div className="mb-4 flex items-start gap-3 bg-sage-50 border border-sage-200 rounded-xl px-4 py-3">
+        <ShieldCheck size={15} className="text-sage-700 mt-0.5 shrink-0" />
+        <p className="text-sm text-stone-600 flex-1 leading-relaxed">
+          Nothing here is released while you're alive — you decide exactly what each person sees. After a death, a trusted person reports it and our team verifies before any after-death access opens.{' '}
+          <a href="/security" target="_blank" rel="noopener noreferrer" className="font-medium text-sage-800 underline underline-offset-2 hover:text-sage-900 whitespace-nowrap">How access is released →</a>
+        </p>
+      </div>
       {sectionError && (
         <div className="mb-4 flex items-start gap-3 bg-red-50 border border-red-200 rounded-xl px-4 py-3">
           <AlertCircle size={15} className="text-red-500 mt-0.5 shrink-0" />
