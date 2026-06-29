@@ -192,11 +192,27 @@ export default function Home() {
     <div className="bg-stone-50">
 
       {/* ── HERO ─────────────────────────────────────────────────── */}
-      <section className="aurora-field overflow-hidden min-h-screen flex flex-col justify-center pt-24 pb-20">
+      <section className="aurora-field overflow-hidden min-h-screen flex flex-col justify-center pt-24 pb-20 relative">
 
-        <div className="relative max-w-7xl mx-auto px-6 lg:px-8 grid lg:grid-cols-[1.45fr_1fr] gap-12 lg:gap-14 items-center">
+        {/* Family photo — bleeds in from the right and feathers into the aurora hero (desktop) */}
+        <div className="hidden lg:block absolute inset-y-0 right-0 w-[54%] pointer-events-none select-none" aria-hidden="true">
+          <img
+            src="/hero-family.jpg"
+            alt=""
+            className="w-full h-full object-cover"
+            style={{
+              opacity: 0.9,
+              maskImage: 'linear-gradient(to right, transparent 0%, rgba(0,0,0,0.35) 18%, #000 48%)',
+              WebkitMaskImage: 'linear-gradient(to right, transparent 0%, rgba(0,0,0,0.35) 18%, #000 48%)',
+            }}
+          />
+          {/* navy wash so the photo melts into the brand background on the left */}
+          <div className="absolute inset-0" style={{ background: 'linear-gradient(to right, rgba(13,22,40,0.55) 0%, rgba(13,22,40,0.14) 40%, rgba(13,22,40,0) 74%)' }} />
+        </div>
+
+        <div className="relative max-w-7xl mx-auto px-6 lg:px-8 w-full">
           {/* Copy */}
-          <div>
+          <div className="max-w-[620px]">
             {/* A/B alternates to try later:
               // "The most thoughtful thing you'll sort out this year."
               // "Stop carrying it all in your head."
@@ -244,18 +260,15 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Family photo — softened to sit within the dark hero */}
-          <div className="animate-fade-up animate-delay-300 lg:max-w-[460px] lg:ml-auto" style={{ position: 'relative', zIndex: 1 }}>
-            <div className="relative rounded-3xl overflow-hidden" style={{ boxShadow: '0 32px 80px rgba(0, 0, 0, 0.45)' }}>
-              <img
-                src="/hero-family.jpg"
-                alt="A daughter and her father organising their family's plan together at home"
-                className="w-full object-cover"
-                style={{ opacity: 0.94 }}
-              />
-              {/* soft navy wash so the photo blends into the aurora hero */}
-              <div className="absolute inset-0 pointer-events-none" style={{ background: 'linear-gradient(160deg, rgba(13,22,40,0.04) 0%, rgba(13,22,40,0.30) 100%)' }} />
-            </div>
+          {/* Mobile photo — contained + softened, shown only on small screens */}
+          <div className="lg:hidden mt-10 relative rounded-3xl overflow-hidden animate-fade-up animate-delay-300">
+            <img
+              src="/hero-family.jpg"
+              alt="A daughter and her father organising their family's plan together at home"
+              className="w-full object-cover"
+              style={{ opacity: 0.95 }}
+            />
+            <div className="absolute inset-0 pointer-events-none" style={{ background: 'linear-gradient(160deg, rgba(13,22,40,0.04) 0%, rgba(13,22,40,0.32) 100%)' }} />
           </div>
         </div>
 
@@ -358,7 +371,7 @@ export default function Home() {
 
       {/* ── REASSURANCE ──────────────────────────────────────────── */}
       <section className="py-24 lg:py-32 aurora-field aurora-dim relative overflow-hidden">
-        <div className="relative max-w-7xl mx-auto px-6 lg:px-8 grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+        <div className="relative max-w-5xl mx-auto px-6 lg:px-8 grid lg:grid-cols-[1.35fr_1fr] gap-10 lg:gap-14 items-center">
           <div className="reveal">
             <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-white/10 mb-8">
               <Heart size={22} className="text-sage-400" />
@@ -370,12 +383,12 @@ export default function Home() {
               Everstead turns confusion into clarity. It gives your loved ones practical direction when decisions are time-sensitive and emotions are running high — a gift they will genuinely appreciate.
             </p>
           </div>
-          <div className="reveal reveal-delay-1 lg:max-w-[460px] lg:ml-auto">
+          <div className="reveal reveal-delay-1 max-w-[300px] lg:max-w-[320px] mx-auto lg:ml-auto lg:mr-0">
             <img
               src="/hero-app-3.png"
               alt="The Everstead app — your plan organised: accounts and assets, documents and wishes, and the people you trust"
               className="w-full rounded-3xl"
-              style={{ boxShadow: '0 32px 80px rgba(0, 0, 0, 0.45)' }}
+              style={{ boxShadow: '0 24px 60px rgba(0, 0, 0, 0.4)' }}
             />
           </div>
         </div>
