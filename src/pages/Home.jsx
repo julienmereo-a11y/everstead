@@ -201,14 +201,12 @@ export default function Home() {
             alt=""
             className="w-full h-full object-cover"
             style={{
-              opacity: 0.92,
+              opacity: 0.9,
               objectPosition: '88% 38%',
-              maskImage: 'linear-gradient(to right, transparent 4%, #000 52%)',
-              WebkitMaskImage: 'linear-gradient(to right, transparent 4%, #000 52%)',
+              maskImage: 'linear-gradient(to right, transparent 8%, #000 66%)',
+              WebkitMaskImage: 'linear-gradient(to right, transparent 8%, #000 66%)',
             }}
           />
-          {/* smooth navy wash — a gradual blend into the brand background, no hard edge */}
-          <div className="absolute inset-0" style={{ background: 'linear-gradient(to right, rgba(13,22,40,0.6) 0%, rgba(13,22,40,0) 50%)' }} />
           {/* soft top fade so the photo melts into the nav band rather than a hard edge */}
           <div className="absolute inset-x-0 top-0 h-16" style={{ background: 'linear-gradient(to bottom, rgba(13,22,40,0.8) 0%, rgba(13,22,40,0) 100%)' }} />
         </div>
