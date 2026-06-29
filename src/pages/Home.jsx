@@ -224,7 +224,10 @@ export default function Home() {
               // "Stop carrying it all in your head."
               // "Everything your family would need, gathered in one place — with love."
             */}
-            <h1 className="font-display text-[2.75rem] leading-[1.18] sm:text-6xl sm:leading-[1.14] lg:text-7xl lg:leading-[1.12] xl:text-[5rem] xl:leading-[1.1] font-light text-white text-balance animate-fade-up">
+            <p className="text-sm sm:text-base font-medium text-sage-300 mb-4 sm:mb-5 tracking-wide animate-fade-up">
+              Organise your accounts, documents &amp; final wishes
+            </p>
+            <h1 className="font-display text-[2.75rem] leading-[1.18] sm:text-6xl sm:leading-[1.14] lg:text-7xl lg:leading-[1.12] xl:text-[5rem] xl:leading-[1.1] font-light text-white text-balance animate-fade-up animate-delay-100">
               Everything that matters, <em className="aurora-text">gathered</em> in one secure place.
             </h1>
 
