@@ -223,6 +223,11 @@ export default function DelegateDashboard() {
       setAlerts(planAlerts ?? [])
       setActivity(recentActivity ?? [])
       setLoading(false)
+
+      // Audit: record that this delegate accessed the owner's vault. The RPC is
+      // SECURITY DEFINER and re-checks the caller is an accepted delegate, so the
+      // entry can't be forged, and the owner sees it in their activity trail.
+      supabase.rpc('log_delegate_access', { p_owner: ownerId, p_action: 'delegate.viewed_vault' }).then(() => {})
     }
 
     load()

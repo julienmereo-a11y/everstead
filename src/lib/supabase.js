@@ -68,6 +68,7 @@ export async function sendEnquiry(type, fields) {
 export function logActivity(userId, action, resourceType, resourceId, resourceName, metadata = {}) {
   supabase.from('activity_log').insert({
     user_id: userId,
+    actor_id: userId, // self-action: the acting user owns the row
     action,
     resource_type: resourceType,
     resource_id: resourceId,

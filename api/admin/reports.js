@@ -66,6 +66,18 @@ export default async function handler(req, res) {
     if (action === 'verify' && report.owner_id) {
       const ownerStatus = report.type === 'death' ? 'deceased' : 'incapacitated'
       await supabase.from('profiles').update({ owner_status: ownerStatus }).eq('id', report.owner_id)
+      // Audit this privileged state change (it unlocks after-death delegate access).
+      try {
+        await supabase.from('activity_log').insert({
+          user_id:       report.owner_id,
+          actor_id:      admin.id,
+          action:        'owner.status_changed',
+          resource_type: 'profiles',
+          resource_id:   report.owner_id,
+          resource_name: ownerStatus,
+          metadata:      { report_id: report.id, report_type: report.type },
+        })
+      } catch { /* audit logging is best-effort — never block the verification */ }
     }
     return res.status(200).json({ report: toUi(report) })
   }
