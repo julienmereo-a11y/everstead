@@ -370,7 +370,7 @@ export default function Home() {
       </section>
 
       {/* ── REASSURANCE ──────────────────────────────────────────── */}
-      <section className="py-24 lg:py-32 aurora-field aurora-dim relative overflow-hidden">
+      <section className="py-14 lg:py-16 aurora-field aurora-dim relative overflow-hidden">
         <div className="relative max-w-5xl mx-auto px-6 lg:px-8 grid lg:grid-cols-[1.35fr_1fr] gap-10 lg:gap-14 items-center">
           <div className="reveal">
             <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-white/10 mb-8">
