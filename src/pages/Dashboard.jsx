@@ -4846,6 +4846,28 @@ function SettingsSection({ profile, isDemo, updateProfile, refreshProfile, onUpg
   const [exporting, setExporting]       = useState(false)
   const [exportDone, setExportDone]     = useState(false)
   const [exportError, setExportError]   = useState(null)
+  const [reauthOpen, setReauthOpen]     = useState(false)
+  const [reauthPassword, setReauthPassword] = useState('')
+  const [reauthError, setReauthError]   = useState(null)
+  const [reauthBusy, setReauthBusy]     = useState(false)
+
+  // Exporting the whole vault is sensitive, so re-verify the password first —
+  // a hijacked open session can't silently download everything.
+  const requestExport = () => { setReauthError(null); setReauthPassword(''); setReauthOpen(true) }
+  const confirmReauthAndExport = async () => {
+    setReauthBusy(true); setReauthError(null)
+    try {
+      const { supabase: sb } = await import('../lib/supabase')
+      const { data: { user } } = await sb.auth.getUser()
+      if (!user?.email) { setReauthError('Could not verify your account. Please sign in again.'); setReauthBusy(false); return }
+      const { error } = await sb.auth.signInWithPassword({ email: user.email, password: reauthPassword })
+      if (error) { setReauthError('That password doesn’t match. Please try again.'); setReauthBusy(false); return }
+      setReauthBusy(false); setReauthOpen(false); setReauthPassword('')
+      await handleExport()
+    } catch {
+      setReauthError('Could not verify right now. Please try again.'); setReauthBusy(false)
+    }
+  }
 
   const handleExport = async () => {
     if (isDemo) return
@@ -5462,7 +5484,7 @@ function SettingsSection({ profile, isDemo, updateProfile, refreshProfile, onUpg
           ) : (
             <div className="space-y-3">
               <button
-                onClick={handleExport}
+                onClick={requestExport}
                 disabled={exporting}
                 className="inline-flex items-center gap-2 btn-aurora text-white text-sm font-semibold px-4 py-2.5 rounded-full hover:bg-navy-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
@@ -5472,6 +5494,28 @@ function SettingsSection({ profile, isDemo, updateProfile, refreshProfile, onUpg
                   <><Download size={14} /> Export my data</>
                 )}
               </button>
+              {reauthOpen && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-navy-900/40 p-4" onClick={() => !reauthBusy && setReauthOpen(false)}>
+                  <div className="bg-white rounded-2xl shadow-xl max-w-sm w-full p-6" onClick={e => e.stopPropagation()}>
+                    <h3 className="text-lg font-semibold text-navy-900 mb-1">Confirm it’s you</h3>
+                    <p className="text-xs text-stone-500 mb-4">For your security, please re-enter your password before downloading a full copy of your vault.</p>
+                    <input
+                      type="password" autoFocus value={reauthPassword}
+                      onChange={e => setReauthPassword(e.target.value)}
+                      onKeyDown={e => { if (e.key === 'Enter' && reauthPassword && !reauthBusy) confirmReauthAndExport() }}
+                      placeholder="Your password"
+                      className="w-full border border-stone-300 rounded-lg px-3 py-2 text-sm mb-3 focus:outline-none focus:ring-2 focus:ring-navy-200"
+                    />
+                    {reauthError && <p className="text-xs text-red-600 mb-3">{reauthError}</p>}
+                    <div className="flex gap-2 justify-end">
+                      <button onClick={() => setReauthOpen(false)} disabled={reauthBusy} className="text-sm px-4 py-2 rounded-full text-stone-600 hover:bg-stone-100 disabled:opacity-50">Cancel</button>
+                      <button onClick={confirmReauthAndExport} disabled={reauthBusy || !reauthPassword} className="inline-flex items-center gap-2 btn-aurora text-white text-sm font-semibold px-4 py-2 rounded-full disabled:opacity-50">
+                        {reauthBusy ? <><Loader2 size={14} className="animate-spin" /> Verifying…</> : 'Confirm & export'}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
               {exportDone && (
                 <p className="text-xs text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-lg px-3 py-2">
                   Your data has been exported. Keep this file somewhere safe.

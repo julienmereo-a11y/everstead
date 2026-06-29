@@ -3,6 +3,25 @@ import { supabase } from '../lib/supabase'
 
 const AuthContext = createContext(null)
 
+// Record the device on sign-in (and let the server alert on a new one). Runs at
+// most once per browser tab-session, and never blocks sign-in.
+function checkDevice(session) {
+  try {
+    if (sessionStorage.getItem('everstead_device_checked')) return
+    sessionStorage.setItem('everstead_device_checked', '1')
+    let deviceId = localStorage.getItem('everstead_device_id')
+    if (!deviceId) {
+      deviceId = (crypto?.randomUUID?.() ?? `${Date.now()}-${Math.random().toString(36).slice(2)}`)
+      localStorage.setItem('everstead_device_id', deviceId)
+    }
+    fetch('/api/auth/device-check', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${session.access_token}` },
+      body:    JSON.stringify({ deviceId }),
+    }).catch(() => {})
+  } catch { /* non-blocking */ }
+}
+
 export function AuthProvider({ children }) {
   const [user,            setUser]            = useState(null)
   const [profile,         setProfile]         = useState(null)
@@ -58,6 +77,11 @@ export function AuthProvider({ children }) {
       if (session?.user) {
         fetchProfile(session.user.id)
         fetchDelegateInvites(session.user.email)
+
+        // On an actual sign-in (password, magic link, or Google), record the
+        // device and alert on a new one. SIGNED_IN fires for every method;
+        // session restores fire INITIAL_SESSION, so this won't run on reload.
+        if (_event === 'SIGNED_IN') checkDevice(session)
 
         // Welcome email is now sent by the Stripe webhook (checkout.session.completed)
         // after the user completes payment — not here on SIGNED_IN.
