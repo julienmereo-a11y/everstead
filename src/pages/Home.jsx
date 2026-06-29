@@ -226,7 +226,7 @@ export default function Home() {
             </h1>
 
             <p className="mt-5 sm:mt-6 text-lg sm:text-xl text-stone-300 leading-relaxed max-w-[600px] animate-fade-up animate-delay-100">
-              Everstead helps families bring their accounts, documents and wishes together — Peace of mind for you now; clarity for the people you love later.
+              Everstead is the secure home for your accounts, documents and final wishes — set up in minutes, shared only with the people you choose. Peace of mind for you now; clarity for the people you love later.
             </p>
 
             <div className="mt-10 flex flex-wrap gap-3 animate-fade-up animate-delay-200">
@@ -376,8 +376,8 @@ export default function Home() {
       <section className="py-14 lg:py-16 aurora-field aurora-dim relative overflow-hidden">
         <div className="relative max-w-5xl mx-auto px-6 lg:px-8 grid lg:grid-cols-[1.35fr_1fr] gap-10 lg:gap-14 items-center">
           <div className="reveal">
-            <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-white/10 mb-8">
-              <Heart size={22} className="text-sage-400" />
+            <div className="inline-flex items-center justify-center w-11 h-11 rounded-full bg-white/10 mb-5">
+              <Heart size={20} className="text-sage-400" />
             </div>
             <h2 className="font-display text-4xl lg:text-5xl font-light text-white text-balance leading-tight">
               Planning ahead is an act of care.
