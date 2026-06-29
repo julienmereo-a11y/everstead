@@ -6,6 +6,35 @@ import { Link } from 'react-router-dom'
 const entries = [
   {
     date: 'June 2026',
+    tag: 'Improvement',
+    tagColor: 'bg-blue-50 text-blue-700',
+    title: 'Stronger safeguards across your account',
+    items: [
+      'Trusted people now see exactly — and only — the areas you’ve granted them, nothing more.',
+      'Access you’ve marked “after death or incapacity” stays sealed until that moment is independently confirmed by our team — it’s never released on an automatic or silent trigger.',
+      'A tamper-proof activity log records sensitive moments — including when a trusted person opens your plan and when access is released — and can never be edited or erased.',
+      'Your AI off-switch is now honoured everywhere: with AI turned off, nothing from your vault is ever sent to the assistant, on any screen.',
+      'Exporting a full copy of your vault now asks you to re-enter your password first.',
+      'We’ll email you a heads-up if your account is signed into from a device we haven’t seen before.',
+      'Invitations are handled through a tighter, more privacy-preserving lookup.',
+    ],
+  },
+  {
+    date: 'June 2026',
+    tag: 'Update',
+    tagColor: 'bg-amber-100 text-amber-700',
+    title: 'A more helpful AI Assistant and a smoother dashboard',
+    items: [
+      'Choose whether the assistant remembers your conversation — pick up where you left off, or start fresh each time.',
+      'Assistant replies are now clearly formatted and easier to read, with your chat history kept when you want it.',
+      'A new “How access is released” explainer makes it plain that access only ever opens after a real person verifies what has happened — there is no automatic, silent trigger.',
+      'Added reassurance in Trusted People about exactly how and when access is released.',
+      'The browser back button now moves between dashboard sections the way you’d expect.',
+      'A new guide on setting up your digital legacy, added to Resources.',
+    ],
+  },
+  {
+    date: 'June 2026',
     tag: 'New',
     tagColor: 'bg-sage-100 text-sage-700',
     title: 'Your AI Assistant — a private helper for the admin',
