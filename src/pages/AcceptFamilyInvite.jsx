@@ -28,45 +28,36 @@ export default function AcceptFamilyInvite() {
   }, [token])
 
   const loadInvite = async () => {
-    const { data, error } = await supabase
-      .from('family_memberships')
-      .select('*')
-      .eq('invite_token', token)
-      .maybeSingle()
+    // Token-scoped, SECURITY DEFINER lookup (replaces the broad anon read of
+    // family_memberships). Returns only the matching row + the primary's name.
+    const { data, error } = await supabase.rpc('get_family_invite_details', { p_token: token })
+    const row = data?.[0]
 
-    if (error || !data) {
+    if (error || !row) {
       setState('error')
       setErrorMsg('This invitation link is invalid or has expired.')
       return
     }
 
-    if (data.invite_status === 'accepted') {
+    if (row.invite_status === 'accepted') {
       setState('already_accepted')
       return
     }
 
-    if (data.invite_status === 'cancelled') {
+    if (row.invite_status === 'cancelled') {
       setState('error')
       setErrorMsg('This invitation has been cancelled.')
       return
     }
 
-    const age = (Date.now() - new Date(data.invited_at).getTime()) / 86400000
+    const age = (Date.now() - new Date(row.invited_at).getTime()) / 86400000
     if (age > 7) {
       setState('expired')
       return
     }
 
-    setMembership(data)
-
-    // Fetch primary user's name
-    const { data: profile } = await supabase
-      .from('profiles')
-      .select('full_name')
-      .eq('id', data.primary_user_id)
-      .maybeSingle()
-
-    setPrimaryName(profile?.full_name || 'Your partner')
+    setMembership(row)
+    setPrimaryName(row.primary_name || 'Your partner')
     setState('found')
   }
 
