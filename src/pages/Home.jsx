@@ -202,7 +202,7 @@ export default function Home() {
             className="w-full h-full object-cover"
             style={{
               opacity: 0.92,
-              objectPosition: '74% 38%',
+              objectPosition: '83% 38%',
               maskImage: 'linear-gradient(to right, transparent 0%, rgba(0,0,0,0.45) 7%, #000 26%)',
               WebkitMaskImage: 'linear-gradient(to right, transparent 0%, rgba(0,0,0,0.45) 7%, #000 26%)',
             }}
