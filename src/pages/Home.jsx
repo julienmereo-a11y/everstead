@@ -224,22 +224,23 @@ export default function Home() {
             </h1>
 
             <p className="mt-5 sm:mt-6 text-lg sm:text-xl text-stone-300 leading-relaxed max-w-[600px] animate-fade-up animate-delay-100">
-              Everstead is the secure home for your accounts, documents and final wishes — set up in minutes, shared only with the people you choose. Peace of mind for you now; clarity for the people you love later.
+              Everstead is the secure place to keep everything your loved ones will need, set up in minutes and shared only with the people you choose.
             </p>
 
-            <div className="mt-10 flex flex-wrap gap-3 animate-fade-up animate-delay-200">
+            <div className="mt-10 flex flex-wrap items-center gap-x-7 gap-y-4 animate-fade-up animate-delay-200">
               <Link
                 to="/get-started"
-                className="btn-aurora inline-flex items-center gap-2 font-semibold text-sm px-6 py-3 rounded-full transition-transform hover:-translate-y-0.5"
+                className="btn-aurora inline-flex items-center gap-2 font-semibold text-base px-8 py-4 rounded-full transition-transform hover:-translate-y-0.5"
               >
-                Start Your Everstead
-                <ArrowRight size={16} />
+                Get started free
+                <ArrowRight size={18} />
               </Link>
               <Link
                 to="/how-it-works"
-                className="inline-flex items-center gap-2 bg-white/10 text-white font-medium text-sm px-6 py-3 rounded-full border border-white/20 hover:bg-white/20 transition-colors"
+                className="group inline-flex items-center gap-1.5 text-white/75 font-medium text-sm hover:text-white transition-colors"
               >
-                See How It Works
+                See how it works
+                <ArrowRight size={15} className="transition-transform group-hover:translate-x-0.5" />
               </Link>
             </div>
 
