@@ -1243,6 +1243,7 @@ export default function DelegateDashboard() {
       {/* AI guide — floating chat, always accessible */}
       <DelegateAIGuide
         ownerName={owner?.full_name}
+        ownerId={invite?.user_id}
         delegateName={invite?.name}
         role={invite?.role}
         ownerStatus={resolvedOwnerStatus}
@@ -2503,7 +2504,7 @@ function NotificationTracker({ accounts, statuses, onSetStatus, ownerSuspended }
 // ─────────────────────────────────────────────────────────────
 // DELEGATE AI GUIDE — floating chat widget
 // ─────────────────────────────────────────────────────────────
-function DelegateAIGuide({ ownerName, delegateName, role, ownerStatus, docCount, accountCount, instructionCount }) {
+function DelegateAIGuide({ ownerName, ownerId, delegateName, role, ownerStatus, docCount, accountCount, instructionCount }) {
   const [open, setOpen] = useState(false)
   const [loading, setLoading] = useState(false)
   const messagesEndRef = React.useRef(null)
@@ -2536,13 +2537,21 @@ function DelegateAIGuide({ ownerName, delegateName, role, ownerStatus, docCount,
     setLoading(true)
     try {
       const vaultSummary = `The delegate can see ${accountCount} account${accountCount !== 1 ? 's' : ''}, ${docCount} document${docCount !== 1 ? 's' : ''}, and ${instructionCount} instruction set${instructionCount !== 1 ? 's' : ''}.`
+      const { supabase: sb } = await import('../lib/supabase')
+      const { data: { session } } = await sb.auth.getSession()
+      if (!session?.access_token) {
+        setMessages(prev => [...prev, { role: 'assistant', content: 'This is just a preview — in a live account, I’d help you through the practical next steps here.' }])
+        setLoading(false)
+        return
+      }
       const res = await fetch('/api/ai/executor-assistant', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${session?.access_token}` },
         body: JSON.stringify({
           question: text,
           delegateName,
           ownerName,
+          ownerId,
           vaultSummary,
           conversationHistory,
         }),

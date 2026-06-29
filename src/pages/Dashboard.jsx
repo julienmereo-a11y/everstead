@@ -1078,9 +1078,16 @@ function OwnerAIGuide({ userName, plan, accountCount, documentCount, contactCoun
     setInput('')
     setLoading(true)
     try {
+      const { supabase: sb } = await import('../lib/supabase')
+      const { data: { session } } = await sb.auth.getSession()
+      if (!session?.access_token) {
+        setMessages(prev => [...prev, { role: 'assistant', content: 'This is just a preview — sign in to your account to chat with the assistant.' }])
+        setLoading(false)
+        return
+      }
       const res = await fetch('/api/ai/assist', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${session?.access_token}` },
         body: JSON.stringify({
           type: 'owner-guide',
           context: { userName, plan, accountCount, documentCount, contactCount, instructionCount },
@@ -3999,9 +4006,16 @@ function InstructionsSection({ instructions, loading, add, update, remove, profi
     setAssistantInput('')
     setAssistantLoading(true)
     try {
+      const { supabase: sb } = await import('../lib/supabase')
+      const { data: { session } } = await sb.auth.getSession()
+      if (!session?.access_token) {
+        setAssistantMessages(prev => [...prev, { role: 'assistant', content: 'This is just a preview — sign in to your account to use the assistant.' }])
+        setAssistantLoading(false)
+        return
+      }
       const res = await fetch('/api/ai/assist', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${session?.access_token}` },
         body: JSON.stringify({ type: 'instructions-assistant', messages: newMessages }),
       })
       const data = await res.json()

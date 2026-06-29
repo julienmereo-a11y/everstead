@@ -1,6 +1,12 @@
 import Anthropic from '@anthropic-ai/sdk'
+import { aiGuard } from '../_lib/ai-guard'
 
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
+
+// `grief-guide` is the only public type: it's the free, anonymous "when someone
+// dies" guide and carries no signed-in user's private vault data. Every other
+// type processes a logged-in user's context, so it must pass the AI off-switch.
+const PUBLIC_TYPES = new Set(['grief-guide'])
 
 // ─────────────────────────────────────────────────────────────────────────────
 // System prompts per feature type
@@ -256,6 +262,12 @@ export default async function handler(req, res) {
   const { type, context, messages } = req.body
 
   if (!type) return res.status(400).json({ error: 'Missing type' })
+
+  // Enforce the per-user AI off-switch for every non-public type.
+  if (!PUBLIC_TYPES.has(type)) {
+    const blocked = await aiGuard(req)
+    if (blocked) return res.status(blocked.status).json({ error: blocked.error })
+  }
 
   let systemPrompt
   let requestMessages

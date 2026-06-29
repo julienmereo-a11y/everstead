@@ -34,6 +34,10 @@ Guidelines:
 - Always respond in the same language as the user
 - Keep answers brief — 2–4 sentences unless more detail is clearly needed`
 
+// Public, anonymous marketing/support assistant (the site chat bubble). It answers
+// general questions about Everstead and processes no signed-in user's private vault
+// data, so it is intentionally NOT behind aiGuard — adding the JWT requirement here
+// would break the assistant for logged-out visitors.
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).end()
 

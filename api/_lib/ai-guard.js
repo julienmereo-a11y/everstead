@@ -22,14 +22,36 @@ export async function aiGuard(req) {
   const { data: { user }, error } = await supabase.auth.getUser(token)
   if (error || !user) return { status: 401, error: 'Unauthorized' }
 
+  return await flagBlocks(user.id, 'your account')
+}
+
+/**
+ * Like aiGuard, but enforces a SPECIFIC user's switch rather than the caller's —
+ * for delegate-facing tools that process the plan OWNER's data. The caller must
+ * still be authenticated (so the route is never anonymous), and the named owner
+ * must not have AI turned off. `targetUserId` is the owner's profiles.id.
+ */
+export async function aiGuardForUser(req, targetUserId) {
+  const token = (req.headers.authorization || '').replace(/^Bearer\s+/i, '')
+  if (!token) return { status: 401, error: 'Unauthorized' }
+
+  const { data: { user }, error } = await supabase.auth.getUser(token)
+  if (error || !user) return { status: 401, error: 'Unauthorized' }
+
+  if (!targetUserId) return { status: 400, error: 'Missing owner reference' }
+
+  return await flagBlocks(targetUserId, 'this account')
+}
+
+async function flagBlocks(userId, whose) {
   const { data: profile } = await supabase
     .from('profiles')
     .select('ai_features_enabled')
-    .eq('id', user.id)
+    .eq('id', userId)
     .single()
 
   if (profile?.ai_features_enabled === false) {
-    return { status: 403, error: 'AI features are turned off for your account.' }
+    return { status: 403, error: `AI features are turned off for ${whose}.` }
   }
   return null
 }

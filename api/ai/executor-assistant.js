@@ -1,13 +1,19 @@
 import Anthropic from '@anthropic-ai/sdk'
+import { aiGuardForUser } from '../_lib/ai-guard'
 
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' })
 
-  const { question, delegateName, ownerName, vaultSummary, conversationHistory = [] } = req.body
+  const { question, delegateName, ownerName, ownerId, vaultSummary, conversationHistory = [] } = req.body
 
   if (!question) return res.status(400).json({ error: 'Missing required field: question' })
+
+  // This tool processes the plan OWNER's data on a delegate's behalf, so it
+  // respects the OWNER's AI off-switch (caller must still be authenticated).
+  const blocked = await aiGuardForUser(req, ownerId)
+  if (blocked) return res.status(blocked.status).json({ error: blocked.error })
 
   const ownerFirstName = ownerName?.split(' ')[0] || 'the plan owner'
 
