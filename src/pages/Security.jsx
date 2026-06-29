@@ -138,6 +138,11 @@ export default function Security() {
       <meta property="og:image" content="https://www.everstead.care/og-image.png" />
       <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:image" content="https://www.everstead.care/og-image.png" />
+      <script type="application/ld+json">{JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'FAQPage',
+        mainEntity: faqItems.map(({ q, a }) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } })),
+      })}</script>
     </Helmet>
     <div className="bg-stone-50 pt-24">
 

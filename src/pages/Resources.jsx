@@ -2166,6 +2166,12 @@ function FaqAccordion({ items }) {
   )
 }
 
+const MONTHS = { january: '01', february: '02', march: '03', april: '04', may: '05', june: '06', july: '07', august: '08', september: '09', october: '10', november: '11', december: '12' }
+function articleDateIso(d) {
+  const m = /([A-Za-z]+)\s+(\d{4})/.exec(d || '')
+  return m && MONTHS[m[1].toLowerCase()] ? `${m[2]}-${MONTHS[m[1].toLowerCase()]}-01` : undefined
+}
+
 function ArticleDetail({ sectionSlug, postSlug }) {
   useReveal()
   const sectionData = sections[sectionSlug]
@@ -2177,11 +2183,36 @@ function ArticleDetail({ sectionSlug, postSlug }) {
     </div>
   )
 
-  const { title, date, tag, readTime, body } = post
+  const { title, date, tag, readTime, body, desc, slug } = post
   const SectionIcon = sectionData.icon
+  const url = `https://www.everstead.care/resources/${sectionSlug}/${slug}`
 
   return (
     <div className="bg-stone-50 pt-24">
+      <Helmet>
+        <title>{`${title} — Everstead`}</title>
+        <meta name="description" content={desc} />
+        <link rel="canonical" href={url} />
+        <meta property="og:type" content="article" />
+        <meta property="og:title" content={`${title} — Everstead`} />
+        <meta property="og:description" content={desc} />
+        <meta property="og:url" content={url} />
+        <meta property="og:image" content="https://www.everstead.care/og-image.png" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:image" content="https://www.everstead.care/og-image.png" />
+        <script type="application/ld+json">{JSON.stringify({
+          '@context': 'https://schema.org',
+          '@type': 'BlogPosting',
+          headline: title,
+          description: desc,
+          datePublished: articleDateIso(date),
+          author: { '@type': 'Organization', name: 'Everstead', url: 'https://www.everstead.care' },
+          publisher: { '@type': 'Organization', name: 'Everstead', logo: { '@type': 'ImageObject', url: 'https://www.everstead.care/logo-v2-white.png' } },
+          image: 'https://www.everstead.care/og-image.png',
+          inLanguage: 'en-GB',
+          mainEntityOfPage: url,
+        })}</script>
+      </Helmet>
       {/* Hero */}
       <section className="py-16 lg:py-24 grain relative overflow-hidden">
         <div className="absolute inset-0 aurora-bg" />

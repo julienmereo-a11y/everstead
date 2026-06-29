@@ -170,4 +170,40 @@
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
+
+  <!-- Resources — section indexes -->
+  <url><loc>https://www.everstead.care/resources/blog</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://www.everstead.care/resources/guides</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://www.everstead.care/resources/checklists</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://www.everstead.care/resources/faqs</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+
+  <!-- Resources — blog articles -->
+  <url><loc>https://www.everstead.care/resources/blog/what-happens-to-bank-accounts-when-you-die</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://www.everstead.care/resources/blog/how-to-organise-your-estate-uk</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://www.everstead.care/resources/blog/what-to-do-when-someone-dies</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://www.everstead.care/resources/blog/what-executors-wish-they-had-known</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://www.everstead.care/resources/blog/digital-accounts-problem</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://www.everstead.care/resources/blog/how-to-set-up-digital-legacy</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://www.everstead.care/resources/blog/estate-conversation-aging-parents</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://www.everstead.care/resources/blog/why-a-will-is-not-enough</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://www.everstead.care/resources/blog/building-financial-inventory</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://www.everstead.care/resources/blog/what-advisors-can-offer-beyond-portfolio</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+
+  <!-- Resources — guides -->
+  <url><loc>https://www.everstead.care/resources/guides/complete-guide-digital-estate-planning</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://www.everstead.care/resources/guides/executors-playbook</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://www.everstead.care/resources/guides/setting-up-emergency-vault</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://www.everstead.care/resources/guides/financial-accounts-inventory-framework</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+
+  <!-- Resources — checklists -->
+  <url><loc>https://www.everstead.care/resources/checklists/estate-readiness-checklist</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://www.everstead.care/resources/checklists/executor-first-steps-checklist</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://www.everstead.care/resources/checklists/annual-plan-review-checklist</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://www.everstead.care/resources/checklists/digital-accounts-inventory-template</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+
+  <!-- Resources — FAQs -->
+  <url><loc>https://www.everstead.care/resources/faqs/general-questions</loc><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://www.everstead.care/resources/faqs/security-privacy-questions</loc><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://www.everstead.care/resources/faqs/pricing-billing-questions</loc><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://www.everstead.care/resources/faqs/estate-planning-101</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
 </urlset>

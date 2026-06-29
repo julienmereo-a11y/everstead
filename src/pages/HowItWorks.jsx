@@ -183,6 +183,11 @@ export default function HowItWorks() {
       <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:image" content="https://www.everstead.care/og-image.png" />
       <script type="application/ld+json">{JSON.stringify(howToSchema)}</script>
+      <script type="application/ld+json">{JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'FAQPage',
+        mainEntity: faqs.map(({ q, a }) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } })),
+      })}</script>
     </Helmet>
     <div className="bg-stone-50 pt-24">
 

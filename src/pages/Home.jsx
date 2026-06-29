@@ -188,6 +188,11 @@ export default function Home() {
           'https://www.everstead.care',
         ],
       })}</script>
+      <script type="application/ld+json">{JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'FAQPage',
+        mainEntity: faqs.map(({ q, a }) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } })),
+      })}</script>
     </Helmet>
     <div className="bg-stone-50">
 

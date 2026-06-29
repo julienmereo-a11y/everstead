@@ -1,0 +1,37 @@
+# Everstead
+
+> Everstead is a UK platform that helps families securely organise their accounts, documents, instructions, and final wishes in one place — so loved ones know exactly what to do when it matters most. Set up in minutes; shared only with the people you choose.
+
+Everstead Digital Ltd, London, UK. UK GDPR compliant · ICO registered · AES-256 encryption.
+
+## What Everstead does
+- A secure vault for bank accounts, investments, insurance, property, and digital accounts
+- Document storage for wills, deeds, and important paperwork
+- Trusted people: invite family members, executors, or advisers to access only the sections you choose
+- Step-by-step instructions and final wishes for loved ones
+- Human-verified release: a trusted person only gains access after Everstead verifies a death or incapacity report — never on a silent or automatic trigger
+- An optional AI assistant that helps you set things up; AI features can be turned off per account
+
+## Plans
+- Essential — from £3.99/month (or £3.19/month billed annually)
+- Family — from £9.99/month (or £7.99/month billed annually); two private vaults under one subscription
+- Adviser — for financial advisers and estate planners (pricing on application)
+- 14-day free trial; no card required to start
+
+## Guides and answers
+- What happens to bank accounts when you die in the UK: https://www.everstead.care/resources/blog/what-happens-to-bank-accounts-when-you-die
+- How to organise your estate in the UK: https://www.everstead.care/resources/blog/how-to-organise-your-estate-uk
+- What to do when someone dies — a step-by-step guide: https://www.everstead.care/resources/blog/what-to-do-when-someone-dies
+- How to set up your digital legacy: https://www.everstead.care/resources/blog/how-to-set-up-digital-legacy
+- Why a will alone isn't enough: https://www.everstead.care/resources/blog/why-a-will-is-not-enough
+- Complete guide to digital estate planning: https://www.everstead.care/resources/guides/complete-guide-digital-estate-planning
+- The executor's playbook: https://www.everstead.care/resources/guides/executors-playbook
+- Estate readiness checklist: https://www.everstead.care/resources/checklists/estate-readiness-checklist
+- Executor first-steps checklist: https://www.everstead.care/resources/checklists/executor-first-steps-checklist
+
+## Key pages
+- Home: https://www.everstead.care/
+- How it works: https://www.everstead.care/how-it-works
+- Security: https://www.everstead.care/security
+- Pricing: https://www.everstead.care/pricing
+- Resources: https://www.everstead.care/resources
