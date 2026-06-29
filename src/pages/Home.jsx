@@ -244,14 +244,18 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Dashboard preview — app mockup */}
-          <div className="animate-fade-up animate-delay-300" style={{ position: 'relative', zIndex: 1 }}>
-            <img
-              src="/hero-app-3.png"
-              alt="The Everstead app — your plan organised: accounts and assets, documents and wishes, and the people you trust"
-              className="w-full lg:max-w-[460px] lg:ml-auto rounded-3xl"
-              style={{ boxShadow: '0 32px 80px rgba(0, 0, 0, 0.45)' }}
-            />
+          {/* Family photo — softened to sit within the dark hero */}
+          <div className="animate-fade-up animate-delay-300 lg:max-w-[460px] lg:ml-auto" style={{ position: 'relative', zIndex: 1 }}>
+            <div className="relative rounded-3xl overflow-hidden" style={{ boxShadow: '0 32px 80px rgba(0, 0, 0, 0.45)' }}>
+              <img
+                src="/hero-family.jpg"
+                alt="A daughter and her father organising their family's plan together at home"
+                className="w-full object-cover"
+                style={{ opacity: 0.94 }}
+              />
+              {/* soft navy wash so the photo blends into the aurora hero */}
+              <div className="absolute inset-0 pointer-events-none" style={{ background: 'linear-gradient(160deg, rgba(13,22,40,0.04) 0%, rgba(13,22,40,0.30) 100%)' }} />
+            </div>
           </div>
         </div>
 
@@ -354,16 +358,26 @@ export default function Home() {
 
       {/* ── REASSURANCE ──────────────────────────────────────────── */}
       <section className="py-24 lg:py-32 aurora-field aurora-dim relative overflow-hidden">
-        <div className="relative max-w-3xl mx-auto px-6 lg:px-8 text-center reveal">
-          <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-white/10 mb-8">
-            <Heart size={22} className="text-sage-400" />
+        <div className="relative max-w-7xl mx-auto px-6 lg:px-8 grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+          <div className="reveal">
+            <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-white/10 mb-8">
+              <Heart size={22} className="text-sage-400" />
+            </div>
+            <h2 className="font-display text-4xl lg:text-5xl font-light text-white text-balance leading-tight">
+              Planning ahead is an act of care.
+            </h2>
+            <p className="mt-6 text-stone-300 text-lg leading-relaxed">
+              Everstead turns confusion into clarity. It gives your loved ones practical direction when decisions are time-sensitive and emotions are running high — a gift they will genuinely appreciate.
+            </p>
           </div>
-          <h2 className="font-display text-4xl lg:text-5xl font-light text-white text-balance leading-tight">
-            Planning ahead is an act of care.
-          </h2>
-          <p className="mt-6 text-stone-300 text-lg leading-relaxed">
-            Everstead turns confusion into clarity. It gives your loved ones practical direction when decisions are time-sensitive and emotions are running high — a gift they will genuinely appreciate.
-          </p>
+          <div className="reveal reveal-delay-1 lg:max-w-[460px] lg:ml-auto">
+            <img
+              src="/hero-app-3.png"
+              alt="The Everstead app — your plan organised: accounts and assets, documents and wishes, and the people you trust"
+              className="w-full rounded-3xl"
+              style={{ boxShadow: '0 32px 80px rgba(0, 0, 0, 0.45)' }}
+            />
+          </div>
         </div>
       </section>
 
