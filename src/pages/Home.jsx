@@ -195,14 +195,14 @@ export default function Home() {
       <section className="aurora-field overflow-hidden min-h-screen flex flex-col justify-center pt-24 pb-20 relative">
 
         {/* Family photo — bleeds in from the right and feathers into the aurora hero (desktop) */}
-        <div className="hidden lg:block absolute top-24 bottom-0 right-0 w-[62%] pointer-events-none select-none" aria-hidden="true">
+        <div className="hidden lg:block absolute top-24 bottom-0 right-0 w-[48%] pointer-events-none select-none" aria-hidden="true">
           <img
             src="/hero-family.jpg"
             alt=""
             className="w-full h-full object-cover"
             style={{
               opacity: 0.92,
-              objectPosition: '83% 38%',
+              objectPosition: '72% 38%',
               maskImage: 'linear-gradient(to right, transparent 0%, rgba(0,0,0,0.45) 7%, #000 26%)',
               WebkitMaskImage: 'linear-gradient(to right, transparent 0%, rgba(0,0,0,0.45) 7%, #000 26%)',
             }}
