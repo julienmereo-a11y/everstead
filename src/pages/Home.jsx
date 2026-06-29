@@ -195,7 +195,7 @@ export default function Home() {
       <section className="aurora-field overflow-hidden min-h-screen flex flex-col justify-center pt-24 pb-20 relative">
 
         {/* Family photo — bleeds in from the right and feathers into the aurora hero (desktop) */}
-        <div className="hidden lg:block absolute inset-y-0 right-0 w-[62%] pointer-events-none select-none" aria-hidden="true">
+        <div className="hidden lg:block absolute top-24 bottom-0 right-0 w-[62%] pointer-events-none select-none" aria-hidden="true">
           <img
             src="/hero-family.jpg"
             alt=""
@@ -209,6 +209,8 @@ export default function Home() {
           />
           {/* lighter navy wash — only feathers the very left into the brand background */}
           <div className="absolute inset-0" style={{ background: 'linear-gradient(to right, rgba(13,22,40,0.5) 0%, rgba(13,22,40,0.06) 28%, rgba(13,22,40,0) 56%)' }} />
+          {/* soft top fade so the photo melts into the nav band rather than a hard edge */}
+          <div className="absolute inset-x-0 top-0 h-16" style={{ background: 'linear-gradient(to bottom, rgba(13,22,40,0.8) 0%, rgba(13,22,40,0) 100%)' }} />
         </div>
 
         <div className="relative max-w-7xl mx-auto px-6 lg:px-8 w-full">
