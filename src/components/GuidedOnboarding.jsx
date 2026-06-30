@@ -48,11 +48,11 @@ const TYPE_META = {
   trusted_person: {
     label: 'Trusted person',
     required: ['name', 'email'],
-    defaults: { role: 'Contact', invite_status: 'pending' },
+    defaults: { invite_status: 'pending' },
     fields: [
       { key: 'name',  label: 'Name',  type: 'text' },
       { key: 'email', label: 'Email', type: 'text' },
-      { key: 'role',  label: 'Role',  type: 'text', placeholder: 'e.g. Executor, Next of kin' },
+      { key: 'role',  label: 'Role',  type: 'select', options: ['Spouse / Partner', 'Primary Executor', 'Secondary Executor', 'Estate Attorney', 'Family Member', 'Family Caretaker', 'Financial Advisor', 'Healthcare Proxy'] },
       { key: 'notes', label: 'Notes', type: 'textarea' },
     ],
   },
