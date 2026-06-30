@@ -139,8 +139,16 @@ export default function GuidedOnboarding({
   const saveDetails = async () => {
     setSavingDetails(true)
     try {
-      const payload = { ...details, date_of_birth: details.date_of_birth || null }
-      await supabase.from('profiles').update(payload).eq('id', profile.id)
+      // Only write fields the user actually filled, so a stale-empty value (e.g. a
+      // city they already gave in chat) can never overwrite what's already saved.
+      const payload = {}
+      for (const [k, v] of Object.entries(details)) {
+        if (k === 'date_of_birth') { if (v) payload[k] = v }
+        else if (v != null && String(v).trim() !== '') payload[k] = v
+      }
+      if (profile?.id && Object.keys(payload).length) {
+        await supabase.from('profiles').update(payload).eq('id', profile.id)
+      }
     } catch { /* non-blocking — they can edit in Settings */ }
     setSavingDetails(false)
     setStage('celebrate')
@@ -157,10 +165,11 @@ export default function GuidedOnboarding({
     return () => { clearTimeout(t1); clearTimeout(t2) }
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
-  const finish = async () => {
+  const finish = () => {
     setClosing(true)
     try { if (profile?.id) localStorage.setItem(`everstead_welcome_done_${profile.id}`, '1') } catch { /* ignore */ }
-    try { if (profile?.id) await supabase.from('profiles').update({ onboarding_completed: true }).eq('id', profile.id) } catch { /* non-blocking */ }
+    // Fire-and-forget so the modal closes instantly (e.g. when handing off to the tour).
+    if (profile?.id) supabase.from('profiles').update({ onboarding_completed: true }).eq('id', profile.id).then(() => {}, () => {})
     onClose?.()
   }
 
@@ -282,6 +291,7 @@ export default function GuidedOnboarding({
       // insert path and trip the NOT NULL email constraint on a partial update).
       const { error } = await supabase.from('profiles').update(clean).eq('id', profile.id)
       if (error) throw error
+      if (clean.city) setDetails(d => ({ ...d, city: clean.city })) // keep the details form in sync
     } else if (card.type === 'about_me') {
       const existing = Array.isArray(aboutMe?.life_events) ? aboutMe.life_events : []
       const merged = card.lifeEvents?.length ? [...existing, ...card.lifeEvents] : existing
