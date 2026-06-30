@@ -130,7 +130,7 @@ export default function GuidedOnboarding({
   const finish = async () => {
     setClosing(true)
     try { if (profile?.id) localStorage.setItem(`everstead_welcome_done_${profile.id}`, '1') } catch { /* ignore */ }
-    try { await updateProfile({ onboarding_completed: true }) } catch { /* non-blocking */ }
+    try { if (profile?.id) await supabase.from('profiles').update({ onboarding_completed: true }).eq('id', profile.id) } catch { /* non-blocking */ }
     onClose?.()
   }
 
@@ -213,7 +213,10 @@ export default function GuidedOnboarding({
     } else if (card.type === 'trusted_person') {
       await addPerson(payload)
     } else if (card.type === 'profile') {
-      await updateProfile(clean)
+      // Direct UPDATE on the existing row (updateProfile upserts, which can hit the
+      // insert path and trip the NOT NULL email constraint on a partial update).
+      const { error } = await supabase.from('profiles').update(clean).eq('id', profile.id)
+      if (error) throw error
     } else if (card.type === 'about_me') {
       const existing = Array.isArray(aboutMe?.life_events) ? aboutMe.life_events : []
       const merged = card.lifeEvents?.length ? [...existing, ...card.lifeEvents] : existing
