@@ -16,6 +16,7 @@ import Markdown            from '../components/Markdown'
 import ReferralCard         from '../components/ReferralCard'
 import FeedbackWidget       from '../components/FeedbackWidget'
 import WelcomeOnboarding    from '../components/WelcomeOnboarding'
+import GuidedOnboarding     from '../components/GuidedOnboarding'
 import { redirectToCheckout, redirectToCustomerPortal, PLANS } from '../lib/stripe'
 import { PRICING } from '../config/pricing'
 import { isAtLimit, getLimit, canUseFeature } from '../lib/planLimits'
@@ -860,12 +861,24 @@ export default function Dashboard() {
       />
     )}
     {showWelcome && !isDemo && (
-      <WelcomeOnboarding
-        profile={activeProfile}
-        updateProfile={updateProfile}
-        onClose={() => setShowWelcome(false)}
-        onGoToAboutMe={() => { setShowWelcome(false); setActiveSection('aboutme') }}
-      />
+      aiEnabled ? (
+        <GuidedOnboarding
+          profile={activeProfile}
+          updateProfile={updateProfile}
+          addAccount={addAccount}
+          addPerson={addPersonRow}
+          saveAboutMe={aboutMeHook.save}
+          aboutMe={aboutMe}
+          onClose={() => setShowWelcome(false)}
+        />
+      ) : (
+        <WelcomeOnboarding
+          profile={activeProfile}
+          updateProfile={updateProfile}
+          onClose={() => setShowWelcome(false)}
+          onGoToAboutMe={() => { setShowWelcome(false); setActiveSection('aboutme') }}
+        />
+      )
     )}
     </>
   )
