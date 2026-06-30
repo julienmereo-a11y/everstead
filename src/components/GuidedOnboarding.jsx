@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react'
-import { Sparkles, Send, Check, AlertTriangle, X, Trash2 } from 'lucide-react'
+import { Sparkles, Send, Check, AlertTriangle, X, Trash2, ArrowRight, Loader2 } from 'lucide-react'
 import { supabase } from '../lib/supabase'
 import Markdown from './Markdown'
 
@@ -122,6 +122,30 @@ export default function GuidedOnboarding({
   const [cards, setCards] = useState([])
   const [closing, setClosing] = useState(false)
   const scrollRef = useRef(null)
+
+  // Stages: chat → details (full profile) → celebrate → tour
+  const [stage, setStage] = useState('chat')
+  const [tourStep, setTourStep] = useState(0)
+  const [savingDetails, setSavingDetails] = useState(false)
+  const [details, setDetails] = useState({
+    full_name:     profile?.full_name     ?? '',
+    date_of_birth: profile?.date_of_birth ?? '',
+    phone:         profile?.phone         ?? '',
+    address_line1: profile?.address_line1 ?? '',
+    address_line2: profile?.address_line2 ?? '',
+    city:          profile?.city          ?? '',
+    postcode:      profile?.postcode      ?? '',
+    country:       profile?.country       ?? 'United Kingdom',
+  })
+  const saveDetails = async () => {
+    setSavingDetails(true)
+    try {
+      const payload = { ...details, date_of_birth: details.date_of_birth || null }
+      await supabase.from('profiles').update(payload).eq('id', profile.id)
+    } catch { /* non-blocking — they can edit in Settings */ }
+    setSavingDetails(false)
+    setStage('celebrate')
+  }
 
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: 'smooth' })
@@ -288,6 +312,16 @@ export default function GuidedOnboarding({
 
   const approvedCount = cards.filter(c => c.approved && c.status !== 'saved').length
 
+  if (stage === 'details') return (
+    <DetailsStage details={details} setDetails={setDetails} saving={savingDetails} onSave={saveDetails} onSkip={() => setStage('celebrate')} onClose={finish} />
+  )
+  if (stage === 'celebrate') return (
+    <CelebrateStage firstName={firstName} onTour={() => { setTourStep(0); setStage('tour') }} onDashboard={finish} />
+  )
+  if (stage === 'tour') return (
+    <TourStage step={tourStep} setStep={setTourStep} onDone={finish} />
+  )
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-navy-950/50 p-4" onClick={finish}>
       <div className="w-full max-w-lg bg-white rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[88vh]" onClick={e => e.stopPropagation()}>
@@ -392,9 +426,12 @@ export default function GuidedOnboarding({
               <Send size={16} />
             </button>
           </div>
-          <div className="flex justify-center pt-2">
+          <div className="flex items-center justify-between pt-2.5">
             <button onClick={finish} disabled={closing} className="text-xs text-stone-400 hover:text-stone-700 transition-colors">
-              I'm done for now
+              Skip for now
+            </button>
+            <button onClick={() => setStage('details')} className="text-xs font-semibold text-navy-700 hover:text-navy-900 inline-flex items-center gap-1 transition-colors">
+              Finish &amp; review my details <ArrowRight size={12} />
             </button>
           </div>
         </div>
@@ -473,6 +510,108 @@ function ProposalCard({ card, onEdit, onToggle, onDismiss }) {
       {card.status === 'error' && card.error && (
         <p className="text-xs text-red-600 mt-2 flex items-center gap-1"><AlertTriangle size={12} /> {card.error}</p>
       )}
+    </div>
+  )
+}
+
+function Field({ label, children }) {
+  return (
+    <div>
+      <label className="block text-xs font-medium text-stone-500 mb-1.5">{label}</label>
+      {children}
+    </div>
+  )
+}
+
+// ── Stage 2: confirm the full profile details ─────────────────────────────────
+function DetailsStage({ details, setDetails, saving, onSave, onSkip, onClose }) {
+  const set = k => e => setDetails(p => ({ ...p, [k]: e.target.value }))
+  const inputCls = 'w-full border border-stone-300 rounded-lg px-3 py-2 text-sm text-navy-900 focus:outline-none focus:ring-2 focus:ring-navy-300'
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-navy-950/50 p-4" onClick={onClose}>
+      <div className="w-full max-w-lg bg-white rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[88vh]" onClick={e => e.stopPropagation()}>
+        <div className="px-6 pt-6 pb-4 border-b border-stone-100">
+          <p className="font-display text-xl text-navy-950">A few details to round things off</p>
+          <p className="text-sm text-stone-500 mt-1 leading-relaxed">So everything's accurate for the people who may one day need it. You can change any of this later in Settings.</p>
+        </div>
+        <div className="px-6 py-5 space-y-4 overflow-y-auto flex-1">
+          <Field label="Full name"><input className={inputCls} value={details.full_name} onChange={set('full_name')} /></Field>
+          <div className="grid grid-cols-2 gap-3">
+            <Field label="Date of birth"><input type="date" className={inputCls} value={details.date_of_birth || ''} onChange={set('date_of_birth')} /></Field>
+            <Field label="Phone"><input className={inputCls} value={details.phone} onChange={set('phone')} placeholder="+44 7700 900000" /></Field>
+          </div>
+          <Field label="Address line 1"><input className={inputCls} value={details.address_line1} onChange={set('address_line1')} placeholder="14 Kensington Road" /></Field>
+          <Field label="Address line 2"><input className={inputCls} value={details.address_line2} onChange={set('address_line2')} placeholder="Optional" /></Field>
+          <div className="grid grid-cols-2 gap-3">
+            <Field label="City / Town"><input className={inputCls} value={details.city} onChange={set('city')} placeholder="London" /></Field>
+            <Field label="Postcode"><input className={inputCls} value={details.postcode} onChange={set('postcode')} placeholder="SW7 2BT" /></Field>
+          </div>
+          <Field label="Country"><input className={inputCls} value={details.country} onChange={set('country')} /></Field>
+        </div>
+        <div className="border-t border-stone-100 p-4 flex items-center justify-between gap-3">
+          <button onClick={onSkip} className="text-xs text-stone-400 hover:text-stone-700">Skip for now</button>
+          <button onClick={onSave} disabled={saving} className="btn-aurora inline-flex items-center gap-2 text-white text-sm font-semibold px-6 py-2.5 rounded-full disabled:opacity-60">
+            {saving ? <><Loader2 size={14} className="animate-spin" /> Saving…</> : <>Save &amp; continue <ArrowRight size={15} /></>}
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+// ── Stage 3: celebrate ────────────────────────────────────────────────────────
+function CelebrateStage({ firstName, onTour, onDashboard }) {
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-navy-950/50 p-4">
+      <div className="w-full max-w-md bg-white rounded-3xl shadow-2xl overflow-hidden text-center px-8 py-10">
+        <div className="text-5xl mb-4">🎉</div>
+        <h2 className="font-display text-2xl text-navy-950 mb-2">Brilliant start, {firstName}.</h2>
+        <p className="text-sm text-stone-500 leading-relaxed mb-7 max-w-xs mx-auto">
+          You've taken one of the most caring steps there is — and everything you added will keep, safe and private, for whenever it's needed.
+        </p>
+        <div className="flex flex-col gap-2.5">
+          <button onClick={onTour} className="btn-aurora inline-flex items-center justify-center gap-2 text-white text-sm font-semibold px-6 py-3 rounded-full">
+            Take a quick tour <ArrowRight size={15} />
+          </button>
+          <button onClick={onDashboard} className="text-sm text-stone-500 hover:text-navy-800 transition-colors py-1">
+            Go straight to my dashboard
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+// ── Stage 4: a quick 5-step tour of the main features ─────────────────────────
+const TOUR = [
+  { emoji: '🗂️', title: 'Your vault', body: 'Everything in one secure place — accounts, assets, and the details your loved ones would otherwise have to hunt for.' },
+  { emoji: '📄', title: 'Documents', body: 'Keep wills, deeds and important paperwork together. Drop a file in and your assistant can even read it for you.' },
+  { emoji: '🤝', title: 'Trusted people', body: 'Invite family or executors and choose exactly what each person can see — and only when the time is right.' },
+  { emoji: '💛', title: 'About Me', body: 'The human heart of your plan — your story, your wishes, and messages for the people you love.' },
+  { emoji: '✨', title: 'Your AI assistant', body: 'Any time you like, just chat or drop in a document and it’ll help you set things up, one small step at a time.' },
+]
+function TourStage({ step, setStep, onDone }) {
+  const s = TOUR[step]
+  const last = step === TOUR.length - 1
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-navy-950/50 p-4">
+      <div className="w-full max-w-md bg-white rounded-3xl shadow-2xl overflow-hidden px-8 py-9 text-center">
+        <div className="text-4xl mb-4">{s.emoji}</div>
+        <h2 className="font-display text-2xl text-navy-950 mb-2">{s.title}</h2>
+        <p className="text-sm text-stone-500 leading-relaxed mb-7 max-w-xs mx-auto">{s.body}</p>
+        <div className="flex items-center justify-center gap-1.5 mb-7">
+          {TOUR.map((_, i) => <span key={i} className={`h-1.5 rounded-full transition-all ${i === step ? 'w-5 bg-navy-700' : 'w-1.5 bg-stone-200'}`} />)}
+        </div>
+        <div className="flex items-center justify-between gap-3">
+          <button onClick={onDone} className="text-xs text-stone-400 hover:text-stone-700">Skip tour</button>
+          <div className="flex items-center gap-2">
+            {step > 0 && <button onClick={() => setStep(step - 1)} className="text-sm text-stone-500 hover:text-navy-800 px-3 py-2">Back</button>}
+            <button onClick={() => last ? onDone() : setStep(step + 1)} className="btn-aurora inline-flex items-center gap-2 text-white text-sm font-semibold px-5 py-2.5 rounded-full">
+              {last ? <>Go to my dashboard <ArrowRight size={14} /></> : <>Next <ArrowRight size={14} /></>}
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
   )
 }
