@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react'
-import { Sparkles, Send, Loader2, Check, AlertTriangle, X, Trash2 } from 'lucide-react'
+import { Sparkles, Send, Check, AlertTriangle, X, Trash2 } from 'lucide-react'
 import { supabase } from '../lib/supabase'
 import Markdown from './Markdown'
 
@@ -258,8 +258,10 @@ export default function GuidedOnboarding({
               <div className="w-7 h-7 rounded-full bg-navy-950 flex items-center justify-center shrink-0">
                 <Sparkles size={13} className="text-sage-300" />
               </div>
-              <div className="bg-stone-50 rounded-2xl rounded-tl-sm px-4 py-3 text-sm text-stone-400 flex items-center gap-2">
-                <Loader2 size={14} className="animate-spin" /> Thinking…
+              <div className="bg-stone-50 rounded-2xl rounded-tl-sm px-4 py-3.5 flex items-center gap-1.5">
+                <span className="w-2 h-2 rounded-full bg-stone-400 animate-bounce" style={{ animationDelay: '0ms', animationDuration: '1s' }} />
+                <span className="w-2 h-2 rounded-full bg-stone-400 animate-bounce" style={{ animationDelay: '160ms', animationDuration: '1s' }} />
+                <span className="w-2 h-2 rounded-full bg-stone-400 animate-bounce" style={{ animationDelay: '320ms', animationDuration: '1s' }} />
               </div>
             </div>
           )}
