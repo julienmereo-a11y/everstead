@@ -60,6 +60,15 @@ const TYPE_META = {
 
 let cardSeq = 0
 
+// Soft, personal entries save directly — onboarding stays conversational. Only
+// higher-stakes entries (accounts, trusted people you'd invite) get a review card.
+const AUTO_SAVE = new Set(['about_me', 'profile'])
+function savedLabel(type) {
+  if (type === 'about_me') return 'Added to your About Me — change it any time'
+  if (type === 'profile') return 'Saved — you can edit it any time'
+  return 'Saved'
+}
+
 // Pull a ```json { proposals: [...] } ``` block out of a reply. Defensive: never throws.
 function parseReply(text) {
   if (!text) return { prose: '', proposals: [] }
@@ -135,8 +144,11 @@ export default function GuidedOnboarding({
     setError(null)
     setLoading(true)
 
-    // API history excludes the scripted opener (the model joins mid-conversation).
-    const apiHistory = nextDisplay.filter(m => !m.scripted).map(m => ({ role: m.role, content: m.content }))
+    // API history = real user/assistant turns only (skip the scripted opener and
+    // the inline "saved" confirmations).
+    const apiHistory = nextDisplay
+      .filter(m => !m.scripted && (m.role === 'user' || m.role === 'assistant'))
+      .map(m => ({ role: m.role, content: m.content }))
 
     try {
       const { data, error: invokeErr } = await supabase.functions.invoke('onboarding-assistant', {
@@ -150,7 +162,18 @@ export default function GuidedOnboarding({
       const reply = data?.reply || ''
       const { prose, proposals } = parseReply(reply)
       setMessages(h => [...h, { role: 'assistant', content: prose || reply }])
-      if (proposals.length) setCards(c => [...c, ...proposals])
+      // Soft entries save straight away (with a gentle inline note); higher-stakes
+      // ones surface a review card. If a direct save fails, fall back to a card.
+      for (const p of proposals) {
+        if (AUTO_SAVE.has(p.type)) {
+          try {
+            await writeCard(p)
+            setMessages(h => [...h, { role: 'saved', content: savedLabel(p.type) }])
+          } catch { setCards(c => [...c, p]) }
+        } else {
+          setCards(c => [...c, p])
+        }
+      }
     } catch (err) {
       setError(err.message || 'Something went wrong. Please try again.')
     } finally {
@@ -239,18 +262,26 @@ export default function GuidedOnboarding({
         {/* Conversation */}
         <div ref={scrollRef} className="px-5 py-5 space-y-4 overflow-y-auto flex-1">
           {messages.map((m, i) => (
-            <div key={i} className={`flex gap-3 ${m.role === 'user' ? 'flex-row-reverse' : ''}`}>
-              {m.role === 'assistant' && (
-                <div className="w-7 h-7 rounded-full bg-navy-950 flex items-center justify-center shrink-0">
-                  <Sparkles size={13} className="text-sage-300" />
-                </div>
-              )}
-              <div className={`rounded-2xl px-4 py-3 text-sm leading-relaxed max-w-[85%] ${
-                m.role === 'user' ? 'bg-navy-800 text-white rounded-tr-sm whitespace-pre-wrap' : 'bg-stone-50 text-navy-900 rounded-tl-sm'
-              }`}>
-                {m.role === 'assistant' ? <Markdown>{m.content}</Markdown> : m.content}
+            m.role === 'saved' ? (
+              <div key={i} className="flex justify-center">
+                <span className="text-xs text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-full px-3 py-1 inline-flex items-center gap-1.5">
+                  <Check size={12} /> {m.content}
+                </span>
               </div>
-            </div>
+            ) : (
+              <div key={i} className={`flex gap-3 ${m.role === 'user' ? 'flex-row-reverse' : ''}`}>
+                {m.role === 'assistant' && (
+                  <div className="w-7 h-7 rounded-full bg-navy-950 flex items-center justify-center shrink-0">
+                    <Sparkles size={13} className="text-sage-300" />
+                  </div>
+                )}
+                <div className={`rounded-2xl px-4 py-3 text-sm leading-relaxed max-w-[85%] ${
+                  m.role === 'user' ? 'bg-navy-800 text-white rounded-tr-sm whitespace-pre-wrap' : 'bg-stone-50 text-navy-900 rounded-tl-sm'
+                }`}>
+                  {m.role === 'assistant' ? <Markdown>{m.content}</Markdown> : m.content}
+                </div>
+              </div>
+            )
           ))}
 
           {loading && (
