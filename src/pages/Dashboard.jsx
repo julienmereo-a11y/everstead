@@ -1619,18 +1619,7 @@ function OverviewSection({ profile, accounts, documents, people, instructions, m
         )}
       </div>
 
-      {/* Readiness Coach card (Feature 3) */}
-      <ReadinessCoachCard
-        profile={profile}
-        stats={{
-          accountsCount: accounts.length,
-          documentsCount: documents.filter(d => d.status !== 'missing').length,
-          contactsCount: people.length,
-          instructionsCount: instructions.length,
-          wishesCount: 0,
-        }}
-        onNavigate={onNavigate}
-      />
+      {/* Readiness coach card removed — the floating "Ask your coach" covers this. */}
 
       {/* Legacy messages CTA — Family/Advisor plans */}
       {planLimits?.personalMessages && (
