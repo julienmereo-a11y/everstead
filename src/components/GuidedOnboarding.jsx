@@ -181,6 +181,41 @@ export default function GuidedOnboarding({
     }
   }
 
+  // After a higher-stakes item is saved, nudge the assistant to suggest a next
+  // small step — keeps onboarding feeling like a conversation, not a dead end.
+  const continueAfterSave = async () => {
+    if (loading) return
+    setError(null)
+    setLoading(true)
+    const trigger = { role: 'user', hidden: true, content: "(I've just added that to my Everstead. Warmly suggest one more small thing I could add if I'd like — or, if I've done a few things now, let me know I'm all set and that it all keeps.)" }
+    const nextDisplay = [...messages, trigger]
+    setMessages(nextDisplay)
+    const apiHistory = nextDisplay
+      .filter(m => !m.scripted && (m.role === 'user' || m.role === 'assistant'))
+      .map(m => ({ role: m.role, content: m.content }))
+    try {
+      const { data, error: invokeErr } = await supabase.functions.invoke('onboarding-assistant', { body: { messages: apiHistory } })
+      if (invokeErr) {
+        let msg = 'The assistant is taking a moment. Please try again.'
+        try { msg = (await invokeErr.context?.json())?.error || msg } catch { /* keep default */ }
+        throw new Error(msg)
+      }
+      const reply = data?.reply || ''
+      const { prose, proposals } = parseReply(reply)
+      setMessages(h => [...h, { role: 'assistant', content: prose || reply }])
+      for (const p of proposals) {
+        if (AUTO_SAVE.has(p.type)) {
+          try { await writeCard(p); setMessages(h => [...h, { role: 'saved', content: savedLabel(p.type) }]) }
+          catch { setCards(c => [...c, p]) }
+        } else { setCards(c => [...c, p]) }
+      }
+    } catch (err) {
+      setError(err.message || 'Something went wrong. Please try again.')
+    } finally {
+      setLoading(false)
+    }
+  }
+
   // ── Proposal cards ──────────────────────────────────────────────────────────
   const editField = (id, key, value) =>
     setCards(cs => cs.map(c => c.id === id ? { ...c, fields: { ...c.fields, [key]: value }, status: 'idle', error: null } : c))
@@ -227,6 +262,7 @@ export default function GuidedOnboarding({
   const addConfirmed = async () => {
     const approved = cards.filter(c => c.approved && c.status !== 'saved')
     if (!approved.length) return
+    let savedAny = false
     for (const card of approved) {
       const err = validate(card)
       if (err) { setCards(cs => cs.map(c => c.id === card.id ? { ...c, status: 'error', error: err } : c)); continue }
@@ -234,11 +270,13 @@ export default function GuidedOnboarding({
       try {
         await writeCard(card)
         setCards(cs => cs.map(c => c.id === card.id ? { ...c, status: 'saved' } : c))
+        savedAny = true
       } catch (e) {
         setCards(cs => cs.map(c => c.id === card.id ? { ...c, status: 'error', error: e.message || 'Could not save this.' } : c))
       }
     }
     setTimeout(() => setCards(cs => cs.filter(c => c.status !== 'saved')), 1600)
+    if (savedAny) continueAfterSave()
   }
 
   const approvedCount = cards.filter(c => c.approved && c.status !== 'saved').length
@@ -264,7 +302,7 @@ export default function GuidedOnboarding({
 
         {/* Conversation */}
         <div ref={scrollRef} className="px-5 py-5 space-y-4 overflow-y-auto flex-1">
-          {messages.map((m, i) => (
+          {messages.filter(m => !m.hidden).map((m, i) => (
             m.role === 'saved' ? (
               <div key={i} className="flex justify-center">
                 <span className="text-xs text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-full px-3 py-1 inline-flex items-center gap-1.5">
