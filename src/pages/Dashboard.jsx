@@ -346,6 +346,7 @@ export default function Dashboard() {
   const [demoPeople, setDemoPeople] = useState(DEMO_PEOPLE)
   // First-run "Welcome to Everstead" guided onboarding — shown once on first login
   const [showWelcome, setShowWelcome] = useState(false)
+  const [showTour, setShowTour] = useState(false)
 
   // Real data hooks — only used when not in demo mode
   const realAccounts      = useAccounts()
@@ -870,6 +871,7 @@ export default function Dashboard() {
           saveAboutMe={aboutMeHook.save}
           aboutMe={aboutMe}
           onClose={() => setShowWelcome(false)}
+          onStartTour={() => setShowTour(true)}
         />
       ) : (
         <WelcomeOnboarding
@@ -879,6 +881,12 @@ export default function Dashboard() {
           onGoToAboutMe={() => { setShowWelcome(false); setActiveSection('aboutme') }}
         />
       )
+    )}
+    {showTour && !isDemo && (
+      <DashboardTour
+        setActiveSection={setActiveSection}
+        onClose={() => { setShowTour(false); setActiveSection('overview') }}
+      />
     )}
     </>
   )
@@ -5869,3 +5877,45 @@ const input       = 'w-full border border-stone-200 rounded-lg px-3 py-2 text-sm
 const primaryBtn  = 'inline-flex items-center gap-2 btn-aurora text-white text-sm font-medium px-4 py-2 rounded-full hover:bg-navy-700 transition-colors'
 const secondaryBtn= 'inline-flex items-center gap-2 bg-white text-stone-700 text-sm font-medium px-4 py-2 rounded-full border border-stone-200 hover:bg-stone-50 transition-colors'
 const capitaliseFirst = (s) => s ? s.charAt(0).toUpperCase() + s.slice(1) : s
+
+// ── First-run tour: a short, warm walk through the real dashboard ─────────────
+const TOUR_STEPS = [
+  { id: 'overview', icon: Home,       title: 'Welcome home', body: 'Whenever you sign in, this is your calm overview — everything at a glance, no pressure to do it all at once.' },
+  { id: 'accounts', icon: Landmark,   title: 'Your vault', body: 'Your accounts, documents and subscriptions live here — the practical things, gathered safely in one place.' },
+  { id: 'people',   icon: Users,      title: 'The people you trust', body: 'Invite family or an executor and choose exactly what each person can see — and only when the time is right. Nothing is shared until you say so.' },
+  { id: 'aboutme',  icon: UserCircle, title: 'The part that’s really you', body: 'About Me is the heart of it — your story, your wishes, and messages for the people you love. Come back and add to it whenever something comes to mind.' },
+]
+function DashboardTour({ setActiveSection, onClose }) {
+  const [step, setStep] = useState(0)
+  useEffect(() => {
+    setActiveSection(TOUR_STEPS[step].id)
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }, [step, setActiveSection])
+  const s = TOUR_STEPS[step]
+  const Icon = s.icon
+  const last = step === TOUR_STEPS.length - 1
+  return (
+    <div className="fixed inset-0 z-[60] pointer-events-none flex items-end justify-center sm:justify-end p-4 sm:p-6">
+      <div className="pointer-events-auto w-full max-w-sm bg-white rounded-3xl shadow-2xl border border-stone-200 px-6 py-5 animate-fade-up">
+        <div className="flex items-center gap-2 mb-3">
+          <div className="w-8 h-8 rounded-xl bg-navy-950 flex items-center justify-center shrink-0"><Icon size={15} className="text-sage-300" /></div>
+          <span className="text-xs font-semibold uppercase tracking-wide text-stone-400">A quick look around · {step + 1}/{TOUR_STEPS.length}</span>
+        </div>
+        <h3 className="font-display text-xl text-navy-950 mb-1.5">{s.title}</h3>
+        <p className="text-sm text-stone-600 leading-relaxed mb-5">{s.body}</p>
+        <div className="flex items-center gap-1.5 mb-5">
+          {TOUR_STEPS.map((_, i) => <span key={i} className={`h-1.5 rounded-full transition-all ${i === step ? 'w-5 bg-navy-700' : 'w-1.5 bg-stone-200'}`} />)}
+        </div>
+        <div className="flex items-center justify-between">
+          <button onClick={onClose} className="text-xs text-stone-400 hover:text-stone-700 transition-colors">Skip</button>
+          <div className="flex items-center gap-2">
+            {step > 0 && <button onClick={() => setStep(step - 1)} className="text-sm text-stone-500 hover:text-navy-800 px-3 py-2">Back</button>}
+            <button onClick={() => last ? onClose() : setStep(step + 1)} className="btn-aurora inline-flex items-center gap-2 text-white text-sm font-semibold px-5 py-2.5 rounded-full">
+              {last ? 'All set 🎉' : <>Next <ArrowRight size={14} /></>}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}

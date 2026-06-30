@@ -104,7 +104,7 @@ function parseReply(text) {
 }
 
 export default function GuidedOnboarding({
-  profile, updateProfile, addAccount, addPerson, saveAboutMe, aboutMe, onClose,
+  profile, updateProfile, addAccount, addPerson, saveAboutMe, aboutMe, onClose, onStartTour,
 }) {
   const firstName = profile?.full_name?.split(' ')[0] || 'there'
 
@@ -125,7 +125,6 @@ export default function GuidedOnboarding({
 
   // Stages: chat → details (full profile) → celebrate → tour
   const [stage, setStage] = useState('chat')
-  const [tourStep, setTourStep] = useState(0)
   const [savingDetails, setSavingDetails] = useState(false)
   const [details, setDetails] = useState({
     full_name:     profile?.full_name     ?? '',
@@ -316,10 +315,7 @@ export default function GuidedOnboarding({
     <DetailsStage details={details} setDetails={setDetails} saving={savingDetails} onSave={saveDetails} onSkip={() => setStage('celebrate')} onClose={finish} />
   )
   if (stage === 'celebrate') return (
-    <CelebrateStage firstName={firstName} onTour={() => { setTourStep(0); setStage('tour') }} onDashboard={finish} />
-  )
-  if (stage === 'tour') return (
-    <TourStage step={tourStep} setStep={setTourStep} onDone={finish} />
+    <CelebrateStage firstName={firstName} onTour={() => { onStartTour?.(); finish() }} onDashboard={finish} />
   )
 
   return (
@@ -582,36 +578,4 @@ function CelebrateStage({ firstName, onTour, onDashboard }) {
   )
 }
 
-// ── Stage 4: a quick 5-step tour of the main features ─────────────────────────
-const TOUR = [
-  { emoji: '🗂️', title: 'Your vault', body: 'Everything in one secure place — accounts, assets, and the details your loved ones would otherwise have to hunt for.' },
-  { emoji: '📄', title: 'Documents', body: 'Keep wills, deeds and important paperwork together. Drop a file in and your assistant can even read it for you.' },
-  { emoji: '🤝', title: 'Trusted people', body: 'Invite family or executors and choose exactly what each person can see — and only when the time is right.' },
-  { emoji: '💛', title: 'About Me', body: 'The human heart of your plan — your story, your wishes, and messages for the people you love.' },
-  { emoji: '✨', title: 'Your AI assistant', body: 'Any time you like, just chat or drop in a document and it’ll help you set things up, one small step at a time.' },
-]
-function TourStage({ step, setStep, onDone }) {
-  const s = TOUR[step]
-  const last = step === TOUR.length - 1
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-navy-950/50 p-4">
-      <div className="w-full max-w-md bg-white rounded-3xl shadow-2xl overflow-hidden px-8 py-9 text-center">
-        <div className="text-4xl mb-4">{s.emoji}</div>
-        <h2 className="font-display text-2xl text-navy-950 mb-2">{s.title}</h2>
-        <p className="text-sm text-stone-500 leading-relaxed mb-7 max-w-xs mx-auto">{s.body}</p>
-        <div className="flex items-center justify-center gap-1.5 mb-7">
-          {TOUR.map((_, i) => <span key={i} className={`h-1.5 rounded-full transition-all ${i === step ? 'w-5 bg-navy-700' : 'w-1.5 bg-stone-200'}`} />)}
-        </div>
-        <div className="flex items-center justify-between gap-3">
-          <button onClick={onDone} className="text-xs text-stone-400 hover:text-stone-700">Skip tour</button>
-          <div className="flex items-center gap-2">
-            {step > 0 && <button onClick={() => setStep(step - 1)} className="text-sm text-stone-500 hover:text-navy-800 px-3 py-2">Back</button>}
-            <button onClick={() => last ? onDone() : setStep(step + 1)} className="btn-aurora inline-flex items-center gap-2 text-white text-sm font-semibold px-5 py-2.5 rounded-full">
-              {last ? <>Go to my dashboard <ArrowRight size={14} /></> : <>Next <ArrowRight size={14} /></>}
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-  )
-}
+// (The tour now runs on the real dashboard — see DashboardTour in Dashboard.jsx.)
