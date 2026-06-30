@@ -111,13 +111,13 @@ export default function GuidedOnboarding({
   // Scripted opener — instant, always on-spec. Shown but NOT sent to the model;
   // the system prompt knows the welcome + first question already happened.
   const opener = [
-    { role: 'assistant', scripted: true, content: `Welcome, ${firstName}. I'm really glad you're here. There's no rush today, and nothing you add is ever shared unless you choose to.` },
-    { role: 'assistant', scripted: true, content: "Before any of the practical bits, I'd love to start with you — the part that's actually worth keeping. Tell me one thing you'd want remembered: a song you love, something you believe in, or a moment that shaped you. Whatever comes to mind first." },
+    { role: 'assistant', scripted: true, content: `Welcome, **${firstName}** 👋 I'm really glad you're here. There's no rush today, and nothing you add is ever shared unless you choose to.` },
+    { role: 'assistant', scripted: true, content: "Before any of the practical bits, I'd love to start with **you** — the part that's actually worth keeping. Tell me one thing you'd want remembered: **a song you love** 🎵, something you believe in 💭, or a moment that shaped you ✨. Whatever comes to mind first." },
   ]
 
-  const [messages, setMessages] = useState(opener) // display history (includes scripted opener)
+  const [messages, setMessages] = useState([]) // opener is revealed below with a typing effect
   const [input, setInput] = useState('')
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(true) // start "typing" while the opener appears
   const [error, setError] = useState(null)
   const [cards, setCards] = useState([])
   const [closing, setClosing] = useState(false)
@@ -126,6 +126,13 @@ export default function GuidedOnboarding({
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: 'smooth' })
   }, [messages, loading, cards.length])
+
+  // Reveal the scripted opener with a short typing animation so the chat feels alive.
+  useEffect(() => {
+    const t1 = setTimeout(() => setMessages([opener[0]]), 650)
+    const t2 = setTimeout(() => { setMessages([opener[0], opener[1]]); setLoading(false) }, 1900)
+    return () => { clearTimeout(t1); clearTimeout(t2) }
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   const finish = async () => {
     setClosing(true)
