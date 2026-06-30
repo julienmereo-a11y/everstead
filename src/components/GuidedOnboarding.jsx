@@ -217,7 +217,7 @@ export default function GuidedOnboarding({
     if (loading) return
     setError(null)
     setLoading(true)
-    const trigger = { role: 'user', hidden: true, content: "(I've just added that to my Everstead. Warmly suggest one more small thing I could add if I'd like — or, if I've done a few things now, let me know I'm all set and that it all keeps.)" }
+    const trigger = { role: 'user', hidden: true, content: "(That's been added to my Everstead now — please do NOT propose it again or create another card for it. If it feels natural, warmly suggest ONE different small thing I might add next (like an account or a document) by simply asking me — don't create a save card yet, wait for my answer. Or, if I've added a few things now, let me know I'm all set and that it all keeps.)" }
     const nextDisplay = [...messages, trigger]
     setMessages(nextDisplay)
     const apiHistory = nextDisplay
