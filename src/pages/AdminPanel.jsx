@@ -6,7 +6,7 @@ import {
   FileText, Phone, Mail, Calendar, MapPin, Hash, MessageSquare,
   LogOut, Filter, ExternalLink, Shield, Users, Copy, Check,
   Loader2, Trash2, LayoutDashboard, Folder, BookOpen, Heart,
-  CreditCard, ChevronDown, ChevronUp, Search,
+  CreditCard, ChevronDown, ChevronUp, Search, Sparkles,
 } from 'lucide-react'
 import { getLiveReports, updateReportStatus, verifyReport, setOwnerStatus } from '../lib/demoData'
 import { supabase } from '../lib/supabase'
@@ -607,7 +607,7 @@ function TeamSection({ isDemo, currentUserEmail }) {
 // DEMO USERS
 // ─────────────────────────────────────────────────────────────
 const DEMO_USERS = [
-  { id: 'u1', full_name: 'James Thornton',   email: 'james@example.com',   phone: '+44 7700 900111', country: 'United Kingdom', nationality: 'British',  plan: 'family',    subscription_status: 'active',        billing_cycle: 'yearly',  readiness_score: 72, created_at: '2026-04-15T10:00:00Z', trial_ends_at: null,                   stripe_customer_id: 'cus_demo1', stripe_subscription_id: 'sub_demo1', accounts_count: 6, documents_count: 4, people_count: 3, instructions_count: 5, wishes_count: 2 },
+  { id: 'u1', full_name: 'James Thornton',   email: 'james@example.com',   phone: '+44 7700 900111', country: 'United Kingdom', nationality: 'British',  plan: 'family',    subscription_status: 'active',        billing_cycle: 'yearly',  readiness_score: 72, is_founding_member: true, created_at: '2026-04-15T10:00:00Z', trial_ends_at: null,                   stripe_customer_id: 'cus_demo1', stripe_subscription_id: 'sub_demo1', accounts_count: 6, documents_count: 4, people_count: 3, instructions_count: 5, wishes_count: 2 },
   { id: 'u2', full_name: 'Sarah Okafor',     email: 'sarah@example.com',   phone: '+44 7700 900222', country: 'United Kingdom', nationality: 'Nigerian',  plan: 'essential', subscription_status: 'trialing',       billing_cycle: 'monthly', readiness_score: 35, created_at: '2026-04-22T14:30:00Z', trial_ends_at: '2026-05-07T14:30:00Z', stripe_customer_id: 'cus_demo2', stripe_subscription_id: 'sub_demo2', accounts_count: 2, documents_count: 0, people_count: 1, instructions_count: 0, wishes_count: 0 },
   { id: 'u3', full_name: 'Marcus Webb',      email: 'marcus@example.com',  phone: null,              country: null,             nationality: null,        plan: 'essential', subscription_status: 'trialing',       billing_cycle: 'monthly', readiness_score: 10, created_at: '2026-05-01T09:00:00Z', trial_ends_at: '2026-05-15T09:00:00Z', stripe_customer_id: 'cus_demo3', stripe_subscription_id: 'sub_demo3', accounts_count: 1, documents_count: 0, people_count: 0, instructions_count: 0, wishes_count: 0 },
   { id: 'u4', full_name: 'Priya Sharma',     email: 'priya@example.com',   phone: '+44 7700 900444', country: 'United Kingdom', nationality: 'Indian',    plan: 'advisor',   subscription_status: 'active',        billing_cycle: 'yearly',  readiness_score: 91, created_at: '2026-04-10T08:00:00Z', trial_ends_at: null,                   stripe_customer_id: 'cus_demo4', stripe_subscription_id: 'sub_demo4', accounts_count: 12, documents_count: 8, people_count: 5, instructions_count: 9, wishes_count: 4 },
@@ -917,6 +917,15 @@ function UserRow({ u }) {
           <div className="flex items-center gap-2 flex-wrap">
             <p className="text-sm font-semibold text-navy-900 truncate">{u.full_name ?? '—'}</p>
             <span className={`text-xs font-medium px-2 py-0.5 rounded-full border capitalize ${planCls}`}>{u.plan}</span>
+            {u.is_founding_member && (
+              <span
+                className="inline-flex items-center gap-1 text-xs font-semibold px-2 py-0.5 rounded-full text-white"
+                style={{ background: 'linear-gradient(100deg,#2d5082,#6f6bc6,#6e9b6a)' }}
+                title="Founding member (registered with FOUNDING50)"
+              >
+                <Sparkles size={11} /> Founding
+              </span>
+            )}
             <span className={`text-xs font-medium px-2 py-0.5 rounded-full border ${statusCls}`}>
               {statusLabel}
               {daysLeft !== null && daysLeft > 0 && ` · ${daysLeft}d left`}
@@ -1246,7 +1255,7 @@ function OverviewSection({ isDemo }) {
 // CSV EXPORT
 // ─────────────────────────────────────────────────────────────
 function exportCsv(users) {
-  const headers = ['Name','Email','Phone','Country','Nationality','Plan','Billing','Status','Readiness %','Joined','Trial ends','Stripe customer']
+  const headers = ['Name','Email','Phone','Country','Nationality','Plan','Billing','Status','Readiness %','Joined','Trial ends','Stripe customer','Founding member']
   const rows = users.map(u => [
     u.full_name ?? '',
     u.email ?? '',
@@ -1260,6 +1269,7 @@ function exportCsv(users) {
     u.created_at ? new Date(u.created_at).toLocaleDateString('en-GB') : '',
     u.trial_ends_at ? new Date(u.trial_ends_at).toLocaleDateString('en-GB') : '',
     u.stripe_customer_id ?? '',
+    u.is_founding_member ? 'Yes' : '',
   ])
   const csv  = [headers, ...rows].map(r => r.map(v => `"${String(v).replace(/"/g, '""')}"`).join(',')).join('\n')
   const blob = new Blob([csv], { type: 'text/csv' })
@@ -1277,6 +1287,8 @@ function UsersSection({ isDemo }) {
   const [search, setSearch]         = useState('')
   const [planFilter, setPlan]       = useState('all')
   const [statusFilter, setStatus]   = useState('all')
+  const [foundingOnly, setFounding] = useState(false)
+  const foundingCount = users.filter(u => u.is_founding_member).length
 
   useEffect(() => {
     if (isDemo) return
@@ -1287,6 +1299,7 @@ function UsersSection({ isDemo }) {
   }, [isDemo])
 
   const visible = users.filter(u => {
+    if (foundingOnly && !u.is_founding_member) return false
     if (planFilter !== 'all' && u.plan !== planFilter) return false
     if (statusFilter === 'active')   return ['active', 'trialing'].includes(u.subscription_status)
     if (statusFilter === 'cancelling') return u.subscription_status === 'cancelling'
@@ -1358,6 +1371,18 @@ function UsersSection({ isDemo }) {
             >{l}</button>
           ))}
         </div>
+        {foundingCount > 0 && (
+          <button
+            onClick={() => setFounding(v => !v)}
+            title="Show only founding members"
+            className={`inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-2 rounded-xl border transition-colors ${
+              foundingOnly ? 'text-white border-transparent shadow-sm' : 'text-navy-700 border-stone-200 bg-white hover:bg-stone-50'
+            }`}
+            style={foundingOnly ? { background: 'linear-gradient(100deg,#2d5082,#6f6bc6,#6e9b6a)' } : undefined}
+          >
+            <Sparkles size={13} /> Founding · {foundingCount}
+          </button>
+        )}
         <button
           onClick={() => exportCsv(visible)}
           title="Export visible users to CSV"

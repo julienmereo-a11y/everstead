@@ -36,6 +36,8 @@ export default async function handler(req, res) {
     // discount rather than failing the signup after the card is confirmed.
     let promotionCodeId = null
     let couponFullyFree = false // a 100%-off promo (e.g. FOUNDING50) IS the free period
+    // Members who register with the FOUNDING50 code become founding members.
+    const isFoundingMember = !!promoCode && String(promoCode).trim().toUpperCase() === 'FOUNDING50'
     if (promoCode) {
       try {
         const list = await stripe.promotionCodes.list({
@@ -109,6 +111,14 @@ export default async function handler(req, res) {
       current_period_end:     currentPeriodEnd,
       ...(referredBy ? { referred_by: referredBy } : {}),
     }).eq('id', userId)
+
+    // Tag founding members (registered with FOUNDING50) as a separate best-effort
+    // write, so it can never break the core profile sync above.
+    if (isFoundingMember && promotionCodeId) {
+      const { error: foundingErr } = await supabase
+        .from('profiles').update({ is_founding_member: true }).eq('id', userId)
+      if (foundingErr) console.error('could not set is_founding_member:', foundingErr.message)
+    }
 
     return res.status(200).json({ subscriptionId: subscription.id, status: subscription.status })
   } catch (err) {

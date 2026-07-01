@@ -752,7 +752,13 @@ export default function Dashboard() {
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-sm font-medium text-white truncate">{activeProfile.full_name ?? 'Your Account'}</p>
-              <p className="text-xs text-stone-500 truncate capitalize">{activeProfile.plan} plan</p>
+              {activeProfile.is_founding_member ? (
+                <p className="text-xs truncate flex items-center gap-1" style={{ color: '#a5b4fc' }}>
+                  <Sparkles size={10} /> Founding member
+                </p>
+              ) : (
+                <p className="text-xs text-stone-500 truncate capitalize">{activeProfile.plan} plan</p>
+              )}
             </div>
           </div>
           <button
@@ -1338,6 +1344,15 @@ function OverviewSection({ profile, accounts, documents, people, instructions, m
           >
             <FileText size={12} /> Export plan
           </Link>
+          {profile.is_founding_member && (
+            <span
+              className="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1 rounded-full text-white shadow-sm"
+              style={{ background: 'linear-gradient(100deg,#2d5082,#6f6bc6,#6e9b6a)' }}
+              title="You joined Everstead as a founding member — thank you for being here from the very start."
+            >
+              <Sparkles size={12} /> Founding member
+            </span>
+          )}
           <span className={`text-xs font-semibold px-3 py-1 rounded-full border capitalize ${planBadge.cls}`}>
             {planBadge.label} plan
           </span>
