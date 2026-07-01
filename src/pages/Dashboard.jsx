@@ -139,7 +139,7 @@ function TrialBanner({ daysLeft, onUpgrade }) {
 
 function TrialExpiredModal({ profile, onUpgrade }) {
   return (
-    <div className="fixed inset-0 z-50 bg-navy-950/90 backdrop-blur-sm flex items-center justify-center p-6">
+    <div className="fixed inset-0 z-[60] bg-navy-950/90 backdrop-blur-sm flex items-center justify-center p-6">
       <div className="bg-white rounded-3xl shadow-2xl max-w-md w-full p-10 text-center">
         <div className="w-16 h-16 rounded-2xl bg-red-50 flex items-center justify-center mx-auto mb-6">
           <Lock size={28} className="text-red-500" />
@@ -214,7 +214,7 @@ function AdvisorCancelledBanner({ daysLeft, advisorName, onAddPayment }) {
 
 function AdvisorCancelledModal({ advisorName, onAddPayment }) {
   return (
-    <div className="fixed inset-0 z-50 bg-navy-950/90 backdrop-blur-sm flex items-center justify-center p-6">
+    <div className="fixed inset-0 z-[60] bg-navy-950/90 backdrop-blur-sm flex items-center justify-center p-6">
       <div className="bg-white rounded-3xl shadow-2xl max-w-md w-full p-10 text-center">
         <div className="w-16 h-16 rounded-2xl bg-orange-50 flex items-center justify-center mx-auto mb-6">
           <CreditCard size={28} className="text-orange-500" />
@@ -777,7 +777,7 @@ export default function Dashboard() {
       </aside>
 
       {/* ── MAIN CONTENT ────────────────────────────────────── */}
-      <main ref={mainRef} className="flex-1 overflow-auto flex flex-col min-w-0" style={{ backgroundColor: '#f8f7f5' }} aria-label="Main content">
+      <main ref={mainRef} className="flex-1 overflow-auto flex flex-col min-w-0 pb-24" style={{ backgroundColor: '#f8f7f5' }} aria-label="Main content">
 
         {/* Mobile top bar */}
         <div className="lg:hidden sticky top-0 z-20 bg-navy-950 border-b border-navy-800 px-4 py-3 flex items-center gap-3">
@@ -1875,7 +1875,7 @@ function OwnerDocViewerModal({ doc, onClose }) {
   if (!doc) return null
   const url = doc.file_url || null
   return (
-    <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4" onClick={onClose}>
+    <div className="fixed inset-0 z-[60] bg-black/60 backdrop-blur-sm flex items-center justify-center p-4" onClick={onClose}>
       <div
         className="relative bg-white rounded-[2rem] shadow-2xl flex flex-col w-full max-w-4xl"
         style={{ height: '90vh' }}
@@ -5412,7 +5412,7 @@ function SettingsSection({ profile, isDemo, updateProfile, refreshProfile, onUpg
                 )}
               </button>
               {reauthOpen && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-navy-900/40 p-4" onClick={() => !reauthBusy && setReauthOpen(false)}>
+                <div className="fixed inset-0 z-[60] flex items-center justify-center bg-navy-900/40 p-4" onClick={() => !reauthBusy && setReauthOpen(false)}>
                   <div className="bg-white rounded-2xl shadow-xl max-w-sm w-full p-6" onClick={e => e.stopPropagation()}>
                     <h3 className="text-lg font-semibold text-navy-900 mb-1">Confirm it’s you</h3>
                     <p className="text-xs text-stone-500 mb-4">For your security, please re-enter your password before downloading a full copy of your vault.</p>
@@ -5528,7 +5528,7 @@ function SettingsSection({ profile, isDemo, updateProfile, refreshProfile, onUpg
 
 function LifeEventPromptModal({ prompt, onNavigate, onClose }) {
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4" onClick={onClose}>
+    <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/40 p-4" onClick={onClose}>
       <div className="bg-white rounded-2xl max-w-sm w-full p-6 shadow-xl" onClick={e => e.stopPropagation()}>
         <div className="flex items-start gap-3 mb-4">
           <div className="w-9 h-9 rounded-xl bg-amber-50 flex items-center justify-center shrink-0">
@@ -5563,7 +5563,7 @@ function LifeEventPromptModal({ prompt, onNavigate, onClose }) {
 function ExecutorPreviewModal({ profile, people, accounts, documents, instructions, onClose }) {
   const executor = people.find(p => p.role?.toLowerCase().includes('executor')) || people[0]
   return (
-    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/50 p-4" onClick={onClose}>
+    <div className="fixed inset-0 z-[60] flex items-end sm:items-center justify-center bg-black/50 p-4" onClick={onClose}>
       <div className="bg-white rounded-2xl max-w-lg w-full max-h-[88vh] overflow-y-auto shadow-2xl" onClick={e => e.stopPropagation()}>
         {/* Header */}
         <div className="sticky top-0 bg-navy-950 rounded-t-2xl px-6 py-4 flex items-center justify-between">
@@ -5739,7 +5739,7 @@ function LoadingSpinner() {
 
 function Modal({ title, onClose, children }) {
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={onClose} aria-hidden="true" />
       <div
         role="dialog"
