@@ -16,9 +16,26 @@ const PRICE_IDS = {
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' })
 
-  const { customerId, paymentMethodId, plan, billingCycle, userId, trialPeriodDays = 14, referredBy, promoCode } = req.body
-  if (!customerId || !paymentMethodId || !plan || !billingCycle || !userId) {
+  // The subscription is always created for the AUTHENTICATED user — never a
+  // client-supplied userId (which would let anyone write to any profile).
+  const authToken = (req.headers.authorization || '').replace(/^Bearer\s+/i, '')
+  if (!authToken) return res.status(401).json({ error: 'Unauthorized' })
+  const { data: { user }, error: authErr } = await supabase.auth.getUser(authToken)
+  if (authErr || !user) return res.status(401).json({ error: 'Unauthorized' })
+  const userId = user.id
+
+  const { customerId, paymentMethodId, plan, billingCycle, referredBy, promoCode } = req.body
+  // Trials are 14 days (21 via referral) — clamp so a caller can never mint longer.
+  const trialPeriodDays = Math.min(Math.max(parseInt(req.body.trialPeriodDays, 10) || 14, 1), 21)
+  if (!customerId || !paymentMethodId || !plan || !billingCycle) {
     return res.status(400).json({ error: 'Missing required fields' })
+  }
+
+  // The Stripe customer must be the caller's own (setup-intent wrote it at the card step).
+  const { data: callerProfile } = await supabase.from('profiles')
+    .select('stripe_customer_id').eq('id', userId).single()
+  if (!callerProfile?.stripe_customer_id || callerProfile.stripe_customer_id !== customerId) {
+    return res.status(403).json({ error: 'Forbidden' })
   }
 
   const priceId = PRICE_IDS[plan]?.[billingCycle]

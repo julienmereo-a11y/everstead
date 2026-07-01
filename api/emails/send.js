@@ -1,12 +1,48 @@
 import { Resend } from 'resend'
+import { requireAdmin, adminDb } from '../_lib/admin-auth.js'
 
 const resend = new Resend(process.env.RESEND_API_KEY)
+
+// Escape user-supplied text before interpolating into email HTML.
+const esc = (s) => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
+
+// Who may send what. This endpoint sends branded email from hello@everstead.care, so
+// every type is gated: admin-only types need an admin JWT; account types need any
+// valid user JWT; invite-accepted may instead prove itself with the invite token
+// (delegates accept without a session). Only the lead-gen tool report is public.
+const ADMIN_TYPES = new Set(['admin', 'admin-direct', 'info-request'])
+const USER_TYPES  = new Set(['welcome', 'invite', 'owner-registration'])
+
+async function verifyUser(req) {
+  const token = (req.headers.authorization || '').replace(/^Bearer\s+/i, '')
+  if (!token) return false
+  const { data: { user }, error } = await adminDb.auth.getUser(token)
+  return !error && !!user
+}
+
+async function verifyInviteToken(inviteToken) {
+  if (!inviteToken) return false
+  const { data } = await adminDb.from('trusted_people')
+    .select('id').eq('invite_token', inviteToken).maybeSingle()
+  return !!data
+}
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).end()
 
   const { type, ...body } = req.body
   if (!type) return res.status(400).json({ error: 'Missing type' })
+
+  if (ADMIN_TYPES.has(type)) {
+    const admin = await requireAdmin(req)
+    if (!admin) return res.status(403).json({ error: 'Forbidden' })
+  } else if (USER_TYPES.has(type)) {
+    if (!(await verifyUser(req))) return res.status(401).json({ error: 'Unauthorized' })
+  } else if (type === 'invite-accepted') {
+    const ok = (await verifyUser(req)) || (await verifyInviteToken(body.inviteToken))
+    if (!ok) return res.status(401).json({ error: 'Unauthorized' })
+  }
+  // 'tool-report' stays public — the Estate Readiness Score lead tool.
 
   try {
     if (type === 'welcome') {
@@ -324,12 +360,12 @@ function infoRequestHtml(reporterName, ownerName, message) {
         </td></tr>
         <tr><td style="padding:40px;">
           <h1 style="margin:0 0 16px;color:#0d1628;font-size:22px;font-weight:normal;">Additional information required</h1>
-          <p style="margin:0 0 16px;color:#4a5568;font-size:15px;line-height:1.7;">Hi ${reporterName || 'there'},</p>
+          <p style="margin:0 0 16px;color:#4a5568;font-size:15px;line-height:1.7;">Hi ${esc(reporterName) || 'there'},</p>
           <p style="margin:0 0 16px;color:#4a5568;font-size:15px;line-height:1.7;">
-            We are reviewing the report you submitted${ownerName ? ` regarding <strong>${ownerName}</strong>` : ''} and need a little more information before we can proceed.
+            We are reviewing the report you submitted${ownerName ? ` regarding <strong>${esc(ownerName)}</strong>` : ''} and need a little more information before we can proceed.
           </p>
           <div style="background:#f5f4f0;border-left:3px solid #4c7d47;border-radius:4px;padding:16px 20px;margin:24px 0;">
-            <p style="margin:0;color:#374151;font-size:15px;line-height:1.7;white-space:pre-wrap;">${message}</p>
+            <p style="margin:0;color:#374151;font-size:15px;line-height:1.7;white-space:pre-wrap;">${esc(message)}</p>
           </div>
           <p style="margin:0 0 0;color:#4a5568;font-size:15px;line-height:1.7;">
             Please reply directly to this email with the requested information and we will continue processing your report as quickly as possible.

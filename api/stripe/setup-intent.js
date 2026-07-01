@@ -33,8 +33,28 @@ const GEO_ALLOWED = new Set([
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' })
 
-  const { userId, email, name, plan, billingCycle, referredBy, trialPeriodDays = 14, existingCustomerId, country, nationality } = req.body
-  if (!userId || !email) return res.status(400).json({ error: 'Missing required fields' })
+  // Always operate on the AUTHENTICATED user — a client-supplied userId would let
+  // anyone overwrite another profile's stripe_customer_id.
+  const authToken = (req.headers.authorization || '').replace(/^Bearer\s+/i, '')
+  if (!authToken) return res.status(401).json({ error: 'Unauthorized' })
+  const { data: { user }, error: authErr } = await supabase.auth.getUser(authToken)
+  if (authErr || !user) return res.status(401).json({ error: 'Unauthorized' })
+  const userId = user.id
+
+  const { name, plan, billingCycle, referredBy, existingCustomerId } = req.body
+  const email = user.email || req.body.email
+  // Clamp: 14 days standard, 21 via referral — never client-mintable beyond that.
+  const trialPeriodDays = Math.min(Math.max(parseInt(req.body.trialPeriodDays, 10) || 14, 1), 21)
+  if (!email) return res.status(400).json({ error: 'Missing required fields' })
+
+  // A resumed customer must be the caller's own.
+  if (existingCustomerId) {
+    const { data: prof } = await supabase.from('profiles')
+      .select('stripe_customer_id').eq('id', userId).single()
+    if (prof?.stripe_customer_id !== existingCustomerId) {
+      return res.status(403).json({ error: 'Forbidden' })
+    }
+  }
 
   // ── IP-based geo enforcement (Vercel injects x-vercel-ip-country, no API call needed)
   const ipCountry = req.headers['x-vercel-ip-country']

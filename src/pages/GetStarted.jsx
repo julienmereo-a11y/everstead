@@ -12,6 +12,13 @@ import { PLANS, getStripe } from '../lib/stripe'
 import { PRICING } from '../config/pricing'
 import { supabase } from '../lib/supabase'
 
+// Stripe endpoints require the caller's JWT — the server derives the user from it
+// (never from a client-supplied userId).
+async function stripeAuthHeaders() {
+  const { data: { session } } = await supabase.auth.getSession()
+  return { 'Content-Type': 'application/json', 'Authorization': `Bearer ${session?.access_token || ''}` }
+}
+
 // ─────────────────────────────────────────────────────────────
 // CONSTANTS
 // ─────────────────────────────────────────────────────────────
@@ -133,7 +140,7 @@ function getPasswordStrength(pw) {
 // ─────────────────────────────────────────────────────────────
 
 export default function GetStarted() {
-  const { signUp } = useAuth()
+  const { signUp, user } = useAuth()
   const [searchParams] = useSearchParams()
   const navigate       = useNavigate()
 
@@ -203,7 +210,17 @@ export default function GetStarted() {
   }, [promoCode])
 
   // Adviser invite branding: ?adviser=<firmId> shows the firm's logo + name at signup.
-  const adviserId = searchParams.get('adviser') || null
+  // Persisted in sessionStorage (like the promo code) so it survives the OAuth round-trip.
+  const urlAdviser = searchParams.get('adviser') || null
+  const [adviserId, setAdviserId] = useState(() => {
+    if (urlAdviser) return urlAdviser
+    try { return sessionStorage.getItem('everstead_adviser') || null } catch { return null }
+  })
+  useEffect(() => {
+    if (!urlAdviser) return
+    setAdviserId(urlAdviser)
+    try { sessionStorage.setItem('everstead_adviser', urlAdviser) } catch { /* ignore */ }
+  }, [urlAdviser])
   const [adviserFirm, setAdviserFirm] = useState(null)
   useEffect(() => {
     if (!adviserId) return
@@ -215,6 +232,24 @@ export default function GetStarted() {
     }, () => {})
     return () => { cancelled = true }
   }, [adviserId])
+
+  // Once their account exists, link them to the inviting firm (server verifies a
+  // pending invite matches their email and enforces the firm's family cap).
+  useEffect(() => {
+    if (!adviserId || !user) return
+    ;(async () => {
+      try {
+        const { data: { session } } = await supabase.auth.getSession()
+        if (!session?.access_token) return
+        const res = await fetch('/api/adviser/claim-client-invite', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${session.access_token}` },
+        })
+        const data = await res.json().catch(() => ({}))
+        if (data?.linked) { try { sessionStorage.removeItem('everstead_adviser') } catch { /* ignore */ } }
+      } catch { /* non-blocking */ }
+    })()
+  }, [adviserId, user]) // eslint-disable-line react-hooks/exhaustive-deps
 
   // Geo access check — runs once on mount, 3-second timeout, fails open
   useEffect(() => {
@@ -300,7 +335,7 @@ export default function GetStarted() {
 
       const intentRes = await fetch('/api/stripe/setup-intent', {
         method:  'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: await stripeAuthHeaders(),
         body:    JSON.stringify({
           userId:             session.user.id,
           email:              profile.email || session.user.email,
@@ -385,7 +420,7 @@ export default function GetStarted() {
 
       const intentRes = await fetch('/api/stripe/setup-intent', {
         method:  'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: await stripeAuthHeaders(),
         body:    JSON.stringify({
           userId:             session.user.id,
           email:              profile?.email || session.user.email,
@@ -462,7 +497,7 @@ export default function GetStarted() {
       //    for the inline PaymentElement (no redirect to Stripe)
       const intentRes = await fetch('/api/stripe/setup-intent', {
         method:  'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: await stripeAuthHeaders(),
         body:    JSON.stringify({
           userId:          user?.id,
           email:           form.email,
@@ -1149,7 +1184,7 @@ function CheckoutForm({ trialDays, plan, billingCycle, customerId, referredBy, p
 
       const subRes = await fetch('/api/stripe/create-subscription', {
         method:  'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: await stripeAuthHeaders(),
         body:    JSON.stringify({
           customerId,
           paymentMethodId,

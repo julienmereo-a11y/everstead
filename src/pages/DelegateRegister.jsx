@@ -68,6 +68,7 @@ export default function DelegateRegister() {
         ownerEmail:  owner?.email,
         inviteeName: invite?.name,
         role:        invite?.role,
+        inviteToken: token, // delegates may not have a session — the token is the proof
       }),
     }).catch(console.error)
 

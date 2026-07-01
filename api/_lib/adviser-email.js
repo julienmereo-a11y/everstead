@@ -43,6 +43,27 @@ export async function sendAdviserInvite({ email, firmName, token }) {
   }
 }
 
+const esc = (s) => String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
+
+// A firm invites a client family to create their Everstead plan.
+export async function sendClientInvite({ email, clientName, firmName, firmId, note }) {
+  if (!email || !firmId) return
+  const url = `${APP}/get-started?adviser=${firmId}`
+  const firm = esc(firmName) || 'Your adviser'
+  const inner = `
+    <h1 style="margin:0 0 16px;color:#0d1628;font-size:24px;font-weight:normal;">${firm} has invited you to Everstead</h1>
+    <p style="margin:0 0 16px;color:#4a5568;font-size:16px;line-height:1.6;">Hi ${esc(clientName) || 'there'}, <strong>${firm}</strong> uses Everstead to help families keep everything their loved ones would need — accounts, documents, trusted people and final wishes — organised in one secure place.</p>
+    ${note ? `<p style="margin:0 0 16px;color:#4a5568;font-size:15px;line-height:1.6;border-left:3px solid #e8e5e0;padding-left:14px;font-style:italic;">&ldquo;${esc(note)}&rdquo;</p>` : ''}
+    <p style="margin:0 0 28px;color:#4a5568;font-size:16px;line-height:1.6;">Create your plan below — you stay in full control of your information, and only ever share what you choose.</p>
+    ${button(url, 'Set up my Everstead plan →')}
+    <p style="margin:28px 0 0;color:#9ca3af;font-size:13px;line-height:1.5;">This invitation was sent to ${esc(email)} at the request of ${firm}. If you weren't expecting it, you can ignore this email.</p>`
+  try {
+    await resend.emails.send({ from: FROM, to: email, subject: `${firmName || 'Your adviser'} has invited you to Everstead`, html: shell(inner) })
+  } catch (err) {
+    console.error('[adviser-email] client invite failed:', err?.message)
+  }
+}
+
 // Tell an EXISTING Everstead account they've been added to a firm's portal.
 export async function sendAdviserAddedNotice({ email, firmName }) {
   if (!email) return

@@ -335,10 +335,11 @@ function ReportDetail({ report, onClose, onAction }) {
           onClose={() => setShowInfoModal(false)}
           onSend={async (msg) => {
             setShowInfoModal(false)
-            // Actually send the email to the reporter
+            // Actually send the email to the reporter (admin-gated endpoint)
+            const { data: { session } } = await supabase.auth.getSession()
             fetch('/api/emails/send', {
               method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
+              headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${session?.access_token || ''}` },
               body: JSON.stringify({
                 type: 'info-request',
                 to: report.reporter_email,
@@ -437,10 +438,11 @@ function TeamSection({ isDemo, currentUserEmail }) {
         .insert({ email: trimmed, token, invited_by: currentUserEmail, status: 'pending' })
       if (insertErr) throw insertErr
 
-      // 2. Send invite email
+      // 2. Send invite email (admin-gated endpoint)
+      const { data: { session } } = await supabase.auth.getSession()
       const emailRes = await fetch('/api/emails/send', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${session?.access_token || ''}` },
         body: JSON.stringify({
           type: 'admin',
           inviteeEmail: trimmed,
@@ -688,9 +690,10 @@ function EmailUserModal({ u, onClose }) {
     if (!subject.trim() || !message.trim()) return
     setState('sending')
     try {
+      const { data: { session } } = await supabase.auth.getSession()
       const res = await fetch('/api/emails/send', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${session?.access_token || ''}` },
         body: JSON.stringify({
           type: 'admin-direct',
           to: u.email,

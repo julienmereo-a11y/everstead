@@ -20,12 +20,14 @@ export default async function handler(req, res) {
     // Explicit no-trial — post-trial checkout
     subscriptionData = { metadata }
   } else if (trialEnd) {
-    // trialEnd is a JS timestamp (ms). Stripe needs Unix seconds and requires
-    // the value to be at least 48 hours in the future.
+    // trialEnd is a JS timestamp (ms). Stripe needs Unix seconds and requires the
+    // value to be at least 48 hours in the future. CLAMPED to 21 days out — the
+    // longest legitimate trial (referral) — so a caller can't mint free years.
     const trialEndUnix = Math.floor(trialEnd / 1000)
     const minTrialEnd  = Math.floor(Date.now() / 1000) + 48 * 3600
+    const maxTrialEnd  = Math.floor(Date.now() / 1000) + 21 * 86400
     subscriptionData = trialEndUnix > minTrialEnd
-      ? { trial_end: trialEndUnix, metadata }
+      ? { trial_end: Math.min(trialEndUnix, maxTrialEnd), metadata }
       : { trial_period_days: 14, metadata }
   } else {
     subscriptionData = { trial_period_days: 14, metadata }

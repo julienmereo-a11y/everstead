@@ -195,6 +195,7 @@ ${family.accounts.length===0?'<tr><td colspan="4" style="color:#888">None shared
 // ─────────────────────────────────────────────────────────────
 function FamilyView({ family, isDemo }) {
   const [activeTab, setActiveTab] = useState('overview')
+  const [resendState, setResendState] = useState('idle') // idle | sending | sent | error
   const defaultPerms = family.advisor_permissions ?? { accounts: true, documents: true, instructions: true, people: true, alerts: true }
   const [permissions, setPermissions] = useState(defaultPerms)
 
@@ -233,12 +234,24 @@ function FamilyView({ family, isDemo }) {
         </p>
         <button
           onClick={async () => {
-            if (isDemo) return
-            await supabase.functions.invoke('resend-advisor-invite', { body: { familyId: family.id } }).catch(console.error)
+            if (isDemo || resendState === 'sending') return
+            setResendState('sending')
+            try {
+              const { data: { session } } = await supabase.auth.getSession()
+              const res = await fetch('/api/adviser/invite-client', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${session?.access_token || ''}` },
+                body: JSON.stringify({ name: family.owner_name, email: family.owner_email }),
+              })
+              setResendState(res.ok ? 'sent' : 'error')
+            } catch { setResendState('error') }
+            setTimeout(() => setResendState('idle'), 3000)
           }}
-          className="inline-flex items-center gap-2 bg-amber-700 text-white text-sm font-semibold px-5 py-2.5 rounded-xl hover:bg-amber-800 transition-colors"
+          disabled={resendState === 'sending'}
+          className="inline-flex items-center gap-2 bg-amber-700 text-white text-sm font-semibold px-5 py-2.5 rounded-xl hover:bg-amber-800 transition-colors disabled:opacity-60"
         >
-          <Send size={14} /> Resend invite
+          {resendState === 'sending' ? <Loader2 size={14} className="animate-spin" /> : <Send size={14} />}
+          {resendState === 'sent' ? 'Invite sent ✓' : resendState === 'error' ? 'Failed — retry' : 'Resend invite'}
         </button>
       </div>
     )
@@ -307,6 +320,7 @@ function FamilyView({ family, isDemo }) {
       {activeTab === 'activity'     && <FamilyActivityTab activityLog={family.activity_log ?? []} />}
       {activeTab === 'notes'        && (
         <FamilyNotesTab
+          family={family}
           advisorNotes={advisorNotes} setAdvisorNotes={setAdvisorNotes}
           nextReviewDate={nextReviewDate} setNextReviewDate={setNextReviewDate}
           meetingNotes={meetingNotes} setMeetingNotes={setMeetingNotes}
@@ -314,7 +328,7 @@ function FamilyView({ family, isDemo }) {
           isDemo={isDemo}
         />
       )}
-      {activeTab === 'access'       && <AdvisorAccessTab family={family} permissions={permissions} setPermissions={setPermissions} isDemo={isDemo} />}
+      {activeTab === 'access'       && <AdvisorAccessTab family={family} permissions={permissions} />}
     </div>
   )
 }
@@ -334,11 +348,9 @@ function LockedTabPanel({ section }) {
   )
 }
 
-// ── Adviser access tab (family-controlled permissions) ─────────
-function AdvisorAccessTab({ family, permissions, setPermissions, isDemo }) {
-  const [saved, setSaved] = useState(false)
-  const [saving, setSaving] = useState(false)
-
+// ── Adviser access tab — READ-ONLY for advisers. The client controls what they
+// share from their own account; an adviser can never request or expand access here.
+function AdvisorAccessTab({ family, permissions }) {
   const SECTIONS = [
     { key: 'accounts',     label: 'Accounts',      desc: 'Bank accounts, investments, pensions and their balances.', icon: Wallet },
     { key: 'documents',    label: 'Documents',     desc: 'Uploaded documents such as wills, LPAs, and insurance policies.', icon: FileText },
@@ -347,47 +359,16 @@ function AdvisorAccessTab({ family, permissions, setPermissions, isDemo }) {
     { key: 'alerts',       label: 'Alerts',        desc: 'Plan readiness alerts and expiry warnings.', icon: Bell },
   ]
 
-  const toggle = (key) => {
-    setPermissions(p => ({ ...p, [key]: !p[key] }))
-    setSaved(false)
-  }
-
-  const handleSave = async () => {
-    if (isDemo) { setSaved(true); return }
-    setSaving(true)
-    try {
-      const { supabase } = await import('../lib/supabase')
-      const { error } = await supabase
-        .from('advisor_permissions')
-        .upsert({
-          family_id:    family.id,
-          owner_id:     family.owner_id,
-          accounts:     permissions.accounts,
-          documents:    permissions.documents,
-          instructions: permissions.instructions,
-          people:       permissions.people,
-          alerts:       permissions.alerts,
-          updated_at:   new Date().toISOString(),
-        }, { onConflict: 'family_id' })
-      if (error) throw error
-      setSaved(true)
-    } catch (err) {
-      console.error('Failed to save advisor permissions:', err)
-      alert('Could not save changes. Please try again.')
-    } finally {
-      setSaving(false)
-    }
-  }
-
   const grantedCount = Object.values(permissions).filter(Boolean).length
 
   return (
     <div className="rounded-[2rem] border border-stone-200 bg-white p-7 space-y-6">
       <div className="flex items-start justify-between gap-4">
         <div>
-          <h3 className="font-semibold text-navy-900 text-base">Adviser access controls</h3>
+          <h3 className="font-semibold text-navy-900 text-base">What {family.owner_name} shares with you</h3>
           <p className="text-stone-500 text-sm mt-1 leading-relaxed max-w-lg">
-            Control exactly what <strong>{family.advisor_role}</strong> can see in your plan. You can change these at any time — your advisor is notified when access is updated.
+            <strong>{family.owner_name}</strong> controls this from their own account and can change it at any time.
+            You cannot request or expand your own access — if you need to see more, ask them directly.
           </p>
         </div>
         <span className="shrink-0 text-xs font-semibold bg-navy-50 text-navy-700 border border-navy-200 px-2.5 py-1 rounded-full">
@@ -401,7 +382,7 @@ function AdvisorAccessTab({ family, permissions, setPermissions, isDemo }) {
           return (
             <div
               key={key}
-              className={`flex items-center gap-4 p-4 rounded-2xl border transition-all ${enabled ? 'border-sage-200 bg-sage-50' : 'border-stone-200 bg-stone-50'}`}
+              className={`flex items-center gap-4 p-4 rounded-2xl border ${enabled ? 'border-sage-200 bg-sage-50' : 'border-stone-200 bg-stone-50'}`}
             >
               <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${enabled ? 'bg-sage-100' : 'bg-stone-200'}`}>
                 <Icon size={17} className={enabled ? 'text-sage-700' : 'text-stone-400'} />
@@ -410,29 +391,20 @@ function AdvisorAccessTab({ family, permissions, setPermissions, isDemo }) {
                 <p className={`text-sm font-semibold ${enabled ? 'text-navy-900' : 'text-stone-500'}`}>{label}</p>
                 <p className="text-xs text-stone-500 mt-0.5 leading-relaxed">{desc}</p>
               </div>
-              <button
-                onClick={() => toggle(key)}
-                className={`shrink-0 flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg transition-colors ${
-                  enabled ? 'bg-sage-500 text-white hover:bg-sage-600' : 'bg-stone-200 text-stone-600 hover:bg-stone-300'
-                }`}
-              >
+              <span className={`shrink-0 flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg ${
+                enabled ? 'bg-sage-100 text-sage-800' : 'bg-stone-200 text-stone-500'
+              }`}>
                 {enabled ? <Eye size={12} /> : <EyeOff size={12} />}
-                {enabled ? 'Visible' : 'Hidden'}
-              </button>
+                {enabled ? 'Shared with you' : 'Not shared'}
+              </span>
             </div>
           )
         })}
       </div>
 
-      <div className="flex items-center justify-between pt-2 border-t border-stone-100">
-        <p className="text-xs text-stone-400">Changes only apply to this advisor. Your data remains private to everyone else.</p>
-        <button
-          onClick={handleSave}
-          disabled={saving}
-          className="flex items-center gap-2 btn-aurora text-white text-sm font-semibold px-5 py-2.5 rounded-full hover:bg-navy-700 transition-colors disabled:opacity-60"
-        >
-          {saving ? <><Loader2 size={14} className="animate-spin" /> Saving…</> : saved ? <><CheckCircle2 size={14} /> Saved</> : 'Save changes'}
-        </button>
+      <div className="flex items-center gap-2 pt-2 border-t border-stone-100">
+        <Lock size={12} className="text-stone-400 shrink-0" />
+        <p className="text-xs text-stone-400">Access is granted by the client, never by Everstead or the adviser. Changes they make apply immediately.</p>
       </div>
     </div>
   )
@@ -616,9 +588,22 @@ function FamilyActivityTab({ activityLog }) {
 }
 
 // ── Notes tab (features 4 & 6) ────────────────────────────────
-function FamilyNotesTab({ advisorNotes, setAdvisorNotes, nextReviewDate, setNextReviewDate, meetingNotes, setMeetingNotes, saved, setSaved, isDemo }) {
-  const handleSave = () => {
-    // In demo mode: local state only
+function FamilyNotesTab({ family, advisorNotes, setAdvisorNotes, nextReviewDate, setNextReviewDate, meetingNotes, setMeetingNotes, saved, setSaved, isDemo }) {
+  const [saving, setSaving] = useState(false)
+  const [error, setError] = useState(null)
+
+  const handleSave = async () => {
+    setError(null)
+    if (isDemo) { setSaved(true); setTimeout(() => setSaved(false), 3000); return }
+    setSaving(true)
+    const { error: rpcError } = await supabase.rpc('save_adviser_client_note', {
+      p_client_id: family.id,
+      p_notes: advisorNotes || null,
+      p_next_review: nextReviewDate || null,
+      p_meeting_notes: meetingNotes || null,
+    })
+    setSaving(false)
+    if (rpcError) { setError('Could not save your notes. Please try again.'); return }
     setSaved(true)
     setTimeout(() => setSaved(false), 3000)
   }
@@ -676,10 +661,17 @@ function FamilyNotesTab({ advisorNotes, setAdvisorNotes, nextReviewDate, setNext
         </div>
       </div>
 
+      {error && (
+        <div className="flex items-start gap-2 bg-red-50 border border-red-200 rounded-xl px-3 py-2.5 text-xs text-red-700">
+          <AlertCircle size={13} className="mt-0.5 shrink-0" /> {error}
+        </div>
+      )}
       <div className="flex items-center justify-between pt-2 border-t border-stone-100">
-        <p className="text-xs text-stone-400">These notes are stored locally in demo mode and are not persisted.</p>
-        <button onClick={handleSave} className="flex items-center gap-2 btn-aurora text-white text-sm font-semibold px-5 py-2.5 rounded-full hover:bg-navy-700 transition-colors">
-          {saved ? <><CheckCircle2 size={14} /> Saved</> : 'Save notes'}
+        <p className="text-xs text-stone-400">
+          {isDemo ? 'These notes are stored locally in demo mode and are not persisted.' : 'Saved securely for your firm — never visible to the client.'}
+        </p>
+        <button onClick={handleSave} disabled={saving} className="flex items-center gap-2 btn-aurora text-white text-sm font-semibold px-5 py-2.5 rounded-full hover:bg-navy-700 transition-colors disabled:opacity-60">
+          {saving ? <><Loader2 size={14} className="animate-spin" /> Saving…</> : saved ? <><CheckCircle2 size={14} /> Saved</> : 'Save notes'}
         </button>
       </div>
     </div>
@@ -892,20 +884,36 @@ function EmptyTab({ icon: Icon, label }) {
 // ─────────────────────────────────────────────────────────────
 // INVITE FAMILY MODAL
 // ─────────────────────────────────────────────────────────────
-function InviteFamilyModal({ onClose, isDemo, familiesCount, familiesLimit }) {
+function InviteFamilyModal({ onClose, isDemo, familiesCount, familiesLimit, onInvited }) {
   const [form, setForm] = useState({ owner_name: '', owner_email: '', plan: 'essential', message: '' })
   const [saving, setSaving] = useState(false)
   const [sent, setSent] = useState(false)
+  const [error, setError] = useState(null)
 
   const atLimit = familiesCount >= familiesLimit
 
   const handleSubmit = async (e) => {
     e.preventDefault()
     setSaving(true)
+    setError(null)
     try {
-      if (!isDemo) { /* wire to Supabase edge function */ }
-      await new Promise(r => setTimeout(r, 800))
+      if (isDemo) {
+        await new Promise(r => setTimeout(r, 800))
+        setSent(true)
+        return
+      }
+      const { data: { session } } = await supabase.auth.getSession()
+      const res = await fetch('/api/adviser/invite-client', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${session?.access_token || ''}` },
+        body: JSON.stringify({ name: form.owner_name, email: form.owner_email, note: form.message }),
+      })
+      const data = await res.json().catch(() => ({}))
+      if (!res.ok) { setError(data.error || 'Could not send the invitation. Please try again.'); return }
       setSent(true)
+      onInvited?.()
+    } catch {
+      setError('Network error. Please try again.')
     } finally {
       setSaving(false)
     }
@@ -959,16 +967,6 @@ function InviteFamilyModal({ onClose, isDemo, familiesCount, familiesLimit }) {
           <input type="email" className={inputCls} value={form.owner_email} onChange={e => setForm(p => ({ ...p, owner_email: e.target.value }))} placeholder="client@example.com" required />
         </div>
         <div className="space-y-1">
-          <label className="block text-xs font-semibold text-stone-600">Plan</label>
-          <div className="flex items-center justify-between gap-3 border border-stone-200 rounded-xl px-4 py-3 bg-navy-50">
-            <div>
-              <p className="text-sm font-semibold text-navy-900">Family plan — included</p>
-              <p className="text-xs text-stone-500 mt-0.5">Covered by your Adviser subscription · no extra charge for your clients</p>
-            </div>
-            <span className="shrink-0 text-xs font-semibold bg-sage-100 text-sage-800 px-2.5 py-1 rounded-full">£0</span>
-          </div>
-        </div>
-        <div className="space-y-1">
           <label className="block text-xs font-semibold text-stone-600">Personal note (optional)</label>
           <textarea
             className={`${inputCls} min-h-[80px] resize-y`}
@@ -981,6 +979,11 @@ function InviteFamilyModal({ onClose, isDemo, familiesCount, familiesLimit }) {
           <Shield size={13} className="text-navy-600 shrink-0" />
           <p className="text-xs text-navy-700">You will only see information the client explicitly shares with you. They remain in full control of their plan.</p>
         </div>
+        {error && (
+          <div className="flex items-start gap-2 bg-red-50 border border-red-200 rounded-xl px-3 py-2.5 text-xs text-red-700">
+            <AlertCircle size={13} className="mt-0.5 shrink-0" /> {error}
+          </div>
+        )}
         <div className="flex gap-3 pt-1">
           <button type="submit" disabled={saving} className={`${primaryBtn} flex-1`}>
             {saving ? 'Sending…' : <><Send size={14} /> Send invitation</>}
@@ -2108,16 +2111,20 @@ export default function AdvisorPortal() {
     setDataLoading(true)
     // Link any pending firm invites for this email, then resolve firm + clients + team.
     await supabase.rpc('claim_adviser_invites').then(() => {}, () => {})
-    const [firmRes, clientRes, teamRes] = await Promise.all([
+    const [firmRes, clientRes, teamRes, inviteRes, notesRes] = await Promise.all([
       supabase.rpc('get_adviser_firm'),
       supabase.rpc('get_adviser_clients'),
       supabase.rpc('get_adviser_team'),
+      supabase.rpc('get_adviser_client_invites'),
+      supabase.rpc('get_adviser_client_notes'),
     ])
     setRealFirm(Array.isArray(firmRes.data) ? (firmRes.data[0] ?? null) : (firmRes.data ?? null))
     setRealTeam(teamRes.data || [])
+    const notesById = {}
+    for (const n of notesRes.data || []) notesById[n.client_id] = n
     // Map client profiles into the portal's family shape. Deep plan data (accounts,
     // documents, permissions) is the separate next phase — empty for now.
-    setRealFamilies((clientRes.data || []).map(c => ({
+    const linked = (clientRes.data || []).map(c => ({
       id: c.id,
       owner_name: c.full_name || c.email,
       owner_email: c.email,
@@ -2125,9 +2132,28 @@ export default function AdvisorPortal() {
       invite_status: 'accepted',
       advisor_role: 'Client',
       last_updated: c.created_at,
+      advisor_notes: notesById[c.id]?.notes ?? '',
+      next_review_date: notesById[c.id]?.next_review_date ?? '',
+      meeting_notes: notesById[c.id]?.meeting_notes ?? '',
       accounts: [], documents: [], instructions: [], trusted_people: [], alerts: [],
       permissions: {},
-    })))
+    }))
+    // Pending client invites appear in the list until the family signs up.
+    const linkedEmails = new Set(linked.map(f => (f.owner_email || '').toLowerCase()))
+    const pending = (inviteRes.data || [])
+      .filter(i => !linkedEmails.has((i.email || '').toLowerCase()))
+      .map(i => ({
+        id: `invite-${i.id}`,
+        owner_name: i.client_name || i.email,
+        owner_email: i.email,
+        readiness_score: 0,
+        invite_status: 'pending',
+        advisor_role: 'Invited',
+        last_updated: i.created_at,
+        accounts: [], documents: [], instructions: [], trusted_people: [], alerts: [],
+        permissions: {},
+      }))
+    setRealFamilies([...linked, ...pending])
     setDataLoading(false)
   }
 
@@ -2313,12 +2339,15 @@ export default function AdvisorPortal() {
               <div className="flex items-center justify-between px-1">
                 <p className="text-xs font-semibold text-stone-500 uppercase tracking-wide">Client families</p>
                 <div className="flex items-center gap-2">
-                  <button
-                    onClick={() => { setSelectMode(v => !v); setSelectedIds(new Set()) }}
-                    className={`text-[10px] font-semibold px-2 py-1 rounded-lg transition-colors ${selectMode ? 'bg-navy-100 text-navy-700' : 'text-stone-500 hover:text-navy-700'}`}
-                  >
-                    {selectMode ? 'Cancel' : 'Select'}
-                  </button>
+                  {/* Bulk nudge is demo-only until the real nudge email exists. */}
+                  {isDemo && (
+                    <button
+                      onClick={() => { setSelectMode(v => !v); setSelectedIds(new Set()) }}
+                      className={`text-[10px] font-semibold px-2 py-1 rounded-lg transition-colors ${selectMode ? 'bg-navy-100 text-navy-700' : 'text-stone-500 hover:text-navy-700'}`}
+                    >
+                      {selectMode ? 'Cancel' : 'Select'}
+                    </button>
+                  )}
                   <button
                     onClick={() => setShowInvite(true)}
                     disabled={families.length >= (advisor?.families_limit ?? 5)}
@@ -2378,8 +2407,8 @@ export default function AdvisorPortal() {
                 ))}
               </div>
 
-              {/* Bulk nudge bar */}
-              {selectMode && (
+              {/* Bulk nudge bar (demo-only, like the Select toggle above) */}
+              {isDemo && selectMode && (
                 <div className="border-t border-stone-100 pt-3 space-y-2">
                   {nudgeSent ? (
                     <div className="flex items-center gap-2 text-xs text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-xl px-3 py-2.5">
@@ -2458,6 +2487,7 @@ export default function AdvisorPortal() {
           isDemo={isDemo}
           familiesCount={families.length}
           familiesLimit={advisor?.families_limit ?? 5}
+          onInvited={isDemo ? undefined : loadPortal}
         />
       )}
 

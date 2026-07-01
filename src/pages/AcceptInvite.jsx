@@ -68,6 +68,7 @@ export default function AcceptInvite() {
         ownerEmail:  owner?.email,
         inviteeName: invite.name,
         role:        invite.role,
+        inviteToken: token, // proves this call comes from a real invite
       }),
     }).catch(console.error)
 

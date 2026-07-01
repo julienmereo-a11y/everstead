@@ -122,9 +122,10 @@ export function usePeople() {
     const access_grants = { accessAreas, accountCategories, documentTypes, accessTiming }
     const person = await base.add({ name, email, role, access_grants })
 
+    const { data: { session } } = await supabase.auth.getSession()
     fetch('/api/emails/send', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${session?.access_token || ''}` },
       body: JSON.stringify({
         type:         'invite',
         inviteeName:  name,
@@ -168,9 +169,10 @@ export function usePeople() {
     // Refresh local state so the new token is available
     base.refetch()
 
+    const { data: { session } } = await supabase.auth.getSession()
     fetch('/api/emails/send', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${session?.access_token || ''}` },
       body: JSON.stringify({
         type:         'invite',
         inviteeName:  person.name,
