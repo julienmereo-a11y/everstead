@@ -325,13 +325,15 @@ export default function GetStarted() {
     const plan    = searchParams.get('plan')
     const billing = searchParams.get('billing')
     if (planLocked) {
+      // Founding offer is Family YEARLY only — lock both, ignore any ?plan/?billing.
       setSelectedPlan('family')
+      setAnnualBilling(true)
     } else if (plan && PLAN_OPTIONS.find(p => p.id === plan)) {
       setSelectedPlan(plan)
       setStep(2)
     }
-    if (billing === 'monthly') setAnnualBilling(false)
-    if (billing === 'yearly')  setAnnualBilling(true)
+    if (!planLocked && billing === 'monthly') setAnnualBilling(false)
+    if (!planLocked && billing === 'yearly')  setAnnualBilling(true)
   }, [searchParams, planLocked])
 
   const handleChange = e => setForm(v => ({ ...v, [e.target.name]: e.target.value }))
@@ -615,27 +617,35 @@ export default function GetStarted() {
           {/* Form — hidden while loading or hard-blocked */}
           {(geoStatus === 'allowed' || geoStatus === 'soft-warn') && (<>
 
-          {/* Billing toggle — visible only on step 1 */}
+          {/* Billing toggle — visible only on step 1. Founding offer is Family Yearly only,
+              so it's locked (no monthly option). */}
           {step === 1 && (
             <div className="flex justify-center mb-8">
-              <div className="inline-flex items-center gap-1 bg-white border border-stone-200 rounded-full p-1 shadow-sm">
-                <button
-                  onClick={() => setAnnualBilling(false)}
-                  className={`px-5 py-1.5 text-sm font-medium rounded-full transition-colors ${!annualBilling ? 'bg-navy-800 text-white' : 'text-stone-500 hover:text-navy-800'}`}
-                >
-                  Monthly
-                </button>
-                <button
-                  onClick={() => setAnnualBilling(true)}
-                  className={`px-5 py-1.5 text-sm font-medium rounded-full transition-colors ${annualBilling ? 'bg-navy-800 text-white' : 'text-stone-500 hover:text-navy-800'}`}
-                >
-                  Yearly{' '}
-                  {annualBilling
-                    ? <span className="text-sage-300 font-semibold ml-1">✓ Saving 20%</span>
-                    : <span className="text-sage-500 font-semibold ml-1">Save 20%</span>
-                  }
-                </button>
-              </div>
+              {planLocked ? (
+                <div className="inline-flex items-center gap-2 bg-white border border-stone-200 rounded-full px-5 py-2 shadow-sm text-sm">
+                  <Lock size={13} className="text-stone-400" />
+                  <span className="font-medium text-navy-800">Billed annually</span>
+                </div>
+              ) : (
+                <div className="inline-flex items-center gap-1 bg-white border border-stone-200 rounded-full p-1 shadow-sm">
+                  <button
+                    onClick={() => setAnnualBilling(false)}
+                    className={`px-5 py-1.5 text-sm font-medium rounded-full transition-colors ${!annualBilling ? 'bg-navy-800 text-white' : 'text-stone-500 hover:text-navy-800'}`}
+                  >
+                    Monthly
+                  </button>
+                  <button
+                    onClick={() => setAnnualBilling(true)}
+                    className={`px-5 py-1.5 text-sm font-medium rounded-full transition-colors ${annualBilling ? 'bg-navy-800 text-white' : 'text-stone-500 hover:text-navy-800'}`}
+                  >
+                    Yearly{' '}
+                    {annualBilling
+                      ? <span className="text-sage-300 font-semibold ml-1">✓ Saving 20%</span>
+                      : <span className="text-sage-500 font-semibold ml-1">Save 20%</span>
+                    }
+                  </button>
+                </div>
+              )}
             </div>
           )}
 
