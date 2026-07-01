@@ -905,8 +905,9 @@ function AdminActions({ u, onTrialExtended }) {
           </button>
         )}
 
-        {/* Apply founding deal — needs a subscription/card on file */}
-        {u.stripe_subscription_id && (
+        {/* Apply founding deal — case-by-case. Works if they have a subscription or a
+            card on file; otherwise it tells you to send the FOUNDING50 link. */}
+        {u.plan !== 'advisor' && (
           <button
             onClick={applyFounding}
             disabled={foundingState === 'sending'}
