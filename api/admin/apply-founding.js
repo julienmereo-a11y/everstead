@@ -26,16 +26,26 @@ export default async function handler(req, res) {
     .from('profiles').select('id, email, full_name, stripe_customer_id, stripe_subscription_id').eq('id', userId).single()
   if (profErr || !prof) return res.status(404).json({ error: 'User not found.' })
 
-  // Resolve FOUNDING50 → its coupon, and refuse if it isn't genuinely 100% off.
-  let coupon
+  // Resolve FOUNDING50 to its Stripe coupon. Stripe distinguishes a "promotion code"
+  // (customer-facing, what checkout uses) from a "coupon" (the discount itself), so try
+  // both, then a case-insensitive scan — and report precisely if it's found-but-wrong.
+  let coupon = null
   try {
-    const list = await stripe.promotionCodes.list({ code: FOUNDING_CODE, active: true, limit: 1, expand: ['data.coupon'] })
-    coupon = list.data[0]?.coupon
+    const promoList = await stripe.promotionCodes.list({ code: FOUNDING_CODE, limit: 1, expand: ['data.coupon'] })
+    if (promoList.data[0]?.coupon) coupon = promoList.data[0].coupon
+    if (!coupon) { try { coupon = await stripe.coupons.retrieve(FOUNDING_CODE) } catch { /* not a coupon id */ } }
+    if (!coupon) {
+      const coupons = await stripe.coupons.list({ limit: 100 })
+      coupon = coupons.data.find(c => (c.id || '').toUpperCase() === FOUNDING_CODE || (c.name || '').toUpperCase() === FOUNDING_CODE) || null
+    }
   } catch (e) {
-    return res.status(502).json({ error: `Could not read the FOUNDING50 coupon from Stripe: ${e.message}` })
+    return res.status(502).json({ error: `Could not read Stripe coupons: ${e.message}` })
   }
-  if (!coupon || coupon.percent_off !== 100) {
-    return res.status(409).json({ error: 'The FOUNDING50 coupon is missing or not 100% off in Stripe. Fix the coupon before applying.' })
+  if (!coupon) {
+    return res.status(409).json({ error: 'No FOUNDING50 promotion code or coupon found in Stripe. Create a promotion code "FOUNDING50" that points to a 100%-off (repeating, 12 months) coupon.' })
+  }
+  if (coupon.percent_off !== 100) {
+    return res.status(409).json({ error: `Found FOUNDING50 in Stripe, but it's ${coupon.percent_off ? coupon.percent_off + '% off' : 'not a percentage discount'} — the founding deal needs a 100%-off coupon.` })
   }
 
   const meta = { plan: 'family', billing_cycle: 'yearly', promo_code: FOUNDING_CODE, founding_applied: 'true', user_id: userId }
