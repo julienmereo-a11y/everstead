@@ -7,6 +7,7 @@ import {
   LogOut, Filter, ExternalLink, Shield, Users, Copy, Check,
   Loader2, Trash2, LayoutDashboard, Folder, BookOpen, Heart,
   CreditCard, ChevronDown, ChevronUp, Search, Sparkles,
+  Building2, Plus, Upload, Pencil, PoundSterling, ArrowLeft,
 } from 'lucide-react'
 import { getLiveReports, updateReportStatus, verifyReport, setOwnerStatus } from '../lib/demoData'
 import { supabase } from '../lib/supabase'
@@ -1252,6 +1253,534 @@ function OverviewSection({ isDemo }) {
 }
 
 // ─────────────────────────────────────────────────────────────
+// ADVISERS (B2B firm management) — admin side only
+// ─────────────────────────────────────────────────────────────
+async function adminPost(url, body) {
+  const { data: { session } } = await supabase.auth.getSession()
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${session?.access_token || ''}` },
+    body: JSON.stringify(body),
+  })
+  const data = await res.json().catch(() => ({}))
+  return { ok: res.ok, data, error: data?.error }
+}
+
+// Money is stored in pennies. These convert for display / form entry.
+const gbp = (pennies) => '£' + ((Number(pennies) || 0) / 100).toLocaleString('en-GB', { minimumFractionDigits: 0, maximumFractionDigits: 2 })
+const penceToPounds = (p) => ((Number(p) || 0) / 100).toFixed(2)
+const poundsToPence = (s) => Math.max(0, Math.round((parseFloat(String(s).replace(/[^0-9.]/g, '')) || 0) * 100))
+
+const inputCls = 'w-full border border-stone-200 rounded-xl px-3 py-2 text-sm text-navy-900 focus:outline-none focus:ring-2 focus:ring-navy-300'
+
+const ADVISER_STATUS = {
+  pilot:     { label: 'Pilot',     cls: 'bg-navy-50 text-navy-700 border-navy-200' },
+  active:    { label: 'Active',    cls: 'bg-emerald-50 text-emerald-700 border-emerald-200' },
+  paused:    { label: 'Paused',    cls: 'bg-amber-50 text-amber-700 border-amber-200' },
+  cancelled: { label: 'Cancelled', cls: 'bg-stone-100 text-stone-500 border-stone-200' },
+}
+const INVOICE_STATUS = {
+  paid:   { label: 'Paid',   cls: 'bg-emerald-50 text-emerald-700 border-emerald-200' },
+  unpaid: { label: 'Unpaid', cls: 'bg-amber-50 text-amber-700 border-amber-200' },
+  waived: { label: 'Waived', cls: 'bg-stone-100 text-stone-500 border-stone-200' },
+}
+
+const DEMO_ADVISERS = [
+  { id: 'adv1', firm_name: 'Thornton & Vale Solicitors', contact_name: 'Rachel Vale', contact_email: 'rachel@thorntonvale.co.uk', logo_url: null, status: 'pilot', plan_type: 'pilot', platform_fee: 0, price_per_family: 0, max_families: 25, pilot_end_date: '2027-06-01', billing_start_date: '2027-06-01', notes: 'First pilot firm — free first year.', created_at: '2026-06-20T10:00:00Z', families_used: 8, latest_invoice: { status: 'waived', amount: 0, issue_date: '2026-06-20' } },
+  { id: 'adv2', firm_name: 'Hartwell Financial Planning', contact_name: 'James Hartwell', contact_email: 'james@hartwellfp.co.uk', logo_url: null, status: 'active', plan_type: 'paid', platform_fee: 25000, price_per_family: 1200, max_families: 50, pilot_end_date: null, billing_start_date: '2026-05-01', notes: '', created_at: '2026-04-10T10:00:00Z', families_used: 42, latest_invoice: { status: 'paid', amount: 75400, issue_date: '2026-06-01' } },
+]
+const DEMO_ADVISER_FAMILIES = {
+  adv1: [
+    { id: 'f1', full_name: 'Margaret Ellis', email: 'margaret@example.com', plan: 'family', subscription_status: 'active', readiness_score: 68 },
+    { id: 'f2', full_name: 'Raymond Clarke', email: 'raymond@example.com', plan: 'family', subscription_status: 'active', readiness_score: 41 },
+  ],
+  adv2: [
+    { id: 'f3', full_name: 'Susan Bright', email: 'susan@example.com', plan: 'family', subscription_status: 'active', readiness_score: 85 },
+  ],
+}
+const DEMO_ADVISER_INVOICES = {
+  adv1: [{ id: 'i1', adviser_id: 'adv1', amount: 0, currency: 'GBP', issue_date: '2026-06-20', due_date: null, status: 'waived', file_path: null, notes: 'Free pilot — first year.' }],
+  adv2: [{ id: 'i2', adviser_id: 'adv2', amount: 75400, currency: 'GBP', issue_date: '2026-06-01', due_date: '2026-06-15', status: 'paid', file_path: null, notes: '£250 platform + 42 families' }],
+}
+
+function AdviserStatusPill({ status }) {
+  const m = ADVISER_STATUS[status] ?? ADVISER_STATUS.pilot
+  return <span className={`text-xs font-semibold px-2.5 py-1 rounded-full border ${m.cls}`}>{m.label}</span>
+}
+
+function Modal({ title, onClose, children }) {
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-navy-950/50 p-4" onClick={onClose}>
+      <div className="w-full max-w-lg bg-white rounded-3xl shadow-2xl overflow-hidden max-h-[90vh] flex flex-col" onClick={e => e.stopPropagation()}>
+        <div className="flex items-center justify-between px-6 py-4 border-b border-stone-100">
+          <h3 className="font-semibold text-navy-900">{title}</h3>
+          <button onClick={onClose} className="text-stone-400 hover:text-stone-700"><X size={20} /></button>
+        </div>
+        <div className="p-6 overflow-y-auto">{children}</div>
+      </div>
+    </div>
+  )
+}
+function Field({ label, hint, children }) {
+  return (
+    <label className="block">
+      <span className="text-xs font-medium text-stone-600">{label}</span>
+      <div className="mt-1">{children}</div>
+      {hint && <span className="text-xs text-stone-400 mt-1 block">{hint}</span>}
+    </label>
+  )
+}
+function SummaryItem({ label, value }) {
+  return <div><p className="text-xs text-stone-400">{label}</p><p className="font-medium text-navy-900">{value}</p></div>
+}
+
+function AdvisersSection({ isDemo }) {
+  const [advisers, setAdvisers]   = useState(isDemo ? DEMO_ADVISERS : [])
+  const [loading, setLoading]     = useState(!isDemo)
+  const [error, setError]         = useState(null)
+  const [selectedId, setSelected] = useState(null)
+  const [formFor, setFormFor]     = useState(null)   // 'new' | firm | null
+
+  const load = async () => {
+    if (isDemo) { setLoading(false); return }
+    setLoading(true)
+    const r = await adminPost('/api/admin/advisers', { action: 'list' })
+    if (r.ok) setAdvisers(r.data.advisers || [])
+    else setError(r.error || 'Could not load advisers.')
+    setLoading(false)
+  }
+  useEffect(() => { if (!isDemo) load() }, [isDemo])
+
+  const selected = advisers.find(a => a.id === selectedId) || null
+  const totalFamilies = advisers.reduce((s, a) => s + (a.families_used || 0), 0)
+  const pilots = advisers.filter(a => a.status === 'pilot').length
+
+  return (
+    <div className="space-y-6">
+      {error && (
+        <div className="flex items-start gap-2 bg-red-50 border border-red-200 rounded-xl px-4 py-3 text-sm text-red-700">
+          <AlertCircle size={15} className="mt-0.5 shrink-0" /> {error}
+        </div>
+      )}
+
+      {loading ? (
+        <div className="flex items-center justify-center py-16"><Loader2 size={24} className="animate-spin text-stone-400" /></div>
+      ) : selected ? (
+        <AdviserDetail isDemo={isDemo} adviser={selected} onBack={() => setSelected(null)} onEdit={() => setFormFor(selected)} onChanged={load} />
+      ) : (
+        <>
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            <StatCard label="Firms"            value={advisers.length} Icon={Building2} color="bg-navy-100 text-navy-700" />
+            <StatCard label="Pilots"           value={pilots}          Icon={Sparkles}  color="bg-sage-100 text-sage-700" />
+            <StatCard label="Families managed" value={totalFamilies}   Icon={Users}     color="bg-emerald-100 text-emerald-700" />
+            <div className="flex items-center justify-end">
+              <button onClick={() => setFormFor('new')} className="inline-flex items-center gap-1.5 text-sm font-semibold px-4 py-2.5 rounded-xl text-white" style={{ backgroundColor: '#2d5082' }}>
+                <Plus size={15} /> New adviser
+              </button>
+            </div>
+          </div>
+
+          {advisers.length === 0 ? (
+            <div className="bg-white border border-stone-200 rounded-2xl p-12 text-center">
+              <Building2 size={28} className="mx-auto text-stone-300 mb-3" />
+              <p className="text-stone-500 text-sm">No adviser firms yet. Create your first one to start the pilot.</p>
+            </div>
+          ) : (
+            <div className="grid gap-4 sm:grid-cols-2">
+              {advisers.map(a => <AdviserCard key={a.id} adviser={a} onOpen={() => setSelected(a.id)} />)}
+            </div>
+          )}
+        </>
+      )}
+
+      {formFor && (
+        <AdviserForm isDemo={isDemo} initial={formFor === 'new' ? null : formFor}
+          onClose={() => setFormFor(null)} onSaved={() => { setFormFor(null); load() }} />
+      )}
+    </div>
+  )
+}
+
+function AdviserCard({ adviser: a, onOpen }) {
+  const atCap = a.max_families > 0 && (a.families_used || 0) >= a.max_families
+  const pct = a.max_families > 0 ? Math.min(100, Math.round((a.families_used || 0) / a.max_families * 100)) : 0
+  const inv = a.latest_invoice ? (INVOICE_STATUS[a.latest_invoice.status] ?? INVOICE_STATUS.unpaid) : null
+  return (
+    <button onClick={onOpen} className="w-full text-left bg-white border border-stone-200 rounded-2xl p-5 hover:border-navy-300 transition-colors">
+      <div className="flex items-start justify-between gap-3">
+        <div className="flex items-center gap-3 min-w-0">
+          {a.logo_url
+            ? <img src={a.logo_url} alt="" className="w-10 h-10 rounded-lg object-contain bg-stone-50 border border-stone-200 shrink-0" />
+            : <div className="w-10 h-10 rounded-lg bg-navy-100 text-navy-700 flex items-center justify-center shrink-0"><Building2 size={18} /></div>}
+          <div className="min-w-0">
+            <p className="font-semibold text-navy-900 truncate">{a.firm_name}</p>
+            <p className="text-xs text-stone-500 truncate">{a.contact_name || a.contact_email || '—'}</p>
+          </div>
+        </div>
+        <AdviserStatusPill status={a.status} />
+      </div>
+      <div className="mt-4 flex items-center gap-2 text-xs">
+        <span className={atCap ? 'text-red-600 font-semibold' : 'text-stone-600'}>{a.families_used || 0} / {a.max_families} families{atCap ? ' · at cap' : ''}</span>
+      </div>
+      <div className="mt-1.5 h-1.5 rounded-full bg-stone-100 overflow-hidden">
+        <div className={`h-full rounded-full ${atCap ? 'bg-red-400' : 'bg-sage-500'}`} style={{ width: `${pct}%` }} />
+      </div>
+      <div className="mt-4 flex items-center justify-between text-xs">
+        <span className="text-stone-500 capitalize">{a.plan_type === 'pilot' ? 'Pilot · free' : `${gbp(a.platform_fee)}/mo + ${gbp(a.price_per_family)}/family`}</span>
+        {inv
+          ? <span className={`px-2 py-0.5 rounded-full border ${inv.cls}`}>{inv.label}</span>
+          : <span className="text-stone-400">No invoices</span>}
+      </div>
+    </button>
+  )
+}
+
+function AdviserForm({ isDemo, initial, onClose, onSaved }) {
+  const [f, setF] = useState(() => ({
+    firm_name: initial?.firm_name || '', contact_name: initial?.contact_name || '', contact_email: initial?.contact_email || '',
+    status: initial?.status || 'pilot', plan_type: initial?.plan_type || 'pilot',
+    platform_fee_gbp: penceToPounds(initial?.platform_fee || 0), price_per_family_gbp: penceToPounds(initial?.price_per_family || 0),
+    max_families: String(initial?.max_families ?? 25),
+    pilot_end_date: initial?.pilot_end_date || '', billing_start_date: initial?.billing_start_date || '',
+    notes: initial?.notes || '', logo_url: initial?.logo_url || '',
+  }))
+  const [logoFile, setLogoFile] = useState(null)
+  const [saving, setSaving]     = useState(false)
+  const [error, setError]       = useState(null)
+  const set = (k, v) => setF(s => ({ ...s, [k]: v }))
+
+  const save = async () => {
+    if (!f.firm_name.trim()) { setError('Firm name is required.'); return }
+    if (isDemo) { onSaved(); return }
+    setSaving(true); setError(null)
+    const payload = {
+      firm_name: f.firm_name.trim(), contact_name: f.contact_name.trim(), contact_email: f.contact_email.trim(),
+      status: f.status, plan_type: f.plan_type,
+      platform_fee: poundsToPence(f.platform_fee_gbp), price_per_family: poundsToPence(f.price_per_family_gbp),
+      max_families: Math.max(0, parseInt(f.max_families, 10) || 0),
+      pilot_end_date: f.pilot_end_date || null, billing_start_date: f.billing_start_date || null,
+      notes: f.notes, logo_url: f.logo_url || null,
+    }
+    const r = initial
+      ? await adminPost('/api/admin/advisers', { action: 'update', id: initial.id, firm: payload })
+      : await adminPost('/api/admin/advisers', { action: 'create', firm: payload })
+    if (!r.ok) { setError(r.error || 'Could not save.'); setSaving(false); return }
+    const saved = r.data.adviser
+    if (logoFile && saved?.id) {
+      try {
+        const ext = logoFile.name.split('.').pop()
+        const path = `${saved.id}/logo-${Date.now()}.${ext}`
+        const { error: upErr } = await supabase.storage.from('adviser-logos').upload(path, logoFile, { upsert: true, contentType: logoFile.type })
+        if (!upErr) {
+          const url = supabase.storage.from('adviser-logos').getPublicUrl(path).data.publicUrl
+          await adminPost('/api/admin/advisers', { action: 'update', id: saved.id, firm: { logo_url: url } })
+        }
+      } catch { /* logo is non-critical */ }
+    }
+    setSaving(false)
+    onSaved()
+  }
+
+  return (
+    <Modal title={initial ? 'Edit adviser firm' : 'New adviser firm'} onClose={onClose}>
+      <div className="space-y-4">
+        {error && <div className="text-sm text-red-600">{error}</div>}
+        <Field label="Firm name *"><input className={inputCls} value={f.firm_name} onChange={e => set('firm_name', e.target.value)} /></Field>
+        <div className="grid grid-cols-2 gap-3">
+          <Field label="Contact name"><input className={inputCls} value={f.contact_name} onChange={e => set('contact_name', e.target.value)} /></Field>
+          <Field label="Contact email"><input className={inputCls} value={f.contact_email} onChange={e => set('contact_email', e.target.value)} /></Field>
+        </div>
+        <Field label="Logo (for 'powered by Everstead' branding)">
+          <div className="flex items-center gap-3">
+            {(logoFile || f.logo_url) && <img src={logoFile ? URL.createObjectURL(logoFile) : f.logo_url} alt="" className="w-10 h-10 rounded-lg object-contain bg-stone-50 border border-stone-200" />}
+            <label className="inline-flex items-center gap-1.5 text-sm px-3 py-2 rounded-xl border border-stone-200 cursor-pointer hover:bg-stone-50">
+              <Upload size={14} /> {logoFile ? 'Change' : 'Upload'}
+              <input type="file" accept="image/*" className="hidden" onChange={e => setLogoFile(e.target.files?.[0] || null)} />
+            </label>
+          </div>
+        </Field>
+        <div className="grid grid-cols-2 gap-3">
+          <Field label="Status">
+            <select className={inputCls} value={f.status} onChange={e => set('status', e.target.value)}>
+              {Object.keys(ADVISER_STATUS).map(s => <option key={s} value={s}>{ADVISER_STATUS[s].label}</option>)}
+            </select>
+          </Field>
+          <Field label="Plan">
+            <select className={inputCls} value={f.plan_type} onChange={e => set('plan_type', e.target.value)}>
+              <option value="pilot">Pilot (free)</option>
+              <option value="paid">Paid</option>
+            </select>
+          </Field>
+        </div>
+        <div className="grid grid-cols-3 gap-3">
+          <Field label="Platform fee (£/mo)"><input className={inputCls} inputMode="decimal" value={f.platform_fee_gbp} onChange={e => set('platform_fee_gbp', e.target.value)} /></Field>
+          <Field label="Per family (£)"><input className={inputCls} inputMode="decimal" value={f.price_per_family_gbp} onChange={e => set('price_per_family_gbp', e.target.value)} /></Field>
+          <Field label="Max families"><input className={inputCls} inputMode="numeric" value={f.max_families} onChange={e => set('max_families', e.target.value)} /></Field>
+        </div>
+        <div className="grid grid-cols-2 gap-3">
+          <Field label="Pilot end date"><input type="date" className={inputCls} value={f.pilot_end_date || ''} onChange={e => set('pilot_end_date', e.target.value)} /></Field>
+          <Field label="Billing start date"><input type="date" className={inputCls} value={f.billing_start_date || ''} onChange={e => set('billing_start_date', e.target.value)} /></Field>
+        </div>
+        <Field label="Notes"><textarea rows={2} className={inputCls} value={f.notes} onChange={e => set('notes', e.target.value)} /></Field>
+        <div className="flex justify-end gap-2 pt-2">
+          <button onClick={onClose} className="px-4 py-2 text-sm text-stone-600 hover:text-stone-900">Cancel</button>
+          <button onClick={save} disabled={saving} className="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-semibold text-white rounded-xl disabled:opacity-50" style={{ backgroundColor: '#4c7d47' }}>
+            {saving ? <Loader2 size={14} className="animate-spin" /> : <Check size={14} />} {initial ? 'Save changes' : 'Create firm'}
+          </button>
+        </div>
+      </div>
+    </Modal>
+  )
+}
+
+function AdviserDetail({ isDemo, adviser: a, onBack, onEdit, onChanged }) {
+  const [families, setFamilies] = useState(isDemo ? (DEMO_ADVISER_FAMILIES[a.id] || []) : [])
+  const [invoices, setInvoices] = useState(isDemo ? (DEMO_ADVISER_INVOICES[a.id] || []) : [])
+  const [loading, setLoading]   = useState(!isDemo)
+  const [invForm, setInvForm]   = useState(false)
+  const [assign, setAssign]     = useState(false)
+  const [error, setError]       = useState(null)
+
+  const load = async () => {
+    if (isDemo) { setLoading(false); return }
+    setLoading(true)
+    const [fr, ir] = await Promise.all([
+      adminPost('/api/admin/advisers', { action: 'list-families', adviserId: a.id }),
+      adminPost('/api/admin/adviser-invoices', { action: 'list', adviserId: a.id }),
+    ])
+    if (fr.ok) setFamilies(fr.data.families || [])
+    if (ir.ok) setInvoices(ir.data.invoices || [])
+    setLoading(false)
+  }
+  useEffect(() => { if (!isDemo) load() }, [a.id, isDemo]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  const used = families.length
+  const atCap = a.max_families > 0 && used >= a.max_families
+
+  const unassign = async (userId) => {
+    if (isDemo) { setFamilies(fs => fs.filter(x => x.id !== userId)); return }
+    const r = await adminPost('/api/admin/advisers', { action: 'unassign-family', userId })
+    if (r.ok) { load(); onChanged?.() } else setError(r.error)
+  }
+  const setInvoiceStatus = async (inv, status) => {
+    if (isDemo) { setInvoices(is => is.map(x => x.id === inv.id ? { ...x, status } : x)); return }
+    const r = await adminPost('/api/admin/adviser-invoices', { action: 'update', id: inv.id, invoice: { status } })
+    if (r.ok) load(); else setError(r.error)
+  }
+
+  return (
+    <div className="space-y-6">
+      <div className="flex items-center justify-between gap-3">
+        <button onClick={onBack} className="inline-flex items-center gap-1.5 text-sm text-stone-500 hover:text-navy-800"><ArrowLeft size={15} /> All advisers</button>
+        <button onClick={onEdit} className="inline-flex items-center gap-1.5 text-sm font-medium px-3 py-2 rounded-xl border border-stone-200 hover:bg-stone-50"><Pencil size={14} /> Edit firm</button>
+      </div>
+
+      {error && <div className="flex items-start gap-2 bg-red-50 border border-red-200 rounded-xl px-4 py-3 text-sm text-red-700"><AlertCircle size={15} className="mt-0.5 shrink-0" /> {error}</div>}
+
+      <div className="bg-white border border-stone-200 rounded-2xl p-5 flex items-start gap-4">
+        {a.logo_url
+          ? <img src={a.logo_url} alt="" className="w-12 h-12 rounded-lg object-contain bg-stone-50 border border-stone-200 shrink-0" />
+          : <div className="w-12 h-12 rounded-lg bg-navy-100 text-navy-700 flex items-center justify-center shrink-0"><Building2 size={22} /></div>}
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2 flex-wrap"><h2 className="text-lg font-semibold text-navy-900">{a.firm_name}</h2><AdviserStatusPill status={a.status} /></div>
+          <p className="text-sm text-stone-500 mt-0.5">{[a.contact_name, a.contact_email].filter(Boolean).join(' · ') || '—'}</p>
+        </div>
+      </div>
+
+      <div className="bg-white border border-stone-200 rounded-2xl p-5">
+        <h3 className="text-sm font-semibold text-navy-900 mb-3">Subscription</h3>
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 text-sm">
+          <SummaryItem label="Plan" value={a.plan_type === 'pilot' ? 'Pilot (free)' : 'Paid'} />
+          <SummaryItem label="Platform fee" value={`${gbp(a.platform_fee)}/mo`} />
+          <SummaryItem label="Per family" value={gbp(a.price_per_family)} />
+          <SummaryItem label="Family cap" value={String(a.max_families)} />
+          <SummaryItem label="Pilot ends" value={fmtDate(a.pilot_end_date)} />
+          <SummaryItem label="Billing starts" value={fmtDate(a.billing_start_date)} />
+        </div>
+        {a.notes && <p className="mt-4 text-sm text-stone-500 border-t border-stone-100 pt-3">{a.notes}</p>}
+      </div>
+
+      <div className="bg-white border border-stone-200 rounded-2xl p-5">
+        <div className="flex items-center justify-between mb-3">
+          <h3 className="text-sm font-semibold text-navy-900">Families <span className={atCap ? 'text-red-600' : 'text-stone-400'}>({used}/{a.max_families}{atCap ? ' · at cap' : ''})</span></h3>
+          <button onClick={() => setAssign(true)} disabled={atCap} title={atCap ? 'At cap — raise the cap first' : ''}
+            className="inline-flex items-center gap-1.5 text-sm font-medium px-3 py-1.5 rounded-lg border border-stone-200 hover:bg-stone-50 disabled:opacity-40 disabled:cursor-not-allowed">
+            <Plus size={14} /> Assign family
+          </button>
+        </div>
+        {loading ? <div className="py-6 text-center"><Loader2 size={18} className="animate-spin text-stone-400 mx-auto" /></div>
+          : families.length === 0 ? <p className="text-sm text-stone-400">No families linked yet.</p> : (
+          <div className="divide-y divide-stone-100">
+            {families.map(fam => (
+              <div key={fam.id} className="flex items-center justify-between py-2.5 gap-3">
+                <div className="min-w-0"><p className="text-sm font-medium text-navy-900 truncate">{fam.full_name || '—'}</p><p className="text-xs text-stone-500 truncate">{fam.email}</p></div>
+                <div className="flex items-center gap-3 shrink-0">
+                  <span className="text-xs text-stone-400 capitalize">{fam.plan}</span>
+                  <button onClick={() => unassign(fam.id)} className="text-stone-300 hover:text-red-500" title="Remove from firm"><Trash2 size={14} /></button>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      <div className="bg-white border border-stone-200 rounded-2xl p-5">
+        <div className="flex items-center justify-between mb-3">
+          <h3 className="text-sm font-semibold text-navy-900">Invoices</h3>
+          <button onClick={() => setInvForm(true)} className="inline-flex items-center gap-1.5 text-sm font-medium px-3 py-1.5 rounded-lg border border-stone-200 hover:bg-stone-50"><Plus size={14} /> Record invoice</button>
+        </div>
+        {invoices.length === 0 ? <p className="text-sm text-stone-400">No invoices yet.</p> : (
+          <div className="divide-y divide-stone-100">
+            {invoices.map(inv => <InvoiceRow key={inv.id} inv={inv} isDemo={isDemo} onStatus={setInvoiceStatus} />)}
+          </div>
+        )}
+      </div>
+
+      {assign && <AssignFamilyModal isDemo={isDemo} adviser={a} onClose={() => setAssign(false)} onAssigned={() => { setAssign(false); load(); onChanged?.() }} />}
+      {invForm && <InvoiceForm isDemo={isDemo} adviserId={a.id} onClose={() => setInvForm(false)} onSaved={() => { setInvForm(false); load() }} />}
+    </div>
+  )
+}
+
+function InvoiceRow({ inv, isDemo, onStatus }) {
+  const [busyUrl, setBusyUrl] = useState(false)
+  const m = INVOICE_STATUS[inv.status] ?? INVOICE_STATUS.unpaid
+  const openPdf = async () => {
+    if (!inv.file_path) return
+    if (isDemo) { window.alert('PDF preview is available on real invoices.'); return }
+    setBusyUrl(true)
+    const r = await adminPost('/api/admin/adviser-invoices', { action: 'file-url', filePath: inv.file_path })
+    setBusyUrl(false)
+    if (r.ok && r.data.url) window.open(r.data.url, '_blank', 'noopener')
+  }
+  return (
+    <div className="flex items-center justify-between py-2.5 gap-3">
+      <div className="min-w-0">
+        <p className="text-sm font-medium text-navy-900">{gbp(inv.amount)} <span className="text-stone-400 font-normal">· {fmtDate(inv.issue_date)}</span></p>
+        <p className="text-xs text-stone-500 truncate">{inv.notes || (inv.due_date ? `Due ${fmtDate(inv.due_date)}` : '—')}</p>
+      </div>
+      <div className="flex items-center gap-2 shrink-0">
+        {inv.file_path && <button onClick={openPdf} className="text-stone-400 hover:text-navy-700" title="View PDF">{busyUrl ? <Loader2 size={14} className="animate-spin" /> : <FileText size={14} />}</button>}
+        <span className={`text-xs font-semibold px-2 py-0.5 rounded-full border ${m.cls}`}>{m.label}</span>
+        <select value={inv.status} onChange={e => onStatus(inv, e.target.value)} className="text-xs border border-stone-200 rounded-lg px-1.5 py-1">
+          <option value="unpaid">Unpaid</option><option value="paid">Paid</option><option value="waived">Waived</option>
+        </select>
+      </div>
+    </div>
+  )
+}
+
+function InvoiceForm({ isDemo, adviserId, onClose, onSaved }) {
+  const today = new Date().toISOString().slice(0, 10)
+  const [amountGbp, setAmountGbp] = useState('0.00')
+  const [issue, setIssue] = useState(today)
+  const [due, setDue]     = useState('')
+  const [status, setStatus] = useState('unpaid')
+  const [notes, setNotes] = useState('')
+  const [pdf, setPdf]     = useState(null)
+  const [saving, setSaving] = useState(false)
+  const [error, setError] = useState(null)
+
+  const save = async () => {
+    if (isDemo) { onSaved(); return }
+    setSaving(true); setError(null)
+    let filePath = null
+    if (pdf) {
+      try {
+        const path = `${adviserId}/${Date.now()}-${pdf.name.replace(/[^a-zA-Z0-9._-]/g, '_')}`
+        const { error: upErr } = await supabase.storage.from('adviser-invoices').upload(path, pdf, { upsert: true, contentType: pdf.type })
+        if (!upErr) filePath = path
+      } catch { /* pdf optional */ }
+    }
+    const r = await adminPost('/api/admin/adviser-invoices', { action: 'create', invoice: {
+      adviser_id: adviserId, amount: poundsToPence(amountGbp), currency: 'GBP',
+      issue_date: issue, due_date: due || null, status, notes, file_path: filePath,
+    } })
+    setSaving(false)
+    if (r.ok) onSaved(); else setError(r.error || 'Could not save invoice.')
+  }
+
+  return (
+    <Modal title="Record invoice" onClose={onClose}>
+      <div className="space-y-4">
+        {error && <div className="text-sm text-red-600">{error}</div>}
+        <div className="grid grid-cols-2 gap-3">
+          <Field label="Amount (£)" hint="0 for a waived / free pilot invoice"><input className={inputCls} inputMode="decimal" value={amountGbp} onChange={e => setAmountGbp(e.target.value)} /></Field>
+          <Field label="Status"><select className={inputCls} value={status} onChange={e => setStatus(e.target.value)}><option value="unpaid">Unpaid</option><option value="paid">Paid</option><option value="waived">Waived</option></select></Field>
+        </div>
+        <div className="grid grid-cols-2 gap-3">
+          <Field label="Issue date"><input type="date" className={inputCls} value={issue} onChange={e => setIssue(e.target.value)} /></Field>
+          <Field label="Due date"><input type="date" className={inputCls} value={due} onChange={e => setDue(e.target.value)} /></Field>
+        </div>
+        <Field label="PDF (optional)">
+          <label className="inline-flex items-center gap-1.5 text-sm px-3 py-2 rounded-xl border border-stone-200 cursor-pointer hover:bg-stone-50">
+            <Upload size={14} /> {pdf ? pdf.name : 'Upload PDF'}
+            <input type="file" accept="application/pdf" className="hidden" onChange={e => setPdf(e.target.files?.[0] || null)} />
+          </label>
+        </Field>
+        <Field label="Notes"><textarea rows={2} className={inputCls} value={notes} onChange={e => setNotes(e.target.value)} /></Field>
+        <div className="flex justify-end gap-2 pt-2">
+          <button onClick={onClose} className="px-4 py-2 text-sm text-stone-600 hover:text-stone-900">Cancel</button>
+          <button onClick={save} disabled={saving} className="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-semibold text-white rounded-xl disabled:opacity-50" style={{ backgroundColor: '#4c7d47' }}>{saving ? <Loader2 size={14} className="animate-spin" /> : <Check size={14} />} Save invoice</button>
+        </div>
+      </div>
+    </Modal>
+  )
+}
+
+function AssignFamilyModal({ isDemo, adviser, onClose, onAssigned }) {
+  const [q, setQ] = useState('')
+  const [results, setResults] = useState([])
+  const [searching, setSearching] = useState(false)
+  const [error, setError] = useState(null)
+  const [busyId, setBusyId] = useState(null)
+
+  useEffect(() => {
+    const run = async () => {
+      if (isDemo) { setResults([{ id: 'demoU', full_name: 'New Client', email: 'client@example.com', plan: 'family' }]); return }
+      setSearching(true)
+      const r = await adminPost('/api/admin/advisers', { action: 'search-unassigned', q })
+      if (r.ok) setResults(r.data.candidates || []); else setError(r.error)
+      setSearching(false)
+    }
+    const t = setTimeout(run, 300)
+    return () => clearTimeout(t)
+  }, [q, isDemo])
+
+  const assign = async (u) => {
+    if (isDemo) { onAssigned(); return }
+    setBusyId(u.id); setError(null)
+    const r = await adminPost('/api/admin/advisers', { action: 'assign-family', adviserId: adviser.id, userId: u.id })
+    setBusyId(null)
+    if (r.ok) onAssigned(); else setError(r.error || 'Could not assign.')
+  }
+
+  return (
+    <Modal title={`Assign a family to ${adviser.firm_name}`} onClose={onClose}>
+      <div className="space-y-3">
+        {error && <div className="text-sm text-red-600">{error}</div>}
+        <div className="relative">
+          <Search size={13} className="absolute left-3 top-1/2 -translate-y-1/2 text-stone-400" />
+          <input autoFocus className={`${inputCls} pl-8`} placeholder="Search by name or email…" value={q} onChange={e => setQ(e.target.value)} />
+        </div>
+        {searching ? <div className="py-6 text-center"><Loader2 size={18} className="animate-spin text-stone-400 mx-auto" /></div> : (
+          <div className="divide-y divide-stone-100 max-h-72 overflow-y-auto">
+            {results.length === 0 ? <p className="text-sm text-stone-400 py-4 text-center">No unlinked accounts found.</p> :
+              results.map(u => (
+                <div key={u.id} className="flex items-center justify-between py-2.5 gap-3">
+                  <div className="min-w-0"><p className="text-sm font-medium text-navy-900 truncate">{u.full_name || '—'}</p><p className="text-xs text-stone-500 truncate">{u.email}</p></div>
+                  <button onClick={() => assign(u)} disabled={busyId === u.id} className="text-sm font-medium text-sage-700 hover:text-sage-900 disabled:opacity-50 shrink-0">{busyId === u.id ? <Loader2 size={14} className="animate-spin" /> : 'Assign'}</button>
+                </div>
+              ))}
+          </div>
+        )}
+        <p className="text-xs text-stone-400">Only accounts not already linked to a firm are shown. The family cap is enforced server-side when you assign.</p>
+      </div>
+    </Modal>
+  )
+}
+
+// ─────────────────────────────────────────────────────────────
 // CSV EXPORT
 // ─────────────────────────────────────────────────────────────
 function exportCsv(users) {
@@ -1483,6 +2012,7 @@ export default function AdminPanel() {
     { id: 'overview', label: 'Overview', Icon: LayoutDashboard },
     { id: 'reports',  label: 'Reports',  Icon: Clock },
     { id: 'users',    label: 'Users',    Icon: UserRound },
+    { id: 'advisers', label: 'Advisers', Icon: Building2 },
     { id: 'team',     label: 'Team',     Icon: Users },
   ]
 
@@ -1638,6 +2168,17 @@ export default function AdminPanel() {
               <p className="text-sm text-stone-500 mt-1">Profile details and readiness progress — no private plan content is shown</p>
             </div>
             <UsersSection isDemo={isDemo} />
+          </>
+        )}
+
+        {/* ── Advisers tab ── */}
+        {activeTab === 'advisers' && (
+          <>
+            <div>
+              <h1 className="text-2xl font-semibold text-navy-950">Advisers</h1>
+              <p className="text-sm text-stone-500 mt-1">Adviser &amp; solicitor firms — subscriptions, family caps and invoices</p>
+            </div>
+            <AdvisersSection isDemo={isDemo} />
           </>
         )}
 
