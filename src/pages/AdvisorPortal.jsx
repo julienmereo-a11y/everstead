@@ -1417,7 +1417,8 @@ function AdviserTeamCard({ team, isOwner, isDemo, onReload }) {
   )
 }
 
-function AdvisorSettings({ advisor, families, isDemo, team, onReload }) {
+function AdvisorSettings({ advisor, families, isDemo, team, onReload, firmId }) {
+  const isOwner = isDemo || advisor?.role === 'Firm owner'
   const [profile, setProfile] = useState({
     full_name: advisor.full_name,
     email:     advisor.email,
@@ -1431,25 +1432,29 @@ function AdvisorSettings({ advisor, families, isDemo, team, onReload }) {
   const [logoUploading, setLogoUploading] = useState(false)
   const [logoError, setLogoError]   = useState(null)
 
+  // The logo is the FIRM's (shown in the portal header, on client signup, and to
+  // clients). Only the owner can change it: upload to the firm's folder, then point
+  // advisers.logo_url at it via the owner-only RPC, and refresh so the header updates.
   const handleLogoUpload = async (e) => {
     const file = e.target.files?.[0]
     if (!file) return
     if (!file.type.startsWith('image/')) { setLogoError('Please upload an image file.'); return }
     if (file.size > 2 * 1024 * 1024) { setLogoError('Logo must be under 2 MB.'); return }
+    if (isDemo) { setLogoError('Logo upload is disabled in demo mode.'); return }
     setLogoError(null)
     setLogoUploading(true)
     try {
       const ext  = file.name.split('.').pop()
-      const path = `${advisor.id}/logo.${ext}`
+      const path = `${firmId}/logo-${Date.now()}.${ext}`
       const { error: uploadError } = await supabase.storage
-        .from('advisor-logos')
+        .from('adviser-logos')
         .upload(path, file, { upsert: true, contentType: file.type })
       if (uploadError) throw uploadError
-      const { data: { publicUrl } } = supabase.storage.from('advisor-logos').getPublicUrl(path)
-      if (!isDemo) {
-        await supabase.from('profiles').update({ logo_url: publicUrl }).eq('id', advisor.id)
-      }
+      const { data: { publicUrl } } = supabase.storage.from('adviser-logos').getPublicUrl(path)
+      const { error: rpcError } = await supabase.rpc('set_firm_logo', { p_url: publicUrl })
+      if (rpcError) throw rpcError
       setProfile(p => ({ ...p, logo_url: publicUrl }))
+      onReload?.()  // refresh the firm so the header + preview show the new logo
     } catch (err) {
       setLogoError(err.message ?? 'Upload failed. Please try again.')
     } finally {
@@ -1520,15 +1525,15 @@ function AdvisorSettings({ advisor, families, isDemo, team, onReload }) {
       {/* ── Logo upload card ── */}
       <div className="rounded-[2rem] border border-stone-200 bg-white p-8 space-y-4">
         <div>
-          <h2 className="text-base font-semibold text-navy-950">Practice logo</h2>
-          <p className="text-xs text-stone-400 mt-0.5">Shown on your adviser profile. Max 2 MB, image files only.</p>
+          <h2 className="text-base font-semibold text-navy-950">Firm logo</h2>
+          <p className="text-xs text-stone-400 mt-0.5">Shown in your portal header, on client signup, and to clients. Max 2 MB, image files only.</p>
         </div>
 
         <div className="flex items-center gap-5">
-          {profile.logo_url ? (
+          {advisor.logo_url ? (
             <img
-              src={profile.logo_url}
-              alt="Practice logo"
+              src={advisor.logo_url}
+              alt="Firm logo"
               className="h-14 w-auto max-w-[140px] rounded-lg object-contain border border-stone-200 bg-stone-50 p-1"
             />
           ) : (
@@ -1537,10 +1542,14 @@ function AdvisorSettings({ advisor, families, isDemo, team, onReload }) {
             </div>
           )}
 
-          <label className={`${primaryBtn} cursor-pointer inline-flex items-center gap-2 ${logoUploading ? 'opacity-50 pointer-events-none' : ''}`}>
-            <input type="file" accept="image/*" className="sr-only" onChange={handleLogoUpload} disabled={logoUploading || isDemo} />
-            {logoUploading ? 'Uploading…' : profile.logo_url ? 'Replace logo' : 'Upload logo'}
-          </label>
+          {isOwner ? (
+            <label className={`${primaryBtn} cursor-pointer inline-flex items-center gap-2 ${logoUploading ? 'opacity-50 pointer-events-none' : ''}`}>
+              <input type="file" accept="image/*" className="sr-only" onChange={handleLogoUpload} disabled={logoUploading || isDemo} />
+              {logoUploading ? 'Uploading…' : advisor.logo_url ? 'Replace logo' : 'Upload logo'}
+            </label>
+          ) : (
+            <p className="text-xs text-stone-400">Only the firm owner can change the logo.</p>
+          )}
         </div>
 
         {logoError && (
@@ -2106,12 +2115,10 @@ export default function AdvisorPortal() {
                 <p className="text-xs text-stone-500 truncate">{advisor?.firm}</p>
               </div>
             </div>
-            <div className="mt-4 flex items-center justify-between text-xs text-stone-500 bg-stone-50 border border-stone-200 rounded-xl px-3.5 py-2.5">
-              <span>{families.length} / {advisor?.families_limit ?? 5} families</span>
-              <div className="flex gap-1">
-                {Array.from({ length: advisor?.families_limit ?? 5 }).map((_, i) => (
-                  <div key={i} className={`w-4 h-1.5 rounded-full ${i < families.length ? 'bg-navy-700' : 'bg-stone-200'}`} />
-                ))}
+            <div className="mt-4 bg-stone-50 border border-stone-200 rounded-xl px-3.5 py-2.5">
+              <p className="text-xs text-stone-500 mb-1.5">{families.length} / {advisor?.families_limit ?? 5} families</p>
+              <div className="h-1.5 rounded-full bg-stone-200 overflow-hidden">
+                <div className="h-full rounded-full bg-navy-700" style={{ width: `${Math.min(100, (families.length / (advisor?.families_limit || 1)) * 100)}%` }} />
               </div>
             </div>
             {/* 5-section nav */}
@@ -2263,7 +2270,7 @@ export default function AdvisorPortal() {
                 ? [{ id: 't1', email: DEMO_ADVISOR.email, role: 'owner', invite_status: 'accepted', full_name: DEMO_ADVISOR.full_name },
                    { id: 't2', email: 'james@carterwealth.co.uk', role: 'member', invite_status: 'accepted', full_name: 'James Reid' }]
                 : realTeam}
-              onReload={isDemo ? undefined : loadPortal} />
+              onReload={isDemo ? undefined : loadPortal} firmId={realFirm?.id} />
           ) : activeSection === 'resources' ? (
             <AdvisorResourcesSection />
           ) : selectedFamily ? (
