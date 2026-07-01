@@ -754,6 +754,24 @@ function AdminActions({ u, onTrialExtended }) {
   const [extendDays, setExtendDays]     = useState(7)
   const [showEmail, setShowEmail]       = useState(false)
   const [isSuspended, setIsSuspended]   = useState(u.is_suspended ?? false)
+  const [foundingState, setFoundingState] = useState('idle')
+
+  const applyFounding = async () => {
+    if (!window.confirm(`Put ${u.full_name ?? u.email} on the founding deal?\n\nThis switches them to Family Yearly and applies the FOUNDING50 coupon — £0 for the first year, then it renews yearly at the normal price.`)) return
+    setFoundingState('sending')
+    try {
+      const { data: { session } } = await supabase.auth.getSession()
+      const res = await fetch('/api/admin/apply-founding', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${session?.access_token}` },
+        body: JSON.stringify({ userId: u.id }),
+      })
+      const data = await res.json().catch(() => ({}))
+      if (!res.ok) { window.alert(data.error || 'Could not apply the founding deal.'); setFoundingState('idle'); return }
+      setFoundingState('sent')
+      setTimeout(() => window.location.reload(), 1200)
+    } catch { setFoundingState('idle'); window.alert('Network error. Please try again.') }
+  }
 
   const sendPasswordReset = async () => {
     setPwState('sending')
@@ -884,6 +902,20 @@ function AdminActions({ u, onTrialExtended }) {
           >
             {cancelState === 'sending' ? <Loader2 size={12} className="animate-spin" /> : <XCircle size={12} />}
             {cancelState === 'sent' ? 'Cancelled ✓' : cancelState === 'error' ? 'Failed — retry' : 'Cancel subscription'}
+          </button>
+        )}
+
+        {/* Apply founding deal — needs a subscription/card on file */}
+        {u.stripe_subscription_id && (
+          <button
+            onClick={applyFounding}
+            disabled={foundingState === 'sending'}
+            className="w-full flex items-center gap-2 text-xs font-semibold px-3 py-2 rounded-xl text-white transition-opacity disabled:opacity-50"
+            style={{ background: 'linear-gradient(100deg,#2d5082,#6f6bc6,#6e9b6a)' }}
+            title="Switch to Family Yearly + FOUNDING50 (first year free, then renews)"
+          >
+            {foundingState === 'sending' ? <Loader2 size={12} className="animate-spin" /> : <Sparkles size={12} />}
+            {foundingState === 'sent' ? 'Applied ✓' : 'Apply founding deal'}
           </button>
         )}
       </div>
