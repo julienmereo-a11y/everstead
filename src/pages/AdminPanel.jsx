@@ -608,7 +608,7 @@ function TeamSection({ isDemo, currentUserEmail }) {
 // DEMO USERS
 // ─────────────────────────────────────────────────────────────
 const DEMO_USERS = [
-  { id: 'u1', full_name: 'James Thornton',   email: 'james@example.com',   phone: '+44 7700 900111', country: 'United Kingdom', nationality: 'British',  plan: 'family',    subscription_status: 'active',        billing_cycle: 'yearly',  readiness_score: 72, is_founding_member: true, created_at: '2026-04-15T10:00:00Z', trial_ends_at: null,                   stripe_customer_id: 'cus_demo1', stripe_subscription_id: 'sub_demo1', accounts_count: 6, documents_count: 4, people_count: 3, instructions_count: 5, wishes_count: 2 },
+  { id: 'u1', full_name: 'James Thornton',   email: 'james@example.com',   phone: '+44 7700 900111', country: 'United Kingdom', nationality: 'British',  plan: 'family',    subscription_status: 'active',        billing_cycle: 'yearly',  readiness_score: 72, is_founding_member: true, created_at: '2026-04-15T10:00:00Z', trial_ends_at: null,                   stripe_customer_id: 'cus_demo1', stripe_subscription_id: 'sub_demo1', accounts_count: 6, documents_count: 4, people_count: 3, instructions_count: 5, wishes_count: 2, referral_count: 3 },
   { id: 'u2', full_name: 'Sarah Okafor',     email: 'sarah@example.com',   phone: '+44 7700 900222', country: 'United Kingdom', nationality: 'Nigerian',  plan: 'essential', subscription_status: 'trialing',       billing_cycle: 'monthly', readiness_score: 35, created_at: '2026-04-22T14:30:00Z', trial_ends_at: '2026-05-07T14:30:00Z', stripe_customer_id: 'cus_demo2', stripe_subscription_id: 'sub_demo2', accounts_count: 2, documents_count: 0, people_count: 1, instructions_count: 0, wishes_count: 0 },
   { id: 'u3', full_name: 'Marcus Webb',      email: 'marcus@example.com',  phone: null,              country: null,             nationality: null,        plan: 'essential', subscription_status: 'trialing',       billing_cycle: 'monthly', readiness_score: 10, created_at: '2026-05-01T09:00:00Z', trial_ends_at: '2026-05-15T09:00:00Z', stripe_customer_id: 'cus_demo3', stripe_subscription_id: 'sub_demo3', accounts_count: 1, documents_count: 0, people_count: 0, instructions_count: 0, wishes_count: 0 },
   { id: 'u4', full_name: 'Priya Sharma',     email: 'priya@example.com',   phone: '+44 7700 900444', country: 'United Kingdom', nationality: 'Indian',    plan: 'advisor',   subscription_status: 'active',        billing_cycle: 'yearly',  readiness_score: 91, created_at: '2026-04-10T08:00:00Z', trial_ends_at: null,                   stripe_customer_id: 'cus_demo4', stripe_subscription_id: 'sub_demo4', accounts_count: 12, documents_count: 8, people_count: 5, instructions_count: 9, wishes_count: 4 },
@@ -969,8 +969,13 @@ function UserRow({ u }) {
                 <ShieldAlert size={10} /> Suspended
               </span>
             )}
+            {u.referral_count > 0 && (
+              <span className="text-xs font-medium px-2 py-0.5 rounded-full border bg-sky-50 text-sky-700 border-sky-200 inline-flex items-center gap-1" title="Successful referrals (each on a 21-day trial)">
+                <Users size={10} /> {u.referral_count} referred
+              </span>
+            )}
           </div>
-          <p className="text-xs text-stone-400 mt-0.5 truncate">{u.email}</p>
+          <p className="text-xs text-stone-400 mt-0.5 truncate">{u.email} · Joined {fmtDate(u.created_at)}</p>
         </div>
         <div className="shrink-0 w-28 hidden sm:block">
           <ReadinessBar score={u.readiness_score ?? 0} />
@@ -1903,7 +1908,7 @@ function AssignFamilyModal({ isDemo, adviser, onClose, onAssigned }) {
 // CSV EXPORT
 // ─────────────────────────────────────────────────────────────
 function exportCsv(users) {
-  const headers = ['Name','Email','Phone','Country','Nationality','Plan','Billing','Status','Readiness %','Joined','Trial ends','Stripe customer','Founding member']
+  const headers = ['Name','Email','Phone','Country','Nationality','Plan','Billing','Status','Readiness %','Joined','Trial ends','Stripe customer','Founding member','Referrals']
   const rows = users.map(u => [
     u.full_name ?? '',
     u.email ?? '',
@@ -1918,6 +1923,7 @@ function exportCsv(users) {
     u.trial_ends_at ? new Date(u.trial_ends_at).toLocaleDateString('en-GB') : '',
     u.stripe_customer_id ?? '',
     u.is_founding_member ? 'Yes' : '',
+    u.referral_count ?? 0,
   ])
   const csv  = [headers, ...rows].map(r => r.map(v => `"${String(v).replace(/"/g, '""')}"`).join(',')).join('\n')
   const blob = new Blob([csv], { type: 'text/csv' })
@@ -1936,6 +1942,8 @@ function UsersSection({ isDemo }) {
   const [planFilter, setPlan]       = useState('all')
   const [statusFilter, setStatus]   = useState('all')
   const [foundingOnly, setFounding] = useState(false)
+  const [sortBy, setSortBy]         = useState('joined-desc')
+  const [showInvite, setShowInvite] = useState(false)
   const foundingCount = users.filter(u => u.is_founding_member).length
 
   useEffect(() => {
@@ -1962,6 +1970,12 @@ function UsersSection({ isDemo }) {
     if (!search) return true
     const q = search.toLowerCase()
     return (u.full_name ?? '').toLowerCase().includes(q) || (u.email ?? '').toLowerCase().includes(q)
+  })
+
+  const sorted = [...visible].sort((a, b) => {
+    if (sortBy === 'joined-asc') return new Date(a.created_at) - new Date(b.created_at)
+    if (sortBy === 'referrals')  return (b.referral_count ?? 0) - (a.referral_count ?? 0)
+    return new Date(b.created_at) - new Date(a.created_at) // newest first
   })
 
   const activeCount      = users.filter(u => ['active', 'trialing'].includes(u.subscription_status)).length
@@ -2031,12 +2045,29 @@ function UsersSection({ isDemo }) {
             <Sparkles size={13} /> Founding · {foundingCount}
           </button>
         )}
+        <select
+          value={sortBy}
+          onChange={e => setSortBy(e.target.value)}
+          title="Sort users"
+          className="text-xs font-medium border border-stone-200 rounded-xl px-3 py-2 bg-white text-stone-600 focus:outline-none focus:ring-2 focus:ring-navy-300"
+        >
+          <option value="joined-desc">Newest first</option>
+          <option value="joined-asc">Oldest first</option>
+          <option value="referrals">Most referrals</option>
+        </select>
         <button
-          onClick={() => exportCsv(visible)}
+          onClick={() => exportCsv(sorted)}
           title="Export visible users to CSV"
           className="inline-flex items-center gap-1.5 text-xs font-medium px-3 py-2 rounded-xl border border-stone-200 bg-white text-stone-600 hover:bg-stone-50 transition-colors"
         >
           <FileText size={13} /> Export CSV
+        </button>
+        <button
+          onClick={() => setShowInvite(true)}
+          className="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-2 rounded-xl text-white transition-opacity hover:opacity-90"
+          style={{ background: 'linear-gradient(100deg,#2d5082,#6f6bc6,#6e9b6a)' }}
+        >
+          <Send size={13} /> Invite user
         </button>
       </div>
 
@@ -2045,16 +2076,67 @@ function UsersSection({ isDemo }) {
         <div className="flex items-center justify-center py-16">
           <Loader2 size={24} className="animate-spin text-stone-400" />
         </div>
-      ) : visible.length === 0 ? (
+      ) : sorted.length === 0 ? (
         <div className="bg-white border border-stone-200 rounded-2xl p-12 text-center">
           <p className="text-stone-400 text-sm">No users match the current filter.</p>
         </div>
       ) : (
         <div className="space-y-3">
-          {visible.map(u => <UserRow key={u.id} u={u} />)}
+          {sorted.map(u => <UserRow key={u.id} u={u} />)}
         </div>
       )}
+
+      {showInvite && <InviteUserModal onClose={() => setShowInvite(false)} />}
     </div>
+  )
+}
+
+// Admin invites a new person to sign up — normal or on the FOUNDING50 offer.
+function InviteUserModal({ onClose }) {
+  const [email, setEmail] = useState('')
+  const [plan, setPlan]   = useState('normal') // 'normal' | 'founding'
+  const [state, setState] = useState('idle')   // idle | sending | sent | error
+  const [error, setError] = useState(null)
+
+  const submit = async () => {
+    const e = email.trim().toLowerCase()
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(e)) { setError('Enter a valid email.'); return }
+    setState('sending'); setError(null)
+    const r = await adminPost('/api/admin/invite-user', { email: e, plan })
+    if (r.ok) { setState('sent'); setTimeout(onClose, 1200) }
+    else { setState('error'); setError(r.error || 'Could not send the invite.') }
+  }
+
+  return (
+    <Modal title="Invite a user" onClose={onClose}>
+      <div className="space-y-4">
+        <Field label="Email">
+          <input type="email" autoFocus value={email} onChange={e => setEmail(e.target.value)} placeholder="person@example.com" className={inputCls} />
+        </Field>
+        <Field label="Offer">
+          <div className="grid grid-cols-2 gap-2">
+            {[['normal', 'Normal signup', '14-day trial'], ['founding', 'Founding (FOUNDING50)', 'First year free']].map(([v, title, sub]) => (
+              <button key={v} type="button" onClick={() => setPlan(v)}
+                className={`text-left rounded-xl border px-3 py-2.5 transition-colors ${plan === v ? 'border-navy-500 bg-navy-50' : 'border-stone-200 hover:bg-stone-50'}`}>
+                <p className="text-sm font-semibold text-navy-900">{title}</p>
+                <p className="text-xs text-stone-500">{sub}</p>
+              </button>
+            ))}
+          </div>
+        </Field>
+        {error && <p className="text-xs text-red-600">{error}</p>}
+        <p className="text-xs text-stone-400">They'll get an email with a link to {plan === 'founding' ? 'claim the founding offer (Family Yearly, first year free)' : 'sign up'}.</p>
+        <div className="flex justify-end gap-2 pt-1">
+          <button onClick={onClose} className="text-sm px-4 py-2 rounded-xl border border-stone-200 hover:bg-stone-50">Cancel</button>
+          <button onClick={submit} disabled={state === 'sending' || state === 'sent'}
+            className="inline-flex items-center gap-2 text-sm font-semibold px-4 py-2 rounded-xl text-white disabled:opacity-50"
+            style={{ background: 'linear-gradient(100deg,#2d5082,#6f6bc6,#6e9b6a)' }}>
+            {state === 'sending' ? <Loader2 size={14} className="animate-spin" /> : <Send size={14} />}
+            {state === 'sent' ? 'Sent ✓' : 'Send invite'}
+          </button>
+        </div>
+      </div>
+    </Modal>
   )
 }
 
