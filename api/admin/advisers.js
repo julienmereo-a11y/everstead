@@ -122,6 +122,48 @@ export default async function handler(req, res) {
       return res.status(200).json({ ok: true })
     }
 
+    // ── Adviser SEATS on a firm (team) ───────────────────────────────────────
+    if (action === 'list-members') {
+      const { adviserId } = req.body
+      if (!adviserId) return res.status(400).json({ error: 'Missing adviser id.' })
+      const { data: members, error } = await db.from('adviser_members')
+        .select('id, email, role, invite_status, user_id, accepted_at, created_at')
+        .eq('adviser_id', adviserId).order('role', { ascending: true }).order('created_at')
+      if (error) throw error
+      const ids = members.filter(m => m.user_id).map(m => m.user_id)
+      const names = {}
+      if (ids.length) {
+        const { data: profs } = await db.from('profiles').select('id, full_name').in('id', ids)
+        for (const p of profs || []) names[p.id] = p.full_name
+      }
+      return res.status(200).json({ members: members.map(m => ({ ...m, full_name: names[m.user_id] || null })) })
+    }
+
+    // Seed the firm's owner, or add another adviser seat. If the email already has an
+    // Everstead account we link + grant portal access now; otherwise it's a pending
+    // seat claimed automatically when they sign up with that email.
+    if (action === 'add-member') {
+      const { adviserId, email, role } = req.body
+      const cleanEmail = String(email || '').trim().toLowerCase()
+      if (!adviserId || !cleanEmail) return res.status(400).json({ error: 'Firm and email are required.' })
+      const { data: prof } = await db.from('profiles').select('id').ilike('email', cleanEmail).maybeSingle()
+      const row = { adviser_id: adviserId, email: cleanEmail, role: role === 'owner' ? 'owner' : 'member' }
+      if (prof?.id) { row.user_id = prof.id; row.invite_status = 'accepted'; row.accepted_at = new Date().toISOString() }
+      const { data, error } = await db.from('adviser_members')
+        .upsert(row, { onConflict: 'adviser_id,email' }).select().single()
+      if (error) throw error
+      if (prof?.id) await db.from('profiles').update({ plan: 'advisor' }).eq('id', prof.id)
+      return res.status(200).json({ member: { ...data, linked: !!prof?.id } })
+    }
+
+    if (action === 'remove-member') {
+      const { memberId } = req.body
+      if (!memberId) return res.status(400).json({ error: 'Missing member id.' })
+      const { error } = await db.from('adviser_members').delete().eq('id', memberId)
+      if (error) throw error
+      return res.status(200).json({ ok: true })
+    }
+
     return res.status(400).json({ error: `Unknown action: ${action}` })
   } catch (err) {
     console.error('admin/advisers error:', err)
