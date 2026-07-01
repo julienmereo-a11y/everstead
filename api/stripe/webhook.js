@@ -8,6 +8,9 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY
 )
 const resend = new Resend(process.env.RESEND_API_KEY)
+// Where founder/owner alerts (new subscribers, card captured) are sent. Configurable
+// so they reach the right inbox — set FOUNDER_TO (or FEEDBACK_TO) in the environment.
+const FOUNDER_TO = process.env.FOUNDER_TO || process.env.FEEDBACK_TO || 'julien@everstead.care'
 
 export const config = { api: { bodyParser: false } }
 
@@ -74,7 +77,7 @@ export default async function handler(req, res) {
       .from('profiles')
       .update(profileUpdate)
       .eq('email', customerEmail)
-      .select('id, full_name, email, plan')
+      .select('id, full_name, email, plan, is_founding_member')
 
     if (profiles?.[0]) {
       const p = profiles[0]
@@ -106,10 +109,13 @@ export default async function handler(req, res) {
       }
 
       // ── Owner notification ────────────────────────────────
+      const isFounding = String(subscription.metadata?.promo_code || '').toUpperCase() === 'FOUNDING50' || !!p.is_founding_member
       await resend.emails.send({
         from:    'Everstead <hello@everstead.care>',
-        to:      'julien@everstead.care',
-        subject: `💳 Card captured — ${p.full_name || p.email} (${metaPlan || p.plan || 'unknown'})`,
+        to:      FOUNDER_TO,
+        subject: isFounding
+          ? `🎉 New FOUNDING member — ${p.full_name || p.email}`
+          : `💳 Card captured — ${p.full_name || p.email} (${metaPlan || p.plan || 'unknown'})`,
         html:    ownerNewSignupHtml({
           name:         p.full_name,
           email:        p.email,
@@ -120,6 +126,7 @@ export default async function handler(req, res) {
           referredBy:   metaReferredBy,
           customerId,
           subscriptionId,
+          isFounding,
         }),
       }).catch(console.error)
     }
@@ -162,10 +169,10 @@ export default async function handler(req, res) {
     // hasn't been written to profiles yet when the webhook arrives)
     let updatedProfile = null
     if (metaUserId) {
-      const { data } = await supabase.from('profiles').update(profileUpdate).eq('id', metaUserId).select('id, full_name, email, plan, billing_cycle').single()
+      const { data } = await supabase.from('profiles').update(profileUpdate).eq('id', metaUserId).select('id, full_name, email, plan, billing_cycle, is_founding_member').single()
       updatedProfile = data
     } else {
-      const { data } = await supabase.from('profiles').update(profileUpdate).eq('stripe_customer_id', subscription.customer).select('id, full_name, email, plan, billing_cycle').single()
+      const { data } = await supabase.from('profiles').update(profileUpdate).eq('stripe_customer_id', subscription.customer).select('id, full_name, email, plan, billing_cycle, is_founding_member').single()
       updatedProfile = data
     }
 
@@ -199,10 +206,13 @@ export default async function handler(req, res) {
     // always has a fully-formed subscription object and no race conditions.
     // Gated on metaUserId (inline flow) for the same de-dup reason as above.
     if (metaUserId && updatedProfile) {
+      const isFounding = String(subscription.metadata?.promo_code || '').toUpperCase() === 'FOUNDING50' || !!updatedProfile.is_founding_member
       await resend.emails.send({
         from:    'Everstead <hello@everstead.care>',
-        to:      'julien@everstead.care',
-        subject: `💳 New subscriber — ${updatedProfile.full_name || updatedProfile.email} (${metaPlan || updatedProfile.plan || 'unknown'})`,
+        to:      FOUNDER_TO,
+        subject: isFounding
+          ? `🎉 New FOUNDING member — ${updatedProfile.full_name || updatedProfile.email}`
+          : `💳 New subscriber — ${updatedProfile.full_name || updatedProfile.email} (${metaPlan || updatedProfile.plan || 'unknown'})`,
         html:    ownerNewSignupHtml({
           name:           updatedProfile.full_name,
           email:          updatedProfile.email,
@@ -213,6 +223,7 @@ export default async function handler(req, res) {
           referredBy:     metaReferredBy,
           customerId:     subscription.customer,
           subscriptionId: subscription.id,
+          isFounding,
         }),
       }).catch(err => console.error('owner notification error:', err.message))
     }
@@ -534,7 +545,7 @@ function emailShell(body) {
 </html>`
 }
 
-function ownerNewSignupHtml({ name, email, plan, billingCycle, isTrialing, trialEnd, referredBy, customerId, subscriptionId }) {
+function ownerNewSignupHtml({ name, email, plan, billingCycle, isTrialing, trialEnd, referredBy, customerId, subscriptionId, isFounding }) {
   const signedUpAt = new Date().toLocaleString('en-GB', {
     day: 'numeric', month: 'long', year: 'numeric',
     hour: '2-digit', minute: '2-digit', timeZone: 'Europe/London',
@@ -570,6 +581,7 @@ function ownerNewSignupHtml({ name, email, plan, billingCycle, isTrialing, trial
             ${row('Email', `<a href="mailto:${email}" style="color:#4c7d47;">${email}</a>`)}
             ${row('Plan', plan ? plan.charAt(0).toUpperCase() + plan.slice(1) : '—')}
             ${row('Billing', billingCycle ? billingCycle.charAt(0).toUpperCase() + billingCycle.slice(1) : '—')}
+            ${isFounding ? row('Founding member', 'Yes — FOUNDING50 (first year free)') : ''}
             ${row('Type', isTrialing ? '14-day trial' : 'Paid immediately')}
             ${trialEndDate ? row('Trial ends', trialEndDate) : ''}
             ${referredBy ? row('Referred by', referredBy) : ''}
