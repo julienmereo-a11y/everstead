@@ -24,13 +24,14 @@ export default function ProtectedRoute({ children }) {
   if (!profile) return <Spinner />
 
   const isDelegateOnly   = profile.role === 'delegate'
+  const isAdviser        = profile.plan === 'advisor'   // advisers use the adviser portal, not B2C checkout
   const onTrialEndedPage = location.pathname === '/trial-ended'
 
   // Redirect expired-trial users to the /trial-ended choice screen FIRST — before
   // the no-subscription bounce below. Otherwise a trial_expired user without their
   // own stripe_subscription_id (e.g. a removed/departed secondary family member)
   // would be wrongly sent to /get-started's card step instead of /trial-ended.
-  if (!isDelegateOnly && !onTrialEndedPage && !isCheckout) {
+  if (!isDelegateOnly && !isAdviser && !onTrialEndedPage && !isCheckout) {
     const trialExpiredByStatus = profile.subscription_status === 'trial_expired'
     const trialExpiredByDate   =
       profile.subscription_status === 'trialing' &&
@@ -48,10 +49,18 @@ export default function ProtectedRoute({ children }) {
   // brief window after checkout where stripe_subscription_id may not yet be synced
   // into the cached profile, so a refresh doesn't wrongly bounce a paid user to
   // the card step.
+  // Require a real checkout to access. Bare 'trialing' is NOT proof — the profile
+  // trigger stamps every new account 'trialing', so a Google sign-in with no card
+  // would otherwise slip straight into the product. Accept an actual Stripe customer
+  // or subscription (checkout AND gifts both create one), an active-ish state, or a
+  // grandfathered legacy trial. stripe_subscription_id is written synchronously at
+  // checkout, so paying users are never bounced.
   const hasSubscription =
     !!profile.stripe_subscription_id ||
-    ['trialing', 'active', 'cancelling', 'past_due'].includes(profile.subscription_status)
-  if (!isDelegateOnly && !isCheckout && !hasSubscription) {
+    !!profile.stripe_customer_id ||
+    profile.legacy_trial_access === true ||
+    ['active', 'cancelling', 'past_due'].includes(profile.subscription_status)
+  if (!isDelegateOnly && !isAdviser && !isCheckout && !hasSubscription) {
     return <Navigate to="/get-started?resume=true" replace />
   }
 
