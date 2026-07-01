@@ -240,14 +240,14 @@ export default function GuidedOnboarding({
         throw new Error(msg)
       }
       const reply = data?.reply || ''
-      const { prose, proposals } = parseReply(reply)
-      setMessages(h => [...h, { role: 'assistant', content: prose || reply }])
-      for (const p of proposals) {
-        if (AUTO_SAVE.has(p.type)) {
-          try { await writeCard(p); setMessages(h => [...h, { role: 'saved', content: savedLabel(p.type) }]) }
-          catch { setCards(c => [...c, p]) }
-        } else { setCards(c => [...c, p]) }
-      }
+      const { prose } = parseReply(reply)
+      // Only ever surface the assistant's SUGGESTION here — never a card. The nudge
+      // is meant to ASK about a next step; any actual proposal comes from the user's
+      // reply (via send). This makes it impossible to re-propose the item just saved.
+      const text = prose && prose.trim()
+        ? prose
+        : "Is there anything else you'd like to pop in — maybe an account or a document? Or you're all set for now, and everything you added keeps."
+      setMessages(h => [...h, { role: 'assistant', content: text }])
     } catch (err) {
       setError(err.message || 'Something went wrong. Please try again.')
     } finally {
