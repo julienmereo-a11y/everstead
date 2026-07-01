@@ -5,6 +5,30 @@ import { Link } from 'react-router-dom'
 
 const entries = [
   {
+    date: 'July 2026',
+    tag: 'New',
+    tagColor: 'bg-sage-100 text-sage-700',
+    title: 'Everstead for advisers & solicitors',
+    items: [
+      'A dedicated, private portal for financial advisers, solicitors and estate planners who support families on Everstead.',
+      'See all your firm’s client families in one place, each with a clear readiness view.',
+      'Invite your whole team — everyone at the firm shares the same client list.',
+      'Add your firm’s logo — it appears in your portal and on your clients’ sign-up, so the experience feels like yours.',
+      'A private AI assistant that guides you around the portal and answers questions about your own client portfolio — never any other firm’s.',
+      'Your firm’s invoices, available right in the portal.',
+      'Clients keep full control of their plans at all times — advisers only ever see what a client chooses to share.',
+    ],
+  },
+  {
+    date: 'July 2026',
+    tag: 'Improvement',
+    tagColor: 'bg-blue-50 text-blue-700',
+    title: 'Smoother on mobile',
+    items: [
+      'Fixed a display glitch on phones where action buttons (like “Send invite”) could sit behind the floating help buttons — dialogs now always appear cleanly on top.',
+    ],
+  },
+  {
     date: 'June 2026',
     tag: 'Improvement',
     tagColor: 'bg-blue-50 text-blue-700',
