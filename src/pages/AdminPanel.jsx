@@ -2152,13 +2152,13 @@ function UsersSection({ isDemo }) {
         </div>
       )}
 
-      {showInvite && <InviteUserModal onClose={() => setShowInvite(false)} />}
+      {showInvite && <InviteUserModal isDemo={isDemo} onClose={() => setShowInvite(false)} />}
     </div>
   )
 }
 
 // Admin invites a new person to sign up — normal or on the FOUNDING50 offer.
-function InviteUserModal({ onClose }) {
+function InviteUserModal({ isDemo, onClose }) {
   const [email, setEmail] = useState('')
   const [plan, setPlan]   = useState('normal') // 'normal' | 'founding'
   const [state, setState] = useState('idle')   // idle | sending | sent | error
@@ -2167,6 +2167,7 @@ function InviteUserModal({ onClose }) {
   const submit = async () => {
     const e = email.trim().toLowerCase()
     if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(e)) { setError('Enter a valid email.'); return }
+    if (isDemo) { setState('sent'); setTimeout(onClose, 1200); return } // demo: no real email
     setState('sending'); setError(null)
     const r = await adminPost('/api/admin/invite-user', { email: e, plan })
     if (r.ok) { setState('sent'); setTimeout(onClose, 1200) }

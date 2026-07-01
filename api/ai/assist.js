@@ -300,6 +300,12 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'Unknown type' })
   }
 
+  // The Anthropic API requires the conversation to START with a user message. Clients
+  // show a local scripted greeting (role 'assistant') and some include it in the
+  // history they send — drop any leading non-user messages so the call never 400s.
+  while (requestMessages.length && requestMessages[0].role !== 'user') requestMessages.shift()
+  if (requestMessages.length === 0) return res.status(400).json({ error: 'Missing messages' })
+
   // Give conversational guides more room; quick single-shot responses need less
   const maxTokens = type === 'grief-guide' || type === 'delegate-guide' || type === 'owner-guide' ? 1024 : 512
 

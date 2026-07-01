@@ -1995,7 +1995,9 @@ function PortalAlertsSection({ families, onSelectFamily, setActiveSection }) {
 // caller's firm via the firm-scoped RPCs).
 function AdviserAssistant({ isDemo }) {
   const [open, setOpen]         = useState(false)
-  const [messages, setMessages] = useState([{ role: 'assistant', content: "Hi — I'm your Everstead adviser assistant. Ask me how to do something in the portal, or about your own client portfolio (e.g. “who has the lowest readiness?”)." }])
+  // The greeting is scripted (local only) — it must NOT be sent to the API, which
+  // requires conversations to start with a user message.
+  const [messages, setMessages] = useState([{ role: 'assistant', scripted: true, content: "Hi — I'm your Everstead adviser assistant. Ask me how to do something in the portal, or about your own client portfolio (e.g. “who has the lowest readiness?”)." }])
   const [input, setInput]       = useState('')
   const [loading, setLoading]   = useState(false)
   const [error, setError]       = useState(null)
@@ -2015,7 +2017,7 @@ function AdviserAssistant({ isDemo }) {
       return
     }
     try {
-      const apiHistory = next.filter(m => m.role === 'user' || m.role === 'assistant').map(m => ({ role: m.role, content: m.content }))
+      const apiHistory = next.filter(m => !m.scripted && (m.role === 'user' || m.role === 'assistant')).map(m => ({ role: m.role, content: m.content }))
       const { data, error: invokeErr } = await supabase.functions.invoke('adviser-assistant', { body: { messages: apiHistory } })
       if (invokeErr) {
         let msg = 'The assistant is taking a moment. Please try again.'

@@ -81,7 +81,11 @@ Deno.serve(async (req: Request) => {
 
   let body: { messages?: InMessage[] }
   try { body = await req.json() } catch { return json({ error: 'Invalid request body.' }, 400) }
-  const history = Array.isArray(body.messages) ? body.messages : []
+  // The Anthropic API requires the conversation to start with a user message — drop
+  // any leading assistant greeting a client may have included.
+  const raw = Array.isArray(body.messages) ? body.messages : []
+  const firstUser = raw.findIndex(m => m.role === 'user')
+  const history = firstUser === -1 ? [] : raw.slice(firstUser)
   if (history.length === 0) return json({ error: 'No messages provided.' }, 400)
 
   const apiKey = Deno.env.get('ANTHROPIC_API_KEY')
