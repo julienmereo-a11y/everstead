@@ -1,13 +1,17 @@
 -- Founding members: people who registered with the FOUNDING50 code (first year
 -- free). We tag them so they get a badge of honour on their dashboard and so the
 -- team can easily identify them in the admin panel.
+--
+-- This migration also HARDENS the admin stats RPC, which previously returned every
+-- user's PII and was executable by anon/PUBLIC with no admin check:
+--   • only real admins (profiles.role = 'admin') get rows,
+--   • EXECUTE is revoked from anon/PUBLIC and granted only to authenticated,
+--   • search_path is pinned (SECURITY DEFINER hardening).
 
 alter table public.profiles
   add column if not exists is_founding_member boolean not null default false;
 
--- The admin user list comes from get_user_stats_for_admin(); surface the new flag.
--- Adding a column changes the return type, so we drop + recreate (grants are
--- re-applied by Postgres' default EXECUTE-to-PUBLIC on CREATE, matching today).
+-- Recreate get_user_stats_for_admin(): add the founding flag + the guards above.
 drop function if exists public.get_user_stats_for_admin();
 create function public.get_user_stats_for_admin()
 returns table(
@@ -22,6 +26,7 @@ returns table(
 )
 language sql
 security definer
+set search_path = public
 as $function$
   select
     p.id, p.full_name, p.email, p.phone, p.country, p.nationality,
@@ -39,5 +44,14 @@ as $function$
   from profiles p
   where p.role != 'delegate'
     and p.stripe_subscription_id is not null
+    -- Only real admins may read this; everyone else gets zero rows.
+    and exists (select 1 from profiles me where me.id = auth.uid() and me.role = 'admin')
   order by p.created_at desc;
 $function$;
+
+-- Lock down who can even call it: not anon, not the world — only signed-in users
+-- (and the admin guard above further restricts them to admins).
+revoke all on function public.get_user_stats_for_admin() from public;
+revoke all on function public.get_user_stats_for_admin() from anon;
+grant execute on function public.get_user_stats_for_admin() to authenticated;
+grant execute on function public.get_user_stats_for_admin() to service_role;
