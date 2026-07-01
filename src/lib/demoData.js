@@ -63,7 +63,7 @@ export const DEMO_PEOPLE = [
   },
   {
     id: '4', user_id: 'demo-user', name: 'Sophie Blake', email: 'sophie.blake@vanguard.com',
-    role: 'Financial Advisor', invite_status: 'accepted',
+    role: 'Financial Adviser', invite_status: 'accepted',
     access_grants: {
       accessAreas: ['accounts'],
       accountCategories: ['Investment', 'Retirement'],
@@ -228,7 +228,7 @@ export const DEMO_ADVISOR = {
   full_name: 'Sophie Carter',
   email: 'sophie.carter@carterwealthmanagement.co.uk',
   firm: 'Carter Wealth Management',
-  role: 'Financial Advisor',
+  role: 'Financial Adviser',
   plan: 'advisor',
   families_limit: 5,
   subscription_status: 'active',
@@ -246,7 +246,7 @@ export const DEMO_ADVISOR_FAMILIES = [
     plan: 'family',
     readiness_score: 76,
     invite_status: 'accepted',
-    advisor_role: 'Financial Advisor',
+    advisor_role: 'Financial Adviser',
     last_updated: '2026-04-22T16:30:00Z',
     accounts: [
       { id: 'a1', institution: 'Barclays', account_type: 'Current Account', category: 'Banking', account_number_hint: '4821', balance_display: '£8,450', notes: 'Primary day-to-day account.' },
@@ -260,7 +260,7 @@ export const DEMO_ADVISOR_FAMILIES = [
     ],
     instructions: [
       { id: 'i1', title: 'First 48 hours — what to do immediately', category: 'Urgent', audience: 'Executor', steps_count: 7 },
-      { id: 'i2', title: 'IHT planning notes', category: 'Financial', audience: 'Advisor', steps_count: 4 },
+      { id: 'i2', title: 'IHT planning notes', category: 'Financial', audience: 'Adviser', steps_count: 4 },
     ],
     alerts: [
       { id: 'al1', title: 'NHS Medical Record expiring soon', severity: 'warning', is_read: false },
@@ -269,7 +269,7 @@ export const DEMO_ADVISOR_FAMILIES = [
     trusted_people: [
       { id: 'p1', name: 'Carol Thornton', role: 'Primary Executor', invite_status: 'accepted' },
       { id: 'p2', name: 'Emily Thornton', role: 'Family Member', invite_status: 'accepted' },
-      { id: 'p3', name: 'Sophie Carter', role: 'Financial Advisor', invite_status: 'accepted' },
+      { id: 'p3', name: 'Sophie Carter', role: 'Financial Adviser', invite_status: 'accepted' },
     ],
     advisor_permissions: {
       accounts: true,
@@ -297,7 +297,7 @@ export const DEMO_ADVISOR_FAMILIES = [
     plan: 'family',
     readiness_score: 91,
     invite_status: 'accepted',
-    advisor_role: 'Financial Advisor',
+    advisor_role: 'Financial Adviser',
     last_updated: '2026-04-19T11:00:00Z',
     accounts: [
       { id: 'a4', institution: 'Lloyds', account_type: 'Current Account', category: 'Banking', account_number_hint: '2291', balance_display: '£14,300', notes: 'Joint account.' },
@@ -314,7 +314,7 @@ export const DEMO_ADVISOR_FAMILIES = [
     alerts: [],
     trusted_people: [
       { id: 'p4', name: 'Robert Okafor', role: 'Spouse / Partner', invite_status: 'accepted' },
-      { id: 'p5', name: 'Sophie Carter', role: 'Financial Advisor', invite_status: 'accepted' },
+      { id: 'p5', name: 'Sophie Carter', role: 'Financial Adviser', invite_status: 'accepted' },
     ],
     advisor_permissions: {
       accounts: true,
@@ -339,7 +339,7 @@ export const DEMO_ADVISOR_FAMILIES = [
     plan: 'essential',
     readiness_score: 54,
     invite_status: 'pending',
-    advisor_role: 'Financial Advisor',
+    advisor_role: 'Financial Adviser',
     last_updated: null,
     accounts: [],
     documents: [],
