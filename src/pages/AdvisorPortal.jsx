@@ -1350,6 +1350,66 @@ function AdvisorResourcesSection() {
 // ADVISOR SETTINGS PANEL
 // ─────────────────────────────────────────────────────────────
 // Firm team — the owner invites teammates who share the firm's clients.
+// Custom-contract billing: advisers see the invoices the Everstead team uploads.
+const DEMO_ADVISER_INVOICES = [
+  { id: 'inv1', amount: 0, currency: 'GBP', issue_date: '2026-07-01', due_date: null, status: 'waived', file_path: null, notes: 'Pilot — first year free.' },
+]
+const INV_PILL = {
+  paid:   'bg-emerald-50 text-emerald-700 border-emerald-200',
+  unpaid: 'bg-amber-50 text-amber-700 border-amber-200',
+  waived: 'bg-stone-100 text-stone-500 border-stone-200',
+}
+function AdviserInvoicesCard({ isDemo }) {
+  const [invoices, setInvoices] = useState(isDemo ? DEMO_ADVISER_INVOICES : [])
+  const [loading, setLoading]   = useState(!isDemo)
+  const [busyId, setBusyId]     = useState(null)
+  useEffect(() => {
+    if (isDemo) return
+    supabase.rpc('get_adviser_invoices').then(({ data }) => { setInvoices(data || []); setLoading(false) }, () => setLoading(false))
+  }, [isDemo])
+  const gbp = (p) => '£' + ((Number(p) || 0) / 100).toLocaleString('en-GB', { minimumFractionDigits: 0, maximumFractionDigits: 2 })
+  const fmt = (d) => d ? new Date(d).toLocaleDateString('en-GB', { dateStyle: 'medium' }) : '—'
+  const viewPdf = async (inv) => {
+    if (!inv.file_path || isDemo) return
+    setBusyId(inv.id)
+    const { data } = await supabase.storage.from('adviser-invoices').createSignedUrl(inv.file_path, 300)
+    setBusyId(null)
+    if (data?.signedUrl) window.open(data.signedUrl, '_blank', 'noopener')
+  }
+  return (
+    <div className="rounded-[2rem] border border-stone-200 bg-white p-8 space-y-4">
+      <div>
+        <h2 className="text-base font-semibold text-navy-950">Billing &amp; invoices</h2>
+        <p className="text-xs text-stone-400 mt-0.5">Your firm is on a custom Everstead plan. Invoices from the Everstead team appear here.</p>
+      </div>
+      {loading ? (
+        <div className="py-6 text-center"><Loader2 size={18} className="animate-spin text-stone-400 mx-auto" /></div>
+      ) : invoices.length === 0 ? (
+        <p className="text-sm text-stone-400">No invoices yet — your Everstead contact will add them here.</p>
+      ) : (
+        <div className="divide-y divide-stone-100">
+          {invoices.map(inv => (
+            <div key={inv.id} className="flex items-center justify-between py-3 gap-3">
+              <div className="min-w-0">
+                <p className="text-sm font-medium text-navy-900">{gbp(inv.amount)} <span className="text-stone-400 font-normal">· {fmt(inv.issue_date)}</span></p>
+                <p className="text-xs text-stone-500 truncate">{inv.notes || (inv.due_date ? `Due ${fmt(inv.due_date)}` : '')}</p>
+              </div>
+              <div className="flex items-center gap-3 shrink-0">
+                {inv.file_path && (
+                  <button onClick={() => viewPdf(inv)} disabled={busyId === inv.id} className="text-xs font-medium text-navy-700 hover:text-navy-900 inline-flex items-center gap-1 disabled:opacity-50">
+                    {busyId === inv.id ? <Loader2 size={12} className="animate-spin" /> : <FileText size={12} />} View PDF
+                  </button>
+                )}
+                <span className={`text-xs font-semibold px-2 py-0.5 rounded-full border capitalize ${INV_PILL[inv.status] || INV_PILL.unpaid}`}>{inv.status}</span>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}
+
 function AdviserTeamCard({ team, isOwner, isDemo, onReload }) {
   const [email, setEmail] = useState('')
   const [busy, setBusy]   = useState(false)
@@ -1563,8 +1623,8 @@ function AdvisorSettings({ advisor, families, isDemo, team, onReload, firmId }) 
       {/* ── Team card ── */}
       <AdviserTeamCard team={team} isOwner={isDemo || advisor?.role === 'Firm owner'} isDemo={isDemo} onReload={onReload} />
 
-      {/* ── Membership card ── */}
-      <AdvisorMembershipCard advisor={advisor} families={families} isDemo={isDemo} cancelled={cancelled} setCancelled={setCancelled} />
+      {/* ── Billing & invoices (custom contract — invoices uploaded by the Everstead team) ── */}
+      <AdviserInvoicesCard isDemo={isDemo} />
 
     </div>
   )
