@@ -773,6 +773,21 @@ function AdminActions({ u, onTrialExtended }) {
     } catch { setFoundingState('idle'); window.alert('Network error. Please try again.') }
   }
 
+  const [linkState, setLinkState] = useState('idle')
+  const sendFoundingLink = async () => {
+    setLinkState('sending')
+    try {
+      const { data: { session } } = await supabase.auth.getSession()
+      const res = await fetch('/api/admin/invite-user', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${session?.access_token}` },
+        body: JSON.stringify({ email: u.email, plan: 'founding' }),
+      })
+      if (!res.ok) throw new Error()
+      setLinkState('sent'); setTimeout(() => setLinkState('idle'), 3000)
+    } catch { setLinkState('error'); setTimeout(() => setLinkState('idle'), 3000) }
+  }
+
   const sendPasswordReset = async () => {
     setPwState('sending')
     try {
@@ -917,6 +932,19 @@ function AdminActions({ u, onTrialExtended }) {
           >
             {foundingState === 'sending' ? <Loader2 size={12} className="animate-spin" /> : <Sparkles size={12} />}
             {foundingState === 'sent' ? 'Applied ✓' : 'Apply founding deal'}
+          </button>
+        )}
+
+        {/* Send founding link — email them the FOUNDING50 signup link (for no-card cases) */}
+        {u.plan !== 'advisor' && (
+          <button
+            onClick={sendFoundingLink}
+            disabled={linkState === 'sending'}
+            className="w-full flex items-center gap-2 text-xs font-medium px-3 py-2 rounded-xl border border-navy-200 text-navy-700 hover:bg-navy-50 transition-colors disabled:opacity-50"
+            title="Email them the FOUNDING50 signup link"
+          >
+            {linkState === 'sending' ? <Loader2 size={12} className="animate-spin" /> : <Sparkles size={12} />}
+            {linkState === 'sent' ? 'Founding link sent ✓' : linkState === 'error' ? 'Failed — retry' : 'Send founding link'}
           </button>
         )}
       </div>
@@ -1120,6 +1148,8 @@ function OverviewSection({ isDemo }) {
   const [users, setUsers]     = useState(isDemo ? DEMO_USERS : [])
   const [loading, setLoading] = useState(!isDemo)
 
+  const [linkSent, setLinkSent] = useState(null)
+
   useEffect(() => {
     if (isDemo) return
     supabase.rpc('get_user_stats_for_admin').then(({ data, error }) => {
@@ -1127,6 +1157,21 @@ function OverviewSection({ isDemo }) {
       setLoading(false)
     })
   }, [isDemo])
+
+  const sendFoundingLink = async (email) => {
+    setLinkSent(email)
+    if (!isDemo) {
+      try {
+        const { data: { session } } = await supabase.auth.getSession()
+        await fetch('/api/admin/invite-user', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${session?.access_token}` },
+          body: JSON.stringify({ email, plan: 'founding' }),
+        })
+      } catch { /* ignore */ }
+    }
+    setTimeout(() => setLinkSent(null), 3000)
+  }
 
   const active     = users.filter(u => ['active', 'trialing'].includes(u.subscription_status))
   const trialing   = users.filter(u => u.subscription_status === 'trialing')
@@ -1159,6 +1204,10 @@ function OverviewSection({ isDemo }) {
     }, 0),
   }))
 
+  const foundingCount  = users.filter(u => u.is_founding_member).length
+  const totalReferrals = users.reduce((s, u) => s + (u.referral_count || 0), 0)
+  const noSubCount     = users.filter(u => u.plan !== 'advisor' && !u.stripe_subscription_id).length
+
   if (loading) return (
     <div className="flex items-center justify-center py-20">
       <Loader2 size={24} className="animate-spin text-stone-400" />
@@ -1177,6 +1226,13 @@ function OverviewSection({ isDemo }) {
         <StatCard label="Total users"    value={users.length}   Icon={Users}        color="bg-navy-100 text-navy-700" />
         <StatCard label="Active / trial" value={active.length}  Icon={CheckCircle2} color="bg-emerald-100 text-emerald-700" />
         <StatCard label="Churned"        value={churned.length} Icon={XCircle}      color="bg-stone-200 text-stone-600" />
+      </div>
+
+      {/* Secondary stats */}
+      <div className="grid grid-cols-3 gap-4">
+        <StatCard label="Founding members"     value={foundingCount}  Icon={Sparkles}    color="bg-indigo-100 text-indigo-700" />
+        <StatCard label="Converted referrals"  value={totalReferrals} Icon={Users}       color="bg-sky-100 text-sky-700" />
+        <StatCard label="No subscription yet"  value={noSubCount}     Icon={CreditCard}  color="bg-amber-100 text-amber-700" />
       </div>
 
       {/* Alerts */}
@@ -1275,7 +1331,15 @@ function OverviewSection({ isDemo }) {
                         <p className="text-sm font-medium text-navy-900 truncate">{u.full_name ?? u.email}</p>
                         <p className="text-xs text-stone-400 truncate">{u.email}</p>
                       </div>
-                      <span className={`text-xs font-semibold px-2 py-0.5 rounded-full border ${d <= 2 ? 'bg-red-50 text-red-700 border-red-200' : 'bg-amber-50 text-amber-700 border-amber-200'}`}>
+                      <button
+                        onClick={() => sendFoundingLink(u.email)}
+                        disabled={linkSent === u.email}
+                        title="Email them the founding offer (first year free)"
+                        className="text-xs font-medium text-navy-700 hover:text-navy-900 disabled:opacity-50 shrink-0"
+                      >
+                        {linkSent === u.email ? 'Sent ✓' : 'Founding link'}
+                      </button>
+                      <span className={`text-xs font-semibold px-2 py-0.5 rounded-full border shrink-0 ${d <= 2 ? 'bg-red-50 text-red-700 border-red-200' : 'bg-amber-50 text-amber-700 border-amber-200'}`}>
                         {d === 0 ? 'Today' : `${d}d left`}
                       </span>
                     </div>
@@ -1961,6 +2025,7 @@ function UsersSection({ isDemo }) {
     if (statusFilter === 'cancelling') return u.subscription_status === 'cancelling'
     if (statusFilter === 'payment')  return ['trial_expired', 'past_due'].includes(u.subscription_status)
     if (statusFilter === 'churned')  return ['cancelled', 'canceled'].includes(u.subscription_status)
+    if (statusFilter === 'nosub')    return u.plan !== 'advisor' && !u.stripe_subscription_id
     if (search) {
       const q = search.toLowerCase()
       return (u.full_name ?? '').toLowerCase().includes(q) || (u.email ?? '').toLowerCase().includes(q)
@@ -2027,6 +2092,7 @@ function UsersSection({ isDemo }) {
             ['cancelling', 'Cancelling'],
             ['payment',    'Payment issue'],
             ['churned',    'Churned'],
+            ['nosub',      'No card yet'],
           ].map(([v,l]) => (
             <button key={v} onClick={() => setStatus(v)}
               className={`px-3 py-2 transition-colors ${statusFilter === v ? 'bg-navy-900 text-white' : 'text-stone-500 hover:bg-stone-50'}`}
