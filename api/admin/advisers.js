@@ -1,4 +1,5 @@
 import { requireAdmin, adminDb as db } from '../_lib/admin-auth.js'
+import { sendAdviserInvite, sendAdviserAddedNotice } from '../_lib/adviser-email.js'
 
 // Admin-only management of adviser/solicitor FIRMS, their client families, and the
 // family cap. Action-based POST (same style as api/stripe/cancel-subscription.js).
@@ -119,6 +120,68 @@ export default async function handler(req, res) {
       if (!userId) return res.status(400).json({ error: 'Missing user id.' })
       const { error } = await db.from('profiles').update({ adviser_id: null }).eq('id', userId)
       if (error) throw error
+      return res.status(200).json({ ok: true })
+    }
+
+    // ── Adviser SEATS on a firm (team) ───────────────────────────────────────
+    if (action === 'list-members') {
+      const { adviserId } = req.body
+      if (!adviserId) return res.status(400).json({ error: 'Missing adviser id.' })
+      const { data: members, error } = await db.from('adviser_members')
+        .select('id, email, role, invite_status, user_id, accepted_at, created_at, invite_token')
+        .eq('adviser_id', adviserId).order('role', { ascending: true }).order('created_at')
+      if (error) throw error
+      const ids = members.filter(m => m.user_id).map(m => m.user_id)
+      const names = {}
+      if (ids.length) {
+        const { data: profs } = await db.from('profiles').select('id, full_name').in('id', ids)
+        for (const p of profs || []) names[p.id] = p.full_name
+      }
+      return res.status(200).json({ members: members.map(m => ({ ...m, full_name: names[m.user_id] || null })) })
+    }
+
+    // Seed the firm's owner, or add another adviser seat. If the email already has an
+    // Everstead account we link + grant portal access now; otherwise it's a pending
+    // seat claimed automatically when they sign up with that email.
+    if (action === 'add-member') {
+      const { adviserId, email, role } = req.body
+      const cleanEmail = String(email || '').trim().toLowerCase()
+      if (!adviserId || !cleanEmail) return res.status(400).json({ error: 'Firm and email are required.' })
+      const { data: prof } = await db.from('profiles').select('id').ilike('email', cleanEmail).maybeSingle()
+      const row = { adviser_id: adviserId, email: cleanEmail, role: role === 'owner' ? 'owner' : 'member' }
+      if (prof?.id) { row.user_id = prof.id; row.invite_status = 'accepted'; row.accepted_at = new Date().toISOString() }
+      const { data, error } = await db.from('adviser_members')
+        .upsert(row, { onConflict: 'adviser_id,email' }).select().single()
+      if (error) throw error
+      const { data: firm } = await db.from('advisers').select('firm_name').eq('id', adviserId).single()
+      if (prof?.id) {
+        await db.from('profiles').update({ plan: 'advisor' }).eq('id', prof.id)
+        await sendAdviserAddedNotice({ email: cleanEmail, firmName: firm?.firm_name })
+      } else {
+        // New to Everstead → email an invite to set a password + activate their account.
+        await sendAdviserInvite({ email: cleanEmail, firmName: firm?.firm_name, token: data.invite_token })
+      }
+      return res.status(200).json({ member: { ...data, linked: !!prof?.id } })
+    }
+
+    if (action === 'remove-member') {
+      const { memberId } = req.body
+      if (!memberId) return res.status(400).json({ error: 'Missing member id.' })
+      const { error } = await db.from('adviser_members').delete().eq('id', memberId)
+      if (error) throw error
+      return res.status(200).json({ ok: true })
+    }
+
+    // Re-send the invite (or added-notice) email for a seat.
+    if (action === 'resend-invite') {
+      const { memberId } = req.body
+      if (!memberId) return res.status(400).json({ error: 'Missing member id.' })
+      const { data: m } = await db.from('adviser_members')
+        .select('email, user_id, invite_token, adviser_id').eq('id', memberId).single()
+      if (!m) return res.status(404).json({ error: 'Seat not found.' })
+      const { data: firm } = await db.from('advisers').select('firm_name').eq('id', m.adviser_id).single()
+      if (m.user_id) await sendAdviserAddedNotice({ email: m.email, firmName: firm?.firm_name })
+      else await sendAdviserInvite({ email: m.email, firmName: firm?.firm_name, token: m.invite_token })
       return res.status(200).json({ ok: true })
     }
 

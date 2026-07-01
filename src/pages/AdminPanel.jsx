@@ -1302,6 +1302,15 @@ const DEMO_ADVISER_INVOICES = {
   adv1: [{ id: 'i1', adviser_id: 'adv1', amount: 0, currency: 'GBP', issue_date: '2026-06-20', due_date: null, status: 'waived', file_path: null, notes: 'Free pilot — first year.' }],
   adv2: [{ id: 'i2', adviser_id: 'adv2', amount: 75400, currency: 'GBP', issue_date: '2026-06-01', due_date: '2026-06-15', status: 'paid', file_path: null, notes: '£250 platform + 42 families' }],
 }
+const DEMO_ADVISER_MEMBERS = {
+  adv1: [
+    { id: 'm1', email: 'rachel@thorntonvale.co.uk', role: 'owner',  invite_status: 'accepted', user_id: 'u-r', full_name: 'Rachel Vale' },
+    { id: 'm2', email: 'tom@thorntonvale.co.uk',    role: 'member', invite_status: 'pending',  user_id: null,  full_name: null },
+  ],
+  adv2: [
+    { id: 'm3', email: 'james@hartwellfp.co.uk', role: 'owner', invite_status: 'accepted', user_id: 'u-j', full_name: 'James Hartwell' },
+  ],
+}
 
 function AdviserStatusPill({ status }) {
   const m = ADVISER_STATUS[status] ?? ADVISER_STATUS.pilot
@@ -1536,21 +1545,42 @@ function AdviserForm({ isDemo, initial, onClose, onSaved }) {
 function AdviserDetail({ isDemo, adviser: a, onBack, onEdit, onChanged }) {
   const [families, setFamilies] = useState(isDemo ? (DEMO_ADVISER_FAMILIES[a.id] || []) : [])
   const [invoices, setInvoices] = useState(isDemo ? (DEMO_ADVISER_INVOICES[a.id] || []) : [])
+  const [members, setMembers]   = useState(isDemo ? (DEMO_ADVISER_MEMBERS[a.id] || []) : [])
   const [loading, setLoading]   = useState(!isDemo)
   const [invForm, setInvForm]   = useState(false)
   const [assign, setAssign]     = useState(false)
   const [error, setError]       = useState(null)
+  const [mEmail, setMEmail]     = useState('')
+  const [mRole, setMRole]       = useState('owner')
+  const [mBusy, setMBusy]       = useState(false)
 
   const load = async () => {
     if (isDemo) { setLoading(false); return }
     setLoading(true)
-    const [fr, ir] = await Promise.all([
+    const [fr, ir, mr] = await Promise.all([
       adminPost('/api/admin/advisers', { action: 'list-families', adviserId: a.id }),
       adminPost('/api/admin/adviser-invoices', { action: 'list', adviserId: a.id }),
+      adminPost('/api/admin/advisers', { action: 'list-members', adviserId: a.id }),
     ])
     if (fr.ok) setFamilies(fr.data.families || [])
     if (ir.ok) setInvoices(ir.data.invoices || [])
+    if (mr.ok) setMembers(mr.data.members || [])
     setLoading(false)
+  }
+
+  const addMember = async () => {
+    const email = mEmail.trim().toLowerCase()
+    if (!email) return
+    if (isDemo) { setMembers(ms => [...ms, { id: 'd' + ms.length, email, role: mRole, invite_status: 'pending', user_id: null, full_name: null }]); setMEmail(''); return }
+    setMBusy(true); setError(null)
+    const r = await adminPost('/api/admin/advisers', { action: 'add-member', adviserId: a.id, email, role: mRole })
+    setMBusy(false)
+    if (r.ok) { setMEmail(''); load() } else setError(r.error)
+  }
+  const removeMember = async (memberId) => {
+    if (isDemo) { setMembers(ms => ms.filter(x => x.id !== memberId)); return }
+    const r = await adminPost('/api/admin/advisers', { action: 'remove-member', memberId })
+    if (r.ok) load(); else setError(r.error)
   }
   useEffect(() => { if (!isDemo) load() }, [a.id, isDemo]) // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -1566,6 +1596,20 @@ function AdviserDetail({ isDemo, adviser: a, onBack, onEdit, onChanged }) {
     if (isDemo) { setInvoices(is => is.map(x => x.id === inv.id ? { ...x, status } : x)); return }
     const r = await adminPost('/api/admin/adviser-invoices', { action: 'update', id: inv.id, invoice: { status } })
     if (r.ok) load(); else setError(r.error)
+  }
+  const [resendId, setResendId] = useState(null)
+  const [copiedId, setCopiedId] = useState(null)
+  const resendInvite = async (m) => {
+    if (isDemo) { setResendId(m.id); setTimeout(() => setResendId(null), 800); return }
+    setResendId(m.id); setError(null)
+    const r = await adminPost('/api/admin/advisers', { action: 'resend-invite', memberId: m.id })
+    setResendId(null)
+    if (!r.ok) setError(r.error)
+  }
+  const copyInvite = (m) => {
+    const url = `${window.location.origin}/accept-adviser-invite?token=${m.invite_token}`
+    try { navigator.clipboard?.writeText(url) } catch { /* ignore */ }
+    setCopiedId(m.id); setTimeout(() => setCopiedId(null), 1500)
   }
 
   return (
@@ -1585,6 +1629,48 @@ function AdviserDetail({ isDemo, adviser: a, onBack, onEdit, onChanged }) {
           <div className="flex items-center gap-2 flex-wrap"><h2 className="text-lg font-semibold text-navy-900">{a.firm_name}</h2><AdviserStatusPill status={a.status} /></div>
           <p className="text-sm text-stone-500 mt-0.5">{[a.contact_name, a.contact_email].filter(Boolean).join(' · ') || '—'}</p>
         </div>
+      </div>
+
+      <div className="bg-white border border-stone-200 rounded-2xl p-5">
+        <h3 className="text-sm font-semibold text-navy-900 mb-3">Advisers on this firm</h3>
+        {members.length === 0 ? <p className="text-sm text-stone-400 mb-3">No advisers yet — add the firm's owner to give them portal access.</p> : (
+          <div className="divide-y divide-stone-100 mb-3">
+            {members.map(m => (
+              <div key={m.id} className="flex items-center justify-between py-2.5 gap-3">
+                <div className="min-w-0">
+                  <p className="text-sm font-medium text-navy-900 truncate">{m.full_name || m.email}</p>
+                  <p className="text-xs text-stone-500 truncate">{m.full_name ? m.email : (m.invite_status === 'pending' ? 'Invited — set-up email sent' : m.email)}</p>
+                </div>
+                <div className="flex items-center gap-2 shrink-0">
+                  <span className={`text-xs font-semibold px-2 py-0.5 rounded-full border capitalize ${m.role === 'owner' ? 'bg-navy-50 text-navy-700 border-navy-200' : 'bg-stone-100 text-stone-500 border-stone-200'}`}>{m.role}</span>
+                  <span className={`text-xs px-2 py-0.5 rounded-full border capitalize ${m.invite_status === 'accepted' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-amber-50 text-amber-700 border-amber-200'}`}>{m.invite_status}</span>
+                  {m.invite_status === 'pending' && (
+                    <>
+                      <button onClick={() => copyInvite(m)} className="text-xs text-stone-500 hover:text-navy-800 inline-flex items-center gap-1" title="Copy invite link">
+                        <Copy size={12} /> {copiedId === m.id ? 'Copied' : 'Copy link'}
+                      </button>
+                      <button onClick={() => resendInvite(m)} disabled={resendId === m.id} className="text-xs font-medium text-navy-700 hover:text-navy-900 disabled:opacity-50">
+                        {resendId === m.id ? 'Sending…' : 'Resend'}
+                      </button>
+                    </>
+                  )}
+                  <button onClick={() => removeMember(m.id)} className="text-stone-300 hover:text-red-500" title="Remove seat"><Trash2 size={14} /></button>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+        <div className="flex items-end gap-2">
+          <input value={mEmail} onChange={e => setMEmail(e.target.value)} placeholder="adviser@firm.co.uk" className={`${inputCls} flex-1`} />
+          <select value={mRole} onChange={e => setMRole(e.target.value)} className={inputCls} style={{ width: 'auto' }}>
+            <option value="owner">Owner</option>
+            <option value="member">Member</option>
+          </select>
+          <button onClick={addMember} disabled={mBusy || !mEmail.trim()} className="inline-flex items-center gap-1.5 text-sm font-medium px-3 py-2 rounded-lg border border-stone-200 hover:bg-stone-50 disabled:opacity-40">
+            {mBusy ? <Loader2 size={14} className="animate-spin" /> : <Plus size={14} />} Add
+          </button>
+        </div>
+        <p className="text-xs text-stone-400 mt-2">The owner can invite the rest of their team from inside the portal. Existing accounts get access immediately; new advisers receive an email to set their password and activate their account.</p>
       </div>
 
       <div className="bg-white border border-stone-200 rounded-2xl p-5">

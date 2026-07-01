@@ -114,6 +114,44 @@ async function handler(req, res) {
     // Fall through to sign-in below to return tokens
   }
 
+  if (mode === 'adviser') {
+    // Validate the adviser invite token before creating the account.
+    const { data: inv, error: invErr } = await supabase
+      .from('adviser_members')
+      .select('id, email, invite_status')
+      .eq('invite_token', token)
+      .single()
+    if (invErr || !inv) return res.status(400).json({ error: 'Invalid or expired invite' })
+    if (inv.invite_status === 'revoked') return res.status(400).json({ error: 'This invite has been revoked.' })
+    if (inv.email.toLowerCase() !== email.toLowerCase())
+      return res.status(403).json({ error: 'Email does not match the invite' })
+
+    const { data: created, error: createErr } = await supabase.auth.admin.createUser({
+      email,
+      password,
+      user_metadata: { full_name: name ?? email },
+      email_confirm: true,
+    })
+    if (createErr && !createErr.message.includes('already registered'))
+      return res.status(400).json({ error: createErr.message })
+
+    // Resolve the user id (created now, or already existed) via their profile.
+    let uid = created?.user?.id
+    if (!uid) {
+      const { data: p } = await supabase.from('profiles').select('id').ilike('email', email).maybeSingle()
+      uid = p?.id
+    }
+    if (uid) {
+      // Grant portal access + link the seat to the account.
+      await supabase.from('profiles').update({ plan: 'advisor' }).eq('id', uid)
+      await supabase.from('adviser_members')
+        .update({ user_id: uid, invite_status: 'accepted', accepted_at: new Date().toISOString() })
+        .eq('invite_token', token)
+    }
+
+    // Fall through to sign-in below to return tokens
+  }
+
   if (mode === 'register') {
     const profileRole = wantsTrial ? 'owner' : 'delegate'
     // Create user server-side (bypasses captcha). Auto-confirm email.

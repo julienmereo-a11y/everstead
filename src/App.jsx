@@ -43,6 +43,7 @@ const AdvisorPortal         = lazy(() => import('./pages/AdvisorPortal'))
 const AdminPanel            = lazy(() => import('./pages/AdminPanel'))
 const AdminLogin            = lazy(() => import('./pages/AdminLogin'))
 const AcceptAdminInvite     = lazy(() => import('./pages/AcceptAdminInvite'))
+const AcceptAdviserInvite   = lazy(() => import('./pages/AcceptAdviserInvite'))
 const AcceptFamilyInvite    = lazy(() => import('./pages/AcceptFamilyInvite'))
 const DelegateRegister      = lazy(() => import('./pages/DelegateRegister'))
 const SetupMFA              = lazy(() => import('./pages/SetupMFA'))
@@ -149,6 +150,7 @@ export default function App() {
                 element={<Navigate to="/dashboard?tab=settings" replace />}
               />
               <Route path="/accept-admin-invite" element={<AcceptAdminInvite />} />
+              <Route path="/accept-adviser-invite" element={<AcceptAdviserInvite />} />
               <Route path="/accept-family-invite" element={<AcceptFamilyInvite />} />
               <Route
                 path="/admin-login"

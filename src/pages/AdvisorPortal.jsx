@@ -1349,7 +1349,75 @@ function AdvisorResourcesSection() {
 // ─────────────────────────────────────────────────────────────
 // ADVISOR SETTINGS PANEL
 // ─────────────────────────────────────────────────────────────
-function AdvisorSettings({ advisor, families, isDemo }) {
+// Firm team — the owner invites teammates who share the firm's clients.
+function AdviserTeamCard({ team, isOwner, isDemo, onReload }) {
+  const [email, setEmail] = useState('')
+  const [busy, setBusy]   = useState(false)
+  const [err, setErr]     = useState(null)
+
+  const post = async (body) => {
+    const { data: { session } } = await supabase.auth.getSession()
+    const res = await fetch('/api/adviser/team', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${session?.access_token || ''}` },
+      body: JSON.stringify(body),
+    })
+    const data = await res.json().catch(() => ({}))
+    return { ok: res.ok, data, error: data?.error }
+  }
+  const invite = async () => {
+    const e = email.trim().toLowerCase(); if (!e) return
+    if (isDemo) { setEmail(''); return }
+    setBusy(true); setErr(null)
+    const r = await post({ action: 'invite', email: e })
+    setBusy(false)
+    if (r.ok) { setEmail(''); onReload?.() } else setErr(r.error)
+  }
+  const revoke = async (memberId) => {
+    if (isDemo) return
+    const r = await post({ action: 'revoke', memberId })
+    if (r.ok) onReload?.(); else setErr(r.error)
+  }
+
+  return (
+    <div className="rounded-[2rem] border border-stone-200 bg-white p-6">
+      <h3 className="font-semibold text-navy-900 text-base mb-1">Your team</h3>
+      <p className="text-sm text-stone-500 mb-4">Advisers at your firm who can access this portal and manage the firm's clients.</p>
+      {err && <p className="text-sm text-red-600 mb-3">{err}</p>}
+      <div className="divide-y divide-stone-100 mb-4">
+        {(team || []).length === 0 && <p className="text-sm text-stone-400 py-2">Just you so far.</p>}
+        {(team || []).map(m => (
+          <div key={m.id} className="flex items-center justify-between py-2.5 gap-3">
+            <div className="min-w-0">
+              <p className="text-sm font-medium text-navy-900 truncate">{m.full_name || m.email}</p>
+              <p className="text-xs text-stone-500 truncate">{m.full_name ? m.email : (m.invite_status === 'pending' ? 'Invited — set-up email sent' : m.email)}</p>
+            </div>
+            <div className="flex items-center gap-2 shrink-0">
+              <span className={`text-xs font-semibold px-2 py-0.5 rounded-full border capitalize ${m.role === 'owner' ? 'bg-navy-50 text-navy-700 border-navy-200' : 'bg-stone-100 text-stone-500 border-stone-200'}`}>{m.role}</span>
+              {isOwner && m.role !== 'owner' && (
+                <button onClick={() => revoke(m.id)} className="text-stone-300 hover:text-red-500" title="Remove teammate"><X size={15} /></button>
+              )}
+            </div>
+          </div>
+        ))}
+      </div>
+      {isOwner ? (
+        <div className="flex items-end gap-2">
+          <input value={email} onChange={e => setEmail(e.target.value)} placeholder="teammate@yourfirm.co.uk"
+            className="flex-1 border border-stone-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-navy-300" />
+          <button onClick={invite} disabled={busy || !email.trim()}
+            className="inline-flex items-center gap-1.5 text-sm font-semibold px-4 py-2 rounded-xl bg-navy-800 text-white hover:bg-navy-700 disabled:opacity-40">
+            {busy ? <Loader2 size={14} className="animate-spin" /> : <UserPlus size={14} />} Invite
+          </button>
+        </div>
+      ) : (
+        <p className="text-xs text-stone-400">Only the firm owner can invite teammates.</p>
+      )}
+    </div>
+  )
+}
+
+function AdvisorSettings({ advisor, families, isDemo, team, onReload }) {
   const [profile, setProfile] = useState({
     full_name: advisor.full_name,
     email:     advisor.email,
@@ -1482,6 +1550,9 @@ function AdvisorSettings({ advisor, families, isDemo }) {
           <p className="text-xs text-stone-400 italic">Logo upload disabled in demo mode.</p>
         )}
       </div>
+
+      {/* ── Team card ── */}
+      <AdviserTeamCard team={team} isOwner={isDemo || advisor?.role === 'Firm owner'} isDemo={isDemo} onReload={onReload} />
 
       {/* ── Membership card ── */}
       <AdvisorMembershipCard advisor={advisor} families={families} isDemo={isDemo} cancelled={cancelled} setCancelled={setCancelled} />
@@ -1858,31 +1929,41 @@ export default function AdvisorPortal() {
 
   // ── Real data state ─────────────────────────────────────────
   const [realFamilies, setRealFamilies] = useState([])
-  const [dataLoading, setDataLoading] = useState(!isDemo)
+  const [realFirm, setRealFirm]         = useState(null)
+  const [realTeam, setRealTeam]         = useState([])
+  const [dataLoading, setDataLoading]   = useState(!isDemo)
+
+  const loadPortal = async () => {
+    setDataLoading(true)
+    // Link any pending firm invites for this email, then resolve firm + clients + team.
+    await supabase.rpc('claim_adviser_invites').then(() => {}, () => {})
+    const [firmRes, clientRes, teamRes] = await Promise.all([
+      supabase.rpc('get_adviser_firm'),
+      supabase.rpc('get_adviser_clients'),
+      supabase.rpc('get_adviser_team'),
+    ])
+    setRealFirm(Array.isArray(firmRes.data) ? (firmRes.data[0] ?? null) : (firmRes.data ?? null))
+    setRealTeam(teamRes.data || [])
+    // Map client profiles into the portal's family shape. Deep plan data (accounts,
+    // documents, permissions) is the separate next phase — empty for now.
+    setRealFamilies((clientRes.data || []).map(c => ({
+      id: c.id,
+      owner_name: c.full_name || c.email,
+      owner_email: c.email,
+      readiness_score: c.readiness_score ?? 0,
+      invite_status: 'accepted',
+      advisor_role: 'Client',
+      last_updated: c.created_at,
+      accounts: [], documents: [], instructions: [], trusted_people: [], alerts: [],
+      permissions: {},
+    })))
+    setDataLoading(false)
+  }
 
   useEffect(() => {
     if (isDemo || !user) return
-    const load = async () => {
-      setDataLoading(true)
-      // Load advisor_clients rows joined with the owner's profile
-      const { data, error } = await supabase
-        .from('advisor_clients')
-        .select(`
-          *,
-          owner:profiles!advisor_clients_owner_id_fkey(id, full_name, email, plan),
-          accounts(*),
-          documents(*),
-          instructions(*, instruction_steps(*)),
-          alerts(*),
-          trusted_people(*)
-        `)
-        .eq('advisor_id', user.id)
-        .order('created_at', { ascending: false })
-      if (!error && data) setRealFamilies(data)
-      setDataLoading(false)
-    }
-    load()
-  }, [user, isDemo])
+    loadPortal()
+  }, [user, isDemo]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleSignOut = async () => {
     await signOut()
@@ -1894,10 +1975,11 @@ export default function AdvisorPortal() {
     id:              user.id,
     full_name:       profile.full_name,
     email:           profile.email ?? user.email,
-    firm:            profile.firm ?? '',
-    role:            'Financial Adviser',
+    firm:            realFirm?.firm_name ?? '',
+    logo_url:        realFirm?.logo_url ?? null,
+    role:            realFirm?.role === 'owner' ? 'Firm owner' : 'Financial Adviser',
     plan:            profile.plan,
-    families_limit:  profile.families_limit ?? 5,
+    families_limit:  realFirm?.max_families ?? profile.families_limit ?? 5,
     subscription_status: profile.subscription_status,
     billing_cycle:   profile.billing_cycle ?? 'monthly',
     next_billing_date: profile.next_billing_date ?? null,
@@ -1976,7 +2058,13 @@ export default function AdvisorPortal() {
               <img src="/logo-v2-white.png" alt="Everstead" className="h-8 w-auto" />
             </Link>
             <div className="hidden sm:block w-px h-6 bg-navy-700" />
-            <span className="hidden sm:block text-xs font-semibold uppercase tracking-[0.18em] text-stone-400">Adviser Portal</span>
+            {advisor?.logo_url ? (
+              <span className="hidden sm:flex items-center bg-white rounded-md px-2 py-1" title={advisor.firm}>
+                <img src={advisor.logo_url} alt={advisor.firm || 'Firm logo'} className="h-6 w-auto max-w-[150px] object-contain" />
+              </span>
+            ) : (
+              <span className="hidden sm:block text-xs font-semibold uppercase tracking-[0.18em] text-stone-400">Adviser Portal</span>
+            )}
           </div>
           <div className="flex items-center gap-3">
             <div className="text-right hidden sm:block">
@@ -2003,12 +2091,16 @@ export default function AdvisorPortal() {
         {/* ── SIDEBAR ──────────────────────────────────── */}
         <aside className="space-y-4 xl:sticky xl:top-8">
 
-          {/* Advisor identity */}
+          {/* Adviser identity */}
           <div className="rounded-[2rem] border border-stone-200 bg-white p-5">
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-2xl bg-navy-100 text-navy-700 flex items-center justify-center">
-                <Briefcase size={20} />
-              </div>
+              {advisor?.logo_url ? (
+                <img src={advisor.logo_url} alt={advisor.firm || ''} className="w-12 h-12 rounded-2xl object-contain bg-white border border-stone-200 shrink-0" />
+              ) : (
+                <div className="w-12 h-12 rounded-2xl bg-navy-100 text-navy-700 flex items-center justify-center shrink-0">
+                  <Briefcase size={20} />
+                </div>
+              )}
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-semibold text-navy-950 truncate">{advisor?.full_name}</p>
                 <p className="text-xs text-stone-500 truncate">{advisor?.firm}</p>
@@ -2166,7 +2258,12 @@ export default function AdvisorPortal() {
           ) : activeSection === 'allAlerts' ? (
             <PortalAlertsSection families={families} onSelectFamily={(id) => { setSelectedFamilyId(id); setActiveSection('families') }} setActiveSection={setActiveSection} />
           ) : activeSection === 'settings' ? (
-            <AdvisorSettings advisor={advisor} families={families} isDemo={isDemo} />
+            <AdvisorSettings advisor={advisor} families={families} isDemo={isDemo}
+              team={isDemo
+                ? [{ id: 't1', email: DEMO_ADVISOR.email, role: 'owner', invite_status: 'accepted', full_name: DEMO_ADVISOR.full_name },
+                   { id: 't2', email: 'james@carterwealth.co.uk', role: 'member', invite_status: 'accepted', full_name: 'James Reid' }]
+                : realTeam}
+              onReload={isDemo ? undefined : loadPortal} />
           ) : activeSection === 'resources' ? (
             <AdvisorResourcesSection />
           ) : selectedFamily ? (

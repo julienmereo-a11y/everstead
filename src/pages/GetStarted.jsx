@@ -202,6 +202,20 @@ export default function GetStarted() {
     return () => { cancelled = true }
   }, [promoCode])
 
+  // Adviser invite branding: ?adviser=<firmId> shows the firm's logo + name at signup.
+  const adviserId = searchParams.get('adviser') || null
+  const [adviserFirm, setAdviserFirm] = useState(null)
+  useEffect(() => {
+    if (!adviserId) return
+    let cancelled = false
+    supabase.rpc('get_adviser_public', { firm_id: adviserId }).then(({ data }) => {
+      if (cancelled) return
+      const f = Array.isArray(data) ? data[0] : data
+      if (f?.firm_name) setAdviserFirm(f)
+    }, () => {})
+    return () => { cancelled = true }
+  }, [adviserId])
+
   // Geo access check — runs once on mount, 3-second timeout, fails open
   useEffect(() => {
     const controller = new AbortController()
@@ -492,6 +506,18 @@ export default function GetStarted() {
       <section className="py-16 lg:py-20 grain relative overflow-hidden">
         <div className="absolute inset-0 aurora-bg" />
         <div className="relative max-w-3xl mx-auto px-6 text-center">
+          {adviserFirm && (
+            <div className="mb-6 inline-flex flex-col items-center gap-2">
+              {adviserFirm.logo_url && (
+                <span className="inline-flex items-center bg-white rounded-lg px-3 py-2 shadow-sm">
+                  <img src={adviserFirm.logo_url} alt={adviserFirm.firm_name} className="h-8 w-auto max-w-[180px] object-contain" />
+                </span>
+              )}
+              <p className="text-sm text-stone-300">
+                Invited by <span className="font-semibold text-white">{adviserFirm.firm_name}</span> · powered by Everstead
+              </p>
+            </div>
+          )}
           <p className="text-xs font-semibold uppercase tracking-widest text-sage-400 mb-4">Get started</p>
           <h1 className="font-display text-4xl lg:text-5xl font-light text-white leading-tight text-balance">
             Start your plan in minutes.
