@@ -128,7 +128,7 @@ export default async function handler(req, res) {
       const { adviserId } = req.body
       if (!adviserId) return res.status(400).json({ error: 'Missing adviser id.' })
       const { data: members, error } = await db.from('adviser_members')
-        .select('id, email, role, invite_status, user_id, accepted_at, created_at')
+        .select('id, email, role, invite_status, user_id, accepted_at, created_at, invite_token')
         .eq('adviser_id', adviserId).order('role', { ascending: true }).order('created_at')
       if (error) throw error
       const ids = members.filter(m => m.user_id).map(m => m.user_id)
@@ -169,6 +169,19 @@ export default async function handler(req, res) {
       if (!memberId) return res.status(400).json({ error: 'Missing member id.' })
       const { error } = await db.from('adviser_members').delete().eq('id', memberId)
       if (error) throw error
+      return res.status(200).json({ ok: true })
+    }
+
+    // Re-send the invite (or added-notice) email for a seat.
+    if (action === 'resend-invite') {
+      const { memberId } = req.body
+      if (!memberId) return res.status(400).json({ error: 'Missing member id.' })
+      const { data: m } = await db.from('adviser_members')
+        .select('email, user_id, invite_token, adviser_id').eq('id', memberId).single()
+      if (!m) return res.status(404).json({ error: 'Seat not found.' })
+      const { data: firm } = await db.from('advisers').select('firm_name').eq('id', m.adviser_id).single()
+      if (m.user_id) await sendAdviserAddedNotice({ email: m.email, firmName: firm?.firm_name })
+      else await sendAdviserInvite({ email: m.email, firmName: firm?.firm_name, token: m.invite_token })
       return res.status(200).json({ ok: true })
     }
 

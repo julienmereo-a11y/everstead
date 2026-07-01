@@ -1597,6 +1597,20 @@ function AdviserDetail({ isDemo, adviser: a, onBack, onEdit, onChanged }) {
     const r = await adminPost('/api/admin/adviser-invoices', { action: 'update', id: inv.id, invoice: { status } })
     if (r.ok) load(); else setError(r.error)
   }
+  const [resendId, setResendId] = useState(null)
+  const [copiedId, setCopiedId] = useState(null)
+  const resendInvite = async (m) => {
+    if (isDemo) { setResendId(m.id); setTimeout(() => setResendId(null), 800); return }
+    setResendId(m.id); setError(null)
+    const r = await adminPost('/api/admin/advisers', { action: 'resend-invite', memberId: m.id })
+    setResendId(null)
+    if (!r.ok) setError(r.error)
+  }
+  const copyInvite = (m) => {
+    const url = `${window.location.origin}/accept-adviser-invite?token=${m.invite_token}`
+    try { navigator.clipboard?.writeText(url) } catch { /* ignore */ }
+    setCopiedId(m.id); setTimeout(() => setCopiedId(null), 1500)
+  }
 
   return (
     <div className="space-y-6">
@@ -1630,6 +1644,16 @@ function AdviserDetail({ isDemo, adviser: a, onBack, onEdit, onChanged }) {
                 <div className="flex items-center gap-2 shrink-0">
                   <span className={`text-xs font-semibold px-2 py-0.5 rounded-full border capitalize ${m.role === 'owner' ? 'bg-navy-50 text-navy-700 border-navy-200' : 'bg-stone-100 text-stone-500 border-stone-200'}`}>{m.role}</span>
                   <span className={`text-xs px-2 py-0.5 rounded-full border capitalize ${m.invite_status === 'accepted' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-amber-50 text-amber-700 border-amber-200'}`}>{m.invite_status}</span>
+                  {m.invite_status === 'pending' && (
+                    <>
+                      <button onClick={() => copyInvite(m)} className="text-xs text-stone-500 hover:text-navy-800 inline-flex items-center gap-1" title="Copy invite link">
+                        <Copy size={12} /> {copiedId === m.id ? 'Copied' : 'Copy link'}
+                      </button>
+                      <button onClick={() => resendInvite(m)} disabled={resendId === m.id} className="text-xs font-medium text-navy-700 hover:text-navy-900 disabled:opacity-50">
+                        {resendId === m.id ? 'Sending…' : 'Resend'}
+                      </button>
+                    </>
+                  )}
                   <button onClick={() => removeMember(m.id)} className="text-stone-300 hover:text-red-500" title="Remove seat"><Trash2 size={14} /></button>
                 </div>
               </div>
