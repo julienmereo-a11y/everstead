@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from 'react'
+import React, { useState, useMemo, useEffect, useRef } from 'react'
 import { Link, useSearchParams, useNavigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import {
@@ -7,7 +7,7 @@ import {
   Info, Clock, BarChart2, Landmark, Shield, Lock, UserPlus, X, RefreshCw,
   ChevronDown, Activity, ArrowRight, Mail, Send, Eye, EyeOff, ToggleLeft, ToggleRight, CreditCard,
   Download, ExternalLink, Loader2, Printer, SortAsc, Filter, LayoutDashboard,
-  CheckSquare, Square, MessageSquare, Calendar, TrendingUp,
+  CheckSquare, Square, MessageSquare, Calendar, TrendingUp, Sparkles,
 } from 'lucide-react'
 import { DEMO_ADVISOR, DEMO_ADVISOR_FAMILIES } from '../lib/demoData'
 import { supabase } from '../lib/supabase'
@@ -1990,6 +1990,106 @@ function PortalAlertsSection({ families, onSelectFamily, setActiveSection }) {
 // ─────────────────────────────────────────────────────────────
 // PORTAL ROOT
 // ─────────────────────────────────────────────────────────────
+// Floating AI assistant for advisers — platform guidance + questions about their OWN
+// portfolio. Gated server-side (the adviser-assistant edge function only ever sees the
+// caller's firm via the firm-scoped RPCs).
+function AdviserAssistant({ isDemo }) {
+  const [open, setOpen]         = useState(false)
+  const [messages, setMessages] = useState([{ role: 'assistant', content: "Hi — I'm your Everstead adviser assistant. Ask me how to do something in the portal, or about your own client portfolio (e.g. “who has the lowest readiness?”)." }])
+  const [input, setInput]       = useState('')
+  const [loading, setLoading]   = useState(false)
+  const [error, setError]       = useState(null)
+  const scrollRef = useRef(null)
+  useEffect(() => { scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: 'smooth' }) }, [messages, loading])
+
+  const send = async () => {
+    const text = input.trim()
+    if (!text || loading) return
+    const next = [...messages, { role: 'user', content: text }]
+    setMessages(next); setInput(''); setError(null); setLoading(true)
+    if (isDemo) {
+      setTimeout(() => {
+        setMessages(m => [...m, { role: 'assistant', content: "In demo mode I can't reach a real portfolio. In your live portal I answer questions about your own clients and guide you around Everstead — always gated to your firm." }])
+        setLoading(false)
+      }, 500)
+      return
+    }
+    try {
+      const apiHistory = next.filter(m => m.role === 'user' || m.role === 'assistant').map(m => ({ role: m.role, content: m.content }))
+      const { data, error: invokeErr } = await supabase.functions.invoke('adviser-assistant', { body: { messages: apiHistory } })
+      if (invokeErr) {
+        let msg = 'The assistant is taking a moment. Please try again.'
+        try { msg = (await invokeErr.context?.json())?.error || msg } catch { /* keep default */ }
+        throw new Error(msg)
+      }
+      setMessages(m => [...m, { role: 'assistant', content: data?.reply || '…' }])
+    } catch (err) {
+      setError(err.message || 'Something went wrong. Please try again.')
+    } finally { setLoading(false) }
+  }
+
+  return (
+    <>
+      <button
+        onClick={() => setOpen(v => !v)}
+        className={`fixed bottom-6 right-6 z-40 inline-flex items-center gap-2.5 px-5 py-3 text-white text-sm font-semibold rounded-full shadow-lg transition-all ${open ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}
+        style={{ background: 'linear-gradient(100deg, #2d5082 0%, #6f6bc6 50%, #6e9b6a 100%)', boxShadow: '0 8px 24px -6px rgba(111,107,198,0.5)' }}
+        aria-label="Open adviser assistant"
+      >
+        <Sparkles size={16} /> Ask Everstead
+      </button>
+
+      {open && (
+        <div className="fixed bottom-6 right-6 z-40 w-[380px] max-w-[calc(100vw-3rem)] rounded-[1.75rem] border border-stone-200 bg-white shadow-2xl flex flex-col overflow-hidden" style={{ height: '540px' }}>
+          <div className="px-5 py-4 bg-navy-950 flex items-center justify-between gap-3">
+            <div className="flex items-center gap-2.5 min-w-0">
+              <div className="w-8 h-8 rounded-xl bg-white/10 flex items-center justify-center shrink-0"><Sparkles size={15} className="text-sage-400" /></div>
+              <div className="min-w-0">
+                <p className="text-sm font-semibold text-white truncate">Adviser assistant</p>
+                <p className="text-[11px] text-stone-400 truncate">Guidance + your portfolio · gated to your firm</p>
+              </div>
+            </div>
+            <button onClick={() => setOpen(false)} className="text-stone-400 hover:text-white transition-colors shrink-0"><X size={18} /></button>
+          </div>
+
+          <div ref={scrollRef} className="flex-1 overflow-y-auto px-4 py-4 space-y-3 bg-stone-50">
+            {messages.map((m, i) => (
+              <div key={i} className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+                <div className={`rounded-2xl px-3.5 py-2.5 text-sm leading-relaxed max-w-[85%] whitespace-pre-wrap ${m.role === 'user' ? 'bg-navy-800 text-white rounded-tr-sm' : 'bg-white border border-stone-200 text-navy-900 rounded-tl-sm'}`}>{m.content}</div>
+              </div>
+            ))}
+            {loading && (
+              <div className="flex justify-start">
+                <div className="bg-white border border-stone-200 rounded-2xl px-3.5 py-3 flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-full bg-stone-400 animate-bounce" style={{ animationDelay: '0ms', animationDuration: '1s' }} />
+                  <span className="w-2 h-2 rounded-full bg-stone-400 animate-bounce" style={{ animationDelay: '160ms', animationDuration: '1s' }} />
+                  <span className="w-2 h-2 rounded-full bg-stone-400 animate-bounce" style={{ animationDelay: '320ms', animationDuration: '1s' }} />
+                </div>
+              </div>
+            )}
+          </div>
+
+          <div className="border-t border-stone-200 p-3">
+            {error && <p className="text-xs text-red-600 mb-2">{error}</p>}
+            <div className="flex items-end gap-2">
+              <textarea
+                value={input}
+                onChange={e => setInput(e.target.value)}
+                onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send() } }}
+                rows={1}
+                placeholder="Ask about the portal or your clients…"
+                disabled={loading}
+                className="flex-1 resize-none border border-stone-200 rounded-xl px-3 py-2 text-sm text-navy-900 focus:outline-none focus:ring-2 focus:ring-navy-300 max-h-28 disabled:bg-stone-50"
+              />
+              <button onClick={send} disabled={loading || !input.trim()} className="shrink-0 w-9 h-9 rounded-xl bg-navy-800 text-white flex items-center justify-center hover:bg-navy-700 transition-colors disabled:opacity-40"><Send size={16} /></button>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
+  )
+}
+
 export default function AdvisorPortal() {
   const [searchParams] = useSearchParams()
   const isDemo = searchParams.get('demo') === 'true'
@@ -2358,6 +2458,9 @@ export default function AdvisorPortal() {
           familiesLimit={advisor?.families_limit ?? 5}
         />
       )}
+
+      {/* Adviser AI assistant — gated to this firm's portfolio */}
+      <AdviserAssistant isDemo={isDemo} />
     </div>
   )
 }
