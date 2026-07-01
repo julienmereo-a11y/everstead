@@ -68,6 +68,12 @@ function savedLabel(type) {
   if (type === 'profile') return 'Saved — you can edit it any time'
   return 'Saved'
 }
+// A warmer, specific confirmation pill for the higher-stakes review cards.
+function savedPill(card) {
+  if (card.type === 'account') return `${card.fields?.institution?.trim() || 'Account'} added to your vault`
+  if (card.type === 'trusted_person') return `${card.fields?.name?.trim() || 'Trusted person'} added — invite them whenever you're ready`
+  return savedLabel(card.type)
+}
 
 // Pull a ```json { proposals: [...] } ``` block out of a reply. Defensive: never throws.
 function parseReply(text) {
@@ -223,33 +229,30 @@ export default function GuidedOnboarding({
   // After a higher-stakes item is saved, nudge the assistant to suggest a next
   // small step — keeps onboarding feeling like a conversation, not a dead end.
   const continueAfterSave = async () => {
-    if (loading) return
     setError(null)
     setLoading(true)
     const trigger = { role: 'user', hidden: true, content: "(That's been added to my Everstead now — please do NOT propose it again or create another card for it. If it feels natural, warmly suggest ONE different small thing I might add next (like an account or a document) by simply asking me — don't create a save card yet, wait for my answer. Or, if I've added a few things now, let me know I'm all set and that it all keeps.)" }
-    const nextDisplay = [...messages, trigger]
-    setMessages(nextDisplay)
-    const apiHistory = nextDisplay
+    // Append via functional updater so we never clobber a message added just before
+    // this (e.g. the 'saved' pill). Build the API history from the current turn + trigger.
+    setMessages(h => [...h, trigger])
+    const apiHistory = [...messages, trigger]
       .filter(m => !m.scripted && (m.role === 'user' || m.role === 'assistant'))
       .map(m => ({ role: m.role, content: m.content }))
+    // A gentle next step to fall back on if the assistant call is slow or fails —
+    // saving must never dead-end into silence.
+    const fallback = "Is there anything else you'd like to pop in — maybe an account, a document, or someone you trust? Or you're all set for now, and everything you added keeps safely."
     try {
       const { data, error: invokeErr } = await supabase.functions.invoke('onboarding-assistant', { body: { messages: apiHistory } })
-      if (invokeErr) {
-        let msg = 'The assistant is taking a moment. Please try again.'
-        try { msg = (await invokeErr.context?.json())?.error || msg } catch { /* keep default */ }
-        throw new Error(msg)
-      }
+      if (invokeErr) throw new Error('nudge failed')
       const reply = data?.reply || ''
       const { prose } = parseReply(reply)
       // Only ever surface the assistant's SUGGESTION here — never a card. The nudge
-      // is meant to ASK about a next step; any actual proposal comes from the user's
-      // reply (via send). This makes it impossible to re-propose the item just saved.
-      const text = prose && prose.trim()
-        ? prose
-        : "Is there anything else you'd like to pop in — maybe an account or a document? Or you're all set for now, and everything you added keeps."
+      // ASKS about a next step; any actual proposal comes from the user's reply (via
+      // send). This makes it impossible to re-propose the item just saved.
+      const text = prose && prose.trim() ? prose : fallback
       setMessages(h => [...h, { role: 'assistant', content: text }])
-    } catch (err) {
-      setError(err.message || 'Something went wrong. Please try again.')
+    } catch {
+      setMessages(h => [...h, { role: 'assistant', content: fallback }])
     } finally {
       setLoading(false)
     }
@@ -310,6 +313,9 @@ export default function GuidedOnboarding({
       try {
         await writeCard(card)
         setCards(cs => cs.map(c => c.id === card.id ? { ...c, status: 'saved' } : c))
+        // Instant confirmation pill — saving always has visible feedback, even
+        // before (or if) the assistant's follow-up nudge arrives.
+        setMessages(h => [...h, { role: 'saved', content: savedPill(card) }])
         savedAny = true
       } catch (e) {
         setCards(cs => cs.map(c => c.id === card.id ? { ...c, status: 'error', error: e.message || 'Could not save this.' } : c))
