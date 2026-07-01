@@ -1,4 +1,5 @@
 import { requireAdmin, adminDb as db } from '../_lib/admin-auth.js'
+import { sendAdviserInvite, sendAdviserAddedNotice } from '../_lib/adviser-email.js'
 
 // Admin-only management of adviser/solicitor FIRMS, their client families, and the
 // family cap. Action-based POST (same style as api/stripe/cancel-subscription.js).
@@ -152,7 +153,14 @@ export default async function handler(req, res) {
       const { data, error } = await db.from('adviser_members')
         .upsert(row, { onConflict: 'adviser_id,email' }).select().single()
       if (error) throw error
-      if (prof?.id) await db.from('profiles').update({ plan: 'advisor' }).eq('id', prof.id)
+      const { data: firm } = await db.from('advisers').select('firm_name').eq('id', adviserId).single()
+      if (prof?.id) {
+        await db.from('profiles').update({ plan: 'advisor' }).eq('id', prof.id)
+        await sendAdviserAddedNotice({ email: cleanEmail, firmName: firm?.firm_name })
+      } else {
+        // New to Everstead → email an invite to set a password + activate their account.
+        await sendAdviserInvite({ email: cleanEmail, firmName: firm?.firm_name, token: data.invite_token })
+      }
       return res.status(200).json({ member: { ...data, linked: !!prof?.id } })
     }
 

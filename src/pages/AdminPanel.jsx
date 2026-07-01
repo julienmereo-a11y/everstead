@@ -1625,7 +1625,7 @@ function AdviserDetail({ isDemo, adviser: a, onBack, onEdit, onChanged }) {
               <div key={m.id} className="flex items-center justify-between py-2.5 gap-3">
                 <div className="min-w-0">
                   <p className="text-sm font-medium text-navy-900 truncate">{m.full_name || m.email}</p>
-                  <p className="text-xs text-stone-500 truncate">{m.full_name ? m.email : (m.invite_status === 'pending' ? 'Pending — joins when they sign up' : m.email)}</p>
+                  <p className="text-xs text-stone-500 truncate">{m.full_name ? m.email : (m.invite_status === 'pending' ? 'Invited — set-up email sent' : m.email)}</p>
                 </div>
                 <div className="flex items-center gap-2 shrink-0">
                   <span className={`text-xs font-semibold px-2 py-0.5 rounded-full border capitalize ${m.role === 'owner' ? 'bg-navy-50 text-navy-700 border-navy-200' : 'bg-stone-100 text-stone-500 border-stone-200'}`}>{m.role}</span>
@@ -1646,7 +1646,7 @@ function AdviserDetail({ isDemo, adviser: a, onBack, onEdit, onChanged }) {
             {mBusy ? <Loader2 size={14} className="animate-spin" /> : <Plus size={14} />} Add
           </button>
         </div>
-        <p className="text-xs text-stone-400 mt-2">The owner can invite the rest of their team from inside the portal. Existing accounts get access immediately; others join when they sign up with that email.</p>
+        <p className="text-xs text-stone-400 mt-2">The owner can invite the rest of their team from inside the portal. Existing accounts get access immediately; new advisers receive an email to set their password and activate their account.</p>
       </div>
 
       <div className="bg-white border border-stone-200 rounded-2xl p-5">

@@ -1,4 +1,5 @@
 import { createClient } from '@supabase/supabase-js'
+import { sendAdviserInvite, sendAdviserAddedNotice } from '../_lib/adviser-email.js'
 
 // Adviser-facing: a firm OWNER manages their team seats. Service-role client;
 // the caller is verified to be an accepted owner of exactly one firm, and can only
@@ -37,7 +38,13 @@ export default async function handler(req, res) {
       const { data, error } = await db.from('adviser_members')
         .upsert(row, { onConflict: 'adviser_id,email' }).select().single()
       if (error) throw error
-      if (prof?.id) await db.from('profiles').update({ plan: 'advisor' }).eq('id', prof.id)
+      const { data: firm } = await db.from('advisers').select('firm_name').eq('id', ctx.adviserId).single()
+      if (prof?.id) {
+        await db.from('profiles').update({ plan: 'advisor' }).eq('id', prof.id)
+        await sendAdviserAddedNotice({ email, firmName: firm?.firm_name })
+      } else {
+        await sendAdviserInvite({ email, firmName: firm?.firm_name, token: data.invite_token })
+      }
       return res.status(200).json({ member: data, linked: !!prof?.id })
     }
 
