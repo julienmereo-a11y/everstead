@@ -754,7 +754,7 @@ export default function GetStarted() {
             <div className="max-w-md mx-auto">
               <h2 className="font-display text-3xl font-light text-navy-950 text-center mb-2">One last step</h2>
               <p className="text-center text-stone-500 text-sm mb-10">
-                We just need a few more details before setting up your trial.
+                We just need a few more details before setting up your {foundingActive ? 'founding place' : 'trial'}.
               </p>
 
               {error && (
@@ -933,7 +933,7 @@ export default function GetStarted() {
                   {loading ? (
                     <><Loader2 size={15} className="animate-spin" />Creating your account…</>
                   ) : (
-                    <><CreditCard size={15} />Start my Everstead trial</>
+                    <><CreditCard size={15} />{foundingActive ? 'Claim my founding place' : 'Start my Everstead trial'}</>
                   )}
                 </button>
               </form>
@@ -942,7 +942,9 @@ export default function GetStarted() {
               <div className="mt-5 flex items-start gap-3 bg-stone-100 rounded-xl p-4">
                 <Lock size={14} className="text-navy-600 mt-0.5 flex-shrink-0" />
                 <p className="text-xs text-stone-500 leading-relaxed">
-                  Your card is stored securely by Stripe and will not be charged until your {trialDays}-day trial ends. Cancel anytime before then and pay nothing.
+                  {foundingActive
+                    ? <>Your card is stored securely by Stripe. As a founding member, your first year is free — £0 for 12 months — and billing only begins after that. Cancel any time before then and pay nothing.</>
+                    : <>Your card is stored securely by Stripe and will not be charged until your {trialDays}-day trial ends. Cancel anytime before then and pay nothing.</>}
                 </p>
               </div>
 
