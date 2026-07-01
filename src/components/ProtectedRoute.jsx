@@ -27,6 +27,13 @@ export default function ProtectedRoute({ children }) {
   const isAdviser        = profile.plan === 'advisor'   // advisers use the adviser portal, not B2C checkout
   const onTrialEndedPage = location.pathname === '/trial-ended'
 
+  // Advisers belong in the adviser portal. Email/password login already routes them
+  // there; this catches Google sign-in, which redirects to /dashboard before the plan
+  // is known. Scoped to the dashboard landing so other protected routes aren't affected.
+  if (isAdviser && location.pathname === '/dashboard') {
+    return <Navigate to="/advisor-portal" replace />
+  }
+
   // Redirect expired-trial users to the /trial-ended choice screen FIRST — before
   // the no-subscription bounce below. Otherwise a trial_expired user without their
   // own stripe_subscription_id (e.g. a removed/departed secondary family member)
