@@ -270,11 +270,14 @@ export default function GetStarted() {
     return () => { controller.abort(); clearTimeout(timer) }
   }, [])
 
-  // Resume checkout — handles ?resume=true (dashboard gate) and localStorage flag (Google OAuth callback)
+  // Resume checkout — handles ?resume=true (dashboard gate), the Google OAuth
+  // callback flag, AND any signed-in user landing here without them. That last case
+  // is a mid-signup page reload (very common on mobile: switching to a password
+  // manager or email app can discard the tab) — the account already exists, so
+  // without resuming they'd be dumped at step 1 and re-registering would fail with
+  // "already registered". Logged-out visitors are unaffected (no session → normal flow).
   useEffect(() => {
-    const isResume  = searchParams.get('resume') === 'true'
-    const isOAuth   = localStorage.getItem('everstead_oauth_pending') === 'true'
-    if (!isResume && !isOAuth) return
+    const isOAuth = localStorage.getItem('everstead_oauth_pending') === 'true'
     ;(async () => {
       const { data: { session } } = await supabase.auth.getSession()
       if (!session) return
