@@ -1,6 +1,46 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 
+// ── Trustpilot rating (manual) ───────────────────────────────────────────────
+// We do NOT recreate Trustpilot's trademarked stars. Instead, drop a genuine,
+// unaltered screenshot of your own Trustpilot rating into /public and set `image`
+// below — it links to your profile. Until an image is present, a plain-text badge
+// (nominative fair use — no trademarked star) shows instead. `label` is the fallback
+// text only; keep it matching your real Trustpilot rating.
+const TRUSTPILOT = {
+  label: 'Excellent',
+  profileUrl: 'https://www.trustpilot.com/review/everstead.care',
+  image: '/trustpilot-rating.png',   // your real screenshot; falls back to text if missing
+}
+
+function TrustpilotBadge() {
+  const { label, profileUrl, image } = TRUSTPILOT
+  const [imgOk, setImgOk] = React.useState(!!image)
+  return (
+    <a
+      href={profileUrl}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="group inline-block"
+      aria-label={`Rated ${label} on Trustpilot — read our reviews`}
+    >
+      {imgOk ? (
+        <img
+          src={image}
+          alt={`Rated ${label} on Trustpilot`}
+          loading="lazy"
+          className="w-auto max-w-[180px] h-auto"
+          onError={() => setImgOk(false)}
+        />
+      ) : (
+        <span className="text-xs text-stone-400 group-hover:text-white transition-colors whitespace-nowrap">
+          Rated <span className="font-medium text-[#00b67a]">{label}</span> on Trustpilot&nbsp;→
+        </span>
+      )}
+    </a>
+  )
+}
+
 const cols = [
   {
     heading: 'Product',
@@ -73,6 +113,9 @@ export default function Footer() {
             <p className="text-xs leading-relaxed text-stone-600 max-w-[240px]">
               Everstead is an organisation platform, not a legal service or law firm.
             </p>
+            <div className="pt-1">
+              <TrustpilotBadge />
+            </div>
           </div>
 
           {/* Columns */}

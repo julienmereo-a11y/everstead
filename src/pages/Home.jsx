@@ -5,8 +5,8 @@ import { useReveal } from '../components/useReveal'
 import { PRICING } from '../config/pricing'
 import {
   ShieldCheck, Lock, Users, FileText, CheckCircle2, ArrowRight,
-  Star, ChevronDown, Bell, Share2, ClipboardList, BookOpen, Heart,
-  UserCircle, Sparkles, UserCheck, MapPin, BadgeCheck
+  ChevronDown, Bell, Share2, BookOpen, Heart,
+  UserCircle, Sparkles, UserCheck, MapPin, BadgeCheck, Landmark
 } from 'lucide-react'
 
 const trustItems = [
@@ -24,26 +24,35 @@ const painPoints = [
   'Digital assets become inaccessible',
 ]
 
-const featureHighlights = [
-  { icon: UserCircle, title: 'About Me', desc: 'The music you\'d want played, a letter for the people you love, the story only you can tell — gathered in one place and shared with whom you choose.' },
-  { icon: Sparkles, title: 'Your AI Assistant', desc: 'New to this, or find admin daunting? A calm, private assistant helps you set things up one small step at a time — chat or drop in a document, and it suggests entries for you to confirm. Nothing is saved until you say so.', ai: 'It suggests, you decide — and you can switch AI off any time. ✨' },
-  { icon: FileText, title: 'Secure document vault', desc: 'Upload, tag, and find legal, financial, and personal documents in seconds. Version history included.', ai: 'Upload a document — we extract the key details automatically. ✨' },
-  { icon: ClipboardList, title: 'Step-by-step instructions', desc: 'Write clear guidance on your own terms — for everyday reference, and so the people you love know what to do when it counts.', ai: 'Not sure what to write? We\'ll help you find the words. ✨' },
-  { icon: Users, title: 'Trusted people & sharing', desc: 'Give each person access to only what they need — a trusted contact today, an executor when it counts. Share by role and category on your terms, with emergency vault access in a single tap.' },
-  { icon: Heart, title: 'Final wishes', desc: 'Capture personal letters, funeral preferences, and sentimental instructions — warm, private, and on your own timeline.', ai: 'We can help you start when the words don\'t come easily. ✨' },
+// "Why Everstead" — three calm pillars (replaces the old six-card feature grid).
+const whyEverstead = [
+  {
+    icon: Landmark,
+    title: 'Accounts & assets',
+    desc: 'Every account, policy and subscription in one clear list — so nothing quietly slips through the cracks.',
+    cta: 'See what you can add',
+    to: '/features',
+  },
+  {
+    icon: FileText,
+    title: 'Documents & wishes',
+    desc: 'Wills, deeds, letters and instructions — stored safely, easy to find, and impossible to misplace.',
+    cta: 'Keep documents safe',
+    to: '/security',
+  },
+  {
+    icon: Users,
+    title: 'People & access',
+    desc: 'Decide who sees what, and when. Your family is only ever a step away — never a guess.',
+    cta: "Choose who's trusted",
+    to: '/how-it-works',
+  },
 ]
 
 const steps = [
-  { num: '01', title: 'Add your accounts & details', desc: 'Organise financial accounts, documents, subscriptions, and key contacts into a structured plan.' },
-  { num: '02', title: 'Assign trusted people', desc: 'Give each person role-based access — only what they need, nothing more.' },
-  { num: '03', title: 'Leave instructions & wishes', desc: 'Write step-by-step guidance, personal notes, and final wishes on your own terms.' },
-  { num: '04', title: 'Keep it updated over time', desc: 'Smart reminders and a readiness score keep your plan current and complete.' },
-]
-
-const testimonials = [
-  { quote: 'The whole process felt straightforward and reassuring from the beginning. The platform was genuinely very easy to navigate, which made everything feel much less overwhelming.', name: 'Victoria Miller', role: 'Verified Trustpilot review', badge: '★★★★★' },
-  { quote: 'I was looking for a service like this for a long time since starting a family. Everstead was the only one that hit the mark. I really feel at ease having this in place.', name: 'Yasmina Banine', role: 'Verified Trustpilot review', badge: '★★★★★' },
-  { quote: 'It was recommended to me by a friend — I was first sceptical but now a happy user. Will recommend too.', name: 'Daniel Sutherland', role: 'Verified Trustpilot review', badge: '★★★★★' },
+  { num: '01', title: 'Bring it together', desc: 'Add accounts, documents and wishes whenever it suits you — a few minutes at a time is plenty.' },
+  { num: '02', title: 'Keep it current', desc: "Small, gentle nudges keep everything accurate and complete, so it's always ready." },
+  { num: '03', title: 'Pass it on', desc: "Choose who's notified, and what they can see, if and when the time ever comes." },
 ]
 
 const plans = [
@@ -76,20 +85,6 @@ const plans = [
     cta: 'Book a demo',
     highlight: false,
   },
-]
-
-const faqs = [
-  { q: 'Is my information actually secure?', a: 'Yes. All data is encrypted at rest and in transit with AES-256 encryption. Role-based access ensures only people you authorise can see specific sections. We never sell your data.' },
-  { q: 'What happens to my account if I pass away?', a: 'You assign trusted people in advance — giving them access only to the sections you\'ve chosen, nothing more. But Everstead is useful long before that moment. Most members use it regularly to keep everything organised, knowing the access is there if it\'s ever needed.' },
-  { q: 'Can I start before I have everything organised?', a: 'Absolutely. Most people start with just a few accounts and build over time. Our readiness score shows progress and highlights what\'s still missing.' },
-  { q: 'Is this a legal document service?', a: 'No. Everstead is an organisation and planning platform — not a legal service. It does not draft wills, prepare legal documents, give legal or financial advice, or replace a solicitor, estate lawyer, accountant, or family adviser. It helps families organise information, instructions, and controlled access in one place.' },
-]
-
-const resourceCards = [
-  { icon: Heart, title: 'What to do when someone dies', desc: 'A free, compassionate AI guide through the practical steps after a death in the UK — from the first hours to closing the estate.', href: '/what-to-do-when-someone-dies' },
-  { icon: BookOpen, title: 'Executor starter guide', desc: 'A practical guide to the first steps families face after a death.', href: '/resources/guides' },
-  { icon: ClipboardList, title: 'Estate planning checklist', desc: 'Use the same checklist structure reflected inside the dashboard.', href: '/resources/checklists' },
-  { icon: FileText, title: 'Security and privacy overview', desc: 'See how Everstead handles permissions, encryption, and data access.', href: '/security' },
 ]
 
 function AnimatedHeroScore({ target = 76, duration = 1500 }) {
@@ -133,7 +128,6 @@ function AnimatedHeroScore({ target = 76, duration = 1500 }) {
 export default function Home() {
   useReveal()
   const [annualPricing, setAnnualPricing] = useState(true)
-  const [openFaq, setOpenFaq] = useState(null)
 
   return (
     <>
@@ -188,28 +182,23 @@ export default function Home() {
           'https://www.everstead.care',
         ],
       })}</script>
-      <script type="application/ld+json">{JSON.stringify({
-        '@context': 'https://schema.org',
-        '@type': 'FAQPage',
-        mainEntity: faqs.map(({ q, a }) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } })),
-      })}</script>
     </Helmet>
     <div className="bg-stone-50">
 
       {/* ── HERO ─────────────────────────────────────────────────── */}
       <section className="aurora-field overflow-hidden min-h-screen flex flex-col justify-center pt-24 pb-20 relative">
 
-        {/* Family photo — bleeds in from the right and feathers into the aurora hero (desktop) */}
-        <div className="hidden lg:block absolute top-24 bottom-0 right-0 w-[54%] pointer-events-none select-none" aria-hidden="true">
+        {/* Family photo — fills the right side of the hero, fully visible on the right and
+            fading gradually leftward into the aurora background (matches the design mock). */}
+        <div className="hidden lg:block absolute top-24 bottom-0 right-0 w-[60%] pointer-events-none select-none" aria-hidden="true">
           <img
             src="/hero-family.jpg"
             alt=""
             className="w-full h-full object-cover"
             style={{
-              opacity: 0.9,
               objectPosition: '88% 38%',
-              maskImage: 'linear-gradient(to right, transparent 8%, #000 66%)',
-              WebkitMaskImage: 'linear-gradient(to right, transparent 8%, #000 66%)',
+              maskImage: 'linear-gradient(to right, transparent 0%, rgba(0,0,0,0.55) 30%, #000 55%)',
+              WebkitMaskImage: 'linear-gradient(to right, transparent 0%, rgba(0,0,0,0.55) 30%, #000 55%)',
             }}
           />
           {/* soft top fade so the photo melts into the nav band rather than a hard edge */}
@@ -307,38 +296,96 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── SOLUTION ─────────────────────────────────────────────── */}
-      <section className="pt-4 pb-24 lg:pt-6 lg:pb-32 aurora-field aurora-dim relative overflow-hidden">
-        <div className="relative max-w-7xl mx-auto px-6 lg:px-8">
+      {/* ── WHY EVERSTEAD ────────────────────────────────────────── */}
+      <section className="pt-20 pb-24 lg:pt-28 lg:pb-32 aurora-field aurora-dim relative overflow-hidden">
+        <div className="relative max-w-6xl mx-auto px-6 lg:px-8">
           <div className="text-center mb-16 reveal">
-            <p className="text-xs font-semibold uppercase tracking-widest text-sage-400 mb-4">One platform</p>
-            <h2 className="font-display text-4xl lg:text-5xl font-light text-white max-w-2xl mx-auto leading-tight">
-              A calm home for your accounts,<br className="hidden sm:block" /> documents, and wishes.
+            <p className="text-xs font-semibold uppercase tracking-widest text-sage-400 mb-4">Why Everstead</p>
+            <h2 className="font-display text-4xl lg:text-5xl font-light text-white max-w-2xl mx-auto leading-tight text-balance">
+              One home for the<br className="hidden sm:block" /> things that matter.
             </h2>
+            <p className="mt-5 text-stone-300 text-lg leading-relaxed max-w-xl mx-auto">
+              No more scattered logins, lost paperwork, or guesswork left behind. Just a clear, gentle record of a life well organised.
+            </p>
           </div>
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {featureHighlights.map(({ icon: Icon, title, desc, ai }, i) => (
+            {whyEverstead.map(({ icon: Icon, title, desc, cta, to }, i) => (
               <div
                 key={title}
-                className={`reveal reveal-delay-${Math.min(i + 1, 5)} bg-white/5 border border-white/10 rounded-xl p-6 hover:bg-white/8 transition-colors`}
+                className={`reveal reveal-delay-${i + 1} bg-white/5 border border-white/10 rounded-3xl p-8 hover:bg-white/8 transition-colors flex flex-col`}
               >
-                <div className="w-9 h-9 rounded-lg bg-navy-700 flex items-center justify-center mb-4">
-                  <Icon size={18} className="text-stone-300" />
+                <div className="w-14 h-14 rounded-full bg-white/10 flex items-center justify-center mb-6">
+                  <Icon size={22} className="text-sage-300" />
                 </div>
-                <h3 className="font-semibold text-white text-sm mb-2">{title}</h3>
-                <p className="text-stone-400 text-sm leading-relaxed">{desc}</p>
-                {ai && (
-                  <span style={{
-                    display: 'block',
-                    fontSize: '12px',
-                    color: '#4c7d47',
-                    marginTop: '6px',
-                    fontStyle: 'italic',
-                  }}>{ai}</span>
-                )}
+                <h3 className="font-display text-2xl font-light text-white mb-3">{title}</h3>
+                <p className="text-stone-300 text-[15px] leading-relaxed mb-6">{desc}</p>
+                <Link
+                  to={to}
+                  className="mt-auto inline-flex items-center gap-1.5 text-sm font-medium text-sage-300 hover:text-sage-200 transition-colors"
+                >
+                  {cta} <ArrowRight size={14} />
+                </Link>
               </div>
             ))}
+          </div>
+
+          {/* Row: Up to date, without the chore */}
+          <div className="mt-24 lg:mt-32 grid lg:grid-cols-2 gap-10 lg:gap-16 items-center reveal">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-widest text-sage-400 mb-4">Effortless to keep current</p>
+              <h3 className="font-display text-3xl lg:text-4xl font-light text-white leading-tight text-balance">
+                Up to date, without the chore.
+              </h3>
+              <p className="mt-5 text-stone-300 leading-relaxed max-w-md">
+                Gentle reminders and one-tap updates mean your Everstead reflects your life as it is now — not as it was five years ago. The hard part stays done.
+              </p>
+              <ul className="mt-6 space-y-3">
+                {['Quiet nudges only when something needs a look', "A clear sense of what's complete and what's left"].map(item => (
+                  <li key={item} className="flex items-start gap-2.5 text-stone-200 text-sm">
+                    <CheckCircle2 size={16} className="text-sage-400 mt-0.5 shrink-0" />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <img
+              src="/screenshot-doc.jpg"
+              alt="A quiet monthly summary in Everstead — home insurance renewed, a new ISA added, and a gentle nudge that a passport expires in six months"
+              width="944" height="780"
+              loading="lazy"
+              className="w-full h-auto rounded-3xl border border-white/10"
+              style={{ boxShadow: '0 24px 60px rgba(0, 0, 0, 0.45)' }}
+            />
+          </div>
+
+          {/* Row: Share exactly what you choose (image left on desktop) */}
+          <div className="mt-20 lg:mt-28 grid lg:grid-cols-2 gap-10 lg:gap-16 items-center reveal">
+            <img
+              src="/screenshot-access.jpg"
+              alt="People & access in Everstead — a partner with full access, a daughter with a single document, and a solicitor sealed until needed"
+              width="944" height="780"
+              loading="lazy"
+              className="w-full h-auto rounded-3xl border border-white/10 order-last lg:order-first"
+              style={{ boxShadow: '0 24px 60px rgba(0, 0, 0, 0.45)' }}
+            />
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-widest text-sage-400 mb-4">Yours to share, on your terms</p>
+              <h3 className="font-display text-3xl lg:text-4xl font-light text-white leading-tight text-balance">
+                Share exactly what you choose.
+              </h3>
+              <p className="mt-5 text-stone-300 leading-relaxed max-w-md">
+                Give a partner full access, a child a single document, or a solicitor a sealed envelope opened only when the time comes. You stay in control, always.
+              </p>
+              <ul className="mt-6 space-y-3">
+                {['Per-item permissions, changeable any time', 'Trusted contacts notified only when needed'].map(item => (
+                  <li key={item} className="flex items-start gap-2.5 text-stone-200 text-sm">
+                    <CheckCircle2 size={16} className="text-sage-400 mt-0.5 shrink-0" />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
         </div>
       </section>
@@ -356,14 +403,12 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid sm:grid-cols-3 border-t border-stone-200 divide-y sm:divide-y-0 sm:divide-x divide-stone-200">
             {steps.map(({ num, title, desc }, i) => (
-              <div key={num} className={`reveal reveal-delay-${i + 1} text-center`}>
-                <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-navy-50 border-2 border-navy-100 mb-5">
-                  <span className="font-display text-xl font-semibold text-navy-700">{num}</span>
-                </div>
-                <h3 className="font-semibold text-navy-900 text-sm mb-2">{title}</h3>
-                <p className="text-stone-500 text-sm leading-relaxed">{desc}</p>
+              <div key={num} className={`reveal reveal-delay-${i + 1} pt-8 pb-4 sm:px-8 sm:first:pl-0 sm:last:pr-0`}>
+                <p className="font-display text-4xl font-light text-sage-700 mb-3">{num}</p>
+                <h3 className="font-display text-xl text-navy-950 mb-2">{title}</h3>
+                <p className="text-stone-500 text-[15px] leading-relaxed">{desc}</p>
               </div>
             ))}
           </div>
@@ -402,44 +447,6 @@ export default function Home() {
               className="w-full h-auto rounded-3xl"
               style={{ boxShadow: '0 24px 60px rgba(0, 0, 0, 0.4)' }}
             />
-          </div>
-        </div>
-      </section>
-
-      {/* ── USE CASE PREVIEW ─────────────────────────────────────── */}
-      <section className="pt-24 pb-14 lg:pt-32 lg:pb-16">
-        <div className="max-w-7xl mx-auto px-6 lg:px-8">
-          <div className="text-center mb-14 reveal">
-            <p className="text-xs font-semibold uppercase tracking-widest text-navy-600 mb-4">Who it's for</p>
-            <h2 className="font-display text-4xl font-light text-navy-950 text-balance">
-              However your family is shaped, there's a place for everyone.
-            </h2>
-          </div>
-
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-            {[
-              { title: 'For Families', desc: 'Make sure loved ones know where everything is and what to do first.', href: '/use-cases/families' },
-              { title: 'For Parents', desc: 'Leave guidance, not guesswork, for practical and personal decisions.', href: '/use-cases/parents' },
-              { title: 'For Aging Adults', desc: 'Organise with dignity and clarity while assigning trusted support.', href: '/use-cases/aging-adults' },
-              { title: 'For Executors', desc: 'A clearer path through responsibilities, documents, and timing.', href: '/use-cases/executors' },
-              { title: 'For Advisers', desc: 'Offer estate organisation as a modern client service.', href: '/use-cases/advisors' },
-              {
-                title: 'See all use cases',
-                desc: 'Explore the full range of ways Everstead supports families and professionals.',
-                href: '/use-cases',
-                isLink: true,
-              },
-            ].map((item, i) => (
-              <Link
-                key={item.title}
-                to={item.href}
-                className={`reveal reveal-delay-${Math.min(i + 1, 5)} group block rounded-xl border border-stone-200 p-6 hover:border-navy-300 hover:bg-navy-50 transition-all ${item.isLink ? 'bg-navy-50 border-navy-200' : 'bg-white'}`}
-              >
-                <h3 className="font-semibold text-navy-900 text-sm mb-2 group-hover:text-navy-700">{item.title}</h3>
-                <p className="text-stone-500 text-sm leading-relaxed">{item.desc}</p>
-                {!item.isLink && <span className="inline-flex items-center gap-1 text-xs text-navy-600 mt-3 font-medium group-hover:gap-2 transition-all">Learn more <ArrowRight size={12} /></span>}
-              </Link>
-            ))}
           </div>
         </div>
       </section>
@@ -582,79 +589,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── TESTIMONIALS ─────────────────────────────────────────── */}
-      <section className="py-14 lg:py-20 bg-stone-50 border-t border-stone-100">
-        <div className="max-w-7xl mx-auto px-6 lg:px-8">
-          <div className="text-center mb-14 reveal">
-            <p className="text-xs font-semibold uppercase tracking-widest text-navy-600 mb-4">Trustpilot reviews</p>
-            <h2 className="font-display text-4xl font-light text-navy-950">What members say.</h2>
-            <a href="https://www.trustpilot.com/review/everstead.care" target="_blank" rel="noopener noreferrer" className="inline-block mt-4 text-xs text-stone-400 hover:text-navy-700 transition-colors underline underline-offset-2">
-              See all reviews on Trustpilot →
-            </a>
-          </div>
-          <div className="grid md:grid-cols-3 gap-6">
-            {testimonials.map(({ quote, name, role, badge }, i) => (
-              <div key={name} className={`reveal reveal-delay-${i + 1} bg-white border border-stone-200 rounded-2xl p-7`}>
-                <div className="flex items-center justify-between mb-5">
-                  <div className="flex gap-0.5">
-                    {[...Array(5)].map((_, j) => <Star key={j} size={13} className="text-amber-400 fill-amber-400" />)}
-                  </div>
-                  {badge && (
-                    <span className="text-xs text-stone-400 border border-stone-200 px-2 py-0.5 rounded-full">{badge}</span>
-                  )}
-                </div>
-                <p className="text-stone-700 text-sm leading-relaxed mb-6 italic">"{quote}"</p>
-                <div>
-                  <p className="font-semibold text-navy-900 text-sm">{name}</p>
-                  <p className="text-stone-500 text-xs mt-0.5">{role}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── RESOURCE HUB ───────────────────────────────────────────── */}
-      <section className="py-24 lg:py-32 bg-white border-y border-stone-100">
-        <div className="max-w-7xl mx-auto px-6 lg:px-8">
-          <div className="flex items-end justify-between gap-4 mb-12 reveal">
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-widest text-navy-600 mb-4">Resources</p>
-              <h2 className="font-display text-4xl font-light text-navy-950">Practical guidance beyond the product.</h2>
-            </div>
-            <Link to="/resources" className="hidden sm:inline-flex items-center gap-2 text-sm font-medium text-navy-700 hover:text-navy-900 transition-colors">Explore resources <ArrowRight size={14} /></Link>
-          </div>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
-            {resourceCards.map(({ icon: Icon, title, desc, href }, i) => (
-              <Link key={title} to={href} className={`reveal reveal-delay-${i + 1} group bg-stone-50 border border-stone-200 rounded-2xl p-6 hover:border-navy-300 hover:bg-white transition-all`}>
-                <div className="w-11 h-11 rounded-2xl bg-navy-50 flex items-center justify-center mb-5 group-hover:bg-navy-100 transition-colors">
-                  <Icon size={18} className="text-navy-700" />
-                </div>
-                <h3 className="text-lg font-semibold text-navy-900 mb-2">{title}</h3>
-                <p className="text-sm text-stone-500 leading-relaxed">{desc}</p>
-              </Link>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── REFERRAL CTA ─────────────────────────────────────────── */}
-      <section className="py-20 lg:py-24 bg-stone-50">
-        <div className="max-w-5xl mx-auto px-6 lg:px-8">
-          <div className="reveal rounded-3xl aurora-field aurora-dim border border-navy-800 p-8 lg:p-10 text-white flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
-            <div className="max-w-2xl">
-              <p className="text-xs font-semibold uppercase tracking-widest text-sage-400 mb-3">Share Everstead</p>
-              <h2 className="font-display text-3xl lg:text-4xl font-light leading-tight">Help a parent, partner, or client get organised before a crisis.</h2>
-              <p className="text-sm text-stone-300 mt-3 leading-relaxed">Everstead works especially well when one family member starts the process and invites others in with the right permissions.</p>
-            </div>
-            <div className="flex flex-wrap gap-3">
-              <Link to="/get-started?plan=family&billing=yearly" className="inline-flex items-center gap-2 bg-white text-navy-900 font-semibold text-sm px-6 py-3 rounded-full hover:bg-stone-100 transition-colors">Start a family plan <ArrowRight size={15} /></Link>
-              <Link to="/book-demo" className="inline-flex items-center gap-2 bg-white/10 text-white border border-white/20 font-medium text-sm px-6 py-3 rounded-full hover:bg-white/20 transition-colors">Book an adviser demo</Link>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* ── Gift strip ─────────────────────────────────────────────── */}
       <section className="py-16 lg:py-20 bg-stone-50 border-y border-stone-100">
         <div className="max-w-5xl mx-auto px-6 lg:px-8">
@@ -679,62 +613,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── LEGAL CLARITY ────────────────────────────────────────── */}
-      <section className="py-16 lg:py-20 bg-white border-y border-stone-100">
-        <div className="max-w-4xl mx-auto px-6 lg:px-8 reveal">
-          <div className="rounded-2xl border border-amber-200 bg-amber-50 p-7 lg:p-8">
-            <p className="text-xs font-semibold uppercase tracking-widest text-amber-700 mb-3">Important</p>
-            <h2 className="font-display text-2xl font-light text-navy-950">
-              Everstead is not a legal service and does not replace professional advice.
-            </h2>
-            <p className="mt-4 text-stone-700 text-sm leading-relaxed">
-              Everstead is an organisation and planning platform. It helps you store references to documents, record instructions, and share access with trusted people. It does <strong>not</strong> draft wills, prepare legal instruments, give legal or financial advice, or replace a solicitor, estate lawyer, accountant, or family adviser. If you need legal or financial guidance, please consult a qualified professional.
-            </p>
-            <div className="mt-5 flex flex-wrap gap-4">
-              <Link to="/terms" className="inline-flex items-center gap-2 text-sm font-medium text-navy-700 hover:text-navy-900 transition-colors">
-                Read our terms <ArrowRight size={14} />
-              </Link>
-              <Link to="/security" className="inline-flex items-center gap-2 text-sm font-medium text-navy-700 hover:text-navy-900 transition-colors">
-                Security & privacy <ArrowRight size={14} />
-              </Link>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ── FAQ ──────────────────────────────────────────────────── */}
-      <section className="py-24 lg:py-32">
-        <div className="max-w-3xl mx-auto px-6 lg:px-8">
-          <div className="text-center mb-14 reveal">
-            <p className="text-xs font-semibold uppercase tracking-widest text-navy-600 mb-4">Questions</p>
-            <h2 className="font-display text-4xl font-light text-navy-950">Frequently asked.</h2>
-          </div>
-          <div className="space-y-4">
-            {faqs.map(({ q, a }, i) => (
-              <FaqItem key={i} q={q} a={a} delay={i + 1} open={openFaq === i} onToggle={() => setOpenFaq(openFaq === i ? null : i)} />
-            ))}
-          </div>
-        </div>
-      </section>
-
     </div>
     </>
-  )
-}
-
-function FaqItem({ q, a, delay, open, onToggle }) {
-  return (
-    <div className={`reveal reveal-delay-${Math.min(delay, 5)} border border-stone-200 rounded-xl overflow-hidden bg-white`}>
-      <button
-        onClick={onToggle}
-        className="w-full text-left flex items-start justify-between gap-4 px-6 py-5"
-      >
-        <span className="font-medium text-navy-900 text-sm">{q}</span>
-        <ChevronDown size={16} className={`text-stone-400 mt-0.5 flex-shrink-0 transition-transform ${open ? 'rotate-180' : ''}`} />
-      </button>
-      {open && (
-        <div className="px-6 pb-5 text-stone-600 text-sm leading-relaxed border-t border-stone-100 pt-4">{a}</div>
-      )}
-    </div>
   )
 }

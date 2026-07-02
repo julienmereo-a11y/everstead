@@ -8,8 +8,6 @@ const navLinks = [
   { label: 'Features', href: '/features' },
   { label: 'Security', href: '/security' },
   { label: 'Pricing', href: '/pricing' },
-  { label: 'Use Cases', href: '/use-cases' },
-  { label: 'Resources', href: '/resources' },
   { label: 'About', href: '/about' },
 ]
 
@@ -146,19 +144,6 @@ export default function Nav() {
                 {link.label}
               </Link>
             ))}
-            <Link
-              to="/gift"
-              aria-current={location.pathname === '/gift' ? 'page' : undefined}
-              className={`px-3 py-1.5 text-sm font-medium rounded-md transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage-400 inline-flex items-center gap-1.5 ${
-                useDarkStyle
-                  ? location.pathname === '/gift'
-                    ? 'text-sage-800 bg-sage-50'
-                    : 'text-sage-700 hover:text-sage-800 hover:bg-sage-50'
-                  : 'text-sage-200 hover:text-white hover:bg-white/10'
-              }`}
-            >
-              <span aria-hidden="true">🎁</span> Gift
-            </Link>
           </div>
 
           {/* CTA */}
@@ -271,17 +256,6 @@ export default function Nav() {
                 {link.label}
               </Link>
             ))}
-            <Link
-              to="/gift"
-              aria-current={location.pathname === '/gift' ? 'page' : undefined}
-              className={`flex items-center gap-2 px-4 py-3 text-sm font-medium rounded-xl transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage-400 ${
-                location.pathname === '/gift'
-                  ? 'text-sage-800 bg-sage-50'
-                  : 'text-sage-700 hover:text-sage-800 hover:bg-sage-50'
-              }`}
-            >
-              <span aria-hidden="true">🎁</span> Give as a gift
-            </Link>
             <div className="pt-4 mt-2 border-t border-stone-100 flex flex-col gap-2.5">
               {user ? (
                 <>
