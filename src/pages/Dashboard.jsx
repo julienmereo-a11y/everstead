@@ -152,7 +152,7 @@ function TrialExpiredModal({ profile, onUpgrade }) {
           {[
             { name: 'Essential', price: '£3.99/mo', note: 'or £3.19/mo billed annually (£38.28/yr · save 20%)', id: 'essential' },
             { name: 'Family', price: '£9.99/mo', note: 'or £7.99/mo billed annually (£95.88/yr · save 20%) — two private vaults', id: 'family', highlight: profile.plan !== 'advisor' },
-            ...(profile.plan === 'advisor' ? [{ name: 'Advisor', price: '£60/mo', note: 'or £48/mo yearly · For estate advisors', id: 'advisor', highlight: true }] : []),
+            ...(profile.plan === 'advisor' ? [{ name: 'Adviser', price: '£60/mo', note: 'or £48/mo yearly · For estate advisers', id: 'advisor', highlight: true }] : []),
           ].map(plan => (
             <button
               key={plan.id}
@@ -193,7 +193,7 @@ function AdvisorCancelledBanner({ daysLeft, advisorName, onAddPayment }) {
         <AlertTriangle size={16} className={`mt-0.5 shrink-0 ${urgent ? 'text-red-500' : 'text-orange-500'}`} />
         <div>
           <p className={`font-semibold ${urgent ? 'text-red-800' : 'text-orange-800'}`}>
-            {advisorName ? `${advisorName} has cancelled their advisor plan.` : 'Your advisor has cancelled their plan.'}
+            {advisorName ? `${advisorName} has cancelled their adviser plan.` : 'Your adviser has cancelled their plan.'}
           </p>
           <p className={`text-xs mt-0.5 leading-relaxed ${urgent ? 'text-red-700' : 'text-orange-700'}`}>
             {daysLeft === 1
@@ -222,8 +222,8 @@ function AdvisorCancelledModal({ advisorName, onAddPayment }) {
         <h2 className="font-display text-3xl font-light text-navy-950 mb-3">Payment required</h2>
         <p className="text-stone-500 text-sm leading-relaxed mb-2">
           {advisorName
-            ? <><strong>{advisorName}</strong> has cancelled their Everstead advisor plan.</>
-            : <>Your advisor has cancelled their Everstead plan.</>}
+            ? <><strong>{advisorName}</strong> has cancelled their Everstead adviser plan.</>
+            : <>Your adviser has cancelled their Everstead plan.</>}
         </p>
         <p className="text-stone-500 text-sm leading-relaxed mb-8">
           The 30-day grace period has ended. Add a payment method to continue — all your accounts, documents, and instructions are saved and waiting for you.
@@ -898,186 +898,6 @@ export default function Dashboard() {
   )
 }
 
-// ─────────────────────────────────────────────────────────────
-// AI ONBOARDING OVERLAY — shown once on first login
-// ─────────────────────────────────────────────────────────────
-function AIOnboardingOverlay({ userName, onClose, onComplete }) {
-  const firstName = userName?.split(' ')[0] || 'there'
-  const QUESTIONS = [
-    { key: 'property',       q: `Do you own property — a home, flat, or land? If so, whereabouts and with whom?` },
-    { key: 'pension',        q: `Do you have a pension? If so, who's the provider — e.g. the NHS, Aviva, or a workplace scheme?` },
-    { key: 'lifeInsurance',  q: `Do you have life insurance or any protection policies?` },
-    { key: 'bankAccounts',   q: `Which banks or building societies do you have accounts with?` },
-    { key: 'executor',       q: `Who would you want to handle your estate — an executor or trusted person? Give their name if you know it.` },
-  ]
-
-  const [step, setStep] = useState(-1) // -1 = intro
-  const [answers, setAnswers] = useState({})
-  const [input, setInput] = useState('')
-  const [processing, setProcessing] = useState(false)
-  const [done, setDone] = useState(false)
-  const [summary, setSummary] = useState('')
-  const inputRef = React.useRef(null)
-
-  React.useEffect(() => {
-    if (step >= 0) inputRef.current?.focus()
-  }, [step])
-
-  const handleNext = () => {
-    if (step >= 0) {
-      const key = QUESTIONS[step].key
-      setAnswers(prev => ({ ...prev, [key]: input.trim() || 'Not provided' }))
-      setInput('')
-    }
-    if (step < QUESTIONS.length - 1) {
-      setStep(s => s + 1)
-    } else {
-      // All questions answered — process
-      handleProcess()
-    }
-  }
-
-  const handleProcess = async () => {
-    setProcessing(true)
-    const finalAnswers = { ...answers }
-    if (step >= 0) finalAnswers[QUESTIONS[step].key] = input.trim() || 'Not provided'
-    try {
-      const { supabase: sb } = await import('../lib/supabase')
-      const { data: { session } } = await sb.auth.getSession()
-      const res = await fetch('/api/ai/process-onboarding', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${session?.access_token}` },
-        body: JSON.stringify({ answers: finalAnswers, firstName }),
-      })
-      // res.ok === false includes the AI-off case (403) — fall back gracefully.
-      const data = res.ok ? await res.json() : {}
-      setSummary(data.onboardingSummary || "I've set up some draft entries based on what you shared. You can review and edit everything in your vault.")
-      setDone(true)
-      await onComplete(data)
-    } catch {
-      setSummary("Something went wrong, but don't worry — you can add everything manually in your vault.")
-      setDone(true)
-    } finally {
-      setProcessing(false)
-    }
-  }
-
-  const progress = step < 0 ? 0 : Math.round(((step) / QUESTIONS.length) * 100)
-
-  return (
-    <div className="fixed inset-0 z-[60] bg-navy-950/95 backdrop-blur-sm flex items-center justify-center p-4">
-      <div className="bg-white rounded-3xl shadow-2xl max-w-lg w-full overflow-hidden">
-        {/* Header */}
-        <div className="bg-navy-950 px-7 py-5 flex items-center justify-between">
-          <div className="flex items-center gap-2.5">
-            <Sparkles size={18} className="text-sage-400" />
-            <p className="text-white font-semibold text-sm">Quick vault setup</p>
-          </div>
-          <button onClick={onClose} className="text-white/40 hover:text-white/80 transition-colors p-1">
-            <X size={16} />
-          </button>
-        </div>
-
-        {/* Progress bar */}
-        {step >= 0 && !done && (
-          <div className="h-1 bg-stone-100">
-            <div className="h-full bg-sage-500 transition-all duration-500" style={{ width: `${progress}%` }} />
-          </div>
-        )}
-
-        <div className="px-7 py-8">
-          {/* Intro */}
-          {step === -1 && (
-            <div className="text-center">
-              <div className="w-14 h-14 bg-sage-100 rounded-full flex items-center justify-center mx-auto mb-5">
-                <Sparkles size={22} className="text-sage-600" />
-              </div>
-              <h2 className="font-display text-2xl font-light text-navy-950 mb-3">
-                Welcome, {firstName}. Let's get your vault started.
-              </h2>
-              <p className="text-stone-500 text-sm leading-relaxed mb-8">
-                I'll ask you 5 quick questions to set up your vault automatically. It takes under 2 minutes and you can edit everything afterwards.
-              </p>
-              <div className="flex flex-col gap-3">
-                <button
-                  onClick={() => setStep(0)}
-                  className="w-full btn-aurora text-white font-semibold text-sm py-3.5 rounded-full hover:bg-navy-700 transition-colors flex items-center justify-center gap-2"
-                >
-                  <Sparkles size={15} /> Let's go
-                </button>
-                <button onClick={onClose} className="text-sm text-stone-400 hover:text-stone-600 transition-colors">
-                  Skip for now — I'll do it manually
-                </button>
-              </div>
-            </div>
-          )}
-
-          {/* Questions */}
-          {step >= 0 && !done && !processing && (
-            <div>
-              <p className="text-xs font-semibold text-stone-400 uppercase tracking-widest mb-6">
-                Question {step + 1} of {QUESTIONS.length}
-              </p>
-              <p className="text-navy-950 font-medium text-base leading-relaxed mb-6">
-                {QUESTIONS[step].q}
-              </p>
-              <textarea
-                ref={inputRef}
-                className="w-full border border-stone-200 rounded-xl px-4 py-3 text-sm text-navy-900 placeholder-stone-300 focus:outline-none focus:ring-2 focus:ring-navy-400 focus:border-navy-400 bg-stone-50 resize-none transition-colors"
-                rows={3}
-                placeholder="Type your answer here…"
-                value={input}
-                onChange={e => setInput(e.target.value)}
-                onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleNext() } }}
-              />
-              <div className="flex items-center justify-between mt-5">
-                <button
-                  onClick={() => { setInput(''); handleNext() }}
-                  className="text-sm text-stone-400 hover:text-stone-600 transition-colors"
-                >
-                  Skip this question
-                </button>
-                <button
-                  onClick={handleNext}
-                  className="inline-flex items-center gap-2 btn-aurora text-white font-semibold text-sm px-5 py-2.5 rounded-full hover:bg-navy-700 transition-colors"
-                >
-                  {step < QUESTIONS.length - 1 ? 'Next' : 'Set up my vault'}
-                  <ArrowRight size={15} />
-                </button>
-              </div>
-            </div>
-          )}
-
-          {/* Processing */}
-          {processing && (
-            <div className="text-center py-4">
-              <Loader2 size={28} className="animate-spin text-navy-600 mx-auto mb-4" />
-              <p className="text-navy-900 font-medium text-sm">Setting up your vault…</p>
-              <p className="text-stone-400 text-xs mt-1">This takes just a moment.</p>
-            </div>
-          )}
-
-          {/* Done */}
-          {done && (
-            <div className="text-center">
-              <div className="w-14 h-14 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-5">
-                <CheckCircle2 size={22} className="text-emerald-600" />
-              </div>
-              <h2 className="font-display text-2xl font-light text-navy-950 mb-3">Your vault is ready</h2>
-              <p className="text-stone-500 text-sm leading-relaxed mb-8">{summary}</p>
-              <button
-                onClick={onClose}
-                className="w-full btn-aurora text-white font-semibold text-sm py-3.5 rounded-full hover:bg-navy-700 transition-colors"
-              >
-                View my vault
-              </button>
-            </div>
-          )}
-        </div>
-      </div>
-    </div>
-  )
-}
 
 // ─────────────────────────────────────────────────────────────
 // OWNER AI GUIDE — floating chat widget
@@ -1633,7 +1453,7 @@ function OverviewSection({ profile, accounts, documents, people, instructions, m
             <span className="text-xs text-stone-400">{documents.length} total</span>
           </div>
           {documents.length === 0 ? (
-            <EmptyState icon={FileText} label="No documents yet" action="Upload your first document" />
+            <EmptyState icon={FileText} label="No documents yet" action="Upload your first document" onAction={() => onNavigate("documents")} />
           ) : (
             <div className="space-y-2">
               {documents.slice(0, 5).map(doc => (
@@ -1777,7 +1597,7 @@ function AccountsSection({ accounts, loading, add, update, remove, profile, onUp
         </p>
       )}
       {loading ? <LoadingSpinner /> : accounts.length === 0 ? (
-        <EmptyState icon={Landmark} label="No accounts yet" action="Add your first account to start building your vault." />
+        <EmptyState icon={Landmark} label="No accounts yet" action="Add your first account to start building your vault." onAction={atAccountLimit ? undefined : openAdd} />
       ) : (
         Object.entries(grouped).map(([category, items]) => {
           const CatIcon = CATEGORY_ICONS[category] ?? Folder
@@ -2272,7 +2092,7 @@ function DocumentsSection({ documents, loading, uploadFile, update, remove, plan
       </div>
 
       {loading ? <LoadingSpinner /> : documents.length === 0 ? (
-        <EmptyState icon={FileText} label="No documents yet" action="Upload your first document — will, insurance policies, property deeds, and more." />
+        <EmptyState icon={FileText} label="No documents yet" action="Upload your first document — will, insurance policies, property deeds, and more." onAction={atDocLimit ? undefined : openUpload} />
       ) : (
         <div className="bg-white border border-stone-200 rounded-xl overflow-hidden overflow-x-auto">
           <table className="w-full text-sm min-w-[640px]">
@@ -2450,7 +2270,8 @@ function DocumentsSection({ documents, loading, uploadFile, update, remove, plan
 // ABOUT ME SECTION
 // ─────────────────────────────────────────────────────────────
 // Roles that should NOT see a personal "About Me" — professional/legal contacts.
-const ABOUT_ME_EXCLUDED_ROLES = ['Estate Attorney', 'Financial Advisor', 'Healthcare Proxy']
+// (Old spellings kept for any rows saved before the UK-terminology rename.)
+const ABOUT_ME_EXCLUDED_ROLES = ['Solicitor', 'Financial Adviser', 'Healthcare Proxy', 'Estate Attorney', 'Financial Advisor']
 
 // Turn a Spotify share URL into an embeddable player URL. Returns null if not a Spotify URL.
 function spotifyEmbedUrl(url) {
@@ -3069,7 +2890,7 @@ function MessagesSection({ messages: initialMessages, loading, people, isDemo, p
       )}
 
       {!messagesLocked && (loading ? <LoadingSpinner /> : messages.length === 0 ? (
-        <EmptyState icon={MessageSquare} label="No messages yet" action="Leave a personal note or video message for someone important — your spouse, children, attorney, or anyone you choose." />
+        <EmptyState icon={MessageSquare} label="No messages yet" action="Leave a personal note or video message for someone important — your spouse, children, solicitor, or anyone you choose." onAction={() => setShowCompose(true)} />
       ) : (
         <div className="space-y-3">
           {messages.map(msg => {
@@ -3556,14 +3377,14 @@ function PersonAccessForm({ initial, onSave, onCancel, saving, submitLabel }) {
           <optgroup label="Estate &amp; legal">
             <option>Primary Executor</option>
             <option>Secondary Executor</option>
-            <option>Estate Attorney</option>
+            <option>Solicitor</option>
           </optgroup>
           <optgroup label="Family">
             <option>Family Member</option>
             <option>Family Caretaker</option>
           </optgroup>
           <optgroup label="Professional">
-            <option>Financial Advisor</option>
+            <option>Financial Adviser</option>
             <option>Healthcare Proxy</option>
           </optgroup>
         </select>
@@ -3770,7 +3591,7 @@ function PeopleSection({ people, loading, invite, resendInvite, updatePerson, re
         </p>
       )}
       {loading ? <LoadingSpinner /> : people.length === 0 ? (
-        <EmptyState icon={Users} label="No trusted people yet" action="Invite an executor, healthcare proxy, or family member to your plan." />
+        <EmptyState icon={Users} label="No trusted people yet" action="Invite an executor, healthcare proxy, or family member to your plan." onAction={() => setShowInvite(true)} />
       ) : (
         <div className="space-y-3">
           {people.map(person => (
@@ -3950,7 +3771,7 @@ function InstructionsSection({ instructions, loading, add, update, remove, profi
           const stepsRaw = stepsMatch[1].trim()
           const steps = stepsRaw.split('\n').map(s => s.replace(/^\d+\.\s*/, '').trim()).filter(Boolean)
           const validCategories = ['Immediate', 'Financial', 'Household', 'Medical', 'Digital', 'Personal', 'Other']
-          const validAudiences = ['Executor', 'Family', 'Healthcare Proxy', 'Advisor', 'Everyone']
+          const validAudiences = ['Executor', 'Family', 'Healthcare Proxy', 'Adviser', 'Advisor', 'Everyone']
           const category = validCategories.find(c => categoryMatch?.[1]?.includes(c)) ?? 'Immediate'
           const audience = validAudiences.find(a => forMatch?.[1]?.includes(a)) ?? 'Executor'
           setParsedSuggestion({
@@ -4072,7 +3893,7 @@ function InstructionsSection({ instructions, loading, add, update, remove, profi
         </p>
       )}
       {loading ? <LoadingSpinner /> : instructions.length === 0 ? (
-        <EmptyState icon={BookOpen} label="No instructions yet" action="Write step-by-step guidance for your executor, family, or healthcare proxy." />
+        <EmptyState icon={BookOpen} label="No instructions yet" action="Write step-by-step guidance for your executor, family, or healthcare proxy." onAction={atInstructionLimit ? undefined : openAdd} />
       ) : (
         <div className="space-y-3">
           {instructions.map(inst => (
@@ -4256,7 +4077,7 @@ function InstructionsSection({ instructions, loading, add, update, remove, profi
               </Field>
               <Field label="Audience" required>
                 <select className={input} value={form.audience} onChange={e => setForm(p => ({ ...p, audience: e.target.value }))}>
-                  {['Executor', 'Family', 'Healthcare Proxy', 'Advisor', 'Everyone'].map(option => <option key={option}>{option}</option>)}
+                  {['Executor', 'Family', 'Healthcare Proxy', 'Adviser', 'Everyone'].map(option => <option key={option}>{option}</option>)}
                 </select>
               </Field>
             </div>
@@ -4362,7 +4183,7 @@ function SubscriptionsSection({ subscriptions: remoteSubs, loading, add, update,
   return (
     <SectionShell title="Subscriptions" subtitle={`£${total.toFixed(2)}/mo total`} action={<button onClick={openAdd} className={primaryBtn}><Plus size={15} />Add subscription</button>}>
       {loading ? <LoadingSpinner /> : subscriptions.length === 0 ? (
-        <EmptyState icon={CreditCard} label="No subscriptions tracked" action="Add recurring bills so your family knows what to cancel." />
+        <EmptyState icon={CreditCard} label="No subscriptions tracked" action="Add recurring bills so your family knows what to cancel." onAction={openAdd} />
       ) : (
         <div className="bg-white border border-stone-200 rounded-xl divide-y divide-stone-50">
           {subscriptions.map(sub => (
@@ -5708,14 +5529,20 @@ function SectionShell({ title, subtitle, action, children }) {
   )
 }
 
-function EmptyState({ icon: Icon, label, action }) {
+function EmptyState({ icon: Icon, label, action, onAction }) {
   return (
     <div className="bg-white border border-dashed border-stone-200 rounded-xl p-12 flex flex-col items-center justify-center text-center">
       <div className="w-12 h-12 rounded-full bg-stone-50 flex items-center justify-center mb-4">
         <Icon size={20} className="text-stone-300" />
       </div>
       <p className="font-medium text-navy-800 text-sm">{label}</p>
-      {action && <p className="text-stone-400 text-xs mt-1 max-w-xs">{action}</p>}
+      {action && (onAction ? (
+        <button onClick={onAction} className="text-navy-700 hover:text-navy-900 underline underline-offset-2 text-xs mt-1 max-w-xs transition-colors">
+          {action}
+        </button>
+      ) : (
+        <p className="text-stone-400 text-xs mt-1 max-w-xs">{action}</p>
+      ))}
     </div>
   )
 }
@@ -5738,6 +5565,12 @@ function LoadingSpinner() {
 }
 
 function Modal({ title, onClose, children }) {
+  // Escape closes the dialog — standard keyboard affordance.
+  React.useEffect(() => {
+    const onKey = (e) => { if (e.key === 'Escape') onClose?.() }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [onClose])
   return (
     <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={onClose} aria-hidden="true" />

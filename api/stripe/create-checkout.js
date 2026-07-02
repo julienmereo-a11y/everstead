@@ -1,8 +1,9 @@
 import Stripe from 'stripe'
+import { withSentry } from '../lib/sentry.js'
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY)
 
-export default async function handler(req, res) {
+async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' })
 
   const { priceId, userEmail, customerId, trialEnd, trialPeriodDays, cancelUrl, plan, billingCycle, referredBy } = req.body
@@ -52,3 +53,6 @@ export default async function handler(req, res) {
     res.status(500).json({ error: err.message })
   }
 }
+
+// Errors are reported to Sentry (no-op until SENTRY_DSN is set) and return a clean 500.
+export default withSentry(handler)

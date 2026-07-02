@@ -1,4 +1,5 @@
 import Stripe from 'stripe'
+import { withSentry } from '../lib/sentry.js'
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY)
 
 // Annual price in PENCE per year (matches the new annual subscription prices).
@@ -8,7 +9,7 @@ const GIFT_PRICE_PENCE = {
   family:    9588, // £95.88/year
 }
 
-export default async function handler(req, res) {
+async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).end()
   const { plan, years, gifterEmail, gifterName } = req.body
   if (!plan || !years || !gifterEmail) return res.status(400).json({ error: 'Missing fields' })
@@ -29,3 +30,6 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: err.message })
   }
 }
+
+// Errors are reported to Sentry (no-op until SENTRY_DSN is set) and return a clean 500.
+export default withSentry(handler)

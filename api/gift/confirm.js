@@ -1,6 +1,7 @@
 import Stripe from 'stripe'
 import { createClient } from '@supabase/supabase-js'
 import { Resend } from 'resend'
+import { withSentry } from '../lib/sentry.js'
 
 const stripe   = new Stripe(process.env.STRIPE_SECRET_KEY)
 const supabase = createClient(process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY)
@@ -9,7 +10,7 @@ const APP_URL  = process.env.VITE_APP_URL || 'https://www.everstead.care'
 
 const PLAN_NAMES = { essential: 'Essential', family: 'Family' }
 
-export default async function handler(req, res) {
+async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).end()
 
   const { paymentIntentId, plan, years, gifterName, gifterEmail, recipientName, recipientEmail, personalMessage, scheduledSendAt } = req.body
@@ -103,3 +104,6 @@ function gifterConfirmationHtml({ gifterName, recipientName, recipientEmail, pla
   </table>
 </body></html>`
 }
+
+// Errors are reported to Sentry (no-op until SENTRY_DSN is set) and return a clean 500.
+export default withSentry(handler)

@@ -1,5 +1,6 @@
 import { Resend } from 'resend'
 import { createClient } from '@supabase/supabase-js'
+import { withSentry } from '../lib/sentry.js'
 
 const resend = new Resend(process.env.RESEND_API_KEY)
 const supabase = createClient(
@@ -9,7 +10,7 @@ const supabase = createClient(
 
 const APP_URL = process.env.VITE_APP_URL || 'https://www.everstead.care'
 
-export default async function handler(req, res) {
+async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).end()
 
   // Verify auth
@@ -100,3 +101,6 @@ function familyInviteHtml(primaryName, inviteUrl) {
 </body>
 </html>`
 }
+
+// Errors are reported to Sentry (no-op until SENTRY_DSN is set) and return a clean 500.
+export default withSentry(handler)

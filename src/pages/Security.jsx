@@ -56,9 +56,9 @@ const infrastructure = [
     name: 'Supabase',
     role: 'Database, authentication & file storage',
     cert: 'SOC 2 Type II certified',
-    region: 'EU West (London)',
+    region: 'London, UK',
     url: 'https://supabase.com/security',
-    detail: 'All user data, documents, and account records are stored on Supabase\'s infrastructure, which holds SOC 2 Type II certification. Data is stored exclusively in the EU West (London) region.',
+    detail: 'All user data, documents, and account records are stored on Supabase\'s infrastructure, which holds SOC 2 Type II certification. Data is stored exclusively in the London (UK) region.',
   },
   {
     name: 'Vercel',
@@ -97,7 +97,7 @@ const faqItems = [
   },
   {
     q: 'Where is my data stored?',
-    a: 'All data is stored in the EU West (London) region on Supabase\'s infrastructure. We do not transfer personal data outside of the European Economic Area. This is compliant with UK GDPR and EU GDPR requirements.',
+    a: 'All data is stored in London, United Kingdom, on Supabase\'s infrastructure. We do not transfer your personal data outside the UK. This is compliant with UK GDPR.',
   },
   {
     q: 'What happens to my data if I cancel?',
@@ -243,7 +243,7 @@ export default function Security() {
               Your data stays in the UK. Full stop.
             </h2>
             <p className="text-stone-300 leading-relaxed mb-5">
-              Everstead is operated by EVERSTEAD DIGITAL LTD (company number 17166825), a UK-registered company, and is compliant with UK GDPR. All personal data is stored and processed exclusively in the EU West (London) region. We never transfer your data outside the EEA.
+              Everstead is operated by EVERSTEAD DIGITAL LTD (company number 17166825), a UK-registered company, and is compliant with UK GDPR. All personal data is stored and processed exclusively in London, United Kingdom. We never transfer your data outside the UK.
             </p>
             <p className="text-stone-400 text-sm leading-relaxed">
               As a data controller, we are responsible for how your data is collected, stored, and used. You have the right to access, correct, export, and permanently delete your data at any time — directly from your dashboard or by contacting us.
@@ -252,7 +252,7 @@ export default function Security() {
           <div className="reveal reveal-delay-1 space-y-3">
             {[
               ['UK GDPR compliant', 'Data processing follows UK GDPR requirements'],
-              ['EU West (London) data residency', 'No data transferred outside EEA'],
+              ['UK (London) data residency', 'No data transferred outside the UK'],
               ['Right to access & portability', 'Export your full plan at any time'],
               ['Right to erasure', 'Permanent deletion within 30 days of request'],
               ['No third-party data sales', 'Your data is never sold or licensed'],
@@ -280,7 +280,7 @@ export default function Security() {
               Permissions in Everstead are not binary. You don't have to give a trusted person full access to give them relevant access. Every person in your plan has a defined scope — and you can update or revoke it any time.
             </p>
             <p className="text-stone-600 leading-relaxed">
-              Share financial account references with your executor, funeral preferences with your children, and legal document access with your attorney — all independently, all reversible.
+              Share financial account references with your executor, funeral preferences with your children, and legal document access with your solicitor — all independently, all reversible.
             </p>
           </div>
           <div className="reveal reveal-delay-1 bg-white rounded-2xl border border-stone-200 p-6">
@@ -288,7 +288,7 @@ export default function Security() {
             <div className="space-y-3">
               {[
                 { name: 'Sarah (Executor)',   access: ['Accounts', 'Documents', 'Instructions'] },
-                { name: 'David (Attorney)',   access: ['Legal documents'] },
+                { name: 'David (Solicitor)',   access: ['Legal documents'] },
                 { name: 'Emma (Daughter)',    access: ['Wishes', 'Instructions'] },
                 { name: 'James (Adviser)',    access: ['Financial accounts', 'Financial docs'] },
               ].map(({ name, access }) => (

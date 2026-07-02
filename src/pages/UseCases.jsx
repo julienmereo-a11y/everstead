@@ -192,7 +192,7 @@ const cases = {
       },
     ],
     quote: '"As executor for three estates in my career, I\'ve learned that organisation is everything. The difference between a plan in Everstead and a folder of loose paperwork is enormous."',
-    quoteAuthor: '— Estate attorney',
+    quoteAuthor: '— Estate solicitor',
     ctaText: 'Help someone prepare now',
     ctaNote: '14-day free trial · Share the link with someone who needs this',
   },
@@ -203,7 +203,7 @@ const cases = {
     title: 'For Advisers & Professionals',
     hero: 'Offer estate organisation as a genuine client service.',
     tagline: 'The gap between legal planning and practical preparation is where clients need you most.',
-    body: "Financial advisers, estate attorneys, and wealth managers help clients plan their futures — but practical estate organisation often falls through the gap. Everstead gives professionals the tools to bridge that gap: collaborative access, client progress visibility, and a structured framework that turns intentions into an organised plan.",
+    body: "Financial advisers, solicitors, and wealth managers help clients plan their futures — but practical estate organisation often falls through the gap. Everstead gives professionals the tools to bridge that gap: collaborative access, client progress visibility, and a structured framework that turns intentions into an organised plan.",
     scenario: "You've had the conversation. The client has a will, pension nominations are updated, and the IHT strategy is in place. But if something happened tomorrow, would their family know where anything is? Would your firm be called at 8pm by a bereaved spouse asking where to start? Everstead is the practical layer that makes your advice actionable.",
     painPoints: [
       "Clients have plans but no organised record of where things actually are",

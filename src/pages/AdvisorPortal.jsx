@@ -65,13 +65,19 @@ const SEVERITY = {
 // MODAL
 // ─────────────────────────────────────────────────────────────
 function Modal({ title, onClose, children }) {
+  // Escape closes the dialog — standard keyboard affordance.
+  useEffect(() => {
+    const onKey = (e) => { if (e.key === 'Escape') onClose?.() }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [onClose])
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
-      <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={onClose} />
-      <div className="relative bg-white rounded-[2rem] shadow-2xl w-full max-w-lg p-7 max-h-[90vh] overflow-y-auto">
+      <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={onClose} aria-hidden="true" />
+      <div role="dialog" aria-modal="true" aria-label={title} className="relative bg-white rounded-[2rem] shadow-2xl w-full max-w-lg p-7 max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between mb-5">
           <h2 className="text-lg font-semibold text-navy-950">{title}</h2>
-          <button onClick={onClose} className="text-stone-400 hover:text-stone-700 transition-colors rounded-lg p-1">
+          <button onClick={onClose} aria-label="Close" className="text-stone-400 hover:text-stone-700 transition-colors rounded-lg p-1">
             <X size={18} />
           </button>
         </div>
@@ -996,238 +1002,6 @@ function InviteFamilyModal({ onClose, isDemo, familiesCount, familiesLimit, onIn
 }
 
 // ─────────────────────────────────────────────────────────────
-// CANCEL PLAN MODAL  (multi-step)
-// ─────────────────────────────────────────────────────────────
-function CancelPlanModal({ advisor, families, isDemo, onClose, onCancelled }) {
-  const acceptedFamilies = families.filter(f => f.invite_status === 'accepted')
-  const [step, setStep]       = useState('review')   // review | reason | confirm | done
-  const [reason, setReason]   = useState('')
-  const [customReason, setCustomReason] = useState('')
-  const [cancelling, setCancelling]     = useState(false)
-
-  const effectiveDate = new Date(Date.now() + 30 * 86_400_000)
-    .toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
-
-  const handleCancel = async () => {
-    setCancelling(true)
-    try {
-      if (!isDemo) {
-        // In production:
-        // 1. Update advisor subscription status to 'cancelling' in Supabase
-        // 2. Trigger edge function → notify each linked family via alert + email
-        // await supabase.from('subscriptions').update({ status: 'cancelling', cancels_at: effectiveDate }).eq('user_id', advisor.id)
-        // await supabase.functions.invoke('notify-advisor-cancellation', { body: { advisor_id: advisor.id } })
-      }
-      await new Promise(r => setTimeout(r, 1000))
-      setStep('done')
-      onCancelled()
-    } finally {
-      setCancelling(false)
-    }
-  }
-
-  // ── Step: review impact ──
-  if (step === 'review') {
-    return (
-      <Modal title="Cancel adviser plan" onClose={onClose}>
-        <div className="space-y-4">
-          <p className="text-sm text-stone-700 leading-relaxed">
-            Before you cancel, please review what will happen to your clients.
-          </p>
-
-          {/* Timeline */}
-          <div className="space-y-0">
-            {[
-              {
-                dot: 'bg-amber-500',
-                label: 'Today',
-                body: 'Cancellation is confirmed. Your plan stays active until the billing period ends.',
-              },
-              {
-                dot: 'bg-orange-500',
-                label: 'Immediately — all linked families are notified',
-                body: `An in-platform alert and email is sent to each of your ${acceptedFamilies.length} active client${acceptedFamilies.length !== 1 ? 's' : ''} telling them you are leaving Everstead and that your adviser access will be removed on the effective date.`,
-              },
-              {
-                dot: 'bg-red-600',
-                label: `${effectiveDate} — adviser access ends`,
-                body: 'Your portal closes. Each linked family has 30 days to add a payment method and continue on their own plan. Your Financial Adviser entry is removed from each of their trusted people lists.',
-              },
-            ].map(({ dot, label, body }, i) => (
-              <div key={i} className="flex gap-4">
-                <div className="flex flex-col items-center">
-                  <div className={`w-3 h-3 rounded-full shrink-0 mt-1 ${dot}`} />
-                  {i < 2 && <div className="w-0.5 flex-1 bg-stone-200 my-1" />}
-                </div>
-                <div className="pb-5">
-                  <p className="text-xs font-semibold text-navy-900">{label}</p>
-                  <p className="text-xs text-stone-500 mt-0.5 leading-relaxed">{body}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {/* Affected families */}
-          {acceptedFamilies.length > 0 && (
-            <div className="rounded-xl border border-stone-200 bg-stone-50 px-4 py-3 space-y-2">
-              <p className="text-xs font-semibold text-stone-600">Families who will be alerted</p>
-              {acceptedFamilies.map(f => (
-                <div key={f.id} className="flex items-center gap-2">
-                  <div className="w-6 h-6 rounded-full bg-navy-100 text-navy-700 flex items-center justify-center text-[10px] font-bold uppercase shrink-0">
-                    {f.owner_name[0]}
-                  </div>
-                  <p className="text-xs text-navy-900">{f.owner_name}</p>
-                  <span className="ml-auto text-[10px] text-stone-400">{f.owner_email}</span>
-                </div>
-              ))}
-            </div>
-          )}
-
-          <div className="flex gap-3 pt-1">
-            <button onClick={() => setStep('reason')} className="inline-flex items-center gap-2 bg-red-600 text-white text-sm font-semibold px-5 py-2.5 rounded-xl hover:bg-red-700 transition-colors">
-              Continue <ArrowRight size={14} />
-            </button>
-            <button onClick={onClose} className={secondaryBtn}>Keep my plan</button>
-          </div>
-        </div>
-      </Modal>
-    )
-  }
-
-  // ── Step: reason ──
-  if (step === 'reason') {
-    return (
-      <Modal title="Why are you cancelling?" onClose={onClose}>
-        <div className="space-y-4">
-          <p className="text-xs text-stone-500">Your feedback helps us improve Everstead for advisers.</p>
-          <div className="space-y-2">
-            {[
-              'Too expensive for my practice',
-              'Not enough clients to justify the plan',
-              'Missing features I need',
-              'Moving to a different solution',
-              'Closing or restructuring my practice',
-              'Other',
-            ].map(opt => (
-              <button
-                key={opt}
-                type="button"
-                onClick={() => setReason(opt)}
-                className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl border text-left text-sm transition-colors ${
-                  reason === opt
-                    ? 'border-navy-300 bg-navy-50 ring-1 ring-navy-300 text-navy-900 font-medium'
-                    : 'border-stone-200 text-stone-700 hover:border-stone-300 hover:bg-stone-50'
-                }`}
-              >
-                <div className={`w-4 h-4 rounded-full border-2 shrink-0 flex items-center justify-center transition-colors ${reason === opt ? 'border-navy-700 bg-navy-700' : 'border-stone-300'}`}>
-                  {reason === opt && <div className="w-1.5 h-1.5 rounded-full bg-white" />}
-                </div>
-                {opt}
-              </button>
-            ))}
-          </div>
-          {reason === 'Other' && (
-            <textarea
-              className={`${inputCls} min-h-[80px] resize-y`}
-              placeholder="Please tell us more…"
-              value={customReason}
-              onChange={e => setCustomReason(e.target.value)}
-            />
-          )}
-          <div className="flex gap-3 pt-1">
-            <button
-              disabled={!reason}
-              onClick={() => setStep('confirm')}
-              className="inline-flex items-center gap-2 bg-red-600 text-white text-sm font-semibold px-5 py-2.5 rounded-xl hover:bg-red-700 transition-colors disabled:opacity-40"
-            >
-              Continue <ArrowRight size={14} />
-            </button>
-            <button onClick={() => setStep('review')} className={secondaryBtn}>Back</button>
-          </div>
-        </div>
-      </Modal>
-    )
-  }
-
-  // ── Step: final confirm ──
-  if (step === 'confirm') {
-    return (
-      <Modal title="Confirm cancellation" onClose={onClose}>
-        <div className="space-y-4">
-          <div className="flex items-start gap-3 bg-red-50 border border-red-200 rounded-xl px-4 py-4">
-            <AlertCircle size={16} className="text-red-600 mt-0.5 shrink-0" />
-            <div className="space-y-1">
-              <p className="text-sm font-semibold text-red-800">This will notify all your clients immediately.</p>
-              <p className="text-xs text-red-700 leading-relaxed">
-                An alert will appear in the plan dashboard of each linked family, and an email will be sent to their registered address. Your adviser access ends on <strong>{effectiveDate}</strong>.
-              </p>
-            </div>
-          </div>
-
-          <div className="rounded-xl border border-stone-200 bg-stone-50 px-4 py-3 space-y-1.5">
-            <p className="text-xs text-stone-500">Cancellation summary</p>
-            <div className="flex justify-between text-xs text-stone-700">
-              <span>Adviser</span><span className="font-medium">{advisor.full_name}</span>
-            </div>
-            <div className="flex justify-between text-xs text-stone-700">
-              <span>Firm</span><span className="font-medium">{advisor.firm}</span>
-            </div>
-            <div className="flex justify-between text-xs text-stone-700">
-              <span>Families to notify</span><span className="font-medium">{acceptedFamilies.length}</span>
-            </div>
-            <div className="flex justify-between text-xs text-stone-700">
-              <span>Access ends</span><span className="font-medium">{effectiveDate}</span>
-            </div>
-            <div className="flex justify-between text-xs text-stone-700">
-              <span>Reason</span><span className="font-medium text-right max-w-[55%]">{reason === 'Other' ? (customReason || 'Other') : reason}</span>
-            </div>
-          </div>
-
-          <div className="flex gap-3 pt-1">
-            <button
-              onClick={handleCancel}
-              disabled={cancelling}
-              className="inline-flex items-center gap-2 bg-red-600 text-white text-sm font-semibold px-5 py-2.5 rounded-xl hover:bg-red-700 transition-colors disabled:opacity-50 flex-1"
-            >
-              {cancelling ? 'Processing…' : 'Confirm cancellation & notify clients'}
-            </button>
-            <button onClick={() => setStep('reason')} className={secondaryBtn}>Back</button>
-          </div>
-          <p className="text-xs text-stone-400 text-center">Your clients will receive an in-platform alert and email notification.</p>
-        </div>
-      </Modal>
-    )
-  }
-
-  // ── Step: done ──
-  return (
-    <Modal title="Cancellation confirmed" onClose={onClose}>
-      <div className="text-center space-y-4 py-2">
-        <div className="w-16 h-16 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center mx-auto">
-          <CheckCircle2 size={28} />
-        </div>
-        <div className="space-y-1">
-          <p className="text-base font-semibold text-navy-950">Your plan has been cancelled</p>
-          <p className="text-sm text-stone-600 leading-relaxed">
-            All {acceptedFamilies.length} linked client{acceptedFamilies.length !== 1 ? 's have' : ' has'} been notified by in-platform alert and email. Your adviser access will remain active until <strong>{effectiveDate}</strong>.
-          </p>
-        </div>
-        <div className="rounded-xl border border-stone-200 bg-stone-50 px-4 py-3 text-left space-y-2">
-          <p className="text-xs font-semibold text-stone-500">Notification sent to</p>
-          {acceptedFamilies.map(f => (
-            <div key={f.id} className="flex items-center gap-2">
-              <CheckCircle2 size={12} className="text-emerald-500 shrink-0" />
-              <p className="text-xs text-navy-900">{f.owner_name} <span className="text-stone-400">— {f.owner_email}</span></p>
-            </div>
-          ))}
-        </div>
-        <button onClick={onClose} className={primaryBtn}>Close</button>
-      </div>
-    </Modal>
-  )
-}
-
-// ─────────────────────────────────────────────────────────────
 // ADVISOR RESOURCES SECTION
 // ─────────────────────────────────────────────────────────────
 const ADVISOR_GUIDES = [
@@ -1633,180 +1407,6 @@ function AdvisorSettings({ advisor, families, isDemo, team, onReload, firmId }) 
   )
 }
 
-// ─────────────────────────────────────────────────────────────
-// ADVISOR MEMBERSHIP CARD
-// ─────────────────────────────────────────────────────────────
-function AdvisorMembershipCard({ advisor, families, isDemo, cancelled, setCancelled }) {
-  const [billingCycle, setBillingCycle] = useState(advisor.billing_cycle ?? 'yearly')
-  const [cancelConfirm, setCancelConfirm] = useState(false)
-  const [cancelReason, setCancelReason]   = useState('')
-  const [cancelling, setCancelling]       = useState(false)
-  const [cancelDone, setCancelDone]       = useState(false)
-
-  const prices = { monthly: 60, yearly: 48 }
-  const price  = prices[billingCycle]
-  const acceptedFamilies = families.filter(f => f.invite_status === 'accepted').length
-  const totalFamilies    = families.length
-
-  const fmtBillingDate = (iso) => {
-    if (!iso) return '—'
-    return new Date(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
-  }
-
-  const handleCancel = async () => {
-    setCancelling(true)
-    try {
-      if (!isDemo) {
-        // await supabase.from('subscriptions').update({ status: 'cancelling' }).eq('user_id', advisor.id)
-      }
-      await new Promise(r => setTimeout(r, 800))
-      setCancelDone(true)
-      setCancelled(true)
-    } finally { setCancelling(false) }
-  }
-
-  return (
-    <div className="rounded-[2rem] border border-stone-200 bg-white p-8 space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between gap-4">
-        <div>
-          <h2 className="text-base font-semibold text-navy-950">Membership</h2>
-          <p className="text-xs text-stone-400 mt-0.5">Your Everstead Adviser subscription</p>
-        </div>
-        <span className={`text-xs font-bold rounded-full px-3 py-1 ${cancelled ? 'text-red-700 bg-red-100' : 'text-sage-700 bg-sage-100'}`}>
-          {cancelled ? 'Cancelling' : 'Active'}
-        </span>
-      </div>
-
-      {/* Plan summary card */}
-      <div className={`rounded-2xl border p-5 space-y-4 ${cancelled ? 'border-red-200 bg-red-50' : 'border-navy-200 bg-navy-50'}`}>
-        <div className="flex items-start justify-between gap-4">
-          <div>
-            <p className="font-semibold text-navy-950">Adviser plan</p>
-            <p className="text-xs text-stone-500 mt-1 leading-relaxed">Up to {advisor.families_limit} client families · Family plan included for all clients · Priority support</p>
-          </div>
-          <div className="text-right shrink-0">
-            <p className="font-display text-2xl font-light text-navy-950">£{price}<span className="text-sm text-stone-500">/mo</span></p>
-            <p className="text-xs text-stone-400 mt-0.5">{billingCycle === 'yearly' ? 'billed annually' : 'billed monthly'}</p>
-          </div>
-        </div>
-
-        {/* Billing cycle toggle */}
-        {!cancelled && (
-          <div className="flex items-center gap-2 pt-3 border-t border-navy-200">
-            <p className="text-xs text-stone-600 font-medium mr-1">Billing cycle:</p>
-            {['monthly', 'yearly'].map(cycle => (
-              <button
-                key={cycle}
-                onClick={() => setBillingCycle(cycle)}
-                className={`text-xs font-semibold px-3 py-1 rounded-lg transition-colors capitalize ${billingCycle === cycle ? 'bg-navy-800 text-white' : 'text-stone-600 hover:bg-navy-100'}`}
-              >
-                {cycle === 'yearly' ? 'Yearly — £48/mo' : 'Monthly — £60/mo'}
-              </button>
-            ))}
-            {billingCycle === 'yearly' && <span className="text-xs font-semibold text-sage-700 bg-sage-100 px-2 py-0.5 rounded-full ml-1">Save 20%</span>}
-          </div>
-        )}
-      </div>
-
-      {/* Usage & billing info */}
-      <div className="grid sm:grid-cols-3 gap-4">
-        {[
-          { label: 'Client families', value: `${totalFamilies} / ${advisor.families_limit}`, sub: `${acceptedFamilies} accepted`, icon: Users },
-          { label: 'Next billing date', value: fmtBillingDate(advisor.next_billing_date), sub: cancelled ? 'Access ends then' : `£${price * (billingCycle === 'yearly' ? 12 : 1)} due`, icon: CreditCard },
-          { label: 'Member since', value: fmtBillingDate(advisor.plan_started_at), sub: 'Adviser plan', icon: CheckCircle2 },
-        ].map(({ label, value, sub, icon: Icon }) => (
-          <div key={label} className="rounded-2xl border border-stone-200 bg-stone-50 p-4">
-            <div className="flex items-center gap-2 mb-2">
-              <Icon size={13} className="text-navy-500" />
-              <p className="text-xs font-semibold text-stone-500 uppercase tracking-wide">{label}</p>
-            </div>
-            <p className="text-sm font-semibold text-navy-950">{value}</p>
-            <p className="text-xs text-stone-400 mt-0.5">{sub}</p>
-          </div>
-        ))}
-      </div>
-
-      {/* Family usage bar */}
-      <div>
-        <div className="flex items-center justify-between mb-1.5">
-          <p className="text-xs font-semibold text-stone-600">Family slots used</p>
-          <p className="text-xs text-stone-500">{totalFamilies} of {advisor.families_limit}</p>
-        </div>
-        <div className="h-2 rounded-full bg-stone-200 overflow-hidden">
-          <div
-            className={`h-full rounded-full transition-all ${totalFamilies >= advisor.families_limit ? 'bg-red-500' : 'bg-sage-500'}`}
-            style={{ width: `${(totalFamilies / advisor.families_limit) * 100}%` }}
-          />
-        </div>
-      </div>
-
-      {/* Cancel section */}
-      <div className="pt-4 border-t border-stone-100">
-        {cancelDone ? (
-          <div className="flex items-center gap-2 text-sm text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-xl px-4 py-3">
-            <CheckCircle2 size={15} /> Cancellation received. Your plan stays active until the billing period ends.
-          </div>
-        ) : cancelConfirm ? (
-          <div className="bg-red-50 border border-red-200 rounded-2xl p-5 space-y-4">
-            <p className="text-sm font-semibold text-red-800">Are you sure you want to cancel?</p>
-            <p className="text-xs text-red-700 leading-relaxed">
-              All linked client families will be notified immediately. Your portal stays active until the end of the current billing period. Each family will have 30 days to add a payment method and continue on their own plan.
-            </p>
-            <div className="space-y-1">
-              <label className="block text-xs font-semibold text-stone-600">Reason for cancelling (optional)</label>
-              <select
-                className="w-full border border-stone-300 rounded-xl px-3 py-2.5 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-navy-400"
-                value={cancelReason}
-                onChange={e => setCancelReason(e.target.value)}
-              >
-                <option value="">Select a reason…</option>
-                <option>Too expensive</option>
-                <option>Not using it enough</option>
-                <option>Retiring / winding down practice</option>
-                <option>Missing a feature I need</option>
-                <option>Switching to another service</option>
-                <option>Other</option>
-              </select>
-            </div>
-            <div className="flex gap-3">
-              <button
-                onClick={handleCancel}
-                disabled={cancelling}
-                className="inline-flex items-center gap-2 bg-red-600 text-white text-sm font-semibold px-5 py-2.5 rounded-xl hover:bg-red-700 transition-colors disabled:opacity-50"
-              >
-                {cancelling ? 'Processing…' : 'Yes, cancel my plan'}
-              </button>
-              <button
-                onClick={() => setCancelConfirm(false)}
-                className="text-sm font-medium text-stone-600 border border-stone-200 px-5 py-2.5 rounded-xl hover:bg-stone-50 transition-colors"
-              >
-                Keep my plan
-              </button>
-            </div>
-          </div>
-        ) : !cancelled ? (
-          <div>
-            <p className="text-xs text-stone-400 mb-2 leading-relaxed">
-              Cancelling will immediately notify all linked client families. They will have 30 days to add a payment method and continue on their own plan.
-            </p>
-            <button
-              onClick={() => setCancelConfirm(true)}
-              className="text-xs text-stone-400 hover:text-red-600 transition-colors underline underline-offset-2"
-            >
-              Cancel adviser plan
-            </button>
-          </div>
-        ) : (
-          <p className="text-xs text-stone-400 leading-relaxed">
-            Your plan has been cancelled. Questions? Contact{' '}
-            <a href="mailto:support@everstead.care" className="text-navy-700 underline">support@everstead.care</a>.
-          </p>
-        )}
-      </div>
-    </div>
-  )
-}
 
 // ─────────────────────────────────────────────────────────────
 // PORTFOLIO OVERVIEW (feature 1)
@@ -2054,7 +1654,7 @@ function AdviserAssistant({ isDemo }) {
                 <p className="text-[11px] text-stone-400 truncate">Guidance + your portfolio · gated to your firm</p>
               </div>
             </div>
-            <button onClick={() => setOpen(false)} className="text-stone-400 hover:text-white transition-colors shrink-0"><X size={18} /></button>
+            <button onClick={() => setOpen(false)} aria-label="Close assistant" className="text-stone-400 hover:text-white transition-colors shrink-0"><X size={18} /></button>
           </div>
 
           <div ref={scrollRef} className="flex-1 overflow-y-auto px-4 py-4 space-y-3 bg-stone-50">
@@ -2086,7 +1686,7 @@ function AdviserAssistant({ isDemo }) {
                 disabled={loading}
                 className="flex-1 resize-none border border-stone-200 rounded-xl px-3 py-2 text-sm text-navy-900 focus:outline-none focus:ring-2 focus:ring-navy-300 max-h-28 disabled:bg-stone-50"
               />
-              <button onClick={send} disabled={loading || !input.trim()} className="shrink-0 w-9 h-9 rounded-xl bg-navy-800 text-white flex items-center justify-center hover:bg-navy-700 transition-colors disabled:opacity-40"><Send size={16} /></button>
+              <button onClick={send} disabled={loading || !input.trim()} aria-label="Send message" className="shrink-0 w-9 h-9 rounded-xl bg-navy-800 text-white flex items-center justify-center hover:bg-navy-700 transition-colors disabled:opacity-40"><Send size={16} /></button>
             </div>
           </div>
         </div>
@@ -2283,7 +1883,8 @@ export default function AdvisorPortal() {
         </div>
       </header>
 
-      <div className="max-w-screen-2xl mx-auto px-6 py-8 grid xl:grid-cols-[300px_1fr] gap-8 items-start">
+      {/* pb-24 keeps the floating "Ask Everstead" pill from covering the last content on mobile */}
+      <div className="max-w-screen-2xl mx-auto px-6 pt-8 pb-24 grid xl:grid-cols-[300px_1fr] gap-8 items-start">
 
         {/* ── SIDEBAR ──────────────────────────────────── */}
         <aside className="space-y-4 xl:sticky xl:top-8">

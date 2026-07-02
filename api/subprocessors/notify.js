@@ -1,5 +1,6 @@
 import { createClient } from '@supabase/supabase-js'
 import { Resend } from 'resend'
+import { withSentry } from '../lib/sentry.js'
 
 const supabase = createClient(
   process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL,
@@ -24,7 +25,7 @@ const APP_URL = process.env.APP_URL || 'https://www.everstead.care'
 //     ]
 //   }
 
-export default async function handler(req, res) {
+async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' })
 
   // Auth
@@ -128,3 +129,6 @@ function escapeHtml(s) {
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#39;')
 }
+
+// Errors are reported to Sentry (no-op until SENTRY_DSN is set) and return a clean 500.
+export default withSentry(handler)

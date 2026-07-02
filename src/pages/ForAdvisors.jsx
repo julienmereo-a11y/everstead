@@ -64,7 +64,7 @@ const benefits = [
   {
     icon: ShieldCheck,
     title: 'Compliant data handling',
-    desc: 'EU data residency, AES-256 encryption, and full GDPR compliance. Your clients\' data is held to the same standard you\'d expect from any professional tool.',
+    desc: 'UK data residency, AES-256 encryption, and full GDPR compliance. Your clients\' data is held to the same standard you\'d expect from any professional tool.',
   },
 ]
 

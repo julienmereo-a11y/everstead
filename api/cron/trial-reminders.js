@@ -1,5 +1,6 @@
 import { createClient } from '@supabase/supabase-js'
 import { Resend } from 'resend'
+import { withSentry } from '../lib/sentry.js'
 
 const supabase = createClient(
   process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL,
@@ -8,7 +9,7 @@ const supabase = createClient(
 const resend = new Resend(process.env.RESEND_API_KEY)
 const APP_URL = process.env.VITE_APP_URL || 'https://www.everstead.care'
 
-export default async function handler(req, res) {
+async function handler(req, res) {
   const authHeader = req.headers['authorization']
   if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
     return res.status(401).json({ error: 'Unauthorized' })
@@ -252,3 +253,6 @@ function deletionWarningHtml(name, deletionDate) {
   </table>
 </body></html>`
 }
+
+// Errors are reported to Sentry (no-op until SENTRY_DSN is set) and return a clean 500.
+export default withSentry(handler)

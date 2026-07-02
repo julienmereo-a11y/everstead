@@ -1,9 +1,10 @@
 import Anthropic from '@anthropic-ai/sdk'
 import { aiGuard } from '../_lib/ai-guard'
+import { withSentry } from '../lib/sentry.js'
 
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
 
-export default async function handler(req, res) {
+async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' })
 
   const blocked = await aiGuard(req)
@@ -51,3 +52,6 @@ Write this as a warm, heartfelt personal letter from me to ${recipientName}.`
     res.status(500).json({ error: 'Failed to write message. Please try again.' })
   }
 }
+
+// Errors are reported to Sentry (no-op until SENTRY_DSN is set) and return a clean 500.
+export default withSentry(handler)

@@ -19,11 +19,11 @@ const GIFT_PLANS = [
     yearlyPrice: PRICING.essential.annual.perYear,
     desc: 'For individuals getting organised.',
     features: [
-      'Unlimited accounts & documents',
-      'Step-by-step instructions for executors',
-      '2 trusted contacts',
-      '5 GB secure storage',
-      'Personal messages to loved ones',
+      'Up to 10 accounts & documents',
+      '1 instruction set for executors',
+      '1 trusted contact',
+      '1 GB secure storage',
+      'Your AI Assistant',
     ],
   },
   {

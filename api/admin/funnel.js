@@ -1,4 +1,5 @@
 import { createClient } from '@supabase/supabase-js'
+import { withSentry } from '../lib/sentry.js'
 
 const supabase = createClient(
   process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL,
@@ -24,7 +25,7 @@ const supabase = createClient(
 //   https://www.everstead.care/api/admin/funnel?token=YOUR_CRON_SECRET
 // ─────────────────────────────────────────────────────────────────────────────
 
-export default async function handler(req, res) {
+async function handler(req, res) {
   // ── Auth ────────────────────────────────────────────────────────────────
   // Accepts either CRON_SECRET (used by cron jobs) OR ADMIN_TOKEN
   // (separate non-sensitive token for browser/admin convenience).
@@ -217,3 +218,6 @@ function htmlPage(r) {
 </body>
 </html>`
 }
+
+// Errors are reported to Sentry (no-op until SENTRY_DSN is set) and return a clean 500.
+export default withSentry(handler)

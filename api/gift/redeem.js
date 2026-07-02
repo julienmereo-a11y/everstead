@@ -1,6 +1,7 @@
 import Stripe from 'stripe'
 import { createClient } from '@supabase/supabase-js'
 import { Resend } from 'resend'
+import { withSentry } from '../lib/sentry.js'
 
 const stripe   = new Stripe(process.env.STRIPE_SECRET_KEY)
 const supabase = createClient(process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY)
@@ -12,7 +13,7 @@ const PRICE_IDS = {
   family:    { yearly: process.env.VITE_STRIPE_FAMILY_YEARLY    },
 }
 
-export default async function handler(req, res) {
+async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).end()
 
   const { code, userId, email, name } = req.body
@@ -114,3 +115,6 @@ function giftRedeemedHtml(name, planName, gifterName, trialEndStr) {
 </body>
 </html>`
 }
+
+// Errors are reported to Sentry (no-op until SENTRY_DSN is set) and return a clean 500.
+export default withSentry(handler)

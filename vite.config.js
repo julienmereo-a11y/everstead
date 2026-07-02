@@ -28,7 +28,19 @@ export default defineConfig({
       },
       workbox: {
         // Precache the built app shell so the SPA loads instantly and offline.
-        globPatterns: ['**/*.{js,css,html,ico,png,svg,woff,woff2}'],
+        // Large marketing images are EXCLUDED — they'd silently download megabytes
+        // to every visitor's service worker; the browser cache handles them fine.
+        globPatterns: ['**/*.{js,css,html,ico,svg,woff,woff2}'],
+        globIgnores: ['**/hero-*', '**/og-image*', '**/founder*', '**/*banner*'],
+        additionalManifestEntries: [
+          { url: '/logo-v2-dark.png', revision: null },
+          { url: '/logo-v2-white.png', revision: null },
+          { url: '/pwa-192x192.png', revision: null },
+          { url: '/pwa-512x512.png', revision: null },
+          { url: '/pwa-maskable-512x512.png', revision: null },
+          { url: '/apple-touch-icon.png', revision: null },
+          { url: '/favicon.png', revision: null },
+        ],
         // SPA fallback: any uncached navigation serves index.html so client-side
         // routing keeps working offline (the in-app OfflineBanner shows the state).
         navigateFallback: '/index.html',

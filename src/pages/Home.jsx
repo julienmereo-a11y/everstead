@@ -79,7 +79,7 @@ const plans = [
 ]
 
 const faqs = [
-  { q: 'Is my information actually secure?', a: 'Yes. All data is encrypted at rest and in transit with AES-256 encryption. Role-based access ensures only people you authorize can see specific sections. We never sell your data.' },
+  { q: 'Is my information actually secure?', a: 'Yes. All data is encrypted at rest and in transit with AES-256 encryption. Role-based access ensures only people you authorise can see specific sections. We never sell your data.' },
   { q: 'What happens to my account if I pass away?', a: 'You assign trusted people in advance — giving them access only to the sections you\'ve chosen, nothing more. But Everstead is useful long before that moment. Most members use it regularly to keep everything organised, knowing the access is there if it\'s ever needed.' },
   { q: 'Can I start before I have everything organised?', a: 'Absolutely. Most people start with just a few accounts and build over time. Our readiness score shows progress and highlights what\'s still missing.' },
   { q: 'Is this a legal document service?', a: 'No. Everstead is an organisation and planning platform — not a legal service. It does not draft wills, prepare legal documents, give legal or financial advice, or replace a solicitor, estate lawyer, accountant, or family adviser. It helps families organise information, instructions, and controlled access in one place.' },
@@ -395,9 +395,11 @@ export default function Home() {
           </div>
           <div className="reveal reveal-delay-1 max-w-[300px] lg:max-w-[320px] mx-auto lg:ml-auto lg:mr-0">
             <img
-              src="/hero-app-3.png"
+              src="/hero-app-3.jpg"
               alt="The Everstead app — your plan organised: accounts and assets, documents and wishes, and the people you trust"
-              className="w-full rounded-3xl"
+              width="512" height="640"
+              loading="lazy"
+              className="w-full h-auto rounded-3xl"
               style={{ boxShadow: '0 24px 60px rgba(0, 0, 0, 0.4)' }}
             />
           </div>
@@ -456,7 +458,7 @@ export default function Home() {
                 Built on the highest security standards — and controlled entirely by you.
               </h2>
               <p className="mt-5 text-stone-600 leading-relaxed">
-                Everstead runs on bank-grade AES-256 encryption and EU-based, UK GDPR-compliant infrastructure. Your information stays private by default — visible only to the people you choose, only the parts you choose, and only when you decide. It's your vault, and you decide who ever gets in.
+                Everstead runs on bank-grade AES-256 encryption and UK-hosted, UK GDPR-compliant infrastructure. Your information stays private by default — visible only to the people you choose, only the parts you choose, and only when you decide. It's your vault, and you decide who ever gets in.
               </p>
               <div className="mt-8 flex flex-wrap gap-x-6 gap-y-3">
                 <Link to="/security" className="inline-flex items-center gap-2 text-navy-700 font-medium text-sm hover:text-navy-900 transition-colors">

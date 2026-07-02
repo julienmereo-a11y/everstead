@@ -1,6 +1,7 @@
 import { createClient } from '@supabase/supabase-js'
 import { Resend } from 'resend'
 import crypto from 'crypto'
+import { withSentry } from '../lib/sentry.js'
 
 const supabase = createClient(
   process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL,
@@ -13,7 +14,7 @@ const BASE_URL = process.env.PUBLIC_BASE_URL || 'https://www.everstead.care'
 // Release a sealed personal message to an UNREGISTERED recipient (an email
 // address). Generates a one-time secure view token, marks the message released,
 // and emails the recipient a private link to view it — no account required.
-export default async function handler(req, res) {
+async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).end()
 
   const token = req.headers.authorization?.replace('Bearer ', '')
@@ -94,3 +95,6 @@ function messageLinkHtml(senderName, recipientName, viewUrl) {
 function escapeHtml(s = '') {
   return String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]))
 }
+
+// Errors are reported to Sentry (no-op until SENTRY_DSN is set) and return a clean 500.
+export default withSentry(handler)

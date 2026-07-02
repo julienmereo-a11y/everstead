@@ -87,7 +87,7 @@ export default function Contact() {
             <div className="mt-12 p-6 bg-white border border-stone-200 rounded-2xl">
               <p className="font-semibold text-navy-900 text-sm mb-2">Looking to book a demo?</p>
               <p className="text-stone-500 text-sm leading-relaxed mb-4">
-                Estate advisors and professionals can schedule a guided walkthrough of the Advisor plan.
+                Estate advisers and professionals can schedule a guided walkthrough of the Adviser plan.
               </p>
               <Link
                 to="/book-demo"

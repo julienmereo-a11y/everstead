@@ -51,7 +51,7 @@ ALLOWED TYPES AND FIELDS (use ONLY these — never invent fields or types):
 - "about_me": passions (free text), reflections (free text), spotify_url (a playlist or song link, or null), life_events (array of { "year": "YYYY", "description": "..." })
 - "profile": city (their city or town — nothing else; never date_of_birth, address, postcode or phone)
 - "account": institution, category (one of: Banking, Retirement, Investment, Insurance, Digital, Property, Other), account_type (free text e.g. "Current account", "Cash ISA"), account_number_hint (last 4 digits only, or null), balance_display (free text e.g. "~£12,000", or null), notes
-- "trusted_person": name, email, role (use EXACTLY one of these labels so it matches the dropdown: "Spouse / Partner", "Primary Executor", "Secondary Executor", "Estate Attorney", "Family Member", "Family Caretaker", "Financial Advisor", "Healthcare Proxy" — map what they say to the closest one, e.g. wife/husband/partner → "Spouse / Partner"; executor → "Primary Executor"; child/parent/sibling/relative → "Family Member"; solicitor/lawyer → "Estate Attorney"; financial adviser → "Financial Advisor"), notes
+- "trusted_person": name, email, role (use EXACTLY one of these labels so it matches the dropdown: "Spouse / Partner", "Primary Executor", "Secondary Executor", "Solicitor", "Family Member", "Family Caretaker", "Financial Adviser", "Healthcare Proxy" — map what they say to the closest one, e.g. wife/husband/partner → "Spouse / Partner"; executor → "Primary Executor"; child/parent/sibling/relative → "Family Member"; solicitor/lawyer/attorney → "Solicitor"; financial adviser/advisor → "Financial Adviser"), notes
 
 GENERAL:
 - Always answer in the user's language.

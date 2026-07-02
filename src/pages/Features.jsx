@@ -241,7 +241,7 @@ const comparison = [
 
 const testimonials = [
   { quote: 'My father passed suddenly. Everstead made an incredibly painful time so much more manageable. Everything was right there.', name: 'Margaret T.', role: 'Daughter & executor' },
-  { quote: 'As an estate attorney, I now recommend this to every client. It dramatically reduces the back-and-forth during settlement.', name: 'David R.', role: 'Estate attorney' },
+  { quote: 'As an estate solicitor, I now recommend this to every client. It dramatically reduces the back-and-forth during settlement.', name: 'David R.', role: 'Estate solicitor' },
   { quote: 'We finally have peace of mind. Our kids will know exactly what to do and where to find everything.', name: 'James & Carol B.', role: 'Parents, married 34 years' },
 ]
 

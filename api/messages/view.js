@@ -1,4 +1,5 @@
 import { createClient } from '@supabase/supabase-js'
+import { withSentry } from '../lib/sentry.js'
 
 const supabase = createClient(
   process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL,
@@ -8,7 +9,7 @@ const supabase = createClient(
 // PUBLIC endpoint — fetch a single personal message by its secure view token.
 // No auth: the unguessable token IS the credential. Only returns a message that
 // has been released, and only a minimal set of safe fields.
-export default async function handler(req, res) {
+async function handler(req, res) {
   if (req.method !== 'GET' && req.method !== 'POST') return res.status(405).end()
 
   const token = req.method === 'GET' ? req.query.token : req.body?.token
@@ -44,3 +45,6 @@ export default async function handler(req, res) {
     releasedAt:    msg.released_at,
   })
 }
+
+// Errors are reported to Sentry (no-op until SENTRY_DSN is set) and return a clean 500.
+export default withSentry(handler)

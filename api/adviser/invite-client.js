@@ -1,5 +1,6 @@
 import { createClient } from '@supabase/supabase-js'
 import { sendClientInvite } from '../_lib/adviser-email.js'
+import { withSentry } from '../lib/sentry.js'
 
 // Adviser-facing: invite a client family to create their Everstead plan.
 // Any accepted adviser on the firm may invite. Enforces the firm's family cap
@@ -23,7 +24,7 @@ async function callerFirm(req) {
   return m ? { user, adviserId: m.adviser_id } : null
 }
 
-export default async function handler(req, res) {
+async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' })
 
   const ctx = await callerFirm(req)
@@ -68,3 +69,6 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: err.message })
   }
 }
+
+// Errors are reported to Sentry (no-op until SENTRY_DSN is set) and return a clean 500.
+export default withSentry(handler)

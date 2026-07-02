@@ -1,4 +1,5 @@
 import Anthropic from '@anthropic-ai/sdk'
+import { withSentry } from './lib/sentry.js'
 
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
 
@@ -38,7 +39,7 @@ Guidelines:
 // general questions about Everstead and processes no signed-in user's private vault
 // data, so it is intentionally NOT behind aiGuard — adding the JWT requirement here
 // would break the assistant for logged-out visitors.
-export default async function handler(req, res) {
+async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).end()
 
   const { messages, userContext } = req.body
@@ -64,3 +65,6 @@ export default async function handler(req, res) {
     res.status(500).json({ error: 'Failed to get a response. Please try again.' })
   }
 }
+
+// Errors are reported to Sentry (no-op until SENTRY_DSN is set) and return a clean 500.
+export default withSentry(handler)

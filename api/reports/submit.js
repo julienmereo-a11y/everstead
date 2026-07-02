@@ -1,5 +1,6 @@
 import { createClient } from '@supabase/supabase-js'
 import { Resend } from 'resend'
+import { withSentry } from '../lib/sentry.js'
 
 const supabase = createClient(
   process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL,
@@ -13,7 +14,7 @@ const TEAM_TO   = process.env.REPORTS_TO || process.env.FEEDBACK_TO || 'julien@e
 // A delegate notifies Everstead that the plan owner has died (or is incapacitated).
 // We verify them via their invite token, record the report for the team to verify,
 // email the team, and — for a death — email the reporter a practical UK guide.
-export default async function handler(req, res) {
+async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).end()
 
   const b = req.body || {}
@@ -180,3 +181,6 @@ function teamHtml(type, p) {
 function escapeHtml(s = '') {
   return String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]))
 }
+
+// Errors are reported to Sentry (no-op until SENTRY_DSN is set) and return a clean 500.
+export default withSentry(handler)

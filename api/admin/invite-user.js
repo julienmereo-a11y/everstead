@@ -1,5 +1,6 @@
 import { Resend } from 'resend'
 import { requireAdmin } from '../_lib/admin-auth.js'
+import { withSentry } from '../lib/sentry.js'
 
 // Admin-only: invite a new person to sign up on Everstead. The admin picks whether
 // they should get the FOUNDING50 offer (first year free, Family Yearly) or a normal
@@ -33,7 +34,7 @@ function inviteHtml({ url, founding }) {
 </body></html>`
 }
 
-export default async function handler(req, res) {
+async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' })
 
   const admin = await requireAdmin(req)
@@ -59,3 +60,6 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: err.message || 'Could not send the invite.' })
   }
 }
+
+// Errors are reported to Sentry (no-op until SENTRY_DSN is set) and return a clean 500.
+export default withSentry(handler)

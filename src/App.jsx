@@ -8,7 +8,9 @@ import AdminGate from './components/AdminGate'
 import ErrorBoundary from './components/ErrorBoundary'
 import Nav from './components/Nav'
 import Footer from './components/Footer'
-import ChatWidget from './components/ChatWidget'
+// Lazy: ChatWidget pulls in react-markdown — keeping it out of the eager bundle
+// saves ~50 kB+ of the entry chunk. A null fallback is invisible (floating widget).
+const ChatWidget = lazy(() => import('./components/ChatWidget'))
 import CookieBanner from './components/CookieBanner'
 import InstallPrompt from './components/InstallPrompt'
 import OfflineBanner from './components/OfflineBanner'
@@ -87,7 +89,7 @@ function Layout({ children }) {
       <Nav />
       <main>{children}</main>
       <Footer />
-      <ChatWidget />
+      <Suspense fallback={null}><ChatWidget /></Suspense>
     </>
   )
 }

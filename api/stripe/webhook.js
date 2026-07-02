@@ -1,6 +1,7 @@
 import Stripe from 'stripe'
 import { createClient } from '@supabase/supabase-js'
 import { Resend } from 'resend'
+import { withSentry } from '../lib/sentry.js'
 
 const stripe  = new Stripe(process.env.STRIPE_SECRET_KEY)
 const supabase = createClient(
@@ -20,7 +21,7 @@ async function buffer(req) {
   return Buffer.concat(chunks)
 }
 
-export default async function handler(req, res) {
+async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).end()
 
   const sig = req.headers['stripe-signature']
@@ -750,3 +751,6 @@ function cancellationWinbackHtml(name) {
 </body>
 </html>`
 }
+
+// Errors are reported to Sentry (no-op until SENTRY_DSN is set) and return a clean 500.
+export default withSentry(handler)

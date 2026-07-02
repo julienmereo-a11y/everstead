@@ -1,4 +1,5 @@
 import { createClient } from '@supabase/supabase-js'
+import { withSentry } from '../lib/sentry.js'
 
 // Called by a newly signed-up user (from GetStarted) who arrived via an adviser
 // invite link. If a pending adviser_client_invites row matches their verified email,
@@ -9,7 +10,7 @@ const db = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY,
 )
 
-export default async function handler(req, res) {
+async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' })
 
   const token = (req.headers.authorization || '').replace(/^Bearer\s+/i, '')
@@ -44,3 +45,6 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: err.message })
   }
 }
+
+// Errors are reported to Sentry (no-op until SENTRY_DSN is set) and return a clean 500.
+export default withSentry(handler)

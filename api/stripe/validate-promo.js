@@ -1,4 +1,5 @@
 import Stripe from 'stripe'
+import { withSentry } from '../lib/sentry.js'
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY)
 
@@ -9,7 +10,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY)
 // Returns { valid, promotionCodeId?, label?, reason? }.
 // Never throws to the client — invalid codes just return { valid: false }.
 
-export default async function handler(req, res) {
+async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' })
 
   const { code } = req.body || {}
@@ -69,3 +70,6 @@ export default async function handler(req, res) {
     return res.status(200).json({ valid: false, reason: 'Could not validate code' })
   }
 }
+
+// Errors are reported to Sentry (no-op until SENTRY_DSN is set) and return a clean 500.
+export default withSentry(handler)

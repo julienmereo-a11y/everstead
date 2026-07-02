@@ -52,7 +52,7 @@ const TYPE_META = {
     fields: [
       { key: 'name',  label: 'Name',  type: 'text' },
       { key: 'email', label: 'Email', type: 'text' },
-      { key: 'role',  label: 'Role',  type: 'select', options: ['Spouse / Partner', 'Primary Executor', 'Secondary Executor', 'Estate Attorney', 'Family Member', 'Family Caretaker', 'Financial Advisor', 'Healthcare Proxy'] },
+      { key: 'role',  label: 'Role',  type: 'select', options: ['Spouse / Partner', 'Primary Executor', 'Secondary Executor', 'Solicitor', 'Family Member', 'Family Caretaker', 'Financial Adviser', 'Healthcare Proxy'] },
       { key: 'notes', label: 'Notes', type: 'textarea' },
     ],
   },
@@ -334,8 +334,10 @@ export default function GuidedOnboarding({
     <CelebrateStage firstName={firstName} onTour={() => { onStartTour?.(); finish() }} onDashboard={finish} />
   )
 
+  // No backdrop-click dismiss: a stray tap (easy on mobile) would permanently mark
+  // onboarding complete. Closing is explicit — the X or "Skip for now".
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-navy-950/50 p-4" onClick={finish}>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-navy-950/50 p-4">
       <div className="w-full max-w-lg bg-white rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[88vh]" onClick={e => e.stopPropagation()}>
         {/* Header */}
         <div className="flex items-center justify-between gap-3 px-6 pt-5 pb-4 border-b border-stone-100">
@@ -433,6 +435,7 @@ export default function GuidedOnboarding({
             <button
               onClick={send}
               disabled={loading || !input.trim()}
+              aria-label="Send message"
               className="shrink-0 w-9 h-9 rounded-xl bg-navy-800 text-white hover:bg-navy-700 transition-colors flex items-center justify-center disabled:opacity-40"
             >
               <Send size={16} />

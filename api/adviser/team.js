@@ -1,5 +1,6 @@
 import { createClient } from '@supabase/supabase-js'
 import { sendAdviserInvite, sendAdviserAddedNotice } from '../_lib/adviser-email.js'
+import { withSentry } from '../lib/sentry.js'
 
 // Adviser-facing: a firm OWNER manages their team seats. Service-role client;
 // the caller is verified to be an accepted owner of exactly one firm, and can only
@@ -21,7 +22,7 @@ async function callerOwnerFirm(req) {
   return m ? { user, adviserId: m.adviser_id } : null
 }
 
-export default async function handler(req, res) {
+async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' })
 
   const ctx = await callerOwnerFirm(req)
@@ -65,3 +66,6 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: err.message })
   }
 }
+
+// Errors are reported to Sentry (no-op until SENTRY_DSN is set) and return a clean 500.
+export default withSentry(handler)

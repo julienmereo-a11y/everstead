@@ -1129,7 +1129,7 @@ export default function GetStarted() {
           <div className="flex flex-wrap justify-center gap-8">
             {[
               { icon: Lock,   label: 'AES-256 encryption'          },
-              { icon: Shield, label: foundingActive ? 'First year free' : '14-day free trial' },
+              { icon: Shield, label: foundingActive ? 'First year free' : `${trialDays}-day free trial` },
               { icon: Users,  label: 'Trusted by families & advisers' },
             ].map(({ icon: Icon, label }) => (
               <div key={label} className="flex items-center gap-2 text-stone-500">

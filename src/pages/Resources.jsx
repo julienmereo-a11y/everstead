@@ -2464,6 +2464,14 @@ function ResourceSection({ slug }) {
   const { label, icon: SectionIcon, desc, posts } = data
   return (
     <div className="bg-stone-50 pt-24">
+      <Helmet>
+        <title>{label} — Everstead</title>
+        <meta name="description" content={desc} />
+        <link rel="canonical" href={`https://www.everstead.care/resources/${slug}`} />
+        <meta property="og:title" content={`${label} — Everstead`} />
+        <meta property="og:description" content={desc} />
+        <meta property="og:url" content={`https://www.everstead.care/resources/${slug}`} />
+      </Helmet>
       <section className="py-20 lg:py-28 grain relative overflow-hidden">
         <div className="absolute inset-0 aurora-bg" />
         <div className="relative max-w-4xl mx-auto px-6 lg:px-8 text-center">

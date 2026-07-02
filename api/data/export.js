@@ -2,6 +2,7 @@ import { createClient } from '@supabase/supabase-js'
 
 // JSZip — defensive import to handle ESM/CJS interop in Vercel's bundler
 import JSZipPkg from 'jszip'
+import { withSentry } from '../lib/sentry.js'
 const JSZip = JSZipPkg.default ?? JSZipPkg
 
 const supabase = createClient(
@@ -17,7 +18,7 @@ const APP_URL = process.env.VITE_APP_URL || 'https://www.everstead.care'
 // Returns:  application/zip binary stream
 // ─────────────────────────────────────────────────────────────────────────────
 
-export default async function handler(req, res) {
+async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).end()
 
   // ── Authenticate ─────────────────────────────────────────────────────────
@@ -191,3 +192,6 @@ export default async function handler(req, res) {
     res.status(500).json({ error: 'Export failed. Please try again.' })
   }
 }
+
+// Errors are reported to Sentry (no-op until SENTRY_DSN is set) and return a clean 500.
+export default withSentry(handler)

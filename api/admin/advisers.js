@@ -1,9 +1,10 @@
 import { requireAdmin, adminDb as db } from '../_lib/admin-auth.js'
 import { sendAdviserInvite, sendAdviserAddedNotice } from '../_lib/adviser-email.js'
+import { withSentry } from '../lib/sentry.js'
 
 // Admin-only management of adviser/solicitor FIRMS, their client families, and the
 // family cap. Action-based POST (same style as api/stripe/cancel-subscription.js).
-export default async function handler(req, res) {
+async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' })
 
   const admin = await requireAdmin(req)
@@ -208,3 +209,6 @@ function cleanFirm(firm = {}) {
   for (const k of ['pilot_end_date', 'billing_start_date']) if (out[k] === '') out[k] = null
   return out
 }
+
+// Errors are reported to Sentry (no-op until SENTRY_DSN is set) and return a clean 500.
+export default withSentry(handler)

@@ -100,7 +100,7 @@ export default function AcceptAdviserInvite() {
                 <input type={showPw ? 'text' : 'password'} required minLength={8} value={pw} onChange={e => setPw(e.target.value)}
                   placeholder="Min. 8 characters"
                   className="w-full border border-stone-200 rounded-xl px-4 py-3 pr-10 text-sm text-navy-900 focus:outline-none focus:ring-2 focus:ring-navy-300" />
-                <button type="button" onClick={() => setShowPw(v => !v)} className="absolute right-3 top-1/2 -translate-y-1/2 text-stone-400 hover:text-stone-600">
+                <button type="button" onClick={() => setShowPw(v => !v)} aria-label={showPw ? 'Hide password' : 'Show password'} className="absolute right-3 top-1/2 -translate-y-1/2 text-stone-400 hover:text-stone-600">
                   {showPw ? <EyeOff size={15} /> : <Eye size={15} />}
                 </button>
               </div>

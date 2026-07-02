@@ -1,5 +1,6 @@
 import Stripe from 'stripe'
 import { requireAdmin, adminDb as db } from '../_lib/admin-auth.js'
+import { withSentry } from '../lib/sentry.js'
 
 // Admin-only: put a user on the founding deal — Family Yearly + the FOUNDING50 coupon
 // (100% off for 12 months) → £0 for the first year, then renews yearly at the normal
@@ -12,7 +13,7 @@ const FAMILY_YEARLY = process.env.VITE_STRIPE_FAMILY_YEARLY
 const FOUNDING_CODE = 'FOUNDING50'
 const NO_CARD = 'No card on file — this user needs to add a card. Send them the FOUNDING50 checkout link (…/get-started?promo=FOUNDING50) to claim it.'
 
-export default async function handler(req, res) {
+async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' })
 
   const admin = await requireAdmin(req)
@@ -104,3 +105,6 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: err.message })
   }
 }
+
+// Errors are reported to Sentry (no-op until SENTRY_DSN is set) and return a clean 500.
+export default withSentry(handler)

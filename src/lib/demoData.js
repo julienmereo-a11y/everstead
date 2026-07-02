@@ -53,7 +53,7 @@ export const DEMO_PEOPLE = [
   },
   {
     id: '3', user_id: 'demo-user', name: 'David Rahman', email: 'david.rahman@cliffords.com',
-    role: 'Estate Attorney', invite_status: 'pending',
+    role: 'Solicitor', invite_status: 'pending',
     access_grants: {
       accessAreas: ['documents'],
       accountCategories: [],
@@ -126,7 +126,7 @@ export const DEMO_SUBSCRIPTIONS = [
 
 export const DEMO_ALERTS = [
   { id: '1', user_id: 'demo-user', title: 'NHS Medical Record is expiring soon', detail: 'Your NHS Summary Health Record expires June 2025. Update it to keep your medical information current.', severity: 'warning', is_read: false, created_at: '2026-04-20T09:00:00Z' },
-  { id: '2', user_id: 'demo-user', title: 'Estate Attorney invite still pending', detail: 'David Rahman has not yet accepted his invitation. Consider resending or following up directly.', severity: 'info', is_read: false, created_at: '2026-04-18T14:00:00Z' },
+  { id: '2', user_id: 'demo-user', title: 'Solicitor invite still pending', detail: 'David Rahman has not yet accepted his invitation. Consider resending or following up directly.', severity: 'info', is_read: false, created_at: '2026-04-18T14:00:00Z' },
   { id: '3', user_id: 'demo-user', title: 'Plan readiness below 80%', detail: 'Your plan is currently at 76%. Adding 2 more items will bring it above the recommended threshold.', severity: 'info', is_read: true, created_at: '2026-04-15T10:00:00Z' },
 ]
 
@@ -175,7 +175,7 @@ export const DEMO_MESSAGES = [
     id: '3',
     user_id: 'demo-user',
     recipient_name: 'David Rahman',
-    recipient_role: 'Estate Attorney',
+    recipient_role: 'Solicitor',
     title: 'Notes for David — estate priorities',
     type: 'note',
     content: 'David, my primary concern is that the property at 14 Kensington Road passes to Carol without delay. The mortgage is fully repaid. Please contact NatWest directly — I have left their details in the Accounts section. The crypto holdings on Coinbase are secondary; the hardware wallet is in the home safe. Please coordinate with Sophie Carter on the IHT planning — she has all the background. Thank you for everything.',

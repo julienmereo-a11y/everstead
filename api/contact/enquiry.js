@@ -1,9 +1,10 @@
 import { Resend } from 'resend'
+import { withSentry } from '../lib/sentry.js'
 
 const resend = new Resend(process.env.RESEND_API_KEY)
 const TO     = process.env.ENQUIRY_TO || 'hello@everstead.care'
 
-export default async function handler(req, res) {
+async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' })
 
   const { type, fields } = req.body || {}
@@ -58,3 +59,6 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: 'Failed to send email' })
   }
 }
+
+// Errors are reported to Sentry (no-op until SENTRY_DSN is set) and return a clean 500.
+export default withSentry(handler)

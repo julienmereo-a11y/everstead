@@ -88,7 +88,7 @@ The difference is the difference between a map left at home and a map that was a
       { feature: 'Step-by-step executor instructions',   everstead: true,  them: false },
       { feature: 'Personal messages & final wishes',     everstead: true,  them: false },
       { feature: 'Adviser portal & client management',   everstead: true,  them: false },
-      { feature: 'EU data residency (UK GDPR compliant)',everstead: true,  them: false },
+      { feature: 'UK data residency (UK GDPR compliant)',everstead: true,  them: false },
       { feature: 'Smart reminders & progress tracking',  everstead: true,  them: false },
       { feature: 'Full data export (right to portability)', everstead: true,  them: false },
     ],
@@ -160,7 +160,7 @@ Think of a will as a destination. Everstead is the map that gets your family the
       { feature: 'Step-by-step executor instructions',   everstead: true,  them: false },
       { feature: 'Smart reminders & progress prompts',   everstead: true,  them: false },
       { feature: 'Adviser portal & client management',   everstead: true,  them: false },
-      { feature: 'EU data residency (UK GDPR compliant)',everstead: true,  them: false },
+      { feature: 'UK data residency (UK GDPR compliant)',everstead: true,  them: false },
       { feature: 'Full data export (right to portability)', everstead: true,  them: false },
     ],
     positioning: `Lyfeguard and Everstead both start from the same place: your information should be secure, organised, and accessible to the right people when it matters. Both are honest alternatives to a locked filing cabinet.
@@ -197,7 +197,7 @@ If you want a secure place to store important files, both products do the job. I
       { feature: 'Personal letters and final wishes preserved',   everstead: true,  them: false },
       { feature: 'Works when your laptop is locked or lost',      everstead: true,  them: false },
       { feature: 'Recoverable when memory fails',                 everstead: true,  them: false },
-      { feature: 'Free — for the first month',                    everstead: true,  them: true  },
+      { feature: 'Free — for the first 14 days',                  everstead: true,  them: true  },
     ],
     positioning: `Almost no one fails to plan because they think planning is unimportant. They fail because the alternatives are all bad.
 

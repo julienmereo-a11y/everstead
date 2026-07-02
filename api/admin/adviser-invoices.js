@@ -1,8 +1,9 @@
 import { requireAdmin, adminDb as db } from '../_lib/admin-auth.js'
+import { withSentry } from '../lib/sentry.js'
 
 // Admin-only invoice management for adviser firms. Amounts are pennies (GBP);
 // a zero-value or 'waived' invoice cleanly records a free pilot.
-export default async function handler(req, res) {
+async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' })
 
   const admin = await requireAdmin(req)
@@ -67,3 +68,6 @@ function cleanInvoice(inv = {}) {
   if (out.due_date === '') out.due_date = null
   return out
 }
+
+// Errors are reported to Sentry (no-op until SENTRY_DSN is set) and return a clean 500.
+export default withSentry(handler)
