@@ -186,7 +186,10 @@ export default function Home() {
     <div className="bg-stone-50">
 
       {/* ── HERO ─────────────────────────────────────────────────── */}
-      <section className="aurora-field overflow-hidden min-h-screen flex flex-col justify-center pt-24 pb-20 relative">
+      {/* Top-anchored by default so the tall heading always clears the fixed nav on
+          short/wide windows; vertically centred only when the viewport is tall enough
+          to have room (otherwise justify-center overflows the heading up into the nav). */}
+      <section className="aurora-field overflow-hidden min-h-screen flex flex-col justify-start [@media(min-height:820px)]:justify-center pt-24 pb-20 relative">
 
         {/* Family photo — fills the right side of the hero, fully visible on the right and
             fading gradually leftward into the aurora background (matches the design mock). */}
@@ -241,11 +244,17 @@ export default function Home() {
               </Link>
             </div>
 
-            <p className="mt-5 text-xs text-stone-400 animate-fade-up animate-delay-300">
-              14-day free trial · Cancel anytime
-            </p>
-            <p className="text-xs text-stone-500 mt-2 animate-fade-up animate-delay-300" style={{ letterSpacing: '0.02em' }}>
-              🔒 Bank-level AES-256 encryption &nbsp;·&nbsp; 🇬🇧 UK-based &nbsp;·&nbsp; ICO registered &nbsp;·&nbsp; No. 17166825
+            <p className="text-xs text-stone-500 mt-5 animate-fade-up animate-delay-300" style={{ letterSpacing: '0.02em' }}>
+              🔒 Bank-level AES-256 encryption &nbsp;·&nbsp; 🇬🇧 UK-based &nbsp;·&nbsp;{' '}
+              <a
+                href="https://www.trustpilot.com/review/everstead.care"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-stone-500 hover:text-white transition-colors"
+                aria-label="Rated Excellent on Trustpilot — read our reviews"
+              >
+                Rated <span className="font-medium text-[#00b67a]">Excellent</span> on Trustpilot
+              </a>
             </p>
             <div className="inline-flex items-center gap-1.5 mt-4 animate-fade-up animate-delay-300" style={{
               padding: '4px 10px',
