@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { DEMO_DELEGATE, DEMO_DOCUMENTS, DEMO_ACCOUNTS, DEMO_INSTRUCTIONS, DEMO_ALERTS, DEMO_ACTIVITY, DEMO_MESSAGES, DEMO_DELEGATE_MESSAGES, submitReport, getOwnerStatus } from '../lib/demoData'
+import { resolveDocumentAccess, accessibleDocumentsFor, accessibleAccountsFor, accessibleInstructionsFor, grantSummary } from '../lib/documentAccess'
 import {
   AlertCircle,
   ArrowRight,
@@ -74,25 +75,6 @@ const formatDate = (value) => {
 }
 
 const normalise = (value) => (value || '').toString().trim().toLowerCase()
-
-function getSharedCategories(grants, resourceType) {
-  return grants
-    .filter(grant => normalise(grant.resource_type) === resourceType)
-    .map(grant => normalise(grant.resource_category))
-    .filter(Boolean)
-}
-
-function hasAllAccess(grants, resourceType) {
-  return grants.some(grant => normalise(grant.resource_type) === resourceType && !normalise(grant.resource_category))
-}
-
-function filterByAccess(items, grants, resourceType, categoryField) {
-  if (!items?.length) return []
-  if (hasAllAccess(grants, resourceType)) return items
-  const categories = getSharedCategories(grants, resourceType)
-  if (!categories.length) return []
-  return items.filter(item => categories.includes(normalise(item[categoryField])))
-}
 
 export default function DelegateDashboard() {
   const [searchParams] = useSearchParams()
@@ -171,7 +153,10 @@ export default function DelegateDashboard() {
       const [{ data: trustedPerson, error: inviteError }, { data: inviteDetails }] = await Promise.all([
         supabase
           .from('trusted_people')
-          .select('*, access_grants (*)')
+          // Plain * — access_grants is the JSONB column on this row (the owner's
+          // role-level grants). The old `access_grants (*)` embed read a separate,
+          // always-empty table, which hid EVERYTHING from real delegates.
+          .select('*')
           .eq('invite_token', token)
           .single(),
         supabase.rpc('get_invite_details', { p_token: token }),
@@ -233,20 +218,39 @@ export default function DelegateDashboard() {
     load()
   }, [token])
 
-  const grants = invite?.access_grants ?? []
-  const accessibleDocuments = useMemo(() => filterByAccess(documents, grants, 'documents', 'doc_type'), [documents, grants])
-  const accessibleAccounts = useMemo(() => filterByAccess(accounts, grants, 'accounts', 'category'), [accounts, grants])
-  const accessibleInstructions = useMemo(() => {
-    if (hasAllAccess(grants, 'instructions')) return instructions
-    const categories = getSharedCategories(grants, 'instructions')
-    if (!categories.length) return []
-    return instructions.filter(item => categories.includes(normalise(item.category)) || categories.includes(normalise(item.audience)))
-  }, [instructions, grants])
+  // Owner status — live from store in demo, from profile field in production.
+  // Computed BEFORE the access memos: per-document/person release timing depends on it.
+  const resolvedOwnerStatus = isDemo
+    ? getOwnerStatus(owner?.email ?? '')
+    : (owner?.owner_status ?? 'active')
+  const ownerDeceased      = resolvedOwnerStatus === 'deceased'
+  const ownerIncapacitated = resolvedOwnerStatus === 'incapacitated'
+  const ownerSuspended     = ownerDeceased || ownerIncapacitated
 
-  const accessibleCategories = useMemo(
-    () => grants.map(grant => `${grant.resource_type}${grant.resource_category ? ` · ${grant.resource_category}` : ''}`),
-    [grants],
+  const grants = invite?.access_grants ?? {}
+  const accessibleDocuments = useMemo(
+    () => accessibleDocumentsFor(invite, documents, ownerSuspended),
+    [invite, documents, ownerSuspended],
   )
+  // Documents this person WILL receive but that are sealed until release — shown
+  // as locked entries so they know the document exists and is taken care of.
+  const sealedDocuments = useMemo(
+    () => (documents || []).filter(d => {
+      const r = resolveDocumentAccess(invite, d, { ownerReleased: ownerSuspended })
+      return r.eventual && !r.access
+    }),
+    [invite, documents, ownerSuspended],
+  )
+  const accessibleAccounts = useMemo(
+    () => accessibleAccountsFor(invite, accounts, ownerSuspended),
+    [invite, accounts, ownerSuspended],
+  )
+  const accessibleInstructions = useMemo(
+    () => accessibleInstructionsFor(invite, instructions, ownerSuspended),
+    [invite, instructions, ownerSuspended],
+  )
+
+  const accessibleCategories = useMemo(() => grantSummary(grants), [grants])
 
   const unreadAlerts = alerts.filter(item => !item.is_read)
   const criticalAlerts = unreadAlerts.filter(item => normalise(item.severity) === 'critical')
@@ -268,14 +272,6 @@ export default function DelegateDashboard() {
     const rawScore = Math.round((components.reduce((sum, value) => sum + value, 0) / components.length) * 100)
     return Math.max(rawScore - Math.min(criticalAlerts.length * 6, 18), 0)
   }, [accessibleAccounts.length, accessibleDocuments.length, accessibleInstructions.length, criticalAlerts.length])
-
-  // Owner status — live from store in demo, from profile field in production
-  const resolvedOwnerStatus = isDemo
-    ? getOwnerStatus(owner?.email ?? '')
-    : (owner?.owner_status ?? 'active')
-  const ownerDeceased      = resolvedOwnerStatus === 'deceased'
-  const ownerIncapacitated = resolvedOwnerStatus === 'incapacitated'
-  const ownerSuspended     = ownerDeceased || ownerIncapacitated
 
   // Persist notification tracker statuses in localStorage
   const notifyKey = `everstead-notify-${token || 'demo'}`
@@ -703,7 +699,7 @@ export default function DelegateDashboard() {
               />
 
               {/* No-access-grants empty state */}
-              {grants.length === 0 && (
+              {(grants.accessAreas || []).length === 0 && (
                 <div className="rounded-[2rem] border border-amber-200 bg-amber-50 p-8 text-center space-y-4">
                   <div className="w-14 h-14 rounded-full bg-amber-100 text-amber-700 flex items-center justify-center mx-auto">
                     <Lock size={24} />
@@ -937,6 +933,31 @@ export default function DelegateDashboard() {
                 </div>
               ) : (
                 <p className="text-sm text-stone-500">No documents are currently shared with this role.</p>
+              )}
+
+              {/* Sealed documents — this person will receive these, but they only
+                  unlock once the owner's passing is verified. Shown so they know
+                  the document exists and is taken care of. */}
+              {sealedDocuments.length > 0 && (
+                <div className="mt-6 pt-5 border-t border-stone-100 space-y-2">
+                  <p className="text-xs font-semibold uppercase tracking-wider text-stone-400 mb-2">
+                    Sealed until needed
+                  </p>
+                  {sealedDocuments.map(item => (
+                    <div key={item.id} className="rounded-2xl border border-stone-200 bg-stone-50/60 flex items-center gap-4 p-5">
+                      <div className="w-10 h-10 rounded-xl bg-white border border-stone-200 flex items-center justify-center shrink-0">
+                        <Lock size={15} className="text-stone-400" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="font-semibold text-stone-600 text-sm">{item.name}</p>
+                        <p className="text-xs text-stone-400 mt-0.5">{item.doc_type || 'Document'} · Sealed — released to you only when the time comes</p>
+                      </div>
+                      <span className="shrink-0 text-xs font-medium px-2 py-0.5 rounded-full border border-stone-200 bg-white text-stone-500">
+                        Sealed
+                      </span>
+                    </div>
+                  ))}
+                </div>
               )}
             </Panel>
           )}

@@ -89,62 +89,54 @@ async function handler(req, res) {
     if (!docs?.length) continue
 
     try {
+      // QUIET NUDGES: one alert + one email per threshold (90/60/30), not one per
+      // day. Severity encodes the threshold (info=90, warning=60, critical=30) —
+      // an existing auto-generated alert for this document at the SAME severity
+      // means we've already nudged for this window, so skip it entirely.
+      const { data: existingAlerts } = await supabase
+        .from('alerts')
+        .select('id, resource_id, severity')
+        .eq('user_id', profile.id)
+        .eq('category', 'documents')
+        .eq('auto_generated', true)
+        .in('resource_id', docs.map(d => d.id))
+      const existingByDoc = {}
+      for (const a of existingAlerts || []) existingByDoc[a.resource_id] = a
+
+      const newDocs = [] // only these go in the email digest
       for (const doc of docs) {
         const severity = doc.daysLeft <= 30 ? 'critical' : doc.daysLeft <= 60 ? 'warning' : 'info'
-        const title    = `${doc.name} expires in ${doc.daysLeft} days`
-        const detail   = `Your ${doc.doc_type} document "${doc.name}" is due to expire on ${new Date(doc.expires_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}. Please renew or update it.`
+        const existing = existingByDoc[doc.id]
+        if (existing?.severity === severity) continue // already nudged at this threshold
 
-        // Upsert alert — deduped on (user_id, resource_id, title) to avoid spam
-        const { error: alertError } = await supabase
-          .from('alerts')
-          .upsert({
-            user_id:        profile.id,
-            severity,
-            title,
-            detail,
-            category:       'documents',
-            is_read:        false,
-            auto_generated: true,
-            action_url:     `${APP_URL}/dashboard?tab=documents`,
-            resource_type:  'document',
-            resource_id:    doc.id,
-            created_at:     now.toISOString(),
-          }, {
-            onConflict:    'user_id,resource_id',
-            ignoreDuplicates: false,
-          })
-
-        if (alertError) {
-          // If upsert fails (e.g. no unique constraint), use insert with dup check
-          const { data: existing } = await supabase
-            .from('alerts')
-            .select('id')
-            .eq('user_id', profile.id)
-            .eq('resource_id', doc.id)
-            .eq('title', title)
-            .maybeSingle()
-
-          if (!existing) {
-            await supabase.from('alerts').insert({
-              user_id:        profile.id,
-              severity,
-              title,
-              detail,
-              category:       'documents',
-              is_read:        false,
-              auto_generated: true,
-              action_url:     `${APP_URL}/dashboard?tab=documents`,
-              resource_type:  'document',
-              resource_id:    doc.id,
-            })
-          }
+        const title  = `${doc.name} expires in ${doc.daysLeft} days`
+        const detail = `Your ${doc.doc_type} document "${doc.name}" is due to expire on ${new Date(doc.expires_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}. Please renew or update it.`
+        const row = {
+          user_id:        profile.id,
+          severity,
+          title,
+          detail,
+          category:       'documents',
+          is_read:        false,
+          auto_generated: true,
+          action_url:     `${APP_URL}/dashboard?tab=documents`,
+          resource_type:  'document',
+          resource_id:    doc.id,
+          created_at:     now.toISOString(),
         }
-
+        // Escalate the existing alert in place (new threshold) or create the first one.
+        if (existing) {
+          await supabase.from('alerts').update(row).eq('id', existing.id)
+        } else {
+          await supabase.from('alerts').insert(row)
+        }
+        newDocs.push(doc)
         alertsCreated++
       }
 
-      // Send email digest if opted in
-      if (profile.notify_document_expiry !== false && profile.email) {
+      // Send ONE email digest per new threshold crossing (if opted in)
+      if (newDocs.length && profile.notify_document_expiry !== false && profile.email) {
+        const docs      = newDocs
         const first     = profile.full_name?.split(' ')[0] || 'there'
         const docRows   = docs.map(d => `
           <tr>

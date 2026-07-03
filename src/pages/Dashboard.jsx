@@ -18,6 +18,7 @@ import FeedbackWidget       from '../components/FeedbackWidget'
 import WelcomeOnboarding    from '../components/WelcomeOnboarding'
 import GuidedOnboarding     from '../components/GuidedOnboarding'
 import { redirectToCheckout, redirectToCustomerPortal, PLANS } from '../lib/stripe'
+import { baseDocumentAccess } from '../lib/documentAccess'
 import { PRICING } from '../config/pricing'
 import { isAtLimit, getLimit, canUseFeature } from '../lib/planLimits'
 import { useAccounts }      from '../hooks/useData'
@@ -819,7 +820,7 @@ export default function Dashboard() {
         )}
         {activeSection === 'overview'      && <OverviewSection  profile={activeProfile} accounts={accounts} documents={documents} people={people} instructions={instructions} messages={messages} alerts={alerts} markRead={markRead} onNavigate={setActiveSection} planLimits={planLimits} loading={loadingAccounts || loadingDocs} daysSinceLogin={daysSinceLogin} onCelebrate={celebrate} onExecutorPreview={() => setShowExecutorPreview(true)} aboutMe={aboutMe} />}
         {activeSection === 'accounts'      && <AccountsSection  accounts={accounts} loading={loadingAccounts} add={addAccount} update={updateAccount} remove={removeAccount} profile={activeProfile} onUpgrade={() => handleUpgrade('family', 'yearly')} onLifeEvent={isDemo ? undefined : setLifeEventPrompt} />}
-        {activeSection === 'documents'     && <DocumentsSection documents={documents} loading={loadingDocs} uploadFile={uploadFile} update={updateDocument} remove={removeDocument} planLimits={planLimits} profile={activeProfile} onUpgrade={() => handleUpgrade('family', 'yearly')} updateProfile={isDemo ? undefined : updateProfile} addAlert={isDemo ? undefined : realAlerts.add} onLifeEvent={isDemo ? undefined : setLifeEventPrompt} />}
+        {activeSection === 'documents'     && <DocumentsSection documents={documents} loading={loadingDocs} uploadFile={uploadFile} update={updateDocument} remove={removeDocument} planLimits={planLimits} profile={activeProfile} onUpgrade={() => handleUpgrade('family', 'yearly')} updateProfile={isDemo ? undefined : updateProfile} addAlert={isDemo ? undefined : realAlerts.add} onLifeEvent={isDemo ? undefined : setLifeEventPrompt} people={people} />}
         {activeSection === 'people'        && <PeopleSection    people={people} loading={loadingPeople} invite={invite} resendInvite={resendInvite} updatePerson={updatePerson} removePerson={removePerson} planLimits={planLimits} profile={activeProfile} onUpgrade={() => handleUpgrade('family', 'yearly')} />}
         {activeSection === 'aboutme'       && <AboutMeSection   aboutMe={aboutMe} loading={isDemo ? false : aboutMeHook.loading} save={aboutMeHook.save} uploadAvatar={aboutMeHook.uploadAvatar} profile={activeProfile} people={people} isDemo={isDemo} onCelebrate={celebrate} />}
         {activeSection === 'assistant' && aiEnabled && <AIAssistantSection profile={activeProfile} isDemo={isDemo} addAccount={addAccount} addPerson={addPersonRow} addDocument={addDocumentRow} addWish={addWish} uploadFile={uploadFile} saveAboutMe={aboutMeHook.save} aboutMe={aboutMe} />}
@@ -1748,8 +1749,85 @@ function OwnerDocViewerModal({ doc, onClose }) {
 // ─────────────────────────────────────────────────────────────
 // DOCUMENTS SECTION
 // ─────────────────────────────────────────────────────────────
-function DocumentsSection({ documents, loading, uploadFile, update, remove, planLimits, profile, onUpgrade, updateProfile, addAlert, onLifeEvent }) {
-  const emptyForm = { name: '', doc_type: 'Legal', status: 'current', expires_at: '', notes: '' }
+// ── Per-document access editor — who can see this document, and when ─────────
+// Layered on top of each person's role-level access settings: overriding here
+// affects THIS document only, and is changeable at any time.
+function DocumentAccessEditor({ people, form, setForm }) {
+  const contacts = (people || []).filter(p => p.id)
+  const ov = form.access_overrides || {}
+  const allow = Array.isArray(ov.allow) ? ov.allow : []
+  const deny  = Array.isArray(ov.deny)  ? ov.deny  : []
+
+  const effectiveFor = (person) => {
+    if (deny.includes(person.id)) return false
+    if (allow.includes(person.id)) return true
+    return baseDocumentAccess(person.access_grants, { doc_type: form.doc_type })
+  }
+
+  const toggle = (person) => {
+    const base = baseDocumentAccess(person.access_grants, { doc_type: form.doc_type })
+    const next = !effectiveFor(person)
+    const newAllow = allow.filter(id => id !== person.id)
+    const newDeny  = deny.filter(id => id !== person.id)
+    if (next && !base) newAllow.push(person.id)
+    if (!next && base) newDeny.push(person.id)
+    setForm(p => ({ ...p, access_overrides: { allow: newAllow, deny: newDeny } }))
+  }
+
+  return (
+    <div className="border border-stone-200 rounded-xl p-4 space-y-3 bg-stone-50/60">
+      <div>
+        <p className="text-xs font-semibold text-stone-600">Who can access this document</p>
+        <p className="text-[11px] text-stone-400 mt-0.5">Based on each person's access settings — tick or untick to override for this document only.</p>
+      </div>
+      {contacts.length === 0 ? (
+        <p className="text-xs text-stone-400">No trusted people yet — invite someone from the People section, then control their access to each document here.</p>
+      ) : (
+        <div className="space-y-1.5 max-h-44 overflow-y-auto pr-1">
+          {contacts.map(person => {
+            const base = baseDocumentAccess(person.access_grants, { doc_type: form.doc_type })
+            const has  = effectiveFor(person)
+            const overridden = has !== base
+            return (
+              <button
+                type="button"
+                key={person.id}
+                onClick={() => toggle(person)}
+                className="w-full flex items-center gap-3 p-2.5 rounded-lg bg-white border border-stone-200 hover:border-navy-300 transition-colors text-left"
+              >
+                <Checkbox checked={has} />
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium text-navy-900 truncate">{person.name}</p>
+                  <p className="text-[11px] text-stone-400">{person.role || 'Trusted contact'}</p>
+                </div>
+                <span className={`shrink-0 text-[10px] font-medium px-2 py-0.5 rounded-full border ${
+                  overridden
+                    ? 'bg-navy-50 border-navy-200 text-navy-700'
+                    : has ? 'bg-sage-50 border-sage-200 text-sage-800' : 'bg-stone-100 border-stone-200 text-stone-400'
+                }`}>
+                  {overridden ? (has ? 'Added for this document' : 'Removed for this document') : has ? 'Via their access settings' : 'No access'}
+                </span>
+              </button>
+            )
+          })}
+        </div>
+      )}
+      <Field label="When is it released?">
+        <select className={input} value={form.release_timing || 'default'} onChange={e => setForm(p => ({ ...p, release_timing: e.target.value }))}>
+          <option value="default">Follow each person's access timing</option>
+          <option value="immediate">Available now to everyone with access</option>
+          <option value="sealed">Sealed — released only when the time comes</option>
+        </select>
+      </Field>
+      {form.release_timing === 'sealed' && (
+        <p className="text-[11px] text-stone-400">Sealed documents stay locked for everyone here — they'll see it exists, but it only opens once your passing is verified by our team.</p>
+      )}
+    </div>
+  )
+}
+
+function DocumentsSection({ documents, loading, uploadFile, update, remove, planLimits, profile, onUpgrade, updateProfile, addAlert, onLifeEvent, people }) {
+  const emptyForm = { name: '', doc_type: 'Legal', status: 'current', expires_at: '', notes: '', access_overrides: {}, release_timing: 'default' }
   const [showUpload, setShowUpload] = useState(false)
   const [editingDocument, setEditingDocument] = useState(null)
   const [viewingDoc, setViewingDoc] = useState(null)
@@ -1864,6 +1942,8 @@ function DocumentsSection({ documents, loading, uploadFile, update, remove, plan
       status: doc.status || 'current',
       expires_at: doc.expires_at || '',
       notes: doc.notes || '',
+      access_overrides: doc.access_overrides || {},
+      release_timing: doc.release_timing || 'default',
     })
   }
 
@@ -1923,6 +2003,8 @@ function DocumentsSection({ documents, loading, uploadFile, update, remove, plan
         status: form.status,
         expires_at: form.expires_at || null,
         notes: form.notes,
+        access_overrides: form.access_overrides || {},
+        release_timing: form.release_timing || 'default',
       })
       // Feature 6: also create expiry alert when editing adds/changes an expiry date
       const prevExpiry = editingDocument.expires_at
@@ -2218,6 +2300,7 @@ function DocumentsSection({ documents, loading, uploadFile, update, remove, plan
             <Field label="Expiry date (optional)">
               <input type="date" className={input} value={form.expires_at} onChange={e => setForm(p => ({ ...p, expires_at: e.target.value }))} />
             </Field>
+            <DocumentAccessEditor people={people} form={form} setForm={setForm} />
             {formError && <p className="text-xs text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2">{formError}</p>}
             <div className="flex gap-3 pt-2">
               <button type="submit" disabled={saving || !file} className={`${primaryBtn} flex-1 disabled:opacity-50`}>
@@ -2253,6 +2336,7 @@ function DocumentsSection({ documents, loading, uploadFile, update, remove, plan
             <Field label="Expiry date (optional)">
               <input type="date" className={input} value={form.expires_at} onChange={e => setForm(p => ({ ...p, expires_at: e.target.value }))} />
             </Field>
+            <DocumentAccessEditor people={people} form={form} setForm={setForm} />
             {formError && <p className="text-xs text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2">{formError}</p>}
             <div className="flex gap-3 pt-2">
               <button type="submit" disabled={saving} className={`${primaryBtn} flex-1`}>

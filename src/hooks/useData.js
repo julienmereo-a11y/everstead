@@ -87,6 +87,9 @@ export function useDocuments() {
       status:     'current',
       notes:      docRecord.notes,
       expires_at: docRecord.expires_at || null,
+      // Per-document access control (who can see it, and when it's released)
+      access_overrides: docRecord.access_overrides || {},
+      release_timing:   docRecord.release_timing || 'default',
     })
     // 2. Upload file to storage
     let storagePath = null

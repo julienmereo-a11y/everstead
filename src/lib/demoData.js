@@ -203,11 +203,13 @@ export const DEMO_DELEGATE = {
     invite_status: 'accepted',
     accepted_at: '2026-04-10T10:00:00Z',
     user_id: 'demo-user',
-    access_grants: [
-      { id: 'g1', resource_type: 'documents', resource_category: '' },
-      { id: 'g2', resource_type: 'accounts', resource_category: '' },
-      { id: 'g3', resource_type: 'instructions', resource_category: '' },
-    ],
+    // JSONB shape — matches trusted_people.access_grants in production.
+    access_grants: {
+      accessAreas: ['documents', 'accounts', 'instructions', 'messages'],
+      accountCategories: [],
+      documentTypes: [],
+      accessTiming: 'always',
+    },
   },
   owner: {
     full_name: 'James Thornton',
