@@ -1,0 +1,182 @@
+{
+  "meta": {
+    "title": "Tarifs — Everstead",
+    "description": "Des tarifs simples et transparents pour les particuliers, les familles et les conseillers professionnels. Commencez vos 14 jours d'essai gratuit — carte requise, aucun débit avant la fin de l'essai."
+  },
+  "header": {
+    "eyebrow": "Tarifs",
+    "title": "Un seul forfait pour tout ce qui compte.",
+    "subtitle": "Commencez à mettre de l'ordre dès aujourd'hui. Votre famille vous en remerciera."
+  },
+  "toggle": {
+    "monthly": "Mensuel",
+    "yearly": "Annuel",
+    "savingActive": "✓ Économie de {{percent}} %",
+    "save": "Économisez {{percent}} %",
+    "billingNoteAnnual": "Facturation annuelle. Vous économisez {{percent}} % par rapport au paiement mensuel. ✓",
+    "billingNoteMonthly": "Facturation mensuelle. Passez à la facturation annuelle et économisez {{percent}} %."
+  },
+  "plans": {
+    "essential": {
+      "name": "Essential",
+      "promo": "OFFRE DE LANCEMENT",
+      "description": "Pour les particuliers qui souhaitent mettre de l'ordre dans leurs comptes, leurs documents et leurs volontés.",
+      "features": [
+        "Jusqu'à 10 comptes et documents",
+        "1 personne de confiance",
+        "1 jeu d'instructions",
+        "1 Go de stockage sécurisé",
+        "Score de préparation",
+        "Votre assistant IA"
+      ],
+      "cta": "Commencer",
+      "upsellNote": "Besoin de plus ? Family comprend deux espaces privés — un seul abonnement pour deux personnes."
+    },
+    "family": {
+      "name": "Family",
+      "badge": "Le plus populaire",
+      "promo": "OFFRE DE LANCEMENT",
+      "description": "Pour les couples et les familles — deux espaces privés, une protection partagée.",
+      "features": [
+        "Deux espaces privés — un seul abonnement",
+        "Comptes et documents illimités",
+        "Jusqu'à 10 personnes de confiance",
+        "Instructions et volontés illimitées",
+        "Messages personnels et dernières volontés",
+        "25 Go de stockage sécurisé",
+        "Votre assistant IA"
+      ],
+      "cta": "Commencer"
+    },
+    "adviser": {
+      "name": "Conseiller",
+      "description": "Pour les professionnels qui accompagnent leurs clients dans l'organisation de leur patrimoine. Tarif sur demande.",
+      "features": [
+        "Tout ce qu'inclut Family",
+        "Espace de travail multi-clients",
+        "Portail client co-brandé",
+        "Outils de collaboration pour conseillers",
+        "Assistance prioritaire"
+      ],
+      "cta": "Réserver une démo",
+      "priceNote": "Tarif sur demande — nous accompagnons personnellement notre première cohorte de conseillers."
+    }
+  },
+  "prices": {
+    "essential": {
+      "monthly": "4,99 €",
+      "yearly": "47,88 €"
+    },
+    "family": {
+      "monthly": "11,99 €",
+      "yearly": "114,88 €"
+    },
+    "suffixMonthly": "/mois",
+    "suffixYearly": "/an",
+    "billedAnnually": "Prix TTC · Économisez 20 %",
+    "gbpNote": "Prix TTC (toutes taxes comprises). Le paiement s'effectue actuellement en livres sterling (£)."
+  },
+  "dataPromise": {
+    "text": "Vos données vous appartiennent. Exportez tout, à tout moment. Engagement de 90 jours en cas d'arrêt du service.",
+    "link": "En savoir plus →"
+  },
+  "gift": {
+    "prompt": "Vous cherchez un cadeau pour une personne qui vous est chère ?",
+    "cta": "🎁 Offrir un abonnement Everstead →"
+  },
+  "comparison": {
+    "title": "Moins cher que les alternatives. Plus complet que chacune d'elles.",
+    "solicitor": {
+      "name": "Notaire ou avocat (succession)",
+      "price": "3 000 – 5 000 £",
+      "description": "Une succession réglée, après votre départ. Aucun accès continu, aucune instruction, aucune tranquillité d'esprit de votre vivant."
+    },
+    "willWriting": {
+      "name": "Service de rédaction de testament",
+      "price": "150 – 500 £",
+      "description": "Un document. Pas d'instructions, pas de comptes organisés, pas d'accès accordés, aucun moyen pour votre famille de retrouver quoi que ce soit."
+    },
+    "everstead": {
+      "name": "Everstead Family",
+      "price": "114,88 €/an",
+      "description": "Tout est organisé, à jour et partagé — aussi longtemps que vous en avez besoin. Deux espaces privés inclus."
+    }
+  },
+  "security": {
+    "eyebrow": "Socle de sécurité",
+    "title": "Chaque forfait repose sur le même modèle de protection.",
+    "body": "Everstead ne réserve pas la protection de base aux forfaits supérieurs. Les différences entre forfaits portent sur la collaboration, l'accompagnement au déploiement et l'expérience de service — jamais sur une confidentialité ou un contrôle d'accès affaiblis.",
+    "items": [
+      "Chiffrement au repos et en transit",
+      "Permissions granulaires pour vos personnes de confiance",
+      "Journal d'audit des activités clés",
+      "Stockage privé des documents et récupération contrôlée"
+    ]
+  },
+  "table": {
+    "capability": "Fonctionnalité",
+    "essential": "Essential",
+    "family": "Family",
+    "adviser": "Conseiller",
+    "rows": [
+      "Comptes, actifs et coffre à documents",
+      "Score de préparation et rappels de révision",
+      "Personnes de confiance et accès délégué",
+      "Collaboration en famille",
+      "Accompagnement au déploiement pour conseillers",
+      "Intégration des partenaires pilotes"
+    ]
+  },
+  "disclaimer": {
+    "eyebrow": "Avertissement important",
+    "title": "Everstead n'est pas un service juridique.",
+    "body": "Les forfaits et les tarifs couvrent l'organisation, la collaboration, le stockage, l'accès délégué et les processus de révision. Ils n'incluent ni la rédaction de testament, ni le conseil juridique, ni aucun service professionnel réglementé.",
+    "readTerms": "Lire les conditions",
+    "discussRollout": "Discuter d'un déploiement conseiller"
+  },
+  "faq": {
+    "eyebrow": "Questions fréquentes",
+    "title": "Tout ce que vous pourriez vouloir savoir.",
+    "items": [
+      {
+        "q": "Comment fonctionne l'essai gratuit ?",
+        "a": "Chaque forfait comprend 14 jours d'essai gratuit. Une carte bancaire est requise pour commencer, mais vous ne serez débité qu'à la fin de l'essai — annulez à tout moment avant la fin et vous ne payez rien. Pendant l'essai, vous avez un accès complet à toutes les fonctionnalités du forfait choisi."
+      },
+      {
+        "q": "Que se passe-t-il si j'annule pendant l'essai ?",
+        "a": "Rien. Vous ne serez pas débité. Votre compte est fermé et vos données sont conservées 30 jours au cas où vous changeriez d'avis, puis supprimées définitivement. Aucuns frais, aucune question."
+      },
+      {
+        "q": "Puis-je changer de forfait après l'inscription ?",
+        "a": "Oui. Vous pouvez passer à un forfait supérieur ou inférieur à tout moment depuis les paramètres de votre compte. Le passage à un forfait supérieur prend effet immédiatement. Le passage à un forfait inférieur prend effet à la fin de votre période de facturation en cours. Vous ne serez jamais facturé plus que le forfait auquel vous êtes abonné."
+      },
+      {
+        "q": "Y a-t-il une réduction pour la facturation annuelle ?",
+        "a": "Oui — la facturation annuelle permet d'économiser 20 % sur les deux forfaits par rapport au paiement mensuel. Le tarif réduit s'applique immédiatement et reste garanti pendant toute l'année."
+      },
+      {
+        "q": "Qu'inclut le forfait Family que le forfait Essential n'inclut pas ?",
+        "a": "Le forfait Family offre à deux personnes leur propre espace privé sous un seul abonnement — chacun conserve ses données personnelles, mais vous pouvez organiser et planifier ensemble. Il fait passer les personnes de confiance de 1 à 10, ajoute le partage d'urgence de votre espace, étend le stockage de 1 Go à 25 Go et inclut un score de préparation pour toute la famille. Voyez-le comme une planification commune avec une confidentialité individuelle."
+      },
+      {
+        "q": "À quoi sert le forfait Adviser ?",
+        "a": "Le forfait Adviser est conçu pour les conseillers financiers, les notaires et les autres professionnels qui souhaitent proposer l'organisation successorale comme un service à leurs clients. Il comprend un espace de travail multi-clients, un portail client co-brandé, des outils de collaboration et une assistance prioritaire. Contactez-nous pour discuter d'un déploiement pilote."
+      },
+      {
+        "q": "Everstead est-il un service juridique ?",
+        "a": "Non. Everstead est un outil d'organisation et de planification — il ne propose ni rédaction de testament, ni conseil juridique, ni aucun service professionnel réglementé. Il est conçu pour fonctionner aux côtés de votre notaire, de votre conseiller financier et de vos autres professionnels. Pour la planification juridique de votre succession, adressez-vous à un professionnel du droit qualifié."
+      },
+      {
+        "q": "Comment mes données sont-elles protégées ?",
+        "a": "Toutes les données bénéficient d'un chiffrement au repos et en transit (AES-256). Everstead opère dans le cadre du RGPD britannique (UK GDPR) et est enregistré auprès de l'ICO, avec un hébergement conforme au RGPD. Le personnel d'Everstead ne peut pas accéder au contenu de votre plan. Vous seul contrôlez l'accès à votre plan."
+      },
+      {
+        "q": "Everstead vaut-il le coup si je ne l'utilise qu'une seule fois pour mettre en place mon plan ?",
+        "a": "La plupart des membres utilisent Everstead régulièrement — comme un endroit unique pour suivre leurs comptes, conserver leurs documents et garder en ordre tout ce qui compte. C'est utile dès aujourd'hui, pas seulement un jour. Cela dit, même si vous ne le configurez qu'une seule fois, la valeur est réelle : les personnes que vous aimez ne passeront pas des mois à reconstituer votre vie si l'imprévu survient. Pour moins qu'un café par semaine, c'est l'une des meilleures choses que vous puissiez faire pour vous-même et pour eux."
+      }
+    ],
+    "stillQuestion": "Encore une question ?",
+    "writeToUs": "Écrivez-nous",
+    "replyTime": "et nous vous répondrons sous un jour ouvré."
+  }
+}

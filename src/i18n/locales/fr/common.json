@@ -1,0 +1,73 @@
+{
+  "nav": {
+    "howItWorks": "Comment ça marche",
+    "features": "Fonctionnalités",
+    "security": "Sécurité",
+    "pricing": "Tarifs",
+    "about": "À propos",
+    "login": "Connexion",
+    "getStarted": "Commencer",
+    "dashboard": "Tableau de bord",
+    "openMenu": "Ouvrir le menu",
+    "closeMenu": "Fermer le menu"
+  },
+  "cookie": {
+    "message": "Nous utilisons des cookies pour sécuriser la plateforme et, avec votre consentement, comprendre comment Everstead est utilisé.",
+    "learnMore": "En savoir plus",
+    "essentialOnly": "Essentiels uniquement",
+    "acceptAll": "Tout accepter"
+  },
+  "footer": {
+    "tagline": "Une plateforme sécurisée pour transmettre l'essentiel à vos proches, au moment où ça compte le plus.",
+    "legalNote": "Everstead est une plateforme d'organisation — pas un service juridique ni un cabinet d'avocats.",
+    "trustpilotRated": "Noté",
+    "trustpilotOn": "sur Trustpilot",
+    "trustpilotAria": "Noté {{label}} sur Trustpilot — lisez nos avis",
+    "cols": {
+      "product": "Produit",
+      "useCases": "Cas d'usage",
+      "resources": "Ressources",
+      "company": "Entreprise",
+      "legal": "Légal"
+    },
+    "links": {
+      "features": "Fonctionnalités",
+      "howItWorks": "Comment ça marche",
+      "pricing": "Tarifs",
+      "security": "Sécurité",
+      "changelog": "Nouveautés",
+      "forFamilies": "Pour les familles",
+      "forParents": "Pour les parents",
+      "forExecutors": "Pour les exécuteurs",
+      "forAdvisers": "Pour les conseillers",
+      "familyVault": "Espace famille",
+      "blog": "Blog",
+      "guides": "Guides",
+      "checklists": "Listes de contrôle",
+      "faqs": "FAQ",
+      "freeTools": "Outils gratuits",
+      "compare": "Comparatif",
+      "about": "À propos",
+      "contact": "Contact",
+      "press": "Presse",
+      "bookDemo": "Réserver une démo",
+      "gift": "🎁 Offrir Everstead",
+      "privacyPolicy": "Politique de confidentialité",
+      "terms": "Conditions d'utilisation",
+      "dataPromise": "Engagement données",
+      "adviserDpa": "DPA conseillers",
+      "subprocessors": "Sous-traitants",
+      "cookiePolicy": "Politique de cookies",
+      "accessibility": "Accessibilité"
+    },
+    "copyright": "© {{year}} Everstead Digital Ltd. Tous droits réservés.",
+    "bottom": {
+      "privacy": "Confidentialité",
+      "terms": "Conditions",
+      "dataPromise": "Engagement données",
+      "cookies": "Cookies",
+      "accessibility": "Accessibilité",
+      "trust": "Confiance"
+    }
+  }
+}

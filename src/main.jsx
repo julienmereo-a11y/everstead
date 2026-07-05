@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client'
 import { HelmetProvider } from 'react-helmet-async'
 import { Analytics } from '@vercel/analytics/react'
 import App from './App.jsx'
+import './i18n' // initialise i18next BEFORE the app renders (path-based locale)
 import './index.css'
 
 ReactDOM.createRoot(document.getElementById('root')).render(

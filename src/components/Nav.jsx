@@ -1,15 +1,21 @@
 import React, { useState, useEffect, useLayoutEffect, useRef } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { Menu, X, ChevronDown, Users } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import { useAuth } from '../contexts/AuthContext'
 
+// Labels are i18n keys under nav.* — resolved with t() at render time.
 const navLinks = [
-  { label: 'How It Works', href: '/how-it-works' },
-  { label: 'Features', href: '/features' },
-  { label: 'Security', href: '/security' },
-  { label: 'Pricing', href: '/pricing' },
-  { label: 'About', href: '/about' },
+  { key: 'howItWorks', href: '/how-it-works' },
+  { key: 'features', href: '/features' },
+  { key: 'security', href: '/security' },
+  { key: 'pricing', href: '/pricing' },
+  { key: 'about', href: '/about' },
 ]
+
+// NOTE: no language switcher in the UI by design — the URL path is the ONLY
+// language signal (/fr/* → French, root → English). The /fr footer carries a
+// single discreet "English" link back to the root tree.
 
 // Pages that have a light background at the top — nav should always use dark style on these
 const lightBgPages = ['/pricing', '/security', '/features', '/how-it-works', '/use-cases', '/login', '/get-started', '/resources', '/about', '/contact', '/book-demo', '/privacy', '/terms', '/forgot-password', '/reset-password']
@@ -34,6 +40,7 @@ export default function Nav() {
     () => computeDarkStyle(window.location.pathname, 0)
   )
   const [open, setOpen] = useState(false)
+  const { t } = useTranslation()
   const location = useLocation()
   const navigate  = useNavigate()
   const menuRef = useRef(null)
@@ -141,7 +148,7 @@ export default function Nav() {
                     : 'text-white/90 hover:text-white hover:bg-white/10'
                 }`}
               >
-                {link.label}
+                {t(`nav.${link.key}`)}
               </Link>
             ))}
           </div>
@@ -208,13 +215,13 @@ export default function Nav() {
                   to="/login"
                   className={`text-sm font-medium transition-colors px-3 py-1.5 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy-400 ${useDarkStyle ? 'text-stone-600 hover:text-navy-800' : 'text-white/90 hover:text-white'}`}
                 >
-                  Login
+                  {t('nav.login')}
                 </Link>
                 <Link
                   to="/get-started"
                   className="btn-aurora text-sm font-semibold px-4 py-2 rounded-full transition-transform hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-navy-400"
                 >
-                  Get Started
+                  {t('nav.getStarted')}
                 </Link>
               </>
             )}
@@ -224,7 +231,7 @@ export default function Nav() {
           <button
             className={`lg:hidden p-2 rounded-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy-400 ${useDarkStyle ? 'text-stone-600 hover:text-navy-800 hover:bg-stone-100' : 'text-white hover:bg-white/10'}`}
             onClick={() => setOpen(v => !v)}
-            aria-label={open ? 'Close menu' : 'Open menu'}
+            aria-label={open ? t('nav.closeMenu') : t('nav.openMenu')}
             aria-expanded={open}
             aria-controls="mobile-nav"
           >
@@ -253,7 +260,7 @@ export default function Nav() {
                     : 'text-stone-700 hover:text-navy-800 hover:bg-stone-50'
                 }`}
               >
-                {link.label}
+                {t(`nav.${link.key}`)}
               </Link>
             ))}
             <div className="pt-4 mt-2 border-t border-stone-100 flex flex-col gap-2.5">
@@ -287,13 +294,13 @@ export default function Nav() {
                     to="/login"
                     className="flex items-center justify-center px-4 py-3 text-sm font-semibold text-navy-800 border border-stone-200 rounded-full hover:bg-stone-50 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy-400"
                   >
-                    Login
+                    {t('nav.login')}
                   </Link>
                   <Link
                     to="/get-started"
                     className="flex items-center justify-center btn-aurora text-sm font-semibold px-4 py-3 rounded-full transition-transform hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-navy-400"
                   >
-                    Get Started
+                    {t('nav.getStarted')}
                   </Link>
                 </>
               )}

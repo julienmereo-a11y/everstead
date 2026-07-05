@@ -1,0 +1,184 @@
+{
+  "meta": {
+    "title": "Everstead — Your life, organised.",
+    "description": "Everstead helps UK families securely organise accounts, documents, instructions, and final wishes — with AI that helps you every step of the way. Start your free trial today.",
+    "ogTitle": "Everstead — Your life, organised.",
+    "ogDescription": "Everstead is the secure home for your accounts, documents, and important decisions — organised for you today, and ready for your family when it counts.",
+    "jsonLdDescription": "Secure personal vault for UK families. Organise accounts, documents, and important decisions — accessible today, and ready for your loved ones when it matters."
+  },
+  "hero": {
+    "eyebrow": "Organise your accounts, documents & final wishes",
+    "title1": "Everything that matters, ",
+    "titleEm": "gathered",
+    "title2": " in one secure place.",
+    "subtitle": "Everstead is the secure place to keep everything your loved ones will need, set up in minutes and shared only with the people you choose.",
+    "ctaPrimary": "Get started free",
+    "ctaSecondary": "See how it works",
+    "trustEncryption": "Bank-level AES-256 encryption",
+    "trustUk": "UK-based",
+    "trustpilotAria": "Rated Excellent on Trustpilot — read our reviews",
+    "trustpilotPre": "Rated",
+    "trustpilotExcellent": "Excellent",
+    "trustpilotPost": "on Trustpilot",
+    "aiBadge": "AI-assisted estate planning",
+    "mobilePhotoAlt": "A daughter and her father organising their family's plan together at home"
+  },
+  "trustBar": {
+    "security": { "label": "Bank-level security", "sub": "AES-256 encryption" },
+    "access": { "label": "Access management", "sub": "You decide who can see what" },
+    "residency": { "label": "UK data residency", "sub": "Fully GDPR compliant" },
+    "soc2": { "label": "SOC 2 compliant", "sub": "Built on SOC 2 infrastructure" }
+  },
+  "why": {
+    "eyebrow": "Why Everstead",
+    "title1": "One home for the",
+    "title2": "things that matter.",
+    "subtitle": "No more scattered logins, lost paperwork, or guesswork left behind. Just a clear, gentle record of a life well organised.",
+    "cards": {
+      "accounts": {
+        "title": "Accounts & assets",
+        "desc": "Every account, policy and subscription in one clear list — so nothing quietly slips through the cracks.",
+        "cta": "See what you can add"
+      },
+      "documents": {
+        "title": "Documents & wishes",
+        "desc": "Wills, deeds, letters and instructions — stored safely, easy to find, and impossible to misplace.",
+        "cta": "Keep documents safe"
+      },
+      "people": {
+        "title": "People & access",
+        "desc": "Decide who sees what, and when. Your family is only ever a step away — never a guess.",
+        "cta": "Choose who's trusted"
+      }
+    }
+  },
+  "rows": {
+    "current": {
+      "eyebrow": "Effortless to keep current",
+      "title": "Up to date, without the chore.",
+      "desc": "Gentle reminders and one-tap updates mean your Everstead reflects your life as it is now — not as it was five years ago. The hard part stays done.",
+      "bullets": [
+        "Quiet nudges only when something needs a look",
+        "A clear sense of what's complete and what's left"
+      ],
+      "imageAlt": "A quiet monthly summary in Everstead — home insurance renewed, a new ISA added, and a gentle nudge that a passport expires in six months"
+    },
+    "share": {
+      "eyebrow": "Yours to share, on your terms",
+      "title": "Share exactly what you choose.",
+      "desc": "Give a partner full access, a child a single document, or a solicitor a sealed envelope opened only when the time comes. You stay in control, always.",
+      "bullets": [
+        "Per-item permissions, changeable any time",
+        "Trusted contacts notified only when needed"
+      ],
+      "imageAlt": "People & access in Everstead — a partner with full access, a daughter with a single document, and a solicitor sealed until needed"
+    }
+  },
+  "steps": {
+    "eyebrow": "Getting started",
+    "title": "Easier than you'd think — and never for nothing.",
+    "subtitle": "A few quiet minutes now means the people you love won't spend weeks piecing it together later.",
+    "items": [
+      {
+        "title": "Bring it together",
+        "desc": "Add accounts, documents and wishes whenever it suits you — a few minutes at a time is plenty."
+      },
+      {
+        "title": "Keep it current",
+        "desc": "Small, gentle nudges keep everything accurate and complete, so it's always ready."
+      },
+      {
+        "title": "Pass it on",
+        "desc": "Choose who's notified, and what they can see, if and when the time ever comes."
+      }
+    ],
+    "link": "Learn the full workflow"
+  },
+  "reassurance": {
+    "title": "Planning ahead is an act of care.",
+    "desc": "Everstead turns confusion into clarity. It gives your loved ones practical direction when decisions are time-sensitive and emotions are running high — a gift they will genuinely appreciate.",
+    "imageAlt": "The Everstead app — your plan organised: accounts and assets, documents and wishes, and the people you trust"
+  },
+  "security": {
+    "eyebrow": "Security & privacy",
+    "title": "Built on the highest security standards — and controlled entirely by you.",
+    "desc": "Everstead runs on bank-grade AES-256 encryption and UK-hosted, UK GDPR-compliant infrastructure. Your information stays private by default — visible only to the people you choose, only the parts you choose, and only when you decide. It's your vault, and you decide who ever gets in.",
+    "linkPractices": "Read our security practices",
+    "linkPrivacy": "Our privacy policy",
+    "features": [
+      "AES-256 encrypted storage",
+      "Role-based access controls",
+      "Complete audit history",
+      "Private sharing only",
+      "Emergency vault access",
+      "Privacy-first commitments"
+    ]
+  },
+  "pricing": {
+    "eyebrow": "Pricing",
+    "title": "Simple, honest pricing.",
+    "subtitle": "Save 20% with yearly billing, all in pounds.",
+    "monthly": "Monthly",
+    "yearly": "Yearly",
+    "save": "Save 20%",
+    "badgePopular": "Most popular",
+    "badgePromo": "Launch offer",
+    "suffixMonthly": "/mo",
+    "suffixAnnual": "/mo",
+    "billedMonthly": "Billed monthly",
+    "billedAnnually": "Billed annually · Save 20%",
+    "plans": {
+      "essential": {
+        "name": "Essential",
+        "priceMonthly": "£{{price}}",
+        "priceAnnual": "£{{price}}",
+        "desc": "For individuals who want their accounts, documents, and wishes in one secure place.",
+        "features": [
+          "Up to 10 accounts & documents",
+          "Step-by-step instructions",
+          "1 trusted contact",
+          "Readiness score",
+          "1 GB storage",
+          "Your AI Assistant"
+        ],
+        "cta": "Start Your Everstead"
+      },
+      "family": {
+        "name": "Family",
+        "priceMonthly": "£{{price}}",
+        "priceAnnual": "£{{price}}",
+        "desc": "For couples and families — two private vaults, one subscription. Organised together, private separately.",
+        "features": [
+          "Everything in Essential",
+          "Two private vaults — one subscription",
+          "Each person keeps their own private data",
+          "Up to 10 trusted contacts",
+          "25 GB storage",
+          "Share only what you choose"
+        ],
+        "cta": "Start Your Everstead"
+      },
+      "advisor": {
+        "name": "Adviser",
+        "desc": "For professionals managing client estate organisation. Pricing on application.",
+        "note": "Pricing on application — we're working personally with our first adviser cohort.",
+        "features": [
+          "Everything in Family",
+          "Multi-client workspace",
+          "Co-branded client portal",
+          "Adviser collaboration tools",
+          "Priority support"
+        ],
+        "cta": "Book a demo"
+      }
+    },
+    "trialNote": "All plans include a 14-day free trial. Your card won't be charged until the trial ends.",
+    "fullDetails": "Full pricing details →"
+  },
+  "gift": {
+    "eyebrow": "A gift that says: I've sorted it.",
+    "title": "Give Everstead to a parent, partner, or someone you love.",
+    "desc": "The kind of present they'd never buy themselves — and the one that genuinely takes weight off their family one day. Sent as a digital gift, redeemable any time.",
+    "cta": "Give as a gift"
+  }
+}

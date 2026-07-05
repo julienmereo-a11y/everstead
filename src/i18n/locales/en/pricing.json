@@ -1,0 +1,182 @@
+{
+  "meta": {
+    "title": "Pricing — Everstead",
+    "description": "Simple, transparent pricing for individuals, families, and professional advisers. Start your 14-day free trial — card required, no charge until trial ends."
+  },
+  "header": {
+    "eyebrow": "Pricing",
+    "title": "One plan for everything that matters.",
+    "subtitle": "Start organising today. Your family will thank you later."
+  },
+  "toggle": {
+    "monthly": "Monthly",
+    "yearly": "Yearly",
+    "savingActive": "✓ Saving {{percent}}%",
+    "save": "Save {{percent}}%",
+    "billingNoteAnnual": "Billed annually. You're saving £{{saving}}/yr on the Family plan compared to monthly. ✓",
+    "billingNoteMonthly": "Billed monthly. Switch to annual and save £{{saving}} on the Family plan."
+  },
+  "plans": {
+    "essential": {
+      "name": "Essential",
+      "promo": "LAUNCH OFFER",
+      "description": "For individuals getting their accounts, documents, and wishes in order.",
+      "features": [
+        "Up to 10 accounts & documents",
+        "1 trusted contact",
+        "1 instruction set",
+        "1 GB secure storage",
+        "Readiness score",
+        "Your AI Assistant"
+      ],
+      "cta": "Start Your Everstead",
+      "upsellNote": "Need more? Family includes two private vaults — just £4 per person."
+    },
+    "family": {
+      "name": "Family",
+      "badge": "Most popular",
+      "promo": "LAUNCH OFFER",
+      "description": "For couples and families — two private vaults, shared protection.",
+      "features": [
+        "Two private vaults — one subscription",
+        "Unlimited accounts & documents",
+        "Up to 10 trusted contacts",
+        "Unlimited instructions & wishes",
+        "Personal messages & final wishes",
+        "25 GB secure storage",
+        "Your AI Assistant"
+      ],
+      "cta": "Start Your Everstead"
+    },
+    "adviser": {
+      "name": "Adviser",
+      "description": "For professionals managing client estate organisation. Pricing on application.",
+      "features": [
+        "Everything in Family",
+        "Multi-client workspace",
+        "Co-branded client portal",
+        "Adviser collaboration tools",
+        "Priority support"
+      ],
+      "cta": "Book a demo",
+      "priceNote": "Pricing on application — we're working personally with our first adviser cohort."
+    }
+  },
+  "prices": {
+    "essential": {
+      "monthly": "£{{value}}",
+      "yearly": "£{{value}}"
+    },
+    "family": {
+      "monthly": "£{{value}}",
+      "yearly": "£{{value}}"
+    },
+    "suffixMonthly": "/ month",
+    "suffixYearly": "/ month",
+    "billedAnnually": "billed annually (£{{total}}/year) · Save 20%",
+    "gbpNote": ""
+  },
+  "dataPromise": {
+    "text": "Your data belongs to you. Export everything anytime. 90-day wind-down commitment.",
+    "link": "Learn more →"
+  },
+  "gift": {
+    "prompt": "Looking for a gift for someone you care about?",
+    "cta": "🎁 Give an Everstead plan as a gift →"
+  },
+  "comparison": {
+    "title": "Less than the alternatives. More than any of them.",
+    "solicitor": {
+      "name": "Solicitor (probate)",
+      "price": "£3,000–5,000",
+      "description": "One estate settled, after you're gone. No ongoing access, no instructions, no peace of mind while you're alive."
+    },
+    "willWriting": {
+      "name": "Will writing service",
+      "price": "£150–500",
+      "description": "A document. No instructions, no organised accounts, no access grants, no way for your family to find anything."
+    },
+    "everstead": {
+      "name": "Everstead Family",
+      "price": "£{{total}} / yr",
+      "description": "Everything organised, updated, and shared — for as long as you need it. Two private vaults included."
+    }
+  },
+  "security": {
+    "eyebrow": "Security baseline",
+    "title": "Every plan is built on the same protection model.",
+    "body": "Everstead does not reserve basic protection for premium tiers. Plan differences are about collaboration, rollout support, and service experience — not weaker privacy or weaker access control.",
+    "items": [
+      "Encryption in transit and at rest",
+      "Granular trusted-person permissions",
+      "Audit trail for key activity",
+      "Private document storage and controlled retrieval"
+    ]
+  },
+  "table": {
+    "capability": "Capability",
+    "essential": "Essential",
+    "family": "Family",
+    "adviser": "Adviser",
+    "rows": [
+      "Accounts and document vault",
+      "Readiness score and review prompts",
+      "Trusted people and delegate access",
+      "Household collaboration",
+      "Adviser rollout support",
+      "Pilot partner onboarding"
+    ]
+  },
+  "disclaimer": {
+    "eyebrow": "Important disclaimer",
+    "title": "Everstead is not a legal service.",
+    "body": "Plans and pricing cover organisation, collaboration, storage, delegate access, and review workflows. They do not include will drafting, legal advice, or regulated professional services.",
+    "readTerms": "Read terms",
+    "discussRollout": "Discuss adviser rollout"
+  },
+  "faq": {
+    "eyebrow": "Common questions",
+    "title": "Everything you might want to know.",
+    "items": [
+      {
+        "q": "How does the free trial work?",
+        "a": "Every plan includes a 14-day free trial. A card is required to start, but you won't be charged until the trial ends — cancel any time before and pay nothing. You have full access to all features on your chosen plan during the trial."
+      },
+      {
+        "q": "What happens if I cancel during the trial?",
+        "a": "Nothing. You will not be charged. Your account is closed and your data is retained for 30 days in case you change your mind, then permanently deleted. No fees, no questions."
+      },
+      {
+        "q": "Can I switch plans after signing up?",
+        "a": "Yes. You can upgrade or downgrade at any time from your account settings. Upgrades take effect immediately. Downgrades take effect at the end of your current billing period. You will never be charged more than the plan you are on."
+      },
+      {
+        "q": "Is there a discount for annual billing?",
+        "a": "Yes — billing annually saves 20% on both plans compared to monthly: about £9.50/year on Essential and £24/year on Family. The discounted rate is applied immediately and locked in for the year."
+      },
+      {
+        "q": "What does the Family plan include that Essential does not?",
+        "a": "The Family plan gives two people their own private vaults under one subscription — each person keeps their own private data, but you can organise and plan together. It increases trusted contacts from 1 to 10, adds emergency vault sharing, expands storage from 1 GB to 25 GB, and includes a family-wide readiness score. Think of it as joint planning with individual privacy."
+      },
+      {
+        "q": "What is the Adviser plan for?",
+        "a": "The Adviser plan is designed for financial advisers, solicitors, and other professionals who want to offer estate organisation as a service to clients. It includes a multi-client workspace, a co-branded client portal, collaboration tools, and priority support. Contact us to discuss a pilot rollout."
+      },
+      {
+        "q": "Is Everstead a legal service?",
+        "a": "No. Everstead is an organisation and planning tool — it does not provide will drafting, legal advice, or any regulated professional service. It is designed to work alongside your solicitor, financial adviser, and other professionals. For legal estate planning, please use a qualified solicitor."
+      },
+      {
+        "q": "How is my data protected?",
+        "a": "All data is encrypted in transit and at rest using AES-256 encryption. Everstead operates under UK GDPR and is registered with the ICO. Everstead staff cannot access the content of your estate plan. Access to your plan is controlled entirely by you."
+      },
+      {
+        "q": "Is Everstead worth it if I only use it once to set up my plan?",
+        "a": "Most members use Everstead regularly — as a single place to track accounts, store documents, and keep everything important in order. It's useful today, not just someday. That said, even if you only set it up once, the value is real: the people you love won't spend months piecing your life together if something unexpected happens. For less than a coffee a week, that's one of the better things you can do for yourself and for them."
+      }
+    ],
+    "stillQuestion": "Still have a question?",
+    "writeToUs": "Write to us",
+    "replyTime": "and we'll reply within one business day."
+  }
+}

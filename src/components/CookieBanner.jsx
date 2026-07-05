@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 
 // Local fallback flag. Cookiebot stores consent in a cookie, but iOS Safari
 // (ITP / private browsing) can refuse to persist it — which previously left the
@@ -14,6 +15,7 @@ const storeConsent = () => {
 }
 
 export default function CookieBanner() {
+  const { t } = useTranslation()
   const [visible, setVisible] = useState(false)
 
   useEffect(() => {
@@ -63,8 +65,8 @@ export default function CookieBanner() {
     }}>
       <div style={{ maxWidth: '860px', margin: '0 auto', display: 'flex', alignItems: 'center', gap: '16px', flexWrap: 'wrap' }}>
         <p style={{ flex: 1, margin: 0, fontSize: '13px', color: '#5a6475', lineHeight: '1.5', minWidth: '200px' }}>
-          We use cookies to keep the platform secure and, with your consent, to understand how people use Everstead.{' '}
-          <a href="/privacy#cookies" style={{ color: '#4c7d47', textDecoration: 'underline' }}>Learn more</a>
+          {t('cookie.message')}{' '}
+          <a href="/privacy#cookies" style={{ color: '#4c7d47', textDecoration: 'underline' }}>{t('cookie.learnMore')}</a>
         </p>
         <div style={{ display: 'flex', gap: '8px', flexShrink: 0 }}>
           <button
@@ -80,7 +82,7 @@ export default function CookieBanner() {
               whiteSpace:   'nowrap',
             }}
           >
-            Essential only
+            {t('cookie.essentialOnly')}
           </button>
           <button
             onClick={() => respond(true)}
@@ -95,7 +97,7 @@ export default function CookieBanner() {
               whiteSpace:   'nowrap',
             }}
           >
-            Accept all
+            {t('cookie.acceptAll')}
           </button>
         </div>
       </div>

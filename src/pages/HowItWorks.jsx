@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { Helmet } from 'react-helmet-async'
 import { Link } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { useReveal } from '../components/useReveal'
 import {
   ArrowRight, CheckCircle2, ChevronDown,
@@ -10,157 +11,28 @@ import {
 } from 'lucide-react'
 
 // ─────────────────────────────────────────────────────────────────────────────
-// DATA
+// NON-TEXT DATA (icons, ids, styles — all visible copy lives in the
+// "howItWorks" i18n namespace)
 // ─────────────────────────────────────────────────────────────────────────────
 
-const steps = [
-  {
-    number: '01',
-    id: 'step-1',
-    label: 'Build your inventory',
-    title: 'Start by mapping everything you own.',
-    body: "Most people have more accounts than they realise — and most families can't find them when they need to. Everstead gives you a structured place to record every financial account, property, insurance policy, and digital asset. You're not uploading statements or linking bank feeds. You're creating a clear, human-readable map that a non-expert family member could follow. Prefer not to do it alone? Your AI Assistant can help — tell it about an account in plain English, or drop in a document, and it'll suggest the entry for you to review and confirm.",
-    bullets: [
-      'Bank accounts, savings, and ISAs',
-      'Pensions — workplace, personal, and state',
-      'Investments and trading accounts',
-      'Property and mortgages',
-      'Life, critical illness, and income protection insurance',
-      'Digital assets and subscriptions',
-    ],
-    preview: {
-      title: 'Financial accounts',
-      items: [
-        { label: 'Barclays current account', tag: 'Banking', done: true },
-        { label: 'Vanguard stocks & shares ISA', tag: 'Investment', done: true },
-        { label: 'Nest workplace pension', tag: 'Pension', done: true },
-        { label: 'Halifax savings account', tag: 'Savings', done: false },
-      ],
-      cta: '+ Add account',
-    },
-    icon: Folder,
-  },
-  {
-    number: '02',
-    id: 'step-2',
-    label: 'Store your documents',
-    title: 'Give every important document a permanent home.',
-    body: "A will that can't be found is almost as useless as not having one. The same goes for insurance policies, pension paperwork, and property deeds. Everstead's encrypted vault lets you upload originals or scanned copies, tag them, and note where physical originals are stored — so your family can find everything in one place, not in three filing cabinets and a solicitor's office. Upload a document and we'll read it for you — extracting the name, type, and expiry automatically.",
-    bullets: [
-      'Upload and organise your will and LPAs',
-      'Store passport, ID, and birth certificate details',
-      'Record insurance policy numbers and contacts',
-      'Note where originals are physically stored',
-      'Version history keeps older documents safe',
-      'AES-256 encryption on everything you upload',
-    ],
-    preview: {
-      title: 'Document vault',
-      items: [
-        { label: 'Last will and testament', tag: 'Legal', done: true },
-        { label: 'Life insurance — Aviva policy', tag: 'Insurance', done: true },
-        { label: 'Property deeds — 14 Elm St', tag: 'Property', done: true },
-        { label: 'Lasting Power of Attorney', tag: 'Legal', done: false },
-      ],
-      cta: '+ Upload document',
-    },
-    icon: FileText,
-  },
-  {
-    number: '03',
-    id: 'step-3',
-    label: 'Invite trusted people',
-    title: 'Decide who sees what — and when.',
-    body: "This is what makes Everstead different from a folder on your desktop. You invite specific people — your spouse, your executor, your solicitor — and choose exactly which sections they can see. They only get access to what you choose, and only when you grant it. Role-based permissions mean your children might see your wishes but not your financial details; your solicitor might see legal documents but nothing else.",
-    bullets: [
-      'Invite family members, advisers, or solicitors',
-      'Set access by category — not all-or-nothing',
-      'Grant emergency vault access for urgent situations',
-      'Revoke or update access at any time',
-      'Delegates see a clean, guided view — not the full dashboard',
-      'Every access event is logged in your audit history',
-    ],
-    preview: {
-      title: 'Trusted people',
-      items: [
-        { label: 'Sarah Mitchell — Spouse', tag: 'Full access', done: true },
-        { label: 'James Mitchell — Son', tag: 'Wishes only', done: true },
-        { label: 'Thornton & Co Solicitors', tag: 'Legal docs', done: true },
-        { label: 'Add a financial adviser', tag: '', done: false },
-      ],
-      cta: '+ Invite someone',
-    },
-    icon: Users,
-  },
-  {
-    number: '04',
-    id: 'step-4',
-    label: 'Write your instructions',
-    title: 'Tell them what to do — step by step.',
-    body: "Documents and account lists answer 'where is it?'. Instructions answer 'what do I do next?'. This is the part most people skip, and the part families say they needed most. In Everstead you can write clear, ordered guidance: who to call first, which accounts to freeze, what your funeral preferences are, what to do with the dog. Not sure where to start? We'll help you write it — just tell us the basics and we'll find the words.",
-    bullets: [
-      'Write step-by-step instructions in plain language',
-      'Record funeral and burial preferences',
-      'Leave messages for individual family members',
-      'Specify what happens to sentimental possessions',
-      'Include contact details for key professionals',
-      'Add anything else you want them to know',
-    ],
-    preview: {
-      title: 'Instructions',
-      items: [
-        { label: 'First 48 hours — who to call', tag: 'Urgent', done: true },
-        { label: 'Funeral and burial wishes', tag: 'Personal', done: true },
-        { label: 'Message to Sarah', tag: 'Private', done: true },
-        { label: 'What to do with the house', tag: 'Property', done: false },
-      ],
-      cta: '+ Add instruction',
-    },
-    icon: ClipboardList,
-  },
+const STEP_META = [
+  { number: '01', id: 'step-1', icon: Folder },
+  { number: '02', id: 'step-2', icon: FileText },
+  { number: '03', id: 'step-3', icon: Users },
+  { number: '04', id: 'step-4', icon: ClipboardList },
 ]
 
-const faqs = [
-  {
-    q: 'Can I start before I have everything organised?',
-    a: "Yes — and we'd encourage it. Most people start with two or three accounts and build from there. Your readiness score shows what's complete and what's missing, so you always know where you left off. An incomplete plan is still far better than none at all.",
-  },
-  {
-    q: 'How long does it take to set up?',
-    a: "Most people complete a solid first version in 45–90 minutes. That includes adding their main accounts, uploading or noting key documents, inviting a trusted person, and writing basic instructions. The annual review — updating anything that's changed — typically takes 15–20 minutes.",
-  },
-  {
-    q: 'What does my family actually see when they need it?',
-    a: "Trusted people you've invited see a clean, guided view of only the sections you've shared with them. They don't see your full dashboard or anything you haven't explicitly granted access to. If you've enabled emergency vault access, they can request it — and you'll be notified unless you've pre-approved it.",
-  },
-  {
-    q: 'Is this the same as writing a will?',
-    a: "No. Everstead is an organisation and planning platform, not a legal service. A will is a legal document that determines how your estate is distributed — you should have one, prepared by a solicitor. Everstead is where you record everything that makes that will easier to execute: account details, document locations, contacts, and instructions your family can actually follow.",
-  },
-  {
-    q: 'What happens to my plan if I stop paying?',
-    a: "If your subscription ends, your data is retained for 30 days. You'll receive a reminder before anything is deleted, and you can export a full copy of your plan at any time from your dashboard. We will never delete your plan without warning.",
-  },
-  {
-    q: "Can my trusted people access my plan without my knowledge?",
-    a: "No. Trusted people only see what you've explicitly shared, and every access event is logged. If you enable emergency vault access, you can choose to be notified immediately when it's used. You remain in control at all times.",
-  },
-]
+const PREVIEW_ITEM_DONE = [true, true, true, false]
 
-const howToSchema = {
-  '@context': 'https://schema.org',
-  '@type': 'HowTo',
-  name: 'How to set up your estate plan with Everstead',
-  description: 'Create a complete digital estate plan — accounts, documents, trusted contacts, and final wishes — so your family is never left guessing.',
-  totalTime: 'PT1H',
-  step: steps.map((s, i) => ({
-    '@type': 'HowToStep',
-    position: i + 1,
-    name: s.title,
-    text: s.body,
-    url: `https://www.everstead.care/how-it-works#${s.id}`,
-  })),
-}
+const FAMILY_POINT_ICONS = [Eye, ClipboardList, Bell, Shield]
+
+const FAMILY_CATEGORY_ICONS = [Folder, FileText, Heart, Lock]
+
+const TIME_CARD_STYLES = [
+  { color: 'bg-navy-50 border-navy-200', textColor: 'text-navy-700' },
+  { color: 'bg-sage-50 border-sage-200', textColor: 'text-sage-700' },
+  { color: 'bg-stone-100 border-stone-200', textColor: 'text-stone-600' },
+]
 
 // ─────────────────────────────────────────────────────────────────────────────
 // COMPONENT
@@ -168,17 +40,63 @@ const howToSchema = {
 
 export default function HowItWorks() {
   useReveal()
+  const { t, i18n } = useTranslation('howItWorks')
+
+  const localePrefix = i18n.language === 'fr' ? '/fr' : ''
+  const pageUrl = `https://www.everstead.care${localePrefix}/how-it-works`
+
+  const steps = STEP_META.map((meta, i) => ({
+    ...meta,
+    label: t(`steps.${i}.label`),
+    title: t(`steps.${i}.title`),
+    body: t(`steps.${i}.body`),
+    bullets: t(`steps.${i}.bullets`, { returnObjects: true }),
+    preview: {
+      title: t(`steps.${i}.preview.title`),
+      items: t(`steps.${i}.preview.items`, { returnObjects: true })
+        .map((item, j) => ({ ...item, done: PREVIEW_ITEM_DONE[j] })),
+      cta: t(`steps.${i}.preview.cta`),
+    },
+  }))
+
+  const heroStats = t('hero.stats', { returnObjects: true })
+
+  const familyPoints = t('familyView.points', { returnObjects: true })
+    .map((text, i) => ({ icon: FAMILY_POINT_ICONS[i], text }))
+
+  const familyCategories = t('familyView.mockup.categories', { returnObjects: true })
+    .map((cat, i) => ({ ...cat, icon: FAMILY_CATEGORY_ICONS[i], shared: true }))
+
+  const timeCards = t('timeBreakdown.cards', { returnObjects: true })
+    .map((card, i) => ({ ...card, ...TIME_CARD_STYLES[i] }))
+
+  const faqs = t('faq.items', { returnObjects: true })
+
+  const howToSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'HowTo',
+    name: t('schema.howToName'),
+    description: t('schema.howToDescription'),
+    totalTime: 'PT1H',
+    step: steps.map((s, i) => ({
+      '@type': 'HowToStep',
+      position: i + 1,
+      name: s.title,
+      text: s.body,
+      url: `${pageUrl}#${s.id}`,
+    })),
+  }
 
   return (
     <>
     <Helmet>
-      <title>How It Works — Everstead</title>
-      <meta name="description" content="See how Everstead works — organise accounts, upload documents with automatic scanning, write instructions with AI assistance, and give your family everything they need. Under an hour to set up." />
-      <link rel="canonical" href="https://www.everstead.care/how-it-works" />
+      <title>{t('meta.title')}</title>
+      <meta name="description" content={t('meta.description')} />
+      <link rel="canonical" href={pageUrl} />
       <meta property="og:type" content="website" />
-      <meta property="og:title" content="How It Works — Everstead" />
-      <meta property="og:description" content="See how Everstead works — organise accounts, upload documents with automatic scanning, write instructions with AI assistance, and give your family everything they need. Under an hour to set up." />
-      <meta property="og:url" content="https://www.everstead.care/how-it-works" />
+      <meta property="og:title" content={t('meta.title')} />
+      <meta property="og:description" content={t('meta.description')} />
+      <meta property="og:url" content={pageUrl} />
       <meta property="og:image" content="https://www.everstead.care/og-image.png" />
       <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:image" content="https://www.everstead.care/og-image.png" />
@@ -196,22 +114,18 @@ export default function HowItWorks() {
         <div className="absolute inset-0 aurora-bg" />
         <div className="relative max-w-4xl mx-auto px-6 lg:px-8 text-center">
           <p className="text-xs font-semibold uppercase tracking-widest text-sage-400 mb-5 animate-fade-in">
-            How it works
+            {t('hero.eyebrow')}
           </p>
           <h1 className="font-display text-5xl lg:text-6xl font-light text-white leading-tight text-balance animate-fade-up">
-            Set up in an afternoon.<br className="hidden lg:block" /> Peace of mind that lasts.
+            {t('hero.titleLine1')}<br className="hidden lg:block" /> {t('hero.titleLine2')}
           </h1>
           <p className="mt-6 text-stone-300 text-lg leading-relaxed max-w-xl mx-auto animate-fade-up animate-delay-100">
-            Four steps. Under an hour. Everything your family needs to know — organised, encrypted, and ready when they need it.
+            {t('hero.subtitle')}
           </p>
 
           {/* Time / effort stats */}
           <div className="mt-12 inline-grid grid-cols-3 gap-px bg-white/10 rounded-2xl overflow-hidden border border-white/10 animate-fade-up animate-delay-200">
-            {[
-              { value: '45 min', label: 'Average setup time' },
-              { value: '15 min', label: 'Annual review' },
-              { value: '14 days', label: 'Free trial' },
-            ].map(({ value, label }) => (
+            {heroStats.map(({ value, label }) => (
               <div key={label} className="bg-white/5 px-8 py-5 text-center">
                 <p className="font-display text-2xl font-light text-white">{value}</p>
                 <p className="text-xs text-stone-400 mt-1">{label}</p>
@@ -357,20 +271,15 @@ export default function HowItWorks() {
         <div className="relative max-w-6xl mx-auto px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
             <div className="reveal">
-              <p className="text-xs font-semibold uppercase tracking-widest text-sage-400 mb-5">The other side</p>
+              <p className="text-xs font-semibold uppercase tracking-widest text-sage-400 mb-5">{t('familyView.eyebrow')}</p>
               <h2 className="font-display text-4xl lg:text-5xl font-light text-white text-balance leading-tight mb-6">
-                What your family sees when they need it.
+                {t('familyView.title')}
               </h2>
               <p className="text-stone-300 leading-relaxed mb-8">
-                When a trusted person you've invited logs in, they don't see your full dashboard. They see a clean, guided view of exactly what you've shared with them — organised by category, with clear instructions at the top.
+                {t('familyView.body')}
               </p>
               <ul className="space-y-4">
-                {[
-                  { icon: Eye,       text: "They only see the sections you've explicitly shared — nothing else." },
-                  { icon: ClipboardList, text: 'Your step-by-step instructions appear at the top, in the order you wrote them.' },
-                  { icon: Bell,      text: 'Emergency vault access can be granted instantly if you choose to enable it.' },
-                  { icon: Shield,    text: 'Every access event is logged — you always know who viewed what and when.' },
-                ].map(({ icon: Icon, text }) => (
+                {familyPoints.map(({ icon: Icon, text }) => (
                   <li key={text} className="flex items-start gap-3">
                     <div className="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center flex-shrink-0 mt-0.5">
                       <Icon size={14} className="text-sage-400" />
@@ -385,19 +294,14 @@ export default function HowItWorks() {
             <div className="reveal reveal-delay-1">
               <div className="bg-white/5 border border-white/10 rounded-2xl overflow-hidden">
                 <div className="bg-white/5 border-b border-white/10 px-6 py-4">
-                  <p className="text-xs text-stone-400 font-medium">Trusted person view — Sarah Mitchell</p>
+                  <p className="text-xs text-stone-400 font-medium">{t('familyView.mockup.header')}</p>
                 </div>
                 <div className="p-6 space-y-4">
                   <div className="bg-sage-900/40 border border-sage-700/40 rounded-xl px-4 py-3">
-                    <p className="text-xs font-semibold text-sage-400 mb-1">Start here — James's instructions</p>
-                    <p className="text-xs text-stone-400">Step 1: Call Thornton & Co Solicitors on 020 7123 4567…</p>
+                    <p className="text-xs font-semibold text-sage-400 mb-1">{t('familyView.mockup.calloutTitle')}</p>
+                    <p className="text-xs text-stone-400">{t('familyView.mockup.calloutBody')}</p>
                   </div>
-                  {[
-                    { label: 'Financial accounts', count: '12 accounts', icon: Folder, shared: true },
-                    { label: 'Important documents', count: '8 documents', icon: FileText, shared: true },
-                    { label: 'Final wishes', count: '3 items', icon: Heart, shared: true },
-                    { label: 'Personal messages', count: 'Private — for you', icon: Lock, shared: true },
-                  ].map(({ label, count, icon: Icon, shared }) => (
+                  {familyCategories.map(({ label, count, icon: Icon, shared }) => (
                     <div key={label} className="flex items-center justify-between bg-white/5 border border-white/10 rounded-xl px-4 py-3">
                       <div className="flex items-center gap-3">
                         <div className="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center">
@@ -422,35 +326,13 @@ export default function HowItWorks() {
       <section className="py-24 lg:py-28 bg-stone-50 border-b border-stone-100">
         <div className="max-w-4xl mx-auto px-6 lg:px-8">
           <div className="text-center mb-14 reveal">
-            <p className="text-xs font-semibold uppercase tracking-widest text-navy-500 mb-4">The time investment</p>
+            <p className="text-xs font-semibold uppercase tracking-widest text-navy-500 mb-4">{t('timeBreakdown.eyebrow')}</p>
             <h2 className="font-display text-4xl font-light text-navy-950 text-balance">
-              What a typical setup looks like.
+              {t('timeBreakdown.title')}
             </h2>
           </div>
           <div className="grid sm:grid-cols-3 gap-6 reveal">
-            {[
-              {
-                time: '45 min',
-                label: 'First session',
-                desc: 'Add your main accounts, upload or note your key documents, invite one trusted person, write your first instruction.',
-                color: 'bg-navy-50 border-navy-200',
-                textColor: 'text-navy-700',
-              },
-              {
-                time: '15 min',
-                label: 'Annual review',
-                desc: 'We send a reminder once a year. Update anything that\'s changed — new accounts, new addresses, updated wishes.',
-                color: 'bg-sage-50 border-sage-200',
-                textColor: 'text-sage-700',
-              },
-              {
-                time: 'As needed',
-                label: 'Ongoing updates',
-                desc: 'Add accounts as you open them. Update documents when they change. Grant or revoke access whenever you need to.',
-                color: 'bg-stone-100 border-stone-200',
-                textColor: 'text-stone-600',
-              },
-            ].map(({ time, label, desc, color, textColor }) => (
+            {timeCards.map(({ time, label, desc, color, textColor }) => (
               <div key={label} className={`rounded-2xl border p-6 ${color}`}>
                 <div className="flex items-center gap-2 mb-3">
                   <Clock size={14} className={textColor} />
@@ -468,8 +350,8 @@ export default function HowItWorks() {
       <section className="py-24 lg:py-32 bg-white border-b border-stone-100">
         <div className="max-w-3xl mx-auto px-6 lg:px-8">
           <div className="text-center mb-14 reveal">
-            <p className="text-xs font-semibold uppercase tracking-widest text-navy-500 mb-4">Questions</p>
-            <h2 className="font-display text-4xl font-light text-navy-950">Common questions.</h2>
+            <p className="text-xs font-semibold uppercase tracking-widest text-navy-500 mb-4">{t('faq.eyebrow')}</p>
+            <h2 className="font-display text-4xl font-light text-navy-950">{t('faq.title')}</h2>
           </div>
           <div className="space-y-3">
             {faqs.map((faq, i) => (
@@ -486,26 +368,26 @@ export default function HowItWorks() {
             {[...Array(5)].map((_, i) => <Star key={i} size={16} className="text-amber-400 fill-amber-400" />)}
           </div>
           <h2 className="font-display text-4xl lg:text-5xl font-light text-white text-balance mb-4">
-            Ready to start your plan?
+            {t('cta.title')}
           </h2>
           <p className="text-stone-300 text-lg leading-relaxed mb-10 max-w-xl mx-auto">
-            Join families who've given their loved ones the clarity they deserve. Your 14-day free trial starts the moment you sign up.
+            {t('cta.body')}
           </p>
           <div className="flex flex-wrap gap-3 justify-center">
             <Link
               to="/get-started"
               className="btn-aurora inline-flex items-center gap-2 font-semibold text-sm px-7 py-3.5 rounded-full"
             >
-              Start Your Everstead <ArrowRight size={15} />
+              {t('cta.primary')} <ArrowRight size={15} />
             </Link>
             <Link
               to="/features"
               className="inline-flex items-center gap-2 bg-white/10 text-white font-medium text-sm px-7 py-3.5 rounded-full border border-white/20 hover:bg-white/20 transition-colors"
             >
-              Explore all features
+              {t('cta.secondary')}
             </Link>
           </div>
-          <p className="text-stone-500 text-xs mt-5">14-day free trial · No charge until it ends · Cancel anytime</p>
+          <p className="text-stone-500 text-xs mt-5">{t('cta.finePrint')}</p>
         </div>
       </section>
 

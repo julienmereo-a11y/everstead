@@ -1,5 +1,6 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 
 // ── Trustpilot rating (manual) ───────────────────────────────────────────────
 // We do NOT recreate Trustpilot's trademarked stars. Instead, drop a genuine,
@@ -14,6 +15,7 @@ const TRUSTPILOT = {
 }
 
 function TrustpilotBadge() {
+  const { t } = useTranslation()
   const { label, profileUrl, image } = TRUSTPILOT
   const [imgOk, setImgOk] = React.useState(!!image)
   return (
@@ -22,82 +24,99 @@ function TrustpilotBadge() {
       target="_blank"
       rel="noopener noreferrer"
       className="group inline-block"
-      aria-label={`Rated ${label} on Trustpilot — read our reviews`}
+      aria-label={t('footer.trustpilotAria', { label })}
     >
       {imgOk ? (
         <img
           src={image}
-          alt={`Rated ${label} on Trustpilot`}
+          alt={t('footer.trustpilotAria', { label })}
           loading="lazy"
           className="w-auto max-w-[180px] h-auto"
           onError={() => setImgOk(false)}
         />
       ) : (
         <span className="text-xs text-stone-400 group-hover:text-white transition-colors whitespace-nowrap">
-          Rated <span className="font-medium text-[#00b67a]">{label}</span> on Trustpilot&nbsp;→
+          {t('footer.trustpilotRated')} <span className="font-medium text-[#00b67a]">{label}</span> {t('footer.trustpilotOn')}&nbsp;→
         </span>
       )}
     </a>
   )
 }
 
+// Labels are i18n keys under footer.links.* — resolved with t() at render time.
 const cols = [
   {
-    heading: 'Product',
+    headingKey: 'product',
     links: [
-      { label: 'Features', href: '/features' },
-      { label: 'How It Works', href: '/how-it-works' },
-      { label: 'Pricing', href: '/pricing' },
-      { label: 'Security', href: '/security' },
-      { label: 'Changelog', href: '/changelog' },
+      { key: 'features', href: '/features' },
+      { key: 'howItWorks', href: '/how-it-works' },
+      { key: 'pricing', href: '/pricing' },
+      { key: 'security', href: '/security' },
+      { key: 'changelog', href: '/changelog' },
     ],
   },
   {
-    heading: 'Use Cases',
+    headingKey: 'useCases',
     links: [
-      { label: 'For Families', href: '/use-cases/families' },
-      { label: 'For Parents', href: '/use-cases/parents' },
-      { label: 'For Executors', href: '/use-cases/executors' },
-      { label: 'For Advisers', href: '/for-advisers' },
-      { label: 'Family Vault', href: '/family-vault' },
+      { key: 'forFamilies', href: '/use-cases/families' },
+      { key: 'forParents', href: '/use-cases/parents' },
+      { key: 'forExecutors', href: '/use-cases/executors' },
+      { key: 'forAdvisers', href: '/for-advisers' },
+      { key: 'familyVault', href: '/family-vault' },
     ],
   },
   {
-    heading: 'Resources',
+    headingKey: 'resources',
     links: [
-      { label: 'Blog', href: '/resources/blog' },
-      { label: 'Guides', href: '/resources/guides' },
-      { label: 'Checklists', href: '/resources/checklists' },
-      { label: 'FAQs', href: '/resources/faqs' },
-      { label: 'Free Tools', href: '/resources#tools' },
-      { label: 'How We Compare', href: '/compare' },
+      { key: 'blog', href: '/resources/blog' },
+      { key: 'guides', href: '/resources/guides' },
+      { key: 'checklists', href: '/resources/checklists' },
+      { key: 'faqs', href: '/resources/faqs' },
+      { key: 'freeTools', href: '/resources#tools' },
+      { key: 'compare', href: '/compare' },
     ],
   },
   {
-    heading: 'Company',
+    headingKey: 'company',
     links: [
-      { label: 'About', href: '/about' },
-      { label: 'Contact', href: '/contact' },
-      { label: 'Press', href: '/press' },
-      { label: 'Book a Demo', href: '/book-demo' },
-      { label: '🎁 Give as a gift', href: '/gift' },
+      { key: 'about', href: '/about' },
+      { key: 'contact', href: '/contact' },
+      { key: 'press', href: '/press' },
+      { key: 'bookDemo', href: '/book-demo' },
+      { key: 'gift', href: '/gift' },
     ],
   },
   {
-    heading: 'Legal',
+    headingKey: 'legal',
     links: [
-      { label: 'Privacy Policy', href: '/privacy' },
-      { label: 'Terms of Service', href: '/terms' },
-      { label: 'Data Promise', href: '/data-promise' },
-      { label: 'Adviser DPA', href: '/adviser-dpa' },
-      { label: 'Subprocessors', href: '/subprocessors' },
-      { label: 'Cookie Policy', href: '/cookies' },
-      { label: 'Accessibility', href: '/accessibility' },
+      { key: 'privacyPolicy', href: '/privacy' },
+      { key: 'terms', href: '/terms' },
+      { key: 'dataPromise', href: '/data-promise' },
+      { key: 'adviserDpa', href: '/adviser-dpa' },
+      { key: 'subprocessors', href: '/subprocessors' },
+      { key: 'cookiePolicy', href: '/cookies' },
+      { key: 'accessibility', href: '/accessibility' },
     ],
   },
 ]
 
+// Discreet "English" link — shown ONLY in the French footer. Language is decided
+// purely by the URL path; this is the one exit back to the root (English) tree.
+// Plain <a>: the router basename differs per locale, so a <Link> can't cross trees.
+// useLocation() is basename-relative, so `pathname` IS the root-equivalent path.
+function EnglishLink() {
+  const { i18n } = useTranslation()
+  const { pathname } = useLocation()
+  if (i18n.language !== 'fr') return null
+  return (
+    <a href={pathname} hrefLang="en" className="hover:text-stone-400 transition-colors">
+      English
+    </a>
+  )
+}
+
 export default function Footer() {
+  const { t } = useTranslation()
   return (
     <footer className="aurora-field aurora-dim text-stone-400">
       <div className="max-w-7xl mx-auto px-6 lg:px-8 py-16 lg:py-20">
@@ -108,10 +127,10 @@ export default function Footer() {
               <img src="/logo-v2-white.png" alt="Everstead" className="h-10 w-auto" />
             </Link>
             <p className="text-sm leading-relaxed text-stone-500 max-w-[220px]">
-              A secure family handoff platform for the moments that matter most.
+              {t('footer.tagline')}
             </p>
             <p className="text-xs leading-relaxed text-stone-600 max-w-[240px]">
-              Everstead is an organisation platform, not a legal service or law firm.
+              {t('footer.legalNote')}
             </p>
             <div className="pt-1">
               <TrustpilotBadge />
@@ -120,13 +139,13 @@ export default function Footer() {
 
           {/* Columns */}
           {cols.map(col => (
-            <div key={col.heading}>
-              <h4 className="text-xs font-semibold uppercase tracking-widest text-stone-500 mb-4">{col.heading}</h4>
+            <div key={col.headingKey}>
+              <h4 className="text-xs font-semibold uppercase tracking-widest text-stone-500 mb-4">{t(`footer.cols.${col.headingKey}`)}</h4>
               <ul className="space-y-2.5">
                 {col.links.map(l => (
                   <li key={l.href}>
                     <Link to={l.href} className="text-sm text-stone-400 hover:text-white transition-colors">
-                      {l.label}
+                      {t(`footer.links.${l.key}`)}
                     </Link>
                   </li>
                 ))}
@@ -136,14 +155,15 @@ export default function Footer() {
         </div>
 
         <div className="mt-14 pt-8 border-t border-navy-800 flex flex-col sm:flex-row justify-between items-center gap-4 text-xs text-stone-600">
-          <p>© {new Date().getFullYear()} Everstead Digital Ltd. All rights reserved.</p>
+          <p>{t('footer.copyright', { year: new Date().getFullYear() })}</p>
           <div className="flex items-center gap-5">
-            <Link to="/privacy" className="hover:text-stone-400 transition-colors">Privacy</Link>
-            <Link to="/terms" className="hover:text-stone-400 transition-colors">Terms</Link>
-            <Link to="/data-promise" className="hover:text-stone-400 transition-colors">Data Promise</Link>
-            <Link to="/cookies" className="hover:text-stone-400 transition-colors">Cookies</Link>
-            <Link to="/accessibility" className="hover:text-stone-400 transition-colors">Accessibility</Link>
-            <Link to="/security" className="hover:text-stone-400 transition-colors">Trust</Link>
+            <Link to="/privacy" className="hover:text-stone-400 transition-colors">{t('footer.bottom.privacy')}</Link>
+            <Link to="/terms" className="hover:text-stone-400 transition-colors">{t('footer.bottom.terms')}</Link>
+            <Link to="/data-promise" className="hover:text-stone-400 transition-colors">{t('footer.bottom.dataPromise')}</Link>
+            <Link to="/cookies" className="hover:text-stone-400 transition-colors">{t('footer.bottom.cookies')}</Link>
+            <Link to="/accessibility" className="hover:text-stone-400 transition-colors">{t('footer.bottom.accessibility')}</Link>
+            <Link to="/security" className="hover:text-stone-400 transition-colors">{t('footer.bottom.trust')}</Link>
+            <EnglishLink />
           </div>
         </div>
       </div>

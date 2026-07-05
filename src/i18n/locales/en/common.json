@@ -1,0 +1,73 @@
+{
+  "nav": {
+    "howItWorks": "How It Works",
+    "features": "Features",
+    "security": "Security",
+    "pricing": "Pricing",
+    "about": "About",
+    "login": "Login",
+    "getStarted": "Get Started",
+    "dashboard": "Dashboard",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu"
+  },
+  "cookie": {
+    "message": "We use cookies to keep the platform secure and, with your consent, to understand how people use Everstead.",
+    "learnMore": "Learn more",
+    "essentialOnly": "Essential only",
+    "acceptAll": "Accept all"
+  },
+  "footer": {
+    "tagline": "A secure family handoff platform for the moments that matter most.",
+    "legalNote": "Everstead is an organisation platform, not a legal service or law firm.",
+    "trustpilotRated": "Rated",
+    "trustpilotOn": "on Trustpilot",
+    "trustpilotAria": "Rated {{label}} on Trustpilot — read our reviews",
+    "cols": {
+      "product": "Product",
+      "useCases": "Use Cases",
+      "resources": "Resources",
+      "company": "Company",
+      "legal": "Legal"
+    },
+    "links": {
+      "features": "Features",
+      "howItWorks": "How It Works",
+      "pricing": "Pricing",
+      "security": "Security",
+      "changelog": "Changelog",
+      "forFamilies": "For Families",
+      "forParents": "For Parents",
+      "forExecutors": "For Executors",
+      "forAdvisers": "For Advisers",
+      "familyVault": "Family Vault",
+      "blog": "Blog",
+      "guides": "Guides",
+      "checklists": "Checklists",
+      "faqs": "FAQs",
+      "freeTools": "Free Tools",
+      "compare": "How We Compare",
+      "about": "About",
+      "contact": "Contact",
+      "press": "Press",
+      "bookDemo": "Book a Demo",
+      "gift": "🎁 Give as a gift",
+      "privacyPolicy": "Privacy Policy",
+      "terms": "Terms of Service",
+      "dataPromise": "Data Promise",
+      "adviserDpa": "Adviser DPA",
+      "subprocessors": "Subprocessors",
+      "cookiePolicy": "Cookie Policy",
+      "accessibility": "Accessibility"
+    },
+    "copyright": "© {{year}} Everstead Digital Ltd. All rights reserved.",
+    "bottom": {
+      "privacy": "Privacy",
+      "terms": "Terms",
+      "dataPromise": "Data Promise",
+      "cookies": "Cookies",
+      "accessibility": "Accessibility",
+      "trust": "Trust"
+    }
+  }
+}

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Helmet } from 'react-helmet-async'
 import { Link } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { useReveal } from '../components/useReveal'
 import { PRICING } from '../config/pricing'
 import {
@@ -9,82 +10,12 @@ import {
   UserCircle, Sparkles, UserCheck, MapPin, BadgeCheck, Landmark
 } from 'lucide-react'
 
-const trustItems = [
-  { icon: Lock,       label: 'Bank-level security', sub: 'AES-256 encryption' },
-  { icon: UserCheck,  label: 'Access management',   sub: 'You decide who can see what' },
-  { icon: MapPin,     label: 'UK data residency',   sub: 'Fully GDPR compliant' },
-  { icon: BadgeCheck, label: 'SOC 2 compliant',     sub: 'Built on SOC 2 infrastructure' },
-]
-
 const painPoints = [
   'Families don\'t know where documents are',
   'Accounts and subscriptions are hard to find',
   'Executors lose time chasing details',
   'Wishes are unclear or unrecorded',
   'Digital assets become inaccessible',
-]
-
-// "Why Everstead" — three calm pillars (replaces the old six-card feature grid).
-const whyEverstead = [
-  {
-    icon: Landmark,
-    title: 'Accounts & assets',
-    desc: 'Every account, policy and subscription in one clear list — so nothing quietly slips through the cracks.',
-    cta: 'See what you can add',
-    to: '/features',
-  },
-  {
-    icon: FileText,
-    title: 'Documents & wishes',
-    desc: 'Wills, deeds, letters and instructions — stored safely, easy to find, and impossible to misplace.',
-    cta: 'Keep documents safe',
-    to: '/security',
-  },
-  {
-    icon: Users,
-    title: 'People & access',
-    desc: 'Decide who sees what, and when. Your family is only ever a step away — never a guess.',
-    cta: "Choose who's trusted",
-    to: '/how-it-works',
-  },
-]
-
-const steps = [
-  { num: '01', title: 'Bring it together', desc: 'Add accounts, documents and wishes whenever it suits you — a few minutes at a time is plenty.' },
-  { num: '02', title: 'Keep it current', desc: "Small, gentle nudges keep everything accurate and complete, so it's always ready." },
-  { num: '03', title: 'Pass it on', desc: "Choose who's notified, and what they can see, if and when the time ever comes." },
-]
-
-const plans = [
-  {
-    id: 'essential',
-    name: 'Essential',
-    monthly: PRICING.essential.monthly.perMonth,
-    annual: PRICING.essential.annual.perMonth,
-    promo: true,
-    desc: 'For individuals who want their accounts, documents, and wishes in one secure place.',
-    features: ['Up to 10 accounts & documents', 'Step-by-step instructions', '1 trusted contact', 'Readiness score', '1 GB storage', 'Your AI Assistant'],
-    cta: 'Start Your Everstead',
-    highlight: false,
-  },
-  {
-    id: 'family',
-    name: 'Family',
-    monthly: PRICING.family.monthly.perMonth,
-    annual: PRICING.family.annual.perMonth,
-    desc: 'For couples and families — two private vaults, one subscription. Organised together, private separately.',
-    features: ['Everything in Essential', 'Two private vaults — one subscription', 'Each person keeps their own private data', 'Up to 10 trusted contacts', '25 GB storage', 'Share only what you choose'],
-    cta: 'Start Your Everstead',
-    highlight: true,
-  },
-  {
-    id: 'advisor',
-    name: 'Adviser',
-    desc: 'For professionals managing client estate organisation. Pricing on application.',
-    features: ['Everything in Family', 'Multi-client workspace', 'Co-branded client portal', 'Adviser collaboration tools', 'Priority support'],
-    cta: 'Book a demo',
-    highlight: false,
-  },
 ]
 
 function AnimatedHeroScore({ target = 76, duration = 1500 }) {
@@ -127,18 +58,97 @@ function AnimatedHeroScore({ target = 76, duration = 1500 }) {
 
 export default function Home() {
   useReveal()
+  const { t, i18n } = useTranslation('home')
   const [annualPricing, setAnnualPricing] = useState(true)
+
+  // /fr pages canonicalise to the /fr URL tree; English stays at the root.
+  const urlPrefix = i18n.language === 'fr' ? '/fr' : ''
+
+  const trustItems = [
+    { icon: Lock,       label: t('trustBar.security.label'),  sub: t('trustBar.security.sub') },
+    { icon: UserCheck,  label: t('trustBar.access.label'),    sub: t('trustBar.access.sub') },
+    { icon: MapPin,     label: t('trustBar.residency.label'), sub: t('trustBar.residency.sub') },
+    { icon: BadgeCheck, label: t('trustBar.soc2.label'),      sub: t('trustBar.soc2.sub') },
+  ]
+
+  // "Why Everstead" — three calm pillars (replaces the old six-card feature grid).
+  const whyEverstead = [
+    {
+      icon: Landmark,
+      title: t('why.cards.accounts.title'),
+      desc: t('why.cards.accounts.desc'),
+      cta: t('why.cards.accounts.cta'),
+      to: '/features',
+    },
+    {
+      icon: FileText,
+      title: t('why.cards.documents.title'),
+      desc: t('why.cards.documents.desc'),
+      cta: t('why.cards.documents.cta'),
+      to: '/security',
+    },
+    {
+      icon: Users,
+      title: t('why.cards.people.title'),
+      desc: t('why.cards.people.desc'),
+      cta: t('why.cards.people.cta'),
+      to: '/how-it-works',
+    },
+  ]
+
+  const stepNums = ['01', '02', '03']
+  const steps = t('steps.items', { returnObjects: true }).map((step, i) => ({ num: stepNums[i], ...step }))
+
+  const securityIcons = [Lock, Users, BookOpen, Share2, Bell, ShieldCheck]
+  const securityFeatures = t('security.features', { returnObjects: true }).map((label, i) => ({
+    icon: securityIcons[i],
+    label,
+  }))
+
+  // English prices stay config-driven (the {{price}} interpolation in en/home.json);
+  // French prices are static, VAT-inclusive display strings baked into fr/home.json.
+  const plans = [
+    {
+      id: 'essential',
+      name: t('pricing.plans.essential.name'),
+      monthly: t('pricing.plans.essential.priceMonthly', { price: PRICING.essential.monthly.perMonth }),
+      annual: t('pricing.plans.essential.priceAnnual', { price: PRICING.essential.annual.perMonth }),
+      promo: true,
+      desc: t('pricing.plans.essential.desc'),
+      features: t('pricing.plans.essential.features', { returnObjects: true }),
+      cta: t('pricing.plans.essential.cta'),
+      highlight: false,
+    },
+    {
+      id: 'family',
+      name: t('pricing.plans.family.name'),
+      monthly: t('pricing.plans.family.priceMonthly', { price: PRICING.family.monthly.perMonth }),
+      annual: t('pricing.plans.family.priceAnnual', { price: PRICING.family.annual.perMonth }),
+      desc: t('pricing.plans.family.desc'),
+      features: t('pricing.plans.family.features', { returnObjects: true }),
+      cta: t('pricing.plans.family.cta'),
+      highlight: true,
+    },
+    {
+      id: 'advisor',
+      name: t('pricing.plans.advisor.name'),
+      desc: t('pricing.plans.advisor.desc'),
+      features: t('pricing.plans.advisor.features', { returnObjects: true }),
+      cta: t('pricing.plans.advisor.cta'),
+      highlight: false,
+    },
+  ]
 
   return (
     <>
     <Helmet>
-      <title>Everstead — Your life, organised.</title>
-      <meta name="description" content="Everstead helps UK families securely organise accounts, documents, instructions, and final wishes — with AI that helps you every step of the way. Start your free trial today." />
-      <link rel="canonical" href="https://www.everstead.care" />
+      <title>{t('meta.title')}</title>
+      <meta name="description" content={t('meta.description')} />
+      <link rel="canonical" href={`https://www.everstead.care${urlPrefix}`} />
       <meta property="og:type" content="website" />
-      <meta property="og:title" content="Everstead — Your life, organised." />
-      <meta property="og:description" content="Everstead is the secure home for your accounts, documents, and important decisions — organised for you today, and ready for your family when it counts." />
-      <meta property="og:url" content="https://www.everstead.care" />
+      <meta property="og:title" content={t('meta.ogTitle')} />
+      <meta property="og:description" content={t('meta.ogDescription')} />
+      <meta property="og:url" content={`https://www.everstead.care${urlPrefix}`} />
       <meta property="og:image" content="https://www.everstead.care/og-image.png" />
       <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:image" content="https://www.everstead.care/og-image.png" />
@@ -154,7 +164,7 @@ export default function Home() {
           width: 320,
           height: 80,
         },
-        description: 'Secure personal vault for UK families. Organise accounts, documents, and important decisions — accessible today, and ready for your loved ones when it matters.',
+        description: t('meta.jsonLdDescription'),
         foundingDate: '2025',
         areaServed: 'GB',
         address: {
@@ -217,14 +227,14 @@ export default function Home() {
               // "Everything your family would need, gathered in one place — with love."
             */}
             <p className="text-sm sm:text-base font-medium text-sage-300 mb-4 sm:mb-5 tracking-wide animate-fade-up">
-              Organise your accounts, documents &amp; final wishes
+              {t('hero.eyebrow')}
             </p>
             <h1 className="font-display text-[2.75rem] leading-[1.18] sm:text-6xl sm:leading-[1.14] lg:text-7xl lg:leading-[1.12] xl:text-[5rem] xl:leading-[1.1] font-light text-white text-balance animate-fade-up animate-delay-100">
-              Everything that matters, <em className="aurora-text">gathered</em> in one secure place.
+              {t('hero.title1')}<em className="aurora-text">{t('hero.titleEm')}</em>{t('hero.title2')}
             </h1>
 
             <p className="mt-5 sm:mt-6 text-lg sm:text-xl text-stone-300 leading-relaxed max-w-[600px] animate-fade-up animate-delay-100">
-              Everstead is the secure place to keep everything your loved ones will need, set up in minutes and shared only with the people you choose.
+              {t('hero.subtitle')}
             </p>
 
             <div className="mt-10 flex flex-wrap items-center gap-x-7 gap-y-4 animate-fade-up animate-delay-200">
@@ -232,28 +242,28 @@ export default function Home() {
                 to="/get-started"
                 className="btn-aurora inline-flex items-center gap-2 font-semibold text-base px-8 py-4 rounded-full transition-transform hover:-translate-y-0.5"
               >
-                Get started free
+                {t('hero.ctaPrimary')}
                 <ArrowRight size={18} />
               </Link>
               <Link
                 to="/how-it-works"
                 className="group inline-flex items-center gap-1.5 text-white/75 font-medium text-sm hover:text-white transition-colors"
               >
-                See how it works
+                {t('hero.ctaSecondary')}
                 <ArrowRight size={15} className="transition-transform group-hover:translate-x-0.5" />
               </Link>
             </div>
 
             <p className="text-xs text-stone-500 mt-5 animate-fade-up animate-delay-300" style={{ letterSpacing: '0.02em' }}>
-              🔒 Bank-level AES-256 encryption &nbsp;·&nbsp; 🇬🇧 UK-based &nbsp;·&nbsp;{' '}
+              🔒 {t('hero.trustEncryption')} &nbsp;·&nbsp; 🇬🇧 {t('hero.trustUk')} &nbsp;·&nbsp;{' '}
               <a
                 href="https://www.trustpilot.com/review/everstead.care"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-stone-500 hover:text-white transition-colors"
-                aria-label="Rated Excellent on Trustpilot — read our reviews"
+                aria-label={t('hero.trustpilotAria')}
               >
-                Rated <span className="font-medium text-[#00b67a]">Excellent</span> on Trustpilot
+                {t('hero.trustpilotPre')} <span className="font-medium text-[#00b67a]">{t('hero.trustpilotExcellent')}</span> {t('hero.trustpilotPost')}
               </a>
             </p>
             <div className="inline-flex items-center gap-1.5 mt-4 animate-fade-up animate-delay-300" style={{
@@ -264,7 +274,7 @@ export default function Home() {
               color: '#4c7d47',
               letterSpacing: '0.04em',
             }}>
-              ✨ AI-assisted estate planning
+              ✨ {t('hero.aiBadge')}
             </div>
           </div>
 
@@ -272,7 +282,7 @@ export default function Home() {
           <div className="lg:hidden mt-10 relative rounded-3xl overflow-hidden animate-fade-up animate-delay-300">
             <img
               src="/hero-family.jpg"
-              alt="A daughter and her father organising their family's plan together at home"
+              alt={t('hero.mobilePhotoAlt')}
               className="w-full object-cover"
               style={{ opacity: 0.95 }}
             />
@@ -309,12 +319,12 @@ export default function Home() {
       <section className="pt-20 pb-24 lg:pt-28 lg:pb-32 aurora-field aurora-dim relative overflow-hidden">
         <div className="relative max-w-6xl mx-auto px-6 lg:px-8">
           <div className="text-center mb-16 reveal">
-            <p className="text-xs font-semibold uppercase tracking-widest text-sage-400 mb-4">Why Everstead</p>
+            <p className="text-xs font-semibold uppercase tracking-widest text-sage-400 mb-4">{t('why.eyebrow')}</p>
             <h2 className="font-display text-4xl lg:text-5xl font-light text-white max-w-2xl mx-auto leading-tight text-balance">
-              One home for the<br className="hidden sm:block" /> things that matter.
+              {t('why.title1')}<br className="hidden sm:block" /> {t('why.title2')}
             </h2>
             <p className="mt-5 text-stone-300 text-lg leading-relaxed max-w-xl mx-auto">
-              No more scattered logins, lost paperwork, or guesswork left behind. Just a clear, gentle record of a life well organised.
+              {t('why.subtitle')}
             </p>
           </div>
 
@@ -342,15 +352,15 @@ export default function Home() {
           {/* Row: Up to date, without the chore */}
           <div className="mt-24 lg:mt-32 grid lg:grid-cols-2 gap-10 lg:gap-16 items-center reveal">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-widest text-sage-400 mb-4">Effortless to keep current</p>
+              <p className="text-xs font-semibold uppercase tracking-widest text-sage-400 mb-4">{t('rows.current.eyebrow')}</p>
               <h3 className="font-display text-3xl lg:text-4xl font-light text-white leading-tight text-balance">
-                Up to date, without the chore.
+                {t('rows.current.title')}
               </h3>
               <p className="mt-5 text-stone-300 leading-relaxed max-w-md">
-                Gentle reminders and one-tap updates mean your Everstead reflects your life as it is now — not as it was five years ago. The hard part stays done.
+                {t('rows.current.desc')}
               </p>
               <ul className="mt-6 space-y-3">
-                {['Quiet nudges only when something needs a look', "A clear sense of what's complete and what's left"].map(item => (
+                {t('rows.current.bullets', { returnObjects: true }).map(item => (
                   <li key={item} className="flex items-start gap-2.5 text-stone-200 text-sm">
                     <CheckCircle2 size={16} className="text-sage-400 mt-0.5 shrink-0" />
                     {item}
@@ -360,7 +370,7 @@ export default function Home() {
             </div>
             <img
               src="/screenshot-doc.jpg"
-              alt="A quiet monthly summary in Everstead — home insurance renewed, a new ISA added, and a gentle nudge that a passport expires in six months"
+              alt={t('rows.current.imageAlt')}
               width="944" height="780"
               loading="lazy"
               className="w-full h-auto rounded-3xl border border-white/10"
@@ -372,22 +382,22 @@ export default function Home() {
           <div className="mt-20 lg:mt-28 grid lg:grid-cols-2 gap-10 lg:gap-16 items-center reveal">
             <img
               src="/screenshot-access.jpg"
-              alt="People & access in Everstead — a partner with full access, a daughter with a single document, and a solicitor sealed until needed"
+              alt={t('rows.share.imageAlt')}
               width="944" height="780"
               loading="lazy"
               className="w-full h-auto rounded-3xl border border-white/10 order-last lg:order-first"
               style={{ boxShadow: '0 24px 60px rgba(0, 0, 0, 0.45)' }}
             />
             <div>
-              <p className="text-xs font-semibold uppercase tracking-widest text-sage-400 mb-4">Yours to share, on your terms</p>
+              <p className="text-xs font-semibold uppercase tracking-widest text-sage-400 mb-4">{t('rows.share.eyebrow')}</p>
               <h3 className="font-display text-3xl lg:text-4xl font-light text-white leading-tight text-balance">
-                Share exactly what you choose.
+                {t('rows.share.title')}
               </h3>
               <p className="mt-5 text-stone-300 leading-relaxed max-w-md">
-                Give a partner full access, a child a single document, or a solicitor a sealed envelope opened only when the time comes. You stay in control, always.
+                {t('rows.share.desc')}
               </p>
               <ul className="mt-6 space-y-3">
-                {['Per-item permissions, changeable any time', 'Trusted contacts notified only when needed'].map(item => (
+                {t('rows.share.bullets', { returnObjects: true }).map(item => (
                   <li key={item} className="flex items-start gap-2.5 text-stone-200 text-sm">
                     <CheckCircle2 size={16} className="text-sage-400 mt-0.5 shrink-0" />
                     {item}
@@ -403,12 +413,12 @@ export default function Home() {
       <section className="py-24 lg:py-32">
         <div className="max-w-5xl mx-auto px-6 lg:px-8">
           <div className="text-center mb-16 reveal">
-            <p className="text-xs font-semibold uppercase tracking-widest text-navy-600 mb-4">Getting started</p>
+            <p className="text-xs font-semibold uppercase tracking-widest text-navy-600 mb-4">{t('steps.eyebrow')}</p>
             <h2 className="font-display text-4xl lg:text-5xl font-light text-navy-950 text-balance">
-              Easier than you'd think — and never for nothing.
+              {t('steps.title')}
             </h2>
             <p className="mt-4 text-stone-500 text-lg leading-relaxed max-w-xl mx-auto">
-              A few quiet minutes now means the people you love won't spend weeks piecing it together later.
+              {t('steps.subtitle')}
             </p>
           </div>
 
@@ -427,7 +437,7 @@ export default function Home() {
               to="/how-it-works"
               className="inline-flex items-center gap-2 text-navy-700 font-medium text-sm hover:text-navy-900 transition-colors"
             >
-              Learn the full workflow <ArrowRight size={15} />
+              {t('steps.link')} <ArrowRight size={15} />
             </Link>
           </div>
         </div>
@@ -441,16 +451,16 @@ export default function Home() {
               <Heart size={20} className="text-sage-400" />
             </div>
             <h2 className="font-display text-4xl lg:text-5xl font-light text-white text-balance leading-tight">
-              Planning ahead is an act of care.
+              {t('reassurance.title')}
             </h2>
             <p className="mt-6 text-stone-300 text-lg leading-relaxed">
-              Everstead turns confusion into clarity. It gives your loved ones practical direction when decisions are time-sensitive and emotions are running high — a gift they will genuinely appreciate.
+              {t('reassurance.desc')}
             </p>
           </div>
           <div className="reveal reveal-delay-1 max-w-[300px] lg:max-w-[320px] mx-auto lg:ml-auto lg:mr-0">
             <img
               src="/hero-app-3.jpg"
-              alt="The Everstead app — your plan organised: accounts and assets, documents and wishes, and the people you trust"
+              alt={t('reassurance.imageAlt')}
               width="512" height="640"
               loading="lazy"
               className="w-full h-auto rounded-3xl"
@@ -465,35 +475,28 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-16 items-center mb-16">
             <div className="reveal">
-              <p className="text-xs font-semibold uppercase tracking-widest text-navy-600 mb-4">Security & privacy</p>
+              <p className="text-xs font-semibold uppercase tracking-widest text-navy-600 mb-4">{t('security.eyebrow')}</p>
               {/* A/B alternates to try later:
                 // "Bank-grade security. Total control. Always yours."
                 // "Protected to the highest standards — and only ever yours."
               */}
               <h2 className="font-display text-4xl lg:text-5xl font-light text-navy-950 text-balance leading-tight">
-                Built on the highest security standards — and controlled entirely by you.
+                {t('security.title')}
               </h2>
               <p className="mt-5 text-stone-600 leading-relaxed">
-                Everstead runs on bank-grade AES-256 encryption and UK-hosted, UK GDPR-compliant infrastructure. Your information stays private by default — visible only to the people you choose, only the parts you choose, and only when you decide. It's your vault, and you decide who ever gets in.
+                {t('security.desc')}
               </p>
               <div className="mt-8 flex flex-wrap gap-x-6 gap-y-3">
                 <Link to="/security" className="inline-flex items-center gap-2 text-navy-700 font-medium text-sm hover:text-navy-900 transition-colors">
-                  Read our security practices <ArrowRight size={15} />
+                  {t('security.linkPractices')} <ArrowRight size={15} />
                 </Link>
                 <Link to="/privacy" className="inline-flex items-center gap-2 text-navy-700 font-medium text-sm hover:text-navy-900 transition-colors">
-                  Our privacy policy <ArrowRight size={15} />
+                  {t('security.linkPrivacy')} <ArrowRight size={15} />
                 </Link>
               </div>
             </div>
             <div className="reveal reveal-delay-1 grid grid-cols-2 gap-4">
-              {[
-                { icon: Lock,       label: 'AES-256 encrypted storage' },
-                { icon: Users,      label: 'Role-based access controls' },
-                { icon: BookOpen,   label: 'Complete audit history' },
-                { icon: Share2,     label: 'Private sharing only' },
-                { icon: Bell,       label: 'Emergency vault access' },
-                { icon: ShieldCheck, label: 'Privacy-first commitments' },
-              ].map(({ icon: Icon, label }) => (
+              {securityFeatures.map(({ icon: Icon, label }) => (
                 <div key={label} className="bg-white rounded-xl p-4 flex items-center gap-3 border border-stone-200">
                   <div className="w-8 h-8 rounded-lg bg-navy-50 flex items-center justify-center flex-shrink-0">
                     <Icon size={16} className="text-navy-700" />
@@ -511,21 +514,21 @@ export default function Home() {
       <section className="py-24 lg:py-32 aurora-field aurora-dim relative overflow-hidden">
         <div className="relative max-w-7xl mx-auto px-6 lg:px-8">
           <div className="text-center mb-14 reveal">
-            <p className="text-xs font-semibold uppercase tracking-widest text-sage-400 mb-4">Pricing</p>
-            <h2 className="font-display text-4xl font-light text-white text-balance">Simple, honest pricing.</h2>
-            <p className="mt-3 text-stone-400 text-sm">Save 20% with yearly billing, all in pounds.</p>
+            <p className="text-xs font-semibold uppercase tracking-widest text-sage-400 mb-4">{t('pricing.eyebrow')}</p>
+            <h2 className="font-display text-4xl font-light text-white text-balance">{t('pricing.title')}</h2>
+            <p className="mt-3 text-stone-400 text-sm">{t('pricing.subtitle')}</p>
             <div className="mt-8 inline-flex items-center gap-4 bg-white/10 border border-white/20 rounded-full p-1">
               <button
                 onClick={() => setAnnualPricing(false)}
                 className={`px-5 py-1.5 text-sm font-medium rounded-full transition-colors ${!annualPricing ? 'bg-white text-navy-900' : 'text-stone-300 hover:text-white'}`}
               >
-                Monthly
+                {t('pricing.monthly')}
               </button>
               <button
                 onClick={() => setAnnualPricing(true)}
                 className={`px-5 py-1.5 text-sm font-medium rounded-full transition-colors ${annualPricing ? 'bg-white text-navy-900' : 'text-stone-300 hover:text-white'}`}
               >
-                Yearly <span className="text-sage-500 font-semibold ml-1">Save 20%</span>
+                {t('pricing.yearly')} <span className="text-sage-500 font-semibold ml-1">{t('pricing.save')}</span>
               </button>
             </div>
           </div>
@@ -542,8 +545,8 @@ export default function Home() {
               >
                 {(highlight || promo) && (
                   <div className="mb-4 flex items-center gap-2 flex-wrap">
-                    {highlight && <span className="inline-block bg-sage-500 text-white text-xs font-semibold px-2.5 py-1 rounded-full">Most popular</span>}
-                    {promo && <span className="inline-block bg-amber-400 text-amber-950 text-xs font-semibold px-2.5 py-1 rounded-full">Launch offer</span>}
+                    {highlight && <span className="inline-block bg-sage-500 text-white text-xs font-semibold px-2.5 py-1 rounded-full">{t('pricing.badgePopular')}</span>}
+                    {promo && <span className="inline-block bg-amber-400 text-amber-950 text-xs font-semibold px-2.5 py-1 rounded-full">{t('pricing.badgePromo')}</span>}
                   </div>
                 )}
                 <h3 className={`font-semibold text-lg mb-1 ${highlight ? 'text-navy-900' : 'text-white'}`}>{name}</h3>
@@ -551,14 +554,14 @@ export default function Home() {
                 {id !== 'advisor' && (
                   <>
                     <div className="flex items-end gap-1 mb-6">
-                      <span className={`font-display text-4xl font-light ${highlight ? 'text-navy-950' : 'text-white'}`}>£{annualPricing ? annual : monthly}</span>
-                      <span className={`text-sm mb-1.5 ${highlight ? 'text-stone-400' : 'text-stone-500'}`}>/mo</span>
+                      <span className={`font-display text-4xl font-light ${highlight ? 'text-navy-950' : 'text-white'}`}>{annualPricing ? annual : monthly}</span>
+                      <span className={`text-sm mb-1.5 ${highlight ? 'text-stone-400' : 'text-stone-500'}`}>{annualPricing ? t('pricing.suffixAnnual') : t('pricing.suffixMonthly')}</span>
                     </div>
-                    <p className={`text-xs mb-4 ${highlight ? 'text-stone-400' : 'text-stone-500'}`}>{annualPricing ? 'Billed annually · Save 20%' : 'Billed monthly'}</p>
+                    <p className={`text-xs mb-4 ${highlight ? 'text-stone-400' : 'text-stone-500'}`}>{annualPricing ? t('pricing.billedAnnually') : t('pricing.billedMonthly')}</p>
                   </>
                 )}
                 {id === 'advisor' && (
-                  <p className="text-stone-400 text-xs mb-6">Pricing on application — we're working personally with our first adviser cohort.</p>
+                  <p className="text-stone-400 text-xs mb-6">{t('pricing.plans.advisor.note')}</p>
                 )}
                 <ul className="space-y-2.5 mb-8">
                   {features.map(f => (
@@ -573,7 +576,7 @@ export default function Home() {
                     to="/book-demo"
                     className="block text-center py-2.5 px-4 rounded-full text-sm font-semibold transition-colors bg-white/10 text-white border border-white/20 hover:bg-white/20"
                   >
-                    Book a demo <ArrowRight size={13} className="inline ml-1" />
+                    {cta} <ArrowRight size={13} className="inline ml-1" />
                   </Link>
                 ) : (
                   <Link
@@ -592,8 +595,8 @@ export default function Home() {
           </div>
 
           <p className="text-center mt-8 text-stone-500 text-xs reveal">
-            All plans include a 14-day free trial. Your card won't be charged until the trial ends.{' '}
-            <Link to="/pricing" className="text-stone-400 hover:text-white underline underline-offset-2 transition-colors">Full pricing details →</Link>
+            {t('pricing.trialNote')}{' '}
+            <Link to="/pricing" className="text-stone-400 hover:text-white underline underline-offset-2 transition-colors">{t('pricing.fullDetails')}</Link>
           </p>
         </div>
       </section>
@@ -604,19 +607,19 @@ export default function Home() {
           <div className="reveal grid md:grid-cols-[auto_1fr_auto] items-center gap-6 rounded-3xl bg-white border border-stone-200 px-8 py-8 lg:px-10 lg:py-9">
             <div className="text-5xl lg:text-6xl select-none" aria-hidden="true">🎁</div>
             <div>
-              <p className="text-xs font-semibold uppercase tracking-widest text-sage-700 mb-2">A gift that says: I've sorted it.</p>
+              <p className="text-xs font-semibold uppercase tracking-widest text-sage-700 mb-2">{t('gift.eyebrow')}</p>
               <h2 className="font-display text-2xl lg:text-3xl font-light text-navy-950 leading-snug mb-2 text-balance">
-                Give Everstead to a parent, partner, or someone you love.
+                {t('gift.title')}
               </h2>
               <p className="text-sm text-stone-600 leading-relaxed max-w-xl">
-                The kind of present they'd never buy themselves — and the one that genuinely takes weight off their family one day. Sent as a digital gift, redeemable any time.
+                {t('gift.desc')}
               </p>
             </div>
             <Link
               to="/gift"
               className="btn-aurora inline-flex items-center justify-center gap-2 text-white text-sm font-semibold px-5 py-3 rounded-full transition-transform hover:-translate-y-0.5 whitespace-nowrap shrink-0"
             >
-              Give as a gift <ArrowRight size={14} />
+              {t('gift.cta')} <ArrowRight size={14} />
             </Link>
           </div>
         </div>

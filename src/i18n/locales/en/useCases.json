@@ -1,0 +1,293 @@
+{
+  "meta": {
+    "index": {
+      "title": "Use Cases — Everstead for Families, Executors & Advisers",
+      "description": "Whether you're organising your own affairs, stepping in as an executor, or advising clients — Everstead is built for the role you're in.",
+      "ogTitle": "Use Cases — Everstead",
+      "ogDescription": "One plan. Every role in a family. See how Everstead works for families, parents, executors, and advisers."
+    },
+    "personaTitle": "{{title}} — Everstead"
+  },
+  "hero": {
+    "eyebrow": "Who it's for",
+    "title": "One plan. Every role in a family.",
+    "subtitle": "Whether you're organising your own affairs, stepping in as an executor, or advising clients — Everstead is built for the role you're in."
+  },
+  "stats": [
+    { "value": "45 min", "label": "Average setup time" },
+    { "value": "5 roles", "label": "Supported use cases" },
+    { "value": "14 days", "label": "Free trial, no charge until it ends" }
+  ],
+  "index": {
+    "learnMore": "Learn more →",
+    "card": {
+      "eyebrow": "Not sure where to start?",
+      "title": "Most people start as individuals and invite family later.",
+      "body": "You don't need to have everything figured out. Start with what you have — one account, one document. The plan grows with you."
+    },
+    "fit": {
+      "eyebrow": "One plan, multiple people",
+      "title": "Every role works from the same plan — with access only to what they need.",
+      "body": "You build the plan. You decide what each trusted person can see. An executor might see the account inventory and step-by-step instructions. A family member might see personal letters and emergency contacts. An adviser might see the financial overview. Everyone gets exactly what they need — and nothing more.",
+      "link": "See how access works",
+      "roles": [
+        { "role": "You", "desc": "Full control. Build, edit, and manage everything." },
+        { "role": "Family members", "desc": "See accounts, documents, and instructions you share." },
+        { "role": "Executor", "desc": "Step-by-step instructions and account inventory." },
+        { "role": "Adviser", "desc": "Financial overview and readiness status." }
+      ]
+    }
+  },
+  "sections": {
+    "notFound": "Use case not found.",
+    "situation": "The situation",
+    "withoutIt": "What goes wrong without it",
+    "withEverstead": "With Everstead",
+    "whatChanges": "What changes when your plan is organised",
+    "keyFeatures": "Key features for {{name}}",
+    "exploreOther": "Explore other use cases",
+    "explore": "Explore →"
+  },
+  "personas": {
+    "families": {
+      "title": "For Families",
+      "shortName": "families",
+      "hero": "Make sure loved ones know where everything is — and what to do first.",
+      "tagline": "When the worst happens, confusion costs more than money.",
+      "body": "When a family member passes or becomes incapacitated, the people left behind face a wave of urgent decisions with almost no information to guide them. Where are the bank accounts? Who is the solicitor? What was on direct debit? Everstead gives you one organised place to answer all of it — before it's needed.",
+      "scenario": "Imagine your partner dies suddenly on a Tuesday. By Thursday you're being asked for account numbers, insurance policies, and the name of their pension provider. You have no idea where to start. That disorientation — the paperwork chaos on top of grief — is what Everstead is built to prevent.",
+      "painPoints": [
+        "Accounts scattered across banks with no single record",
+        "Documents in physical folders that no one can find",
+        "No clear first steps for whoever has to manage the estate",
+        "Subscriptions continuing to charge for months after death",
+        "Relatives disagreeing because wishes were never written down"
+      ],
+      "benefits": [
+        "A single place for all accounts, documents, and contacts",
+        "First-steps checklist your family can follow immediately",
+        "Document access granted to the right people in advance",
+        "Subscription and recurring cost inventory",
+        "Final wishes and personal messages, clearly recorded",
+        "Emergency vault access for urgent situations"
+      ],
+      "features": [
+        {
+          "title": "Document vault",
+          "body": "Upload wills, insurance policies, and property deeds. Tagged and accessible — no searching through physical folders."
+        },
+        {
+          "title": "First-steps instructions",
+          "body": "Write a step-by-step guide for your executor or family, in your own words. They see it the moment they log in."
+        },
+        {
+          "title": "Trusted access",
+          "body": "Invite a family member with read-only access to specific sections. They can't edit anything — only view what you've shared."
+        }
+      ]
+    },
+    "parents": {
+      "title": "For Parents",
+      "shortName": "parents",
+      "hero": "Leave guidance, not guesswork, for every practical and personal decision.",
+      "tagline": "Your children will need to know. Make it easy for them.",
+      "body": "Parents carry both practical responsibilities and personal wishes they want their children to understand. The financial and logistical side is only half of it — the other half is the guidance only you can give. Everstead lets you record both, clearly and privately, so nothing important is left unsaid.",
+      "scenario": "Your children are adults. They know you love them. But if something happened tomorrow, would they know who your pension is with? Who your solicitor is? What your wishes are for your funeral? Would they know what you'd want for your grandchildren? Everstead is the place you put all of that down.",
+      "painPoints": [
+        "No single record of financial accounts and policies",
+        "Children don't know where important documents are kept",
+        "Personal wishes never formally written down",
+        "Guardian preferences for pets and dependants unrecorded",
+        "Digital accounts and passwords inaccessible"
+      ],
+      "benefits": [
+        "Record where key documents and accounts are stored",
+        "Leave personal letters and messages for specific family members",
+        "Assign guardianship and care preferences for dependants and pets",
+        "Document digital accounts and subscriptions clearly",
+        "Update your plan as life changes without starting over",
+        "Set access levels so children see only what you choose"
+      ],
+      "features": [
+        {
+          "title": "Personal messages",
+          "body": "Write letters to each of your children — or to your grandchildren for milestones you might not be there for. Private, stored, and delivered when it counts."
+        },
+        {
+          "title": "Granular access control",
+          "body": "Share your financial section with one child and your personal wishes with another. Each trusted person only sees what you've chosen."
+        },
+        {
+          "title": "Guardianship and care notes",
+          "body": "Record your preferences for dependants, pets, and care situations — the kind of guidance a will often leaves out."
+        }
+      ]
+    },
+    "aging-adults": {
+      "title": "For Aging Adults",
+      "shortName": "aging adults",
+      "hero": "Organise your affairs with dignity — on your own terms.",
+      "tagline": "It's not about the end. It's about being prepared.",
+      "body": "Organising your affairs doesn't have to feel final. It's one of the most considerate things you can do for the people you love. Everstead gives you complete control over what you share, who sees it, and how your wishes are expressed — without any technical knowledge required.",
+      "scenario": "You've thought about getting your affairs in order for a while. But it feels like a big job — and maybe a bit morbid. Everstead lets you go at your own pace. Add your current account this week. Upload your will next month. Invite your daughter when you're ready. There's no rush and nothing is ever final until you say so.",
+      "painPoints": [
+        "Feels overwhelming to start — no clear place to begin",
+        "Reluctant to involve family before you're ready",
+        "Concerned about who can see sensitive financial information",
+        "Worried that technology will be too complicated",
+        "Not sure what actually needs to be documented"
+      ],
+      "benefits": [
+        "Gradual setup — add a little at a time, no pressure",
+        "Assign a trusted family member with limited, specific access",
+        "Clearly record medical preferences and care wishes",
+        "Emergency vault for immediate access when needed",
+        "Simple design — no technical expertise required",
+        "You stay in full control of who sees what, always"
+      ],
+      "features": [
+        {
+          "title": "You control access",
+          "body": "Nothing is shared unless you choose to share it. Invite someone today, revoke their access tomorrow. Always your decision."
+        },
+        {
+          "title": "Emergency access",
+          "body": "Set a trusted person as an emergency contact. If something happens suddenly, they can access the vault immediately — with everything they need."
+        },
+        {
+          "title": "Simple, guided setup",
+          "body": "Everstead walks you through what to document, step by step. No technical knowledge needed. Add things gradually at your own pace."
+        }
+      ]
+    },
+    "executors": {
+      "title": "For Executors",
+      "shortName": "executors",
+      "hero": "A clear, organised starting point for a complex responsibility.",
+      "tagline": "Being named executor is an honour. It can also be overwhelming.",
+      "body": "When someone names you as their executor, they're trusting you with an enormous responsibility — often at an already difficult time. The challenge isn't the intent; it's the information. Where are the accounts? What's outstanding? Who needs to be contacted and in what order? Everstead gives executors a structured, complete starting point.",
+      "scenario": "You've been named executor for a close friend. You're grieving, you're managing your own family, and you're now responsible for closing out a financial life — bank accounts, pensions, property, direct debits — with almost no guidance on where to start. Everstead is the organised handover that makes that possible.",
+      "painPoints": [
+        "No single record of accounts, assets, or policies",
+        "Documents scattered across physical and digital locations",
+        "Unclear what order to do things or who to contact first",
+        "Subscriptions continuing to charge after death",
+        "No audit trail for decisions made during the process"
+      ],
+      "benefits": [
+        "Organised account and asset inventory from the start",
+        "Documents already uploaded, tagged, and accessible",
+        "Step-by-step instruction sequences to follow",
+        "Contact list with roles and relationships clearly labelled",
+        "Subscription and recurring bill inventory for fast cancellation",
+        "Audit history for transparent record-keeping"
+      ],
+      "features": [
+        {
+          "title": "Step-by-step instructions",
+          "body": "The plan owner writes exactly what they want you to do first, second, and third. You arrive with a checklist, not a blank page."
+        },
+        {
+          "title": "Everything in one place",
+          "body": "Accounts, documents, contacts, subscriptions — all organised in a single structured plan. No searching across filing cabinets and email inboxes."
+        },
+        {
+          "title": "Audit trail",
+          "body": "Every access event is logged and timestamped. Transparent record-keeping for everything you view, download, or reference."
+        }
+      ]
+    },
+    "advisors": {
+      "title": "For Advisers & Professionals",
+      "shortName": "advisers & professionals",
+      "hero": "Offer estate organisation as a genuine client service.",
+      "tagline": "The gap between legal planning and practical preparation is where clients need you most.",
+      "body": "Financial advisers, solicitors, and wealth managers help clients plan their futures — but practical estate organisation often falls through the gap. Everstead gives professionals the tools to bridge that gap: collaborative access, client progress visibility, and a structured framework that turns intentions into an organised plan.",
+      "scenario": "You've had the conversation. The client has a will, pension nominations are updated, and the IHT strategy is in place. But if something happened tomorrow, would their family know where anything is? Would your firm be called at 8pm by a bereaved spouse asking where to start? Everstead is the practical layer that makes your advice actionable.",
+      "painPoints": [
+        "Clients have plans but no organised record of where things actually are",
+        "Families left without a clear starting point despite professional advice",
+        "No structured handover between adviser and client estate",
+        "Difficult to verify that clients have followed through on action items",
+        "Your firm's value isn't visible until it's too late to demonstrate it"
+      ],
+      "benefits": [
+        "Multi-client workspace to manage multiple client plans",
+        "Co-branded client portal under your firm identity",
+        "Collaborative access to specific plan sections",
+        "Client progress and readiness dashboards",
+        "Streamlined onboarding and plan completion flows",
+        "White-label options for enterprise practices"
+      ],
+      "features": [
+        {
+          "title": "Multi-client workspace",
+          "body": "Manage plans for all your clients from a single adviser dashboard. See readiness scores, completion status, and recent activity at a glance."
+        },
+        {
+          "title": "Selective collaboration",
+          "body": "Access only the sections your client has chosen to share with you. They stay in control. You get the visibility you need to advise effectively."
+        },
+        {
+          "title": "Your brand, your service",
+          "body": "White-label options available for practices that want to offer Everstead under their own firm identity — as a genuine value-add service."
+        }
+      ]
+    }
+  },
+  "quotes": {
+    "families": {
+      "text": "\"We had no idea where my mother kept anything — her bank, her pension, even her will. We spent six months piecing it together. Everstead would have changed everything.\"",
+      "author": "— Adult child and estate executor"
+    },
+    "parents": {
+      "text": "\"The hardest part wasn't the grief. It was the dozen practical decisions we had to make without knowing what she would have wanted. That's the part I'm determined not to leave for my children.\"",
+      "author": "— Parent planning ahead"
+    },
+    "aging-adults": {
+      "text": "\"I finally feel like I've taken care of something important. My children won't be left wondering. That's the peace of mind I was looking for.\"",
+      "author": "— Everstead user, age 71"
+    },
+    "executors": {
+      "text": "\"As executor for three estates in my career, I've learned that organisation is everything. The difference between a plan in Everstead and a folder of loose paperwork is enormous.\"",
+      "author": "— Estate solicitor"
+    },
+    "advisors": {
+      "text": "\"This has become a genuine value-add for my practice. Clients appreciate that I'm helping them prepare practically, not just on paper. The conversations are better, and the outcomes are too.\"",
+      "author": "— Certified Financial Planner"
+    }
+  },
+  "cta": {
+    "families": {
+      "text": "Set up your family plan",
+      "note": "14-day free trial · Card required · No charge until trial ends"
+    },
+    "parents": {
+      "text": "Start building your plan",
+      "note": "14-day free trial · Set up in under an hour"
+    },
+    "aging-adults": {
+      "text": "Get started at your own pace",
+      "note": "14-day free trial · No technical expertise needed"
+    },
+    "executors": {
+      "text": "Help someone prepare now",
+      "note": "14-day free trial · Share the link with someone who needs this"
+    },
+    "advisors": {
+      "text": "Book a demo for your practice",
+      "note": "Early access — working personally with our first adviser partners"
+    },
+    "shared": {
+      "readyTitle": "Ready to get organised?",
+      "readyBody": "It takes about 45 minutes to build a complete plan. Your family will have everything they need.",
+      "seeHowItWorks": "See how it works"
+    },
+    "start": "Start Your Everstead",
+    "bookDemo": "Book a demo",
+    "bottom": {
+      "title": "Whichever role you're in — start here.",
+      "body": "14-day free trial. Set up in about 45 minutes. No charge until your trial ends."
+    }
+  }
+}

@@ -1,0 +1,184 @@
+{
+  "meta": {
+    "title": "Everstead — Votre vie, organisée.",
+    "description": "Everstead aide les familles à organiser en toute sécurité leurs comptes, documents, instructions et dernières volontés — avec une IA qui vous accompagne à chaque étape. Commencez votre essai gratuit dès aujourd'hui.",
+    "ogTitle": "Everstead — Votre vie, organisée.",
+    "ogDescription": "Everstead est le foyer sécurisé de vos comptes, documents et décisions importantes — organisés pour vous aujourd'hui, et prêts pour votre famille quand cela compte.",
+    "jsonLdDescription": "Un espace personnel sécurisé pour les familles. Organisez comptes, documents et décisions importantes — accessibles aujourd'hui, et prêts pour vos proches le moment venu."
+  },
+  "hero": {
+    "eyebrow": "Organisez vos comptes, documents et dernières volontés",
+    "title1": "Tout ce qui compte, ",
+    "titleEm": "réuni",
+    "title2": " en un seul endroit sûr.",
+    "subtitle": "Mettez de l'ordre dans votre vie numérique, pour que vos proches ne soient jamais perdus. Tout se met en place en quelques minutes, et n'est partagé qu'avec les personnes que vous choisissez.",
+    "ctaPrimary": "Commencer gratuitement",
+    "ctaSecondary": "Voir comment ça marche",
+    "trustEncryption": "Chiffrement AES-256 au repos et en transit",
+    "trustUk": "Basé au Royaume-Uni",
+    "trustpilotAria": "Noté Excellent sur Trustpilot — lisez nos avis",
+    "trustpilotPre": "Noté",
+    "trustpilotExcellent": "Excellent",
+    "trustpilotPost": "sur Trustpilot",
+    "aiBadge": "Organisation assistée par l'IA",
+    "mobilePhotoAlt": "Une fille et son père organisent ensemble le plan de leur famille, à la maison"
+  },
+  "trustBar": {
+    "security": { "label": "Chiffrement AES-256", "sub": "Au repos et en transit" },
+    "access": { "label": "Gestion des accès", "sub": "Vous décidez qui peut voir quoi" },
+    "residency": { "label": "Données hébergées au Royaume-Uni", "sub": "Pleinement conforme au RGPD" },
+    "soc2": { "label": "Conformité SOC 2", "sub": "Bâti sur une infrastructure SOC 2" }
+  },
+  "why": {
+    "eyebrow": "Pourquoi Everstead",
+    "title1": "Un seul foyer pour",
+    "title2": "tout ce qui compte.",
+    "subtitle": "Fini les identifiants éparpillés, les papiers égarés et les questions sans réponse. Juste la trace claire et sereine d'une vie bien organisée.",
+    "cards": {
+      "accounts": {
+        "title": "Comptes et actifs",
+        "desc": "Chaque compte, contrat et abonnement dans une liste claire — pour que rien ne passe entre les mailles du filet.",
+        "cta": "Découvrez ce que vous pouvez ajouter"
+      },
+      "documents": {
+        "title": "Documents et volontés",
+        "desc": "Testaments, actes, lettres et instructions — conservés en sécurité, faciles à retrouver et impossibles à égarer.",
+        "cta": "Protégez vos documents"
+      },
+      "people": {
+        "title": "Personnes de confiance",
+        "desc": "Décidez qui voit quoi, et quand. Votre famille n'est jamais qu'à un pas — jamais dans l'incertitude.",
+        "cta": "Choisissez vos personnes de confiance"
+      }
+    }
+  },
+  "rows": {
+    "current": {
+      "eyebrow": "Facile à garder à jour",
+      "title": "À jour, sans la corvée.",
+      "desc": "Des rappels bienveillants et des mises à jour en un geste : votre Everstead reflète votre vie telle qu'elle est aujourd'hui — pas celle d'il y a cinq ans. Le plus dur reste fait.",
+      "bullets": [
+        "Des rappels discrets, uniquement quand quelque chose mérite un coup d'œil",
+        "Une vision claire de ce qui est complet et de ce qui reste à faire"
+      ],
+      "imageAlt": "Un résumé mensuel discret dans Everstead — l'assurance habitation renouvelée, un nouveau livret d'épargne ajouté, et un rappel en douceur qu'un passeport expire dans six mois"
+    },
+    "share": {
+      "eyebrow": "À partager selon vos règles",
+      "title": "Partagez exactement ce que vous choisissez.",
+      "desc": "Donnez à votre conjoint un accès complet, à un enfant un seul document, ou à votre notaire une enveloppe scellée, ouverte seulement le moment venu. Vous gardez le contrôle, toujours.",
+      "bullets": [
+        "Des autorisations par élément, modifiables à tout moment",
+        "Des personnes de confiance prévenues uniquement quand c'est nécessaire"
+      ],
+      "imageAlt": "Personnes de confiance dans Everstead — un conjoint avec un accès complet, une fille avec un seul document, et un notaire dont l'enveloppe reste scellée jusqu'au moment venu"
+    }
+  },
+  "steps": {
+    "eyebrow": "Premiers pas",
+    "title": "Plus simple que vous ne le pensez — et jamais pour rien.",
+    "subtitle": "Quelques minutes tranquilles aujourd'hui, pour que ceux que vous aimez ne passent pas des semaines à tout reconstituer plus tard.",
+    "items": [
+      {
+        "title": "Rassemblez l'essentiel",
+        "desc": "Ajoutez comptes, documents et volontés quand cela vous arrange — quelques minutes de temps en temps suffisent largement."
+      },
+      {
+        "title": "Gardez tout à jour",
+        "desc": "De petits rappels bienveillants maintiennent l'ensemble exact et complet, pour que tout soit toujours prêt."
+      },
+      {
+        "title": "Transmettez, le moment venu",
+        "desc": "Choisissez qui est prévenu, et ce que chacun peut voir, si et quand le moment arrive un jour."
+      }
+    ],
+    "link": "Découvrir le fonctionnement complet"
+  },
+  "reassurance": {
+    "title": "Préparer l'avenir, c'est prendre soin des vôtres.",
+    "desc": "Everstead transforme la confusion en clarté. Il donne à vos proches des repères concrets quand les décisions pressent et que l'émotion est vive — un cadeau qu'ils apprécieront sincèrement.",
+    "imageAlt": "L'application Everstead — votre plan organisé : comptes et actifs, documents et volontés, et vos personnes de confiance"
+  },
+  "security": {
+    "eyebrow": "Sécurité et confidentialité",
+    "title": "Conçu selon les normes de sécurité les plus strictes — et entièrement sous votre contrôle.",
+    "desc": "Everstead repose sur un chiffrement AES-256 au repos et en transit, et sur une infrastructure hébergée au Royaume-Uni, conforme au RGPD. Vos informations restent privées par défaut — visibles uniquement des personnes que vous choisissez, pour les seuls éléments que vous choisissez, et seulement quand vous le décidez. C'est votre espace, et vous seul décidez qui peut y entrer.",
+    "linkPractices": "Découvrir nos pratiques de sécurité",
+    "linkPrivacy": "Notre politique de confidentialité",
+    "features": [
+      "Stockage chiffré AES-256",
+      "Contrôles d'accès par rôles",
+      "Historique d'audit complet",
+      "Partage privé uniquement",
+      "Accès d'urgence pour vos proches",
+      "La confidentialité avant tout"
+    ]
+  },
+  "pricing": {
+    "eyebrow": "Tarifs",
+    "title": "Des tarifs simples et honnêtes.",
+    "subtitle": "Économisez 20 % avec la facturation annuelle. Prix en euros, TTC.",
+    "monthly": "Mensuel",
+    "yearly": "Annuel",
+    "save": "Économisez 20 %",
+    "badgePopular": "Le plus populaire",
+    "badgePromo": "Offre de lancement",
+    "suffixMonthly": "/mois",
+    "suffixAnnual": "/an",
+    "billedMonthly": "Facturation mensuelle · Prix TTC",
+    "billedAnnually": "Facturation annuelle · Prix TTC · Économisez 20 %",
+    "plans": {
+      "essential": {
+        "name": "Essentiel",
+        "priceMonthly": "4,99 €",
+        "priceAnnual": "47,88 €",
+        "desc": "Pour celles et ceux qui veulent réunir leurs comptes, documents et volontés en un seul endroit sûr.",
+        "features": [
+          "Jusqu'à 10 comptes et documents",
+          "Instructions pas à pas",
+          "1 personne de confiance",
+          "Score de préparation",
+          "1 Go de stockage",
+          "Votre assistant IA"
+        ],
+        "cta": "Commencez votre Everstead"
+      },
+      "family": {
+        "name": "Famille",
+        "priceMonthly": "11,99 €",
+        "priceAnnual": "114,88 €",
+        "desc": "Pour les couples et les familles — deux espaces privés, un seul abonnement. Organisés ensemble, privés chacun de son côté.",
+        "features": [
+          "Tout ce qui est inclus dans Essentiel",
+          "Deux espaces privés — un seul abonnement",
+          "Chacun garde ses données privées",
+          "Jusqu'à 10 personnes de confiance",
+          "25 Go de stockage",
+          "Ne partagez que ce que vous choisissez"
+        ],
+        "cta": "Commencez votre Everstead"
+      },
+      "advisor": {
+        "name": "Conseiller",
+        "desc": "Pour les professionnels qui accompagnent leurs clients dans l'organisation de leur patrimoine. Tarif sur demande.",
+        "note": "Tarif sur demande — nous accompagnons personnellement notre première cohorte de conseillers.",
+        "features": [
+          "Tout ce qui est inclus dans Famille",
+          "Espace de travail multi-clients",
+          "Portail client co-brandé",
+          "Outils de collaboration pour conseillers",
+          "Assistance prioritaire"
+        ],
+        "cta": "Réserver une démo"
+      }
+    },
+    "trialNote": "Tous les forfaits incluent 14 jours d'essai gratuit. Votre carte ne sera débitée qu'à la fin de la période d'essai.",
+    "fullDetails": "Tous les détails des tarifs →"
+  },
+  "gift": {
+    "eyebrow": "Un cadeau qui dit : je m'en suis occupé.",
+    "title": "Offrez Everstead à un parent, un conjoint ou quelqu'un que vous aimez.",
+    "desc": "Le genre de cadeau qu'ils ne s'offriraient jamais eux-mêmes — et celui qui, un jour, soulagera vraiment leur famille. Envoyé sous forme de cadeau numérique, à activer à tout moment.",
+    "cta": "Offrir en cadeau"
+  }
+}

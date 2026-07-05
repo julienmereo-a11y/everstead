@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { Helmet } from 'react-helmet-async'
 import { Link, useNavigate, useLocation, useSearchParams } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { Mail, Lock, Eye, EyeOff, ArrowRight, ShieldCheck } from 'lucide-react'
 import { supabase } from '../lib/supabase'
 
@@ -17,35 +18,9 @@ function GoogleIcon() {
   )
 }
 
-const QUOTES = [
-  {
-    text: "The greatest act of love is to make things easier for the people who will grieve you.",
-    author: null,
-    role: null,
-  },
-  {
-    text: "My father passed suddenly. Everstead made an incredibly painful time so much more manageable.",
-    author: "Margaret T.",
-    role: "Daughter & executor",
-  },
-  {
-    text: "Planning isn't about expecting the worst. It's about protecting what you love most.",
-    author: null,
-    role: null,
-  },
-  {
-    text: "I set up Everstead so my children will never go through what we did when Mum passed. It took one afternoon.",
-    author: "David R.",
-    role: "Father & executor",
-  },
-  {
-    text: "The most thoughtful thing you can leave behind isn't money. It's a plan.",
-    author: null,
-    role: null,
-  },
-]
-
 export default function Login() {
+  const { t, i18n } = useTranslation('login')
+  const QUOTES = t('leftPanel.quotes', { returnObjects: true })
   const navigate = useNavigate()
   const location = useLocation()
   const [searchParams] = useSearchParams()
@@ -122,7 +97,7 @@ export default function Login() {
         body:    JSON.stringify({ email, password }),
       })
       const data = await res.json()
-      if (!res.ok) throw new Error(data.error || 'Something went wrong.')
+      if (!res.ok) throw new Error(data.error || t('errors.generic'))
       setStep(2)
     } catch (err) {
       setError(err.message)
@@ -142,7 +117,7 @@ export default function Login() {
         body:    JSON.stringify({ email, code }),
       })
       const data = await res.json()
-      if (!res.ok) throw new Error(data.error || 'Something went wrong.')
+      if (!res.ok) throw new Error(data.error || t('errors.generic'))
 
       const { data: sessionData, error: sessionErr } = await supabase.auth.setSession({
         access_token:  data.access_token,
@@ -230,18 +205,14 @@ export default function Login() {
             key={i}
             onClick={() => { setQuoteVisible(false); setTimeout(() => { setQuoteIndex(i); setQuoteVisible(true) }, 400) }}
             style={{ width: i === quoteIndex ? '20px' : '6px', height: '6px', borderRadius: '3px', backgroundColor: i === quoteIndex ? '#4c7d47' : 'rgba(255,255,255,0.2)', border: 'none', cursor: 'pointer', transition: 'all 0.3s ease', padding: 0 }}
-            aria-label={`Quote ${i + 1}`}
+            aria-label={t('leftPanel.quoteAriaLabel', { number: i + 1 })}
           />
         ))}
       </div>
 
       {/* Trust stats */}
       <div className="relative z-10 grid grid-cols-3 gap-3">
-        {[
-          { value: '14-day', label: 'Free trial' },
-          { value: 'AES-256', label: 'Encryption' },
-          { value: 'UK-based', label: 'ICO registered' },
-        ].map(({ value, label }) => (
+        {t('leftPanel.stats', { returnObjects: true }).map(({ value, label }) => (
           <div key={label} className="text-center rounded-xl" style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)', padding: '16px 12px' }}>
             <p style={{ fontFamily: 'Georgia, serif', fontSize: '18px', fontWeight: '300', color: '#ffffff', marginBottom: '4px' }}>{value}</p>
             <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.45)' }}>{label}</p>
@@ -254,7 +225,7 @@ export default function Login() {
   return (
     <>
     <Helmet>
-      <title>Sign In — Everstead</title>
+      <title>{t('meta.title')}</title>
       <meta name="robots" content="noindex, nofollow" />
     </Helmet>
     <div className="min-h-screen flex" style={{ backgroundColor: '#f8f7f5' }}>
@@ -275,8 +246,8 @@ export default function Login() {
             {/* ── STEP 1: Email + Password ── */}
             {step === 1 && (
               <>
-                <h1 style={{ fontFamily: 'Georgia, serif', fontSize: '28px', fontWeight: '400', color: '#0d1628', marginBottom: '6px', letterSpacing: '-0.01em' }}>Welcome back</h1>
-                <p style={{ fontSize: '14px', color: '#78716c', marginBottom: '28px' }}>Sign in to your Everstead account</p>
+                <h1 style={{ fontFamily: 'Georgia, serif', fontSize: '28px', fontWeight: '400', color: '#0d1628', marginBottom: '6px', letterSpacing: '-0.01em' }}>{t('step1.title')}</h1>
+                <p style={{ fontSize: '14px', color: '#78716c', marginBottom: '28px' }}>{t('step1.subtitle')}</p>
 
                 <button
                   type="button"
@@ -285,23 +256,23 @@ export default function Login() {
                   style={{ border: '1px solid #e5e2dc', backgroundColor: '#ffffff', color: '#0d1628', fontWeight: '500', fontSize: '14px', padding: '12px', borderRadius: '9999px', marginBottom: '20px', cursor: 'pointer' }}
                 >
                   <GoogleIcon />
-                  Continue with Google
+                  {t('step1.googleButton')}
                 </button>
 
                 <div className="flex items-center gap-3" style={{ marginBottom: '20px' }}>
                   <div className="flex-1 h-px bg-stone-200" />
-                  <span style={{ fontSize: '12px', color: '#a8a29e' }}>or sign in with email</span>
+                  <span style={{ fontSize: '12px', color: '#a8a29e' }}>{t('step1.divider')}</span>
                   <div className="flex-1 h-px bg-stone-200" />
                 </div>
 
                 <form onSubmit={handleSendCode} className="space-y-4">
                   <div>
-                    <label style={{ display: 'block', fontSize: '12px', fontWeight: '600', color: '#57534e', marginBottom: '6px' }}>Email address</label>
+                    <label style={{ display: 'block', fontSize: '12px', fontWeight: '600', color: '#57534e', marginBottom: '6px' }}>{t('step1.emailLabel')}</label>
                     <div className="relative">
                       <Mail size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-stone-400 pointer-events-none" />
                       <input
                         type="email" required value={email} onChange={e => setEmail(e.target.value)}
-                        placeholder="you@example.com" autoComplete="email"
+                        placeholder={t('step1.emailPlaceholder')} autoComplete="email"
                         style={{ width: '100%', paddingLeft: '40px', paddingRight: '16px', paddingTop: '12px', paddingBottom: '12px', fontSize: '14px', border: '1px solid #e5e2dc', borderRadius: '10px', outline: 'none', boxSizing: 'border-box', transition: 'border-color 0.2s, box-shadow 0.2s', backgroundColor: '#fafaf9' }}
                         onFocus={e => { e.target.style.borderColor = '#0d1628'; e.target.style.boxShadow = '0 0 0 3px rgba(13,22,40,0.08)'; e.target.style.backgroundColor = '#ffffff' }}
                         onBlur={e => { e.target.style.borderColor = '#e5e2dc'; e.target.style.boxShadow = 'none'; e.target.style.backgroundColor = '#fafaf9' }}
@@ -311,11 +282,11 @@ export default function Login() {
 
                   <div>
                     <div className="flex items-center justify-between" style={{ marginBottom: '6px' }}>
-                      <label style={{ fontSize: '12px', fontWeight: '600', color: '#57534e' }}>Password</label>
+                      <label style={{ fontSize: '12px', fontWeight: '600', color: '#57534e' }}>{t('step1.passwordLabel')}</label>
                       <Link to="/forgot-password" style={{ fontSize: '12px', color: '#4c7d47', textDecoration: 'none', fontWeight: '500' }}
                         onMouseEnter={e => e.target.style.color = '#3d6b3a'}
                         onMouseLeave={e => e.target.style.color = '#4c7d47'}>
-                        Forgot password?
+                        {t('step1.forgotPassword')}
                       </Link>
                     </div>
                     <div className="relative">
@@ -329,7 +300,7 @@ export default function Login() {
                         onBlur={e => { e.target.style.borderColor = '#e5e2dc'; e.target.style.boxShadow = 'none'; e.target.style.backgroundColor = '#fafaf9' }}
                       />
                       <button type="button" onClick={() => setShowPw(v => !v)}
-                        aria-label={showPw ? 'Hide password' : 'Show password'}
+                        aria-label={showPw ? t('step1.hidePassword') : t('step1.showPassword')}
                         className="absolute right-3.5 top-1/2 -translate-y-1/2 text-stone-400 hover:text-stone-600 transition-colors">
                         {showPw ? <EyeOff size={15} /> : <Eye size={15} />}
                       </button>
@@ -346,15 +317,15 @@ export default function Login() {
                     className="btn-aurora w-full flex items-center justify-center gap-2 transition-all disabled:opacity-50"
                     style={{ color: '#ffffff', fontWeight: '600', fontSize: '14px', padding: '13px', borderRadius: '9999px', border: 'none', cursor: 'pointer', marginTop: '8px' }}
                   >
-                    {loading ? 'Verifying…' : 'Continue'}
+                    {loading ? t('step1.submitLoading') : t('step1.submit')}
                     {!loading && <ArrowRight size={16} />}
                   </button>
                 </form>
 
                 <p style={{ textAlign: 'center', fontSize: '13px', color: '#a8a29e', marginTop: '20px' }}>
-                  Don't have an account?{' '}
+                  {t('step1.noAccount')}{' '}
                   <Link to="/get-started" style={{ color: '#4c7d47', fontWeight: '500', textDecoration: 'none' }}>
-                    Start Your Everstead
+                    {t('step1.getStarted')}
                   </Link>
                 </p>
               </>
@@ -366,8 +337,8 @@ export default function Login() {
                 <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-5" style={{ backgroundColor: 'rgba(76,125,71,0.1)' }}>
                   <ShieldCheck size={22} style={{ color: '#4c7d47' }} />
                 </div>
-                <h1 style={{ fontFamily: 'Georgia, serif', fontSize: '28px', fontWeight: '400', color: '#0d1628', marginBottom: '6px', letterSpacing: '-0.01em' }}>Check your email</h1>
-                <p style={{ fontSize: '14px', color: '#78716c', marginBottom: '4px' }}>We sent a 6-digit code to</p>
+                <h1 style={{ fontFamily: 'Georgia, serif', fontSize: '28px', fontWeight: '400', color: '#0d1628', marginBottom: '6px', letterSpacing: '-0.01em' }}>{t('step2.title')}</h1>
+                <p style={{ fontSize: '14px', color: '#78716c', marginBottom: '4px' }}>{t('step2.sentCode')}</p>
                 <p style={{ fontSize: '14px', color: '#0d1628', fontWeight: '600', marginBottom: '28px' }}>{email}</p>
 
                 <form onSubmit={handleVerifyCode} className="space-y-5">
@@ -400,15 +371,15 @@ export default function Login() {
                     className="btn-aurora w-full flex items-center justify-center gap-2 transition-all disabled:opacity-50"
                     style={{ color: '#ffffff', fontWeight: '600', fontSize: '14px', padding: '13px', borderRadius: '9999px', border: 'none', cursor: 'pointer' }}
                   >
-                    {loading ? 'Verifying…' : 'Sign in'}
+                    {loading ? t('step2.submitLoading') : t('step2.submit')}
                     {!loading && <ArrowRight size={16} />}
                   </button>
 
                   <p style={{ textAlign: 'center', fontSize: '13px', color: '#a8a29e' }}>
-                    Wrong email?{' '}
+                    {t('step2.wrongEmail')}{' '}
                     <button type="button" onClick={() => { setStep(1); setDigits(['','','','','','']); setError(null) }}
                       style={{ color: '#4c7d47', fontWeight: '500', background: 'none', border: 'none', cursor: 'pointer', fontSize: '13px', padding: 0 }}>
-                      Go back
+                      {t('step2.goBack')}
                     </button>
                   </p>
                 </form>
@@ -418,7 +389,7 @@ export default function Login() {
 
           {/* Trust badge */}
           <p style={{ textAlign: 'center', fontSize: '11px', color: '#a8a29e', marginTop: '20px', letterSpacing: '0.01em' }}>
-            🔒 Bank-level AES-256 encryption · UK-registered · ICO No. 17166825
+            {t('trustBadge')}
           </p>
         </div>
       </div>

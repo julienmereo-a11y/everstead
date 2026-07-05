@@ -1,0 +1,261 @@
+{
+  "meta": {
+    "title": "Fonctionnalités — Everstead",
+    "description": "Découvrez tout ce qu'Everstead vous offre — numérisation de documents, instructions rédigées avec votre assistant IA, messages personnels, personnes de confiance et un score de préparation pour garder votre plan sur la bonne voie."
+  },
+  "hero": {
+    "eyebrow": "Fonctionnalités",
+    "title": "Tout ce que votre famille devra retrouver — réuni au même endroit.",
+    "subtitle": "Everstead vous offre une vision structurée, sécurisée et complète de votre patrimoine — comptes, documents, instructions et dernières volontés — organisée et accessible aux bonnes personnes, au moment où cela compte le plus.",
+    "ctaPrimary": "Commencer gratuitement",
+    "ctaSecondary": "Voir comment ça marche"
+  },
+  "sections": {
+    "problem": {
+      "eyebrow": "Ce que vivent les familles sans plan",
+      "items": [
+        "Des documents introuvables",
+        "Des mots de passe et des comptes perdus",
+        "Des semaines perdues à courir après les informations",
+        "Des volontés jamais consignées"
+      ]
+    },
+    "core": {
+      "eyebrow": "Ce que vous y trouverez",
+      "title": "Dix fonctionnalités. Un plan complet.",
+      "subtitle": "Chaque fonctionnalité est pensée autour des questions que les familles se posent réellement après un décès — et des réponses qu'elles peinent à trouver.",
+      "features": {
+        "aboutMe": {
+          "tag": "À propos de moi",
+          "title": "À propos de moi",
+          "headline": "L'histoire que vous seul pouvez raconter — préservée pour ceux que vous aimez.",
+          "body": "Bien plus que des comptes et de l'administratif. La musique que vous aimeriez faire jouer, une lettre à vos enfants, les événements qui ont marqué votre vie, une playlist qui vous ressemble. C'est le cœur chaleureux et humain de votre plan — écrit selon vos propres termes et partagé uniquement avec les personnes de votre choix, dès maintenant ou le jour où votre plan sera activé.",
+          "bullets": [
+            "Événements de vie, passions et réflexions personnelles",
+            "Lettres et messages pour ceux que vous aimez",
+            "Une photo de profil et une playlist qui disent qui vous êtes",
+            "Partagé uniquement avec les personnes choisies — jamais avec les notaires ou les conseillers"
+          ]
+        },
+        "aiAssistant": {
+          "tag": "Assistant IA",
+          "title": "Votre assistant IA",
+          "headline": "Une aide privée, pour les jours où l'administratif pèse trop lourd.",
+          "body": "Si mettre de l'ordre dans tout cela vous a déjà paru insurmontable, vous n'avez pas à y arriver seul. Votre assistant IA est une aide calme et privée au sein de votre compte — discutez avec des mots simples, ou déposez un document et il le lira pour vous suggérer des entrées. Il avance une petite étape à la fois, et rien n'est jamais enregistré avant que vous ne l'ayez relu et confirmé. Il peut aussi répondre à vos questions pratiques sur le fonctionnement d'Everstead.",
+          "bullets": [
+            "Discutez, ou déposez un document — il vous suggère des entrées à relire",
+            "Rien n'est enregistré sans votre confirmation — il suggère, vous décidez",
+            "Vous aide à commencer, même quand les mots ou l'énergie manquent",
+            "Privé et limité à votre compte ; désactivez l'IA à tout moment dans les Paramètres"
+          ]
+        },
+        "accounts": {
+          "tag": "Comptes",
+          "title": "Comptes et actifs",
+          "headline": "Chaque compte, documenté une seule fois et retrouvé instantanément.",
+          "body": "Comptes bancaires, investissements, épargne retraite, livrets d'épargne, portefeuilles crypto, contrats d'assurance, fournisseurs d'énergie, abonnements — tout est structuré, étiqueté et consultable. Ajoutez les noms des établissements, les numéros de compte, les indices de connexion et les contacts, pour que rien ne soit enfoui ni oublié.",
+          "bullets": [
+            "Comptes bancaires, d'investissement, d'épargne retraite et d'assurance",
+            "Actifs numériques, crypto et comptes en ligne",
+            "Suivi des abonnements avec dates de renouvellement et coûts",
+            "Catégories et étiquettes personnalisées"
+          ]
+        },
+        "documents": {
+          "tag": "Documents",
+          "title": "Coffre à documents",
+          "headline": "Vos documents juridiques et personnels, conservés et partagés en toute sécurité.",
+          "body": "Téléversez votre testament, votre mandat de protection future, vos titres de propriété, passeport, acte de naissance, contrats d'assurance et bien plus. Classez par catégorie, attribuez les accès par rôle et conservez un historique des versions, pour qu'aucun document ne soit écrasé sans laisser de trace.",
+          "bullets": [
+            "Testaments, mandats de protection future, titres de propriété, contrats d'assurance",
+            "Chiffrement au repos (AES-256)",
+            "Accès par rôle — ne partagez que ce qui est nécessaire",
+            "Historique des versions et journal d'audit des fichiers"
+          ],
+          "ai": "Déposez un document — nous en extrayons automatiquement les informations clés. ✨"
+        },
+        "instructions": {
+          "tag": "Instructions",
+          "title": "Instructions",
+          "headline": "Des consignes écrites, exactement au moment où l'on en a le plus besoin.",
+          "body": "Dites à votre famille quoi faire, dans quel ordre, et qui appeler — avec des mots simples. Couvrez les premières 48 heures, le règlement de la succession, la clôture des comptes et tout ce qui vous tient à cœur. Vos mots, préservés et transmis avec clarté.",
+          "bullets": [
+            "Les premiers gestes pour les jours qui suivent un décès",
+            "Listes de contrôle pour la clôture des comptes et la succession",
+            "Listes de contacts avec noms, rôles et numéros",
+            "Notes personnelles et consignes adaptées à chaque situation"
+          ],
+          "ai": "Vous ne savez pas quoi écrire ? Nous vous aiderons à trouver les mots. ✨"
+        },
+        "people": {
+          "tag": "Personnes",
+          "title": "Personnes de confiance",
+          "headline": "Les bonnes personnes voient les bonnes informations — rien de plus.",
+          "body": "Attribuez des rôles : exécuteur testamentaire, conjoint, enfant, notaire ou conseiller financier. Chaque rôle n'accède qu'à ce que vous avez explicitement partagé. Vous pouvez ajuster, révoquer ou élargir les accès à tout moment — et garder ainsi le contrôle total.",
+          "bullets": [
+            "Rôles nommés : exécuteur testamentaire, conjoint, conseiller, aidant",
+            "Contrôle d'accès précis, section par section",
+            "Révoquez ou modifiez les accès à tout moment",
+            "Notification dès qu'une personne de confiance consulte votre plan"
+          ]
+        },
+        "access": {
+          "tag": "Accès",
+          "title": "Accès d'urgence et partage",
+          "headline": "Un accès immédiat quand chaque minute compte.",
+          "body": "Configurez votre accès d'urgence pour qu'il se déverrouille automatiquement sous des conditions précises — ou permettez à une personne de confiance d'envoyer une demande d'accès en un seul geste. Chaque accès est consigné dans un journal d'audit complet : rien ne se passe sans laisser de trace.",
+          "bullets": [
+            "Accès d'urgence avec conditions de déverrouillage contrôlées",
+            "Demande d'accès en un geste pour vos personnes de confiance",
+            "Partage différé dans le temps ou soumis à conditions",
+            "Journal d'audit complet de chaque accès"
+          ]
+        },
+        "wishes": {
+          "tag": "Volontés",
+          "title": "Dernières volontés",
+          "headline": "Vos préférences personnelles, recueillies avec dignité.",
+          "body": "Consignez vos préférences pour les obsèques et l'hommage, vos volontés en matière de don d'organes, vos lettres personnelles, vos instructions pour les objets à valeur sentimentale, et les détails d'inhumation ou de crémation. Everstead veille à ce qu'elles soient retrouvées, lues et respectées.",
+          "bullets": [
+            "Préférences pour les obsèques et la cérémonie d'hommage",
+            "Volontés en matière de don d'organes et de tissus",
+            "Lettres et messages personnels pour vos proches",
+            "Attribution des objets personnels ou à valeur sentimentale"
+          ],
+          "ai": "Nous pouvons vous aider à commencer, quand les mots ne viennent pas facilement. ✨"
+        },
+        "messages": {
+          "tag": "Messages",
+          "title": "Messages personnels",
+          "headline": "Vos mots, transmis au moment où ils comptent le plus.",
+          "body": "Écrivez un mot personnel ou enregistrez un message vidéo pour chaque personne de votre plan — votre conjoint, vos enfants, votre notaire ou un ami proche. Chaque message est scellé, chiffré et remis uniquement à son destinataire lorsque vos délégués accèdent au plan. Dites ce que vous avez à dire, selon vos propres termes.",
+          "bullets": [
+            "Des mots écrits pour des personnes nommées — personnels et privés",
+            "Messages vidéo enregistrés et conservés en toute sécurité sur la plateforme",
+            "Remis uniquement au destinataire prévu, une fois le plan activé",
+            "Un message distinct par personne — des mots différents pour des liens différents"
+          ],
+          "ai": "Écrivez-le vous-même ou laissez-nous vous aider à démarrer. ✨"
+        },
+        "subscriptions": {
+          "tag": "Abonnements",
+          "title": "Suivi des abonnements",
+          "headline": "Ne payez plus pour des services qui survivent à la personne qui les a souscrits.",
+          "body": "Répertoriez chaque prélèvement récurrent — services de streaming, logiciels, adhésions, salles de sport, magazines. Ajoutez les montants, les dates de renouvellement et les instructions de résiliation. Les exécuteurs testamentaires peuvent traiter chaque ligne sans deviner, ni subir de prélèvements surprises.",
+          "bullets": [
+            "Tous les prélèvements récurrents en un seul coup d'œil",
+            "Dates de renouvellement et montants facturés",
+            "Instructions de résiliation pour chaque service",
+            "Évite que des abonnements actifs passent inaperçus"
+          ]
+        },
+        "progress": {
+          "tag": "Progression",
+          "title": "Score de préparation",
+          "headline": "Sachez exactement où en est votre plan.",
+          "body": "Le score de préparation mesure la complétude de toutes les sections — comptes, documents, instructions, personnes de confiance et dernières volontés. Des suggestions intelligentes font remonter ce qui manque, pour que votre plan reste à jour et que rien ne passe entre les mailles du filet.",
+          "bullets": [
+            "Score de complétude sur toutes les sections du plan",
+            "Suggestions intelligentes pour les éléments manquants ou obsolètes",
+            "Rappels de révision réguliers",
+            "Un signal clair pour votre famille : tout est préparé"
+          ],
+          "ai": "Votre assistant IA vous indique exactement sur quoi vous concentrer ensuite. ✨"
+        }
+      }
+    },
+    "security": {
+      "eyebrow": "Sécurité",
+      "title": "Conçu pour la confidentialité, la confiance et le contrôle.",
+      "subtitle": "Vos données ne sont jamais vendues, jamais partagées sans votre autorisation, et toujours chiffrées. Nous avons conçu Everstead pour les familles — pas pour les annonceurs.",
+      "points": [
+        { "label": "Stockage chiffré (AES-256)", "desc": "Chiffrement au repos et en transit pour l'ensemble de vos données." },
+        { "label": "Contrôle d'accès par rôle", "desc": "Chaque personne de confiance ne voit que les sections qui lui sont attribuées." },
+        { "label": "Journal d'audit complet", "desc": "Chaque consultation, chaque partage et chaque modification sont enregistrés de façon permanente." },
+        { "label": "La confidentialité avant tout", "desc": "Aucune vente de données, aucune publicité, aucun accès de tiers sans votre consentement." },
+        { "label": "Notifications d'accès", "desc": "Vous êtes averti chaque fois qu'une personne de confiance accède à votre plan." },
+        { "label": "Sauvegardes sécurisées", "desc": "Des sauvegardes chiffrées et redondantes garantissent que votre plan ne sera jamais perdu." }
+      ],
+      "link": "Découvrir toutes nos pratiques de sécurité"
+    },
+    "who": {
+      "eyebrow": "Pour qui ?",
+      "title": "Everstead accompagne chaque membre du plan familial.",
+      "items": [
+        { "title": "Familles", "desc": "Un seul endroit où chaque membre du foyer sait que les comptes, les documents et les volontés sont consignés — pour que personne ne reste dans l'incertitude." },
+        { "title": "Exécuteurs testamentaires", "desc": "Un guide complet et structuré de la succession — comptes, contacts, documents et instructions — sans des semaines de recherches." },
+        { "title": "Seniors", "desc": "Construisez votre plan à votre rythme, désignez vos personnes de confiance et sachez que vos volontés et vos affaires sont correctement documentées." },
+        { "title": "Conseillers patrimoniaux", "desc": "Offrez à vos clients un dossier successoral sécurisé et organisé qu'ils peuvent tenir à jour eux-mêmes — et qui allège considérablement votre charge administrative." }
+      ]
+    },
+    "comparison": {
+      "eyebrow": "Ce qui nous distingue",
+      "title": "Mieux qu'un tableur. Plus accessible qu'un notaire.",
+      "subtitle": "Les tableurs se perdent. Les notaires conservent des documents auxquels vous n'avez pas accès vous-même. Everstead offre aux familles un plan vivant, sécurisé et accessible.",
+      "columns": {
+        "everstead": "Everstead",
+        "spreadsheet": "Tableur",
+        "solicitor": "Notaire"
+      },
+      "rows": [
+        "Tous les comptes documentés au même endroit",
+        "Stockage chiffré avec contrôle des accès",
+        "Partage par rôle avec journal d'audit",
+        "Accès d'urgence",
+        "Instructions pas à pas pour la famille",
+        "Dernières volontés consignées",
+        "Suivi des abonnements",
+        "Score de préparation et suggestions intelligentes",
+        "Toujours à jour, modifiable à tout moment"
+      ]
+    },
+    "readiness": {
+      "scoreLabel": "Préparation du plan",
+      "scoreValue": "76 %",
+      "checklist": [
+        "18 comptes documentés",
+        "4 personnes de confiance désignées",
+        "Préférences d'obsèques renseignées",
+        "Accès d'urgence configuré",
+        "Relire le testament",
+        "Ajouter l'assurance habitation"
+      ],
+      "lastUpdated": "Mis à jour aujourd'hui",
+      "attention": "2 éléments à revoir →",
+      "eyebrow": "Score de préparation",
+      "title": "Une mesure claire de la préparation de votre famille.",
+      "body": "Le score de préparation suit votre plan dans chacune de ses sections. Des suggestions intelligentes vous indiquent ce qui manque, ce qui n'est plus à jour ou ce qui mérite un second regard — pour que vous puissiez toujours répondre : « oui, tout est en ordre ».",
+      "bullets": [
+        "Suit la complétude de toutes les sections",
+        "Met en évidence les éléments manquants ou obsolètes",
+        "Rappels de révision réguliers",
+        "La tranquillité d'esprit, enfin mesurable"
+      ]
+    },
+    "legal": {
+      "eyebrow": "Important",
+      "title": "Everstead n'est pas un service juridique et ne remplace pas l'avis d'un professionnel.",
+      "body1": "Everstead est une plateforme d'organisation et de planification, pour mettre de l'ordre dans votre vie numérique et vos volontés. Elle vous aide à conserver des références à vos documents, à consigner des instructions et à partager des accès avec vos personnes de confiance. Elle ne rédige",
+      "bodyNot": "pas",
+      "body2": "de testaments, ne prépare pas d'actes juridiques, ne donne pas de conseils juridiques ou financiers et ne remplace ni un notaire, ni un avocat, ni un expert-comptable, ni un conseiller familial. Si vous avez besoin d'un accompagnement juridique ou financier, adressez-vous à un professionnel qualifié.",
+      "termsLink": "Lire nos conditions d'utilisation",
+      "securityLink": "Sécurité et confidentialité"
+    }
+  },
+  "testimonials": {
+    "eyebrow": "Témoignages",
+    "title": "Ce que disent les familles.",
+    "items": [
+      { "quote": "Mon père est parti brutalement. Everstead a rendu une période incroyablement douloureuse tellement plus gérable. Tout était là, au même endroit.", "name": "Margaret T.", "role": "Fille et exécutrice testamentaire" },
+      { "quote": "En tant que notaire, je le recommande désormais à chacun de mes clients. Cela réduit considérablement les allers-retours pendant le règlement de la succession.", "name": "David R.", "role": "Notaire" },
+      { "quote": "Nous avons enfin l'esprit tranquille. Nos enfants sauront exactement quoi faire et où tout trouver.", "name": "James & Carol B.", "role": "Parents, mariés depuis 34 ans" }
+    ]
+  },
+  "cta": {
+    "title": "Offrez à votre famille la clarté, pas le chaos.",
+    "subtitle": "Quelques minutes suffisent pour commencer. Une seule épreuve suffit pour regretter de ne pas l'avoir fait.",
+    "ctaPrimary": "Commencer gratuitement",
+    "ctaSecondary": "Voir les tarifs",
+    "footnote": "Essai gratuit de 14 jours · Carte bancaire requise · Aucun débit avant la fin de l'essai · Annulable à tout moment"
+  }
+}

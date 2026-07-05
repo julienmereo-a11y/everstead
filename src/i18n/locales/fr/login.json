@@ -1,0 +1,68 @@
+{
+  "meta": {
+    "title": "Connexion — Everstead"
+  },
+  "leftPanel": {
+    "quotes": [
+      {
+        "text": "Le plus grand acte d'amour, c'est de faciliter les choses pour ceux qui vous pleureront.",
+        "author": null,
+        "role": null
+      },
+      {
+        "text": "Mon père est parti soudainement. Everstead a rendu une période incroyablement douloureuse tellement plus surmontable.",
+        "author": "Margaret T.",
+        "role": "Fille et exécutrice testamentaire"
+      },
+      {
+        "text": "Planifier, ce n'est pas s'attendre au pire. C'est protéger ce que l'on aime le plus.",
+        "author": null,
+        "role": null
+      },
+      {
+        "text": "J'ai créé mon Everstead pour que mes enfants ne vivent jamais ce que nous avons traversé au décès de maman. Cela m'a pris un après-midi.",
+        "author": "David R.",
+        "role": "Père et exécuteur testamentaire"
+      },
+      {
+        "text": "La chose la plus attentionnée que l'on puisse laisser derrière soi, ce n'est pas de l'argent. C'est un plan.",
+        "author": null,
+        "role": null
+      }
+    ],
+    "quoteAriaLabel": "Citation {{number}}",
+    "stats": [
+      { "value": "14 jours", "label": "Essai gratuit" },
+      { "value": "AES-256", "label": "Chiffrement" },
+      { "value": "Royaume-Uni", "label": "Enregistré auprès de l'ICO" }
+    ]
+  },
+  "step1": {
+    "title": "Bon retour parmi nous",
+    "subtitle": "Connectez-vous à votre compte Everstead",
+    "googleButton": "Continuer avec Google",
+    "divider": "ou connectez-vous par e-mail",
+    "emailLabel": "Adresse e-mail",
+    "emailPlaceholder": "vous@exemple.com",
+    "passwordLabel": "Mot de passe",
+    "forgotPassword": "Mot de passe oublié ?",
+    "showPassword": "Afficher le mot de passe",
+    "hidePassword": "Masquer le mot de passe",
+    "submit": "Continuer",
+    "submitLoading": "Vérification…",
+    "noAccount": "Pas encore de compte ?",
+    "getStarted": "Commencer votre Everstead"
+  },
+  "step2": {
+    "title": "Vérifiez votre boîte de réception",
+    "sentCode": "Nous avons envoyé un code à 6 chiffres à",
+    "submit": "Se connecter",
+    "submitLoading": "Vérification…",
+    "wrongEmail": "Mauvaise adresse e-mail ?",
+    "goBack": "Retour"
+  },
+  "errors": {
+    "generic": "Une erreur est survenue. Veuillez réessayer."
+  },
+  "trustBadge": "🔒 Chiffrement au repos et en transit · Hébergement conforme au RGPD · ICO n° 17166825"
+}

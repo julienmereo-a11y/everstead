@@ -1,0 +1,68 @@
+{
+  "meta": {
+    "title": "Sign In — Everstead"
+  },
+  "leftPanel": {
+    "quotes": [
+      {
+        "text": "The greatest act of love is to make things easier for the people who will grieve you.",
+        "author": null,
+        "role": null
+      },
+      {
+        "text": "My father passed suddenly. Everstead made an incredibly painful time so much more manageable.",
+        "author": "Margaret T.",
+        "role": "Daughter & executor"
+      },
+      {
+        "text": "Planning isn't about expecting the worst. It's about protecting what you love most.",
+        "author": null,
+        "role": null
+      },
+      {
+        "text": "I set up Everstead so my children will never go through what we did when Mum passed. It took one afternoon.",
+        "author": "David R.",
+        "role": "Father & executor"
+      },
+      {
+        "text": "The most thoughtful thing you can leave behind isn't money. It's a plan.",
+        "author": null,
+        "role": null
+      }
+    ],
+    "quoteAriaLabel": "Quote {{number}}",
+    "stats": [
+      { "value": "14-day", "label": "Free trial" },
+      { "value": "AES-256", "label": "Encryption" },
+      { "value": "UK-based", "label": "ICO registered" }
+    ]
+  },
+  "step1": {
+    "title": "Welcome back",
+    "subtitle": "Sign in to your Everstead account",
+    "googleButton": "Continue with Google",
+    "divider": "or sign in with email",
+    "emailLabel": "Email address",
+    "emailPlaceholder": "you@example.com",
+    "passwordLabel": "Password",
+    "forgotPassword": "Forgot password?",
+    "showPassword": "Show password",
+    "hidePassword": "Hide password",
+    "submit": "Continue",
+    "submitLoading": "Verifying…",
+    "noAccount": "Don't have an account?",
+    "getStarted": "Start Your Everstead"
+  },
+  "step2": {
+    "title": "Check your email",
+    "sentCode": "We sent a 6-digit code to",
+    "submit": "Sign in",
+    "submitLoading": "Verifying…",
+    "wrongEmail": "Wrong email?",
+    "goBack": "Go back"
+  },
+  "errors": {
+    "generic": "Something went wrong."
+  },
+  "trustBadge": "🔒 Bank-level AES-256 encryption · UK-registered · ICO No. 17166825"
+}

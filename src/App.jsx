@@ -1,5 +1,7 @@
 import React, { useEffect, Suspense, lazy } from 'react'
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom'
+import { Helmet } from 'react-helmet-async'
+import i18n, { languageFromPath } from './i18n'
 import { AuthProvider } from './contexts/AuthContext'
 import ProtectedRoute from './components/ProtectedRoute'
 import AdvisorProtectedRoute from './components/AdvisorProtectedRoute'
@@ -83,9 +85,28 @@ function ScrollToTop() {
   return null
 }
 
+// hreflang alternates for the current page — links the / and /fr trees for SEO.
+// useLocation() returns the basename-RELATIVE path, so the same code works in
+// both language trees.
+function HreflangTags() {
+  const { pathname } = useLocation()
+  const base = 'https://www.everstead.care'
+  const sub = pathname === '/' ? '' : pathname
+  return (
+    // key forces a fresh Helmet per path so the alternates swap on CLIENT-SIDE
+    // navigations too (crawlers hard-load, but keep the DOM honest regardless).
+    <Helmet key={pathname}>
+      <link rel="alternate" hrefLang="en" href={`${base}${sub || '/'}`} />
+      <link rel="alternate" hrefLang="fr" href={`${base}/fr${sub}`} />
+      <link rel="alternate" hrefLang="x-default" href={`${base}${sub || '/'}`} />
+    </Helmet>
+  )
+}
+
 function Layout({ children }) {
   return (
     <>
+      <HreflangTags />
       <Nav />
       <main>{children}</main>
       <Footer />
@@ -95,9 +116,22 @@ function Layout({ children }) {
 }
 
 export default function App() {
+  // Locale comes from the URL prefix ONLY: /fr/* → French, else English.
+  // The SAME route tree renders under both — basename '/fr' makes every internal
+  // <Link to="/pricing"> resolve to /fr/pricing automatically, no duplication.
+  // Switching locale is a full navigation (see LanguageSwitcher in Nav), so the
+  // basename is fixed for the lifetime of a page load.
+  const lang = languageFromPath(window.location.pathname)
+
+  useEffect(() => {
+    // Keep the region-specific tag for English (UK product); plain fr for French.
+    document.documentElement.lang = lang === 'fr' ? 'fr' : 'en-GB'
+    if (i18n.language !== lang) i18n.changeLanguage(lang)
+  }, [lang])
+
   return (
     <AuthProvider>
-      <BrowserRouter>
+      <BrowserRouter basename={lang === 'fr' ? '/fr' : '/'}>
         <ScrollToTop />
         <ErrorBoundary>
           <Suspense fallback={<PageLoader />}>
