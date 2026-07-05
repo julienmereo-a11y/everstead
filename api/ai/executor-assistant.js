@@ -1,6 +1,6 @@
 import Anthropic from '@anthropic-ai/sdk'
 import { aiGuardForUser } from '../_lib/ai-guard'
-import { withSentry } from '../lib/sentry.js'
+import { withSentry, captureException } from '../lib/sentry.js'
 
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
 
@@ -67,6 +67,7 @@ Rules:
     res.status(200).json({ response: message.content[0].text })
   } catch (error) {
     console.error('executor-assistant error:', error)
+    captureException(err, { endpoint: 'ai/executor-assistant' })
     res.status(500).json({ error: 'Failed to get a response. Please try again.' })
   }
 }

@@ -1,6 +1,6 @@
 import Anthropic from '@anthropic-ai/sdk'
 import { aiGuard } from '../_lib/ai-guard'
-import { withSentry } from '../lib/sentry.js'
+import { withSentry, captureException } from '../lib/sentry.js'
 
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
 
@@ -85,6 +85,7 @@ Return ONLY valid JSON with these exact field names. No explanation, no markdown
     res.status(200).json({ extracted })
   } catch (error) {
     console.error('extract-document error:', error)
+    captureException(err, { endpoint: 'ai/extract-document' })
     res.status(500).json({ error: 'Failed to scan document. Please fill in details manually.' })
   }
 }

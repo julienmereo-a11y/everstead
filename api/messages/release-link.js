@@ -1,7 +1,7 @@
 import { createClient } from '@supabase/supabase-js'
 import { Resend } from 'resend'
 import crypto from 'crypto'
-import { withSentry } from '../lib/sentry.js'
+import { withSentry, captureException } from '../lib/sentry.js'
 
 const supabase = createClient(
   process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL,
@@ -69,6 +69,7 @@ async function handler(req, res) {
     })
   } catch (err) {
     console.error('release-link: email error:', err.message)
+    captureException(err, { endpoint: 'messages/release-link' })
     return res.status(502).json({ error: 'Message released, but the email could not be sent.' })
   }
 

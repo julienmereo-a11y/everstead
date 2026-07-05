@@ -1,7 +1,7 @@
 import Stripe from 'stripe'
 import { createClient } from '@supabase/supabase-js'
 import { Resend } from 'resend'
-import { withSentry } from '../lib/sentry.js'
+import { withSentry, captureException } from '../lib/sentry.js'
 
 const stripe   = new Stripe(process.env.STRIPE_SECRET_KEY)
 const supabase = createClient(
@@ -56,6 +56,7 @@ async function handler(req, res) {
       return res.status(200).json({ success: true })
     } catch (err) {
       console.error('suspend-user error:', err)
+      captureException(err, { endpoint: 'stripe/cancel-subscription', action: 'suspend-user' })
       return res.status(500).json({ error: err.message })
     }
   }
@@ -68,6 +69,7 @@ async function handler(req, res) {
       return res.status(200).json({ success: true })
     } catch (err) {
       console.error('unsuspend-user error:', err)
+      captureException(err, { endpoint: 'stripe/cancel-subscription', action: 'unsuspend-user' })
       return res.status(500).json({ error: err.message })
     }
   }
@@ -117,6 +119,7 @@ async function handler(req, res) {
       return res.status(200).json({ success: true, trialEndsAt })
     } catch (err) {
       console.error('extend-trial error:', err)
+      captureException(err, { endpoint: 'stripe/cancel-subscription', action: 'extend-trial' })
       return res.status(500).json({ error: err.message })
     }
   }
@@ -143,6 +146,7 @@ async function handler(req, res) {
       return res.status(200).json({ success: true })
     } catch (err) {
       console.error('reactivate-subscription error:', err)
+      captureException(err, { endpoint: 'stripe/cancel-subscription', action: 'reactivate' })
       return res.status(500).json({ error: err.message })
     }
   }
@@ -197,6 +201,7 @@ async function handler(req, res) {
     res.status(200).json({ success: true, cancelAt, cancelAtDate: cancelAtDate ?? periodEndDate, periodEnd, periodEndDate })
   } catch (err) {
     console.error('cancel-subscription error:', err)
+    captureException(err, { endpoint: 'stripe/cancel-subscription', action: 'cancel' })
     res.status(500).json({ error: err.message })
   }
 }

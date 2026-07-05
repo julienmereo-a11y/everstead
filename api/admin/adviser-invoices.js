@@ -1,5 +1,5 @@
 import { requireAdmin, adminDb as db } from '../_lib/admin-auth.js'
-import { withSentry } from '../lib/sentry.js'
+import { withSentry, captureException } from '../lib/sentry.js'
 
 // Admin-only invoice management for adviser firms. Amounts are pennies (GBP);
 // a zero-value or 'waived' invoice cleanly records a free pilot.
@@ -56,6 +56,7 @@ async function handler(req, res) {
     return res.status(400).json({ error: `Unknown action: ${action}` })
   } catch (err) {
     console.error('admin/adviser-invoices error:', err)
+    captureException(err, { endpoint: 'admin/adviser-invoices' })
     return res.status(500).json({ error: err.message })
   }
 }

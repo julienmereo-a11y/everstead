@@ -1,6 +1,6 @@
 import { createClient } from '@supabase/supabase-js'
 import { Resend } from 'resend'
-import { withSentry } from '../lib/sentry.js'
+import { withSentry, captureException } from '../lib/sentry.js'
 
 const supabase = createClient(
   process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL,
@@ -66,7 +66,11 @@ async function handler(req, res) {
     })
     .select('id')
     .single()
-  if (insErr) return res.status(500).json({ error: 'Could not save the report' })
+  if (insErr) {
+    console.error('reports/submit insert error:', insErr)
+    captureException(insErr, { endpoint: 'reports/submit', stage: 'insert' })
+    return res.status(500).json({ error: 'Could not save the report' })
+  }
 
   const ownerName = owner?.full_name || 'the plan owner'
 
@@ -82,6 +86,7 @@ async function handler(req, res) {
     })
   } catch (err) {
     console.error('reports/submit reporter email:', err.message)
+    captureException(err, { endpoint: 'reports/submit', stage: 'reporter-email', reportId: report.id })
   }
 
   // Notify the team to verify.
@@ -93,7 +98,10 @@ async function handler(req, res) {
       html:    teamHtml(type, { reporterName, reporterEmail, owner, ...b }),
     })
   } catch (err) {
+    // CRITICAL: if this notification silently fails, a death/incapacity report
+    // could sit unverified indefinitely — always report to Sentry.
     console.error('reports/submit team email:', err.message)
+    captureException(err, { endpoint: 'reports/submit', stage: 'team-notification', critical: true, reportId: report.id, type })
   }
 
   return res.status(200).json({ ok: true, reportId: report.id })

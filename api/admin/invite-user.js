@@ -1,6 +1,6 @@
 import { Resend } from 'resend'
 import { requireAdmin } from '../_lib/admin-auth.js'
-import { withSentry } from '../lib/sentry.js'
+import { withSentry, captureException } from '../lib/sentry.js'
 
 // Admin-only: invite a new person to sign up on Everstead. The admin picks whether
 // they should get the FOUNDING50 offer (first year free, Family Yearly) or a normal
@@ -57,6 +57,7 @@ async function handler(req, res) {
     return res.status(200).json({ ok: true })
   } catch (err) {
     console.error('admin/invite-user error:', err)
+    captureException(err, { endpoint: 'admin/invite-user' })
     return res.status(500).json({ error: err.message || 'Could not send the invite.' })
   }
 }

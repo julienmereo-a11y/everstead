@@ -1,6 +1,6 @@
 import Stripe from 'stripe'
 import { createClient } from '@supabase/supabase-js'
-import { withSentry } from '../lib/sentry.js'
+import { withSentry, captureException } from '../lib/sentry.js'
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY)
 const supabase = createClient(
@@ -109,6 +109,7 @@ async function handler(req, res) {
     })
   } catch (err) {
     console.error('setup-intent error:', err)
+    captureException(err, { endpoint: 'stripe/setup-intent' })
     return res.status(500).json({ error: err.message })
   }
 }

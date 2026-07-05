@@ -1,6 +1,6 @@
 import Anthropic from '@anthropic-ai/sdk'
 import { aiGuard } from '../_lib/ai-guard'
-import { withSentry } from '../lib/sentry.js'
+import { withSentry, captureException } from '../lib/sentry.js'
 
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
 
@@ -322,6 +322,7 @@ async function handler(req, res) {
     res.status(200).json({ reply: text })
   } catch (err) {
     console.error('ai/assist error:', err)
+    captureException(err, { endpoint: 'ai/assist' })
     res.status(500).json({ error: 'Failed to get a response. Please try again.' })
   }
 }

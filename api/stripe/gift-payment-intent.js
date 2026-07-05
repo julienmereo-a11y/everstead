@@ -1,5 +1,5 @@
 import Stripe from 'stripe'
-import { withSentry } from '../lib/sentry.js'
+import { withSentry, captureException } from '../lib/sentry.js'
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY)
 
 // Annual price in PENCE per year (matches the new annual subscription prices).
@@ -27,6 +27,8 @@ async function handler(req, res) {
     })
     return res.status(200).json({ clientSecret: intent.client_secret, intentId: intent.id, amountPence })
   } catch (err) {
+    console.error('gift-payment-intent error:', err)
+    captureException(err, { endpoint: 'stripe/gift-payment-intent' })
     return res.status(500).json({ error: err.message })
   }
 }

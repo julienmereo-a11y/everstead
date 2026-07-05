@@ -1,6 +1,6 @@
 import { createClient } from '@supabase/supabase-js'
 import { Resend } from 'resend'
-import { withSentry } from '../lib/sentry.js'
+import { withSentry, captureException } from '../lib/sentry.js'
 
 const supabase = createClient(process.env.VITE_SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY)
 const resend = new Resend(process.env.RESEND_API_KEY)
@@ -38,6 +38,7 @@ async function notifyFounderOfSignup({ name, email, plan }) {
     })
   } catch (err) {
     console.error('[delegate-register] founder notification failed:', err)
+    captureException(err, { endpoint: 'auth/delegate-register', stage: 'founder-notification' })
   }
 }
 

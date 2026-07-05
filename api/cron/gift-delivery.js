@@ -1,6 +1,6 @@
 import { createClient } from '@supabase/supabase-js'
 import { Resend } from 'resend'
-import { withSentry } from '../lib/sentry.js'
+import { withSentry, captureException } from '../lib/sentry.js'
 
 const supabase = createClient(
   process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL,
@@ -32,6 +32,7 @@ async function handler(req, res) {
 
   if (error) {
     console.error('gift-delivery query error:', error)
+    captureException(error, { endpoint: 'cron/gift-delivery', stage: 'query' })
     return res.status(500).json({ error: error.message })
   }
 
@@ -65,6 +66,7 @@ async function handler(req, res) {
       sent++
     } catch (err) {
       console.error(`gift-delivery error for gift ${gift.id}:`, err)
+      captureException(err, { endpoint: 'cron/gift-delivery', stage: 'delivery', giftId: gift.id })
       errors.push(`${gift.id}: ${err.message}`)
     }
   }
@@ -102,6 +104,7 @@ async function handler(req, res) {
       reminded++
     } catch (err) {
       console.error(`gift-reminder error for gift ${gift.id}:`, err)
+      captureException(err, { endpoint: 'cron/gift-delivery', stage: 'reminder', giftId: gift.id })
       errors.push(`reminder ${gift.id}: ${err.message}`)
     }
   }

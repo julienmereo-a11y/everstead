@@ -2,7 +2,7 @@ import { createClient } from '@supabase/supabase-js'
 
 // JSZip — defensive import to handle ESM/CJS interop in Vercel's bundler
 import JSZipPkg from 'jszip'
-import { withSentry } from '../lib/sentry.js'
+import { withSentry, captureException } from '../lib/sentry.js'
 const JSZip = JSZipPkg.default ?? JSZipPkg
 
 const supabase = createClient(
@@ -189,6 +189,7 @@ async function handler(req, res) {
 
   } catch (err) {
     console.error('export: unexpected error', err)
+    captureException(err, { endpoint: 'data/export' })
     res.status(500).json({ error: 'Export failed. Please try again.' })
   }
 }

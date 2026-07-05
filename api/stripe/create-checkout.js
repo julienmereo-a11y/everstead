@@ -1,5 +1,5 @@
 import Stripe from 'stripe'
-import { withSentry } from '../lib/sentry.js'
+import { withSentry, captureException } from '../lib/sentry.js'
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY)
 
@@ -50,6 +50,7 @@ async function handler(req, res) {
     res.status(200).json({ url: session.url })
   } catch (err) {
     console.error('create-checkout error:', err)
+    captureException(err, { endpoint: 'stripe/create-checkout' })
     res.status(500).json({ error: err.message })
   }
 }

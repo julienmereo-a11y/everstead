@@ -1,7 +1,7 @@
 import Stripe from 'stripe'
 import { createClient } from '@supabase/supabase-js'
 import { Resend } from 'resend'
-import { withSentry } from '../lib/sentry.js'
+import { withSentry, captureException } from '../lib/sentry.js'
 
 const stripe   = new Stripe(process.env.STRIPE_SECRET_KEY)
 const supabase = createClient(
@@ -44,6 +44,7 @@ async function handler(req, res) {
     } catch (err) {
       // Log but don't block deletion — the account should still be deleted
       console.error('delete-account: Stripe cancellation error:', err.message)
+      captureException(err, { endpoint: 'auth/delete-account' })
     }
   }
 

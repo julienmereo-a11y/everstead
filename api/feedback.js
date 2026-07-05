@@ -1,6 +1,6 @@
 import { createClient } from '@supabase/supabase-js'
 import { Resend } from 'resend'
-import { withSentry } from './lib/sentry.js'
+import { withSentry, captureException } from './lib/sentry.js'
 
 const supabase = createClient(
   process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL,
@@ -33,6 +33,7 @@ async function handler(req, res) {
     await supabase.from('feedback').insert(clean)
   } catch (err) {
     console.error('[feedback] insert error:', err)
+    captureException(err, { endpoint: 'feedback', stage: 'insert' })
   }
 
   // Email the founder
@@ -68,6 +69,7 @@ async function handler(req, res) {
     })
   } catch (err) {
     console.error('[feedback] email error:', err)
+    captureException(err, { endpoint: 'feedback', stage: 'email' })
     // Still a success for the user if the DB insert worked.
   }
 

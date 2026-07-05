@@ -1,6 +1,6 @@
 import Anthropic from '@anthropic-ai/sdk'
 import { aiGuard } from '../_lib/ai-guard'
-import { withSentry } from '../lib/sentry.js'
+import { withSentry, captureException } from '../lib/sentry.js'
 
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
 
@@ -79,6 +79,7 @@ Give them personalised coaching and one specific next action.`
     res.status(200).json({ coaching })
   } catch (error) {
     console.error('readiness-coach error:', error)
+    captureException(err, { endpoint: 'ai/readiness-coach' })
     res.status(500).json({ error: 'Failed to generate coaching. Please try again.' })
   }
 }

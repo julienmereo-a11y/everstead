@@ -1,6 +1,6 @@
 import { createClient } from '@supabase/supabase-js'
 import { sendAdviserInvite, sendAdviserAddedNotice } from '../_lib/adviser-email.js'
-import { withSentry } from '../lib/sentry.js'
+import { withSentry, captureException } from '../lib/sentry.js'
 
 // Adviser-facing: a firm OWNER manages their team seats. Service-role client;
 // the caller is verified to be an accepted owner of exactly one firm, and can only
@@ -63,6 +63,7 @@ async function handler(req, res) {
     return res.status(400).json({ error: `Unknown action: ${action}` })
   } catch (err) {
     console.error('adviser/team error:', err)
+    captureException(err, { endpoint: 'adviser/team' })
     return res.status(500).json({ error: err.message })
   }
 }

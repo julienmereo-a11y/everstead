@@ -1,6 +1,6 @@
 import { createClient } from '@supabase/supabase-js'
 import { Resend } from 'resend'
-import { withSentry } from '../lib/sentry.js'
+import { withSentry, captureException } from '../lib/sentry.js'
 
 const supabase = createClient(
   process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL,
@@ -143,6 +143,7 @@ async function handler(req, res) {
         stepSent++
       } catch (err) {
         console.error(`onboarding-sequence email ${step.n} for ${user.email}:`, err)
+        captureException(err, { endpoint: 'cron/onboarding-sequence', step: step.n, userId: user.id })
         results.errors.push(`email_${step.n}_${user.id}: ${err.message}`)
       }
     }

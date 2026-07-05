@@ -1,6 +1,6 @@
 import Anthropic from '@anthropic-ai/sdk'
 import { aiGuard } from '../_lib/ai-guard'
-import { withSentry } from '../lib/sentry.js'
+import { withSentry, captureException } from '../lib/sentry.js'
 
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
 
@@ -48,6 +48,7 @@ Write these as warm, practical instructions in my voice, addressed directly to m
     res.status(200).json({ instructions: message.content[0].text })
   } catch (error) {
     console.error('write-instructions error:', error)
+    captureException(err, { endpoint: 'ai/write-instructions' })
     res.status(500).json({ error: 'Failed to write instructions. Please try again.' })
   }
 }

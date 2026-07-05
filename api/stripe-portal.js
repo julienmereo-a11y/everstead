@@ -1,6 +1,6 @@
 import Stripe from 'stripe'
 import { createClient } from '@supabase/supabase-js'
-import { withSentry } from './lib/sentry.js'
+import { withSentry, captureException } from './lib/sentry.js'
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY)
 const supabase = createClient(process.env.VITE_SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY)
@@ -34,6 +34,7 @@ async function handler(req, res) {
     res.status(200).json({ url: session.url })
   } catch (err) {
     console.error('stripe-portal error:', err)
+    captureException(err, { endpoint: 'stripe-portal' })
     res.status(500).json({ error: err.message })
   }
 }

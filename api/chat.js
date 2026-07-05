@@ -1,5 +1,5 @@
 import Anthropic from '@anthropic-ai/sdk'
-import { withSentry } from './lib/sentry.js'
+import { withSentry, captureException } from './lib/sentry.js'
 
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
 
@@ -62,6 +62,7 @@ async function handler(req, res) {
     res.status(200).json({ reply: text })
   } catch (err) {
     console.error('chat error:', err)
+    captureException(err, { endpoint: 'chat' })
     res.status(500).json({ error: 'Failed to get a response. Please try again.' })
   }
 }

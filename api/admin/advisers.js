@@ -1,6 +1,6 @@
 import { requireAdmin, adminDb as db } from '../_lib/admin-auth.js'
 import { sendAdviserInvite, sendAdviserAddedNotice } from '../_lib/adviser-email.js'
-import { withSentry } from '../lib/sentry.js'
+import { withSentry, captureException } from '../lib/sentry.js'
 
 // Admin-only management of adviser/solicitor FIRMS, their client families, and the
 // family cap. Action-based POST (same style as api/stripe/cancel-subscription.js).
@@ -189,6 +189,7 @@ async function handler(req, res) {
     return res.status(400).json({ error: `Unknown action: ${action}` })
   } catch (err) {
     console.error('admin/advisers error:', err)
+    captureException(err, { endpoint: 'admin/advisers' })
     return res.status(500).json({ error: err.message })
   }
 }

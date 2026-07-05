@@ -1,5 +1,5 @@
 import { Resend } from 'resend'
-import { withSentry } from '../lib/sentry.js'
+import { withSentry, captureException } from '../lib/sentry.js'
 
 const resend = new Resend(process.env.RESEND_API_KEY)
 const TO     = process.env.ENQUIRY_TO || 'hello@everstead.care'
@@ -56,6 +56,7 @@ async function handler(req, res) {
     return res.status(200).json({ ok: true })
   } catch (err) {
     console.error('[enquiry] send error:', err)
+    captureException(err, { endpoint: 'contact/enquiry' })
     return res.status(500).json({ error: 'Failed to send email' })
   }
 }

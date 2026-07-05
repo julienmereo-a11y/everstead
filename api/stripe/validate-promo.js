@@ -1,5 +1,5 @@
 import Stripe from 'stripe'
-import { withSentry } from '../lib/sentry.js'
+import { withSentry, captureException } from '../lib/sentry.js'
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY)
 
@@ -67,6 +67,9 @@ async function handler(req, res) {
     })
   } catch (err) {
     console.error('validate-promo error:', err)
+    // A real failure here looks identical to "invalid code" to the user — always
+    // report so a Stripe outage doesn't silently read as a typo'd promo code.
+    captureException(err, { endpoint: 'stripe/validate-promo' })
     return res.status(200).json({ valid: false, reason: 'Could not validate code' })
   }
 }

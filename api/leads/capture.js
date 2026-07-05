@@ -1,6 +1,6 @@
 import { createClient } from '@supabase/supabase-js'
 import { Resend } from 'resend'
-import { withSentry } from '../lib/sentry.js'
+import { withSentry, captureException } from '../lib/sentry.js'
 
 const supabase = createClient(
   process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL,
@@ -91,6 +91,7 @@ async function handler(req, res) {
     }
   } catch (err) {
     console.error('[leads/capture] DB exception:', err)
+    captureException(err, { endpoint: 'leads/capture', stage: 'db-write' })
     // Don't block the email send if DB write fails — better to deliver the
     // takeaway than to leave the user empty-handed. We'll fall through.
   }
@@ -109,6 +110,7 @@ async function handler(req, res) {
     })
   } catch (err) {
     console.error('[leads/capture] email send error:', err)
+    captureException(err, { endpoint: 'leads/capture', stage: 'email-send' })
     return res.status(500).json({ error: "Could not send the email. Please try again or contact hello@everstead.care." })
   }
 

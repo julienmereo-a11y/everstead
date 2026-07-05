@@ -1,6 +1,6 @@
 import { createClient } from '@supabase/supabase-js'
 import { Resend } from 'resend'
-import { withSentry } from '../lib/sentry.js'
+import { withSentry, captureException } from '../lib/sentry.js'
 
 const supabase = createClient(
   process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL,
@@ -85,6 +85,7 @@ async function handler(req, res) {
     })
   } catch (err) {
     console.error('[subprocessor subscribe] confirmation email error:', err)
+    captureException(err, { endpoint: 'subprocessors/subscribe' })
   }
 
   return res.status(200).json({ ok: true })

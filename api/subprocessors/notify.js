@@ -1,6 +1,6 @@
 import { createClient } from '@supabase/supabase-js'
 import { Resend } from 'resend'
-import { withSentry } from '../lib/sentry.js'
+import { withSentry, captureException } from '../lib/sentry.js'
 
 const supabase = createClient(
   process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL,
@@ -72,6 +72,7 @@ async function handler(req, res) {
       sent.push(sub.email)
     } catch (err) {
       console.error(`[notify] send failed for ${sub.email}:`, err)
+      captureException(err, { endpoint: 'subprocessors/notify' })
       failed.push({ email: sub.email, error: err.message })
     }
   }

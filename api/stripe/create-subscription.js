@@ -1,6 +1,6 @@
 import Stripe from 'stripe'
 import { createClient } from '@supabase/supabase-js'
-import { withSentry } from '../lib/sentry.js'
+import { withSentry, captureException } from '../lib/sentry.js'
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY)
 const supabase = createClient(
@@ -70,6 +70,7 @@ async function handler(req, res) {
         }
       } catch (e) {
         console.error('create-subscription promo lookup failed:', e.message)
+        captureException(e, { endpoint: 'stripe/create-subscription', stage: 'promo-lookup', userId })
       }
     }
 
@@ -102,6 +103,9 @@ async function handler(req, res) {
       // now, retry once without it so the user still gets an account.
       if (promotionCodeId) {
         console.error('create-subscription with discount failed, retrying without:', e.message)
+        // Worth knowing even though we recover — the user silently loses their
+        // discount (e.g. FOUNDING50) and gets charged full price.
+        captureException(e, { endpoint: 'stripe/create-subscription', stage: 'discount-retry', userId, promoCode })
         delete subParams.discounts
         delete subParams.metadata.promo_code
         subscription = await stripe.subscriptions.create(subParams)
@@ -135,12 +139,16 @@ async function handler(req, res) {
     if (isFoundingMember && promotionCodeId) {
       const { error: foundingErr } = await supabase
         .from('profiles').update({ is_founding_member: true }).eq('id', userId)
-      if (foundingErr) console.error('could not set is_founding_member:', foundingErr.message)
+      if (foundingErr) {
+        console.error('could not set is_founding_member:', foundingErr.message)
+        captureException(foundingErr, { endpoint: 'stripe/create-subscription', stage: 'founding-flag', userId })
+      }
     }
 
     return res.status(200).json({ subscriptionId: subscription.id, status: subscription.status })
   } catch (err) {
     console.error('create-subscription error:', err)
+    captureException(err, { endpoint: 'stripe/create-subscription', userId })
     return res.status(500).json({ error: err.message })
   }
 }

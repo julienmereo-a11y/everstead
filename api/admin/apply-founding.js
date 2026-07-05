@@ -1,6 +1,6 @@
 import Stripe from 'stripe'
 import { requireAdmin, adminDb as db } from '../_lib/admin-auth.js'
-import { withSentry } from '../lib/sentry.js'
+import { withSentry, captureException } from '../lib/sentry.js'
 
 // Admin-only: put a user on the founding deal — Family Yearly + the FOUNDING50 coupon
 // (100% off for 12 months) → £0 for the first year, then renews yearly at the normal
@@ -40,6 +40,8 @@ async function handler(req, res) {
       coupon = coupons.data.find(c => (c.id || '').toUpperCase() === FOUNDING_CODE || (c.name || '').toUpperCase() === FOUNDING_CODE) || null
     }
   } catch (e) {
+    console.error('apply-founding coupon lookup error:', e)
+    captureException(e, { endpoint: 'admin/apply-founding', stage: 'coupon-lookup' })
     return res.status(502).json({ error: `Could not read Stripe coupons: ${e.message}` })
   }
   if (!coupon) {
@@ -102,6 +104,7 @@ async function handler(req, res) {
     return res.status(200).json({ ok: true, status: updated.status })
   } catch (err) {
     console.error('apply-founding error:', err)
+    captureException(err, { endpoint: 'admin/apply-founding' })
     return res.status(500).json({ error: err.message })
   }
 }

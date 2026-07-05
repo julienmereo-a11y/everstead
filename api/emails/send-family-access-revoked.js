@@ -1,6 +1,6 @@
 import { Resend } from 'resend'
 import { createClient } from '@supabase/supabase-js'
-import { withSentry } from '../lib/sentry.js'
+import { withSentry, captureException } from '../lib/sentry.js'
 
 const resend = new Resend(process.env.RESEND_API_KEY)
 const supabase = createClient(
@@ -35,6 +35,7 @@ async function handler(req, res) {
     res.status(200).json({ sent: true })
   } catch (err) {
     console.error('send-family-access-revoked error:', err)
+    captureException(err, { endpoint: 'emails/send-family-access-revoked' })
     res.status(500).json({ error: err.message })
   }
 }

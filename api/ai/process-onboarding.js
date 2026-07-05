@@ -1,6 +1,6 @@
 import Anthropic from '@anthropic-ai/sdk'
 import { aiGuard } from '../_lib/ai-guard'
-import { withSentry } from '../lib/sentry.js'
+import { withSentry, captureException } from '../lib/sentry.js'
 
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
 
@@ -69,6 +69,7 @@ Extract structured vault entries from these answers.`
     res.status(200).json(result)
   } catch (error) {
     console.error('process-onboarding error:', error)
+    captureException(err, { endpoint: 'ai/process-onboarding' })
     res.status(500).json({ error: 'Failed to process onboarding. Please try again.' })
   }
 }

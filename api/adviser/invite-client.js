@@ -1,6 +1,6 @@
 import { createClient } from '@supabase/supabase-js'
 import { sendClientInvite } from '../_lib/adviser-email.js'
-import { withSentry } from '../lib/sentry.js'
+import { withSentry, captureException } from '../lib/sentry.js'
 
 // Adviser-facing: invite a client family to create their Everstead plan.
 // Any accepted adviser on the firm may invite. Enforces the firm's family cap
@@ -66,6 +66,7 @@ async function handler(req, res) {
     return res.status(200).json({ ok: true })
   } catch (err) {
     console.error('adviser/invite-client error:', err)
+    captureException(err, { endpoint: 'adviser/invite-client' })
     return res.status(500).json({ error: err.message })
   }
 }

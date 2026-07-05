@@ -1,5 +1,5 @@
 import { createClient } from '@supabase/supabase-js'
-import { withSentry } from '../lib/sentry.js'
+import { withSentry, captureException } from '../lib/sentry.js'
 
 // Called by a newly signed-up user (from GetStarted) who arrived via an adviser
 // invite link. If a pending adviser_client_invites row matches their verified email,
@@ -42,6 +42,7 @@ async function handler(req, res) {
     return res.status(200).json({ linked: true, firm_name: firm?.firm_name || null })
   } catch (err) {
     console.error('adviser/claim-client-invite error:', err)
+    captureException(err, { endpoint: 'adviser/claim-client-invite' })
     return res.status(500).json({ error: err.message })
   }
 }

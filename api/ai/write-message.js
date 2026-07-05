@@ -1,6 +1,6 @@
 import Anthropic from '@anthropic-ai/sdk'
 import { aiGuard } from '../_lib/ai-guard'
-import { withSentry } from '../lib/sentry.js'
+import { withSentry, captureException } from '../lib/sentry.js'
 
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
 
@@ -49,6 +49,7 @@ Write this as a warm, heartfelt personal letter from me to ${recipientName}.`
     res.status(200).json({ message: message.content[0].text })
   } catch (error) {
     console.error('write-message error:', error)
+    captureException(err, { endpoint: 'ai/write-message' })
     res.status(500).json({ error: 'Failed to write message. Please try again.' })
   }
 }

@@ -1,7 +1,7 @@
 import Stripe from 'stripe'
 import { createClient } from '@supabase/supabase-js'
 import { Resend } from 'resend'
-import { withSentry } from '../lib/sentry.js'
+import { withSentry, captureException } from '../lib/sentry.js'
 
 const stripe   = new Stripe(process.env.STRIPE_SECRET_KEY)
 const supabase = createClient(process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY)
@@ -72,6 +72,7 @@ async function handler(req, res) {
     return res.status(200).json({ ok: true, plan: gift.plan, trialEnds: new Date(trialEnd * 1000).toISOString() })
   } catch (err) {
     console.error('gift redeem error:', err)
+    captureException(err, { endpoint: 'gift/redeem' })
     return res.status(500).json({ error: err.message })
   }
 }

@@ -1,6 +1,6 @@
 import { createClient } from '@supabase/supabase-js'
 import { Resend } from 'resend'
-import { withSentry } from '../lib/sentry.js'
+import { withSentry, captureException } from '../lib/sentry.js'
 
 const supabase = createClient(
   process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL,
@@ -73,6 +73,7 @@ async function handler(req, res) {
           await supabase.from('profiles').update({ [task.flag]: true }).eq('id', p.id)
           results.reminded++
         } catch (err) {
+          captureException(err, { endpoint: 'cron/trial-reminders', stage: 'reminder', userId: p.id })
           results.errors.push(`reminder ${p.id}: ${err.message}`)
         }
       }
@@ -106,6 +107,7 @@ async function handler(req, res) {
           .eq('id', p.id)
         results.warned++
       } catch (err) {
+        captureException(err, { endpoint: 'cron/trial-reminders', stage: 'deletion-warning', userId: p.id })
         results.errors.push(`warning ${p.id}: ${err.message}`)
       }
     })
@@ -147,6 +149,7 @@ async function handler(req, res) {
       results.deleted++
     } catch (err) {
       console.error(`daily-jobs: delete failed for ${p.id}:`, err.message)
+      captureException(err, { endpoint: 'cron/trial-reminders', stage: 'permanent-deletion', userId: p.id })
       results.errors.push(`delete ${p.id}: ${err.message}`)
     }
   }
