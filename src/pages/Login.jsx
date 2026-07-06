@@ -123,7 +123,14 @@ export default function Login() {
         access_token:  data.access_token,
         refresh_token: data.refresh_token,
       })
-      if (sessionErr) throw sessionErr
+      // Never surface a raw Supabase SDK error here — it can leak internal
+      // infrastructure detail (e.g. a stale cached bundle hitting a rotated API
+      // key shows "Legacy API keys are disabled", which means nothing to a user
+      // and looks alarming). Log it for us, show a safe generic message instead.
+      if (sessionErr) {
+        console.error('setSession error:', sessionErr)
+        throw new Error(t('errors.generic'))
+      }
 
       if (redirectParam) { navigate(redirectParam, { replace: true }); return }
       if (from) { navigate(from, { replace: true }); return }
