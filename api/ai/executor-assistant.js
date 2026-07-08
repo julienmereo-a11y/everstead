@@ -1,5 +1,5 @@
 import Anthropic from '@anthropic-ai/sdk'
-import { aiGuardForUser } from '../_lib/ai-guard'
+import { aiGuardForUser } from '../_lib/ai-guard.js'
 import { withSentry, captureException } from '../lib/sentry.js'
 
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
