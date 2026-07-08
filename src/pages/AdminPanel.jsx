@@ -791,6 +791,40 @@ function AdminActions({ u, onTrialExtended }) {
     } catch { setLinkState('error'); setTimeout(() => setLinkState('idle'), 3000) }
   }
 
+  const [deleteState, setDeleteState] = useState('idle')
+  const deleteUser = async () => {
+    // Type-to-confirm: irreversible, so require the admin to type the exact email.
+    const typed = window.prompt(
+      `⚠️ PERMANENTLY DELETE ${u.full_name ?? u.email}\n\n` +
+      `This instantly and irreversibly erases their account, all their vault data ` +
+      `(accounts, documents, messages, contacts, wishes), their uploaded files, and ` +
+      `cancels & deletes their Stripe customer. This CANNOT be undone.\n\n` +
+      `Type their email to confirm:\n${u.email}`
+    )
+    if (typed == null) return
+    if (typed.trim().toLowerCase() !== (u.email || '').trim().toLowerCase()) {
+      window.alert('Email did not match — deletion cancelled.')
+      return
+    }
+    setDeleteState('sending')
+    try {
+      const { data: { session } } = await supabase.auth.getSession()
+      const res = await fetch('/api/admin/delete-user', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${session?.access_token}` },
+        body: JSON.stringify({ userId: u.id }),
+      })
+      const data = await res.json().catch(() => ({}))
+      if (!res.ok) { window.alert(data.error || 'Could not delete the user.'); setDeleteState('idle'); return }
+      if (data.warnings?.length) console.warn('delete-user completed with warnings:', data.warnings)
+      setDeleteState('deleted')
+      setTimeout(() => window.location.reload(), 900)
+    } catch {
+      setDeleteState('idle')
+      window.alert('Network error. Please try again.')
+    }
+  }
+
   const sendPasswordReset = async () => {
     setPwState('sending')
     try {
@@ -949,6 +983,26 @@ function AdminActions({ u, onTrialExtended }) {
             {linkState === 'sending' ? <Loader2 size={12} className="animate-spin" /> : <Sparkles size={12} />}
             {linkState === 'sent' ? 'Founding link sent ✓' : linkState === 'error' ? 'Failed — retry' : 'Send founding link'}
           </button>
+        )}
+
+        {/* Danger zone — permanent deletion. Separated + type-to-confirm so it can't
+            be clicked by accident. Hidden for admins (delete your own role first). */}
+        {u.role !== 'admin' && (
+          <div className="pt-2 mt-2 border-t border-stone-100">
+            <button
+              onClick={deleteUser}
+              disabled={deleteState === 'sending' || deleteState === 'deleted'}
+              className="w-full flex items-center gap-2 text-xs font-semibold px-3 py-2 rounded-xl border border-red-300 text-red-700 bg-red-50 hover:bg-red-100 transition-colors disabled:opacity-50"
+              title="Permanently delete this user, their data, files, and Stripe customer"
+            >
+              {deleteState === 'sending'
+                ? <Loader2 size={12} className="animate-spin" />
+                : <Trash2 size={12} />}
+              {deleteState === 'sending' ? 'Deleting…'
+                : deleteState === 'deleted' ? 'Deleted ✓'
+                : 'Delete user permanently'}
+            </button>
+          </div>
         )}
       </div>
 
