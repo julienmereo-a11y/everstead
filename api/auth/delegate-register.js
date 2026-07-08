@@ -10,6 +10,11 @@ const FOUNDER_TO = process.env.FEEDBACK_TO || 'julien@everstead.care'
 // Awaited (serverless freezes after the response) but wrapped so a failure
 // never blocks the signup itself.
 async function notifyFounderOfSignup({ name, email, plan }) {
+  // Escape user-supplied signup values before interpolating into the email HTML
+  // body. (The raw values are still used for the structured subject/replyTo fields.)
+  const esc = (s) => String(s ?? '').replace(/[&<>"']/g, c => (
+    { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]
+  ))
   try {
     const when = new Date().toLocaleString('en-GB', {
       day: 'numeric', month: 'long', year: 'numeric',
@@ -26,9 +31,9 @@ async function notifyFounderOfSignup({ name, email, plan }) {
     <tr><td style="background:#2d5082;background:linear-gradient(100deg,#2d5082 0%,#6f6bc6 50%,#6e9b6a 100%);padding:20px 24px;"><p style="margin:0;color:#fff;font-size:16px;font-weight:600;">New registration</p></td></tr>
     <tr><td style="padding:22px 24px;">
       <table style="width:100%;border-collapse:collapse;">
-        <tr><td style="padding:6px 0;color:#6b7280;font-size:14px;width:120px;">Name</td><td style="padding:6px 0;color:#0d1628;font-size:14px;font-weight:500;">${name || '—'}</td></tr>
-        <tr><td style="padding:6px 0;color:#6b7280;font-size:14px;">Email</td><td style="padding:6px 0;color:#0d1628;font-size:14px;font-weight:500;">${email || '—'}</td></tr>
-        <tr><td style="padding:6px 0;color:#6b7280;font-size:14px;">Plan selected</td><td style="padding:6px 0;color:#0d1628;font-size:14px;font-weight:500;">${plan || 'essential'}</td></tr>
+        <tr><td style="padding:6px 0;color:#6b7280;font-size:14px;width:120px;">Name</td><td style="padding:6px 0;color:#0d1628;font-size:14px;font-weight:500;">${esc(name) || '—'}</td></tr>
+        <tr><td style="padding:6px 0;color:#6b7280;font-size:14px;">Email</td><td style="padding:6px 0;color:#0d1628;font-size:14px;font-weight:500;">${esc(email) || '—'}</td></tr>
+        <tr><td style="padding:6px 0;color:#6b7280;font-size:14px;">Plan selected</td><td style="padding:6px 0;color:#0d1628;font-size:14px;font-weight:500;">${esc(plan) || 'essential'}</td></tr>
         <tr><td style="padding:6px 0;color:#6b7280;font-size:14px;">Registered</td><td style="padding:6px 0;color:#0d1628;font-size:14px;font-weight:500;">${when}</td></tr>
       </table>
       <p style="margin:16px 0 0;font-size:13px;color:#9ca3af;">Account created. Card entry / checkout may still be in progress.</p>

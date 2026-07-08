@@ -1,6 +1,7 @@
 import { createClient } from '@supabase/supabase-js'
 import { Resend } from 'resend'
 import { withSentry, captureException } from './lib/sentry.js'
+import { rateLimited } from './_lib/rate-limit.js'
 
 const supabase = createClient(
   process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL,
@@ -11,6 +12,11 @@ const FEEDBACK_TO = process.env.FEEDBACK_TO || 'julien@everstead.care'
 
 async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' })
+
+  // Public endpoint — throttle to stop mass email/abuse.
+  if (await rateLimited(req, 'feedback', { max: 8, windowMinutes: 15 })) {
+    return res.status(429).json({ error: 'Too many requests. Please try again shortly.' })
+  }
 
   const { userId, email, name, rating, category, message, page, plan } = req.body || {}
   if (!message || typeof message !== 'string' || !message.trim()) {

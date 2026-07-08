@@ -112,13 +112,13 @@ export default function RedeemGift() {
         await supabase.from('profiles').update({ country: form.country }).eq('id', user.id)
       }
 
-      // 3. Redeem gift
+      // 3. Redeem gift — send the session JWT; the server derives the account from it
+      // (never a client-supplied userId).
       const redeemRes = await fetch('/api/gift/redeem', {
         method:  'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${access_token}` },
         body:    JSON.stringify({
           code,
-          userId: user.id,
           email:  form.email,
           name:   form.fullName,
         }),

@@ -1,6 +1,7 @@
 import { createClient } from '@supabase/supabase-js'
 import { Resend } from 'resend'
 import { withSentry } from '../lib/sentry.js'
+import { rateLimited } from '../_lib/rate-limit.js'
 
 const supabase = createClient(process.env.VITE_SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY)
 const resend   = new Resend(process.env.RESEND_API_KEY)
@@ -30,6 +31,12 @@ async function handler(req, res) {
   }
 
   const { access_token, refresh_token } = await authRes.json()
+
+  // Throttle code sends per IP (password already verified above, so wrong-password
+  // attempts don't consume the budget) — stops MFA-email bombing of a target inbox.
+  if (await rateLimited(req, 'mfa-send-code', { max: 6, windowMinutes: 15 })) {
+    return res.status(429).json({ error: 'Too many code requests. Please wait a few minutes and try again.' })
+  }
 
   // Generate 6-digit code
   const code = String(Math.floor(100000 + Math.random() * 900000))

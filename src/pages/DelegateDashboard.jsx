@@ -299,23 +299,29 @@ export default function DelegateDashboard() {
 
   // Print handler
   const handlePrint = () => {
+    // Escape every owner-entered value before it's written into the print window —
+    // account names, notes, instruction bodies etc. are free text and would otherwise
+    // execute as HTML/JS in the delegate's browser (stored XSS across the trust boundary).
+    const esc = (s) => String(s ?? '').replace(/[&<>"']/g, c => (
+      { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]
+    ))
     const sections = []
     if (accessibleAccounts.length) {
       sections.push(`<h2>Accounts (${accessibleAccounts.length})</h2><ul>${
-        accessibleAccounts.map(a => `<li><strong>${a.institution}</strong> — ${a.account_type}${a.account_number_hint ? ` (••••${a.account_number_hint})` : ''}${a.notes ? `<br><em>${a.notes}</em>` : ''}</li>`).join('')
+        accessibleAccounts.map(a => `<li><strong>${esc(a.institution)}</strong> — ${esc(a.account_type)}${a.account_number_hint ? ` (••••${esc(a.account_number_hint)})` : ''}${a.notes ? `<br><em>${esc(a.notes)}</em>` : ''}</li>`).join('')
       }</ul>`)
     }
     if (accessibleDocuments.length) {
       sections.push(`<h2>Documents (${accessibleDocuments.length})</h2><ul>${
-        accessibleDocuments.map(d => `<li><strong>${d.name}</strong> — ${d.doc_type || 'Document'}${d.expires_at ? ` (expires ${formatDate(d.expires_at)})` : ''}${d.notes ? `<br><em>${d.notes}</em>` : ''}</li>`).join('')
+        accessibleDocuments.map(d => `<li><strong>${esc(d.name)}</strong> — ${esc(d.doc_type || 'Document')}${d.expires_at ? ` (expires ${esc(formatDate(d.expires_at))})` : ''}${d.notes ? `<br><em>${esc(d.notes)}</em>` : ''}</li>`).join('')
       }</ul>`)
     }
     if (accessibleInstructions.length) {
       sections.push(`<h2>Instructions (${accessibleInstructions.length})</h2>${
-        accessibleInstructions.map(i => `<div style="margin-bottom:1.5rem"><strong>${i.title}</strong> (${i.category} · ${i.audience})<br>${i.body || ''}<ol>${(i.instruction_steps || []).map(s => `<li>${s.body}</li>`).join('')}</ol></div>`).join('')
+        accessibleInstructions.map(i => `<div style="margin-bottom:1.5rem"><strong>${esc(i.title)}</strong> (${esc(i.category)} · ${esc(i.audience)})<br>${esc(i.body || '')}<ol>${(i.instruction_steps || []).map(s => `<li>${esc(s.body)}</li>`).join('')}</ol></div>`).join('')
       }`)
     }
-    const html = `<!DOCTYPE html><html><head><title>${owner?.full_name || 'Plan'} — Handoff Plan</title><style>body{font-family:Georgia,serif;max-width:800px;margin:2rem auto;color:#1a1a1a;line-height:1.6}h1{font-size:1.8rem;margin-bottom:0.5rem}h2{font-size:1.1rem;text-transform:uppercase;letter-spacing:.08em;color:#666;border-bottom:1px solid #ddd;padding-bottom:.5rem;margin-top:2rem}ul{padding-left:1.2rem}li{margin-bottom:.75rem}@media print{body{margin:1rem}}</style></head><body><h1>${owner?.full_name || 'Plan owner'}'s handoff plan</h1><p style="color:#666;font-size:.9rem">Viewed by ${invite?.name || 'delegate'} (${invite?.role || 'trusted person'}) · Printed ${new Date().toLocaleDateString('en-GB', { dateStyle: 'long' })}</p>${sections.join('')}<hr style="margin-top:3rem"><p style="font-size:.8rem;color:#999">Exported from Everstead — secure estate planning platform · everstead.care</p></body></html>`
+    const html = `<!DOCTYPE html><html><head><title>${esc(owner?.full_name || 'Plan')} — Handoff Plan</title><style>body{font-family:Georgia,serif;max-width:800px;margin:2rem auto;color:#1a1a1a;line-height:1.6}h1{font-size:1.8rem;margin-bottom:0.5rem}h2{font-size:1.1rem;text-transform:uppercase;letter-spacing:.08em;color:#666;border-bottom:1px solid #ddd;padding-bottom:.5rem;margin-top:2rem}ul{padding-left:1.2rem}li{margin-bottom:.75rem}@media print{body{margin:1rem}}</style></head><body><h1>${esc(owner?.full_name || 'Plan owner')}'s handoff plan</h1><p style="color:#666;font-size:.9rem">Viewed by ${esc(invite?.name || 'delegate')} (${esc(invite?.role || 'trusted person')}) · Printed ${new Date().toLocaleDateString('en-GB', { dateStyle: 'long' })}</p>${sections.join('')}<hr style="margin-top:3rem"><p style="font-size:.8rem;color:#999">Exported from Everstead — secure estate planning platform · everstead.care</p></body></html>`
     const w = window.open('', '_blank')
     w.document.write(html)
     w.document.close()

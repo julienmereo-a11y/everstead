@@ -16,8 +16,17 @@ const PRICE_IDS = {
 async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).end()
 
-  const { code, userId, email, name } = req.body
-  if (!code || !userId || !email) return res.status(400).json({ error: 'Missing fields' })
+  // The gift is attached to the AUTHENTICATED caller — never a client-supplied userId
+  // (which previously let a code-holder redeem onto any account).
+  const token = (req.headers.authorization || '').replace(/^Bearer\s+/i, '')
+  if (!token) return res.status(401).json({ error: 'Unauthorized' })
+  const { data: { user }, error: authErr } = await supabase.auth.getUser(token)
+  if (authErr || !user) return res.status(401).json({ error: 'Unauthorized' })
+  const userId = user.id
+
+  const { code, name } = req.body
+  const email = req.body.email || user.email
+  if (!code || !email) return res.status(400).json({ error: 'Missing fields' })
 
   // Validate code
   const { data: gift } = await supabase.from('gift_codes').select('*').eq('code', code).single()
@@ -27,6 +36,19 @@ async function handler(req, res) {
 
   const priceId = PRICE_IDS[gift.plan]?.yearly
   if (!priceId) return res.status(400).json({ error: 'Invalid plan on gift code.' })
+
+  // Atomically claim the code BEFORE any Stripe work. The `redeemed_by is null` guard
+  // serialises concurrent redeems at the row level — only one caller can win the race,
+  // so a single gift can't be double-spent. Rolled back below if Stripe then fails.
+  const prevStatus = gift.status
+  const { data: claimed } = await supabase.from('gift_codes')
+    .update({ status: 'redeemed', redeemed_at: new Date().toISOString(), redeemed_by: userId })
+    .eq('id', gift.id)
+    .is('redeemed_by', null)
+    .select('id')
+  if (!claimed || claimed.length === 0) {
+    return res.status(400).json({ error: 'This gift has already been redeemed.' })
+  }
 
   try {
     // Create Stripe customer for recipient
@@ -52,12 +74,7 @@ async function handler(req, res) {
       trial_ends_at:          new Date(trialEnd * 1000).toISOString(),
     }).eq('id', userId)
 
-    // Mark code redeemed
-    await supabase.from('gift_codes').update({
-      status:       'redeemed',
-      redeemed_at:  new Date().toISOString(),
-      redeemed_by:  userId,
-    }).eq('id', gift.id)
+    // (Code was already claimed atomically above.)
 
     // Send "vault is ready" email to recipient
     const planName    = gift.plan === 'family' ? 'Family' : 'Essential'
@@ -71,6 +88,10 @@ async function handler(req, res) {
 
     return res.status(200).json({ ok: true, plan: gift.plan, trialEnds: new Date(trialEnd * 1000).toISOString() })
   } catch (err) {
+    // Stripe/profile step failed — release the claim so the gift isn't lost.
+    await supabase.from('gift_codes')
+      .update({ status: prevStatus, redeemed_at: null, redeemed_by: null })
+      .eq('id', gift.id)
     console.error('gift redeem error:', err)
     captureException(err, { endpoint: 'gift/redeem' })
     return res.status(500).json({ error: err.message })

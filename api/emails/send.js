@@ -146,6 +146,7 @@ async function handler(req, res) {
 }
 
 function welcomeHtml(name, plan) {
+  name = esc(name); plan = esc(plan)
   return `<!DOCTYPE html>
 <html>
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
@@ -174,6 +175,7 @@ function welcomeHtml(name, plan) {
 }
 
 function inviteAcceptedHtml(ownerName, inviteeName, role) {
+  ownerName = esc(ownerName); inviteeName = esc(inviteeName); role = esc(role)
   return `<!DOCTYPE html>
 <html>
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
@@ -201,6 +203,7 @@ function inviteAcceptedHtml(ownerName, inviteeName, role) {
 }
 
 function adminInviteHtml(email, inviteUrl) {
+  email = esc(email)   // inviteUrl is server-generated (safe); email is user-supplied
   return `<!DOCTYPE html>
 <html>
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
@@ -233,6 +236,7 @@ function adminInviteHtml(email, inviteUrl) {
 }
 
 function inviteHtml(inviteeName, ownerName, role, inviteToken) {
+  inviteeName = esc(inviteeName); ownerName = esc(ownerName); role = esc(role)
   const signupUrl = inviteToken
     ? `${process.env.VITE_APP_URL}/accept-invite?token=${inviteToken}`
     : `${process.env.VITE_APP_URL}/accept-invite`
@@ -274,7 +278,7 @@ function inviteHtml(inviteeName, ownerName, role, inviteToken) {
 }
 
 function toolReportHtml(name, score, answers) {
-  const firstName = name?.split(' ')[0] || 'there'
+  const firstName = esc(name?.split(' ')[0] || 'there')
   const appUrl    = process.env.VITE_APP_URL || 'https://www.everstead.care'
 
   const band = score >= 86 ? { label: 'Excellent', color: '#0d1628' }
@@ -410,6 +414,7 @@ function adminDirectHtml(toName, subject, message) {
 }
 
 function ownerRegistrationHtml({ name, email, plan, billingCycle }) {
+  name = esc(name); email = esc(email); plan = esc(plan); billingCycle = esc(billingCycle)
   const signedUpAt = new Date().toLocaleString('en-GB', {
     day: 'numeric', month: 'long', year: 'numeric',
     hour: '2-digit', minute: '2-digit', timeZone: 'Europe/London',

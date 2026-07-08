@@ -1,5 +1,6 @@
 import { Resend } from 'resend'
 import { withSentry, captureException } from '../lib/sentry.js'
+import { rateLimited } from '../_lib/rate-limit.js'
 
 const resend = new Resend(process.env.RESEND_API_KEY)
 const TO     = process.env.ENQUIRY_TO || 'hello@everstead.care'
@@ -7,18 +8,30 @@ const TO     = process.env.ENQUIRY_TO || 'hello@everstead.care'
 async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' })
 
+  // Public unauthenticated endpoint — throttle to stop mass branded-email abuse.
+  if (await rateLimited(req, 'contact-enquiry', { max: 5, windowMinutes: 15 })) {
+    return res.status(429).json({ error: 'Too many requests. Please try again in a few minutes.' })
+  }
+
   const { type, fields } = req.body || {}
   if (!type || !fields) return res.status(400).json({ error: 'Missing type or fields' })
 
-  // Build subject
+  // Escape all submitter-controlled values before they enter the email HTML —
+  // this is a public, unauthenticated endpoint, so the field keys/values are
+  // fully attacker-controlled (HTML/phishing injection into a branded email).
+  const esc = (s) => String(s ?? '').replace(/[&<>"']/g, c => (
+    { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]
+  ))
+
+  // Build subject (Resend takes this as a structured field — escaped for safety anyway)
   const subject =
     type === 'book-demo'
-      ? `New adviser demo request — ${fields['Firm'] || fields['Full name'] || 'Unknown firm'}`
-      : `New contact form message — ${fields['Subject'] || fields['Name'] || 'No subject'}`
+      ? `New adviser demo request — ${esc(fields['Firm'] || fields['Full name'] || 'Unknown firm')}`
+      : `New contact form message — ${esc(fields['Subject'] || fields['Name'] || 'No subject')}`
 
   // Build plain HTML body from fields
   const rows = Object.entries(fields)
-    .map(([k, v]) => `<tr><td style="padding:6px 12px;font-weight:600;color:#374151;white-space:nowrap;vertical-align:top;">${k}</td><td style="padding:6px 12px;color:#4b5563;">${v || '—'}</td></tr>`)
+    .map(([k, v]) => `<tr><td style="padding:6px 12px;font-weight:600;color:#374151;white-space:nowrap;vertical-align:top;">${esc(k)}</td><td style="padding:6px 12px;color:#4b5563;">${esc(v) || '—'}</td></tr>`)
     .join('')
 
   const html = `

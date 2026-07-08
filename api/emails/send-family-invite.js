@@ -45,6 +45,10 @@ async function handler(req, res) {
 }
 
 function familyInviteHtml(primaryName, inviteUrl) {
+  // Escape the inviter's name before it enters the email HTML (inviteUrl is server-built).
+  primaryName = String(primaryName ?? '').replace(/[&<>"']/g, c => (
+    { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]
+  ))
   const items = [
     'Your own private vault — fully separate from theirs',
     'Organise your accounts, documents, and final wishes',
