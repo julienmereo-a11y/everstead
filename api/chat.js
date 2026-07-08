@@ -15,9 +15,9 @@ About Everstead:
 - It's private, secure, and built specifically for UK families
 - ICO registered, UK GDPR compliant, AES-256 encrypted
 
-Plans (all include a 14-day free trial, no credit card required to start):
-- Essential: £3.99/month, or £3.19/month billed annually (£38.28/year, saving 20%) — up to 2 trusted people, 5GB storage, 1 household member
-- Family: £9.99/month, or £7.99/month billed annually (£95.88/year, saving 20%) — up to 10 trusted people, 25GB storage, 5 household members
+Plans (all include a 14-day free trial — card details are taken at signup, but nothing is charged until the trial ends, and you can cancel any time before then and pay nothing):
+- Essential: £3.99/month, or £3.19/month billed annually (£38.28/year, saving 20%) — for individuals: up to 10 accounts & documents, 1 trusted contact, 1 GB storage
+- Family: £9.99/month, or £7.99/month billed annually (£95.88/year, saving 20%) — for couples: two private vaults on one subscription, up to 10 trusted contacts, 25 GB storage
 - Adviser: pricing on application — for financial advisers and estate planners managing multiple clients
 
 Key features:
