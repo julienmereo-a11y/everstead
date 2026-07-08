@@ -196,48 +196,52 @@ export default function Home() {
     <div className="bg-stone-50">
 
       {/* ── HERO ─────────────────────────────────────────────────── */}
-      {/* Top-anchored by default so the tall heading always clears the fixed nav on
-          short/wide windows; vertically centred only when the viewport is tall enough
-          to have room (otherwise justify-center overflows the heading up into the nav). */}
-      <section className="aurora-field overflow-hidden min-h-screen flex flex-col justify-start [@media(min-height:820px)]:justify-center pt-24 pb-20 relative">
+      {/* Full-bleed photo/video hero: media layer → veil → vignette → grain → content.
+          Content is bottom-anchored (not centred) so the layout reads as a calm,
+          photographic "big lower-left headline" hero rather than a text-on-gradient one. */}
+      <section className="relative min-h-screen flex flex-col justify-end overflow-hidden bg-navy-950 grain">
 
-        {/* Family photo — fills the right side of the hero, fully visible on the right and
-            fading gradually leftward into the aurora background (matches the design mock). */}
-        <div className="hidden lg:block absolute top-24 bottom-0 right-0 w-[60%] pointer-events-none select-none" aria-hidden="true">
-          <img
-            src="/hero-family.jpg"
-            alt=""
-            className="w-full h-full object-cover"
-            style={{
-              objectPosition: '88% 38%',
-              maskImage: 'linear-gradient(to right, transparent 0%, rgba(0,0,0,0.55) 30%, #000 55%)',
-              WebkitMaskImage: 'linear-gradient(to right, transparent 0%, rgba(0,0,0,0.55) 30%, #000 55%)',
-            }}
-          />
-          {/* soft top fade so the photo melts into the nav band rather than a hard edge */}
-          <div className="absolute inset-x-0 top-0 h-16" style={{ background: 'linear-gradient(to bottom, rgba(13,22,40,0.8) 0%, rgba(13,22,40,0) 100%)' }} />
-        </div>
+        {/* Media — poster photo, with the looping video layered on top (desktop only,
+            to avoid forcing a ~38MB autoplay download on mobile connections) */}
+        <img
+          src="/hero-living-room.png"
+          alt=""
+          aria-hidden="true"
+          className="absolute inset-0 w-full h-full object-cover"
+          style={{ objectPosition: 'center 60%' }}
+        />
+        <video
+          className="hidden lg:block absolute inset-0 w-full h-full object-cover"
+          style={{ objectPosition: 'center 60%' }}
+          src="/videohero.mp4"
+          poster="/hero-living-room.png"
+          autoPlay
+          muted
+          loop
+          playsInline
+        />
 
-        <div className="relative max-w-7xl mx-auto px-6 lg:px-8 w-full">
-          {/* Copy */}
-          <div className="max-w-[620px]">
-            {/* A/B alternates to try later:
-              // "The most thoughtful thing you'll sort out this year."
-              // "Stop carrying it all in your head."
-              // "Everything your family would need, gathered in one place — with love."
-            */}
-            <p className="text-sm sm:text-base font-medium text-sage-300 mb-4 sm:mb-5 tracking-wide animate-fade-up">
-              {t('hero.eyebrow')}
-            </p>
-            <h1 className="font-display text-[2.75rem] leading-[1.18] sm:text-6xl sm:leading-[1.14] lg:text-7xl lg:leading-[1.12] xl:text-[5rem] xl:leading-[1.1] font-light text-white text-balance animate-fade-up animate-delay-100">
-              {t('hero.title1')}<em className="aurora-text">{t('hero.titleEm')}</em>{t('hero.title2')}
+        {/* Veil — darkens the media while keeping its warmth */}
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{ background: 'linear-gradient(200deg, rgba(11,18,32,0.38) 0%, rgba(11,18,32,0.62) 46%, rgba(9,14,26,0.9) 100%)' }}
+        />
+        {/* Vignette — anchors the headline corner */}
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{ background: 'radial-gradient(120% 90% at 30% 88%, rgba(6,10,20,0.55) 0%, transparent 55%)' }}
+        />
+
+        <div className="relative max-w-7xl mx-auto px-6 lg:px-8 w-full pt-40 pb-12 sm:pb-16 lg:pb-[4.5rem]">
+          <div className="max-w-[46rem]">
+            <h1 className="font-display text-[2.75rem] leading-[1.18] sm:text-6xl sm:leading-[1.14] lg:text-7xl lg:leading-[1.12] xl:text-[5rem] xl:leading-[1.1] font-light text-white text-balance animate-fade-up">
+              {t('hero.title1')}<em className="not-italic text-sage-300">{t('hero.titleEm')}</em>{t('hero.title2')}
             </h1>
 
-            <p className="mt-5 sm:mt-6 text-lg sm:text-xl text-stone-300 leading-relaxed max-w-[600px] animate-fade-up animate-delay-100">
-              {t('hero.subtitle')}
-            </p>
+            {/* Hairline rule */}
+            <div className="mt-8 sm:mt-10 h-px w-full max-w-[28rem]" style={{ background: 'rgba(255,255,255,0.28)' }} />
 
-            <div className="mt-10 flex flex-wrap items-center gap-x-7 gap-y-4 animate-fade-up animate-delay-200">
+            <div className="mt-8 sm:mt-10 flex flex-wrap items-center gap-3.5 animate-fade-up animate-delay-100">
               <Link
                 to="/get-started"
                 className="btn-aurora inline-flex items-center gap-2 font-semibold text-base px-8 py-4 rounded-full transition-transform hover:-translate-y-0.5"
@@ -247,51 +251,35 @@ export default function Home() {
               </Link>
               <Link
                 to="/how-it-works"
-                className="group inline-flex items-center gap-1.5 text-white/75 font-medium text-sm hover:text-white transition-colors"
+                className="group inline-flex items-center gap-1.5 text-stone-100 font-medium text-[0.95rem] px-6 py-4 rounded-full border transition-colors hover:border-white"
+                style={{ background: 'rgba(255,255,255,0.06)', borderColor: 'rgba(255,255,255,0.35)' }}
               >
                 {t('hero.ctaSecondary')}
                 <ArrowRight size={15} className="transition-transform group-hover:translate-x-0.5" />
               </Link>
             </div>
 
-            <p className="text-xs text-stone-500 mt-5 animate-fade-up animate-delay-300" style={{ letterSpacing: '0.02em' }}>
+            <p className="mt-6 text-[0.95rem] text-stone-200 animate-fade-up animate-delay-200">
+              {t('hero.eyebrow')}
+            </p>
+
+            <p className="text-xs text-stone-300 mt-3 animate-fade-up animate-delay-200" style={{ letterSpacing: '0.02em' }}>
               🔒 {t('hero.trustEncryption')} &nbsp;·&nbsp; 🇬🇧 {t('hero.trustUk')} &nbsp;·&nbsp;{' '}
               <a
                 href="https://www.trustpilot.com/review/everstead.care"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-stone-500 hover:text-white transition-colors"
+                className="text-stone-300 hover:text-white transition-colors"
                 aria-label={t('hero.trustpilotAria')}
               >
                 {t('hero.trustpilotPre')} <span className="font-medium text-[#00b67a]">{t('hero.trustpilotExcellent')}</span> {t('hero.trustpilotPost')}
               </a>
             </p>
-            <div className="inline-flex items-center gap-1.5 mt-4 animate-fade-up animate-delay-300" style={{
-              padding: '4px 10px',
-              borderRadius: '20px',
-              border: '1px solid rgba(76, 125, 71, 0.3)',
-              fontSize: '11px',
-              color: '#4c7d47',
-              letterSpacing: '0.04em',
-            }}>
-              ✨ {t('hero.aiBadge')}
-            </div>
-          </div>
-
-          {/* Mobile photo — contained + softened, shown only on small screens */}
-          <div className="lg:hidden mt-10 relative rounded-3xl overflow-hidden animate-fade-up animate-delay-300">
-            <img
-              src="/hero-family.jpg"
-              alt={t('hero.mobilePhotoAlt')}
-              className="w-full object-cover"
-              style={{ opacity: 0.95 }}
-            />
-            <div className="absolute inset-0 pointer-events-none" style={{ background: 'linear-gradient(160deg, rgba(13,22,40,0.04) 0%, rgba(13,22,40,0.32) 100%)' }} />
           </div>
         </div>
 
         {/* Scroll hint */}
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 text-stone-400 animate-bounce">
+        <div className="relative self-center mb-6 flex flex-col items-center gap-1 text-stone-300 animate-bounce">
           <ChevronDown size={18} />
         </div>
       </section>
