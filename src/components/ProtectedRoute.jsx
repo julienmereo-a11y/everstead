@@ -52,19 +52,26 @@ export default function ProtectedRoute({ children }) {
   // Gate: user created an account but never completed checkout (no subscription).
   // Delegates are excluded — they don't go through checkout.
   // Skip if already mid-checkout (?checkout=success) to avoid redirect loop.
-  // Treat an active/trialing subscription_status as "has access" too — covers the
-  // brief window after checkout where stripe_subscription_id may not yet be synced
-  // into the cached profile, so a refresh doesn't wrongly bounce a paid user to
-  // the card step.
-  // Require a real checkout to access. Bare 'trialing' is NOT proof — the profile
-  // trigger stamps every new account 'trialing', so a Google sign-in with no card
-  // would otherwise slip straight into the product. Accept an actual Stripe customer
-  // or subscription (checkout AND gifts both create one), an active-ish state, or a
-  // grandfathered legacy trial. stripe_subscription_id is written synchronously at
-  // checkout, so paying users are never bounced.
+  //
+  // Require a real, card-confirmed checkout to access. What counts as proof:
+  //   - stripe_subscription_id — written synchronously by create-subscription.js
+  //     (Stripe trial or paid) AND by gift redemption, so paying/gifted/founding
+  //     users are never bounced. This is the primary signal.
+  //   - an active-ish subscription_status (active/cancelling/past_due) — post-payment
+  //     states, also set by family invite-accept.
+  //   - a grandfathered legacy trial.
+  //
+  // NOT accepted:
+  //   - Bare stripe_customer_id. setup-intent.js creates the Stripe customer and
+  //     writes stripe_customer_id the moment a user REACHES the card step — before
+  //     they enter any card. The founding-offer resume flow reaches that step
+  //     automatically. Treating a customer id as access let anyone who opened (or was
+  //     auto-advanced to) the payment step walk straight into /dashboard without paying.
+  //   - Bare 'trialing' status. The profile trigger stamps every new account
+  //     'trialing', so a Google sign-in with no card would otherwise slip in.
+  //     A genuine trial always carries a stripe_subscription_id (caught above).
   const hasSubscription =
     !!profile.stripe_subscription_id ||
-    !!profile.stripe_customer_id ||
     profile.legacy_trial_access === true ||
     ['active', 'cancelling', 'past_due'].includes(profile.subscription_status)
   if (!isDelegateOnly && !isAdviser && !isCheckout && !hasSubscription) {

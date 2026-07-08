@@ -288,17 +288,23 @@ export default function GetStarted() {
 
       const { data: profile } = await supabase
         .from('profiles')
-        .select('stripe_customer_id, stripe_subscription_id, subscription_status, full_name, email, plan, billing_cycle, country')
+        .select('stripe_customer_id, stripe_subscription_id, subscription_status, legacy_trial_access, full_name, email, plan, billing_cycle, country')
         .eq('id', session.user.id)
         .single()
 
       if (!profile) return
 
-      // Already subscribed — nothing to resume. Go straight to the dashboard
+      // Already has real access — nothing to resume. Go straight to the dashboard
       // rather than recreating a SetupIntent and showing the card step again.
+      // This MUST mirror ProtectedRoute's access test exactly: bare 'trialing' is
+      // NOT access (every new account is stamped 'trialing' with no card), so a
+      // genuine trial is proven only by a stripe_subscription_id. Otherwise this
+      // would send a no-card user to /dashboard, which ProtectedRoute immediately
+      // bounces back here — an infinite redirect loop.
       if (
         profile.stripe_subscription_id ||
-        ['trialing', 'active', 'cancelling', 'past_due'].includes(profile.subscription_status)
+        profile.legacy_trial_access === true ||
+        ['active', 'cancelling', 'past_due'].includes(profile.subscription_status)
       ) {
         navigate('/dashboard')
         return
@@ -356,6 +362,15 @@ export default function GetStarted() {
       setStep(3)
     })()
   }, [])
+
+  // Anchor the flow to the top on every step change. The resume effect can
+  // auto-advance step 1 → 3 while the founding promo + geo checks are still
+  // resolving (each of which reflows the page); without this the user is left
+  // stranded mid-page and the layout appears to "jump" under them. A wizard
+  // should always start each step at the top anyway.
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }, [step])
 
   // Pre-select plan from URL params (e.g. from Pricing page CTA).
   // A founding-offer promo link locks the plan to Family, overriding ?plan=.
@@ -571,22 +586,28 @@ export default function GetStarted() {
             }
           </p>
 
-          {/* Promo banner — only when ?promo= is present */}
-          {promoCode && promoState.status === 'valid' && (
-            <div className="mt-6 inline-flex items-center gap-2 rounded-full bg-sage-500/15 border border-sage-400/30 px-5 py-2.5 text-sm">
-              <span aria-hidden="true">🎉</span>
-              <span className="text-sage-200 font-semibold">Founding offer applied — {promoState.label.toLowerCase()}.</span>
-              <span className="text-stone-400 hidden sm:inline">Code {promoCode}</span>
-            </div>
-          )}
-          {promoCode && promoState.status === 'invalid' && (
-            <div className="mt-6 inline-flex items-center gap-2 rounded-full bg-amber-500/10 border border-amber-400/30 px-5 py-2.5 text-sm">
-              <span className="text-amber-200">Code {promoCode} couldn't be applied — {promoState.reason.toLowerCase()}. You can still start your free trial.</span>
-            </div>
-          )}
-          {promoCode && promoState.status === 'checking' && (
-            <div className="mt-6 inline-flex items-center gap-2 rounded-full bg-white/5 border border-white/10 px-5 py-2.5 text-sm">
-              <span className="text-stone-400">Checking your code…</span>
+          {/* Promo banner — only when ?promo= is present. The slot reserves a fixed
+              height so the checking → valid/invalid transition doesn't change the
+              hero's height and shove the plan grid below it (the founding "jump"). */}
+          {promoCode && (
+            <div className="mt-6 min-h-[44px] flex items-center justify-center">
+              {promoState.status === 'valid' && (
+                <div className="inline-flex items-center gap-2 rounded-full bg-sage-500/15 border border-sage-400/30 px-5 py-2.5 text-sm">
+                  <span aria-hidden="true">🎉</span>
+                  <span className="text-sage-200 font-semibold">Founding offer applied — {promoState.label.toLowerCase()}.</span>
+                  <span className="text-stone-400 hidden sm:inline">Code {promoCode}</span>
+                </div>
+              )}
+              {promoState.status === 'invalid' && (
+                <div className="inline-flex items-center gap-2 rounded-full bg-amber-500/10 border border-amber-400/30 px-5 py-2.5 text-sm">
+                  <span className="text-amber-200">Code {promoCode} couldn't be applied — {promoState.reason.toLowerCase()}. You can still start your free trial.</span>
+                </div>
+              )}
+              {promoState.status === 'checking' && (
+                <div className="inline-flex items-center gap-2 rounded-full bg-white/5 border border-white/10 px-5 py-2.5 text-sm">
+                  <span className="text-stone-400">Checking your code…</span>
+                </div>
+              )}
             </div>
           )}
         </div>
