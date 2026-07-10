@@ -411,7 +411,7 @@ async function handler(req, res) {
 
     const { data: existing } = await supabase
       .from('profiles')
-      .select('id, full_name, email, plan, subscription_status')
+      .select('id, full_name, email, plan, subscription_status, last_dunning_invoice')
       .eq('stripe_customer_id', invoice.customer)
       .single()
 
@@ -422,12 +422,19 @@ async function handler(req, res) {
     const wasTrialing = existing?.subscription_status === 'trialing'
     const newStatus   = wasTrialing ? 'trial_expired' : 'past_due'
 
+    // Stripe re-emits invoice.payment_failed on EVERY dunning retry of the same
+    // invoice, so emailing on each one floods the customer (one "payment failed"
+    // email per retry — 8+ in a cycle). Send exactly one notice per invoice by
+    // recording the invoice id we last emailed about. The status is still refreshed
+    // on every event; only the email is deduped.
+    const alreadyEmailed = !!invoice.id && existing?.last_dunning_invoice === invoice.id
+
     await supabase
       .from('profiles')
-      .update({ subscription_status: newStatus })
+      .update({ subscription_status: newStatus, last_dunning_invoice: invoice.id ?? existing?.last_dunning_invoice })
       .eq('stripe_customer_id', invoice.customer)
 
-    if (existing?.email) {
+    if (existing?.email && !alreadyEmailed) {
       await resend.emails.send({
         from:    'Everstead <hello@everstead.care>',
         to:      existing.email,
