@@ -1,7 +1,6 @@
 import React from 'react'
 import { Navigate, useLocation, useSearchParams } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
-import { isNative } from '../lib/platform'
 
 const Spinner = () => (
   <div className="min-h-screen bg-stone-50 flex items-center justify-center">
@@ -87,9 +86,7 @@ export default function ProtectedRoute({ children }) {
   // here is keyed off plan='free' (a server-set, client-frozen column), never off a
   // bare stripe_customer_id or a self-settable status.
   if (!isDelegateOnly && !isAdviser && !isFreeTier && !isCheckout && !hasSubscription) {
-    return isNative()
-      ? <Navigate to="/native/paywall" replace />
-      : <Navigate to="/get-started?resume=true" replace />
+    return <Navigate to="/get-started?resume=true" replace />
   }
 
   return children

@@ -35,8 +35,6 @@ import { useAboutMe }       from '../hooks/useData'
 import { useWishes }        from '../hooks/useData'
 import AIAssistantSection   from '../components/AIAssistantSection'
 import { FamilySection }    from './Settings'
-import { isNative }         from '../lib/platform'
-import { isBiometricLockEnabled, setBiometricLockEnabled } from '../components/native/BiometricGate'
 import {
   DEMO_PROFILE, DEMO_ACCOUNTS, DEMO_DOCUMENTS, DEMO_PEOPLE,
   DEMO_INSTRUCTIONS, DEMO_SUBSCRIPTIONS, DEMO_ALERTS, DEMO_ACTIVITY, DEMO_MESSAGES,
@@ -4679,42 +4677,11 @@ function ReferralLinkBox({ referralCode }) {
   )
 }
 
+// Native-only (iOS) biometric unlock. On the web build this is a no-op — the full
+// implementation depends on the native modules (lib/platform, components/native)
+// that belong to the mobile app work and are not part of this web branch.
 function BiometricLockSetting() {
-  const [enabled, setEnabled] = useState(false)
-  const [loaded, setLoaded]   = useState(false)
-
-  useEffect(() => {
-    if (!isNative()) return
-    isBiometricLockEnabled().then(value => { setEnabled(value); setLoaded(true) })
-  }, [])
-
-  if (!isNative()) return null
-
-  const toggle = async () => {
-    const next = !enabled
-    setEnabled(next) // optimistic — this is a local device preference, no server round-trip
-    await setBiometricLockEnabled(next)
-  }
-
-  return (
-    <div className="bg-white border border-stone-200 rounded-2xl p-6">
-      <h2 className="font-semibold text-navy-950 text-sm mb-1 flex items-center gap-2">
-        <Lock size={15} className="text-navy-600" /> Biometric unlock
-      </h2>
-      <p className="text-xs text-stone-400 mb-4 leading-relaxed">
-        Require Face ID or Touch ID to open the app on this device, on top of your account sign-in.
-      </p>
-      <button
-        onClick={toggle}
-        disabled={!loaded}
-        className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors disabled:opacity-50 ${enabled ? 'bg-navy-800' : 'bg-stone-200'}`}
-        role="switch"
-        aria-checked={enabled}
-      >
-        <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${enabled ? 'translate-x-6' : 'translate-x-1'}`} />
-      </button>
-    </div>
-  )
+  return null
 }
 
 function SettingsSection({ profile, isDemo, updateProfile, refreshProfile, onUpgrade, onDeleteAccount, upgradeError }) {
