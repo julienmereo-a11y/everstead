@@ -1,6 +1,7 @@
 import React from 'react'
 import { Navigate, useLocation, useSearchParams } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
+import { isNative } from '../lib/platform'
 
 const Spinner = () => (
   <div className="min-h-screen bg-stone-50 flex items-center justify-center">
@@ -25,6 +26,7 @@ export default function ProtectedRoute({ children }) {
 
   const isDelegateOnly   = profile.role === 'delegate'
   const isAdviser        = profile.plan === 'advisor'   // advisers use the adviser portal, not B2C checkout
+  const isFreeTier       = profile.plan === 'free'      // permanent free tier — always admitted, features capped in the DB
   const onTrialEndedPage = location.pathname === '/trial-ended'
 
   // Advisers belong in the adviser portal. Email/password login already routes them
@@ -38,7 +40,7 @@ export default function ProtectedRoute({ children }) {
   // the no-subscription bounce below. Otherwise a trial_expired user without their
   // own stripe_subscription_id (e.g. a removed/departed secondary family member)
   // would be wrongly sent to /get-started's card step instead of /trial-ended.
-  if (!isDelegateOnly && !isAdviser && !onTrialEndedPage && !isCheckout) {
+  if (!isDelegateOnly && !isAdviser && !isFreeTier && !onTrialEndedPage && !isCheckout) {
     const trialExpiredByStatus = profile.subscription_status === 'trial_expired'
     const trialExpiredByDate   =
       profile.subscription_status === 'trialing' &&
@@ -60,6 +62,9 @@ export default function ProtectedRoute({ children }) {
   //   - an active-ish subscription_status (active/cancelling/past_due) — post-payment
   //     states, also set by family invite-accept.
   //   - a grandfathered legacy trial.
+  //   - Apple IAP (entitlement_source='apple_iap') never touches Stripe, so it gets
+  //     its own check — including 'trialing', which RevenueCat's INITIAL_PURCHASE
+  //     writes directly (no separate "trial started" step to race with).
   //
   // NOT accepted:
   //   - Bare stripe_customer_id. setup-intent.js creates the Stripe customer and
@@ -73,9 +78,18 @@ export default function ProtectedRoute({ children }) {
   const hasSubscription =
     !!profile.stripe_subscription_id ||
     profile.legacy_trial_access === true ||
-    ['active', 'cancelling', 'past_due'].includes(profile.subscription_status)
-  if (!isDelegateOnly && !isAdviser && !isCheckout && !hasSubscription) {
-    return <Navigate to="/get-started?resume=true" replace />
+    ['active', 'cancelling', 'past_due'].includes(profile.subscription_status) ||
+    (profile.entitlement_source === 'apple_iap' &&
+      ['trialing', 'active', 'cancelling', 'past_due'].includes(profile.subscription_status))
+  // Free-tier users are admitted with no subscription at all — their limits are
+  // enforced in the database (free_tier_allows + restrictive INSERT policies), not by
+  // the paywall. This intentionally does NOT re-open the bypass fixed earlier: access
+  // here is keyed off plan='free' (a server-set, client-frozen column), never off a
+  // bare stripe_customer_id or a self-settable status.
+  if (!isDelegateOnly && !isAdviser && !isFreeTier && !isCheckout && !hasSubscription) {
+    return isNative()
+      ? <Navigate to="/native/paywall" replace />
+      : <Navigate to="/get-started?resume=true" replace />
   }
 
   return children
