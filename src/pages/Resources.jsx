@@ -2091,7 +2091,7 @@ const sections = {
               },
               {
                 q: 'What are the plans and prices?',
-                a: 'Essential is £3.99/month, or £3.19/month billed annually (£38.28/year). Family is £9.99/month, or £7.99/month billed annually (£95.88/year). Billing annually saves 20%. Adviser pricing is on application. All prices are in pounds sterling and include VAT where applicable.',
+                a: 'Everstead is free forever, with no card required. Everstead+ is £9.99/month, or £7.99/month billed annually (£95.88/year) — billing annually saves 20%. Everstead Pro pricing is on application. All prices are in pounds sterling and include VAT where applicable.',
               },
               {
                 q: 'Can I switch plans?',

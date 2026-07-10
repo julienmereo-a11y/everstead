@@ -1,42 +1,42 @@
 {
   "meta": {
     "title": "Pricing — Everstead",
-    "description": "Simple, transparent pricing for individuals, families, and professional advisers. Start your 14-day free trial — card required, no charge until trial ends."
+    "description": "Start free — no card required. Upgrade to Everstead+ for two private vaults, unlimited accounts and documents, and 25 GB of secure storage."
   },
   "header": {
     "eyebrow": "Pricing",
-    "title": "One plan for everything that matters.",
-    "subtitle": "Start organising today. Your family will thank you later."
+    "title": "Start free. Upgrade when you're ready.",
+    "subtitle": "Begin organising today at no cost — your family will thank you later."
   },
   "toggle": {
     "monthly": "Monthly",
     "yearly": "Yearly",
     "savingActive": "✓ Saving {{percent}}%",
     "save": "Save {{percent}}%",
-    "billingNoteAnnual": "Billed annually. You're saving £{{saving}}/yr on the Family plan compared to monthly. ✓",
-    "billingNoteMonthly": "Billed monthly. Switch to annual and save £{{saving}} on the Family plan."
+    "billingNoteAnnual": "Billed annually. You're saving £{{saving}}/yr on Everstead+ compared to monthly. ✓",
+    "billingNoteMonthly": "Billed monthly. Switch to annual and save £{{saving}} on Everstead+."
   },
   "plans": {
-    "essential": {
-      "name": "Essential",
-      "promo": "LAUNCH OFFER",
-      "description": "For individuals getting their accounts, documents, and wishes in order.",
+    "free": {
+      "name": "Everstead",
+      "promo": "",
+      "description": "Get started and organise the essentials, at no cost. No card required, ever.",
       "features": [
-        "Up to 10 accounts & documents",
-        "1 trusted contact",
-        "1 instruction set",
-        "1 GB secure storage",
-        "Readiness score",
-        "Your AI Assistant"
+        "Full guided setup with Your AI Assistant",
+        "Your complete About Me profile",
+        "1 account or asset",
+        "1 document",
+        "1 trusted person",
+        "Readiness score"
       ],
-      "cta": "Start Your Everstead",
-      "upsellNote": "Need more? Family includes two private vaults — just £4 per person."
+      "cta": "Get started free",
+      "priceLabel": "Free",
+      "priceSub": "forever"
     },
     "family": {
-      "name": "Family",
+      "name": "Everstead+",
       "badge": "Most popular",
-      "promo": "LAUNCH OFFER",
-      "description": "For couples and families — two private vaults, shared protection.",
+      "description": "For couples and households — two private vaults, one subscription, shared protection.",
       "features": [
         "Two private vaults — one subscription",
         "Unlimited accounts & documents",
@@ -48,11 +48,26 @@
       ],
       "cta": "Start Your Everstead"
     },
+    "essential": {
+      "name": "Essential",
+      "description": "For individuals getting their accounts, documents, and wishes in order.",
+      "features": [
+        "Up to 10 accounts & documents",
+        "1 trusted contact",
+        "1 instruction set",
+        "1 GB secure storage",
+        "Readiness score",
+        "Your AI Assistant"
+      ],
+      "cta": "Start Your Everstead",
+      "upsellNote": "Need more? Everstead+ includes two private vaults.",
+      "retired": true
+    },
     "adviser": {
-      "name": "Adviser",
+      "name": "Everstead Pro",
       "description": "For professionals managing client estate organisation. Pricing on application.",
       "features": [
-        "Everything in Family",
+        "Everything in Everstead+",
         "Multi-client workspace",
         "Co-branded client portal",
         "Adviser collaboration tools",
@@ -97,7 +112,7 @@
       "description": "A document. No instructions, no organised accounts, no access grants, no way for your family to find anything."
     },
     "everstead": {
-      "name": "Everstead Family",
+      "name": "Everstead+",
       "price": "£{{total}} / yr",
       "description": "Everything organised, updated, and shared — for as long as you need it. Two private vaults included."
     }
@@ -115,9 +130,9 @@
   },
   "table": {
     "capability": "Capability",
-    "essential": "Essential",
-    "family": "Family",
-    "adviser": "Adviser",
+    "essential": "Free",
+    "family": "Everstead+",
+    "adviser": "Everstead Pro",
     "rows": [
       "Accounts and document vault",
       "Readiness score and review prompts",
@@ -152,15 +167,15 @@
       },
       {
         "q": "Is there a discount for annual billing?",
-        "a": "Yes — billing annually saves 20% on both plans compared to monthly: about £9.50/year on Essential and £24/year on Family. The discounted rate is applied immediately and locked in for the year."
+        "a": "Yes — billing Everstead+ annually saves 20% compared to monthly (about £24/year). The discounted rate is applied immediately and locked in for the year."
       },
       {
-        "q": "What does the Family plan include that Essential does not?",
-        "a": "The Family plan gives two people their own private vaults under one subscription — each person keeps their own private data, but you can organise and plan together. It increases trusted contacts from 1 to 10, adds emergency vault sharing, expands storage from 1 GB to 25 GB, and includes a family-wide readiness score. Think of it as joint planning with individual privacy."
+        "q": "What does Everstead+ include that the free plan does not?",
+        "a": "Everstead+ gives two people their own private vaults under one subscription — each keeps their own private data, but you can organise and plan together. It lifts the free plan's limits to unlimited accounts, documents and instructions, up to 10 trusted contacts, personal messages and final wishes, and 25 GB of secure storage."
       },
       {
-        "q": "What is the Adviser plan for?",
-        "a": "The Adviser plan is designed for financial advisers, solicitors, and other professionals who want to offer estate organisation as a service to clients. It includes a multi-client workspace, a co-branded client portal, collaboration tools, and priority support. Contact us to discuss a pilot rollout."
+        "q": "What is Everstead Pro for?",
+        "a": "Everstead Pro is designed for financial advisers, solicitors, and other professionals who want to offer estate organisation as a service to clients. It includes a multi-client workspace, a co-branded client portal, collaboration tools, and priority support. Contact us to discuss a pilot rollout."
       },
       {
         "q": "Is Everstead a legal service?",

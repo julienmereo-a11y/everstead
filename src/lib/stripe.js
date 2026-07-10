@@ -24,6 +24,23 @@ export const getStripe = (() => {
 // Display amounts come from the pricing SSOT (src/config/pricing.js).
 // `yearly` is the per-month-when-billed-annually figure (display only).
 export const PLANS = {
+  // Permanent free tier — no Stripe product, no price. Its caps mirror the
+  // server-side authority (public.free_tier_allows + restrictive INSERT policies
+  // on accounts / documents / trusted_people). Keep these in step with
+  // FREE_LIMITS in config/pricing.js and the migration; the database is the
+  // authority, this is only so the UI can gate before the insert is rejected.
+  free: {
+    name: 'Everstead',
+    limits: {
+      trustedPeople: 1,
+      storageGb: 1,
+      householdMembers: 1,
+      maxAccounts: 1,
+      maxDocuments: 1,
+      instructionSets: null, // uncapped — onboarding/About Me/AI stay fully open on Free
+      personalMessages: false,
+    },
+  },
   essential: {
     name: 'Essential',
     monthly: PRICING.essential.monthly.perMonth, // 3.99
@@ -43,7 +60,7 @@ export const PLANS = {
     },
   },
   family: {
-    name: 'Family',
+    name: 'Everstead+',
     monthly: PRICING.family.monthly.perMonth, // 9.99
     yearly:  PRICING.family.annual.perMonth,  // 7.99 (/mo billed annually)
     priceIds: {
@@ -61,7 +78,7 @@ export const PLANS = {
     },
   },
   advisor: {
-    name: 'Advisor',
+    name: 'Everstead Pro',
     monthly: 60,
     yearly:  48,
     priceIds: {

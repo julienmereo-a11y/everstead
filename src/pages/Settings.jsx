@@ -319,7 +319,7 @@ export function FamilySection({ profile, session }) {
       {isSecondary && (
         <div>
           <p className="text-sm text-stone-600 mb-4">
-            You joined <strong>{partnerProfile?.full_name || 'a partner'}</strong>'s Family plan. Your vault is completely private to you.
+            You joined <strong>{partnerProfile?.full_name || 'a partner'}</strong>'s Everstead+ plan. Your vault is completely private to you.
           </p>
 
           <div className="flex items-center gap-3 p-4 bg-stone-50 border border-stone-200 rounded-xl mb-5">
@@ -344,7 +344,7 @@ export function FamilySection({ profile, session }) {
           {showRemoveConfirm && (
             <div className="bg-red-50 border border-red-200 rounded-xl p-4">
               <p className="text-sm text-red-800 mb-3">
-                Are you sure? You'll lose access to the Family plan and your account will be deactivated until you start your own plan.
+                Are you sure? You'll lose access to Everstead+ and your account will be deactivated until you start your own plan.
               </p>
               <div className="flex gap-3">
                 <button
@@ -484,7 +484,7 @@ export function FamilySection({ profile, session }) {
               {showRemoveConfirm && (
                 <div className="bg-red-50 border border-red-200 rounded-xl p-4">
                   <p className="text-sm text-red-800 mb-3">
-                    Are you sure? <strong>{partnerProfile?.full_name || 'Your partner'}</strong> will lose access to the Family plan and will need their own subscription to continue using Everstead.
+                    Are you sure? <strong>{partnerProfile?.full_name || 'Your partner'}</strong> will lose access to Everstead+ and will need their own subscription to continue using Everstead.
                   </p>
                   <div className="flex gap-3">
                     <button
@@ -576,10 +576,10 @@ export default function Settings() {
             </div>
           </Card>
 
-          {/* ── Family plan section — only visible to family plan users ── */}
+          {/* ── Household section — managing the second vault on Everstead+ ── */}
           {isFamily && (
             <Card>
-              <SectionLabel>Family plan</SectionLabel>
+              <SectionLabel>Family</SectionLabel>
               <div className="flex items-center gap-2 mb-5">
                 <Users size={16} className="text-navy-700" />
                 <h2 className="text-sm font-semibold text-navy-900">Two private vaults — one subscription</h2>

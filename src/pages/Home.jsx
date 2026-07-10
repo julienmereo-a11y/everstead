@@ -107,16 +107,19 @@ export default function Home() {
 
   // English prices stay config-driven (the {{price}} interpolation in en/home.json);
   // French prices are static, VAT-inclusive display strings baked into fr/home.json.
+  // Consumer preview shows the two self-serve plans (Free + Everstead+). Everstead Pro
+  // (the professional/adviser plan) is presented on its own band below, never as a
+  // third column — it's sold via demo, not self-serve checkout.
   const plans = [
     {
-      id: 'essential',
-      name: t('pricing.plans.essential.name'),
-      monthly: t('pricing.plans.essential.priceMonthly', { price: PRICING.essential.monthly.perMonth }),
-      annual: t('pricing.plans.essential.priceAnnual', { price: PRICING.essential.annual.perMonth }),
-      promo: true,
-      desc: t('pricing.plans.essential.desc'),
-      features: t('pricing.plans.essential.features', { returnObjects: true }),
-      cta: t('pricing.plans.essential.cta'),
+      id: 'free',
+      isFree: true,
+      name: t('pricing.plans.free.name'),
+      priceLabel: t('pricing.plans.free.priceLabel'),
+      priceSub: t('pricing.plans.free.priceSub'),
+      desc: t('pricing.plans.free.desc'),
+      features: t('pricing.plans.free.features', { returnObjects: true }),
+      cta: t('pricing.plans.free.cta'),
       highlight: false,
     },
     {
@@ -128,14 +131,6 @@ export default function Home() {
       features: t('pricing.plans.family.features', { returnObjects: true }),
       cta: t('pricing.plans.family.cta'),
       highlight: true,
-    },
-    {
-      id: 'advisor',
-      name: t('pricing.plans.advisor.name'),
-      desc: t('pricing.plans.advisor.desc'),
-      features: t('pricing.plans.advisor.features', { returnObjects: true }),
-      cta: t('pricing.plans.advisor.cta'),
-      highlight: false,
     },
   ]
 
@@ -521,8 +516,8 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-6">
-            {plans.map(({ id, name, monthly, annual, desc, features, cta, highlight, promo }, i) => (
+          <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+            {plans.map(({ id, isFree, name, monthly, annual, priceLabel, priceSub, desc, features, cta, highlight }, i) => (
               <div
                 key={name}
                 className={`reveal reveal-delay-${i + 1} rounded-2xl p-7 border ${
@@ -531,15 +526,21 @@ export default function Home() {
                     : 'bg-white/5 text-stone-300 border-white/10'
                 }`}
               >
-                {(highlight || promo) && (
+                {highlight && (
                   <div className="mb-4 flex items-center gap-2 flex-wrap">
-                    {highlight && <span className="inline-block bg-sage-500 text-white text-xs font-semibold px-2.5 py-1 rounded-full">{t('pricing.badgePopular')}</span>}
-                    {promo && <span className="inline-block bg-amber-400 text-amber-950 text-xs font-semibold px-2.5 py-1 rounded-full">{t('pricing.badgePromo')}</span>}
+                    <span className="inline-block bg-sage-500 text-white text-xs font-semibold px-2.5 py-1 rounded-full">{t('pricing.badgePopular')}</span>
                   </div>
                 )}
                 <h3 className={`font-semibold text-lg mb-1 ${highlight ? 'text-navy-900' : 'text-white'}`}>{name}</h3>
                 <p className={`text-sm mb-5 ${highlight ? 'text-stone-500' : 'text-stone-400'}`}>{desc}</p>
-                {id !== 'advisor' && (
+                {isFree ? (
+                  <>
+                    <div className="flex items-end gap-1 mb-6">
+                      <span className={`font-display text-4xl font-light ${highlight ? 'text-navy-950' : 'text-white'}`}>{priceLabel}</span>
+                    </div>
+                    <p className={`text-xs mb-4 ${highlight ? 'text-stone-400' : 'text-stone-500'}`}>{priceSub}</p>
+                  </>
+                ) : (
                   <>
                     <div className="flex items-end gap-1 mb-6">
                       <span className={`font-display text-4xl font-light ${highlight ? 'text-navy-950' : 'text-white'}`}>{annualPricing ? annual : monthly}</span>
@@ -547,9 +548,6 @@ export default function Home() {
                     </div>
                     <p className={`text-xs mb-4 ${highlight ? 'text-stone-400' : 'text-stone-500'}`}>{annualPricing ? t('pricing.billedAnnually') : t('pricing.billedMonthly')}</p>
                   </>
-                )}
-                {id === 'advisor' && (
-                  <p className="text-stone-400 text-xs mb-6">{t('pricing.plans.advisor.note')}</p>
                 )}
                 <ul className="space-y-2.5 mb-8">
                   {features.map(f => (
@@ -559,27 +557,29 @@ export default function Home() {
                     </li>
                   ))}
                 </ul>
-                {id === 'advisor' ? (
-                  <Link
-                    to="/book-demo"
-                    className="block text-center py-2.5 px-4 rounded-full text-sm font-semibold transition-colors bg-white/10 text-white border border-white/20 hover:bg-white/20"
-                  >
-                    {cta} <ArrowRight size={13} className="inline ml-1" />
-                  </Link>
-                ) : (
-                  <Link
-                    to={`/get-started?plan=${id}&billing=${annualPricing ? 'yearly' : 'monthly'}`}
-                    className={`block text-center py-2.5 px-4 rounded-full text-sm font-semibold transition-colors ${
-                      highlight
-                        ? 'btn-aurora'
-                        : 'bg-white/10 text-white border border-white/20 hover:bg-white/20'
-                    }`}
-                  >
-                    {cta}
-                  </Link>
-                )}
+                <Link
+                  to={isFree ? '/get-started?plan=free' : `/get-started?plan=${id}&billing=${annualPricing ? 'yearly' : 'monthly'}`}
+                  className={`block text-center py-2.5 px-4 rounded-full text-sm font-semibold transition-colors ${
+                    highlight
+                      ? 'btn-aurora'
+                      : 'bg-white/10 text-white border border-white/20 hover:bg-white/20'
+                  }`}
+                >
+                  {cta}
+                </Link>
               </div>
             ))}
+          </div>
+
+          {/* Everstead Pro — the professional plan, presented on its own band (never a third column) */}
+          <div className="reveal mt-6 max-w-4xl mx-auto rounded-2xl border border-white/10 bg-white/5 px-7 py-6 flex flex-col sm:flex-row sm:items-center gap-4">
+            <div className="flex-1">
+              <h3 className="font-semibold text-white text-base mb-1">{t('pricing.plans.advisor.name')}</h3>
+              <p className="text-sm text-stone-400">{t('pricing.plans.advisor.desc')}</p>
+            </div>
+            <Link to="/book-demo" className="shrink-0 inline-block text-center py-2.5 px-5 rounded-full text-sm font-semibold bg-white/10 text-white border border-white/20 hover:bg-white/20 transition-colors">
+              {t('pricing.plans.advisor.cta')} <ArrowRight size={13} className="inline ml-1" />
+            </Link>
           </div>
 
           <p className="text-center mt-8 text-stone-500 text-xs reveal">

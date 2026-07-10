@@ -13,13 +13,13 @@ export default function FamilyAccessRevokedEmail({ secondaryName }) {
             </td></tr>
             <tr><td style={{ padding: '40px' }}>
               <h1 style={{ margin: '0 0 16px', color: '#0d1628', fontSize: '24px', fontWeight: 'normal', lineHeight: '1.3' }}>
-                Your Family plan access has ended
+                Your Everstead+ access has ended
               </h1>
               <p style={{ margin: '0 0 16px', color: '#4a5568', fontSize: '16px', lineHeight: '1.6' }}>
                 Hi {secondaryName || 'there'},
               </p>
               <p style={{ margin: '0 0 16px', color: '#4a5568', fontSize: '16px', lineHeight: '1.6' }}>
-                Your access to the Everstead Family plan has ended. Your vault and all your data are safe — but you'll need your own plan to keep using Everstead.
+                Your access to Everstead+ has ended. Your vault and all your data are safe — but you'll need your own plan to keep using Everstead.
               </p>
               <p style={{ margin: '0 0 32px', color: '#4a5568', fontSize: '16px', lineHeight: '1.6' }}>
                 If you'd like to continue, you can start your own plan in minutes. Your existing data will be preserved.

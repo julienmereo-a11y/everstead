@@ -23,26 +23,28 @@ async function stripeAuthHeaders() {
 // CONSTANTS
 // ─────────────────────────────────────────────────────────────
 
+// Essential is retired — no longer offered to new signups (existing subscribers keep it).
+// Free is the no-card entry tier; Everstead+ (key 'family') keeps its 14-day card trial.
 const PLAN_OPTIONS = [
   {
-    id: 'essential',
-    name: 'Essential',
-    monthly: PRICING.essential.monthly.perMonth, yearly: PRICING.essential.annual.perMonth, promo: true,
-    desc: 'For individuals getting started. Up to 10 accounts, 1 trusted contact, 1 GB storage.',
-    features: ['Up to 10 accounts & documents', 'Step-by-step instructions', '1 trusted contact', '1 GB storage'],
+    id: 'free',
+    name: 'Everstead',
+    isFree: true,
+    desc: 'Free forever. Organise the essentials — no card required.',
+    features: ['Full guided setup with Your AI Assistant', 'Your About Me profile', '1 account · 1 document · 1 trusted person'],
   },
   {
     id: 'family',
-    name: 'Family',
+    name: 'Everstead+',
     monthly: PRICING.family.monthly.perMonth, yearly: PRICING.family.annual.perMonth,
     desc: 'For couples and households planning together.',
-    features: ['Two private vaults — one subscription', 'Each person keeps their own private data', 'Share only what you choose', '10 trusted contacts', '25 GB storage'],
+    features: ['Two private vaults — one subscription', 'Each person keeps their own private data', 'Unlimited accounts & documents', '10 trusted contacts', '25 GB storage'],
     badge: 'Most popular',
   },
   {
     id: 'advisor',
-    name: 'Adviser',
-    desc: 'For professionals with multiple clients. Pricing on application.',
+    name: 'Everstead Pro',
+    desc: 'For solicitors, will-writers, and financial advisers. Pricing on application.',
     features: ['Multi-client workspace', 'Co-branded portal', 'Client dashboards', '100 GB storage'],
   },
 ]
@@ -149,7 +151,7 @@ export default function GetStarted() {
   const [geoDismissed, setGeoDismissed] = useState(false)
 
   const [step, setStep]               = useState(1) // 1 = plan, 2 = account, 3 = payment
-  const [selectedPlan, setSelectedPlan] = useState('family')
+  const [selectedPlan, setSelectedPlan] = useState('free')
   const [annualBilling, setAnnualBilling] = useState(true)
   const [advisorFamilyCount, setAdvisorFamilyCount] = useState(null) // null = not asked yet
   const [showPw, setShowPw]           = useState(false)
@@ -322,7 +324,7 @@ export default function GetStarted() {
         ? 'family'                                              // founding offer is Family-only
         : (urlPlan && PLAN_OPTIONS.find(p => p.id === urlPlan))
           ? urlPlan
-          : (oauthPlan?.plan || profile.plan || 'essential')
+          : (oauthPlan?.plan || profile.plan || 'free')
       const resumeBilling = profile.billing_cycle
         ? profile.billing_cycle === 'yearly'
         : (oauthPlan?.billing ?? true)
@@ -511,6 +513,14 @@ export default function GetStarted() {
         )
       }
 
+      // 1c. FREE TIER — no card, no Stripe. The account was created server-side with
+      // plan='free' (delegate-register sets it); go straight into the product. A full
+      // reload lets AuthContext pick up the new session + free profile before the gate runs.
+      if (selectedPlan === 'free') {
+        window.location.href = '/dashboard'
+        return
+      }
+
       // 2. Create Stripe customer + subscription with trial → get client secret
       //    for the inline PaymentElement (no redirect to Stripe)
       const intentRes = await fetch('/api/stripe/setup-intent', {
@@ -582,7 +592,9 @@ export default function GetStarted() {
               ? <><span className="text-sage-300 font-semibold">Your first year is free.</span> Add your card to claim your founding place — you won't be charged during your first year, and you can cancel any time.</>
               : referralCode
               ? <><span className="text-sage-300 font-semibold">You've been referred — enjoy a 21-day free trial.</span> Enter your card details and you won't be charged until day 21.</>
-              : `${trialDays}-day free trial on every plan. Enter your card details — you won't be charged until the trial ends.`
+              : selectedPlan === 'free'
+              ? <><span className="text-sage-300 font-semibold">Start free — no card required.</span> Set up the essentials with Your AI Assistant, and upgrade to Everstead+ whenever you're ready.</>
+              : `${trialDays}-day free trial. Enter your card details — you won't be charged until the trial ends.`
             }
           </p>
 
@@ -743,7 +755,7 @@ export default function GetStarted() {
               </h2>
               {planLocked && (
                 <p className="text-center text-stone-500 text-sm mb-8 max-w-md mx-auto">
-                  The founding offer applies to the <span className="font-semibold text-navy-800">Family</span> plan — your first year is free. The plan is set for you below.
+                  The founding offer applies to the <span className="font-semibold text-navy-800">Everstead+</span> plan — your first year is free. The plan is set for you below.
                 </p>
               )}
               <div className="grid md:grid-cols-3 gap-5 mb-10">
@@ -784,7 +796,12 @@ export default function GetStarted() {
                     </div>
                     <p className="text-stone-500 text-xs mb-4 leading-relaxed">{plan.desc}</p>
                     <div className="mb-5">
-                      {plan.id === 'advisor' ? (
+                      {plan.isFree ? (
+                        <>
+                          <span className="font-display text-2xl font-light text-navy-950">Free</span>
+                          <span className="text-xs text-stone-400 ml-1.5">forever · no card</span>
+                        </>
+                      ) : plan.id === 'advisor' ? (
                         <span className="font-display text-2xl font-light text-navy-950">Pricing on application</span>
                       ) : (
                         <>
@@ -835,7 +852,9 @@ export default function GetStarted() {
                     <ArrowRight size={16} />
                   </button>
                   <p className="mt-3 text-xs text-stone-400">
-                    {foundingActive
+                    {selectedPlan === 'free'
+                      ? 'Free forever · No card required'
+                      : foundingActive
                       ? 'Your first year is free · Cancel any time and pay nothing'
                       : `${trialDays}-day free trial · Cancel before it ends and pay nothing`}
                   </p>
@@ -1027,6 +1046,8 @@ export default function GetStarted() {
                 >
                   {loading ? (
                     <><Loader2 size={15} className="animate-spin" />Creating your account…</>
+                  ) : selectedPlan === 'free' ? (
+                    <><CheckCircle2 size={15} />Create my free account</>
                   ) : (
                     <><CreditCard size={15} />{foundingActive ? 'Claim my founding place' : 'Start my Everstead trial'}</>
                   )}
@@ -1037,7 +1058,9 @@ export default function GetStarted() {
               <div className="mt-5 flex items-start gap-3 bg-stone-100 rounded-xl p-4">
                 <Lock size={14} className="text-navy-600 mt-0.5 flex-shrink-0" />
                 <p className="text-xs text-stone-500 leading-relaxed">
-                  {foundingActive
+                  {selectedPlan === 'free'
+                    ? <>No card required — Everstead is free to start. You can upgrade to Everstead+ whenever you're ready, and your data comes with you.</>
+                    : foundingActive
                     ? <>Your card is stored securely by Stripe. As a founding member, your first year is free — £0 for 12 months — and billing only begins after that. Cancel any time before then and pay nothing.</>
                     : <>Your card is stored securely by Stripe and will not be charged until your {trialDays}-day trial ends. Cancel anytime before then and pay nothing.</>}
                 </p>

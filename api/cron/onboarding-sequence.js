@@ -1,6 +1,7 @@
 import { createClient } from '@supabase/supabase-js'
 import { Resend } from 'resend'
 import { withSentry, captureException } from '../lib/sentry.js'
+import { planLabel } from '../_lib/plan-label.js'
 
 const supabase = createClient(
   process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL,
@@ -307,7 +308,7 @@ function email4Html(name, _plan, userId) {
 // ─────────────────────────────────────────────────────────────────────────────
 function email5Html(name, plan, accountCount = 0, documentCount = 0, contactCount = 0, userId) {
   const first    = name?.split(' ')[0] || 'there'
-  const planName = plan ? plan.charAt(0).toUpperCase() + plan.slice(1) : 'Essential'
+  const planName = planLabel(plan)
 
   // Build a personalised data summary
   const dataSummary = `You've added ${accountCount} financial ${accountCount === 1 ? 'account' : 'accounts'}, ${documentCount} ${documentCount === 1 ? 'document' : 'documents'}, and named ${contactCount} trusted ${contactCount === 1 ? 'contact' : 'contacts'}.`

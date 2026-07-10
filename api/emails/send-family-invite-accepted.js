@@ -28,7 +28,7 @@ async function handler(req, res) {
     await resend.emails.send({
       from:    'Everstead <hello@everstead.care>',
       to:      primaryEmail,
-      subject: `${secondaryName || 'Your partner'} has joined your Everstead Family plan`,
+      subject: `${secondaryName || 'Your partner'} has joined your Everstead+ plan`,
       html:    familyInviteAcceptedHtml(primaryName, secondaryName, APP_URL),
     })
 
@@ -53,13 +53,13 @@ function familyInviteAcceptedHtml(primaryName, secondaryName, appUrl) {
         </td></tr>
         <tr><td style="padding:40px;">
           <h1 style="margin:0 0 16px;color:#0d1628;font-size:24px;font-weight:normal;line-height:1.3;">
-            ${secondaryName || 'Your partner'} has joined your Family plan
+            ${secondaryName || 'Your partner'} has joined your Everstead+ plan
           </h1>
           <p style="margin:0 0 16px;color:#4a5568;font-size:16px;line-height:1.6;">
             Hi ${primaryName || 'there'},
           </p>
           <p style="margin:0 0 32px;color:#4a5568;font-size:16px;line-height:1.6;">
-            <strong>${secondaryName || 'Your partner'}</strong> has accepted your invitation and set up their private vault. They're now part of your Family plan. Their data remains completely private to them unless they choose to share it with you.
+            <strong>${secondaryName || 'Your partner'}</strong> has accepted your invitation and set up their private vault. They're now part of your Everstead+ plan. Their data remains completely private to them unless they choose to share it with you.
           </p>
           <table cellpadding="0" cellspacing="0" style="margin:0 0 24px;">
             <tr><td style="background:#2d5082;background:linear-gradient(100deg,#2d5082 0%,#6f6bc6 50%,#6e9b6a 100%);border-radius:9999px;">

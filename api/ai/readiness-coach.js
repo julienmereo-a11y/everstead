@@ -1,6 +1,7 @@
 import Anthropic from '@anthropic-ai/sdk'
 import { aiGuard } from '../_lib/ai-guard.js'
 import { withSentry, captureException } from '../lib/sentry.js'
+import { planLabel } from '../_lib/plan-label.js'
 
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
 
@@ -45,7 +46,7 @@ Rules:
 - If instructionsCount === 0: encourage writing first instruction set as most impactful
 - Return ONLY valid JSON — no markdown, no explanation`
 
-  const userPrompt = `Here is the vault status for ${firstName || 'this user'} (${plan || 'Essential'} plan):
+  const userPrompt = `Here is the vault status for ${firstName || 'this user'} (${planLabel(plan)} plan):
 - Accounts documented: ${accountsCount}
 - Documents uploaded: ${documentsCount}
 - Trusted contacts: ${contactsCount}

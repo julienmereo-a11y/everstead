@@ -40,7 +40,6 @@ export default function TrialEnded() {
   const billingCycle = profile.billing_cycle || 'yearly'
   const planConfig   = PLANS[plan] ?? PLANS.essential
   const firstName    = profile.full_name?.split(' ')[0] ?? 'there'
-  const canDowngrade = plan === 'family' || plan === 'advisor'
   const priceLabel   = `${planConfig.name} plan — £${planConfig.monthly}/mo or £${planConfig.yearly}/mo yearly`
 
   // Deletion imminence
@@ -72,23 +71,6 @@ export default function TrialEnded() {
         priceId,
         userEmail:  user.email,
         customerId: undefined,
-      })
-    } catch (err) {
-      setError(err.message)
-      setBusy(null)
-    }
-  }
-
-  const handleDowngrade = async () => {
-    setError(null)
-    setBusy('downgrade')
-    try {
-      const priceId = PLANS.essential.priceIds.yearly
-      if (!priceId) throw new Error('Price not found. Please contact support.')
-      await goToCheckout({
-        priceId,
-        userEmail:  user.email,
-        customerId: profile.stripe_customer_id || undefined,
       })
     } catch (err) {
       setError(err.message)
@@ -171,26 +153,6 @@ export default function TrialEnded() {
                   }
                 </button>
               </div>
-
-              {/* Option 2 — Downgrade (family/advisor only) */}
-              {canDowngrade && (
-                <div className="bg-white border border-stone-200 rounded-2xl p-6">
-                  <p className="font-semibold text-navy-900 text-base mb-0.5">Downgrade to Essential</p>
-                  <p className="text-stone-500 text-sm mb-5">
-                    Keep your plan at £{PLANS.essential.yearly}/mo billed annually — fewer features, same security
-                  </p>
-                  <button
-                    onClick={handleDowngrade}
-                    disabled={!!busy}
-                    className="flex items-center gap-2 border border-navy-200 text-navy-800 font-semibold text-sm px-5 py-2.5 rounded-full hover:bg-navy-50 transition-colors disabled:opacity-50"
-                  >
-                    {busy === 'downgrade'
-                      ? <><Loader2 size={14} className="animate-spin" /> Setting up payment…</>
-                      : <>Switch to Essential <ArrowRight size={14} /></>
-                    }
-                  </button>
-                </div>
-              )}
 
             </div>
 

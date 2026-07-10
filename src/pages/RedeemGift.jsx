@@ -22,7 +22,9 @@ function Field({ label, required, children }) {
 
 const inputClass = 'w-full border border-stone-300 rounded-lg px-4 py-2.5 text-sm text-navy-900 placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-navy-400 focus:border-navy-400 bg-white transition-colors'
 
-const PLAN_NAMES   = { essential: 'Essential', family: 'Family' }
+// 'essential' retained so any gift codes bought before Essential was retired still
+// display correctly on redemption.
+const PLAN_NAMES   = { essential: 'Essential', family: 'Everstead+' }
 const PLAN_DESCS   = {
   essential: 'For individuals getting their digital life in order.',
   family:    'Two private vaults — one subscription. For couples and families.',

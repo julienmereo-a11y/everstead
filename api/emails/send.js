@@ -146,7 +146,11 @@ async function handler(req, res) {
 }
 
 function welcomeHtml(name, plan) {
-  name = esc(name); plan = esc(plan)
+  const isFree    = plan === 'free'
+  // Mirrors PLAN_LABELS in src/config/pricing.js (not imported here — that module reads
+  // import.meta.env at load and would crash in this serverless runtime).
+  const planLabel = { free: 'Everstead', essential: 'Essential', family: 'Everstead+', advisor: 'Everstead Pro' }[plan] || plan || 'Everstead'
+  name = esc(name); const planName = esc(planLabel)
   return `<!DOCTYPE html>
 <html>
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
@@ -159,7 +163,7 @@ function welcomeHtml(name, plan) {
         </td></tr>
         <tr><td style="padding:40px;">
           <h1 style="margin:0 0 16px;color:#0d1628;font-size:24px;font-weight:normal;">Welcome, ${name || 'there'}</h1>
-          <p style="margin:0 0 16px;color:#4a5568;font-size:16px;line-height:1.6;">Thank you for joining Everstead. You're on the <strong>${plan || 'Essential'}</strong> plan — your 14-day free trial starts now.</p>
+          <p style="margin:0 0 16px;color:#4a5568;font-size:16px;line-height:1.6;">Thank you for joining Everstead. You're on the <strong>${planName}</strong> plan${isFree ? ' — free forever, with no card required.' : ' — your 14-day free trial starts now.'}</p>
           <p style="margin:0 0 16px;color:#4a5568;font-size:16px;line-height:1.6;">Everstead helps you organise everything your family needs to know — accounts, documents, contacts, and instructions — all in one secure, private place.</p>
           <p style="margin:0 0 32px;color:#4a5568;font-size:16px;line-height:1.6;">Start by adding your first account or uploading an important document.</p>
           <a href="${process.env.VITE_APP_URL}/dashboard" style="display:inline-block;background:#2d5082;background:linear-gradient(100deg,#2d5082 0%,#6f6bc6 50%,#6e9b6a 100%);color:#ffffff;text-decoration:none;padding:14px 28px;border-radius:9999px;font-size:15px;">Go to your dashboard →</a>

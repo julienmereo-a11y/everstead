@@ -1,6 +1,7 @@
 import Anthropic from '@anthropic-ai/sdk'
 import { aiGuard } from '../_lib/ai-guard.js'
 import { withSentry, captureException } from '../lib/sentry.js'
+import { planLabel } from '../_lib/plan-label.js'
 
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
 
@@ -123,7 +124,7 @@ function ownerGuidePrompt(context) {
 
 About this user:
 - Name: ${userName || 'the user'}
-- Plan: ${plan || 'Essential'}
+- Plan: ${planLabel(plan)}
 - Accounts documented: ${accountCount}
 - Documents uploaded: ${documentCount}
 - Trusted contacts: ${contactCount}

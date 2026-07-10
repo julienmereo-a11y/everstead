@@ -2136,7 +2136,7 @@ function UsersSection({ isDemo }) {
           />
         </div>
         <div className="flex rounded-xl border border-stone-200 bg-white overflow-hidden text-xs font-medium">
-          {[['all','All plans'],['essential','Essential'],['family','Family'],['advisor','Advisor']].map(([v,l]) => (
+          {[['all','All plans'],['free','Everstead'],['essential','Essential'],['family','Everstead+'],['advisor','Everstead Pro']].map(([v,l]) => (
             <button key={v} onClick={() => setPlan(v)}
               className={`px-3 py-2 transition-colors ${planFilter === v ? 'bg-navy-900 text-white' : 'text-stone-500 hover:bg-stone-50'}`}
             >{l}</button>

@@ -1,4 +1,5 @@
 import React from 'react'
+import { emailPlanLabel } from './planLabel'
 
 const appUrl = import.meta.env?.VITE_APP_URL || 'https://www.everstead.care'
 
@@ -13,7 +14,7 @@ export default function PaymentConfirmedEmail({ name, plan }) {
             </td></tr>
             <tr><td style={{ padding: '40px' }}>
               <h1 style={{ margin: '0 0 16px', color: '#0d1628', fontSize: '24px', fontWeight: 'normal' }}>Subscription confirmed</h1>
-              <p style={{ margin: '0 0 16px', color: '#4a5568', fontSize: '16px', lineHeight: '1.6' }}>Hi {name || 'there'}, your payment has been processed and your <strong>{plan || 'Essential'}</strong> plan subscription is now active.</p>
+              <p style={{ margin: '0 0 16px', color: '#4a5568', fontSize: '16px', lineHeight: '1.6' }}>Hi {name || 'there'}, your payment has been processed and your <strong>{emailPlanLabel(plan)}</strong> plan subscription is now active.</p>
               <p style={{ margin: '0 0 32px', color: '#4a5568', fontSize: '16px', lineHeight: '1.6' }}>Thank you for trusting Everstead with something this important.</p>
               <a href={`${appUrl}/dashboard`} style={{ display: 'inline-block', background: '#0d1628', color: '#ffffff', textDecoration: 'none', padding: '14px 28px', borderRadius: '8px', fontSize: '15px' }}>Go to dashboard →</a>
             </td></tr>

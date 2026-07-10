@@ -17,12 +17,12 @@ const PLAN_META = {
     features: ['Up to 10 accounts & documents', '1 trusted contact', '1 GB storage'],
   },
   family: {
-    label:    'Family',
+    label:    'Everstead+',
     price:    '£7.99/month (billed annually) or £9.99/month',
     features: ['Two private vaults — one subscription', 'Share only what you choose', '10 trusted contacts', '25 GB storage'],
   },
   advisor: {
-    label:    'Advisor',
+    label:    'Everstead Pro',
     price:    '£48/month (billed annually) or £60/month',
     features: ['Multi-client workspace', 'Co-branded portal', 'Client dashboards', '100 GB storage'],
   },
