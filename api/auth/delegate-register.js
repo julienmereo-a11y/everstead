@@ -160,17 +160,28 @@ async function handler(req, res) {
 
   if (mode === 'register') {
     const profileRole = wantsTrial ? 'owner' : 'delegate'
-    // Create user server-side (bypasses captcha). Auto-confirm email.
+    const plan        = req.body.plan
+    const isFree      = plan === 'free'
+    // Create user server-side (bypasses captcha). Auto-confirm email. Pass the plan in
+    // metadata so the handle_new_user trigger stamps profiles.plan at INSERT — this is
+    // the ONLY way the client can end up on 'free', since the profile guard trigger
+    // freezes plan against client (anon/authenticated) updates.
     const { data: created, error: createErr } = await supabase.auth.admin.createUser({
       email,
       password,
-      user_metadata: { full_name: name ?? email, role: profileRole },
+      user_metadata: { full_name: name ?? email, role: profileRole, ...(plan ? { plan } : {}) },
       email_confirm: true,
     })
     if (createErr) return res.status(400).json({ error: createErr.message })
 
     if (created?.user?.id) {
-      await supabase.from('profiles').update({ role: profileRole }).eq('id', created.user.id)
+      // Free tier has no trial — clear the trigger's default 'trialing'/trial_ends_at so
+      // free users don't see trial banners or trip trial-expiry logic. (service_role, so
+      // the profile guard allows it.)
+      const upd = isFree
+        ? { role: profileRole, subscription_status: null, trial_ends_at: null }
+        : { role: profileRole }
+      await supabase.from('profiles').update(upd).eq('id', created.user.id)
     }
 
     // Notify the founder of new owner signups (not delegate-only registrations)
