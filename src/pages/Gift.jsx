@@ -128,7 +128,7 @@ function GiftPaymentForm({ plan, years, gifterName, gifterEmail, recipientName, 
         <p className="text-xs font-semibold text-stone-500 mb-3">Order summary</p>
         <div className="space-y-1.5">
           <div className="flex justify-between text-sm">
-            <span className="text-stone-600">Everstead {planObj?.name} — {yearsLabel}</span>
+            <span className="text-stone-600">{planObj?.name} — {yearsLabel}</span>
             <span className="font-semibold text-navy-900">£{totalGBP}</span>
           </div>
           <div className="flex justify-between text-xs text-stone-400">
@@ -175,7 +175,8 @@ function GiftPaymentForm({ plan, years, gifterName, gifterEmail, recipientName, 
 
 export default function Gift() {
   const [step, setStep]           = useState(1)
-  const [selectedPlan, setSelectedPlan] = useState('family')
+  // Everstead+ is the only giftable plan, so this is fixed (not user-selected).
+  const [selectedPlan] = useState('family')
   const [selectedYears, setSelectedYears] = useState(1)
   const [clientSecret, setClientSecret]   = useState(null)
   const [intentId, setIntentId]           = useState(null)
@@ -256,7 +257,7 @@ export default function Gift() {
     (sendNow || (scheduledDate && new Date(scheduledDate) > new Date()))
 
   const STEPS = [
-    { n: 1, label: 'Choose plan' },
+    { n: 1, label: 'Gift length' },
     { n: 2, label: 'Recipient details' },
     { n: 3, label: 'Payment' },
   ]
@@ -320,54 +321,39 @@ export default function Gift() {
             {/* ── STEP 1: Choose plan & duration ── */}
             {step === 1 && (
               <div>
-                <h2 className="font-display text-3xl font-light text-navy-950 text-center mb-10">Choose a plan</h2>
+                <h2 className="font-display text-3xl font-light text-navy-950 text-center mb-3">How long is your gift?</h2>
+                <p className="text-center text-stone-500 text-sm mb-10">You're gifting {planObj?.name} — choose how many years to give.</p>
 
-                {/* Plan cards */}
-                <div className="grid sm:grid-cols-2 gap-4 mb-8">
-                  {GIFT_PLANS.map(plan => (
-                    <button
-                      key={plan.id}
-                      onClick={() => setSelectedPlan(plan.id)}
-                      className={`text-left rounded-2xl border-2 p-6 transition-all ${
-                        selectedPlan === plan.id
-                          ? 'border-navy-700 bg-navy-50 ring-2 ring-navy-200'
-                          : 'border-stone-200 bg-white hover:border-navy-300'
-                      }`}
-                    >
-                      <div className="flex items-start justify-between gap-2 mb-1">
-                        <div>
-                          <h3 className="font-semibold text-navy-900">{plan.name}</h3>
-                          {plan.badge && (
-                            <span className="inline-block mt-1 text-[10px] font-semibold bg-sage-100 text-sage-700 px-2 py-0.5 rounded-full">
-                              {plan.badge}
-                            </span>
-                          )}
-                        </div>
-                        <div className={`w-5 h-5 rounded-full border-2 flex-shrink-0 mt-0.5 flex items-center justify-center transition-all ${
-                          selectedPlan === plan.id ? 'border-navy-700 bg-navy-700' : 'border-stone-300'
-                        }`}>
-                          {selectedPlan === plan.id && <div className="w-2 h-2 rounded-full bg-white" />}
-                        </div>
-                      </div>
-                      <p className="text-stone-500 text-xs mb-4 leading-relaxed">{plan.desc}</p>
-                      <ul className="space-y-1.5 mb-5">
-                        {plan.features.map(f => (
-                          <li key={f} className="flex items-start gap-2 text-xs text-stone-600">
-                            <svg className="w-3.5 h-3.5 text-sage-500 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                              <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                            </svg>
-                            {f}
-                          </li>
-                        ))}
-                      </ul>
-                      <p className="font-display text-xl font-light text-navy-950">
-                        £{plan.yearlyPrice.toFixed(2)}<span className="text-xs text-stone-400 ml-1">/year</span>
-                      </p>
-                    </button>
-                  ))}
+                {/* What's included — Everstead+ is the only giftable plan, so this is a
+                    fixed summary rather than a choice */}
+                <div className="rounded-2xl border border-stone-200 bg-white p-6 mb-8">
+                  <div className="flex items-start justify-between gap-3 mb-1">
+                    <div>
+                      <h3 className="font-semibold text-navy-900">{planObj?.name}</h3>
+                      {planObj?.badge && (
+                        <span className="inline-block mt-1 text-[10px] font-semibold bg-sage-100 text-sage-700 px-2 py-0.5 rounded-full">
+                          {planObj.badge}
+                        </span>
+                      )}
+                    </div>
+                    <p className="font-display text-xl font-light text-navy-950 whitespace-nowrap">
+                      £{planObj?.yearlyPrice.toFixed(2)}<span className="text-xs text-stone-400 ml-1">/year</span>
+                    </p>
+                  </div>
+                  <p className="text-stone-500 text-xs mb-4 leading-relaxed">{planObj?.desc}</p>
+                  <ul className="grid sm:grid-cols-2 gap-x-4 gap-y-1.5">
+                    {planObj?.features.map(f => (
+                      <li key={f} className="flex items-start gap-2 text-xs text-stone-600">
+                        <svg className="w-3.5 h-3.5 text-sage-500 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                        </svg>
+                        {f}
+                      </li>
+                    ))}
+                  </ul>
                 </div>
 
-                {/* Year selector */}
+                {/* Year selector — the primary choice on this step */}
                 <div className="mb-10">
                   <p className="text-xs font-semibold text-stone-600 mb-3">How many years?</p>
                   <div className="grid grid-cols-3 gap-3">
@@ -399,7 +385,7 @@ export default function Gift() {
                 <div className="bg-white border border-stone-200 rounded-2xl p-6 mb-6">
                   <div className="flex justify-between items-center">
                     <div>
-                      <p className="text-sm font-semibold text-navy-900">Everstead {planObj?.name} — {yearsLabel}</p>
+                      <p className="text-sm font-semibold text-navy-900">{planObj?.name} — {yearsLabel}</p>
                       <p className="text-xs text-stone-400 mt-0.5">One-time gift payment</p>
                     </div>
                     <p className="font-display text-3xl font-light text-navy-950">£{totalGBP}</p>
@@ -422,7 +408,7 @@ export default function Gift() {
                 <p className="text-center text-stone-500 text-sm mb-10">
                   Gifting{' '}
                   <button onClick={() => setStep(1)} className="text-navy-700 underline underline-offset-2 font-medium hover:text-navy-900">
-                    Everstead {planObj?.name} — {yearsLabel}
+                    {planObj?.name} — {yearsLabel}
                   </button>
                 </p>
 
