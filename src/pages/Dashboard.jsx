@@ -19,7 +19,7 @@ import WelcomeOnboarding    from '../components/WelcomeOnboarding'
 import GuidedOnboarding     from '../components/GuidedOnboarding'
 import { redirectToCheckout, redirectToCustomerPortal, PLANS } from '../lib/stripe'
 import { baseDocumentAccess } from '../lib/documentAccess'
-import { PRICING } from '../config/pricing'
+import { PRICING, PLAN_LABELS, planLabel } from '../config/pricing'
 import { isAtLimit, getLimit, canUseFeature } from '../lib/planLimits'
 import { useAccounts }      from '../hooks/useData'
 import { useDocuments }     from '../hooks/useData'
@@ -35,6 +35,8 @@ import { useAboutMe }       from '../hooks/useData'
 import { useWishes }        from '../hooks/useData'
 import AIAssistantSection   from '../components/AIAssistantSection'
 import { FamilySection }    from './Settings'
+import { isNative }         from '../lib/platform'
+import { isBiometricLockEnabled, setBiometricLockEnabled } from '../components/native/BiometricGate'
 import {
   DEMO_PROFILE, DEMO_ACCOUNTS, DEMO_DOCUMENTS, DEMO_PEOPLE,
   DEMO_INSTRUCTIONS, DEMO_SUBSCRIPTIONS, DEMO_ALERTS, DEMO_ACTIVITY, DEMO_MESSAGES,
@@ -1509,6 +1511,41 @@ function OverviewSection({ profile, accounts, documents, people, instructions, m
   )
 }
 
+// Friendly, at-the-limit upgrade nudge shown inline when a vault cap is hit.
+// Plan-aware: Free users get the free-tier framing and are pointed to Everstead+;
+// grandfathered Essential subscribers keep their original wording. It's never a
+// blocking modal — it sits above the (disabled) add control, so nothing the user
+// has already saved is touched. The database is the real authority (free_tier_allows
+// + restrictive INSERT policies); this just gates the UI before an insert would be
+// rejected.
+// The free-tier caps are enforced by restrictive RLS INSERT policies, which reject
+// with Postgres code 42501 ("new row violates row-level security policy"). The UI
+// gates before that point, but if a rejection ever reaches a form, show friendly
+// copy instead of the raw policy string.
+function friendlyLimitError(err, fallback) {
+  const raw = err?.message || ''
+  if (err?.code === '42501' || /row-level security/i.test(raw)) {
+    return `You've reached your free ${PLAN_LABELS.free} plan limit. Upgrade to ${PLAN_LABELS.family} to add more.`
+  }
+  return raw || fallback
+}
+
+function PlanLimitNotice({ plan, limit, noun, benefit, onUpgrade }) {
+  const isFree = plan === 'free'
+  const nounPlural = limit === 1 ? noun : `${noun}s`
+  return (
+    <p className="text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded-xl px-4 py-3 mt-3 mb-4">
+      {isFree
+        ? `You're on the free ${PLAN_LABELS.free} plan, which includes ${limit} ${nounPlural}. `
+        : `You've reached your ${limit}-${noun} limit on the ${planLabel(plan)} plan. `}
+      <button onClick={onUpgrade} className="font-semibold underline underline-offset-2 hover:text-amber-900">
+        Upgrade to {PLAN_LABELS.family} →
+      </button>{' '}
+      {benefit}
+    </p>
+  )
+}
+
 // ─────────────────────────────────────────────────────────────
 // ACCOUNTS SECTION
 // ─────────────────────────────────────────────────────────────
@@ -1518,6 +1555,7 @@ function AccountsSection({ accounts, loading, add, update, remove, profile, onUp
   const [editingAccount, setEditingAccount] = useState(null)
   const [form, setForm] = useState(emptyForm)
   const [saving, setSaving] = useState(false)
+  const [formError, setFormError] = useState(null)
 
   const grouped = accounts.reduce((acc, a) => {
     const key = a.category || 'Other'
@@ -1530,6 +1568,7 @@ function AccountsSection({ accounts, loading, add, update, remove, profile, onUp
     setShowAdd(false)
     setEditingAccount(null)
     setForm(emptyForm)
+    setFormError(null)
   }
 
   const openAdd = () => {
@@ -1554,6 +1593,7 @@ function AccountsSection({ accounts, loading, add, update, remove, profile, onUp
   const handleSubmit = async (e) => {
     e.preventDefault()
     setSaving(true)
+    setFormError(null)
     try {
       const payload = {
         ...form,
@@ -1571,6 +1611,8 @@ function AccountsSection({ accounts, loading, add, update, remove, profile, onUp
         }
       }
       closeModal()
+    } catch (err) {
+      setFormError(friendlyLimitError(err, 'Could not save this account. Please try again.'))
     } finally {
       setSaving(false)
     }
@@ -1589,13 +1631,13 @@ function AccountsSection({ accounts, loading, add, update, remove, profile, onUp
       }
     >
       {atAccountLimit && (
-        <p className="text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded-xl px-4 py-3 mt-3 mb-4">
-          You've reached your 10-account limit on the Essential plan.{' '}
-          <button onClick={onUpgrade} className="font-semibold underline underline-offset-2 hover:text-amber-900">
-            Upgrade to Family →
-          </button>{' '}
-          for unlimited accounts.
-        </p>
+        <PlanLimitNotice
+          plan={profile?.plan}
+          limit={getLimit(profile?.plan, 'maxAccounts')}
+          noun="account"
+          benefit="for unlimited accounts."
+          onUpgrade={onUpgrade}
+        />
       )}
       {loading ? <LoadingSpinner /> : accounts.length === 0 ? (
         <EmptyState icon={Landmark} label="No accounts yet" action="Add your first account to start building your vault." onAction={atAccountLimit ? undefined : openAdd} />
@@ -1676,6 +1718,9 @@ function AccountsSection({ accounts, loading, add, update, remove, profile, onUp
             <Field label="Notes / instructions">
               <textarea className={input} rows={3} value={form.notes} onChange={e => setForm(p => ({ ...p, notes: e.target.value }))} placeholder="Add helpful details, access notes, or instructions for this account…" />
             </Field>
+            {formError && (
+              <div className="bg-red-50 border border-red-200 rounded-xl px-4 py-3 text-sm text-red-700">{formError}</div>
+            )}
             <div className="flex gap-3 pt-2">
               <button type="submit" disabled={saving} className={`${primaryBtn} flex-1`}>
                 {saving ? 'Saving…' : editingAccount ? 'Save changes' : 'Add account'}
@@ -1986,7 +2031,7 @@ function DocumentsSection({ documents, loading, uploadFile, update, remove, plan
       }
       closeModal()
     } catch (err) {
-      setFormError(err.message ?? 'Upload failed. Please try again.')
+      setFormError(friendlyLimitError(err, 'Upload failed. Please try again.'))
     } finally {
       setSaving(false)
     }
@@ -2073,13 +2118,13 @@ function DocumentsSection({ documents, loading, uploadFile, update, remove, plan
         )
       })()}
       {atDocLimit && (
-        <p className="text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded-xl px-4 py-3 mt-3 mb-4">
-          You've reached your 10-document limit on the Essential plan.{' '}
-          <button onClick={onUpgrade} className="font-semibold underline underline-offset-2 hover:text-amber-900">
-            Upgrade to Family →
-          </button>{' '}
-          for unlimited storage.
-        </p>
+        <PlanLimitNotice
+          plan={profile?.plan}
+          limit={getLimit(profile?.plan, 'maxDocuments')}
+          noun="document"
+          benefit="for unlimited documents and storage."
+          onUpgrade={onUpgrade}
+        />
       )}
       {/* Will & LPA guidance — always visible until user has uploaded both */}
       {(() => {
@@ -3598,7 +3643,7 @@ function PeopleSection({ people, loading, invite, resendInvite, updatePerson, re
     try {
       await invite(payload)
       setShowInvite(false)
-    } catch (err) { setSectionError(err.message ?? 'Could not send invite. Please try again.') }
+    } catch (err) { setSectionError(friendlyLimitError(err, 'Could not send invite. Please try again.')) }
     finally { setSaving(false) }
   }
 
@@ -3666,13 +3711,13 @@ function PeopleSection({ people, loading, invite, resendInvite, updatePerson, re
         </div>
       )}
       {atLimit && (
-        <p className="text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded-xl px-4 py-3 mt-3 mb-4">
-          The Essential plan includes 1 trusted contact.{' '}
-          <button onClick={onUpgrade} className="font-semibold underline underline-offset-2 hover:text-amber-900">
-            Upgrade to Family →
-          </button>{' '}
-          to invite up to 10 people.
-        </p>
+        <PlanLimitNotice
+          plan={profile?.plan}
+          limit={getLimit(profile?.plan, 'trustedPeople')}
+          noun="trusted contact"
+          benefit="to invite up to 10 people."
+          onUpgrade={onUpgrade}
+        />
       )}
       {loading ? <LoadingSpinner /> : people.length === 0 ? (
         <EmptyState icon={Users} label="No trusted people yet" action="Invite an executor, healthcare proxy, or family member to your plan." onAction={() => setShowInvite(true)} />
@@ -4635,6 +4680,44 @@ function ReferralLinkBox({ referralCode }) {
   )
 }
 
+function BiometricLockSetting() {
+  const [enabled, setEnabled] = useState(false)
+  const [loaded, setLoaded]   = useState(false)
+
+  useEffect(() => {
+    if (!isNative()) return
+    isBiometricLockEnabled().then(value => { setEnabled(value); setLoaded(true) })
+  }, [])
+
+  if (!isNative()) return null
+
+  const toggle = async () => {
+    const next = !enabled
+    setEnabled(next) // optimistic — this is a local device preference, no server round-trip
+    await setBiometricLockEnabled(next)
+  }
+
+  return (
+    <div className="bg-white border border-stone-200 rounded-2xl p-6">
+      <h2 className="font-semibold text-navy-950 text-sm mb-1 flex items-center gap-2">
+        <Lock size={15} className="text-navy-600" /> Biometric unlock
+      </h2>
+      <p className="text-xs text-stone-400 mb-4 leading-relaxed">
+        Require Face ID or Touch ID to open the app on this device, on top of your account sign-in.
+      </p>
+      <button
+        onClick={toggle}
+        disabled={!loaded}
+        className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors disabled:opacity-50 ${enabled ? 'bg-navy-800' : 'bg-stone-200'}`}
+        role="switch"
+        aria-checked={enabled}
+      >
+        <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${enabled ? 'translate-x-6' : 'translate-x-1'}`} />
+      </button>
+    </div>
+  )
+}
+
 function SettingsSection({ profile, isDemo, updateProfile, refreshProfile, onUpgrade, onDeleteAccount, upgradeError }) {
   const PLANS = [
     { id: 'essential', name: 'Essential', tier: 1, monthly: PRICING.essential.monthly.perMonth, yearly: PRICING.essential.annual.perMonth, desc: 'For individuals. 2 trusted contacts, 5 GB storage.' },
@@ -5019,6 +5102,9 @@ function SettingsSection({ profile, isDemo, updateProfile, refreshProfile, onUpg
             <ShieldCheck size={13} /> Set up authenticator app
           </a>
         </div>
+
+        {/* ── Biometric unlock (native iOS app only) ── */}
+        <BiometricLockSetting />
 
         {/* ── Subscription ── */}
         <div className="bg-white border border-stone-200 rounded-2xl p-6">
