@@ -48,9 +48,9 @@ export default function AdvisorProtectedRoute({ children }) {
             <Briefcase size={26} />
           </div>
           <div>
-            <h1 className="font-display text-2xl font-light text-navy-950 mb-2">Adviser plan required</h1>
+            <h1 className="font-display text-2xl font-light text-navy-950 mb-2">Everstead Pro required</h1>
             <p className="text-sm text-stone-500 leading-relaxed">
-              The Adviser Portal is only available on the Adviser plan. You're currently on the{' '}
+              The Adviser Portal is only available on Everstead Pro. You're currently on the{' '}
               <span className="font-semibold capitalize">{profile.plan}</span> plan.
             </p>
           </div>
@@ -59,7 +59,7 @@ export default function AdvisorProtectedRoute({ children }) {
               to="/pricing"
               className="inline-flex items-center justify-center gap-2 bg-navy-800 text-white text-sm font-semibold px-5 py-3 rounded-xl hover:bg-navy-700 transition-colors"
             >
-              View Adviser plan
+              View Everstead Pro
             </Link>
             <Link
               to="/dashboard"

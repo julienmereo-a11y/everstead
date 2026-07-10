@@ -939,7 +939,7 @@ function InviteFamilyModal({ onClose, isDemo, familiesCount, familiesLimit, onIn
             <Users size={24} />
           </div>
           <p className="text-sm text-stone-700 leading-relaxed">
-            Your Adviser plan supports up to <strong>{familiesLimit} families</strong>. You have reached the limit.
+            Your Everstead Pro plan supports up to <strong>{familiesLimit} families</strong>. You have reached the limit.
           </p>
           <p className="text-xs text-stone-500">To add more families, contact <a href="mailto:support@everstead.care" className="text-navy-700 underline">support@everstead.care</a> to discuss a higher-volume arrangement.</p>
           <button onClick={onClose} className={secondaryBtn}>Close</button>
@@ -1114,7 +1114,7 @@ function AdvisorResourcesSection() {
 
         <div className="mt-5 bg-navy-50 border border-navy-200 rounded-2xl px-5 py-4 flex flex-col sm:flex-row sm:items-center gap-4">
           <div className="flex-1">
-            <p className="font-semibold text-navy-900 text-sm">Questions about the Adviser plan?</p>
+            <p className="font-semibold text-navy-900 text-sm">Questions about Everstead Pro?</p>
             <p className="text-xs text-stone-500 mt-1 leading-relaxed">Our team is happy to assist with onboarding or pilot rollout.</p>
           </div>
           <a

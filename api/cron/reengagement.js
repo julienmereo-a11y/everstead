@@ -1,6 +1,7 @@
 import { createClient } from '@supabase/supabase-js'
 import { Resend } from 'resend'
 import { withSentry, captureException } from '../lib/sentry.js'
+import { planLabel } from '../_lib/plan-label.js'
 
 const supabase = createClient(
   process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL,
@@ -136,7 +137,7 @@ function nudgeHtml(name, plan, hasAccounts, hasContacts, hasDocuments, userId) {
   const unsubUrl = userId
     ? `${APP_URL}/api/email/unsubscribe?token=${Buffer.from(userId).toString('base64url')}`
     : `mailto:hello@everstead.care?subject=Unsubscribe`
-  const planName = plan ? plan.charAt(0).toUpperCase() + plan.slice(1) : 'Essential'
+  const planName = planLabel(plan)
 
   // Build a checklist showing what's done and what's missing
   const checklistItems = [

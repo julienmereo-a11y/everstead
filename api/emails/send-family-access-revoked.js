@@ -28,7 +28,7 @@ async function handler(req, res) {
     await resend.emails.send({
       from:    'Everstead <hello@everstead.care>',
       to:      secondaryEmail,
-      subject: 'Your Everstead Family plan access has ended',
+      subject: 'Your Everstead+ access has ended',
       html:    familyAccessRevokedHtml(secondaryName, APP_URL),
     })
 
@@ -53,13 +53,13 @@ function familyAccessRevokedHtml(secondaryName, appUrl) {
         </td></tr>
         <tr><td style="padding:40px;">
           <h1 style="margin:0 0 16px;color:#0d1628;font-size:24px;font-weight:normal;line-height:1.3;">
-            Your Family plan access has ended
+            Your Everstead+ access has ended
           </h1>
           <p style="margin:0 0 16px;color:#4a5568;font-size:16px;line-height:1.6;">
             Hi ${secondaryName || 'there'},
           </p>
           <p style="margin:0 0 16px;color:#4a5568;font-size:16px;line-height:1.6;">
-            Your access to the Everstead Family plan has ended. Your vault and all your data are safe — but you'll need your own plan to keep using Everstead.
+            Your access to Everstead+ has ended. Your vault and all your data are safe — but you'll need your own plan to keep using Everstead.
           </p>
           <p style="margin:0 0 32px;color:#4a5568;font-size:16px;line-height:1.6;">
             If you'd like to continue, you can start your own plan in minutes. Your existing data will be preserved.

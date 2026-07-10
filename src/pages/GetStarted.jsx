@@ -755,7 +755,7 @@ export default function GetStarted() {
               </h2>
               {planLocked && (
                 <p className="text-center text-stone-500 text-sm mb-8 max-w-md mx-auto">
-                  The founding offer applies to the <span className="font-semibold text-navy-800">Family</span> plan — your first year is free. The plan is set for you below.
+                  The founding offer applies to the <span className="font-semibold text-navy-800">Everstead+</span> plan — your first year is free. The plan is set for you below.
                 </p>
               )}
               <div className="grid md:grid-cols-3 gap-5 mb-10">

@@ -32,7 +32,7 @@ async function handler(req, res) {
     await resend.emails.send({
       from:    'Everstead <hello@everstead.care>',
       to:      secondaryEmail,
-      subject: `${primaryName || 'Someone'} has invited you to join their Everstead Family plan`,
+      subject: `${primaryName || 'Someone'} has invited you to join their Everstead+ plan`,
       html:    familyInviteHtml(primaryName, inviteUrl),
     })
 
@@ -53,7 +53,7 @@ function familyInviteHtml(primaryName, inviteUrl) {
     'Your own private vault — fully separate from theirs',
     'Organise your accounts, documents, and final wishes',
     'Control exactly what, if anything, you share',
-    'Covered by their Family plan — no extra cost to you',
+    'Covered by their Everstead+ plan — no extra cost to you',
   ]
   const listItems = items.map(item =>
     `<tr>
@@ -77,7 +77,7 @@ function familyInviteHtml(primaryName, inviteUrl) {
             ${primaryName || 'Someone'} has invited you to Everstead
           </h1>
           <p style="margin:0 0 16px;color:#4a5568;font-size:16px;line-height:1.6;">
-            <strong>${primaryName || 'Someone'}</strong> has invited you to set up your own private Everstead vault — as part of their Family plan.
+            <strong>${primaryName || 'Someone'}</strong> has invited you to set up your own private Everstead vault — as part of their Everstead+ plan.
           </p>
           <p style="margin:0 0 20px;color:#4a5568;font-size:16px;line-height:1.6;">
             You'll have your own completely private account. <strong>${primaryName || 'They'}</strong> won't be able to see your documents, accounts, or wishes unless you choose to share them.

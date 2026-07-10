@@ -8,7 +8,7 @@ const supabase = createClient(process.env.SUPABASE_URL || process.env.VITE_SUPAB
 const resend   = new Resend(process.env.RESEND_API_KEY)
 const APP_URL  = process.env.VITE_APP_URL || 'https://www.everstead.care'
 
-const PLAN_NAMES = { essential: 'Essential', family: 'Family' }
+const PLAN_NAMES = { essential: 'Essential', family: 'Everstead+' }
 
 async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).end()

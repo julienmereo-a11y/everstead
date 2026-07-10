@@ -1,6 +1,7 @@
 import { createClient } from '@supabase/supabase-js'
 import { Resend } from 'resend'
 import { withSentry, captureException } from '../lib/sentry.js'
+import { planLabel } from '../_lib/plan-label.js'
 
 const supabase = createClient(
   process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL,
@@ -103,7 +104,7 @@ async function handler(req, res) {
 // ─────────────────────────────────────────────────────────────────────────────
 function annualReviewHtml(name, plan, accountCount, documentCount, contactCount) {
   const first    = name?.split(' ')[0] || 'there'
-  const planName = plan ? plan.charAt(0).toUpperCase() + plan.slice(1) : 'Essential'
+  const planName = planLabel(plan)
 
   return `<!DOCTYPE html>
 <html>

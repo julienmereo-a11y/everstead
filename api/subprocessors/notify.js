@@ -108,7 +108,7 @@ function notificationHtml({ summary, effectiveDate, changes, unsubLink }) {
         <a href="${APP_URL}/subprocessors" style="color:#4c7d47;">everstead.care/subprocessors</a>.
       </p>
       <p style="margin:24px 0 0;font-size:14px;line-height:1.6;color:#4b5563;">
-        <strong>If you're an Adviser plan customer and you object to this change</strong>, reply to this email or contact privacy@everstead.care within 30 days of this notice. If we can't resolve the objection, you may terminate your subscription without penalty.
+        <strong>If you're an Everstead Pro customer and you object to this change</strong>, reply to this email or contact privacy@everstead.care within 30 days of this notice. If we can't resolve the objection, you may terminate your subscription without penalty.
       </p>
     </td></tr>
     <tr><td style="padding:16px 24px;background:#f9fafb;border-top:1px solid #e5e7eb;">

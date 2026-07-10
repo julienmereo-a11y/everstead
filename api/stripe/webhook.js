@@ -2,6 +2,7 @@ import Stripe from 'stripe'
 import { createClient } from '@supabase/supabase-js'
 import { Resend } from 'resend'
 import { withSentry } from '../lib/sentry.js'
+import { planLabel } from '../_lib/plan-label.js'
 
 const stripe  = new Stripe(process.env.STRIPE_SECRET_KEY)
 const supabase = createClient(
@@ -492,8 +493,8 @@ function paymentConfirmedHtml(name, plan, isTrialing, periodEnd, trialDays = 14)
     : null
 
   const bodyText = isTrialing
-    ? `Your card has been saved for your <strong>${plan || 'Essential'}</strong> plan. Your ${trialDays}-day free trial is now active — you won't be charged until it ends${chargeDate ? ` on <strong>${chargeDate}</strong>` : ''}.`
-    : `Your <strong>${plan || 'Essential'}</strong> plan is now active. Your payment was confirmed and your subscription starts today.`
+    ? `Your card has been saved for your <strong>${planLabel(plan)}</strong> plan. Your ${trialDays}-day free trial is now active — you won't be charged until it ends${chargeDate ? ` on <strong>${chargeDate}</strong>` : ''}.`
+    : `Your <strong>${planLabel(plan)}</strong> plan is now active. Your payment was confirmed and your subscription starts today.`
 
   return emailShell(`
     <h1 style="margin:0 0 16px;color:#0d1628;font-size:24px;font-weight:normal;">
@@ -508,7 +509,7 @@ function trialEndingReminderHtml(name, plan, endDate) {
   return emailShell(`
     <h1 style="margin:0 0 16px;color:#0d1628;font-size:24px;font-weight:normal;">Your trial ends in 3 days, ${name || 'there'}</h1>
     <p style="margin:0 0 16px;color:#4a5568;font-size:16px;line-height:1.6;">
-      Your 14-day free trial on the <strong>${plan || 'Essential'}</strong> plan ends${endDate ? ` on <strong>${endDate}</strong>` : ' soon'}.
+      Your 14-day free trial on the <strong>${planLabel(plan)}</strong> plan ends${endDate ? ` on <strong>${endDate}</strong>` : ' soon'}.
     </p>
     <p style="margin:0 0 32px;color:#4a5568;font-size:16px;line-height:1.6;">
       Your card on file will be charged automatically when the trial ends. No action is needed — just continue using Everstead.
@@ -522,7 +523,7 @@ function paymentFailedHtml(name, plan) {
   return emailShell(`
     <h1 style="margin:0 0 16px;color:#0d1628;font-size:24px;font-weight:normal;">Payment failed, ${name || 'there'}</h1>
     <p style="margin:0 0 16px;color:#4a5568;font-size:16px;line-height:1.6;">
-      We were unable to charge the card on file for your <strong>${plan || 'Essential'}</strong> plan.
+      We were unable to charge the card on file for your <strong>${planLabel(plan)}</strong> plan.
     </p>
     <p style="margin:0 0 32px;color:#4a5568;font-size:16px;line-height:1.6;">
       Please update your payment method to keep your plan active. Your data is safe and will remain for 30 days.
@@ -664,7 +665,7 @@ function referralConversionHtml(referrerName, newMemberName) {
 
 function renewalReceiptHtml(name, plan, billingCycle, amountPaid, currency, nextRenewalDate) {
   const firstName = name?.split(' ')[0] || 'there'
-  const planName  = plan ? plan.charAt(0).toUpperCase() + plan.slice(1) : 'Essential'
+  const planName  = planLabel(plan)
   const cycleLabel = billingCycle === 'yearly' ? 'annual' : 'monthly'
   const APP_URL   = process.env.VITE_APP_URL || 'https://www.everstead.care'
   return emailShell(`

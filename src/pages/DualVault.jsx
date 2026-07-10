@@ -293,7 +293,7 @@ export default function DualVault() {
           <div className="max-w-3xl mx-auto px-6 lg:px-8 text-center reveal">
             <p className="text-xs font-semibold uppercase tracking-[0.2em] text-sage-300 mb-5">Everstead+</p>
             <h2 className="font-display text-3xl lg:text-4xl font-light text-white mb-4 text-balance">
-              Two vaults. Everything in Essential. From £9.99/month.
+              Two vaults. Everything in Everstead. From £9.99/month.
             </h2>
             <p className="text-stone-400 text-sm leading-relaxed mb-8 max-w-xl mx-auto">
               One subscription for both of you. Each person gets a full, private vault — accounts, documents, instructions, trusted contacts, and final wishes — kept completely separate unless you choose to share.

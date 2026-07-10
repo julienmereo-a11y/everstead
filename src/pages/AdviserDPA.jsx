@@ -12,7 +12,7 @@ const clauses = [
     title: '1. Definitions',
     body: `"Agreement" means these Data Processing Terms, incorporated by reference into the Everstead Terms of Service.
 
-"Controller" means the Adviser (the natural or legal person using an Everstead Adviser plan) who determines the purposes and means of processing personal data of their clients.
+"Controller" means the Adviser (the natural or legal person using an Everstead Pro plan) who determines the purposes and means of processing personal data of their clients.
 
 "Processor" means ${COMPANY} (company number ${COMPANY_NO}), registered in England and Wales, which processes personal data on behalf of the Controller.
 
@@ -22,7 +22,7 @@ const clauses = [
   },
   {
     title: '2. Scope and application',
-    body: `These Data Processing Terms apply to all processing of personal data carried out by ${COMPANY} on behalf of Advisers in connection with the Everstead Adviser plan.
+    body: `These Data Processing Terms apply to all processing of personal data carried out by ${COMPANY} on behalf of Advisers in connection with the Everstead Pro plan.
 
 By activating an Adviser account, the Adviser (as Controller) agrees to these terms. These terms supplement and, where inconsistent, take precedence over the Everstead Terms of Service with respect to data processing activities.
 
@@ -191,7 +191,7 @@ export default function AdviserDPA() {
 
             <div className="reveal rounded-2xl bg-navy-50 border border-navy-100 px-6 py-5">
               <p className="text-sm text-navy-800 leading-relaxed">
-                <strong>Who this applies to:</strong> These Data Processing Terms apply to all Adviser plan accounts on Everstead. By activating an Adviser account, you (the Adviser, acting as Data Controller) agree to these terms. Everstead Digital Ltd acts as Data Processor. These terms are automatically incorporated into your Everstead subscription agreement.
+                <strong>Who this applies to:</strong> These Data Processing Terms apply to all Everstead Pro accounts on Everstead. By activating an Adviser account, you (the Adviser, acting as Data Controller) agree to these terms. Everstead Digital Ltd acts as Data Processor. These terms are automatically incorporated into your Everstead subscription agreement.
               </p>
             </div>
 

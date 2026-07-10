@@ -77,7 +77,7 @@ async function handler(req, res) {
     // (Code was already claimed atomically above.)
 
     // Send "vault is ready" email to recipient
-    const planName    = gift.plan === 'family' ? 'Family' : 'Essential'
+    const planName    = gift.plan === 'family' ? 'Everstead+' : 'Essential'
     const trialEndStr = new Date(trialEnd * 1000).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
     await resend.emails.send({
       from:    'Everstead <hello@everstead.care>',

@@ -1,6 +1,7 @@
 import { createClient } from '@supabase/supabase-js'
 import { Resend } from 'resend'
 import { withSentry, captureException } from '../lib/sentry.js'
+import { planLabel } from '../_lib/plan-label.js'
 
 const supabase = createClient(
   process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL,
@@ -216,7 +217,7 @@ function trialReminderHtml(name, plan, trialEndsAt, daysLeft) {
         </td></tr>
         <tr><td style="padding:40px;">
           <h1 style="margin:0 0 16px;color:#0d1628;font-size:24px;font-weight:normal;">${daysLeft === 1 ? 'Your trial ends tomorrow.' : `Your trial ends in ${daysLeft} days.`}</h1>
-          <p style="margin:0 0 16px;color:#4a5568;font-size:16px;line-height:1.6;">Hi ${name || 'there'}, your free trial on the <strong>${plan || 'Essential'}</strong> plan ends${endDate ? ` on <strong>${endDate}</strong>` : ' soon'}.</p>
+          <p style="margin:0 0 16px;color:#4a5568;font-size:16px;line-height:1.6;">Hi ${name || 'there'}, your free trial on the <strong>${planLabel(plan)}</strong> plan ends${endDate ? ` on <strong>${endDate}</strong>` : ' soon'}.</p>
           <p style="margin:0 0 32px;color:#4a5568;font-size:16px;line-height:1.6;">Add your payment details before then to keep access to your estate plan, documents, and trusted contacts.</p>
           <a href="${APP_URL}/dashboard" style="display:inline-block;background:#2d5082;background:linear-gradient(100deg,#2d5082 0%,#6f6bc6 50%,#6e9b6a 100%);color:#ffffff;text-decoration:none;padding:14px 28px;border-radius:9999px;font-size:15px;">Go to my vault →</a>
         </td></tr>

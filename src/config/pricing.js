@@ -126,7 +126,7 @@ export const PRICING = {
     saveAmountYear: '~£9.50/year',
   },
   family: {
-    name: 'Family',
+    name: 'Everstead+',
     monthly: {
       perMonth: 9.99,
       display: '£9.99',
