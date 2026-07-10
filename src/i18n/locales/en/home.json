@@ -128,42 +128,41 @@
     "billedMonthly": "Billed monthly",
     "billedAnnually": "Billed annually · Save 20%",
     "plans": {
-      "essential": {
-        "name": "Essential",
-        "priceMonthly": "£{{price}}",
-        "priceAnnual": "£{{price}}",
-        "desc": "For individuals who want their accounts, documents, and wishes in one secure place.",
+      "free": {
+        "name": "Everstead",
+        "priceLabel": "Free",
+        "priceSub": "forever · no card required",
+        "desc": "Get started and organise the essentials — at no cost, with no card.",
         "features": [
-          "Up to 10 accounts & documents",
+          "Guided onboarding & About Me",
+          "Your AI Assistant",
+          "1 account, 1 document, 1 trusted person",
           "Step-by-step instructions",
-          "1 trusted contact",
-          "Readiness score",
-          "1 GB storage",
-          "Your AI Assistant"
+          "Readiness score"
         ],
-        "cta": "Start Your Everstead"
+        "cta": "Create free account"
       },
       "family": {
-        "name": "Family",
+        "name": "Everstead+",
         "priceMonthly": "£{{price}}",
         "priceAnnual": "£{{price}}",
         "desc": "For couples and families — two private vaults, one subscription. Organised together, private separately.",
         "features": [
-          "Everything in Essential",
+          "Everything in Free, uncapped",
           "Two private vaults — one subscription",
           "Each person keeps their own private data",
           "Up to 10 trusted contacts",
           "25 GB storage",
-          "Share only what you choose"
+          "Personal Messages & more"
         ],
-        "cta": "Start Your Everstead"
+        "cta": "Start your Everstead+"
       },
       "advisor": {
-        "name": "Adviser",
+        "name": "Everstead Pro",
         "desc": "For professionals managing client estate organisation. Pricing on application.",
         "note": "Pricing on application — we're working personally with our first adviser cohort.",
         "features": [
-          "Everything in Family",
+          "Everything in Everstead+",
           "Multi-client workspace",
           "Co-branded client portal",
           "Adviser collaboration tools",
@@ -172,7 +171,7 @@
         "cta": "Book a demo"
       }
     },
-    "trialNote": "All plans include a 14-day free trial. Your card won't be charged until the trial ends.",
+    "trialNote": "Free forever — no card required. Everstead+ includes a 14-day free trial; your card isn't charged until it ends.",
     "fullDetails": "Full pricing details →"
   },
   "gift": {

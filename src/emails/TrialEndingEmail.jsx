@@ -1,4 +1,5 @@
 import React from 'react'
+import { emailPlanLabel } from './planLabel'
 
 const appUrl = import.meta.env?.VITE_APP_URL || 'https://www.everstead.care'
 
@@ -20,7 +21,7 @@ export default function TrialEndingEmail({ name, plan, trialEndsAt, daysLeft = 3
                 Your trial ends {daysLeft === 1 ? 'tomorrow' : `in ${daysLeft} days`}
               </h1>
               <p style={{ margin: '0 0 16px', color: '#4a5568', fontSize: '16px', lineHeight: '1.6' }}>
-                Hi {name || 'there'}, your free trial on the <strong>{plan || 'Essential'}</strong> plan ends{endDate ? <> on <strong>{endDate}</strong></> : ' soon'}.
+                Hi {name || 'there'}, your free trial on the <strong>{emailPlanLabel(plan)}</strong> plan ends{endDate ? <> on <strong>{endDate}</strong></> : ' soon'}.
               </p>
               <p style={{ margin: '0 0 32px', color: '#4a5568', fontSize: '16px', lineHeight: '1.6' }}>Add your payment details to keep your estate plan, documents, and trusted contacts intact.</p>
               <a href={`${appUrl}/dashboard`} style={{ display: 'inline-block', background: '#0d1628', color: '#ffffff', textDecoration: 'none', padding: '14px 28px', borderRadius: '8px', fontSize: '15px' }}>Add payment details →</a>

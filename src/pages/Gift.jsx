@@ -12,28 +12,18 @@ import { getStripe } from '../lib/stripe'
 // CONSTANTS
 // ─────────────────────────────────────────────────────────────
 
+// A gift is a new paid subscription for the recipient. Essential is retired, so the
+// only giftable plan is Everstead+ (Everstead Pro is sold to professionals via demo,
+// and the Free tier needs no gifting).
 const GIFT_PLANS = [
   {
-    id: 'essential',
-    name: 'Essential',
-    yearlyPrice: PRICING.essential.annual.perYear,
-    desc: 'For individuals getting organised.',
-    features: [
-      'Up to 10 accounts & documents',
-      '1 instruction set for executors',
-      '1 trusted contact',
-      '1 GB secure storage',
-      'Your AI Assistant',
-    ],
-  },
-  {
     id: 'family',
-    name: 'Family',
+    name: 'Everstead+',
     yearlyPrice: PRICING.family.annual.perYear,
     desc: 'Two private vaults, one subscription.',
-    badge: 'Most popular gift',
+    badge: 'The complete gift',
     features: [
-      'Everything in Essential',
+      'Everything in Everstead, uncapped',
       'Two private vaults — one for each person',
       'Each person keeps their own private data',
       'Up to 10 trusted contacts',

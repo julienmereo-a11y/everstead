@@ -74,7 +74,7 @@ export default function DualVault() {
     <>
       <Helmet>
         <title>Family Vault — Two Private Vaults, One Subscription | Everstead</title>
-        <meta name="description" content="Everstead's Family plan gives couples two completely private vaults under one subscription. Each person keeps their own data. Share only what you choose. No competitor offers this." />
+        <meta name="description" content="Everstead+ gives couples two completely private vaults under one subscription. Each person keeps their own data. Share only what you choose. No competitor offers this." />
         <link rel="canonical" href="https://www.everstead.care/family-vault" />
         <meta property="og:type" content="website" />
         <meta property="og:title" content="Family Vault — Two Private Vaults, One Subscription | Everstead" />
@@ -91,12 +91,12 @@ export default function DualVault() {
         <section className="py-20 lg:py-28 grain relative overflow-hidden">
           <div className="absolute inset-0 aurora-bg" />
           <div className="relative max-w-4xl mx-auto px-6 lg:px-8 text-center reveal">
-            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-sage-300 mb-5">Family plan</p>
+            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-sage-300 mb-5">Everstead+</p>
             <h1 className="font-display text-4xl lg:text-6xl font-light text-white leading-tight text-balance">
               Two private vaults. One subscription. No compromises.
             </h1>
             <p className="mt-5 text-lg leading-relaxed text-stone-300 max-w-2xl mx-auto">
-              Most estate planning tools assume couples share everything. Everstead doesn't. The Family plan gives each person a completely private vault — organised separately, shared only by choice.
+              Most estate planning tools assume couples share everything. Everstead doesn't. Everstead+ gives each person a completely private vault — organised separately, shared only by choice.
             </p>
             <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
               <Link to="/get-started" className="btn-aurora inline-flex items-center justify-center gap-2 text-white px-6 py-3 rounded-full text-sm font-semibold transition-colors">
@@ -106,7 +106,7 @@ export default function DualVault() {
                 See pricing
               </Link>
             </div>
-            <p className="mt-5 text-sm text-stone-400">Family plan from £9.99/month. 14-day free trial.</p>
+            <p className="mt-5 text-sm text-stone-400">Everstead+ from £9.99/month. 14-day free trial.</p>
           </div>
         </section>
 
@@ -240,7 +240,7 @@ export default function DualVault() {
                   <p className="text-xs font-semibold text-stone-500 uppercase tracking-widest">Feature</p>
                 </div>
                 <div className="px-6 py-4 text-center border-l border-stone-200">
-                  <p className="text-xs font-semibold text-navy-700 uppercase tracking-widest">Family plan</p>
+                  <p className="text-xs font-semibold text-navy-700 uppercase tracking-widest">Everstead+</p>
                 </div>
                 <div className="px-6 py-4 text-center border-l border-stone-200">
                   <p className="text-xs font-semibold text-stone-500 uppercase tracking-widest">Single vault</p>
@@ -291,7 +291,7 @@ export default function DualVault() {
         {/* Pricing CTA */}
         <section className="py-20 lg:py-28 aurora-field aurora-dim relative overflow-hidden">
           <div className="max-w-3xl mx-auto px-6 lg:px-8 text-center reveal">
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-sage-300 mb-5">Family plan</p>
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-sage-300 mb-5">Everstead+</p>
             <h2 className="font-display text-3xl lg:text-4xl font-light text-white mb-4 text-balance">
               Two vaults. Everything in Essential. From £9.99/month.
             </h2>

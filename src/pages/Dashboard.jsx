@@ -57,7 +57,7 @@ const NAV_ITEMS = [
   { id: 'subscriptions',  label: 'Subscriptions',    icon: CreditCard,   group: 'Your vault' },
 
   { id: 'people',         label: 'People',           icon: Users,        group: 'People & wishes' },
-  { id: 'family',         label: 'Family Plan',      icon: Heart,        group: 'People & wishes', familyOnly: true },
+  { id: 'family',         label: 'Family',           icon: Heart,        group: 'People & wishes', familyOnly: true },
   { id: 'messages',       label: 'Personal Messages',icon: MessageSquare,group: 'People & wishes' },
   { id: 'instructions',   label: 'Instructions',     icon: BookOpen,     group: 'People & wishes' },
 
@@ -153,9 +153,8 @@ function TrialExpiredModal({ profile, onUpgrade }) {
         </p>
         <div className="space-y-3 mb-8">
           {[
-            { name: 'Essential', price: '£3.99/mo', note: 'or £3.19/mo billed annually (£38.28/yr · save 20%)', id: 'essential' },
-            { name: 'Family', price: '£9.99/mo', note: 'or £7.99/mo billed annually (£95.88/yr · save 20%) — two private vaults', id: 'family', highlight: profile.plan !== 'advisor' },
-            ...(profile.plan === 'advisor' ? [{ name: 'Adviser', price: '£60/mo', note: 'or £48/mo yearly · For estate advisers', id: 'advisor', highlight: true }] : []),
+            { name: 'Everstead+', price: '£9.99/mo', note: 'or £7.99/mo billed annually (£95.88/yr · save 20%) — two private vaults', id: 'family', highlight: profile.plan !== 'advisor' },
+            ...(profile.plan === 'advisor' ? [{ name: 'Everstead Pro', price: '£60/mo', note: 'or £48/mo yearly · For estate advisers', id: 'advisor', highlight: true }] : []),
           ].map(plan => (
             <button
               key={plan.id}
@@ -233,8 +232,7 @@ function AdvisorCancelledModal({ advisorName, onAddPayment }) {
         </p>
         <div className="space-y-3 mb-8">
           {[
-            { name: 'Essential', price: '£3.99/mo', note: 'or £3.19/mo billed annually (£38.28/yr · save 20%)', id: 'essential' },
-            { name: 'Family', price: '£9.99/mo', note: 'or £7.99/mo billed annually (£95.88/yr · save 20%) — all household members', id: 'family', highlight: true },
+            { name: 'Everstead+', price: '£9.99/mo', note: 'or £7.99/mo billed annually (£95.88/yr · save 20%) — all household members', id: 'family', highlight: true },
           ].map(plan => (
             <button
               key={plan.id}
@@ -271,9 +269,9 @@ function FamilyWrapper({ profile }) {
   if (!session) return null
   return (
     <SectionShell
-      title="Family Plan"
+      title="Family"
       subtitle={profile.family_role === 'secondary'
-        ? 'You have your own private vault under a Family plan subscription.'
+        ? 'You have your own private vault under an Everstead+ subscription.'
         : 'Invite your partner or spouse to their own private vault under your plan.'}
     >
       <FamilySection profile={profile} session={session} />
@@ -760,7 +758,7 @@ export default function Dashboard() {
                   <Sparkles size={10} /> Founding member
                 </p>
               ) : (
-                <p className="text-xs text-stone-500 truncate capitalize">{activeProfile.plan} plan</p>
+                <p className="text-xs text-stone-500 truncate">{planLabel(activeProfile.plan)} plan</p>
               )}
             </div>
           </div>
@@ -1083,9 +1081,10 @@ function OwnerAIGuide({ userName, plan, accountCount, documentCount, contactCoun
 // OVERVIEW SECTION
 // ─────────────────────────────────────────────────────────────
 const PLAN_BADGE = {
-  essential: { label: 'Essential', cls: 'bg-stone-100 text-stone-600 border-stone-200' },
-  family:    { label: 'Family',    cls: 'bg-navy-50  text-navy-700  border-navy-200'  },
-  advisor:   { label: 'Adviser',   cls: 'bg-sage-50  text-sage-700  border-sage-200'  },
+  free:      { label: PLAN_LABELS.free,      cls: 'bg-stone-100 text-stone-600 border-stone-200' },
+  essential: { label: PLAN_LABELS.essential, cls: 'bg-stone-100 text-stone-600 border-stone-200' },
+  family:    { label: PLAN_LABELS.family,    cls: 'bg-navy-50  text-navy-700  border-navy-200'  },
+  advisor:   { label: PLAN_LABELS.advisor,   cls: 'bg-sage-50  text-sage-700  border-sage-200'  },
 }
 
 function OverviewSection({ profile, accounts, documents, people, instructions, messages, alerts, markRead, onNavigate, planLimits, loading, daysSinceLogin, onCelebrate, onExecutorPreview, aboutMe }) {
@@ -1400,7 +1399,7 @@ function OverviewSection({ profile, accounts, documents, people, instructions, m
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-semibold text-navy-900">
-                  {isSecondaryUser ? 'Your Family Plan vault is active' : 'Family vault active'}
+                  {isSecondaryUser ? 'Your Everstead+ vault is active' : 'Family vault active'}
                 </p>
                 <p className="text-xs text-stone-500 mt-0.5 truncate">
                   {isSecondaryUser
@@ -2976,7 +2975,7 @@ function MessagesSection({ messages: initialMessages, loading, people, isDemo, p
   return (
     <SectionShell
       title="Personal Messages"
-      subtitle={messagesLocked ? 'Family plan feature' : `${releasedCount} released · ${sealedCount} sealed`}
+      subtitle={messagesLocked ? 'Everstead+ feature' : `${releasedCount} released · ${sealedCount} sealed`}
       action={!messagesLocked ? (
         <div className="flex items-center gap-2">
           {unreleased.length > 1 && (
@@ -2998,13 +2997,13 @@ function MessagesSection({ messages: initialMessages, loading, people, isDemo, p
           </div>
           <h3 className="font-display text-xl font-light text-navy-950 mb-2">Leave something behind that matters.</h3>
           <p className="text-stone-600 text-sm leading-relaxed max-w-sm mx-auto mb-6">
-            Write letters, record final wishes, and set release triggers for the people you love — delivered when it matters most. Personal messages are included in the Family plan.
+            Write letters, record final wishes, and set release triggers for the people you love — delivered when it matters most. Personal Messages are included in Everstead+.
           </p>
           <button
             onClick={onUpgrade}
             className="inline-flex items-center gap-2 btn-aurora text-white font-semibold text-sm px-6 py-3 rounded-full hover:bg-navy-700 transition-colors"
           >
-            Upgrade to Family →
+            Upgrade to Everstead+ →
           </button>
         </div>
       )}
@@ -4013,13 +4012,13 @@ function InstructionsSection({ instructions, loading, add, update, remove, profi
       }
     >
       {atInstructionLimit && (
-        <p className="text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded-xl px-4 py-3 mt-3 mb-4">
-          The Essential plan includes 1 instruction set.{' '}
-          <button onClick={onUpgrade} className="font-semibold underline underline-offset-2 hover:text-amber-900">
-            Upgrade to Family →
-          </button>{' '}
-          for unlimited instructions.
-        </p>
+        <PlanLimitNotice
+          plan={profile?.plan}
+          limit={getLimit(profile?.plan, 'instructionSets')}
+          noun="instruction set"
+          benefit="for unlimited instructions."
+          onUpgrade={onUpgrade}
+        />
       )}
       {loading ? <LoadingSpinner /> : instructions.length === 0 ? (
         <EmptyState icon={BookOpen} label="No instructions yet" action="Write step-by-step guidance for your executor, family, or healthcare proxy." onAction={atInstructionLimit ? undefined : openAdd} />
@@ -4551,7 +4550,7 @@ const OWNER_GUIDES = [
       { label: 'What they are', detail: 'Personal Messages are private letters or notes addressed to specific trusted people. They are stored encrypted and not visible to anyone until you or your executor releases them.' },
       { label: 'When they are released', detail: 'You can release a message yourself at any time (e.g. for a birthday or milestone). Or your executor can release them once a life event has been reported and verified by Everstead.' },
       { label: 'What to write', detail: 'Letters to your children or grandchildren, final words to a partner, guidance to a trusted friend. These are not legal documents — write them as you would speak.' },
-      { label: 'Available on Family plan', detail: 'Personal Messages are included in the Family plan. If you\'re on Essential, upgrade to unlock this feature.' },
+      { label: 'Available on Everstead+', detail: 'Personal Messages are included in Everstead+. Upgrade to unlock this feature.' },
     ],
   },
 ]
@@ -4719,12 +4718,17 @@ function BiometricLockSetting() {
 }
 
 function SettingsSection({ profile, isDemo, updateProfile, refreshProfile, onUpgrade, onDeleteAccount, upgradeError }) {
+  // Everstead+ is the self-serve upgrade for Free and grandfathered Essential users.
+  // Essential is retired, so it only appears for someone already on it (never offered
+  // to Free or new users).
   const PLANS = [
-    { id: 'essential', name: 'Essential', tier: 1, monthly: PRICING.essential.monthly.perMonth, yearly: PRICING.essential.annual.perMonth, desc: 'For individuals. 2 trusted contacts, 5 GB storage.' },
-    { id: 'family',    name: 'Family',    tier: 2, monthly: PRICING.family.monthly.perMonth,    yearly: PRICING.family.annual.perMonth,    desc: 'Household members, up to 10 trusted contacts, 25 GB storage.' },
+    ...(profile.plan === 'essential'
+      ? [{ id: 'essential', name: PLAN_LABELS.essential, tier: 1, monthly: PRICING.essential.monthly.perMonth, yearly: PRICING.essential.annual.perMonth, desc: 'Your current plan — unchanged.' }]
+      : []),
+    { id: 'family', name: PLAN_LABELS.family, tier: 2, monthly: PRICING.family.monthly.perMonth, yearly: PRICING.family.annual.perMonth, desc: 'Two private vaults, up to 10 trusted contacts, 25 GB storage.' },
   ]
-  const PLAN_TIERS = { essential: 1, family: 2, advisor: 3 }
-  const currentTier   = PLAN_TIERS[profile.plan] ?? 1
+  const PLAN_TIERS = { free: 0, essential: 1, family: 2, advisor: 3 }
+  const currentTier   = PLAN_TIERS[profile.plan] ?? 0
   // Local overrides — set immediately after API calls so the UI doesn't wait on refreshProfile
   const [localSubStatus, setLocalSubStatus] = useState(null)
   const [localCancelAt,  setLocalCancelAt]  = useState(null)
@@ -5112,7 +5116,7 @@ function SettingsSection({ profile, isDemo, updateProfile, refreshProfile, onUpg
             <CreditCard size={15} className="text-navy-600" /> Subscription
           </h2>
           <p className="text-xs text-stone-400 mb-5">
-            Currently on the <span className="font-semibold text-navy-800 capitalize">{profile.plan}</span> plan
+            Currently on the <span className="font-semibold text-navy-800">{planLabel(profile.plan)}</span> plan
             {isTrialing    && <span className="ml-2 text-amber-600 font-medium">· Free trial active</span>}
             {isCancelling  && <span className="ml-2 text-amber-600 font-medium">· Cancellation scheduled</span>}
             {isCancelled   && <span className="ml-2 text-stone-400 font-medium">· Plan ended</span>}
@@ -5166,7 +5170,7 @@ function SettingsSection({ profile, isDemo, updateProfile, refreshProfile, onUpg
                 </div>
               </div>
               <button
-                onClick={() => onUpgrade(profile.plan || 'essential', 'yearly')}
+                onClick={() => onUpgrade(profile.plan === 'essential' ? 'essential' : 'family', 'yearly')}
                 className="inline-flex items-center gap-2 text-sm font-semibold btn-aurora text-white px-4 py-2 rounded-full hover:bg-navy-700 transition-colors"
               >
                 Reactivate Everstead

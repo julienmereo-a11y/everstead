@@ -128,42 +128,41 @@
     "billedMonthly": "Facturation mensuelle · Prix TTC",
     "billedAnnually": "Facturation annuelle · Prix TTC · Économisez 20 %",
     "plans": {
-      "essential": {
-        "name": "Essentiel",
-        "priceMonthly": "4,99 €",
-        "priceAnnual": "47,88 €",
-        "desc": "Pour celles et ceux qui veulent réunir leurs comptes, documents et volontés en un seul endroit sûr.",
+      "free": {
+        "name": "Everstead",
+        "priceLabel": "Gratuit",
+        "priceSub": "pour toujours · sans carte",
+        "desc": "Commencez et organisez l'essentiel — sans frais et sans carte.",
         "features": [
-          "Jusqu'à 10 comptes et documents",
+          "Intégration guidée et À propos de moi",
+          "Votre assistant IA",
+          "1 compte, 1 document, 1 personne de confiance",
           "Instructions pas à pas",
-          "1 personne de confiance",
-          "Score de préparation",
-          "1 Go de stockage",
-          "Votre assistant IA"
+          "Score de préparation"
         ],
-        "cta": "Commencez votre Everstead"
+        "cta": "Créer un compte gratuit"
       },
       "family": {
-        "name": "Famille",
+        "name": "Everstead+",
         "priceMonthly": "11,99 €",
         "priceAnnual": "114,88 €",
         "desc": "Pour les couples et les familles — deux espaces privés, un seul abonnement. Organisés ensemble, privés chacun de son côté.",
         "features": [
-          "Tout ce qui est inclus dans Essentiel",
+          "Tout Everstead, sans limite",
           "Deux espaces privés — un seul abonnement",
           "Chacun garde ses données privées",
           "Jusqu'à 10 personnes de confiance",
           "25 Go de stockage",
-          "Ne partagez que ce que vous choisissez"
+          "Messages personnels et plus"
         ],
-        "cta": "Commencez votre Everstead"
+        "cta": "Commencez votre Everstead+"
       },
       "advisor": {
-        "name": "Conseiller",
+        "name": "Everstead Pro",
         "desc": "Pour les professionnels qui accompagnent leurs clients dans l'organisation de leur patrimoine. Tarif sur demande.",
         "note": "Tarif sur demande — nous accompagnons personnellement notre première cohorte de conseillers.",
         "features": [
-          "Tout ce qui est inclus dans Famille",
+          "Tout ce qui est inclus dans Everstead+",
           "Espace de travail multi-clients",
           "Portail client co-brandé",
           "Outils de collaboration pour conseillers",
@@ -172,7 +171,7 @@
         "cta": "Réserver une démo"
       }
     },
-    "trialNote": "Tous les forfaits incluent 14 jours d'essai gratuit. Votre carte ne sera débitée qu'à la fin de la période d'essai.",
+    "trialNote": "Gratuit pour toujours — sans carte. Everstead+ inclut 14 jours d'essai gratuit ; votre carte n'est débitée qu'à la fin.",
     "fullDetails": "Tous les détails des tarifs →"
   },
   "gift": {

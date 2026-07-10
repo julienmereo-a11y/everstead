@@ -13,13 +13,13 @@ export default function FamilyInviteAcceptedEmail({ primaryName, secondaryName }
             </td></tr>
             <tr><td style={{ padding: '40px' }}>
               <h1 style={{ margin: '0 0 16px', color: '#0d1628', fontSize: '24px', fontWeight: 'normal', lineHeight: '1.3' }}>
-                {secondaryName || 'Your partner'} has joined your Family plan
+                {secondaryName || 'Your partner'} has joined your Everstead+ plan
               </h1>
               <p style={{ margin: '0 0 16px', color: '#4a5568', fontSize: '16px', lineHeight: '1.6' }}>
                 Hi {primaryName || 'there'},
               </p>
               <p style={{ margin: '0 0 32px', color: '#4a5568', fontSize: '16px', lineHeight: '1.6' }}>
-                <strong>{secondaryName || 'Your partner'}</strong> has accepted your invitation and set up their private vault. They're now part of your Family plan. Their data remains completely private to them unless they choose to share it with you.
+                <strong>{secondaryName || 'Your partner'}</strong> has accepted your invitation and set up their private vault. They're now part of your Everstead+ plan. Their data remains completely private to them unless they choose to share it with you.
               </p>
               <table cellPadding="0" cellSpacing="0" style={{ margin: '0 0 24px' }}>
                 <tbody><tr><td style={{ background: '#4c7d47', borderRadius: '8px' }}>

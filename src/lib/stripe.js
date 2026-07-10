@@ -60,7 +60,7 @@ export const PLANS = {
     },
   },
   family: {
-    name: 'Family',
+    name: 'Everstead+',
     monthly: PRICING.family.monthly.perMonth, // 9.99
     yearly:  PRICING.family.annual.perMonth,  // 7.99 (/mo billed annually)
     priceIds: {
@@ -78,7 +78,7 @@ export const PLANS = {
     },
   },
   advisor: {
-    name: 'Advisor',
+    name: 'Everstead Pro',
     monthly: 60,
     yearly:  48,
     priceIds: {

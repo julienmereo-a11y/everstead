@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { MessageCircle, X, Send, Loader2 } from 'lucide-react'
 import { useAuth } from '../contexts/AuthContext'
+import { planLabel } from '../config/pricing'
 import Markdown from './Markdown'
 
 export default function ChatWidget() {
@@ -22,7 +23,7 @@ export default function ChatWidget() {
   }, [open, messages])
 
   const userContext = user && profile
-    ? `The user is logged in as ${profile.full_name || user.email} on the ${profile.plan || 'Essential'} plan.`
+    ? `The user is logged in as ${profile.full_name || user.email} on the ${planLabel(profile.plan) || 'Everstead'} plan.`
     : null
 
   const send = async () => {
