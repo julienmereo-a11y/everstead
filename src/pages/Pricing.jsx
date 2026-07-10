@@ -49,18 +49,20 @@ export default function Pricing() {
     })),
   }
 
+  // Consumer table = Free + Everstead+ only. Everstead Pro (advisers) is its own band
+  // below — a different sales motion (platform fee + per-family, sold via demo).
+  // Essential is retired: not shown to new visitors, but grandfathered subscribers keep it.
   const plans = [
     {
-      id: 'essential',
-      i18nKey: 'essential',
-      name: t('plans.essential.name'),
-      monthly: PRICING.essential.monthly.perMonth,
-      yearly: PRICING.essential.annual.perMonth,
-      yearlyTotal: PRICING.essential.annual.perYear,
-      promo: t('plans.essential.promo'),
-      description: t('plans.essential.description'),
-      features: t('plans.essential.features', { returnObjects: true }),
-      cta: t('plans.essential.cta'),
+      id: 'free',
+      i18nKey: 'free',
+      isFree: true,
+      name: t('plans.free.name'),
+      priceLabel: t('plans.free.priceLabel'),
+      priceSub: t('plans.free.priceSub'),
+      description: t('plans.free.description'),
+      features: t('plans.free.features', { returnObjects: true }),
+      cta: t('plans.free.cta'),
     },
     {
       id: 'family',
@@ -74,15 +76,6 @@ export default function Pricing() {
       cta: t('plans.family.cta'),
       highlight: true,
       badge: t('plans.family.badge'),
-      promo: t('plans.family.promo'),
-    },
-    {
-      id: 'advisor',
-      i18nKey: 'adviser',
-      name: t('plans.adviser.name'),
-      description: t('plans.adviser.description'),
-      features: t('plans.adviser.features', { returnObjects: true }),
-      cta: t('plans.adviser.cta'),
     },
   ]
 
@@ -162,10 +155,11 @@ export default function Pricing() {
       </section>
 
       <section className="py-20 lg:py-24">
-        <div className="max-w-7xl mx-auto px-6 lg:px-8 grid xl:grid-cols-3 gap-6">
+        <div className="max-w-4xl mx-auto px-6 lg:px-8 grid md:grid-cols-2 gap-6">
           {plans.map((plan, index) => {
-            const isAdvisor = plan.id === 'advisor'
-            const href = isAdvisor ? null : `/get-started?plan=${plan.id}&billing=${annual ? 'yearly' : 'monthly'}`
+            const href = plan.isFree
+              ? '/get-started?plan=free'
+              : `/get-started?plan=${plan.id}&billing=${annual ? 'yearly' : 'monthly'}`
             return (
               <div key={plan.id} className={`reveal reveal-delay-${Math.min(index + 1, 3)} rounded-[2rem] border p-8 flex flex-col ${plan.highlight ? 'border-navy-300 bg-navy-950 text-white shadow-xl shadow-navy-950/10' : 'border-stone-200 bg-white text-navy-950'}`}>
                 {(plan.badge || plan.promo) && (
@@ -178,9 +172,13 @@ export default function Pricing() {
                   <p className={`text-sm font-semibold ${plan.highlight ? 'text-sage-300' : 'text-navy-700'}`}>{plan.name}</p>
                   <p className={`mt-3 text-sm leading-relaxed ${plan.highlight ? 'text-stone-300' : 'text-stone-600'}`}>{plan.description}</p>
                 </div>
-                {isAdvisor ? (
+                {plan.isFree ? (
                   <div className="mt-8">
-                    <p className="text-stone-400 text-xs mb-6">{t('plans.adviser.priceNote')}</p>
+                    <div className="flex items-end gap-2">
+                      <span className="font-display text-5xl font-light">{plan.priceLabel}</span>
+                      <span className={`pb-2 text-sm ${plan.highlight ? 'text-stone-400' : 'text-stone-500'}`}>{plan.priceSub}</span>
+                    </div>
+                    <p className="mt-1.5 text-[11px] text-stone-400">No card required</p>
                   </div>
                 ) : (
                   <div className="mt-8">
@@ -207,30 +205,38 @@ export default function Pricing() {
                     </li>
                   ))}
                 </ul>
-                {isAdvisor ? (
-                  <div className="mt-8">
-                    <Link
-                      to="/book-demo"
-                      className="inline-flex items-center justify-center gap-2 w-full rounded-full px-5 py-3.5 text-sm font-semibold transition-colors bg-navy-800 text-white hover:bg-navy-700"
-                    >
-                      {plan.cta} <ArrowRight size={15} />
-                    </Link>
-                  </div>
-                ) : (
-                  <>
-                    <Link to={href} className="btn-aurora inline-flex items-center justify-center gap-2 mt-8 w-full rounded-full px-5 py-3.5 text-sm font-semibold">
-                      {plan.cta} <ArrowRight size={15} />
-                    </Link>
-                    {plan.id === 'essential' && (
-                      <p className="mt-3 text-center text-xs text-stone-400 leading-relaxed">
-                        {t('plans.essential.upsellNote')}
-                      </p>
-                    )}
-                  </>
+                <Link to={href} className={`inline-flex items-center justify-center gap-2 mt-8 w-full rounded-full px-5 py-3.5 text-sm font-semibold ${plan.isFree && !plan.highlight ? 'border border-navy-200 text-navy-800 hover:bg-navy-50 transition-colors' : 'btn-aurora'}`}>
+                  {plan.cta} <ArrowRight size={15} />
+                </Link>
+                {plan.isFree && (
+                  <p className="mt-3 text-center text-xs text-stone-400 leading-relaxed">
+                    Upgrade to Everstead+ any time — your data comes with you.
+                  </p>
                 )}
               </div>
             )
           })}
+        </div>
+
+        {/* ── EVERSTEAD PRO — advisers (separate sales motion, not a consumer card) ── */}
+        <div className="max-w-4xl mx-auto px-6 lg:px-8 mt-8">
+          <div className="reveal rounded-[2rem] border border-navy-200 bg-navy-950 text-white p-8 sm:flex sm:items-center sm:justify-between gap-8">
+            <div className="max-w-lg">
+              <p className="text-sm font-semibold text-sage-300">{t('plans.adviser.name')}</p>
+              <p className="mt-2 text-stone-300 text-sm leading-relaxed">
+                For solicitors, will-writers, and financial advisers — a co-branded, multi-client
+                workspace. {t('plans.adviser.priceNote')}
+              </p>
+            </div>
+            <div className="mt-5 sm:mt-0 flex flex-col sm:flex-row gap-3 shrink-0">
+              <Link to="/for-advisers" className="inline-flex items-center justify-center gap-2 rounded-full px-5 py-3 text-sm font-semibold border border-white/25 text-white hover:bg-white/10 transition-colors">
+                Learn more
+              </Link>
+              <Link to="/book-demo" className="btn-aurora inline-flex items-center justify-center gap-2 rounded-full px-5 py-3 text-sm font-semibold">
+                {t('plans.adviser.cta')} <ArrowRight size={15} />
+              </Link>
+            </div>
+          </div>
         </div>
 
         {/* ── FR only: prices are TTC, checkout currently charges in GBP ── */}
