@@ -48,6 +48,12 @@ async function handler(req, res) {
   const trialPeriodDays = Math.min(Math.max(parseInt(req.body.trialPeriodDays, 10) || 14, 1), 21)
   if (!email) return res.status(400).json({ error: 'Missing required fields' })
 
+  // The free tier has no Stripe subscription and never needs a card. Refuse here so a
+  // free user can never be given a Stripe customer by an errant resume/checkout call.
+  if (plan === 'free') {
+    return res.status(400).json({ error: 'The free plan does not require payment.' })
+  }
+
   // A resumed customer must be the caller's own.
   if (existingCustomerId) {
     const { data: prof } = await supabase.from('profiles')

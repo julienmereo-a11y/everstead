@@ -505,8 +505,11 @@ export default function Dashboard() {
   }
 
   // New Google OAuth users who signed in via /login and never went through checkout
-  // will have no stripe_customer_id — redirect them to checkout to get a subscription
+  // will have no stripe_customer_id — redirect them to checkout to get a subscription.
+  // Free-tier users legitimately have no subscription and belong on the dashboard, so
+  // they must be excluded (otherwise every free signup is bounced into the card step).
   const hasNoSubscription = !isDemo
+    && activeProfile.plan !== 'free'
     && !activeProfile.stripe_customer_id
     && !['trialing', 'active', 'cancelling'].includes(activeProfile.subscription_status)
 
@@ -4696,6 +4699,9 @@ function SettingsSection({ profile, isDemo, updateProfile, refreshProfile, onUpg
   ]
   const PLAN_TIERS = { free: 0, essential: 1, family: 2, advisor: 3 }
   const currentTier   = PLAN_TIERS[profile.plan] ?? 0
+  // Free users have no Stripe subscription, so billing-portal and cancel actions must
+  // not show for them (they'd hit Stripe with no customer/subscription and error).
+  const isFreeTier    = profile.plan === 'free'
   // Local overrides — set immediately after API calls so the UI doesn't wait on refreshProfile
   const [localSubStatus, setLocalSubStatus] = useState(null)
   const [localCancelAt,  setLocalCancelAt]  = useState(null)
@@ -5212,15 +5218,16 @@ function SettingsSection({ profile, isDemo, updateProfile, refreshProfile, onUpg
                 })}
               </div>
 
-              {/* Manage billing — for paid subscribers */}
-              {!isTrialing && (
+              {/* Manage billing — for paid subscribers only (free users have no billing) */}
+              {!isTrialing && !isFreeTier && (
                 <div className="mt-4 pt-4 border-t border-stone-100">
                   <p className="text-xs text-stone-400 mb-2">Update your payment method or view invoices in the billing portal.</p>
                   <ManageBillingButton />
                 </div>
               )}
 
-              {/* Cancel subscription */}
+              {/* Cancel subscription — hidden for free users (no subscription to cancel) */}
+              {!isFreeTier && (
               <div className="mt-5 pt-4 border-t border-stone-100">
                 {cancelConfirm ? (
                   <div className="bg-stone-50 border border-stone-200 rounded-xl p-5 space-y-3">
@@ -5259,6 +5266,7 @@ function SettingsSection({ profile, isDemo, updateProfile, refreshProfile, onUpg
                   </button>
                 )}
               </div>
+              )}
             </>
           )}
         </div>

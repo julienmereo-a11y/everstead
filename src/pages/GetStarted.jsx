@@ -331,6 +331,10 @@ export default function GetStarted() {
       setSelectedPlan(resumePlan)
       setAnnualBilling(resumeBilling)
 
+      // Free tier has no checkout — a free user resumed here belongs on the dashboard,
+      // never at the card step (this path must not create a Stripe customer for them).
+      if (resumePlan === 'free') { navigate('/dashboard'); return }
+
       // Google OAuth users skip step 2 — collect missing profile fields first
       if (isOAuth && !profile.country) {
         setForm(v => ({

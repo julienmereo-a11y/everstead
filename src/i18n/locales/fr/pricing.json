@@ -17,6 +17,22 @@
     "billingNoteMonthly": "Facturation mensuelle. Passez à la facturation annuelle et économisez {{percent}} %."
   },
   "plans": {
+    "free": {
+      "name": "Everstead",
+      "promo": "",
+      "description": "Commencez et organisez l'essentiel, sans frais. Sans carte, jamais.",
+      "features": [
+        "Configuration guidée complète avec votre assistant IA",
+        "Votre profil « À propos de moi » complet",
+        "1 compte ou actif",
+        "1 document",
+        "1 personne de confiance",
+        "Score de préparation"
+      ],
+      "cta": "Commencer gratuitement",
+      "priceLabel": "Gratuit",
+      "priceSub": "pour toujours"
+    },
     "essential": {
       "name": "Essential",
       "promo": "OFFRE DE LANCEMENT",
@@ -30,10 +46,10 @@
         "Votre assistant IA"
       ],
       "cta": "Commencer",
-      "upsellNote": "Besoin de plus ? Family comprend deux espaces privés — un seul abonnement pour deux personnes."
+      "upsellNote": "Besoin de plus ? Everstead+ comprend deux espaces privés — un seul abonnement pour deux personnes."
     },
     "family": {
-      "name": "Family",
+      "name": "Everstead+",
       "badge": "Le plus populaire",
       "promo": "OFFRE DE LANCEMENT",
       "description": "Pour les couples et les familles — deux espaces privés, une protection partagée.",
@@ -49,10 +65,10 @@
       "cta": "Commencer"
     },
     "adviser": {
-      "name": "Conseiller",
+      "name": "Everstead Pro",
       "description": "Pour les professionnels qui accompagnent leurs clients dans l'organisation de leur patrimoine. Tarif sur demande.",
       "features": [
-        "Tout ce qu'inclut Family",
+        "Tout ce qu'inclut Everstead+",
         "Espace de travail multi-clients",
         "Portail client co-brandé",
         "Outils de collaboration pour conseillers",
@@ -97,7 +113,7 @@
       "description": "Un document. Pas d'instructions, pas de comptes organisés, pas d'accès accordés, aucun moyen pour votre famille de retrouver quoi que ce soit."
     },
     "everstead": {
-      "name": "Everstead Family",
+      "name": "Everstead+",
       "price": "114,88 €/an",
       "description": "Tout est organisé, à jour et partagé — aussi longtemps que vous en avez besoin. Deux espaces privés inclus."
     }
@@ -115,9 +131,9 @@
   },
   "table": {
     "capability": "Fonctionnalité",
-    "essential": "Essential",
-    "family": "Family",
-    "adviser": "Conseiller",
+    "essential": "Gratuit",
+    "family": "Everstead+",
+    "adviser": "Everstead Pro",
     "rows": [
       "Comptes, actifs et coffre à documents",
       "Score de préparation et rappels de révision",
@@ -155,12 +171,12 @@
         "a": "Oui — la facturation annuelle permet d'économiser 20 % sur les deux forfaits par rapport au paiement mensuel. Le tarif réduit s'applique immédiatement et reste garanti pendant toute l'année."
       },
       {
-        "q": "Qu'inclut le forfait Family que le forfait Essential n'inclut pas ?",
-        "a": "Le forfait Family offre à deux personnes leur propre espace privé sous un seul abonnement — chacun conserve ses données personnelles, mais vous pouvez organiser et planifier ensemble. Il fait passer les personnes de confiance de 1 à 10, ajoute le partage d'urgence de votre espace, étend le stockage de 1 Go à 25 Go et inclut un score de préparation pour toute la famille. Voyez-le comme une planification commune avec une confidentialité individuelle."
+        "q": "Qu'inclut le forfait Everstead+ que l'offre gratuite n'inclut pas ?",
+        "a": "Le forfait Everstead+ offre à deux personnes leur propre espace privé sous un seul abonnement — chacun conserve ses données personnelles, mais vous pouvez organiser et planifier ensemble. Il fait passer les personnes de confiance de 1 à 10, ajoute le partage d'urgence de votre espace, étend le stockage de 1 Go à 25 Go et inclut un score de préparation pour toute la famille. Voyez-le comme une planification commune avec une confidentialité individuelle."
       },
       {
-        "q": "À quoi sert le forfait Adviser ?",
-        "a": "Le forfait Adviser est conçu pour les conseillers financiers, les notaires et les autres professionnels qui souhaitent proposer l'organisation successorale comme un service à leurs clients. Il comprend un espace de travail multi-clients, un portail client co-brandé, des outils de collaboration et une assistance prioritaire. Contactez-nous pour discuter d'un déploiement pilote."
+        "q": "À quoi sert le forfait Everstead Pro ?",
+        "a": "Le forfait Everstead Pro est conçu pour les conseillers financiers, les notaires et les autres professionnels qui souhaitent proposer l'organisation successorale comme un service à leurs clients. Il comprend un espace de travail multi-clients, un portail client co-brandé, des outils de collaboration et une assistance prioritaire. Contactez-nous pour discuter d'un déploiement pilote."
       },
       {
         "q": "Everstead est-il un service juridique ?",
