@@ -849,29 +849,8 @@ export default function GetStarted() {
                 })}
               </div>
 
-              {/* Everstead Pro — advisers: a separate sales motion, presented as its own
-                  band below the two consumer cards (mirrors /pricing), never a selectable
-                  self-serve option. */}
-              <div className="max-w-2xl mx-auto mb-8">
-                <div className="rounded-2xl border border-navy-200 bg-navy-950 text-white p-6 sm:flex sm:items-center sm:justify-between gap-6">
-                  <div className="sm:max-w-sm">
-                    <p className="text-sm font-semibold text-sage-300">Everstead Pro</p>
-                    <p className="mt-1.5 text-stone-300 text-xs leading-relaxed">
-                      For solicitors, will-writers, and financial advisers — a co-branded, multi-client workspace. Pricing on application.
-                    </p>
-                  </div>
-                  <div className="mt-4 sm:mt-0 flex flex-col sm:flex-row gap-3 shrink-0">
-                    <Link to="/for-advisers" className="inline-flex items-center justify-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold border border-white/25 text-white hover:bg-white/10 transition-colors">
-                      Learn more
-                    </Link>
-                    <Link to="/book-demo" className="btn-aurora inline-flex items-center justify-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold">
-                      Book a demo <ArrowRight size={15} />
-                    </Link>
-                  </div>
-                </div>
-              </div>
-
-              {/* Continue with the selected consumer plan */}
+              {/* Continue with the selected consumer plan — primary action, so it sits
+                  directly under the two cards, above the Everstead Pro band. */}
               <div className="text-center mt-6">
                 <button
                   onClick={() => setStep(clientSecret ? 3 : 2)}
@@ -889,6 +868,28 @@ export default function GetStarted() {
                     ? 'Your first year is free · Cancel any time and pay nothing'
                     : `${trialDays}-day free trial · Cancel before it ends and pay nothing`}
                 </p>
+              </div>
+
+              {/* Everstead Pro — advisers: a separate sales motion, shown as its own band
+                  below the consumer cards + primary CTA (mirrors /pricing), never a
+                  selectable self-serve option. */}
+              <div className="max-w-2xl mx-auto mt-12">
+                <div className="rounded-2xl border border-navy-200 bg-navy-950 text-white p-6 sm:flex sm:items-center sm:justify-between gap-6">
+                  <div className="sm:max-w-sm">
+                    <p className="text-sm font-semibold text-sage-300">Everstead Pro</p>
+                    <p className="mt-1.5 text-stone-300 text-xs leading-relaxed">
+                      For solicitors, will-writers, and financial advisers — a co-branded, multi-client workspace. Pricing on application.
+                    </p>
+                  </div>
+                  <div className="mt-4 sm:mt-0 flex flex-col sm:flex-row gap-3 shrink-0">
+                    <Link to="/for-advisers" className="inline-flex items-center justify-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold border border-white/25 text-white hover:bg-white/10 transition-colors">
+                      Learn more
+                    </Link>
+                    <Link to="/book-demo" className="btn-aurora inline-flex items-center justify-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold">
+                      Book a demo <ArrowRight size={15} />
+                    </Link>
+                  </div>
+                </div>
               </div>
             </div>
           )}
