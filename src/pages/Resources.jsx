@@ -2458,6 +2458,14 @@ function articleDateIso(d) {
   return m && MONTHS[m[1].toLowerCase()] ? `${m[2]}-${MONTHS[m[1].toLowerCase()]}-01` : undefined
 }
 
+// Numeric sort key (YYYYMM) for ordering posts newest-first. Undated posts — e.g.
+// 'Updated 2026' guides/checklists and null-dated FAQs — return 0, so a stable sort
+// leaves them in their authored order while dated blog posts sort by date.
+function articleSortKey(d) {
+  const iso = articleDateIso(d)
+  return iso ? Number(iso.slice(0, 4) + iso.slice(5, 7)) : 0
+}
+
 function ArticleDetail({ sectionSlug, postSlug }) {
   useReveal()
   const sectionData = sections[sectionSlug]
@@ -2668,7 +2676,9 @@ function ResourceSection({ slug }) {
   const data = sections[slug]
   useReveal()
   if (!data) return <div className="py-40 text-center text-stone-500">Section not found.</div>
-  const { label, icon: SectionIcon, desc, posts } = data
+  const { label, icon: SectionIcon, desc } = data
+  // Newest first. Stable sort keeps undated posts (guides/FAQs) in authored order.
+  const posts = [...data.posts].sort((a, b) => articleSortKey(b.date) - articleSortKey(a.date))
   return (
     <div className="bg-stone-50 pt-24">
       <Helmet>
