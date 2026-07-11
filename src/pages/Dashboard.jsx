@@ -1928,7 +1928,7 @@ function DocumentsSection({ documents, loading, uploadFile, update, remove, plan
             setForm(p => ({
               ...p,
               name: ex.documentName || p.name,
-              doc_type: ex.documentType ? capitaliseFirst(ex.documentType.replace(/_/g, ' ')) : p.doc_type,
+              doc_type: ex.documentType ? normaliseDocType(ex.documentType.replace(/_/g, ' ')) : p.doc_type,
               expires_at: ex.expiryDate || p.expires_at,
               notes: extraLines ? (p.notes ? p.notes + '\n' + extraLines : extraLines) : p.notes,
             }))
@@ -1998,7 +1998,9 @@ function DocumentsSection({ documents, loading, uploadFile, update, remove, plan
     setSaving(true)
     setFormError(null)
     try {
-      await uploadFile(form, file)
+      // Clamp doc_type to an allowed value (defence in depth — the AI scan or a stale
+      // form value could otherwise send a type the CHECK constraint rejects).
+      await uploadFile({ ...form, doc_type: normaliseDocType(form.doc_type) }, file)
       // Life event prompt — will and LPA uploads are key estate planning moments
       const lowerType = form.doc_type?.toLowerCase() ?? ''
       if (lowerType.includes('will')) {
@@ -2044,7 +2046,7 @@ function DocumentsSection({ documents, loading, uploadFile, update, remove, plan
     try {
       await update(editingDocument.id, {
         name: form.name,
-        doc_type: form.doc_type,
+        doc_type: normaliseDocType(form.doc_type),
         status: form.status,
         expires_at: form.expires_at || null,
         notes: form.notes,
@@ -5755,6 +5757,28 @@ const input       = 'w-full border border-stone-200 rounded-lg px-3 py-2 text-sm
 const primaryBtn  = 'inline-flex items-center gap-2 btn-aurora text-white text-sm font-medium px-4 py-2 rounded-full hover:bg-navy-700 transition-colors'
 const secondaryBtn= 'inline-flex items-center gap-2 bg-white text-stone-700 text-sm font-medium px-4 py-2 rounded-full border border-stone-200 hover:bg-stone-50 transition-colors'
 const capitaliseFirst = (s) => s ? s.charAt(0).toUpperCase() + s.slice(1) : s
+
+// The documents.doc_type CHECK constraint only permits these seven values (keep this
+// list in step with the DB constraint and the Type dropdown).
+const DOC_TYPES = ['Legal', 'Finance', 'Insurance', 'Property', 'Personal', 'Medical', 'Other']
+
+// Map a free-form document type — e.g. a value the AI document scan extracts
+// ("pension_transfer", "questionnaire", "financial") — onto one of DOC_TYPES. Anything
+// unrecognised falls back to 'Other'. Without this, an AI-set doc_type that isn't in the
+// list silently fails to match the dropdown AND is rejected by the CHECK constraint on save.
+const normaliseDocType = (raw) => {
+  if (!raw) return 'Other'
+  const s = String(raw).toLowerCase().trim()
+  const exact = DOC_TYPES.find(t => t.toLowerCase() === s)
+  if (exact) return exact
+  if (/legal|will|testament|lpa|attorney|probate|deed of|contract|agreement|questionnaire|transfer/.test(s)) return 'Legal'
+  if (/financ|bank|pension|invest|isa|savings|statement|tax|payslip/.test(s)) return 'Finance'
+  if (/insur|policy|annuity/.test(s)) return 'Insurance'
+  if (/propert|title|land regist|lease|mortgage/.test(s)) return 'Property'
+  if (/medic|health|prescription|nhs|hospital|doctor/.test(s)) return 'Medical'
+  if (/passport|licen|identity|birth|marriage|personal/.test(s)) return 'Personal'
+  return 'Other'
+}
 
 // ── First-run tour: a short, warm walk through the real dashboard ─────────────
 const TOUR_STEPS = [
