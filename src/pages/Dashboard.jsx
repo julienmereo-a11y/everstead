@@ -819,7 +819,7 @@ export default function Dashboard() {
             onAddPayment={() => handleUpgrade()}
           />
         )}
-        {activeSection === 'overview'      && <OverviewSection  profile={activeProfile} accounts={accounts} documents={documents} people={people} instructions={instructions} messages={messages} alerts={alerts} markRead={markRead} onNavigate={setActiveSection} planLimits={planLimits} loading={loadingAccounts || loadingDocs} daysSinceLogin={daysSinceLogin} onCelebrate={celebrate} onExecutorPreview={() => setShowExecutorPreview(true)} aboutMe={aboutMe} />}
+        {activeSection === 'overview'      && <OverviewSection  profile={activeProfile} accounts={accounts} documents={documents} people={people} instructions={instructions} messages={messages} alerts={alerts} markRead={markRead} onNavigate={setActiveSection} planLimits={planLimits} loading={loadingAccounts || loadingDocs} daysSinceLogin={daysSinceLogin} onCelebrate={celebrate} onExecutorPreview={() => setShowExecutorPreview(true)} aboutMe={aboutMe} onUpgrade={() => handleUpgrade('family', 'yearly')} />}
         {activeSection === 'accounts'      && <AccountsSection  accounts={accounts} loading={loadingAccounts} add={addAccount} update={updateAccount} remove={removeAccount} profile={activeProfile} onUpgrade={() => handleUpgrade('family', 'yearly')} onLifeEvent={isDemo ? undefined : setLifeEventPrompt} />}
         {activeSection === 'documents'     && <DocumentsSection documents={documents} loading={loadingDocs} uploadFile={uploadFile} update={updateDocument} remove={removeDocument} planLimits={planLimits} profile={activeProfile} onUpgrade={() => handleUpgrade('family', 'yearly')} updateProfile={isDemo ? undefined : updateProfile} addAlert={isDemo ? undefined : realAlerts.add} onLifeEvent={isDemo ? undefined : setLifeEventPrompt} people={people} />}
         {activeSection === 'people'        && <PeopleSection    people={people} loading={loadingPeople} invite={invite} resendInvite={resendInvite} updatePerson={updatePerson} removePerson={removePerson} planLimits={planLimits} profile={activeProfile} onUpgrade={() => handleUpgrade('family', 'yearly')} />}
@@ -1088,7 +1088,7 @@ const PLAN_BADGE = {
   advisor:   { label: PLAN_LABELS.advisor,   cls: 'bg-sage-50  text-sage-700  border-sage-200'  },
 }
 
-function OverviewSection({ profile, accounts, documents, people, instructions, messages, alerts, markRead, onNavigate, planLimits, loading, daysSinceLogin, onCelebrate, onExecutorPreview, aboutMe }) {
+function OverviewSection({ profile, accounts, documents, people, instructions, messages, alerts, markRead, onNavigate, planLimits, loading, daysSinceLogin, onCelebrate, onExecutorPreview, aboutMe, onUpgrade }) {
   const criticalAlerts = alerts.filter(a => a.severity === 'critical' && !a.is_read)
   const [staleBannerDismissed, setStaleBannerDismissed] = React.useState(false)
   const showStaleBanner = !staleBannerDismissed && daysSinceLogin !== null && daysSinceLogin >= 180
@@ -1503,9 +1503,32 @@ function OverviewSection({ profile, accounts, documents, people, instructions, m
         </div>
       </div>
 
-      {/* ── Referral nudge ── */}
+      {/* ── Free users: nudge to upgrade instead of the referral trial offer.
+             Paid users: the refer-a-friend (extended trial) card. ── */}
       <div className="mt-6">
-        <ReferralCard userId={profile?.id} />
+        {profile?.plan === 'free' ? (
+          <div className="rounded-2xl border border-navy-200 bg-navy-950 text-white p-6 sm:flex sm:items-center sm:justify-between gap-6">
+            <div className="flex items-start gap-4">
+              <div className="w-11 h-11 rounded-xl bg-white/10 flex items-center justify-center shrink-0">
+                <Sparkles size={18} className="text-sage-300" />
+              </div>
+              <div className="max-w-lg">
+                <p className="font-semibold text-white text-base">Ready for more? Upgrade to Everstead+</p>
+                <p className="mt-1 text-sm text-stone-300 leading-relaxed">
+                  Unlimited accounts &amp; documents, up to 10 trusted contacts, two private vaults, Personal Messages, and 25 GB of secure storage — everything you've set up comes with you.
+                </p>
+              </div>
+            </div>
+            <button
+              onClick={onUpgrade}
+              className="mt-4 sm:mt-0 shrink-0 inline-flex items-center justify-center gap-2 btn-aurora text-white font-semibold text-sm px-6 py-3 rounded-full hover:-translate-y-0.5 transition-transform"
+            >
+              Upgrade to Everstead+ <ArrowRight size={15} />
+            </button>
+          </div>
+        ) : (
+          <ReferralCard userId={profile?.id} />
+        )}
       </div>
     </div>
   )
@@ -5302,16 +5325,20 @@ function SettingsSection({ profile, isDemo, updateProfile, refreshProfile, onUpg
           )}
         </div>
 
-        {/* ── Refer a friend ── */}
-        <div className="bg-white border border-stone-200 rounded-2xl p-6">
-          <h2 className="font-semibold text-navy-950 text-sm mb-1 flex items-center gap-2">
-            <Gift size={15} className="text-sage-600" /> Refer a friend
-          </h2>
-          <p className="text-xs text-stone-400 mb-4">
-            Share your unique link — your friend gets a <span className="font-semibold text-navy-700">21-day free trial</span> instead of 14 days. Estate planning is a team effort.
-          </p>
-          <ReferralLinkBox referralCode={profile.referral_code || profile.id} />
-        </div>
+        {/* ── Refer a friend — the extended-trial referral only makes sense once you're
+               on a paid plan, so it's hidden for free users (who see the upgrade cards
+               above instead). ── */}
+        {!isFreeTier && (
+          <div className="bg-white border border-stone-200 rounded-2xl p-6">
+            <h2 className="font-semibold text-navy-950 text-sm mb-1 flex items-center gap-2">
+              <Gift size={15} className="text-sage-600" /> Refer a friend
+            </h2>
+            <p className="text-xs text-stone-400 mb-4">
+              Share your unique link — your friend gets a <span className="font-semibold text-navy-700">21-day free trial</span> instead of 14 days. Estate planning is a team effort.
+            </p>
+            <ReferralLinkBox referralCode={profile.referral_code || profile.id} />
+          </div>
+        )}
 
         {/* ── AI features ── */}
         <div className="bg-white border border-stone-200 rounded-2xl p-6">
