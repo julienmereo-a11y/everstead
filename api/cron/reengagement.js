@@ -36,13 +36,15 @@ async function handler(req, res) {
   const sevenDaysAgo      = new Date(now.getTime() - 7  * 86_400_000).toISOString()
   const fourteenDaysAgo   = new Date(now.getTime() - 14 * 86_400_000).toISOString()
 
-  // Fetch candidates: trialing/active users, signed up 7+ days ago,
-  // not nudged yet or last nudge was 14+ days ago
+  // Fetch candidates: free-tier users (no subscription) plus trialing/active paid
+  // users, signed up 7+ days ago, not nudged yet or last nudge was 14+ days ago.
+  // Free users are the activation target, so they must be nudged too — they have
+  // no stripe_subscription_id and a null subscription_status, so both are matched
+  // via plan='free' rather than the paid-status filter.
   const { data: candidates, error } = await supabase
     .from('profiles')
     .select('id, full_name, email, plan, notify_reengagement, notify_vault_nudges')
-    .not('stripe_subscription_id', 'is', null)
-    .in('subscription_status', ['trialing', 'active'])
+    .or('subscription_status.in.(trialing,active),plan.eq.free')
     .neq('role', 'delegate')
     .not('email', 'is', null)
     .lte('created_at', sevenDaysAgo)
@@ -189,7 +191,7 @@ function nudgeHtml(name, plan, hasAccounts, hasContacts, hasDocuments, userId) {
             ${first}, your plan is almost ready.
           </h1>
           <p style="margin:0 0 16px;color:#4a5568;font-size:16px;line-height:1.7;">
-            You signed up for Everstead's <strong>${planName}</strong> plan — great first step. A few things left to make your estate plan genuinely useful if something unexpected happens:
+            You started your <strong>${planName}</strong> plan — great first step. A few things left to make your estate plan genuinely useful if something unexpected happens:
           </p>
           <table cellpadding="0" cellspacing="0" style="margin:24px 0 32px;width:100%;background:#f9f8f6;border-radius:10px;padding:8px;">
             ${checklistRows}

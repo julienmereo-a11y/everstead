@@ -42,7 +42,8 @@ async function handler(req, res) {
   const { data: candidates, error } = await supabase
     .from('profiles')
     .select('id, full_name, email, plan, notify_annual_review')
-    .in('subscription_status', ['trialing', 'active'])
+    // Include free-tier users (null status) alongside trialing/active paid users.
+    .or('subscription_status.in.(trialing,active),plan.eq.free')
     .neq('role', 'delegate')
     .not('email', 'is', null)
     .gte('created_at', windowStart)
