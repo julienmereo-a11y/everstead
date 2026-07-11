@@ -37,9 +37,18 @@ const PLAN_OPTIONS = [
     id: 'family',
     name: 'Everstead+',
     monthly: PRICING.family.monthly.perMonth, yearly: PRICING.family.annual.perMonth,
-    desc: 'For couples and households planning together.',
-    features: ['Two private vaults — one subscription', 'Each person keeps their own private data', 'Unlimited accounts & documents', '10 trusted contacts', '25 GB storage'],
+    desc: 'For couples and households — two private vaults, one subscription, shared protection.',
+    features: [
+      'Two private vaults — one subscription',
+      'Unlimited accounts & documents',
+      'Up to 10 trusted contacts',
+      'Unlimited instructions & wishes',
+      'Personal messages & final wishes',
+      '25 GB secure storage',
+      'Your AI Assistant',
+    ],
     badge: 'Most popular',
+    highlight: true, // rendered as the dark, featured card (mirrors /pricing)
   },
   // Everstead Pro (advisers) is intentionally NOT a self-serve option — it's sold via
   // demo and presented as its own band below the two consumer cards (mirrors /pricing).
@@ -766,55 +775,72 @@ export default function GetStarted() {
                     key={plan.id}
                     disabled={locked}
                     onClick={() => { if (locked) return; setSelectedPlan(plan.id) }}
-                    className={`text-left rounded-2xl border-2 p-6 transition-all ${
+                    className={`relative text-left rounded-[2rem] border p-7 flex flex-col transition-all ${
+                      plan.highlight
+                        ? 'border-navy-300 bg-navy-950 text-white shadow-xl shadow-navy-950/10'
+                        : 'border-stone-200 bg-white text-navy-950 hover:border-navy-300'
+                    } ${
                       selectedPlan === plan.id
-                        ? 'border-navy-700 bg-navy-50 ring-2 ring-navy-200'
-                        : 'border-stone-200 bg-white hover:border-navy-300'
+                        ? (plan.highlight ? 'ring-2 ring-sage-400' : 'ring-2 ring-navy-300')
+                        : ''
                     } ${locked ? 'opacity-40 cursor-not-allowed pointer-events-none' : ''}`}
                   >
+                    {/* selection indicator */}
+                    <div className={`absolute top-6 right-6 w-5 h-5 rounded-full border-2 flex-shrink-0 flex items-center justify-center transition-all ${
+                      selectedPlan === plan.id
+                        ? (plan.highlight ? 'border-sage-300 bg-sage-300' : 'border-navy-700 bg-navy-700')
+                        : (plan.highlight ? 'border-white/30' : 'border-stone-300')
+                    }`}>
+                      {selectedPlan === plan.id && <div className={`w-2 h-2 rounded-full ${plan.highlight ? 'bg-navy-950' : 'bg-white'}`} />}
+                    </div>
+
                     {(plan.badge || plan.promo) && (
-                      <div className="flex items-center gap-2 flex-wrap mb-3">
+                      <div className="flex items-center gap-2 flex-wrap mb-4">
                         {plan.badge && (
-                          <div className="inline-flex items-center gap-1 bg-sage-500 text-white text-xs font-semibold px-2.5 py-0.5 rounded-full">
+                          <span className="inline-flex items-center gap-1 bg-sage-500 text-white text-xs font-semibold px-3 py-1 rounded-full">
                             <Star size={10} />{plan.badge}
-                          </div>
+                          </span>
                         )}
                         {plan.promo && (
-                          <div className="inline-flex items-center gap-1 bg-amber-400 text-amber-950 text-xs font-semibold px-2.5 py-0.5 rounded-full">
+                          <span className="inline-block bg-amber-400 text-amber-950 text-xs font-semibold px-3 py-1 rounded-full">
                             Launch offer
-                          </div>
+                          </span>
                         )}
                       </div>
                     )}
-                    <div className="flex items-start justify-between gap-2 mb-3">
-                      <h3 className="font-semibold text-navy-900">{plan.name}</h3>
-                      <div className={`w-5 h-5 rounded-full border-2 flex-shrink-0 mt-0.5 flex items-center justify-center transition-all ${
-                        selectedPlan === plan.id ? 'border-navy-700 bg-navy-700' : 'border-stone-300'
-                      }`}>
-                        {selectedPlan === plan.id && <div className="w-2 h-2 rounded-full bg-white" />}
-                      </div>
-                    </div>
-                    <p className="text-stone-500 text-xs mb-4 leading-relaxed">{plan.desc}</p>
-                    <div className="mb-5">
+
+                    <p className={`text-sm font-semibold ${plan.highlight ? 'text-sage-300' : 'text-navy-700'}`}>{plan.name}</p>
+                    <p className={`mt-2 text-sm leading-relaxed pr-6 ${plan.highlight ? 'text-stone-300' : 'text-stone-600'}`}>{plan.desc}</p>
+
+                    <div className="mt-6">
                       {plan.isFree ? (
                         <>
-                          <span className="font-display text-2xl font-light text-navy-950">Free</span>
-                          <span className="text-xs text-stone-400 ml-1.5">forever · no card</span>
+                          <div className="flex items-end gap-2">
+                            <span className="font-display text-4xl font-light">Free</span>
+                            <span className={`pb-1.5 text-sm ${plan.highlight ? 'text-stone-400' : 'text-stone-500'}`}>forever</span>
+                          </div>
+                          <p className="mt-1.5 text-[11px] text-stone-400">No card required</p>
                         </>
                       ) : (
                         <>
-                          <span className="font-display text-2xl font-light text-navy-950">
-                            £{annualBilling ? plan.yearly : plan.monthly}
-                          </span>
-                          <span className="text-xs text-stone-400 ml-1.5">/mo · {annualBilling ? 'billed annually (save 20%)' : 'billed monthly'}</span>
+                          <div className="flex items-end gap-2">
+                            <span className="font-display text-4xl font-light">£{annualBilling ? plan.yearly : plan.monthly}</span>
+                            <span className={`pb-1.5 text-sm ${plan.highlight ? 'text-stone-400' : 'text-stone-500'}`}>/ month</span>
+                          </div>
+                          <p className="mt-1.5 text-[11px] text-stone-400">
+                            {annualBilling
+                              ? `billed annually (£${PRICING.family.annual.perYear.toFixed(2)}/year) · Save 20%`
+                              : 'billed monthly'}
+                          </p>
                         </>
                       )}
                     </div>
-                    <ul className="space-y-1.5">
+
+                    <ul className="mt-6 space-y-2.5 flex-1">
                       {plan.features.map(f => (
-                        <li key={f} className="flex items-center gap-2 text-xs text-stone-600">
-                          <CheckCircle2 size={12} className="text-sage-500 flex-shrink-0" />
-                          {f}
+                        <li key={f} className="flex items-start gap-2.5 text-sm leading-relaxed">
+                          <CheckCircle2 size={15} className={`mt-0.5 flex-shrink-0 ${plan.highlight ? 'text-sage-300' : 'text-sage-600'}`} />
+                          <span className={plan.highlight ? 'text-stone-200' : 'text-stone-600'}>{f}</span>
                         </li>
                       ))}
                     </ul>
