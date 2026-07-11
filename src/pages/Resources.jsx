@@ -15,6 +15,213 @@ const sections = {
     desc: 'Practical guidance on estate planning, family organisation, and digital life management.',
     posts: [
       {
+        slug: 'what-happens-to-your-pension-when-you-die',
+        title: 'What happens to your pension when you die in the UK?',
+        date: 'July 2026',
+        tag: 'Estate planning',
+        desc: 'For many people a pension is their single biggest asset — yet it works nothing like the rest of your estate. A plain-language guide to workplace vs personal pensions, the expression-of-wish form that decides who inherits, death benefits, and how pensions are taxed on death.',
+        readTime: '10 min read',
+        body: [
+          {
+            type: 'intro',
+            text: "For many people, a pension is the single largest asset they own — often worth more than their home. Yet what happens to it when you die is one of the least understood parts of estate planning. Pensions don't work like the rest of your estate: in most cases they aren't covered by your will, they can pass to your family without the delays of probate, and — crucially — who receives them can come down to a single form you may have filled in years ago and forgotten. This guide explains what happens to UK pensions on death, the different rules for workplace and personal pensions, and the one step that matters more than any other.",
+          },
+          {
+            type: 'toc',
+            items: [
+              "Why pensions don't follow your will",
+              "The most important form you'll ever fill in",
+              "Defined contribution ('pot') pensions",
+              "Defined benefit ('final salary') pensions",
+              'The State Pension when you die',
+              'How pensions are taxed on death',
+              'The 2027 inheritance tax change',
+              'What your family needs to do',
+              'Practical checklist',
+              'How to protect your own family',
+            ],
+          },
+          {
+            type: 'heading',
+            text: "Why pensions don't follow your will",
+          },
+          {
+            type: 'text',
+            text: "Most pensions are held in a trust, kept separate from your personal estate. That has two big consequences. First, they usually pass outside your will — you can't simply 'leave your pension' to someone in your will the way you would a house or a bank account. Second, because they sit in trust, they normally fall outside the estate for probate, so the money can reach your beneficiaries faster and, historically, without inheritance tax. Instead of your will, it is the scheme's trustees or provider who decide who receives the money — guided by the nomination you have made.",
+          },
+          {
+            type: 'note',
+            text: "This is why keeping your pension nomination up to date can matter more than almost anything in your will. If your circumstances have changed — a divorce, a new partner, a new child — but your nomination has not, the money could go to the wrong person.",
+          },
+          {
+            type: 'heading',
+            text: "The most important form you'll ever fill in",
+          },
+          {
+            type: 'subheading',
+            text: "The 'expression of wish' (nomination) form",
+          },
+          {
+            type: 'text',
+            text: "Every workplace and personal pension lets you name who you would like to receive the money if you die. It goes by different names — an 'expression of wish', a 'nomination', or a 'beneficiary nomination' — but it does the same job: it tells the scheme's trustees who you want the benefits to go to. Nest, the workplace scheme millions of UK employees are enrolled in, calls this an 'expression of wish', and you complete it in your online Nest account.",
+          },
+          {
+            type: 'text',
+            text: "An expression of wish is not legally binding — the trustees make the final decision, which is part of what keeps the pension outside your estate for tax. But in practice trustees follow a valid, up-to-date nomination in the great majority of cases. Without one, they have to investigate who your dependants are, which causes delay and can lead to an outcome you would not have chosen.",
+          },
+          {
+            type: 'note',
+            text: "Check and update your nomination whenever your life changes — marriage, divorce, a new partner, a new child, or a new job (a new employer usually means a new pension, with its own nomination to complete).",
+          },
+          {
+            type: 'heading',
+            text: "Defined contribution ('pot') pensions",
+          },
+          {
+            type: 'text',
+            text: "A defined contribution (DC) pension — the most common type today, including Nest, personal pensions, and SIPPs — is a pot of money built up from your and your employer's contributions. When you die, whatever is left in the pot can be passed on.",
+          },
+          {
+            type: 'text',
+            text: "Your beneficiaries usually have options: take it as a lump sum, keep it invested and draw an income (beneficiary drawdown), or use it to buy an annuity. If you die before age 75, these benefits are typically paid tax-free, within the available allowance. If you die at 75 or older, they are taxed as income at the beneficiary's own tax rate. We cover this in more detail below.",
+          },
+          {
+            type: 'text',
+            text: "Because the money can be passed on and even kept within a pension, a DC pension can be one of the most tax-efficient ways to pass wealth to the next generation — one reason advisers often suggest drawing on other savings first.",
+          },
+          {
+            type: 'heading',
+            text: "Defined benefit ('final salary') pensions",
+          },
+          {
+            type: 'text',
+            text: "A defined benefit (DB) pension — sometimes called 'final salary' or 'career average' — promises a set income for life rather than a pot of money. What happens on death depends on the scheme's rules, but typically includes some or all of the following.",
+          },
+          {
+            type: 'list',
+            heading: 'Common defined benefit death benefits:',
+            items: [
+              "A survivor's pension — an ongoing income for a spouse, civil partner, or sometimes a dependent child, usually a percentage (often around half) of your pension",
+              'A lump sum if you die within a guarantee period after retiring (commonly five years)',
+              "A 'death in service' lump sum if you die while still employed and paying in — often two to four times your salary",
+            ],
+          },
+          {
+            type: 'text',
+            text: "DB benefits are set by the scheme rather than by how much is 'left', so there is less flexibility than a DC pot — but a spouse's pension can be valuable lifelong security. Contact the scheme administrator to confirm exactly what is payable.",
+          },
+          {
+            type: 'heading',
+            text: 'The State Pension when you die',
+          },
+          {
+            type: 'text',
+            text: "The State Pension stops when you die — it cannot be inherited as a pot. But there are a few things a surviving spouse or civil partner should know.",
+          },
+          {
+            type: 'list',
+            heading: 'State Pension and bereavement:',
+            items: [
+              'Depending on when you both reached State Pension age, a spouse or civil partner may be able to inherit part of an Additional State Pension or a protected payment',
+              'If you are under State Pension age when your spouse or civil partner dies, you may qualify for Bereavement Support Payment (a lump sum plus monthly payments, subject to the conditions)',
+              "Report the death to the Pension Service — the government's Tell Us Once service can notify most departments, including DWP and HMRC, in one step",
+            ],
+          },
+          {
+            type: 'note',
+            text: "The rules for inheriting State Pension are complex and depend on dates and National Insurance records. Check your specific position on gov.uk or with the Pension Service.",
+          },
+          {
+            type: 'heading',
+            text: 'How pensions are taxed on death',
+          },
+          {
+            type: 'subheading',
+            text: 'The age-75 rule',
+          },
+          {
+            type: 'text',
+            text: "For defined contribution pensions, the key factor is your age at death:",
+          },
+          {
+            type: 'list',
+            heading: 'The broad rule:',
+            items: [
+              'Die before age 75 — benefits are usually paid free of income tax, whether taken as a lump sum or as income, provided they are within the available allowance and paid out within two years',
+              "Die at 75 or older — benefits are taxed as income at the beneficiary's marginal rate, so the tax depends on their other income in the year they take it",
+            ],
+          },
+          {
+            type: 'text',
+            text: "There is also an overall allowance on tax-free lump sum death benefits — the Lump Sum and Death Benefit Allowance, £1,073,100 for most people in 2026. Amounts above it can be taxed. Annuities and defined benefit pensions have their own rules.",
+          },
+          {
+            type: 'note',
+            text: "Tax rules change frequently and depend on personal circumstances. Treat the above as a general guide, not advice — confirm the current position on gov.uk or speak to a financial adviser or the pension scheme.",
+          },
+          {
+            type: 'heading',
+            text: 'The 2027 inheritance tax change',
+          },
+          {
+            type: 'text',
+            text: "Pensions have long sat outside your estate for inheritance tax (IHT) — one of the main reasons they are such a tax-efficient way to pass on money. That is changing. From 6 April 2027, the government plans to bring most unused pension funds and death benefits into the estate for IHT purposes.",
+          },
+          {
+            type: 'text',
+            text: "If that goes ahead as announced, larger pension pots could face IHT — currently 40% above the available threshold — in addition to any income tax. The detail is still being finalised, so if pensions form a large part of your estate, it is worth reviewing your plans and taking advice before the change takes effect.",
+          },
+          {
+            type: 'note',
+            text: "This is an announced change due to take effect from April 2027, and the detail may still be refined. Confirm the current rules before making any decisions.",
+          },
+          {
+            type: 'heading',
+            text: 'What your family needs to do',
+          },
+          {
+            type: 'text',
+            text: "When someone dies, their pensions are not always obvious — especially old workplace pensions from jobs held decades ago. The practical steps are below.",
+          },
+          {
+            type: 'list',
+            heading: 'Dealing with pensions after a death:',
+            items: [
+              'Identify every pension — check payslips, old employers, bank statements for pension contributions, and any pension paperwork or online accounts',
+              "Contact each scheme or provider's bereavement team and tell them of the death",
+              'Provide a certified copy of the death certificate and proof of your identity and relationship',
+              'Ask each scheme what benefits are payable and whether a nomination is on file',
+              "Use the government's free Pension Tracing Service to find lost or forgotten schemes by former employer",
+            ],
+          },
+          {
+            type: 'text',
+            text: "Because defined contribution death benefits are usually best claimed within two years to preserve their tax treatment, it helps to act reasonably promptly once you know a pension exists.",
+          },
+          {
+            type: 'heading',
+            text: 'How to protect your own family',
+          },
+          {
+            type: 'text',
+            text: "Two simple actions make an enormous difference. The first is keeping your expression of wish or nomination up to date on every pension you hold — it is free, takes minutes online, and decides who inherits. The second is making sure your family actually knows the pensions exist.",
+          },
+          {
+            type: 'text',
+            text: "Old workplace pensions are among the most commonly lost assets in the UK — billions of pounds sit unclaimed simply because families do not know where to look. A short, up-to-date list of every pension you hold — the provider, roughly what it is worth, and where the paperwork or login lives — stored somewhere your trusted people can reach removes that risk entirely. It does not require a solicitor or a formal document. It requires only that you write it down and share it with someone you trust.",
+          },
+          {
+            type: 'related',
+            heading: 'Related reading',
+            links: [
+              { label: 'What happens to bank accounts when you die in the UK?', href: '/resources/blog/what-happens-to-bank-accounts-when-you-die' },
+              { label: "Building your family's financial inventory", href: '/resources/blog/building-financial-inventory' },
+              { label: 'Where to keep important documents so your family can find them', href: '/resources/blog/where-to-keep-important-documents' },
+            ],
+          },
+        ],
+      },
+      {
         slug: 'what-happens-to-bank-accounts-when-you-die',
         title: 'What happens to bank accounts when you die in the UK?',
         date: 'May 2026',
