@@ -1738,8 +1738,32 @@ function AccountsSection({ accounts, loading, add, update, remove, profile, onUp
 // DOCUMENT VIEWER MODAL (owner dashboard)
 // ─────────────────────────────────────────────────────────────
 function OwnerDocViewerModal({ doc, onClose }) {
+  // Uploaded files live in the private `documents` storage bucket, referenced by
+  // storage_path (there is no file_url column). Resolve a short-lived signed URL to
+  // preview/download; fall back to file_url if a row ever carries a public one.
+  const [url, setUrl]         = useState(doc?.file_url || null)
+  const [loading, setLoading] = useState(!doc?.file_url && !!doc?.storage_path)
+
+  useEffect(() => {
+    let active = true
+    if (doc?.file_url)      { setUrl(doc.file_url); setLoading(false); return () => { active = false } }
+    if (!doc?.storage_path) { setUrl(null);         setLoading(false); return () => { active = false } }
+    setLoading(true)
+    ;(async () => {
+      try {
+        const { getDocumentUrl } = await import('../lib/supabase')
+        const signed = await getDocumentUrl(doc.storage_path)
+        if (active) setUrl(signed || null)
+      } catch {
+        if (active) setUrl(null)
+      } finally {
+        if (active) setLoading(false)
+      }
+    })()
+    return () => { active = false }
+  }, [doc?.id, doc?.storage_path, doc?.file_url])
+
   if (!doc) return null
-  const url = doc.file_url || null
   return (
     <div className="fixed inset-0 z-[60] bg-black/60 backdrop-blur-sm flex items-center justify-center p-4" onClick={onClose}>
       <div
@@ -1778,6 +1802,11 @@ function OwnerDocViewerModal({ doc, onClose }) {
         <div className="flex-1 overflow-hidden rounded-b-[2rem]">
           {url ? (
             <iframe src={url} title={doc.name} className="w-full h-full border-0" />
+          ) : loading ? (
+            <div className="flex flex-col items-center justify-center h-full text-stone-400 gap-3">
+              <Loader2 size={28} className="animate-spin" />
+              <p className="text-sm">Loading preview…</p>
+            </div>
           ) : (
             <div className="flex flex-col items-center justify-center h-full text-stone-400 gap-3">
               <FileText size={40} />

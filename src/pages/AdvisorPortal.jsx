@@ -716,6 +716,31 @@ function FamilyAccountsTab({ accounts }) {
 
 // ── Document Viewer Modal ──────────────────────────────────────
 function DocumentViewerModal({ doc, onClose }) {
+  // Uploaded client files are private (storage_path in the `documents` bucket, no
+  // file_url column) — resolve a signed URL to preview/download, falling back to
+  // file_url if a row ever carries a public one.
+  const [url, setUrl]         = useState(doc?.file_url || null)
+  const [loading, setLoading] = useState(!doc?.file_url && !!doc?.storage_path)
+
+  useEffect(() => {
+    let active = true
+    if (doc?.file_url)      { setUrl(doc.file_url); setLoading(false); return () => { active = false } }
+    if (!doc?.storage_path) { setUrl(null);         setLoading(false); return () => { active = false } }
+    setLoading(true)
+    ;(async () => {
+      try {
+        const { getDocumentUrl } = await import('../lib/supabase')
+        const signed = await getDocumentUrl(doc.storage_path)
+        if (active) setUrl(signed || null)
+      } catch {
+        if (active) setUrl(null)
+      } finally {
+        if (active) setLoading(false)
+      }
+    })()
+    return () => { active = false }
+  }, [doc?.id, doc?.storage_path, doc?.file_url])
+
   if (!doc) return null
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm" onClick={onClose}>
@@ -736,10 +761,10 @@ function DocumentViewerModal({ doc, onClose }) {
             </div>
           </div>
           <div className="flex items-center gap-2">
-            {doc.file_url && (
+            {url && (
               <>
                 <a
-                  href={doc.file_url}
+                  href={url}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center gap-1.5 text-xs font-medium text-navy-700 bg-navy-50 hover:bg-navy-100 px-3 py-2 rounded-xl transition-colors"
@@ -747,7 +772,7 @@ function DocumentViewerModal({ doc, onClose }) {
                   <ExternalLink size={13} /> Open in tab
                 </a>
                 <a
-                  href={doc.file_url}
+                  href={url}
                   download={doc.name}
                   className="flex items-center gap-1.5 text-xs font-medium text-white btn-aurora hover:bg-navy-900 px-3 py-2 rounded-full transition-colors"
                 >
@@ -762,12 +787,17 @@ function DocumentViewerModal({ doc, onClose }) {
         </div>
         {/* Viewer */}
         <div className="flex-1 overflow-hidden rounded-b-[2rem]">
-          {doc.file_url ? (
+          {url ? (
             <iframe
-              src={doc.file_url}
+              src={url}
               title={doc.name}
               className="w-full h-full border-0"
             />
+          ) : loading ? (
+            <div className="flex flex-col items-center justify-center h-full text-stone-400 gap-3">
+              <Loader2 size={28} className="animate-spin" />
+              <p className="text-sm">Loading preview…</p>
+            </div>
           ) : (
             <div className="flex flex-col items-center justify-center h-full text-stone-400 gap-3">
               <FileText size={40} />
