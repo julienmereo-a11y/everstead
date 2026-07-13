@@ -2425,7 +2425,7 @@ function DocumentsSection({ documents, loading, uploadFile, update, remove, plan
               </Field>
               <Field label="Status">
                 <select className={input} value={form.status} onChange={e => setForm(p => ({ ...p, status: e.target.value }))}>
-                  {['current', 'expiring', 'missing', 'archived'].map(option => <option key={option}>{option}</option>)}
+                  {['current', 'expiring', 'missing', 'expired'].map(option => <option key={option}>{option}</option>)}
                 </select>
               </Field>
             </div>
@@ -3953,7 +3953,8 @@ function InstructionsSection({ instructions, loading, add, update, remove, profi
         if (titleMatch && stepsMatch) {
           const stepsRaw = stepsMatch[1].trim()
           const steps = stepsRaw.split('\n').map(s => s.replace(/^\d+\.\s*/, '').trim()).filter(Boolean)
-          const validCategories = ['Immediate', 'Financial', 'Household', 'Medical', 'Digital', 'Personal', 'Other']
+          // Must mirror the DB CHECK constraint instructions_category_check — 'Digital' is not allowed
+          const validCategories = ['Immediate', 'Financial', 'Legal', 'Household', 'Medical', 'Personal', 'Other']
           const validAudiences = ['Executor', 'Family', 'Healthcare Proxy', 'Adviser', 'Advisor', 'Everyone']
           const category = validCategories.find(c => categoryMatch?.[1]?.includes(c)) ?? 'Immediate'
           const audience = validAudiences.find(a => forMatch?.[1]?.includes(a)) ?? 'Executor'
@@ -4255,7 +4256,7 @@ function InstructionsSection({ instructions, loading, add, update, remove, profi
             <div className="grid grid-cols-2 gap-4">
               <Field label="Category" required>
                 <select className={input} value={form.category} onChange={e => setForm(p => ({ ...p, category: e.target.value }))}>
-                  {['Immediate', 'Financial', 'Household', 'Medical', 'Digital', 'Personal', 'Other'].map(option => <option key={option}>{option}</option>)}
+                  {['Immediate', 'Financial', 'Legal', 'Household', 'Medical', 'Personal', 'Other'].map(option => <option key={option}>{option}</option>)}
                 </select>
               </Field>
               <Field label="Audience" required>
