@@ -22,21 +22,28 @@ const headers = () => ({
 // OneSignal dedupes subscriptions by token, so repeat registrations are safe.
 export async function registerPushToken({ userId, token, platform }) {
   if (!pushConfigured()) return { skipped: true }
-  const res = await fetch(`${API}/apps/${APP_ID}/users`, {
-    method: 'POST',
-    headers: headers(),
-    body: JSON.stringify({
-      identity: { external_id: userId },
-      subscriptions: [{
-        type: platform === 'android' ? 'AndroidPush' : 'iOSPush',
-        token,
-        enabled: true,
-      }],
-    }),
-  })
-  const data = await res.json().catch(() => ({}))
-  if (!res.ok) console.error('[push] register failed:', res.status, data)
-  return { ok: res.ok, data }
+  // Never throw: a OneSignal outage would otherwise 500 the endpoint and spam Sentry,
+  // even though the client treats registration as best-effort.
+  try {
+    const res = await fetch(`${API}/apps/${APP_ID}/users`, {
+      method: 'POST',
+      headers: headers(),
+      body: JSON.stringify({
+        identity: { external_id: userId },
+        subscriptions: [{
+          type: platform === 'android' ? 'AndroidPush' : 'iOSPush',
+          token,
+          enabled: true,
+        }],
+      }),
+    })
+    const data = await res.json().catch(() => ({}))
+    if (!res.ok) console.error('[push] register failed:', res.status, data)
+    return { ok: res.ok, data }
+  } catch (err) {
+    console.error('[push] register error:', err)
+    return { ok: false }
+  }
 }
 
 // Send a push to one or more users by Supabase user id. Fire-and-forget safe:
