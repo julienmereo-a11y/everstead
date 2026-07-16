@@ -3171,6 +3171,39 @@ function MessagesSection({ messages: initialMessages, loading, people, isDemo, p
                 {/* Expanded body */}
                 {isOpen && (
                   <div className="border-t border-stone-100 px-5 py-4 bg-stone-50 space-y-4">
+                    {/* Release timing — editable while the message is still sealed. */}
+                    {!isReleased && (
+                      <div className="flex flex-wrap items-center gap-2">
+                        <p className="text-xs font-semibold text-stone-600 mr-1">When is it released?</p>
+                        <select
+                          className="text-xs font-medium border border-stone-200 rounded-lg px-2.5 py-1.5 bg-white text-navy-900"
+                          value={msg.release_timing || 'after_death'}
+                          onChange={async e => {
+                            if (isDemo) return
+                            const v = e.target.value
+                            try { await updateMessage(msg.id, { release_timing: v, release_at: v === 'on_date' ? (msg.release_at || null) : null }) } catch {}
+                          }}
+                        >
+                          <option value="after_death">When the time comes</option>
+                          <option value="on_date">On a specific date</option>
+                        </select>
+                        {(msg.release_timing === 'on_date') && (
+                          <input
+                            type="date"
+                            className="text-xs font-medium border border-stone-200 rounded-lg px-2.5 py-1.5 bg-white text-navy-900"
+                            min={new Date(Date.now() + 86400000).toISOString().slice(0, 10)}
+                            value={msg.release_at ? String(msg.release_at).slice(0, 10) : ''}
+                            onChange={async e => {
+                              if (isDemo || !e.target.value) return
+                              try { await updateMessage(msg.id, { release_at: new Date(`${e.target.value}T12:00:00Z`).toISOString() }) } catch {}
+                            }}
+                          />
+                        )}
+                        {msg.release_timing === 'on_date' && !msg.release_at && (
+                          <span className="text-[11px] text-amber-600">Pick a date — it stays sealed until then.</span>
+                        )}
+                      </div>
+                    )}
                     {(msg.type === 'video' || msg.type === 'photo') ? (
                       (msg.media_url || msg.video_url) ? (
                         <div className="rounded-xl overflow-hidden border border-stone-200">
