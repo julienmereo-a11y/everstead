@@ -76,3 +76,25 @@ export function logActivity(userId, action, resourceType, resourceId, resourceNa
     metadata,
   }).then(() => {}) // intentionally not awaited
 }
+
+/**
+ * Signed URL for a Personal Message's photo/video.
+ *
+ * Message media lives in the PRIVATE `messages` bucket (sealed content must not
+ * be fetchable by anyone holding a leaked URL). Rows store the original
+ * public-style URL — it encodes the object path — so we extract the path and
+ * mint a short-lived signed URL. The owner's storage SELECT policy scopes this
+ * to their own folder; delegates and external recipients get theirs from the
+ * server (api/messages/delegate-media.js and /m/<token> respectively).
+ *
+ * Returns null when there's nothing to sign or the caller isn't allowed.
+ */
+export async function signedMessageMediaUrl(storedUrl, expiresIn = 3600) {
+  if (!storedUrl) return null
+  const m = String(storedUrl).match(/\/object\/(?:public|sign)\/messages\/([^?]+)/)
+    || String(storedUrl).match(/\/messages\/([^?]+)/)
+  const path = m ? decodeURIComponent(m[1]) : String(storedUrl)
+  const { data, error } = await supabase.storage.from('messages').createSignedUrl(path, expiresIn)
+  if (error) return null
+  return data?.signedUrl || null
+}

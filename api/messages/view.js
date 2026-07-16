@@ -39,11 +39,25 @@ async function handler(req, res) {
     title:         msg.title,
     content:       msg.content,
     type:          msg.type || 'note',
-    mediaUrl:      msg.media_url || msg.video_url || null,
+    mediaUrl:      await signedMediaUrl(msg.media_url || msg.video_url),
     recipientName: msg.recipient_name || null,
     senderName:    profile?.full_name || 'Someone',
     releasedAt:    msg.released_at,
   })
+}
+
+// The `messages` bucket is PRIVATE (sealed media must not be fetchable by URL
+// alone) — stored values are legacy public-style URLs that encode the path.
+// Mint a signed URL with the service role; the recipient's proof of entitlement
+// is the view token that got them here. 24h covers a long reading session.
+async function signedMediaUrl(storedUrl) {
+  if (!storedUrl) return null
+  const m = String(storedUrl).match(/\/object\/(?:public|sign)\/messages\/([^?]+)/)
+    || String(storedUrl).match(/\/messages\/([^?]+)/)
+  const path = m ? decodeURIComponent(m[1]) : String(storedUrl)
+  const { data, error } = await supabase.storage.from('messages').createSignedUrl(path, 60 * 60 * 24)
+  if (error) return null
+  return data?.signedUrl || null
 }
 
 // Errors are reported to Sentry (no-op until SENTRY_DSN is set) and return a clean 500.

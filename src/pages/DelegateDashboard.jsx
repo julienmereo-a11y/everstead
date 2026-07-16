@@ -31,6 +31,8 @@ import {
   Play,
   Video,
   FileEdit,
+  Image as ImageIcon,
+  RefreshCw,
   Settings,
   Eye,
   EyeOff,
@@ -207,6 +209,16 @@ export default function DelegateDashboard() {
       setInstructions(steps ?? [])
       setAlerts(planAlerts ?? [])
       setActivity(recentActivity ?? [])
+
+      // Personal Messages addressed to this delegate. Messages RLS is
+      // owner-only, so this goes through a SECURITY DEFINER RPC that
+      // re-validates the caller (auth email must match the accepted invite)
+      // and only returns released messages — plus after-death ones once the
+      // owner's passing is verified. Before this, released messages had NO
+      // surface for trusted people in production (only the demo showed them).
+      const { data: delegateMsgs } = await supabase.rpc('get_delegate_messages', { p_token: token })
+      setMyMessages(delegateMsgs ?? [])
+
       setLoading(false)
 
       // Audit: record that this delegate accessed the owner's vault. The RPC is
@@ -1235,7 +1247,7 @@ export default function DelegateDashboard() {
               {myMessages.length > 0 && (
                 <div className="space-y-4">
                   {myMessages.map(msg => (
-                    <DelegateMessageCard key={msg.id} msg={msg} ownerName={owner?.full_name} />
+                    <DelegateMessageCard key={msg.id} msg={msg} ownerName={owner?.full_name} inviteToken={token} isDemo={isDemo} />
                   ))}
                 </div>
               )}
@@ -1715,8 +1727,35 @@ function DelegateSettingsPanel({ invite, isDemo }) {
 // ─────────────────────────────────────────────────────────────
 // DELEGATE MESSAGE CARD
 // ─────────────────────────────────────────────────────────────
-function DelegateMessageCard({ msg, ownerName }) {
+function DelegateMessageCard({ msg, ownerName, inviteToken, isDemo }) {
   const [open, setOpen] = useState(false)
+  const isMedia = msg.type === 'video' || msg.type === 'photo'
+  const hasMedia = !!(msg.media_url || msg.video_url)
+  // Signed URL fetched lazily on first expand — the private `messages` bucket
+  // isn't readable by delegates directly, so the server authorises and signs
+  // (api/messages/delegate-media.js re-checks the invite + release state).
+  const [mediaUrl, setMediaUrl] = useState(null)
+  const [mediaState, setMediaState] = useState('idle') // idle | loading | ready | failed
+  useEffect(() => {
+    if (!open || !isMedia || !hasMedia || isDemo || mediaState !== 'idle') return
+    let on = true
+    setMediaState('loading')
+    ;(async () => {
+      try {
+        const { data: { session } } = await supabase.auth.getSession()
+        const res = await fetch('/api/messages/delegate-media', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${session?.access_token}` },
+          body: JSON.stringify({ inviteToken, messageId: msg.id }),
+        })
+        const data = await res.json().catch(() => ({}))
+        if (!on) return
+        if (res.ok && data.url) { setMediaUrl(data.url); setMediaState('ready') }
+        else setMediaState('failed')
+      } catch { if (on) setMediaState('failed') }
+    })()
+    return () => { on = false }
+  }, [open, isMedia, hasMedia, isDemo, mediaState, inviteToken, msg.id])
 
   const fmtDate = (iso) => {
     try { return new Intl.DateTimeFormat('en-GB', { dateStyle: 'long' }).format(new Date(iso)) } catch { return '—' }
@@ -1728,8 +1767,8 @@ function DelegateMessageCard({ msg, ownerName }) {
         onClick={() => setOpen(o => !o)}
         className="w-full flex items-center gap-4 px-5 py-4 text-left hover:bg-stone-50 transition-colors"
       >
-        <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${msg.type === 'video' ? 'bg-purple-50 text-purple-600' : 'bg-navy-50 text-navy-700'}`}>
-          {msg.type === 'video' ? <Video size={17} /> : <FileEdit size={17} />}
+        <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${msg.type === 'video' ? 'bg-purple-50 text-purple-600' : msg.type === 'photo' ? 'bg-sage-50 text-sage-600' : 'bg-navy-50 text-navy-700'}`}>
+          {msg.type === 'video' ? <Video size={17} /> : msg.type === 'photo' ? <ImageIcon size={17} /> : <FileEdit size={17} />}
         </div>
         <div className="flex-1 min-w-0">
           <p className="font-semibold text-navy-900 text-sm truncate">{msg.title}</p>
@@ -1740,7 +1779,7 @@ function DelegateMessageCard({ msg, ownerName }) {
         </div>
         <div className="flex items-center gap-2 shrink-0">
           <span className={`text-xs font-medium px-2.5 py-1 rounded-full border ${msg.type === 'video' ? 'bg-purple-50 text-purple-700 border-purple-200' : 'bg-navy-50 text-navy-700 border-navy-200'}`}>
-            {msg.type === 'video' ? 'Video' : 'Note'}
+            {msg.type === 'video' ? 'Video' : msg.type === 'photo' ? 'Photo' : 'Note'}
           </span>
           <ChevronDown size={15} className={`text-stone-400 transition-transform ${open ? 'rotate-180' : ''}`} />
         </div>
@@ -1748,14 +1787,26 @@ function DelegateMessageCard({ msg, ownerName }) {
 
       {open && (
         <div className="border-t border-stone-100 px-5 py-5 bg-stone-50 space-y-4">
-          {msg.type === 'video' ? (
-            <div className="flex flex-col items-center justify-center gap-3 py-10 aurora-field aurora-dim rounded-xl text-white">
-              <div className="w-16 h-16 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors cursor-pointer">
-                <Play size={26} className="text-white ml-1" />
+          {isMedia ? (
+            isDemo || !hasMedia ? (
+              <div className="flex flex-col items-center justify-center gap-3 py-10 aurora-field aurora-dim rounded-xl text-white">
+                <div className="w-16 h-16 rounded-full bg-white/10 flex items-center justify-center">
+                  {msg.type === 'video' ? <Play size={26} className="text-white ml-1" /> : <ImageIcon size={26} className="text-white" />}
+                </div>
+                <p className="text-sm text-stone-300 font-medium">{msg.title}</p>
+                <p className="text-xs text-stone-500">{isDemo ? 'Playback available in your live plan' : `This ${msg.type} is stored securely.`}</p>
               </div>
-              <p className="text-sm text-stone-300 font-medium">{msg.title}</p>
-              <p className="text-xs text-stone-500">Tap to play — video playback available in your live plan</p>
-            </div>
+            ) : mediaState === 'ready' && mediaUrl ? (
+              <div className="rounded-xl overflow-hidden border border-stone-200 bg-white">
+                {msg.type === 'video'
+                  ? <video src={mediaUrl} controls playsInline className="w-full max-h-96 bg-black" />
+                  : <img src={mediaUrl} alt={msg.title} className="w-full max-h-96 object-contain bg-stone-50" />}
+              </div>
+            ) : mediaState === 'failed' ? (
+              <p className="text-xs text-stone-400 py-8 text-center">This {msg.type} couldn't be loaded right now — please try again later.</p>
+            ) : (
+              <div className="flex items-center justify-center py-10"><RefreshCw size={18} className="animate-spin text-stone-300" /></div>
+            )
           ) : (
             <div>
               <p className="text-xs font-semibold text-stone-500 mb-3 uppercase tracking-wide">

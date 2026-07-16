@@ -2801,6 +2801,29 @@ function AboutMeSection({ aboutMe, loading, save, uploadAvatar, profile, people,
 }
 
 // ─────────────────────────────────────────────────────────────
+// SIGNED MEDIA — message photos/videos live in the PRIVATE `messages` bucket;
+// the stored URL only encodes the path. Mint a short-lived signed URL to view.
+function SignedMedia({ msg }) {
+  const stored = msg.media_url || msg.video_url
+  const [url, setUrl] = useState(null)
+  const [failed, setFailed] = useState(false)
+  React.useEffect(() => {
+    let on = true
+    setUrl(null); setFailed(false)
+    if (!stored) return
+    import('../lib/supabase').then(({ signedMessageMediaUrl }) =>
+      signedMessageMediaUrl(stored).then(u => { if (on) { u ? setUrl(u) : setFailed(true) } })
+    )
+    return () => { on = false }
+  }, [stored])
+  if (!stored) return null
+  if (failed) return <p className="text-xs text-stone-400 py-6 text-center">This {msg.type} couldn't be loaded.</p>
+  if (!url) return <div className="flex items-center justify-center py-10"><RefreshCw size={18} className="animate-spin text-stone-300" /></div>
+  return msg.type === 'video'
+    ? <video src={url} controls playsInline className="w-full max-h-80 bg-black" />
+    : <img src={url} alt={msg.title} className="w-full max-h-80 object-contain bg-stone-50" />
+}
+
 // RECORD VIDEO — in-browser webcam + mic recording (MediaRecorder)
 // ─────────────────────────────────────────────────────────────
 function RecordVideo({ onCapture }) {
@@ -3221,11 +3244,9 @@ function MessagesSection({ messages: initialMessages, loading, people, isDemo, p
                       </div>
                     )}
                     {(msg.type === 'video' || msg.type === 'photo') ? (
-                      (msg.media_url || msg.video_url) ? (
+                      (msg.media_url || msg.video_url) && !isDemo ? (
                         <div className="rounded-xl overflow-hidden border border-stone-200">
-                          {msg.type === 'video'
-                            ? <video src={msg.media_url || msg.video_url} controls playsInline className="w-full max-h-80 bg-black" />
-                            : <img src={msg.media_url || msg.video_url} alt={msg.title} className="w-full max-h-80 object-contain bg-stone-50" />}
+                          <SignedMedia msg={msg} />
                         </div>
                       ) : isDemo ? (
                         <div className="flex flex-col items-center justify-center gap-2 py-8 aurora-field aurora-dim rounded-xl text-white">
