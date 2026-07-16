@@ -2941,11 +2941,14 @@ function MessagesSection({ messages: initialMessages, loading, people, isDemo, p
     setAiWriterLoading(false)
   }
 
-  // Merge server state with local optimistic released state
+  // Merge server state with local optimistic released state. Server truth is
+  // additive-only: releasedIds can mark EXTRA rows released this session, but
+  // must never un-release a server-released row (the Set is initialised before
+  // async data arrives on ?tab=messages deep links, so it starts empty).
   const messages = initialMessages.map(m => ({
     ...m,
-    released: releasedIds.has(m.id),
-    released_at: releasedIds.has(m.id) ? (m.released_at ?? new Date().toISOString()) : null,
+    released: m.released || releasedIds.has(m.id),
+    released_at: m.released_at ?? (releasedIds.has(m.id) ? new Date().toISOString() : null),
   }))
 
   const sealedCount   = messages.filter(m => !m.released).length
@@ -3024,6 +3027,19 @@ function MessagesSection({ messages: initialMessages, loading, people, isDemo, p
     } catch (err) {
       setSaveError(err?.message || 'Could not save the message. Please try again.')
     } finally { setSaving(false) }
+  }
+
+  // A scheduled release day is stored as noon UTC — format it in UTC so the
+  // chip always echoes the day the user picked (UTC+13/14 would otherwise
+  // show the next day). fmtDate stays local for real instants (released_at).
+  const fmtDay = (iso) => {
+    try { return new Intl.DateTimeFormat('en-GB', { dateStyle: 'medium', timeZone: 'UTC' }).format(new Date(iso)) } catch { return '—' }
+  }
+  // Tomorrow in the USER'S timezone (toISOString would use UTC and block
+  // "tomorrow" for evening users west of Greenwich).
+  const localTomorrow = () => {
+    const d = new Date(Date.now() + 86400000)
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
   }
 
   const fmtDate = (iso) => {
@@ -3113,7 +3129,7 @@ function MessagesSection({ messages: initialMessages, loading, people, isDemo, p
                       For <span className="font-medium text-navy-700">{msg.recipient_name}</span>
                       {msg.recipient_role ? ` · ${msg.recipient_role}` : ''}
                       {msg.recipient_email ? <span className="ml-1.5 inline-flex items-center gap-1 text-[10px] font-semibold text-navy-600 bg-navy-50 px-1.5 py-0.5 rounded-full align-middle"><Send size={9} /> via email</span> : null}
-                      {!isReleased && msg.release_timing === 'on_date' && msg.release_at ? <span className="ml-1.5 inline-flex items-center gap-1 text-[10px] font-semibold text-amber-700 bg-amber-50 px-1.5 py-0.5 rounded-full align-middle"><Clock size={9} /> Releases {fmtDate(msg.release_at)}</span> : null}
+                      {!isReleased && msg.release_timing === 'on_date' && msg.release_at ? <span className="ml-1.5 inline-flex items-center gap-1 text-[10px] font-semibold text-amber-700 bg-amber-50 px-1.5 py-0.5 rounded-full align-middle"><Clock size={9} /> Releases {fmtDay(msg.release_at)}</span> : null}
                     </p>
                   </button>
 
@@ -3191,7 +3207,7 @@ function MessagesSection({ messages: initialMessages, loading, people, isDemo, p
                           <input
                             type="date"
                             className="text-xs font-medium border border-stone-200 rounded-lg px-2.5 py-1.5 bg-white text-navy-900"
-                            min={new Date(Date.now() + 86400000).toISOString().slice(0, 10)}
+                            min={localTomorrow()}
                             value={msg.release_at ? String(msg.release_at).slice(0, 10) : ''}
                             onChange={async e => {
                               if (isDemo || !e.target.value) return
@@ -3430,7 +3446,7 @@ function MessagesSection({ messages: initialMessages, loading, people, isDemo, p
                   <input
                     className={input}
                     type="date"
-                    min={new Date(Date.now() + 86400000).toISOString().slice(0, 10)}
+                    min={localTomorrow()}
                     value={form.release_at}
                     onChange={e => setForm(p => ({ ...p, release_at: e.target.value }))}
                     required

@@ -57,23 +57,37 @@ async function handler(req, res) {
       // email link-rewriters — same reasoning as release-link.js.
       const viewToken = isExternal ? (msg.view_token || crypto.randomBytes(24).toString('hex')) : msg.view_token
 
-      const { error: updErr } = await supabase
+      // 1. CLAIM the row (guarded on released=false). If someone manually
+      //    released it between our SELECT and now, this matches 0 rows and we
+      //    skip entirely — never email a token that wasn't stored.
+      const { data: claimed, error: updErr } = await supabase
         .from('messages')
         .update({ released: true, released_at: new Date().toISOString(), ...(viewToken ? { view_token: viewToken } : {}) })
         .eq('id', msg.id)
-        .eq('released', false) // idempotence: never double-release
+        .eq('released', false)
+        .select('id')
       if (updErr) throw updErr
-      released++
+      if (!claimed?.length) continue // lost the race — manual release already handled it
 
+      // 2. Deliver. If the email fails, UNDO the claim so the next hourly run
+      //    retries — otherwise a scheduled letter would silently never arrive.
       if (isExternal) {
         const senderName = nameOf[msg.user_id] || 'Someone'
-        await resend.emails.send({
-          from:    'Everstead <hello@everstead.care>',
-          to:      msg.recipient_email,
-          subject: `${senderName} has left you a personal message`,
-          html:    messageLinkHtml(senderName, msg.recipient_name, `${BASE_URL}/m/${viewToken}`),
-        })
+        try {
+          await resend.emails.send({
+            from:    'Everstead <hello@everstead.care>',
+            to:      msg.recipient_email,
+            subject: `${senderName} has left you a personal message`,
+            html:    messageLinkHtml(senderName, msg.recipient_name, `${BASE_URL}/m/${viewToken}`),
+          })
+        } catch (mailErr) {
+          await supabase.from('messages')
+            .update({ released: false, released_at: null }) // keep view_token — reused next run
+            .eq('id', msg.id)
+          throw mailErr
+        }
       }
+      released++
     } catch (err) {
       errors.push({ id: msg.id, error: err.message })
       captureException(err, { endpoint: 'cron/message-delivery', messageId: msg.id })

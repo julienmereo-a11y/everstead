@@ -54,7 +54,8 @@ async function handler(req, res) {
   // app_user_id is set to the Supabase auth.users.id at Purchases.configure()/
   // logIn() time on the client (see src/contexts/AuthContext.jsx) — that makes
   // it the join key here, with revenuecat_app_user_id kept for defense-in-depth.
-  const appUserId  = event.app_user_id
+  // TRANSFER events carry no app_user_id — the new owner is in transferred_to.
+  const appUserId  = event.app_user_id || event.transferred_to?.[0]
   const productId  = event.product_id
   const planInfo   = PRODUCT_TO_PLAN[productId] || {}
   const periodType = event.period_type // 'TRIAL' | 'NORMAL' | 'INTRO'
@@ -102,9 +103,14 @@ async function handler(req, res) {
       break
 
     case 'EXPIRATION':
+      // Back to the free tier explicitly. plan:null would FAIL OPEN — the
+      // canUseFeature() gate, the messages RLS backstop and the free-tier caps
+      // all treat an unknown plan permissively, so an expired subscriber would
+      // keep every paid feature.
       profileUpdate = {
         subscription_status: 'cancelled',
-        plan:                 null,
+        plan:                 'free',
+        billing_cycle:        null,
         current_period_end:   null,
         cancel_at:             null,
       }
@@ -133,11 +139,18 @@ async function handler(req, res) {
 
   if (!appUserId) return res.status(200).json({ received: true, ignored: 'no app_user_id' })
 
-  const { data: updatedProfiles } = await supabase
+  const { data: updatedProfiles, error: updateError } = await supabase
     .from('profiles')
     .update(profileUpdate)
     .or(`revenuecat_app_user_id.eq.${appUserId},id.eq.${appUserId}`)
     .select('id, subscription_status, plan')
+
+  // A failed write must NOT be acknowledged — return 500 so RevenueCat retries,
+  // otherwise a paid purchase could be dropped on a transient DB error.
+  if (updateError) {
+    console.error('revenuecat webhook: profile update failed:', updateError.message)
+    return res.status(500).json({ error: 'profile update failed' })
+  }
 
   if (updatedProfiles?.[0]?.id) {
     await cascadeToFamilyMember(updatedProfiles[0].id, {
