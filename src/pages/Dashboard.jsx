@@ -2894,7 +2894,7 @@ function MessagesSection({ messages: initialMessages, loading, people, isDemo, p
   const [releasedIds, setReleasedIds]   = useState(
     () => new Set(initialMessages.filter(m => m.released).map(m => m.id))
   )
-  const [form, setForm] = useState({ recipient_kind: 'person', recipient_name: '', recipient_role: '', recipient_email: '', title: '', type: 'note', content: '' })
+  const [form, setForm] = useState({ recipient_kind: 'person', recipient_name: '', recipient_role: '', recipient_email: '', title: '', type: 'note', content: '', release_timing: 'after_death', release_at: '' })
   const [mediaFile, setMediaFile] = useState(null)       // recorded Blob or selected File
   const [mediaPreview, setMediaPreview] = useState(null) // object URL for preview
   const [saving, setSaving] = useState(false)
@@ -2905,7 +2905,7 @@ function MessagesSection({ messages: initialMessages, loading, people, isDemo, p
   }
   const resetForm = () => {
     setMedia(null)
-    setForm({ recipient_kind: 'person', recipient_name: '', recipient_role: '', recipient_email: '', title: '', type: 'note', content: '' })
+    setForm({ recipient_kind: 'person', recipient_name: '', recipient_role: '', recipient_email: '', title: '', type: 'note', content: '', release_timing: 'after_death', release_at: '' })
   }
 
   // AI message writer (Feature 5)
@@ -2996,6 +2996,9 @@ function MessagesSection({ messages: initialMessages, loading, people, isDemo, p
     if ((form.type === 'video' || form.type === 'photo') && !mediaFile) {
       setSaveError(`Please record or upload a ${form.type} first.`); return
     }
+    if (form.release_timing === 'on_date' && !form.release_at) {
+      setSaveError('Please choose the date it should be released.'); return
+    }
     setSaveError(null)
     setSaving(true)
     try {
@@ -3007,6 +3010,10 @@ function MessagesSection({ messages: initialMessages, loading, people, isDemo, p
           title:   form.title,
           type:    form.type,
           content: form.type === 'note' ? form.content : '',
+          release_timing: form.release_timing,
+          // Noon UTC on the chosen day: the hourly cron delivers within the hour,
+          // at a humane time in every nearby timezone (never 00:xx).
+          release_at: form.release_timing === 'on_date' ? new Date(`${form.release_at}T12:00:00Z`).toISOString() : null,
         })
         if (row && mediaFile && form.type !== 'note') {
           await uploadMedia(row.id, mediaFile)
@@ -3106,6 +3113,7 @@ function MessagesSection({ messages: initialMessages, loading, people, isDemo, p
                       For <span className="font-medium text-navy-700">{msg.recipient_name}</span>
                       {msg.recipient_role ? ` · ${msg.recipient_role}` : ''}
                       {msg.recipient_email ? <span className="ml-1.5 inline-flex items-center gap-1 text-[10px] font-semibold text-navy-600 bg-navy-50 px-1.5 py-0.5 rounded-full align-middle"><Send size={9} /> via email</span> : null}
+                      {!isReleased && msg.release_timing === 'on_date' && msg.release_at ? <span className="ml-1.5 inline-flex items-center gap-1 text-[10px] font-semibold text-amber-700 bg-amber-50 px-1.5 py-0.5 rounded-full align-middle"><Clock size={9} /> Releases {fmtDate(msg.release_at)}</span> : null}
                     </p>
                   </button>
 
@@ -3360,6 +3368,41 @@ function MessagesSection({ messages: initialMessages, loading, people, isDemo, p
                   <input className={input} type="text" placeholder="Their name (optional)" value={form.recipient_name} onChange={e => setForm(p => ({ ...p, recipient_name: e.target.value }))} />
                   <input className={input} type="email" placeholder="their@email.com" value={form.recipient_email} onChange={e => setForm(p => ({ ...p, recipient_email: e.target.value }))} required />
                   <p className="text-[11px] text-stone-400 leading-snug">They don't need an account. When you release the message, we'll email them a private, secure link to view it.</p>
+                </div>
+              )}
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold text-stone-600 mb-2">When is it released?</label>
+              <div className="grid grid-cols-2 gap-2.5">
+                {[
+                  { value: 'after_death', label: 'When the time comes', desc: 'Released when Everstead verifies your passing — or whenever you choose.' },
+                  { value: 'on_date',     label: 'On a specific date',  desc: 'Delivered automatically — a wedding day, an 18th birthday…' },
+                ].map(opt => (
+                  <button
+                    key={opt.value}
+                    type="button"
+                    onClick={() => setForm(p => ({ ...p, release_timing: opt.value }))}
+                    className={`flex flex-col gap-1 items-start p-3 rounded-xl border text-left transition-colors ${
+                      form.release_timing === opt.value ? 'border-navy-300 bg-navy-50 ring-1 ring-navy-300' : 'border-stone-200 hover:border-stone-300'
+                    }`}
+                  >
+                    <p className="text-xs font-semibold text-navy-900">{opt.label}</p>
+                    <p className="text-[10px] text-stone-400 leading-snug">{opt.desc}</p>
+                  </button>
+                ))}
+              </div>
+              {form.release_timing === 'on_date' && (
+                <div className="mt-2.5">
+                  <input
+                    className={input}
+                    type="date"
+                    min={new Date(Date.now() + 86400000).toISOString().slice(0, 10)}
+                    value={form.release_at}
+                    onChange={e => setForm(p => ({ ...p, release_at: e.target.value }))}
+                    required
+                  />
+                  <p className="text-[11px] text-stone-400 leading-snug mt-1.5">It stays sealed until this day, then is released automatically{form.recipient_kind === 'email' ? ' and emailed to them' : ''}. You can still release it sooner.</p>
                 </div>
               )}
             </div>
