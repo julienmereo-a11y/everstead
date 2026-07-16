@@ -15,6 +15,11 @@
 
     <!-- Primary SEO -->
     <title>Everstead — Your life, organised.</title>
+    <!-- Generic fallback so raw HTML (non-JS crawlers, share-preview bots, SEO
+         scanners) always sees a real description. Every page's <Helmet> still
+         overrides this with its own specific description once React renders —
+         this is only what's seen before that happens. -->
+    <meta name="description" content="One secure place for your accounts, documents, trusted contacts, and wishes — organised for life, not just for death." />
     <meta name="keywords" content="digital estate planning UK, estate planning app, online will organiser, executor tools, family estate planning London" />
     <meta name="robots" content="index, follow" />
     <!-- Canonical is set per-page via react-helmet (see each page's <Helmet>). A

@@ -5,7 +5,8 @@
       "name": "everstead-dev",
       "runtimeExecutable": "npm",
       "runtimeArgs": ["run", "dev"],
-      "port": 4173
+      "port": 4173,
+      "autoPort": true
     },
     {
       "name": "course-au-cringe",

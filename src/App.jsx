@@ -2,12 +2,14 @@ import React, { useEffect, Suspense, lazy } from 'react'
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import { Helmet } from 'react-helmet-async'
 import i18n, { languageFromPath } from './i18n'
-import { AuthProvider } from './contexts/AuthContext'
+import { AuthProvider, useAuth } from './contexts/AuthContext'
+import { isNative } from './lib/platform'
 import ProtectedRoute from './components/ProtectedRoute'
 import AdvisorProtectedRoute from './components/AdvisorProtectedRoute'
 import AdminProtectedRoute from './components/AdminProtectedRoute'
 import AdminGate from './components/AdminGate'
 import ErrorBoundary from './components/ErrorBoundary'
+import BiometricGate from './components/native/BiometricGate'
 import Nav from './components/Nav'
 import Footer from './components/Footer'
 // Lazy: ChatWidget pulls in react-markdown — keeping it out of the eager bundle
@@ -69,6 +71,12 @@ const MessageView           = lazy(() => import('./pages/MessageView'))
 const DataPromise           = lazy(() => import('./pages/DataPromise'))
 const ForAdvisors           = lazy(() => import('./pages/ForAdvisors'))
 const DualVault             = lazy(() => import('./pages/DualVault'))
+// NOTE: IAPPaywall / NativeWelcome / NativeSignUp were the pre-redesign native
+// entry screens. They are superseded by MobileApp (which owns auth, the free tier
+// and the Everstead+ paywall in its own state) and still contained the RETIRED
+// Essential pricing — a real App Review hazard if a reviewer ever reached them.
+// Routes removed 2026-07-14; the files can be deleted.
+const MobileApp             = lazy(() => import('./pages/native/app/MobileApp'))
 
 // ── Page loading fallback ─────────────────────────────────────────────────────
 function PageLoader() {
@@ -115,6 +123,15 @@ function Layout({ children }) {
   )
 }
 
+// Native apps open into the native mobile app (MobileApp), which handles its
+// own onboarding / sign-in and the connected, tabbed experience — never the
+// marketing Home page (Apple guideline 4.2). Web is unaffected: isNative() is
+// always false in a browser, so it always renders the marketing Home.
+function RootRoute() {
+  if (isNative()) return <div style={{ height: '100dvh' }}><MobileApp /></div>
+  return <Layout><Home /></Layout>
+}
+
 export default function App() {
   // Locale comes from the URL prefix ONLY: /fr/* → French, else English.
   // The SAME route tree renders under both — basename '/fr' makes every internal
@@ -135,6 +152,7 @@ export default function App() {
         <ScrollToTop />
         <ErrorBoundary>
           <Suspense fallback={<PageLoader />}>
+          <BiometricGate>
             <Routes>
               {/* ── Protected app pages — no Nav/Footer ── */}
               <Route
@@ -146,6 +164,19 @@ export default function App() {
                 }
               />
               <Route path="/delegate-dashboard" element={<DelegateDashboard />} />
+              {/* Native mobile app. On a phone (or native shell) it fills the screen;
+                  on a desktop browser it's centered in a phone-sized frame so the
+                  preview reads correctly instead of stretching edge-to-edge. */}
+              <Route
+                path="/mobile"
+                element={
+                  <div style={{ minHeight: '100dvh', background: '#0d1628', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <div style={{ width: 'min(100vw, 402px)', height: 'min(100dvh, 874px)', overflow: 'hidden', position: 'relative', boxShadow: '0 24px 70px rgba(0,0,0,0.45)' }}>
+                      <MobileApp />
+                    </div>
+                  </div>
+                }
+              />
               <Route
                 path="/advisor-portal"
                 element={
@@ -208,7 +239,7 @@ export default function App() {
               />
 
               {/* ── Public pages ── */}
-              <Route path="/"           element={<Layout><Home /></Layout>} />
+              <Route path="/"           element={<RootRoute />} />
               <Route path="/features"   element={<Layout><Features /></Layout>} />
               <Route path="/how-it-works" element={<Layout><HowItWorks /></Layout>} />
               <Route path="/pricing"    element={<Layout><Pricing /></Layout>} />
@@ -219,7 +250,7 @@ export default function App() {
               <Route path="/about"      element={<Layout><About /></Layout>} />
               <Route path="/contact"    element={<Layout><Contact /></Layout>} />
               <Route path="/book-demo"  element={<Layout><BookDemo /></Layout>} />
-              <Route path="/login"           element={<Layout><Login /></Layout>} />
+              <Route path="/login"           element={isNative() ? <Login /> : <Layout><Login /></Layout>} />
               <Route path="/forgot-password" element={<Layout><ForgotPassword /></Layout>} />
               <Route path="/reset-password"  element={<Layout><ResetPassword /></Layout>} />
               <Route path="/privacy"    element={<Layout><Privacy /></Layout>} />
@@ -247,11 +278,21 @@ export default function App() {
               <Route path="/family-vault" element={<Layout><DualVault /></Layout>} />
               <Route path="*"           element={<Layout><NotFound /></Layout>} />
             </Routes>
+          </BiometricGate>
           </Suspense>
         </ErrorBoundary>
-        <CookieBanner />
-        <OfflineBanner />
-        <InstallPrompt />
+        {/* Web-only overlays. None of these belong in the native shell: cookie consent
+            is a web concern, InstallPrompt advertises the PWA (nonsensical inside the
+            real app), and OfflineBanner trusts navigator.onLine — which is unreliable
+            in the Capacitor webview and can report offline forever, permanently
+            covering the UI. */}
+        {!isNative() && (
+          <>
+            <CookieBanner />
+            <OfflineBanner />
+            <InstallPrompt />
+          </>
+        )}
       </BrowserRouter>
     </AuthProvider>
   )

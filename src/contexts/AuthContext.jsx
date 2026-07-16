@@ -1,7 +1,42 @@
 import React, { createContext, useContext, useEffect, useState, useCallback } from 'react'
 import { supabase } from '../lib/supabase'
+import { isNative, isIOS, apiPost } from '../lib/platform'
 
 const AuthContext = createContext(null)
+
+// RevenueCat app_user_id is set to the Supabase user id so the RevenueCat
+// webhook (api/revenuecat/webhook.js) can join a purchase event straight back
+// to a profiles row with no separate mapping step. iOS-only for now — Android
+// support would reuse the same calls once an Android build exists.
+let revenueCatConfigured = false
+// Only touch the RevenueCat SDK when a real public key is configured (Phase B).
+// Initialising it with an undefined key leaves the native SDK in a broken state
+// where later calls (e.g. logOut on sign-out) can crash the webview.
+const REVENUECAT_KEY = import.meta.env.VITE_REVENUECAT_IOS_API_KEY
+async function syncRevenueCatUser(userId) {
+  if (!isNative() || !isIOS() || !REVENUECAT_KEY) return
+  try {
+    const { Purchases } = await import('@revenuecat/purchases-capacitor')
+    if (!revenueCatConfigured) {
+      await Purchases.configure({ apiKey: REVENUECAT_KEY, appUserID: userId })
+      revenueCatConfigured = true
+    } else {
+      await Purchases.logIn({ appUserID: userId })
+    }
+  } catch (err) {
+    console.error('RevenueCat sync error:', err)
+  }
+}
+
+async function revenueCatLogOut() {
+  if (!isNative() || !isIOS() || !revenueCatConfigured) return
+  try {
+    const { Purchases } = await import('@revenuecat/purchases-capacitor')
+    await Purchases.logOut()
+  } catch (err) {
+    console.error('RevenueCat logout error:', err)
+  }
+}
 
 // Record the device on sign-in (and let the server alert on a new one). Runs at
 // most once per browser tab-session, and never blocks sign-in.
@@ -14,11 +49,11 @@ function checkDevice(session) {
       deviceId = (crypto?.randomUUID?.() ?? `${Date.now()}-${Math.random().toString(36).slice(2)}`)
       localStorage.setItem('everstead_device_id', deviceId)
     }
-    fetch('/api/auth/device-check', {
-      method:  'POST',
-      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${session.access_token}` },
-      body:    JSON.stringify({ deviceId }),
-    }).catch(() => {})
+    // apiPost, not a relative fetch — on native a relative /api/… call hits the
+    // capacitor://localhost SPA fallback and silently does nothing (see platform.js),
+    // which would leave new-device security alerts permanently dead on mobile.
+    apiPost('/api/auth/device-check', { deviceId },
+      { Authorization: `Bearer ${session.access_token}` }).catch(() => {})
   } catch { /* non-blocking */ }
 }
 
@@ -30,6 +65,8 @@ export function AuthProvider({ children }) {
 
   // ── Fetch profile ────────────────────────────────────────────
   // Profile is created automatically by the handle_new_user DB trigger on signup.
+  // Returns the row as well as storing it, so callers can poll for a change they're
+  // waiting on (e.g. the plan flipping to 'family' once RevenueCat's webhook lands).
   const fetchProfile = useCallback(async (userId) => {
     const { data } = await supabase
       .from('profiles')
@@ -37,6 +74,7 @@ export function AuthProvider({ children }) {
       .eq('id', userId)
       .single()
     if (data) setProfile(data)
+    return data
   }, [])
 
   const fetchDelegateInvites = useCallback(async (email) => {
@@ -68,6 +106,7 @@ export function AuthProvider({ children }) {
           fetchProfile(session.user.id),
           fetchDelegateInvites(session.user.email),
         ])
+        syncRevenueCatUser(session.user.id)
       }
       setLoading(false)
     })
@@ -77,6 +116,7 @@ export function AuthProvider({ children }) {
       if (session?.user) {
         fetchProfile(session.user.id)
         fetchDelegateInvites(session.user.email)
+        syncRevenueCatUser(session.user.id)
 
         // On an actual sign-in (password, magic link, or Google), record the
         // device and alert on a new one. SIGNED_IN fires for every method;
@@ -89,6 +129,7 @@ export function AuthProvider({ children }) {
       } else {
         setProfile(null)
         setDelegateInvites([])
+        if (_event === 'SIGNED_OUT') revenueCatLogOut()
       }
     })
 

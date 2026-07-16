@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Everstead</string>
+    <string name="title_activity_main">Everstead</string>
+    <string name="package_name">care.everstead.app</string>
+    <string name="custom_url_scheme">care.everstead.app</string>
+</resources>

@@ -1,0 +1,235 @@
+/* ──────────────────────────────────────────────────────────────────────────
+   Everstead mobile app — scoped styles
+
+   Ported from the design handoff prototype's <style> block. EVERY rule is
+   scoped under `.evst-app` so none of it leaks into the marketing website,
+   which shares this bundle. Keyframes are prefixed `evst*` because the site
+   already defines its own `fadeUp`/`fadeIn` with different values.
+
+   Brand tokens are declared as CSS custom properties on `.evst-app` (values
+   from tailwind.config.js) so the ported component classes can reference
+   var(--color-*) verbatim.
+   ────────────────────────────────────────────────────────────────────────── */
+
+.evst-app {
+  /* Type */
+  --font-display: "Cormorant Garamond", Georgia, serif;
+  --font-sans: "DM Sans", system-ui, sans-serif;
+
+  /* Stone */
+  --color-stone-50:#fafaf9; --color-stone-100:#f5f5f4; --color-stone-200:#e7e5e4;
+  --color-stone-300:#d6d3d1; --color-stone-400:#a8a29e; --color-stone-500:#78716c;
+  --color-stone-600:#57534e; --color-stone-700:#44403c; --color-stone-800:#292524;
+  --color-stone-900:#1c1917; --color-stone-950:#0c0a09;
+
+  /* Navy */
+  --color-navy-50:#f0f3f9; --color-navy-100:#dce4f0; --color-navy-200:#b9cae1;
+  --color-navy-300:#8aa8cb; --color-navy-400:#5c84b4; --color-navy-500:#3b659d;
+  --color-navy-600:#2d5082; --color-navy-700:#253f67; --color-navy-800:#1d3052;
+  --color-navy-900:#152240; --color-navy-950:#0d1628;
+
+  /* Sage */
+  --color-sage-50:#f4f7f4; --color-sage-100:#e4ece3; --color-sage-200:#c8d9c6;
+  --color-sage-300:#9dbc9a; --color-sage-400:#6e9b6a; --color-sage-500:#4c7d47;
+  --color-sage-600:#3a6336; --color-sage-700:#2f4f2c; --color-sage-800:#263f24;
+  --color-sage-900:#1e331d;
+
+  /* Safe-area insets are applied inline as max(env(safe-area-inset-*), <floor>px)
+     on each header / tab bar / onboarding rule below — NOT via a CSS custom
+     property. In this Capacitor iOS shell env(safe-area-inset-*) resolves to 0
+     (the webview doesn't report window insets to CSS), so the floor is what keeps
+     headers clear of the status bar / Dynamic Island; max() still prefers the real,
+     larger inset on any device where env() does resolve. Inlined rather than kept in
+     a var to avoid any env()-inside-custom-property substitution quirk on WebKit. */
+
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  background: var(--color-stone-50);
+  font-family: var(--font-sans);
+  color: var(--color-stone-900);
+  overflow: hidden;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* UI chrome shouldn't be text-selectable (long-press on iOS otherwise pops the
+   selection loupe on buttons/rows). Inputs/textareas stay selectable. */
+.evst-app .btn, .evst-app .tab, .evst-app .row, .evst-app .task, .evst-app .tile,
+.evst-app .chip, .evst-app .fchip, .evst-app .linkbtn, .evst-app .skip, .evst-app .hav {
+  -webkit-user-select: none; user-select: none;
+}
+
+.evst-app *, .evst-app *::before, .evst-app *::after { box-sizing: border-box; }
+
+/* ── Layout scaffolding ─────────────────────────────────────── */
+.evst-app .body { flex: 1; overflow-y: auto; scrollbar-width: none; display: flex; flex-direction: column; overscroll-behavior-y: none; }
+.evst-app .body::-webkit-scrollbar { display: none; }
+
+/* Opaque status-bar cover. The webview extends under the translucent iOS status
+   bar (viewport-fit=cover), so scrolled content would otherwise show through behind
+   the clock. This fixed strip sits above the scroll body (z-index) and matches the
+   screen's top colour, so content scrolls invisibly behind it. Height mirrors the
+   header safe-area floor. Fixed-px fallback first in case max()/env() can't resolve. */
+.evst-app .sbcover { position: absolute; top: 0; left: 0; right: 0; height: 50px; height: max(env(safe-area-inset-top), 50px); background: var(--color-stone-50); z-index: 30; pointer-events: none; }
+.evst-app .sbcover-dark { background: #0d1628; }
+.evst-app .scr { animation: evstFadeUp .28s ease both; flex: 1; }
+
+@keyframes evstFadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+@keyframes evstFadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes evstSlideUp { from { transform: translateY(100%); } to { transform: none; } }
+@keyframes evstToastIn { from { opacity: 0; transform: translate(-50%,-8px); } to { opacity: 1; transform: translate(-50%,0); } }
+@keyframes evstAurora { from { background-position: 0% 50%; } to { background-position: 100% 50%; } }
+@keyframes evstSpin { to { transform: rotate(360deg); } }
+
+.evst-app .serif { font-family: var(--font-display); }
+.evst-app .m0 { margin: 0; }
+.evst-app .f1 { flex: 1; }
+.evst-app .fx { display: flex; }
+.evst-app .col { flex-direction: column; }
+.evst-app .ac { align-items: center; }
+.evst-app .jc { justify-content: center; }
+.evst-app .jb { justify-content: space-between; }
+.evst-app .tc { text-align: center; }
+.evst-app .w100 { width: 100%; }
+.evst-app .posrel { position: relative; }
+.evst-app .posabs { position: absolute; }
+.evst-app .ohide { overflow: hidden; }
+.evst-app .gap10 { gap: 10px; }
+.evst-app .gap12 { gap: 12px; }
+.evst-app .gap16 { gap: 16px; }
+.evst-app .fs13 { font-size: 13px; }
+.evst-app .fs14 { font-size: 14px; }
+.evst-app .fw6 { font-weight: 600; }
+
+/* ── Cards (canonical brand surfaces, redeclared in scope) ──── */
+.evst-app .card-light { background: #fff; border: 1px solid var(--color-stone-200); border-radius: 16px; }
+.evst-app .card-dark { background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.15); border-radius: 16px; }
+
+/* ── Grain overlay ──────────────────────────────────────────── */
+.evst-app .grain { position: relative; }
+.evst-app .grain::before {
+  content: ''; position: absolute; inset: 0; pointer-events: none; z-index: 0; border-radius: inherit;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+}
+
+/* ── Home hero ──────────────────────────────────────────────── */
+.evst-app .hero { background: linear-gradient(150deg,#0d1628 0%,#1d3052 100%); color: #fafaf9; padding: 64px 20px 22px; padding-top: calc(max(env(safe-area-inset-top), 50px) + 14px); position: relative; overflow: hidden; }
+.evst-app .hero-glow { position: absolute; inset: 0; opacity: .1; pointer-events: none;
+  background-image: radial-gradient(circle at 80% 15%,#6ea6d8 0%,transparent 55%), radial-gradient(circle at 15% 95%,#4c7d47 0%,transparent 45%); }
+.evst-app .hav { width: 40px; height: 40px; border-radius: 999px; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.18); display: flex; align-items: center; justify-content: center; font: 600 14px var(--font-display); color: #fafaf9; letter-spacing: .04em; flex: none; }
+.evst-app .ringp { transition: stroke-dashoffset .6s cubic-bezier(.2,.8,.2,1); }
+
+/* ── Section headers on light screens ───────────────────────── */
+.evst-app .head { padding: 62px 20px 16px; padding-top: calc(max(env(safe-area-inset-top), 50px) + 12px); display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; }
+.evst-app .h1 { font-family: var(--font-display); font-size: 30px; font-weight: 600; line-height: 1.05; margin: 0; color: var(--color-stone-900); }
+.evst-app .sub { font-size: 13px; color: var(--color-stone-500); margin: 5px 0 0; }
+.evst-app .pad { padding: 0 20px 26px; }
+.evst-app .eyebrow { font-size: 10.5px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--color-navy-600); margin: 0 0 8px; }
+.evst-app .eyebrow-sage { color: var(--color-sage-400); }
+
+/* ── Buttons ────────────────────────────────────────────────── */
+.evst-app .btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; background: var(--color-navy-600); color: #fff; border: 0; border-radius: 999px; padding: 11px 20px; font: 500 14px var(--font-sans); cursor: pointer; transition: background .15s, opacity .15s, transform .1s; }
+.evst-app .btn:hover { background: var(--color-navy-700); }
+.evst-app .btn:active:not(.dis) { transform: scale(.97); }
+.evst-app .btn.dis { opacity: .35; pointer-events: none; }
+.evst-app .btn-sm { padding: 8px 15px; font-size: 13px; }
+.evst-app .btn-light { background: #fafaf9; color: var(--color-navy-800); }
+.evst-app .btn-light:hover { background: #fff; }
+.evst-app .btn-glass { background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.18); color: #fafaf9; }
+.evst-app .btn-glass:hover { background: rgba(255,255,255,.14); }
+.evst-app .linkbtn { width: 100%; background: none; border: 0; color: rgba(255,255,255,.6); font: 500 13px var(--font-sans); margin-top: 14px; cursor: pointer; padding: 6px; }
+
+/* ── Tab bar ────────────────────────────────────────────────── */
+.evst-app .tabbar { display: flex; background: rgba(250,250,249,.92); backdrop-filter: blur(16px); border-top: 1px solid var(--color-stone-200); padding: 10px 4px 32px; padding-bottom: calc(max(env(safe-area-inset-bottom), 20px) + 12px); position: relative; z-index: 20; }
+.evst-app .tab { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; background: none; border: 0; padding: 0; cursor: pointer; color: var(--color-stone-400); font: 500 10px var(--font-sans); letter-spacing: .03em; transition: color .15s, opacity .1s; }
+.evst-app .tab:active { opacity: .6; }
+.evst-app .tab.on { color: var(--color-navy-700); }
+
+/* ── Stat tiles ─────────────────────────────────────────────── */
+.evst-app .tile { flex: 1; padding: 15px 10px; text-align: center; cursor: pointer; transition: transform .12s; }
+.evst-app .tile:active { transform: scale(.96); }
+/* Sans numerals: Cormorant's serif 0/1 glyphs read as the LETTERS "O"/"I" at this
+   size ("O Accounts", "I Documents"), so counts use DM Sans for legibility. */
+.evst-app .num { font-family: var(--font-sans); font-size: 23px; font-weight: 600; line-height: 1.1; color: var(--color-navy-800); font-variant-numeric: lining-nums tabular-nums; }
+.evst-app .lbl { font-size: 11px; color: var(--color-stone-500); margin-top: 5px; }
+
+/* ── List rows ──────────────────────────────────────────────── */
+.evst-app .row { display: flex; align-items: center; gap: 12px; padding: 12px 16px; cursor: pointer; transition: background .12s; }
+.evst-app .row:active, .evst-app .task:active { background: var(--color-stone-100); }
+.evst-app .bt { border-top: 1px solid var(--color-stone-100); }
+.evst-app .avatar { width: 38px; height: 38px; border-radius: 12px; background: var(--color-navy-50); color: var(--color-navy-700); display: flex; align-items: center; justify-content: center; font: 600 17px var(--font-display); flex: none; }
+.evst-app .avatar-round { border-radius: 999px; }
+.evst-app .dicon { width: 38px; height: 38px; border-radius: 12px; background: var(--color-stone-100); color: var(--color-stone-500); display: flex; align-items: center; justify-content: center; flex: none; }
+.evst-app .rname { font-size: 14.5px; font-weight: 500; color: var(--color-stone-900); }
+.evst-app .rdet { font-size: 12px; color: var(--color-stone-500); margin-top: 2px; }
+.evst-app .chev { color: var(--color-stone-300); flex: none; }
+
+/* ── Chips ──────────────────────────────────────────────────── */
+.evst-app .chip { display: inline-flex; align-items: center; padding: 4px 10px; border-radius: 999px; font-size: 11px; font-weight: 500; flex: none; }
+.evst-app .chip-sage { background: var(--color-sage-100); color: var(--color-sage-700); }
+.evst-app .chip-stone { background: var(--color-stone-100); color: var(--color-stone-600); }
+.evst-app .chip-navy { background: var(--color-navy-50); color: var(--color-navy-700); }
+
+/* ── Activity rows ──────────────────────────────────────────── */
+.evst-app .arow { display: flex; justify-content: space-between; gap: 12px; padding: 12px 16px; font-size: 13px; color: var(--color-stone-700); line-height: 1.45; }
+.evst-app .awhen { color: var(--color-stone-500); font-size: 12px; flex: none; padding-top: 1px; }
+
+/* ── Tasks / checkboxes ─────────────────────────────────────── */
+.evst-app .task { display: flex; align-items: center; gap: 12px; padding: 12px 16px; cursor: pointer; }
+.evst-app .ck { width: 23px; height: 23px; border-radius: 999px; border: 1.5px solid var(--color-stone-300); flex: none; display: flex; align-items: center; justify-content: center; box-sizing: border-box; transition: background .2s, border-color .2s; }
+.evst-app .ck.on { background: var(--color-sage-500); border-color: var(--color-sage-500); }
+.evst-app .ckm { opacity: 0; transform: scale(.5); transition: opacity .2s, transform .2s; }
+.evst-app .ckm.on { opacity: 1; transform: scale(1); }
+.evst-app .task-lbl { font-size: 14px; flex: 1; color: var(--color-stone-800); transition: opacity .2s; }
+.evst-app .task-lbl.done { opacity: .45; text-decoration: line-through; }
+
+/* ── Progress bar ───────────────────────────────────────────── */
+.evst-app .prog { height: 6px; border-radius: 999px; background: var(--color-stone-200); overflow: hidden; }
+.evst-app .prog-fill { height: 100%; border-radius: 999px; background: var(--color-sage-500); transition: width .5s cubic-bezier(.2,.8,.2,1); }
+
+/* ── Onboarding / auth (dark) ───────────────────────────────── */
+.evst-app .ob { flex: 1; display: flex; flex-direction: column; background: linear-gradient(160deg,#0d1628 0%,#1d3052 100%); color: #fafaf9; padding: 68px 28px 62px; padding-top: calc(max(env(safe-area-inset-top), 50px) + 18px); padding-bottom: calc(max(env(safe-area-inset-bottom), 20px) + 42px); position: relative; overflow: hidden; }
+.evst-app .skip { position: absolute; top: 60px; top: calc(max(env(safe-area-inset-top), 50px) + 10px); right: 22px; background: none; border: 0; color: rgba(255,255,255,.55); font: 500 13px var(--font-sans); cursor: pointer; z-index: 5; }
+.evst-app .dots { display: flex; gap: 6px; justify-content: center; margin-bottom: 18px; }
+.evst-app .dot { width: 6px; height: 6px; border-radius: 99px; background: rgba(255,255,255,.25); transition: width .2s, background .2s; }
+.evst-app .dot.on { background: var(--color-sage-400); width: 18px; }
+.evst-app .obh { font-family: var(--font-display); font-size: 29px; font-weight: 500; line-height: 1.15; margin: 0; color: #fafaf9; text-wrap: balance; }
+.evst-app .ficon { width: 38px; height: 38px; border-radius: 12px; background: rgba(110,155,106,.16); color: #9dbc9a; display: flex; align-items: center; justify-content: center; flex: none; }
+.evst-app .ftit { font-size: 14px; font-weight: 600; color: #fafaf9; }
+.evst-app .fsub { font-size: 12.5px; color: rgba(255,255,255,.6); margin-top: 2px; line-height: 1.5; }
+.evst-app .oblogo { height: 62px; width: auto; align-self: center; margin: 6px 0 0; flex: none; }
+.evst-app .fpw { background: none; border: 0; color: rgba(255,255,255,.55); font: 500 12.5px var(--font-sans); margin-top: 12px; cursor: pointer; padding: 0; text-align: left; align-self: flex-start; }
+.evst-app .aurora { font-style: italic; background: linear-gradient(105deg,#dce4f0 0%,#8aa8cb 40%,#9dbc9a 75%,#c8d9c6 100%); background-size: 220% 100%; -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; color: transparent; animation: evstAurora 7s ease-in-out infinite alternate; }
+
+/* ── Bottom sheets ──────────────────────────────────────────── */
+.evst-app .sheet-wrap { position: absolute; inset: 0; z-index: 40; display: flex; flex-direction: column; justify-content: flex-end; }
+.evst-app .scrim { position: absolute; inset: 0; background: rgba(13,22,40,.5); animation: evstFadeIn .25s both; }
+.evst-app .sheet { position: relative; background: var(--color-stone-50); border-radius: 24px 24px 0 0; padding: 14px 20px 46px; padding-bottom: max(46px, calc(env(safe-area-inset-bottom) + 28px)); animation: evstSlideUp .32s cubic-bezier(.2,.9,.25,1) both; max-height: 92%; overflow-y: auto; scrollbar-width: none; overscroll-behavior-y: none; }
+.evst-app .sheet::-webkit-scrollbar { display: none; }
+.evst-app .grab { width: 36px; height: 4px; border-radius: 99px; background: var(--color-stone-300); margin: 0 auto 14px; }
+.evst-app .sh-title { font-family: var(--font-display); font-size: 23px; font-weight: 600; margin: 0 0 6px; color: var(--color-stone-900); }
+
+/* ── Form controls ──────────────────────────────────────────── */
+.evst-app .flabel { display: block; font-size: 11px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--color-stone-500); margin: 14px 0 6px; }
+.evst-app .flabel-dark { color: rgba(255,255,255,.5); }
+.evst-app .inp { width: 100%; box-sizing: border-box; padding: 12px 14px; border: 1px solid var(--color-stone-300); border-radius: 12px; font: 400 15px var(--font-sans); background: #fff; color: var(--color-stone-900); outline: none; transition: border-color .15s, box-shadow .15s; }
+.evst-app .inp:focus { border-color: var(--color-navy-500); box-shadow: 0 0 0 3px var(--color-navy-100); }
+.evst-app .inp-dark { background: rgba(255,255,255,.07); border-color: rgba(255,255,255,.22); color: #fff; }
+.evst-app .inp-dark::placeholder { color: rgba(255,255,255,.4); }
+.evst-app .inp-dark:focus { border-color: var(--color-sage-400); box-shadow: none; }
+.evst-app .fchips { display: flex; flex-wrap: wrap; gap: 8px; }
+.evst-app .fchip { padding: 8px 14px; border-radius: 999px; border: 1px solid var(--color-stone-300); background: #fff; font: 500 13px var(--font-sans); color: var(--color-stone-600); cursor: pointer; transition: background .15s, color .15s, border-color .15s; }
+.evst-app .fchip.sel { background: var(--color-navy-600); border-color: var(--color-navy-600); color: #fff; }
+.evst-app .drop { border: 1.5px dashed var(--color-stone-300); border-radius: 14px; padding: 20px; text-align: center; cursor: pointer; transition: border-color .2s, background .2s; background: #fff; }
+.evst-app .drop.picked { border-color: var(--color-sage-500); background: var(--color-sage-50); }
+.evst-app .note { margin-top: 16px; padding: 14px 16px; background: var(--color-navy-50); border-radius: 14px; font-size: 12.5px; line-height: 1.55; color: var(--color-navy-800); }
+
+/* ── Toast ──────────────────────────────────────────────────── */
+.evst-app .toast-error { background: #7f1d1d; }
+.evst-app .toast { position: absolute; top: 56px; top: calc(max(env(safe-area-inset-top), 50px) + 6px); left: 50%; z-index: 60; background: var(--color-navy-900); color: #fafaf9; font: 500 12.5px var(--font-sans); padding: 9px 16px; border-radius: 999px; box-shadow: 0 8px 24px rgba(13,22,40,.35); animation: evstToastIn .3s cubic-bezier(.2,.9,.3,1.2) both; max-width: 82%; text-align: center; }
+
+@media (prefers-reduced-motion: reduce) {
+  .evst-app .aurora { animation: none; }
+  .evst-app .ringp { transition: none; }
+}

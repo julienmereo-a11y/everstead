@@ -2,10 +2,46 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa'
 
+const isCapacitorBuild = process.env.CAP_BUILD === '1'
+// The on-screen error catcher below is a DEBUG tool. It must never ship in a build
+// that reaches real users — a raw red stack trace is the last thing someone
+// organising their estate should ever see, and the app's ErrorBoundary already
+// shows a calm fallback. Opt in explicitly: `npm run build:cap:debug`.
+const isCapacitorDebug = isCapacitorBuild && process.env.CAP_DEBUG === '1'
+const port = process.env.PORT ? Number(process.env.PORT) : 4173
+
+// In the native (Capacitor) build, strip the web-only marketing/consent/analytics
+// tags from index.html. Cookiebot (auto blocking mode), Google Tag Manager and the
+// Meta Pixel must never run inside the WKWebView — Cookiebot can't verify the
+// capacitor://localhost origin and can defer other scripts, which blanks the app.
+// SAFE error surface (native only, temporary): shows real uncaught JS exceptions /
+// rejections on screen. Uses NO capture phase, so a mere resource 404 (e.g. a font)
+// will NOT trigger it — only genuine app crashes.
+const NATIVE_ERROR_CATCHER = `<script>(function(){function show(l,e){try{var m=((e&&e.message)?e.message+'\\n\\n':'')+((e&&e.stack)||String(e));var d=document.getElementById('__fatal__');if(!d){d=document.createElement('div');d.id='__fatal__';d.style.cssText='position:fixed;inset:0;z-index:99999;background:#0d1628;color:#fca5a5;font:12px/1.5 monospace;padding:24px;padding-top:max(env(safe-area-inset-top),70px);overflow:auto;white-space:pre-wrap;-webkit-user-select:text';(document.body||document.documentElement).appendChild(d);d.onclick=function(){d.remove()};}d.textContent='\\u26A0\\uFE0F '+l+'  (tap to dismiss)\\n\\n'+m;}catch(x){}}window.addEventListener('error',function(e){if(e.error||typeof e.message==='string')show('error',e.error||e.message);});window.addEventListener('unhandledrejection',function(e){show('unhandledrejection',e.reason);});})();</script>`
+
+function stripWebOnlyTagsForNative() {
+  return {
+    name: 'strip-web-only-tags-for-native',
+    transformIndexHtml(html) {
+      if (!isCapacitorBuild) return html
+      return html
+        .replace(/<script[^>]*data-cbid[^>]*>[\s\S]*?<\/script>/g, '')          // Cookiebot CMP
+        .replace(/<script[^>]*data-cookieconsent[^>]*>[\s\S]*?<\/script>/g, '')  // consent-gated scripts (GA, pixel, consent-mode defaults)
+        .replace(/<script[^>]*googletagmanager[^>]*>[\s\S]*?<\/script>/g, '')    // GA loader
+        .replace(/<noscript>\s*<img[^>]*facebook\.com\/tr[^>]*>\s*<\/noscript>/g, '') // Meta Pixel noscript
+        .replace('</head>', `${isCapacitorDebug ? NATIVE_ERROR_CATCHER : ''}</head>`)
+    },
+  }
+}
+
 export default defineConfig({
   plugins: [
     react(),
-    VitePWA({
+    stripWebOnlyTagsForNative(),
+    // Skipped for the Capacitor build: the PWA service worker's own offline
+    // caching would otherwise fight with Capacitor's local-file serving of
+    // the bundled app (stale-cache-after-native-update class of bug).
+    !isCapacitorBuild && VitePWA({
       registerType: 'autoUpdate',     // new versions install + activate without manual cache clearing
       injectRegister: 'auto',          // plugin injects the SW registration script
       includeAssets: ['favicon.png', 'apple-touch-icon.png'],
@@ -72,9 +108,16 @@ export default defineConfig({
       },
     }),
   ],
+  // Native build: bundle everything into a single file (no code-split chunks).
+  // Dynamic-import chunks can fail to load over the capacitor://localhost scheme
+  // in the iOS WKWebView, which surfaces as a blank/white screen after launch.
+  // Inlining removes that whole failure class. The web build keeps code-splitting.
+  build: isCapacitorBuild
+    ? { rollupOptions: { output: { inlineDynamicImports: true } } }
+    : {},
   server: {
     host: true,
-    port: 4173,
+    port,
     cors: true,
     headers: {
       'Access-Control-Allow-Origin': '*',
@@ -82,7 +125,7 @@ export default defineConfig({
   },
   preview: {
     host: true,
-    port: 4173,
+    port,
     cors: true,
     headers: {
       'Access-Control-Allow-Origin': '*',

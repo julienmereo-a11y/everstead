@@ -132,7 +132,7 @@ export const PRICING = {
       display: '£9.99',
       amountPence: 999,
       priceId: import.meta.env.VITE_STRIPE_FAMILY_MONTHLY,
-      revenueCatIdentifier: 'family_monthly',
+      revenueCatIdentifier: 'everstead_plus_monthly',
     },
     annual: {
       perMonth: 7.99,
@@ -141,7 +141,7 @@ export const PRICING = {
       perYearDisplay: '£95.88',
       amountPence: 9588,
       priceId: import.meta.env.VITE_STRIPE_FAMILY_YEARLY,
-      revenueCatIdentifier: 'family_yearly',
+      revenueCatIdentifier: 'everstead_plus_yearly',
     },
     saveLabel: 'Save 20%',
     saveAmountYear: '£24/year',

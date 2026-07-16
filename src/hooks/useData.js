@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
 import { supabase, uploadDocument, removeStorageFile, logActivity } from '../lib/supabase'
+import { apiPost } from '../lib/platform'
 import { useAuth } from '../contexts/AuthContext'
 
 // ─────────────────────────────────────────────────────────────
@@ -125,23 +126,26 @@ export function usePeople() {
     const access_grants = { accessAreas, accountCategories, documentTypes, accessTiming }
     const person = await base.add({ name, email, role, access_grants })
 
+    // MUST go through apiPost, not a relative fetch: on native the bundle is served
+    // from capacitor://localhost, which has no server — a relative /api/… call is
+    // answered by the SPA fallback (HTTP 200 + index.html), so the email is never
+    // sent AND nothing throws. apiPost rewrites to the absolute origin and uses
+    // CapacitorHttp (bypasses webview CORS). See src/lib/platform.js.
     const { data: { session } } = await supabase.auth.getSession()
-    fetch('/api/emails/send', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${session?.access_token || ''}` },
-      body: JSON.stringify({
-        type:         'invite',
-        inviteeName:  name,
-        inviteeEmail: email,
-        role,
-        ownerName:    profile?.full_name ?? 'Someone',
-        inviteToken:  person.invite_token,
-      }),
-    }).catch(console.error)
+    const emailed = await apiPost('/api/emails/send', {
+      type:         'invite',
+      inviteeName:  name,
+      inviteeEmail: email,
+      role,
+      ownerName:    profile?.full_name ?? 'Someone',
+      inviteToken:  person.invite_token,
+    }, { Authorization: `Bearer ${session?.access_token || ''}` }).catch(() => ({ ok: false }))
 
     logActivity(user.id, 'person.invited', 'trusted_people', person.id, name)
     base.refetch()
-    return person
+    // Surface delivery failure so the caller can tell the truth ("added, but we
+    // couldn't email them") instead of claiming the invite was sent.
+    return { ...person, emailSent: emailed?.ok !== false }
   }
 
   const update = async (id, { role, accessAreas = [], accountCategories = [], documentTypes = [], accessTiming = 'always' }) => {
@@ -173,18 +177,14 @@ export function usePeople() {
     base.refetch()
 
     const { data: { session } } = await supabase.auth.getSession()
-    fetch('/api/emails/send', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${session?.access_token || ''}` },
-      body: JSON.stringify({
-        type:         'invite',
-        inviteeName:  person.name,
-        inviteeEmail: person.email,
-        role:         person.role,
-        ownerName:    profile?.full_name ?? 'Someone',
-        inviteToken:  newToken,
-      }),
-    }).catch(console.error)
+    await apiPost('/api/emails/send', {
+      type:         'invite',
+      inviteeName:  person.name,
+      inviteeEmail: person.email,
+      role:         person.role,
+      ownerName:    profile?.full_name ?? 'Someone',
+      inviteToken:  newToken,
+    }, { Authorization: `Bearer ${session?.access_token || ''}` }).catch(() => {})
   }
 
   return { ...base, invite, update, resendInvite }
@@ -315,17 +315,21 @@ export function useMessages() {
 
   useEffect(() => { load() }, [load])
 
+  // Both throw on failure (mirroring useTable) — swallowing the error here made
+  // every composer close with a "sealed" toast while the write had failed.
   const add = async (msg) => {
     const { supabase } = await import('../lib/supabase')
     const { data: { session } } = await supabase.auth.getSession()
-    const { data: row } = await supabase.from('messages').insert({ ...msg, user_id: session.user.id }).select().single()
+    const { data: row, error } = await supabase.from('messages').insert({ ...msg, user_id: session.user.id }).select().single()
+    if (error) throw error
     if (row) setData(prev => [row, ...prev])
     return row
   }
 
   const update = async (id, changes) => {
     const { supabase } = await import('../lib/supabase')
-    const { data: row } = await supabase.from('messages').update(changes).eq('id', id).select().single()
+    const { data: row, error } = await supabase.from('messages').update(changes).eq('id', id).select().single()
+    if (error) throw error
     if (row) setData(prev => prev.map(m => m.id === id ? row : m))
     return row
   }
@@ -365,16 +369,10 @@ export function useMessages() {
   const releaseExternal = async (messageId) => {
     const { supabase } = await import('../lib/supabase')
     const { data: { session } } = await supabase.auth.getSession()
-    const res = await fetch('/api/messages/release-link', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${session?.access_token}` },
-      body: JSON.stringify({ messageId }),
-    })
-    if (!res.ok) {
-      const { error } = await res.json().catch(() => ({}))
-      throw new Error(error || 'Could not send the message')
-    }
-    return res.json()
+    const { ok, data } = await apiPost('/api/messages/release-link', { messageId },
+      { Authorization: `Bearer ${session?.access_token}` })
+    if (!ok) throw new Error(data?.error || 'Could not send the message')
+    return data
   }
 
   return { data, loading, add, update, uploadVideo, uploadMedia, releaseExternal, refresh: load }

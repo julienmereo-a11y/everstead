@@ -37,3 +37,20 @@ dev-dist/
 # design-sync build output (reproducible)
 /ds-bundle/
 /.ds-tw/
+
+# Capacitor iOS native project - keep the Xcode project as source,
+# ignore generated/local artifacts (Pods, build output, user-specific state)
+ios/App/Pods/
+ios/App/build/
+ios/App/App.xcworkspace/xcuserdata/
+ios/App/App.xcodeproj/xcuserdata/
+ios/App/App/public/
+
+# Capacitor Android - same rule: the project is source, the web assets are
+# generated (rebuilt by `npm run build:capacitor && npx cap sync`)
+android/app/src/main/assets/public/
+android/app/src/main/assets/capacitor.config.json
+android/app/src/main/assets/capacitor.plugins.json
+
+# Design handoff snapshots (bud.app exports) - reference material, not source
+design_handoff_everstead_app/
