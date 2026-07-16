@@ -213,7 +213,9 @@
 /* ── Form controls ──────────────────────────────────────────── */
 .evst-app .flabel { display: block; font-size: 11px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--color-stone-500); margin: 14px 0 6px; }
 .evst-app .flabel-dark { color: rgba(255,255,255,.5); }
-.evst-app .inp { width: 100%; box-sizing: border-box; padding: 12px 14px; border: 1px solid var(--color-stone-300); border-radius: 12px; font: 400 15px var(--font-sans); background: #fff; color: var(--color-stone-900); outline: none; transition: border-color .15s, box-shadow .15s; }
+/* 16px minimum is deliberate: iOS auto-zooms the whole webview when focusing
+   any input under 16px, and the zoom sticks — the app stays cropped/panned. */
+.evst-app .inp { width: 100%; box-sizing: border-box; padding: 12px 14px; border: 1px solid var(--color-stone-300); border-radius: 12px; font: 400 16px var(--font-sans); background: #fff; color: var(--color-stone-900); outline: none; transition: border-color .15s, box-shadow .15s; }
 .evst-app .inp:focus { border-color: var(--color-navy-500); box-shadow: 0 0 0 3px var(--color-navy-100); }
 .evst-app .inp-dark { background: rgba(255,255,255,.07); border-color: rgba(255,255,255,.22); color: #fff; }
 .evst-app .inp-dark::placeholder { color: rgba(255,255,255,.4); }

@@ -9,7 +9,7 @@ import { haptic } from '../../../../lib/haptics'
 import SecScreen from '../components/SecScreen'
 
 // Bump on each build so you can confirm on-device which bundle is running.
-const APP_BUILD = '2026-07-16 · build 33'
+const APP_BUILD = '2026-07-17 · build 34'
 
 function Toggle({ on, onChange, disabled }) {
   return (

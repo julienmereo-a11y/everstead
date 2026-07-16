@@ -29,6 +29,11 @@ function stripWebOnlyTagsForNative() {
         .replace(/<script[^>]*data-cookieconsent[^>]*>[\s\S]*?<\/script>/g, '')  // consent-gated scripts (GA, pixel, consent-mode defaults)
         .replace(/<script[^>]*googletagmanager[^>]*>[\s\S]*?<\/script>/g, '')    // GA loader
         .replace(/<noscript>\s*<img[^>]*facebook\.com\/tr[^>]*>\s*<\/noscript>/g, '') // Meta Pixel noscript
+        // Native shell: forbid zoom. iOS auto-zooms on input focus and the zoom
+        // STICKS — the whole app ends up cropped and panned under the status bar.
+        // Standard for Capacitor apps; the website keeps pinch-zoom (a11y).
+        .replace(/<meta name="viewport"[^>]*\/?>/,
+          '<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no" />')
         .replace('</head>', `${isCapacitorDebug ? NATIVE_ERROR_CATCHER : ''}</head>`)
     },
   }
