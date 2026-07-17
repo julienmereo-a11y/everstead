@@ -197,7 +197,7 @@ export default function MobileAppAuthed() {
         const { App } = await import('@capacitor/app')
         handle = await App.addListener('appStateChange', ({ isActive }) => {
           if (!isActive) return
-          accounts.refetch?.(); documents.refetch?.(); people.refetch?.(); activityLog.refetch?.()
+          accounts.refetch?.(); documents.refetch?.(); people.refetch?.(); instructions.refetch?.(); activityLog.refetch?.()
           refreshProfile?.()
         })
       } catch { /* listener is a nicety — never block the app */ }
@@ -377,15 +377,18 @@ export default function MobileAppAuthed() {
         <MobilePlanSelect
           onBack={() => go('more')}
           onSubscribed={async () => {
-          // plan flips to 'family' only when RevenueCat's WEBHOOK lands, which is
-          // usually a beat after purchasePackage() resolves. Poll briefly, or the
-          // user who just paid gets shown the free-tier upgrade nudge again.
-          go('home'); say('Welcome to Everstead+')
-          for (let i = 0; i < 6; i++) {
+          // plan flips to 'family' only when RevenueCat's WEBHOOK lands — often
+          // several seconds after purchasePackage() resolves. Don't announce
+          // success before it's true, and poll long enough for slow webhooks
+          // (the old 6s window routinely lost the race, so a paying user kept
+          // seeing free-tier limit nudges until a restart).
+          go('home'); say('Payment received — finalising your upgrade…')
+          for (let i = 0; i < 15; i++) {
             const p = await refreshProfile?.()
-            if (p?.plan && p.plan !== 'free') break
-            await new Promise(r => setTimeout(r, 1000))
+            if (p?.plan && p.plan !== 'free') { say('Welcome to Everstead+', 'success'); return }
+            await new Promise(r => setTimeout(r, 2000))
           }
+          say('Your upgrade is processing — it will appear in a moment.')
         }}
         />
       </>
@@ -395,7 +398,7 @@ export default function MobileAppAuthed() {
   // Set / change the app-lock passcode, reached from Settings. Full-screen (no tab
   // bar); returns to Settings when done or skipped.
   if (screen === 'security') {
-    return <SecuritySetup onDone={() => { go('settings'); say('App lock updated') }} />
+    return <SecuritySetup onDone={(changed) => { go('settings'); if (changed) say('App lock updated') }} />
   }
 
   return (

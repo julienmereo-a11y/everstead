@@ -9,7 +9,7 @@ import { haptic } from '../../../../lib/haptics'
 import SecScreen from '../components/SecScreen'
 
 // Bump on each build so you can confirm on-device which bundle is running.
-const APP_BUILD = '2026-07-17 · build 36'
+const APP_BUILD = '2026-07-17 · build 37'
 
 function Toggle({ on, onChange, disabled }) {
   return (
@@ -24,6 +24,16 @@ function Toggle({ on, onChange, disabled }) {
     </button>
   )
 }
+
+// Module scope, NOT inside the component: an inline component gets a fresh
+// identity per render, so React remounted every card on each keystroke —
+// inputs lost focus and the iOS keyboard dismissed after every character.
+const Card = ({ title, children }) => (
+  <div className="card-light" style={{ padding: 16, marginBottom: 14 }}>
+    <div className="eyebrow" style={{ marginBottom: 12 }}>{title}</div>
+    {children}
+  </div>
+)
 
 const NOTIFS = [
   { key: 'notify_document_expiry', label: 'Document expiry reminders' },
@@ -124,13 +134,6 @@ export default function SettingsScreen({ app }) {
       .then(() => { setCopied(true); setTimeout(() => setCopied(false), 1600) })
       .catch(() => app.say('Could not copy — long-press the link instead.', 'error'))
   }
-
-  const Card = ({ title, children }) => (
-    <div className="card-light" style={{ padding: 16, marginBottom: 14 }}>
-      <div className="eyebrow" style={{ marginBottom: 12 }}>{title}</div>
-      {children}
-    </div>
-  )
 
   return (
     <SecScreen title="Settings" subtitle={profile?.email} onBack={() => app.go('more')}>

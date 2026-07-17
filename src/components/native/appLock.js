@@ -65,6 +65,11 @@ export async function setPasscode(pin) {
   const hash = await sha256Hex(salt + pin)
   await storeSet(K_SALT, salt)
   await storeSet(K_PIN, hash)
+  // storeSet never throws (storage must not break flows) — so VERIFY the write
+  // landed. Without this, a missing Preferences plugin meant SecuritySetup
+  // showed success while no lock existed at all: a silent security failure.
+  const readBack = await storeGet(K_PIN)
+  if (readBack !== hash) throw new Error('Passcode could not be saved on this device.')
 }
 
 export async function verifyPasscode(pin) {

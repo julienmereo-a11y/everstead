@@ -13,13 +13,19 @@ let revenueCatConfigured = false
 // Initialising it with an undefined key leaves the native SDK in a broken state
 // where later calls (e.g. logOut on sign-out) can crash the webview.
 const REVENUECAT_KEY = import.meta.env.VITE_REVENUECAT_IOS_API_KEY
+let revenueCatConfigurePromise = null
 async function syncRevenueCatUser(userId) {
   if (!isNative() || !isIOS() || !REVENUECAT_KEY) return
   try {
     const { Purchases } = await import('@revenuecat/purchases-capacitor')
     if (!revenueCatConfigured) {
-      await Purchases.configure({ apiKey: REVENUECAT_KEY, appUserID: userId })
-      revenueCatConfigured = true
+      // The bootstrap getSession() and the INITIAL_SESSION event fire within
+      // milliseconds of each other — share ONE configure() so they can't both
+      // run it concurrently.
+      revenueCatConfigurePromise ??= Purchases.configure({ apiKey: REVENUECAT_KEY, appUserID: userId })
+        .then(() => { revenueCatConfigured = true })
+        .catch(err => { revenueCatConfigurePromise = null; throw err })
+      await revenueCatConfigurePromise
     } else {
       await Purchases.logIn({ appUserID: userId })
     }
@@ -129,7 +135,14 @@ export function AuthProvider({ children }) {
       } else {
         setProfile(null)
         setDelegateInvites([])
-        if (_event === 'SIGNED_OUT') revenueCatLogOut()
+        if (_event === 'SIGNED_OUT') {
+          revenueCatLogOut()
+          // The app-lock PIN is per-user, not per-device: without this, a new
+          // account on the same phone inherits (and is locked out by) the
+          // previous user's passcode, with no way past the lock screen.
+          import('../components/native/appLock')
+            .then(m => m.clearPasscode?.()).catch(() => {})
+        }
       }
     })
 
@@ -171,10 +184,13 @@ export function AuthProvider({ children }) {
   const updateProfile = async (updates, profileUserId = user?.id) => {
     if (!profileUserId) throw new Error('Unable to complete signup. Please try again.')
 
-    const payload = { id: profileUserId, ...updates }
+    // UPDATE, not upsert: the upsert's insert path lacks email (NOT NULL, no
+    // default), so a missing profile row made every save throw. Profile rows
+    // are created by the signup trigger — this only ever amends them.
     const { data, error } = await supabase
       .from('profiles')
-      .upsert(payload, { onConflict: 'id' })
+      .update(updates)
+      .eq('id', profileUserId)
       .select()
       .single()
     if (error) throw error

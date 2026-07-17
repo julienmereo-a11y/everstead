@@ -32,6 +32,22 @@ const Spinner = () => (
   </div>
 )
 
+// Shown when the session is valid but the profile hasn't arrived (usually an
+// offline cold start). A 6s grace keeps the normal path a plain spinner.
+function ProfileWait({ retry }) {
+  const [slow, setSlow] = useState(false)
+  useEffect(() => { const t = setTimeout(() => setSlow(true), 6000); return () => clearTimeout(t) }, [])
+  if (!slow) return <Spinner />
+  return (
+    <div className="evst-app" style={{ background: '#0d1628', height: '100dvh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 14, padding: 32, textAlign: 'center' }}>
+      <p style={{ color: 'rgba(255,255,255,0.75)', fontSize: 14.5, lineHeight: 1.5, margin: 0 }}>
+        We couldn't reach Everstead. Check your connection and try again.
+      </p>
+      <button className="btn btn-light" onClick={retry}>Try again</button>
+    </div>
+  )
+}
+
 export default function MobileApp() {
   const { user, profile, loading } = useAuth()
   const [params] = useSearchParams()
@@ -44,7 +60,7 @@ export default function MobileApp() {
   const [needsSetup, setNeedsSetup] = useState(isNative() ? null : false)
   useEffect(() => {
     let cancelled = false
-    if (!user || !isNative()) { setNeedsIntro(false); setNeedsSetup(false); return }
+    if (!user?.id || !isNative()) { setNeedsIntro(false); setNeedsSetup(false); return }
     // Back to "checking" while the pref reads resolve — otherwise the stale `false`
     // from the logged-out state lets a just-signed-in user flash the full app for a
     // beat before the intro/passcode gates kick in.
@@ -56,7 +72,9 @@ export default function MobileApp() {
       .then(s => { if (!cancelled) setNeedsSetup(!s.setupDone) })
       .catch(() => { if (!cancelled) setNeedsSetup(false) })
     return () => { cancelled = true }
-  }, [user])
+    // user?.id, NOT user: supabase emits a NEW user object on TOKEN_REFRESHED /
+    // USER_UPDATED; keying on the object unmounted the whole app every ~50 min.
+  }, [user?.id])
 
   // Preview modes (no backend, no login).
   if (demo === 'plan') {
@@ -89,8 +107,9 @@ export default function MobileApp() {
   if (!user) return <div className="evst-app" style={{ background: '#0d1628' }}><MobileAuthFlow /></div>
 
   // Logged in, profile still loading → wait (avoids a flash before the app
-  // renders with the user's data).
-  if (!profile) return <Spinner />
+  // renders with the user's data). If it never arrives (offline cold start,
+  // Supabase blip), offer a retry instead of an infinite spinner.
+  if (!profile) return <ProfileWait retry={() => refreshProfile?.()} />
 
   // Still resolving the first-run flags → wait.
   if (needsIntro === null || needsSetup === null) return <Spinner />

@@ -136,11 +136,15 @@ export async function syncReminders(args) {
   // or the just-uploaded document's expiry reminder never gets scheduled.
   if (syncing) { pendingSync = args; return }
   syncing = true
-  const mine = ++epoch
   try {
     if (!(await notificationsGranted())) return
     const { LN } = await plugin()
     await clearReminders()
+    // Snapshot AFTER clearReminders — it bumps the epoch itself. Snapshotting
+    // before it (the original code) made `epoch !== mine` ALWAYS true, so the
+    // schedule call at the bottom never ran: every local reminder was silently
+    // dead. Any clear/sign-out that happens after this line still invalidates.
+    const mine = epoch
 
     const now = Date.now()
     const notifications = []

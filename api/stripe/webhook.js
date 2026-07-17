@@ -22,6 +22,21 @@ async function buffer(req) {
   return Buffer.concat(chunks)
 }
 
+
+// Map a raw Stripe subscription status onto profiles_subscription_status_check
+// (trialing|active|past_due|canceled|cancelled|cancelling|incomplete|
+// trial_expired|pending_deletion). Stripe also emits 'unpaid', 'paused' and
+// 'incomplete_expired' — writing those unmapped fails the CHECK and silently
+// aborts the ENTIRE profile sync (plan, period end, cancel_at included).
+function safeSubscriptionStatus(stripeStatus) {
+  switch (stripeStatus) {
+    case 'unpaid':             return 'past_due'
+    case 'paused':             return 'cancelled'
+    case 'incomplete_expired': return 'cancelled'
+    default:                   return stripeStatus
+  }
+}
+
 async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).end()
 
@@ -159,7 +174,7 @@ async function handler(req, res) {
       stripe_customer_id:     subscription.customer,
       stripe_subscription_id: subscription.id,
       stripe_price_id:        priceId,
-      subscription_status:    isTrialing ? 'trialing' : subscription.status,
+      subscription_status:    isTrialing ? 'trialing' : safeSubscriptionStatus(subscription.status),
       trial_ends_at:          trialEndsAt,
       current_period_end:     currentPeriodEnd,
     }
@@ -308,7 +323,7 @@ async function handler(req, res) {
       : null
 
     const profileUpdate = {
-      subscription_status: subscription.cancel_at_period_end ? 'cancelling' : subscription.status,
+      subscription_status: subscription.cancel_at_period_end ? 'cancelling' : safeSubscriptionStatus(subscription.status),
       current_period_end:  currentPeriodEnd,
       stripe_price_id:     priceId,
       ...planInfo,
@@ -324,11 +339,12 @@ async function handler(req, res) {
     const prevPriceId = event.data.previous_attributes?.items?.data?.[0]?.price?.id
     const prevPlan    = PRICE_TO_PLAN[prevPriceId]?.plan
 
-    const { data: updatedProfiles } = await supabase
+    const { data: updatedProfiles, error: updErr } = await supabase
       .from('profiles')
       .update(profileUpdate)
       .eq('stripe_customer_id', subscription.customer)
       .select('id, full_name, email, plan, subscription_status')
+    if (updErr) console.error('subscription.updated profile sync failed:', updErr.message)
 
     // Post-upgrade celebratory email (essential → family)
     if (

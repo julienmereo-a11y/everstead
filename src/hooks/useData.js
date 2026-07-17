@@ -209,7 +209,8 @@ export function useInstructions() {
         body: s,
         step_order: i,
       }))
-      await supabase.from('instruction_steps').insert(stepRows)
+      const { error } = await supabase.from('instruction_steps').insert(stepRows)
+      if (error) throw error // never show "saved" for steps that don't exist
     }
 
     base.refetch()
@@ -219,18 +220,35 @@ export function useInstructions() {
   const updateWithSteps = async (instructionId, { title, category, audience, body, steps = [] }) => {
     const instruction = await base.update(instructionId, { title, category, audience, body })
 
-    await supabase
+    // INSERT the new steps BEFORE deleting the old ones — delete-first meant a
+    // failed insert permanently destroyed the user's steps while both apps
+    // showed "saved". New rows use step_order offset to coexist, then the old
+    // rows are removed and the order rewritten.
+    const { data: oldSteps } = await supabase
       .from('instruction_steps')
-      .delete()
+      .select('id')
       .eq('instruction_id', instructionId)
 
     if (steps.length > 0) {
       const stepRows = steps.map((s, i) => ({
         instruction_id: instructionId,
         body: s,
-        step_order: i,
+        step_order: 1000 + i, // temporary offset so old+new coexist
       }))
-      await supabase.from('instruction_steps').insert(stepRows)
+      const { data: inserted, error: insErr } = await supabase
+        .from('instruction_steps').insert(stepRows).select('id, step_order')
+      if (insErr) throw insErr // old steps still intact — honest failure
+
+      // New steps are safely stored: remove the old ones, then normalise order.
+      const oldIds = (oldSteps || []).map(r => r.id)
+      if (oldIds.length) await supabase.from('instruction_steps').delete().in('id', oldIds)
+      for (const row of (inserted || [])) {
+        await supabase.from('instruction_steps')
+          .update({ step_order: row.step_order - 1000 }).eq('id', row.id)
+      }
+    } else {
+      const oldIds = (oldSteps || []).map(r => r.id)
+      if (oldIds.length) await supabase.from('instruction_steps').delete().in('id', oldIds)
     }
 
     base.refetch()
@@ -386,7 +404,7 @@ export function useActivityLog(limit = 20) {
   const [data, setData]       = useState([])
   const [loading, setLoading] = useState(true)
 
-  useEffect(() => {
+  const refetch = useCallback(() => {
     if (!user) return
     supabase
       .from('activity_log')
@@ -400,7 +418,9 @@ export function useActivityLog(limit = 20) {
       })
   }, [user, limit])
 
-  return { data, loading }
+  useEffect(() => { refetch() }, [refetch])
+
+  return { data, loading, refetch }
 }
 
 // ─────────────────────────────────────────────────────────────

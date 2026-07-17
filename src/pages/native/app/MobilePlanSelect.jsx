@@ -54,7 +54,11 @@ export default function MobilePlanSelect({ onSubscribed, onBack, demo }) {
       haptic.success() // subscription started — the biggest moment in the app
       onSubscribed?.(PLAN_KEY)
     } catch (err) {
-      if (!err?.userCancelled) { setError('Purchase could not be completed. Please try again.'); console.error('purchase error:', err) }
+      // The Capacitor bridge rejects with (message, code) — userCancelled never
+      // arrives on iOS. Code '1' is PURCHASE_CANCELLED: the user tapped Cancel
+      // on the Apple sheet, which must not read as a failure.
+      const cancelled = err?.userCancelled || err?.code === '1' || /cancel/i.test(err?.message || '')
+      if (!cancelled) { setError('Purchase could not be completed. Please try again.'); console.error('purchase error:', err) }
     } finally { setBusy(false) }
   }
 

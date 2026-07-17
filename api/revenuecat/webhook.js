@@ -140,10 +140,17 @@ async function handler(req, res) {
 
   if (!appUserId) return res.status(200).json({ received: true, ignored: 'no app_user_id' })
 
+  // id.eq.<value> casts to uuid — a $RCAnonymousID:… app_user_id would make the
+  // whole filter error (→ 500 → RevenueCat retries forever). Only match on the
+  // uuid column when the value actually is a uuid.
+  const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(appUserId)
+  const matcher = isUuid
+    ? `revenuecat_app_user_id.eq.${appUserId},id.eq.${appUserId}`
+    : `revenuecat_app_user_id.eq.${appUserId}`
   const { data: updatedProfiles, error: updateError } = await supabase
     .from('profiles')
     .update(profileUpdate)
-    .or(`revenuecat_app_user_id.eq.${appUserId},id.eq.${appUserId}`)
+    .or(matcher)
     .select('id, subscription_status, plan')
 
   // A failed write must NOT be acknowledged — return 500 so RevenueCat retries,

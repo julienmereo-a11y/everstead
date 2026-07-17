@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { LockKeyhole } from 'lucide-react'
 import { isNative } from '../../lib/platform'
-import { getLockState, verifyPasscode, verifyBiometric } from './appLock'
+import { getLockState, verifyPasscode, verifyBiometric, clearPasscode } from './appLock'
 import { haptic } from '../../lib/haptics'
 
 // Local device-lock layer for the iOS app, sitting above the route tree. The lock
@@ -20,6 +20,7 @@ export default function BiometricGate({ children }) {
   const [biometric, setBiometric] = useState(false)
   const [pin, setPin] = useState('')
   const [error, setError] = useState(null)
+  const [confirmExit, setConfirmExit] = useState(false)
   const backgroundedAt = useRef(null)
 
   // Any native platform: the passcode is pure JS, and the biometric plugin covers
@@ -106,6 +107,24 @@ export default function BiometricGate({ children }) {
         {biometric && (
           <button onClick={promptBiometric} className="text-sage-300 text-sm font-medium">Use Face ID</button>
         )}
+        {/* Escape hatch — without it a forgotten passcode is a PERMANENT
+            lockout (the lock screen was the only surface, with no way out
+            short of deleting the app). Signing out clears the device PIN;
+            their vault data is safe behind their account password. */}
+        <button
+          onClick={async () => {
+            if (!confirmExit) { setConfirmExit(true); setTimeout(() => setConfirmExit(false), 4000); return }
+            try {
+              await clearPasscode()
+              const { supabase } = await import('../../lib/supabase')
+              await supabase.auth.signOut()
+            } catch { /* even on failure, fall through to unlock the gate — no session = auth screen */ }
+            setLocked(false)
+          }}
+          className="text-white/50 text-xs font-medium mt-4"
+        >
+          {confirmExit ? 'Tap again to sign out — your passcode will be reset' : 'Forgotten your passcode? Sign out'}
+        </button>
       </div>
     )
   }

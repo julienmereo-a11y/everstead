@@ -2075,12 +2075,15 @@ function DocumentsSection({ documents, loading, uploadFile, update, remove, plan
         if (daysUntilExpiry > 0 && daysUntilExpiry <= 90) {
           const severity = daysUntilExpiry <= 30 ? 'critical' : 'warning'
           const fmtDate = expiryDate.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
+          // Column is `detail` (there is no `message` column — the insert was
+          // silently rejected for as long as this feature existed); category
+          // 'documents' matches the expiry cron's dedup filter.
           await addAlert({
             title: `${form.name || 'Document'} expiry approaching`,
-            message: `Your ${form.name || 'document'} expires on ${fmtDate}. Update it before it lapses.`,
+            detail: `Your ${form.name || 'document'} expires on ${fmtDate}. Update it before it lapses.`,
             severity,
-            category: 'document',
-          }).catch(() => {})
+            category: 'documents',
+          }).catch(err => console.error('expiry alert failed:', err?.message))
         }
       }
       closeModal()
@@ -2115,12 +2118,15 @@ function DocumentsSection({ documents, loading, uploadFile, update, remove, plan
         if (daysUntilExpiry > 0 && daysUntilExpiry <= 90) {
           const severity = daysUntilExpiry <= 30 ? 'critical' : 'warning'
           const fmtDate = expiryDate.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
+          // Column is `detail` (there is no `message` column — the insert was
+          // silently rejected for as long as this feature existed); category
+          // 'documents' matches the expiry cron's dedup filter.
           await addAlert({
             title: `${form.name || 'Document'} expiry approaching`,
-            message: `Your ${form.name || 'document'} expires on ${fmtDate}. Update it before it lapses.`,
+            detail: `Your ${form.name || 'document'} expires on ${fmtDate}. Update it before it lapses.`,
             severity,
-            category: 'document',
-          }).catch(() => {})
+            category: 'documents',
+          }).catch(err => console.error('expiry alert failed:', err?.message))
         }
       }
       closeModal()
@@ -4440,7 +4446,7 @@ function SubscriptionsSection({ subscriptions: remoteSubs, loading, add, update,
       billing_cycle: sub.billing_cycle || 'Monthly',
       amount: sub.amount ?? '',
       next_charge_date: sub.next_charge_date || '',
-      notes: sub.notes || '',
+      notes: sub.cancel_instructions || '',
     })
   }
 
@@ -4453,7 +4459,9 @@ function SubscriptionsSection({ subscriptions: remoteSubs, loading, add, update,
       billing_cycle: form.billing_cycle,
       amount: Number(form.amount || 0),
       next_charge_date: form.next_charge_date || null,
-      notes: form.notes,
+      // The DB column is cancel_instructions — `notes` does not exist on the
+      // subscriptions table, and one unknown key rejects the WHOLE write.
+      cancel_instructions: form.notes,
     }
     try {
       if (editingSubscription) {
@@ -4465,13 +4473,9 @@ function SubscriptionsSection({ subscriptions: remoteSubs, loading, add, update,
       }
       closeModal()
     } catch (err) {
-      // save locally so the UI still works even if Supabase rejects
-      if (!editingSubscription) {
-        setLocalSubs(prev => [...prev, { ...payload, id: Date.now() }])
-        closeModal()
-      } else {
-        setSaveError(err?.message || 'Could not save. Please try again.')
-      }
+      // Never fake success: a phantom row that vanishes on reload is worse
+      // than an honest error.
+      setSaveError(err?.message || 'Could not save. Please try again.')
     } finally {
       setSaving(false)
     }
@@ -4491,7 +4495,7 @@ function SubscriptionsSection({ subscriptions: remoteSubs, loading, add, update,
               <div className="flex-1 min-w-0">
                 <p className="font-medium text-navy-800 text-sm">{sub.name}</p>
                 <p className="text-xs text-stone-400">{sub.billing_cycle} · Next: {sub.next_charge_date ?? '—'}</p>
-                {sub.notes && <p className="text-xs text-stone-400 mt-0.5 truncate">{sub.notes}</p>}
+                {sub.cancel_instructions && <p className="text-xs text-stone-400 mt-0.5 truncate">{sub.cancel_instructions}</p>}
               </div>
               <p className="font-semibold text-navy-900 text-sm">£{Number(sub.amount || 0).toFixed(2)}</p>
               <div className="flex items-center gap-1 shrink-0">
