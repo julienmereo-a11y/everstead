@@ -28,6 +28,7 @@ async function handler(req, res) {
       .eq('subscription_status', 'trialing')
       .lt('trial_ends_at', new Date().toISOString())
       .not('trial_ends_at', 'is', null)
+      .neq('entitlement_source', 'apple_iap') // Apple manages IAP lifecycle
 
     for (const p of expired ?? []) {
       await supabase
@@ -48,6 +49,7 @@ async function handler(req, res) {
     .eq('subscription_status', 'trialing')
     .not('trial_ends_at', 'is', null)
     .neq('notify_trial_reminders', false)
+    .neq('entitlement_source', 'apple_iap') // Apple auto-charges IAP trials — no card nudge
 
   const now = Date.now()
 
