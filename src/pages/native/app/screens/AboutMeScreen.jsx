@@ -1,9 +1,12 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { useAboutMe } from '../../../../hooks/useData'
+import { useAuth } from '../../../../contexts/AuthContext'
 import { initialsOf } from '../helpers'
 import SecScreen, { Busy } from '../components/SecScreen'
 
 export default function AboutMeScreen({ app }) {
+  const auth = useAuth()
+  const profile = app.profile || auth.profile
   const live = useAboutMe()
   const data = app.demo ? app.demoData.aboutMe : live.data
   const loading = app.demo ? false : live.loading
@@ -16,16 +19,21 @@ export default function AboutMeScreen({ app }) {
   const fileInput = useRef(null)
 
   useEffect(() => {
-    if (!data) return
+    // Never ask for what we already know: the name was given at onboarding
+    // (profiles.full_name), so start from it — mirrors the web's AboutMeSection.
+    if (!data) {
+      setForm(f => ({ ...f, full_name: f.full_name || profile?.full_name || '' }))
+      return
+    }
     setForm({
-      full_name: data.full_name || '',
+      full_name: data.full_name || profile?.full_name || '',
       date_of_birth: data.date_of_birth || '',
       passions: data.passions || '',
       reflections: data.reflections || '',
     })
     setEvents(Array.isArray(data.life_events) ? data.life_events : [])
     setAvatar(data.avatar_url || '')
-  }, [data])
+  }, [data, profile?.full_name])
 
   const set = (k) => (e) => setForm(f => ({ ...f, [k]: e.target.value }))
   const setEvent = (i, k, v) => setEvents(es => es.map((e, idx) => idx === i ? { ...e, [k]: v } : e))
