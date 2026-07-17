@@ -32,14 +32,27 @@ async function handler(req, res) {
 
   const { access_token, refresh_token } = await authRes.json()
 
+  // App Review bypass: Apple's reviewer signs in on a device that can't receive
+  // the emailed code, so the ONE designated review account uses a fixed code
+  // (given to Apple in the App Review notes) and gets no email. Env-gated — if
+  // either var is unset, every account behaves normally. The password is still
+  // required, so the review flow mirrors production exactly.
+  const isReviewAccount =
+    !!process.env.APP_REVIEW_EMAIL &&
+    !!process.env.APP_REVIEW_CODE &&
+    email.trim().toLowerCase() === process.env.APP_REVIEW_EMAIL.trim().toLowerCase()
+
   // Throttle code sends per IP (password already verified above, so wrong-password
   // attempts don't consume the budget) — stops MFA-email bombing of a target inbox.
-  if (await rateLimited(req, 'mfa-send-code', { max: 6, windowMinutes: 15 })) {
+  // Skipped for the review account so repeated reviewer sign-ins never rate-limit.
+  if (!isReviewAccount && await rateLimited(req, 'mfa-send-code', { max: 6, windowMinutes: 15 })) {
     return res.status(429).json({ error: 'Too many code requests. Please wait a few minutes and try again.' })
   }
 
-  // Generate 6-digit code
-  const code = String(Math.floor(100000 + Math.random() * 900000))
+  // Generate 6-digit code (fixed, no email, for the review account)
+  const code = isReviewAccount
+    ? String(process.env.APP_REVIEW_CODE)
+    : String(Math.floor(100000 + Math.random() * 900000))
 
   // Store session + code — upsert so a retry replaces the previous one
   const { error: dbErr } = await supabase.from('mfa_pending').upsert(
@@ -58,13 +71,16 @@ async function handler(req, res) {
     return res.status(500).json({ error: 'Could not generate code. Please try again.' })
   }
 
-  // Send branded email
-  await resend.emails.send({
-    from:    'Everstead <hello@everstead.care>',
-    to:      email,
-    subject: `${code} — your Everstead sign-in code`,
-    html:    mfaHtml(code),
-  }).catch(err => console.error('mfa email error:', err))
+  // Send branded email (skipped for the review account — its code is fixed and
+  // supplied to Apple in the App Review notes).
+  if (!isReviewAccount) {
+    await resend.emails.send({
+      from:    'Everstead <hello@everstead.care>',
+      to:      email,
+      subject: `${code} — your Everstead sign-in code`,
+      html:    mfaHtml(code),
+    }).catch(err => console.error('mfa email error:', err))
+  }
 
   res.status(200).json({ sent: true })
 }
