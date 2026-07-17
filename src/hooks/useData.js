@@ -428,6 +428,9 @@ export function useAboutMe() {
   const save = async (values) => {
     if (!user) return null
     const payload = { ...values, user_id: user.id, updated_at: new Date().toISOString() }
+    // date_of_birth is a Postgres `date` — an empty string (untouched form
+    // field) fails the cast and the whole save 400s. Empty means "not set".
+    if (payload.date_of_birth === '') payload.date_of_birth = null
     const { data: row, error } = await supabase
       .from('about_me')
       .upsert(payload, { onConflict: 'user_id' })
