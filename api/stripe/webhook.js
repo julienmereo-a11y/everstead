@@ -246,7 +246,11 @@ async function handler(req, res) {
     const subscription = event.data.object
     const { data: deletedProfiles } = await supabase
       .from('profiles')
-      .update({ subscription_status: 'cancelled', plan: null, current_period_end: null, cancel_at: null })
+      .update({ subscription_status: 'cancelled', plan: 'free', current_period_end: null, cancel_at: null })
+      // plan MUST be 'free', never null: profiles.plan is NOT NULL, so the
+      // null write silently failed — expired subscribers kept their paid plan
+      // and the winback email never sent. 'free' also closes the fail-open
+      // gates (canUseFeature/RLS treat an unknown plan permissively).
       .eq('stripe_customer_id', subscription.customer)
       .select('id, full_name, email, plan')
 
@@ -274,7 +278,7 @@ async function handler(req, res) {
       if (membership?.secondary_user_id) {
         await supabase
           .from('profiles')
-          .update({ subscription_status: 'cancelled', plan: null })
+          .update({ subscription_status: 'cancelled', plan: 'free' }) // NOT NULL: never null (see above)
           .eq('id', membership.secondary_user_id)
       }
     }

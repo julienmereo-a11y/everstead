@@ -107,10 +107,11 @@ async function handler(req, res) {
       // canUseFeature() gate, the messages RLS backstop and the free-tier caps
       // all treat an unknown plan permissively, so an expired subscriber would
       // keep every paid feature.
+      // NB: billing_cycle is NOT NULL with CHECK(monthly|yearly) — never null
+      // it here; a stale value on a free plan is harmless.
       profileUpdate = {
         subscription_status: 'cancelled',
         plan:                 'free',
-        billing_cycle:        null,
         current_period_end:   null,
         cancel_at:             null,
       }
