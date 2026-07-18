@@ -130,6 +130,24 @@ export default function MobilePlanSelect({ onSubscribed, onBack, demo }) {
         <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.65)', textAlign: 'center', margin: '6px 0 0', lineHeight: 1.5 }}>
           Billed through the App Store after your trial. Manage or cancel anytime in Settings.
         </p>
+        {/* Guideline 3.1.2: auto-renewable subscription screens must link the
+            Terms of Use and Privacy Policy. Opens in the system browser sheet. */}
+        <p style={{ fontSize: 11, textAlign: 'center', margin: '8px 0 0', lineHeight: 1.5 }}>
+          {[['Terms of Use', 'https://www.everstead.care/terms'], ['Privacy Policy', 'https://www.everstead.care/privacy']].map(([label, url], i) => (
+            <React.Fragment key={label}>
+              {i > 0 && <span style={{ color: 'rgba(255,255,255,0.35)' }}> · </span>}
+              <a
+                href={url}
+                style={{ color: 'rgba(255,255,255,0.65)', textDecoration: 'underline' }}
+                onClick={async (e) => {
+                  if (!isNative()) return // web preview: normal link
+                  e.preventDefault()
+                  try { const { Browser } = await import('@capacitor/browser'); await Browser.open({ url }) } catch {}
+                }}
+              >{label}</a>
+            </React.Fragment>
+          ))}
+        </p>
       </div>
     </div>
   )
