@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react'
 import { useAuth } from '../../../../contexts/AuthContext'
 import { supabase } from '../../../../lib/supabase'
-import { isNative } from '../../../../lib/platform'
+import { isNative, apiPost } from '../../../../lib/platform'
 import { planLabel, isPaidPlan } from '../../../../config/pricing'
 import { getLockState, setBiometricEnabled, clearPasscode, biometricAvailable } from '../../../../components/native/appLock'
 import { clearReminders, notificationsGranted, requestNotificationPermission, registerForPush, notificationStatus } from '../../../../lib/notifications'
@@ -9,7 +9,7 @@ import { haptic } from '../../../../lib/haptics'
 import SecScreen from '../components/SecScreen'
 
 // Bump on each build so you can confirm on-device which bundle is running.
-const APP_BUILD = '2026-07-17 · build 37'
+const APP_BUILD = '2026-07-18 · build 38'
 
 function Toggle({ on, onChange, disabled }) {
   return (
@@ -70,6 +70,35 @@ export default function SettingsScreen({ app }) {
     confirmTimer.current = setTimeout(() => setConfirmAction(null), 3500)
   }
   useEffect(() => () => clearTimeout(confirmTimer.current), [])
+
+  // Account deletion (App Store Guideline 5.1.1(v): apps with account creation
+  // must offer in-app deletion). Reuses the web endpoint, which cancels any
+  // Stripe subscription, marks the profile pending_deletion (data removed
+  // within 30 days) and emails a confirmation. Apple IAP subscriptions can
+  // only be cancelled by the user in their Apple ID settings — the copy below
+  // tells them so.
+  const [delOpen, setDelOpen] = useState(false)
+  const [deleting, setDeleting] = useState(false)
+  const [delErr, setDelErr] = useState(null)
+  const deleteAccount = async () => {
+    if (app.demo || deleting) return
+    setDelErr(null); setDeleting(true)
+    try {
+      const { data: { session } } = await supabase.auth.getSession()
+      const userId = auth.user?.id
+      if (!session?.access_token || !userId) throw new Error('Please sign in again and retry.')
+      const res = await apiPost('/api/auth/delete-account', { userId }, {
+        Authorization: `Bearer ${session.access_token}`,
+      })
+      if (!res.ok) throw new Error(res.data?.error || 'Deletion failed. Please contact support@everstead.care.')
+      // Account is scheduled for deletion — clear local state and leave.
+      await clearReminders()
+      signOut()
+    } catch (err) {
+      setDelErr(err.message || 'Deletion failed. Please contact support@everstead.care.')
+      setDeleting(false)
+    }
+  }
 
   useEffect(() => {
     if (!profile) return
@@ -257,6 +286,44 @@ export default function SettingsScreen({ app }) {
       >
         {confirmAction === 'signout' ? 'Tap again to sign out' : 'Sign out'}
       </button>
+
+      {!delOpen ? (
+        <button
+          className="linkbtn"
+          style={{ marginTop: 14, color: 'var(--color-stone-400)', fontSize: 12.5 }}
+          onClick={() => { haptic.warning(); setDelOpen(true); setDelErr(null) }}
+        >
+          Delete my account
+        </button>
+      ) : (
+        <div className="card-light" style={{ padding: 16, marginTop: 14, border: '1px solid #fecaca' }}>
+          <div className="eyebrow" style={{ marginBottom: 10, color: '#b91c1c' }}>Delete account</div>
+          <p className="rdet" style={{ margin: '0 0 8px', lineHeight: 1.55 }}>
+            This permanently deletes your Everstead account — your vault, documents,
+            personal messages and trusted contacts. Your data is removed within 30 days.
+            You can export a copy first from the website (everstead.care → Settings).
+          </p>
+          {profile?.entitlement_source === 'apple_iap' && isPaidPlan(profile?.plan) && (
+            <p className="rdet" style={{ margin: '0 0 8px', lineHeight: 1.55, fontWeight: 600 }}>
+              Your Everstead+ subscription is billed by Apple: please also cancel it in
+              Settings → your Apple ID → Subscriptions. Deleting your account does not
+              cancel an Apple subscription.
+            </p>
+          )}
+          {app.demo && <p className="rdet" style={{ margin: '0 0 8px', color: 'var(--color-stone-400)' }}>Not available in demo.</p>}
+          {delErr && <p style={{ color: '#b91c1c', fontSize: 12.5, margin: '0 0 8px' }}>{delErr}</p>}
+          <button
+            className={`btn w100 ${deleting || app.demo ? 'dis' : ''}`}
+            style={{ background: '#b91c1c', color: '#fff', marginTop: 4 }}
+            onClick={deleteAccount}
+          >
+            {deleting ? 'Deleting…' : 'Permanently delete my account'}
+          </button>
+          <button className="linkbtn" style={{ marginTop: 8 }} onClick={() => { setDelOpen(false); setDelErr(null) }} disabled={deleting}>
+            Cancel
+          </button>
+        </div>
+      )}
 
       {isNative() && (
         <p style={{ textAlign: 'center', fontSize: 11, color: 'var(--color-stone-400)', margin: '16px 0 0' }}>
