@@ -2,17 +2,12 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<!-- Export compliance: Everstead uses only standard OS-provided encryption
-	     (HTTPS/TLS) — which is exempt. Declaring this here means Apple never
-	     shows the encryption/export question on upload or submission. -->
-	<key>ITSAppUsesNonExemptEncryption</key>
-	<false/>
-    <key>CAPACITOR_DEBUG</key>
+	<key>CAPACITOR_DEBUG</key>
 	<string>$(CAPACITOR_DEBUG)</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
-        <string>Everstead</string>
+	<string>Everstead</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -27,8 +22,35 @@
 	<string>$(MARKETING_VERSION)</string>
 	<key>CFBundleVersion</key>
 	<string>$(CURRENT_PROJECT_VERSION)</string>
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSCameraUsageDescription</key>
+	<string>Everstead uses the camera so you can scan and upload documents and record personal messages.</string>
+	<key>NSFaceIDUsageDescription</key>
+	<string>Everstead uses Face ID to keep your vault private on this device.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Everstead uses the microphone to record personal messages.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Everstead needs access to your photos so you can upload documents, add a profile photo, and attach photos or videos to your messages.</string>
+	<key>UIApplicationSceneManifest</key>
+	<dict>
+		<key>UIApplicationSupportsMultipleScenes</key>
+		<false/>
+		<key>UISceneConfigurations</key>
+		<dict>
+			<key>UIWindowSceneSessionRoleApplication</key>
+			<array>
+				<dict>
+					<key>UISceneConfigurationName</key>
+					<string>Default Configuration</string>
+					<key>UISceneDelegateClassName</key>
+					<string>$(PRODUCT_MODULE_NAME).SceneDelegate</string>
+				</dict>
+			</array>
+		</dict>
+	</dict>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
@@ -52,30 +74,5 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<true/>
-	<key>NSFaceIDUsageDescription</key>
-	<string>Everstead uses Face ID to keep your vault private on this device.</string>
-	<key>NSCameraUsageDescription</key>
-	<string>Everstead uses the camera so you can scan documents and record video messages for your loved ones.</string>
-	<key>NSMicrophoneUsageDescription</key>
-	<string>Everstead uses the microphone so you can record video messages with sound for your loved ones.</string>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Everstead needs access to your photos so you can upload documents, add a profile photo, and attach photos or videos to your messages.</string>
-	<key>UIApplicationSceneManifest</key>
-	<dict>
-		<key>UIApplicationSupportsMultipleScenes</key>
-		<false/>
-		<key>UISceneConfigurations</key>
-		<dict>
-			<key>UIWindowSceneSessionRoleApplication</key>
-			<array>
-				<dict>
-					<key>UISceneConfigurationName</key>
-					<string>Default Configuration</string>
-					<key>UISceneDelegateClassName</key>
-					<string>$(PRODUCT_MODULE_NAME).SceneDelegate</string>
-				</dict>
-			</array>
-		</dict>
-	</dict>
 </dict>
 </plist>
