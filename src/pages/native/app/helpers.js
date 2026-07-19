@@ -62,8 +62,14 @@ export function activityText(row) {
     case 'document.uploaded':  return `You uploaded “${name}”`
     case 'person.invited':     return `You invited ${name}`
     case 'instruction.created':return `You wrote “${name}”`
+    case 'auth.new_device_login': return 'You signed in on a new device'
+    case 'data_export':        return 'You exported your data'
+    case 'owner.status_changed': return 'Account status changed'
     default: {
-      const verb = String(row.action || '').split('.')[1] || 'changed'
+      // Unknown actions: humanise the verb ("password_changed" → "password
+      // changed") and skip the "an item" filler when there's no resource name.
+      const verb = (String(row.action || '').split('.')[1] || String(row.action || '') || 'changed').replace(/_/g, ' ')
+      if (!row.resource_name) return verb.charAt(0).toUpperCase() + verb.slice(1)
       return `${name} ${verb}`
     }
   }

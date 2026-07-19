@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import './mobile-app.css'
 import { useAuth } from '../../../contexts/AuthContext'
-import { isNative } from '../../../lib/platform'
+import { isNative, applyPlatformClass } from '../../../lib/platform'
 import { getLockState } from '../../../components/native/appLock'
 import MobileAuthFlow from './MobileAuthFlow'
 import MobileAppAuthed from './MobileAppAuthed'
@@ -52,6 +52,10 @@ export default function MobileApp() {
   const { user, profile, loading } = useAuth()
   const [params] = useSearchParams()
   const demo = params.get('demo')
+
+  // Per-platform chrome tuning (see applyPlatformClass). Once, at the app root —
+  // every native surface (auth, demo, authed app, lock) renders below this.
+  useEffect(() => { applyPlatformClass() }, [])
 
   // First-run gates (native only), in order: 4-step intro tour → passcode / Face ID
   // setup. Both flags are device-local, checked once the user is signed in.

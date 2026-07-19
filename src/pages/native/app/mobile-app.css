@@ -235,3 +235,17 @@
   .evst-app .aurora { animation: none; }
   .evst-app .ringp { transition: none; }
 }
+
+/* ── Android chrome tuning ──────────────────────────────────────
+   On Android the webview sits BELOW the system status bar (unlike iOS, where
+   it extends underneath), so the iOS 50px top-inset floor becomes a dead band.
+   plat-android (set on <body> by applyPlatformClass) collapses those floors.
+   The status bar itself is coloured navy natively (styles.xml statusBarColor).
+   Do NOT touch the iOS values — they are load-bearing (see the safe-area note
+   at the top of this file). */
+body.plat-android .evst-app .sbcover { height: 0; }
+body.plat-android .evst-app .hero { padding-top: 18px; }
+body.plat-android .evst-app .head { padding-top: 16px; }
+body.plat-android .evst-app .ob { padding-top: 26px; padding-bottom: 34px; }
+body.plat-android .evst-app .skip { top: 22px; }
+body.plat-android .evst-app .tabbar { padding-bottom: 14px; }

@@ -13,10 +13,29 @@
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
         <item name="android:background">@null</item>
+        <!-- The webview is laid out below the status bar (Capacitor edge-to-edge
+             margins), so the status-bar strip shows the WINDOW background. Navy
+             keeps it on-brand; white icons come from StatusBar.setStyle(Dark) in
+             src/lib/platform.js (statusBarColor is a no-op on targetSdk 35+). -->
+        <item name="android:windowBackground">#0d1628</item>
+        <!-- Navy status bar (brand #0d1628) with light icons — matches the app's
+             dark headers/onboarding. The webview sits below the status bar, so
+             this is the only way to colour it on Android. targetSdk 35+ enforces
+             edge-to-edge and ignores statusBarColor, so opt out for now; proper
+             edge-to-edge (insets in CSS) is a post-launch project. -->
+        <item name="android:windowOptOutEdgeToEdgeEnforcement">true</item>
+        <item name="android:statusBarColor">#0d1628</item>
+        <item name="android:windowLightStatusBar">false</item>
     </style>
 
 
     <style name="AppTheme.NoActionBarLaunch" parent="Theme.SplashScreen">
         <item name="android:background">@drawable/splash</item>
+        <!-- MainActivity's window is created with THIS theme (see the manifest),
+             so the status-bar attrs must live here — the runtime setTheme() to
+             AppTheme.NoActionBar does not re-apply window-level attributes. -->
+        <item name="android:windowOptOutEdgeToEdgeEnforcement">true</item>
+        <item name="android:statusBarColor">#0d1628</item>
+        <item name="android:windowLightStatusBar">false</item>
     </style>
 </resources>
