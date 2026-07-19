@@ -11,6 +11,7 @@ import AdminGate from './components/AdminGate'
 import ErrorBoundary from './components/ErrorBoundary'
 import BiometricGate from './components/native/BiometricGate'
 import Nav from './components/Nav'
+import AppBanner, { APP_BANNER_HEIGHT, isAppBannerDismissed } from './components/AppBanner'
 import Footer from './components/Footer'
 // Lazy: ChatWidget pulls in react-markdown — keeping it out of the eager bundle
 // saves ~50 kB+ of the entry chunk. A null fallback is invisible (floating widget).
@@ -112,11 +113,22 @@ function HreflangTags() {
 }
 
 function Layout({ children }) {
+  // "App coming soon" bar. Shown on the marketing site only — never inside the native
+  // app (you're already in it) — and hidden once dismissed. When it's visible the
+  // fixed Nav is pushed down and <main> padded by the same height, so pt-24 pages and
+  // full-bleed heroes stay correctly aligned without any per-page changes.
+  const [bannerVisible, setBannerVisible] = React.useState(false)
+  useEffect(() => {
+    if (!isNative() && !isAppBannerDismissed()) setBannerVisible(true)
+  }, [])
+  const topOffset = bannerVisible ? APP_BANNER_HEIGHT : 0
+
   return (
     <>
       <HreflangTags />
-      <Nav />
-      <main>{children}</main>
+      {bannerVisible && <AppBanner onDismiss={() => setBannerVisible(false)} />}
+      <Nav topOffset={topOffset} />
+      <main style={topOffset ? { paddingTop: topOffset } : undefined}>{children}</main>
       <Footer />
       <Suspense fallback={null}><ChatWidget /></Suspense>
     </>

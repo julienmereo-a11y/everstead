@@ -33,7 +33,9 @@ function computeDarkStyle(pathname, scrollY) {
   return scrollY > 24                // standard threshold elsewhere
 }
 
-export default function Nav() {
+// `topOffset` (px) shifts the fixed nav down when a banner occupies the very top of
+// the page (see AppBanner). Defaults to 0 — the nav sits flush against the top.
+export default function Nav({ topOffset = 0 }) {
   // Initialise directly from window.location so the very first render is correct
   // even before React Router has had a chance to set location state.
   const [useDarkStyle, setUseDarkStyle] = useState(
@@ -107,14 +109,15 @@ export default function Nav() {
         height: '2px',
         background: 'linear-gradient(90deg, transparent 0%, #4c7d47 30%, #4c7d47 70%, transparent 100%)',
         position: 'fixed',
-        top: 0,
+        top: topOffset,
         left: 0,
         zIndex: 1000,
         pointerEvents: 'none',
       }} />
       <header
         ref={menuRef}
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+        style={{ top: topOffset }}
+        className={`fixed left-0 right-0 z-50 transition-all duration-300 ${
           useDarkStyle
             ? 'bg-stone-50/95 backdrop-blur-md shadow-sm border-b border-stone-200'
             : 'bg-gradient-to-b from-black/40 to-transparent backdrop-blur-none'
