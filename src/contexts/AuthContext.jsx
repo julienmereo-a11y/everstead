@@ -12,10 +12,14 @@ let revenueCatConfigured = false
 // Only touch the RevenueCat SDK when a real public key is configured (Phase B).
 // Initialising it with an undefined key leaves the native SDK in a broken state
 // where later calls (e.g. logOut on sign-out) can crash the webview.
-const REVENUECAT_KEY = import.meta.env.VITE_REVENUECAT_IOS_API_KEY
+// Key is per-store: appl_ on iOS, goog_ on Android — RevenueCat treats them as
+// two apps in one project, same entitlement ("plus") and product identifiers.
+const RC_IOS_KEY     = import.meta.env.VITE_REVENUECAT_IOS_API_KEY
+const RC_ANDROID_KEY = import.meta.env.VITE_REVENUECAT_ANDROID_API_KEY
+const REVENUECAT_KEY = isIOS() ? RC_IOS_KEY : RC_ANDROID_KEY
 let revenueCatConfigurePromise = null
 async function syncRevenueCatUser(userId) {
-  if (!isNative() || !isIOS() || !REVENUECAT_KEY) return
+  if (!isNative() || !REVENUECAT_KEY) return
   try {
     const { Purchases } = await import('@revenuecat/purchases-capacitor')
     if (!revenueCatConfigured) {
@@ -35,7 +39,7 @@ async function syncRevenueCatUser(userId) {
 }
 
 async function revenueCatLogOut() {
-  if (!isNative() || !isIOS() || !revenueCatConfigured) return
+  if (!isNative() || !revenueCatConfigured) return
   try {
     const { Purchases } = await import('@revenuecat/purchases-capacitor')
     await Purchases.logOut()

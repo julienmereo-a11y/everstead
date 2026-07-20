@@ -40,15 +40,16 @@ export default function MobilePlanSelect({ onSubscribed, onBack, demo }) {
     setError(null)
     // Web preview / demo: no App Store — simulate a successful subscription.
     if (demo || !isNative()) { onSubscribed?.(PLAN_KEY); return }
-    // RevenueCat is configured for iOS only so far (see docs/android-launch-checklist.md) —
-    // calling an unconfigured SDK on Android would just throw a generic error.
-    if (!isIOS()) { setError('Purchases are not available on Android yet — you can upgrade at everstead.care.'); return }
     setBusy(true)
     try {
       const { Purchases } = await import('@revenuecat/purchases-capacitor')
       const { current } = await Purchases.getOfferings()
       const identifier = p[annual ? 'annual' : 'monthly'].revenueCatIdentifier
-      const pkg = current?.availablePackages?.find(x => x.identifier === identifier || x.product?.identifier === identifier)
+      // Google product identifiers arrive as "subscription_id:base_plan_id";
+      // strip the suffix so one revenueCatIdentifier matches both stores.
+      const pkg = current?.availablePackages?.find(x =>
+        x.identifier === identifier ||
+        String(x.product?.identifier || '').split(':')[0] === identifier)
       if (!pkg) { setError('That plan is not available right now. Please try again shortly.'); return }
       await Purchases.purchasePackage({ aPackage: pkg })
       haptic.success() // subscription started — the biggest moment in the app
@@ -65,13 +66,12 @@ export default function MobilePlanSelect({ onSubscribed, onBack, demo }) {
   const restore = async () => {
     setError(null)
     if (demo || !isNative()) { onSubscribed?.('restore'); return }
-    if (!isIOS()) { setError('Purchases are not available on Android yet — you can upgrade at everstead.care.'); return }
     setBusy(true)
     try {
       const { Purchases } = await import('@revenuecat/purchases-capacitor')
       const { customerInfo } = await Purchases.restorePurchases()
       if (Object.keys(customerInfo?.entitlements?.active || {}).length > 0) { haptic.success(); onSubscribed?.('restore') }
-      else setError('No previous purchase was found for this Apple ID.')
+      else setError(`No previous purchase was found for this ${isIOS() ? 'Apple ID' : 'Google account'}.`)
     } catch { setError('Restore failed. Please try again.') } finally { setBusy(false) }
   }
 
@@ -128,7 +128,7 @@ export default function MobilePlanSelect({ onSubscribed, onBack, demo }) {
           Restore a previous purchase
         </button>
         <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.65)', textAlign: 'center', margin: '6px 0 0', lineHeight: 1.5 }}>
-          Billed through the App Store after your trial. Manage or cancel anytime in Settings.
+          Billed through {isIOS() || !isNative() ? 'the App Store' : 'Google Play'} after your trial. Manage or cancel anytime in Settings.
         </p>
         {/* Guideline 3.1.2: auto-renewable subscription screens must link the
             Terms of Use and Privacy Policy. Opens in the system browser sheet. */}

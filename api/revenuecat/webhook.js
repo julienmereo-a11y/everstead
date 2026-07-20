@@ -56,7 +56,10 @@ async function handler(req, res) {
   // it the join key here, with revenuecat_app_user_id kept for defense-in-depth.
   // TRANSFER events carry no app_user_id — the new owner is in transferred_to.
   const appUserId  = event.app_user_id || event.transferred_to?.[0]
-  const productId  = event.product_id
+  // Google Play product ids arrive as "subscription_id:base_plan_id"
+  // (e.g. "everstead_plus_monthly:monthly") — strip the base-plan suffix so
+  // both stores hit the same PRODUCT_TO_PLAN keys. Apple ids have no colon.
+  const productId  = String(event.product_id || '').split(':')[0]
   const planInfo   = PRODUCT_TO_PLAN[productId] || {}
   const periodType = event.period_type // 'TRIAL' | 'NORMAL' | 'INTRO'
 
