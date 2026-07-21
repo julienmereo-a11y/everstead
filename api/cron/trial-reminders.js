@@ -28,7 +28,9 @@ async function handler(req, res) {
       .eq('subscription_status', 'trialing')
       .lt('trial_ends_at', new Date().toISOString())
       .not('trial_ends_at', 'is', null)
-      .neq('entitlement_source', 'apple_iap') // Apple manages IAP lifecycle
+      // Store-managed IAP (Apple + Google) auto-handle the trial→charge lifecycle,
+      // so they must never enter our Stripe-oriented expiry/deletion sweep.
+      .not('entitlement_source', 'in', '("apple_iap","google_play")')
 
     for (const p of expired ?? []) {
       await supabase
@@ -49,7 +51,8 @@ async function handler(req, res) {
     .eq('subscription_status', 'trialing')
     .not('trial_ends_at', 'is', null)
     .neq('notify_trial_reminders', false)
-    .neq('entitlement_source', 'apple_iap') // Apple auto-charges IAP trials — no card nudge
+    // Apple + Google auto-charge IAP trials — no card nudge for store-managed subs.
+    .not('entitlement_source', 'in', '("apple_iap","google_play")')
 
   const now = Date.now()
 

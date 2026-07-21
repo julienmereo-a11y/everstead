@@ -4,19 +4,21 @@ export const isNative = () => Capacitor.isNativePlatform()
 export const isIOS = () => Capacitor.getPlatform() === 'ios'
 
 // Tag <body> with the native platform (plat-ios / plat-android) so the mobile
-// CSS can tune per-platform chrome. iOS needs a 50px top-inset floor because its
-// webview draws under the status bar; Android's webview sits BELOW the status
-// bar, so the same floor reads as a dead band and plat-android collapses it.
+// CSS can tune per-platform chrome, and pin the Android status bar so the
+// webview never draws under it (it does by default on Android 15+/One UI
+// edge-to-edge — e.g. Samsung Fold — which overlapped the header).
 export const applyPlatformClass = () => {
   if (!isNative()) return
   document.body.classList.add(`plat-${Capacitor.getPlatform()}`)
-  // Android: brand-navy status bar with white icons. Must be done at runtime —
-  // Capacitor 8's edge-to-edge handling sets LIGHT_STATUS_BARS after window
-  // creation, overriding the theme attrs in styles.xml. Style.Dark = dark
-  // BACKGROUND (i.e. white icons). iOS is untouched (its status bar is correct).
   if (Capacitor.getPlatform() === 'android') {
     import('@capacitor/status-bar')
       .then(({ StatusBar, Style }) => {
+        // overlay:false reserves the status-bar space so content starts BELOW it
+        // (the plat-android paddings then act as normal spacing, not inset-clearing).
+        StatusBar.setOverlaysWebView({ overlay: false }).catch(() => {})
+        // Style.Dark = dark background → white icons. setBackgroundColor colours
+        // the reserved bar navy. Set at runtime because Capacitor's edge-to-edge
+        // handling overrides the styles.xml theme attrs after window creation.
         StatusBar.setStyle({ style: Style.Dark }).catch(() => {})
         StatusBar.setBackgroundColor({ color: '#0d1628' }).catch(() => {})
       })

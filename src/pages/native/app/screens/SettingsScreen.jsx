@@ -303,11 +303,11 @@ export default function SettingsScreen({ app }) {
             personal messages and trusted contacts. Your data is removed within 30 days.
             You can export a copy first from the website (everstead.care → Settings).
           </p>
-          {profile?.entitlement_source === 'apple_iap' && isPaidPlan(profile?.plan) && (
+          {['apple_iap', 'google_play'].includes(profile?.entitlement_source) && isPaidPlan(profile?.plan) && (
             <p className="rdet" style={{ margin: '0 0 8px', lineHeight: 1.55, fontWeight: 600 }}>
-              Your Everstead+ subscription is billed by Apple: please also cancel it in
-              Settings → your Apple ID → Subscriptions. Deleting your account does not
-              cancel an Apple subscription.
+              {profile.entitlement_source === 'google_play'
+                ? 'Your Everstead+ subscription is billed by Google: please also cancel it in the Play Store → Subscriptions. Deleting your account does not cancel a Google Play subscription.'
+                : 'Your Everstead+ subscription is billed by Apple: please also cancel it in Settings → your Apple ID → Subscriptions. Deleting your account does not cancel an Apple subscription.'}
             </p>
           )}
           {app.demo && <p className="rdet" style={{ margin: '0 0 8px', color: 'var(--color-stone-400)' }}>Not available in demo.</p>}

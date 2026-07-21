@@ -63,6 +63,15 @@ async function handler(req, res) {
   const planInfo   = PRODUCT_TO_PLAN[productId] || {}
   const periodType = event.period_type // 'TRIAL' | 'NORMAL' | 'INTRO'
 
+  // Which store is billing this user — drives where they're told to cancel
+  // (Settings) and which crons skip them (store-managed lifecycles never get
+  // our Stripe trial nudges). RevenueCat sends event.store.
+  const entitlementSource =
+    event.store === 'PLAY_STORE'                     ? 'google_play'
+    : (event.store === 'APP_STORE' || event.store === 'MAC_APP_STORE') ? 'apple_iap'
+    : event.store === 'STRIPE'                       ? 'stripe'
+    : 'apple_iap' // safe default: treat unknown as a store-managed IAP
+
   const currentPeriodEnd = event.expiration_at_ms
     ? new Date(event.expiration_at_ms).toISOString()
     : null
@@ -73,7 +82,7 @@ async function handler(req, res) {
     case 'INITIAL_PURCHASE':
       profileUpdate = {
         subscription_status:  periodType === 'TRIAL' ? 'trialing' : 'active',
-        entitlement_source:   'apple_iap',
+        entitlement_source:   entitlementSource,
         revenuecat_app_user_id: appUserId,
         apple_original_transaction_id: event.original_transaction_id || null,
         current_period_end:  currentPeriodEnd,

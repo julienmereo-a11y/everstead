@@ -61,9 +61,9 @@ export default function ProtectedRoute({ children }) {
   //   - an active-ish subscription_status (active/cancelling/past_due) — post-payment
   //     states, also set by family invite-accept.
   //   - a grandfathered legacy trial.
-  //   - Apple IAP (entitlement_source='apple_iap') never touches Stripe, so it gets
-  //     its own check — including 'trialing', which RevenueCat's INITIAL_PURCHASE
-  //     writes directly (no separate "trial started" step to race with).
+  //   - Store IAP (entitlement_source 'apple_iap' / 'google_play') never touches
+  //     Stripe, so it gets its own check — including 'trialing', which RevenueCat's
+  //     INITIAL_PURCHASE writes directly (no separate "trial started" step to race).
   //
   // NOT accepted:
   //   - Bare stripe_customer_id. setup-intent.js creates the Stripe customer and
@@ -78,7 +78,7 @@ export default function ProtectedRoute({ children }) {
     !!profile.stripe_subscription_id ||
     profile.legacy_trial_access === true ||
     ['active', 'cancelling', 'past_due'].includes(profile.subscription_status) ||
-    (profile.entitlement_source === 'apple_iap' &&
+    (['apple_iap', 'google_play'].includes(profile.entitlement_source) &&
       ['trialing', 'active', 'cancelling', 'past_due'].includes(profile.subscription_status))
   // Free-tier users are admitted with no subscription at all — their limits are
   // enforced in the database (free_tier_allows + restrictive INSERT policies), not by
