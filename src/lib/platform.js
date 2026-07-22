@@ -11,14 +11,14 @@ export const applyPlatformClass = () => {
   if (!isNative()) return
   document.body.classList.add(`plat-${Capacitor.getPlatform()}`)
   if (Capacitor.getPlatform() === 'android') {
+    // Layout is owned by Capacitor's built-in SystemBars inset handling + the
+    // plat-android CSS (var(--safe-area-inset-*) — see mobile-app.css). Do NOT
+    // call setOverlaysWebView here: it's a no-op on Android 15+ (edge-to-edge
+    // is enforced — verified on a Fold 7) and on older versions it can fight
+    // SystemBars and double-pad. We only style the bar: Style.Dark = dark
+    // background → white icons (the .sbcover strip / navy headers sit behind).
     import('@capacitor/status-bar')
       .then(({ StatusBar, Style }) => {
-        // overlay:false reserves the status-bar space so content starts BELOW it
-        // (the plat-android paddings then act as normal spacing, not inset-clearing).
-        StatusBar.setOverlaysWebView({ overlay: false }).catch(() => {})
-        // Style.Dark = dark background → white icons. setBackgroundColor colours
-        // the reserved bar navy. Set at runtime because Capacitor's edge-to-edge
-        // handling overrides the styles.xml theme attrs after window creation.
         StatusBar.setStyle({ style: Style.Dark }).catch(() => {})
         StatusBar.setBackgroundColor({ color: '#0d1628' }).catch(() => {})
       })

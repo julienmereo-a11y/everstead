@@ -237,15 +237,21 @@
 }
 
 /* ── Android chrome tuning ──────────────────────────────────────
-   On Android the webview sits BELOW the system status bar (unlike iOS, where
-   it extends underneath), so the iOS 50px top-inset floor becomes a dead band.
-   plat-android (set on <body> by applyPlatformClass) collapses those floors.
-   The status bar itself is coloured navy natively (styles.xml statusBarColor).
+   Capacitor 8's SystemBars plugin has two Android modes:
+   • Passthrough (modern WebView + viewport-fit=cover — e.g. Samsung Fold /
+     Android 15+): the webview runs EDGE-TO-EDGE under the status bar, and
+     Capacitor injects the real insets as --safe-area-inset-* variables on
+     :root (env() is unreliable here — memory says it reads 0 in this shell).
+   • Native padding (older WebViews / no viewport cover — e.g. the API 36
+     emulator image): Capacitor pads the webview below the bar and injects
+     nothing, so the variables fall back to 0px.
+   calc(var(--safe-area-inset-top, 0px) + N) is correct in BOTH modes.
+   plat-android is set on <body> by applyPlatformClass.
    Do NOT touch the iOS values — they are load-bearing (see the safe-area note
    at the top of this file). */
-body.plat-android .evst-app .sbcover { height: 0; }
-body.plat-android .evst-app .hero { padding-top: 18px; }
-body.plat-android .evst-app .head { padding-top: 16px; }
-body.plat-android .evst-app .ob { padding-top: 26px; padding-bottom: 34px; }
-body.plat-android .evst-app .skip { top: 22px; }
-body.plat-android .evst-app .tabbar { padding-bottom: 14px; }
+body.plat-android .evst-app .sbcover { height: var(--safe-area-inset-top, 0px); background: #0d1628; }
+body.plat-android .evst-app .hero { padding-top: calc(var(--safe-area-inset-top, 0px) + 18px); }
+body.plat-android .evst-app .head { padding-top: calc(var(--safe-area-inset-top, 0px) + 16px); }
+body.plat-android .evst-app .ob { padding-top: calc(var(--safe-area-inset-top, 0px) + 26px); padding-bottom: calc(var(--safe-area-inset-bottom, 0px) + 34px); }
+body.plat-android .evst-app .skip { top: calc(var(--safe-area-inset-top, 0px) + 22px); }
+body.plat-android .evst-app .tabbar { padding-bottom: calc(var(--safe-area-inset-bottom, 0px) + 14px); }
