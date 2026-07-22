@@ -83,7 +83,13 @@ export async function maybeAskNotificationPermission() {
 // repeatedly (server dedupes by token); silently no-ops without permission, off
 // device, or before the Xcode push capability / server keys exist.
 export async function registerForPush() {
-  if (!isNative()) return
+  // iOS-only until Android FCM is configured: without google-services.json,
+  // PushNotificationsPlugin.register() throws "Default FirebaseApp is not
+  // initialized" on Capacitor's NATIVE plugin thread — a hard process crash no
+  // JS try/catch can contain (verified on a Galaxy Fold 7: crash-loop on every
+  // launch once notification permission was granted, since this runs on profile
+  // load). Local notifications (reminders) don't use Firebase and keep working.
+  if (!isIOS()) return
   try {
     if (!(await notificationsGranted())) return
     const { PushNotifications } = await import('@capacitor/push-notifications')

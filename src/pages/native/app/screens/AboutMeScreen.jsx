@@ -2,7 +2,14 @@ import React, { useEffect, useRef, useState } from 'react'
 import { useAboutMe } from '../../../../hooks/useData'
 import { useAuth } from '../../../../contexts/AuthContext'
 import { initialsOf } from '../helpers'
+import { isNative, isIOS } from '../../../../lib/platform'
 import SecScreen, { Busy } from '../components/SecScreen'
+
+// Photo picking is deferred on Android like media messages: One UI kills the
+// app process while the gallery picker is open (verified on a Galaxy Fold 7),
+// so the picked file never arrives. The photo can be set on the website and
+// syncs to the app. v1.1 restores it alongside media messages.
+const CAN_PICK_PHOTO = !isNative() || isIOS()
 
 export default function AboutMeScreen({ app }) {
   const auth = useAuth()
@@ -62,13 +69,19 @@ export default function AboutMeScreen({ app }) {
   return (
     <SecScreen title="About Me" subtitle="Your story, for the people you love" onBack={() => app.go('more')}>
       <div className="fx col ac" style={{ marginBottom: 18 }}>
-        <button onClick={() => fileInput.current?.click()} style={{ border: 0, background: 'none', cursor: 'pointer' }}>
+        <button onClick={() => CAN_PICK_PHOTO && fileInput.current?.click()} style={{ border: 0, background: 'none', cursor: CAN_PICK_PHOTO ? 'pointer' : 'default' }}>
           {avatar
             ? <img src={avatar} alt="" style={{ width: 76, height: 76, borderRadius: '999px', objectFit: 'cover' }} />
             : <span className="avatar avatar-round" style={{ width: 76, height: 76, fontSize: 28 }}>{initialsOf(form.full_name || 'You')}</span>}
         </button>
-        <input ref={fileInput} type="file" accept="image/*" style={{ display: 'none' }} onChange={pickAvatar} />
-        <button className="linkbtn" style={{ color: 'var(--color-navy-600)' }} onClick={() => fileInput.current?.click()}>Change photo</button>
+        {CAN_PICK_PHOTO ? (
+          <>
+            <input ref={fileInput} type="file" accept="image/*" style={{ display: 'none' }} onChange={pickAvatar} />
+            <button className="linkbtn" style={{ color: 'var(--color-navy-600)' }} onClick={() => fileInput.current?.click()}>Change photo</button>
+          </>
+        ) : (
+          <p className="rdet" style={{ margin: 0, fontSize: 11.5 }}>Set your photo at everstead.care — it syncs here.</p>
+        )}
       </div>
 
       <div className="card-light" style={{ padding: 16 }}>

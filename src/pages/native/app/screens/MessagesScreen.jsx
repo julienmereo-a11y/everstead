@@ -287,11 +287,15 @@ export default function MessagesScreen({ app }) {
             <button className="grab" aria-label="Close" onClick={resetSheet} style={{ display: 'block', border: 0, cursor: 'pointer', padding: 10, margin: '-10px auto 4px', background: 'none' }}><span style={{ display: 'block', width: 36, height: 4, borderRadius: 99, background: 'var(--color-stone-300)' }} /></button>
             <h3 className="sh-title">Write a message</h3>
 
-            {/* Type selector. Video/photo composition is hidden on Android for
-                now: the system media picker reliably kills the app process
-                mid-pick on some devices (e.g. Samsung One UI), losing the file.
-                Text letters work everywhere; iOS + web keep all three. Existing
-                video/photo messages still render in the list below regardless. */}
+            {/* Type selector. Video/photo composition is deferred on Android:
+                One UI kills the app process while the heavy media pickers
+                (gallery/camera) are open — verified repeatedly on a Galaxy
+                Fold 7 with logcat ("Start proc … for top-activity" on return,
+                file never delivered) — and an HTML input's result cannot
+                survive process death. Lightweight pickers are fine (Vault
+                document upload works). v1.1: restored-result native capture.
+                iOS + web keep all three types; existing media messages still
+                render on Android. */}
             <div className="fx" style={{ gap: 8, marginBottom: 4 }}>
               {(isNative() && !isIOS() ? TYPES.filter(t => t.key === 'note') : TYPES).map(({ key, label, Icon }) => {
                 const on = msgType === key
