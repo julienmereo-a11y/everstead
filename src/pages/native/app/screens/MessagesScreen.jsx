@@ -102,6 +102,7 @@ export default function MessagesScreen({ app }) {
     )
   }
 
+  const ANDROID = isNative() && !isIOS()
   const set = (k) => (e) => setForm(f => ({ ...f, [k]: e.target.value }))
   const isMedia = msgType === 'video' || msgType === 'photo'
   const isEmail = form.recipient_kind === 'email'
@@ -115,7 +116,21 @@ export default function MessagesScreen({ app }) {
   }
 
   const pickFrom = (ref) => () => { if (ref.current) { ref.current.value = ''; ref.current.click() } }
-  const onFile = (e) => { const f = e.target.files?.[0]; if (f) setMediaFile(f) }
+  const onFile = (e) => {
+    const f = e.target.files?.[0]
+    if (!f) return
+    // Android's gallery upload uses a MIXED-type file input (see `uploadAccept`)
+    // so it lands on the lightweight Files picker instead of the reap-prone
+    // system Photo Picker — which means non-media files can appear, so enforce
+    // the expected kind here. (An empty `type` from some providers is allowed:
+    // we can't tell, and the server-side CHECK still guards the bucket.)
+    if (ANDROID && f.type && !f.type.startsWith(msgType === 'video' ? 'video/' : 'image/')) {
+      app.say(msgType === 'video' ? 'Please choose a video file.' : 'Please choose a photo.', 'error')
+      e.target.value = ''
+      return
+    }
+    setMediaFile(f)
+  }
 
   // Android captures media IN the webview (RecorderSheet) — external
   // camera/pickers get the app process reaped by One UI's LMK before the result
@@ -181,6 +196,14 @@ export default function MessagesScreen({ app }) {
   const localTomorrow = () => { const d = new Date(Date.now() + 86400000); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}` }
 
   const accept = msgType === 'video' ? 'video/*' : 'image/*'
+  // On Android, a media-only accept (image/* or video/*) makes the WebView hand
+  // off to the system Photo Picker — a separate process that lets One UI's
+  // low-memory killer reap Everstead before the pick returns (verified at length
+  // on a Galaxy Fold 7). A MIXED accept routes to the lightweight Files/Documents
+  // picker instead — the same picker the Vault document upload uses, which
+  // survives reliably. We widen with application/pdf and validate the kind in
+  // onFile. iOS/web keep the native, kind-filtered picker.
+  const uploadAccept = ANDROID ? `${accept},application/pdf` : accept
 
   return (
     <SecScreen
@@ -379,34 +402,32 @@ export default function MessagesScreen({ app }) {
                       onClick={() => setMediaFile(null)}
                     >Choose a different {msgType === 'video' ? 'video' : 'photo'}</button>
                   </div>
-                ) : isNative() && !isIOS() ? (
-                  // Android: in-webview capture only. The gallery/Files pickers
-                  // background the app and One UI's low-memory killer reaps it
-                  // before the pick returns (verified on a Galaxy Fold 7), so a
-                  // gallery upload can't complete. Capture never backgrounds.
-                  <button className="btn btn-sm w100 fx ac jc" style={{ gap: 6 }} onClick={() => setRecorder(msgType === 'video' ? 'video' : 'photo')}>
-                    <CameraIcon />{msgType === 'video' ? 'Record a video' : 'Take a photo'}
-                  </button>
                 ) : (
                   <div className="fx" style={{ gap: 8, marginTop: 2 }}>
-                    <button className="btn btn-sm f1 fx ac jc" style={{ gap: 6 }} onClick={pickFrom(captureRef)}>
+                    {/* Capture: iOS/web open the system camera; Android records/
+                        shoots INSIDE the webview (RecorderSheet) so the process
+                        never backgrounds and can't be reaped mid-capture. */}
+                    <button
+                      className="btn btn-sm f1 fx ac jc" style={{ gap: 6 }}
+                      onClick={ANDROID ? () => setRecorder(msgType === 'video' ? 'video' : 'photo') : pickFrom(captureRef)}
+                    >
                       <CameraIcon />{msgType === 'video' ? 'Record' : 'Take photo'}
                     </button>
+                    {/* Upload from the gallery — on Android this rides the mixed
+                        accept (uploadAccept) → lightweight Files picker. */}
                     <button className="btn btn-sm f1 fx ac jc" style={{ gap: 6, background: '#fff', color: 'var(--color-navy-800)', border: '1px solid var(--color-stone-200)' }} onClick={pickFrom(libraryRef)}>
                       <UploadIcon />Upload
                     </button>
                   </div>
                 )}
                 <p className="rdet" style={{ margin: '8px 0 0', fontSize: 11.5 }}>
-                  {isNative() && !isIOS()
-                    ? (msgType === 'video' ? 'Record a video message for the people you love.' : 'Take a photo to keep with this message.')
-                    : (msgType === 'video' ? 'Record yourself now, or upload an existing video.' : 'Take a photo now, or upload a meaningful one from your library.')}
+                  {msgType === 'video' ? 'Record yourself now, or upload an existing video.' : 'Take a photo now, or upload a meaningful one from your library.'}
                 </p>
-                {/* Hidden inputs (iOS + web only): capture opens the camera; the
-                    other the library. Android uses the in-webview RecorderSheet —
-                    an HTML input's result dies with the reaped process there. */}
+                {/* Camera capture input is iOS/web only — Android captures in the
+                    RecorderSheet. The library/upload input renders everywhere;
+                    on Android it uses the mixed accept to reach the Files picker. */}
                 {(!isNative() || isIOS()) && <input ref={captureRef} type="file" accept={accept} capture="user" style={{ display: 'none' }} onChange={onFile} />}
-                {(!isNative() || isIOS()) && <input ref={libraryRef} type="file" accept={accept} style={{ display: 'none' }} onChange={onFile} />}
+                <input ref={libraryRef} type="file" accept={uploadAccept} style={{ display: 'none' }} onChange={onFile} />
               </>
             )}
 

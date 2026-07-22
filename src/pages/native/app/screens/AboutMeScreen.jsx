@@ -6,10 +6,11 @@ import { isNative, isIOS } from '../../../../lib/platform'
 import RecorderSheet from '../components/RecorderSheet'
 import SecScreen, { Busy } from '../components/SecScreen'
 
-// On Android, "Change photo" captures IN the webview (RecorderSheet photo mode):
-// the system gallery picker backgrounds the app and One UI's low-memory killer
-// reaps it before the pick returns. In-webview capture never backgrounds.
-// iOS + web keep the normal <input type=file> (gallery pick).
+// Android gives two ways to set the avatar: "Upload photo" (a MIXED-type file
+// input that routes to the lightweight Files picker — the media-only picker
+// hands off to the system Photo Picker, a separate process One UI reaps before
+// the pick returns), and "Take photo" (RecorderSheet, in-webview capture, which
+// never backgrounds the app). iOS + web keep the normal <input type=file>.
 const ANDROID_CAPTURE = isNative() && !isIOS()
 
 export default function AboutMeScreen({ app }) {
@@ -55,10 +56,18 @@ export default function AboutMeScreen({ app }) {
   }
   const pickAvatar = async (e) => {
     const file = e.target.files?.[0]
-    if (file) applyPickedPhoto(file)
+    if (!file) return
+    // Android's upload input is mixed-type (light Files picker — see the header
+    // note), so it can return a non-image; guard the kind. An empty type from
+    // some providers is allowed (the avatars bucket accepts it either way).
+    if (ANDROID_CAPTURE && file.type && !file.type.startsWith('image/')) {
+      app.say('Please choose a photo (image file).', 'error'); e.target.value = ''; return
+    }
+    applyPickedPhoto(file)
   }
-  // Android: open the in-webview camera. Everywhere else: the normal file input.
-  const changePhoto = () => { if (ANDROID_CAPTURE) setCapture(true); else fileInput.current?.click() }
+  // Open the gallery/Files picker (all platforms). Android additionally offers an
+  // in-webview "Take photo" (RecorderSheet) button alongside this.
+  const changePhoto = () => fileInput.current?.click()
 
   const onSave = async () => {
     setBusy(true)
@@ -80,8 +89,15 @@ export default function AboutMeScreen({ app }) {
             ? <img src={avatar} alt="" style={{ width: 76, height: 76, borderRadius: '999px', objectFit: 'cover' }} />
             : <span className="avatar avatar-round" style={{ width: 76, height: 76, fontSize: 28 }}>{initialsOf(form.full_name || 'You')}</span>}
         </button>
-        {!ANDROID_CAPTURE && <input ref={fileInput} type="file" accept="image/*" style={{ display: 'none' }} onChange={pickAvatar} />}
-        <button className="linkbtn" style={{ color: 'var(--color-navy-600)' }} onClick={changePhoto}>{ANDROID_CAPTURE ? 'Take photo' : 'Change photo'}</button>
+        <input ref={fileInput} type="file" accept={ANDROID_CAPTURE ? 'image/*,application/pdf' : 'image/*'} style={{ display: 'none' }} onChange={pickAvatar} />
+        {ANDROID_CAPTURE ? (
+          <div className="fx ac" style={{ gap: 18, marginTop: 2 }}>
+            <button className="linkbtn" style={{ width: 'auto', margin: 0, color: 'var(--color-navy-600)' }} onClick={() => setCapture(true)}>Take photo</button>
+            <button className="linkbtn" style={{ width: 'auto', margin: 0, color: 'var(--color-navy-600)' }} onClick={changePhoto}>Upload photo</button>
+          </div>
+        ) : (
+          <button className="linkbtn" style={{ color: 'var(--color-navy-600)' }} onClick={changePhoto}>Change photo</button>
+        )}
       </div>
 
       <div className="card-light" style={{ padding: 16 }}>
