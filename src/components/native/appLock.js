@@ -1,4 +1,4 @@
-import { isNative } from '../../lib/platform'
+import { isNative, isIOS } from '../../lib/platform'
 
 // App-lock state for the native iOS app: an optional numeric passcode plus an
 // optional Face ID / Touch ID shortcut. This is a convenience lock in FRONT of the
@@ -94,8 +94,16 @@ export async function clearPasscode() {
   await Promise.all([storeRemove(K_PIN), storeRemove(K_SALT), storeSet(K_BIO, 'false')])
 }
 
+// Biometric unlock is iOS-only. On Android the plugin's AuthActivity calls
+// crypto-based BiometricPrompt.authenticate(), which HARD-CRASHES the whole
+// process on devices whose enrolled biometric is Class 2 / Weak (e.g. Samsung
+// face unlock) — "Crypto-based authentication is not supported for Class 2
+// (Weak) biometrics". That crash is native, in a separate activity, so a JS
+// try/catch can't contain it, and isAvailable() reports true without exposing
+// the weak class. Rather than risk a launch-day crash-loop across an entire
+// class of Android devices, Android uses the PIN only (which is fully working).
 export async function biometricAvailable() {
-  if (!isNative()) return false
+  if (!isIOS()) return false
   try {
     const { NativeBiometric } = await import('@capgo/capacitor-native-biometric')
     const { isAvailable } = await NativeBiometric.isAvailable({ useFallback: false })
@@ -103,8 +111,10 @@ export async function biometricAvailable() {
   } catch { return false }
 }
 
-// Prompt Face ID / Touch ID. Resolves true on success, false on failure/cancel.
+// Prompt Face ID / Touch ID (iOS only — see biometricAvailable). Resolves true
+// on success, false on failure/cancel/unsupported.
 export async function verifyBiometric() {
+  if (!isIOS()) return false
   try {
     const { NativeBiometric } = await import('@capgo/capacitor-native-biometric')
     const { isAvailable } = await NativeBiometric.isAvailable({ useFallback: false })
