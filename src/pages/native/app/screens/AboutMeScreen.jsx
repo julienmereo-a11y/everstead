@@ -3,13 +3,14 @@ import { useAboutMe } from '../../../../hooks/useData'
 import { useAuth } from '../../../../contexts/AuthContext'
 import { initialsOf } from '../helpers'
 import { isNative, isIOS } from '../../../../lib/platform'
+import RecorderSheet from '../components/RecorderSheet'
 import SecScreen, { Busy } from '../components/SecScreen'
 
-// Photo picking is deferred on Android like media messages: One UI kills the
-// app process while the gallery picker is open (verified on a Galaxy Fold 7),
-// so the picked file never arrives. The photo can be set on the website and
-// syncs to the app. v1.1 restores it alongside media messages.
-const CAN_PICK_PHOTO = !isNative() || isIOS()
+// On Android, "Change photo" captures IN the webview (RecorderSheet photo mode):
+// the system gallery picker backgrounds the app and One UI's low-memory killer
+// reaps it before the pick returns. In-webview capture never backgrounds.
+// iOS + web keep the normal <input type=file> (gallery pick).
+const ANDROID_CAPTURE = isNative() && !isIOS()
 
 export default function AboutMeScreen({ app }) {
   const auth = useAuth()
@@ -47,12 +48,17 @@ export default function AboutMeScreen({ app }) {
   const addEvent = () => setEvents(es => [...es, { year: '', description: '' }])
   const removeEvent = (i) => setEvents(es => es.filter((_, idx) => idx !== i))
 
-  const pickAvatar = async (e) => {
-    const file = e.target.files?.[0]
-    if (!file) return
+  const [capture, setCapture] = useState(false)
+  const applyPickedPhoto = async (file) => {
     try { const url = await uploadAvatar(file); setAvatar(url); app.say('Photo added — tap Save to keep it') }
     catch { app.say('Could not upload that photo.', 'error') }
   }
+  const pickAvatar = async (e) => {
+    const file = e.target.files?.[0]
+    if (file) applyPickedPhoto(file)
+  }
+  // Android: open the in-webview camera. Everywhere else: the normal file input.
+  const changePhoto = () => { if (ANDROID_CAPTURE) setCapture(true); else fileInput.current?.click() }
 
   const onSave = async () => {
     setBusy(true)
@@ -69,19 +75,13 @@ export default function AboutMeScreen({ app }) {
   return (
     <SecScreen title="About Me" subtitle="Your story, for the people you love" onBack={() => app.go('more')}>
       <div className="fx col ac" style={{ marginBottom: 18 }}>
-        <button onClick={() => CAN_PICK_PHOTO && fileInput.current?.click()} style={{ border: 0, background: 'none', cursor: CAN_PICK_PHOTO ? 'pointer' : 'default' }}>
+        <button onClick={changePhoto} style={{ border: 0, background: 'none', cursor: 'pointer' }}>
           {avatar
             ? <img src={avatar} alt="" style={{ width: 76, height: 76, borderRadius: '999px', objectFit: 'cover' }} />
             : <span className="avatar avatar-round" style={{ width: 76, height: 76, fontSize: 28 }}>{initialsOf(form.full_name || 'You')}</span>}
         </button>
-        {CAN_PICK_PHOTO ? (
-          <>
-            <input ref={fileInput} type="file" accept="image/*" style={{ display: 'none' }} onChange={pickAvatar} />
-            <button className="linkbtn" style={{ color: 'var(--color-navy-600)' }} onClick={() => fileInput.current?.click()}>Change photo</button>
-          </>
-        ) : (
-          <p className="rdet" style={{ margin: 0, fontSize: 11.5 }}>Set your photo at everstead.care — it syncs here.</p>
-        )}
+        {!ANDROID_CAPTURE && <input ref={fileInput} type="file" accept="image/*" style={{ display: 'none' }} onChange={pickAvatar} />}
+        <button className="linkbtn" style={{ color: 'var(--color-navy-600)' }} onClick={changePhoto}>{ANDROID_CAPTURE ? 'Take photo' : 'Change photo'}</button>
       </div>
 
       <div className="card-light" style={{ padding: 16 }}>
@@ -113,6 +113,14 @@ export default function AboutMeScreen({ app }) {
       </div>
 
       <button className={`btn w100 ${busy ? 'dis' : ''}`} style={{ marginTop: 22 }} onClick={onSave}>{busy ? 'Saving…' : 'Save'}</button>
+
+      {capture && (
+        <RecorderSheet
+          mode="photo"
+          onUse={(file) => { setCapture(false); applyPickedPhoto(file) }}
+          onClose={() => setCapture(false)}
+        />
+      )}
     </SecScreen>
   )
 }

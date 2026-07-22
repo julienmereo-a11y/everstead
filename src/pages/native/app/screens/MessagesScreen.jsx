@@ -3,6 +3,7 @@ import { useMessages, usePeople } from '../../../../hooks/useData'
 import { useAuth } from '../../../../contexts/AuthContext'
 import { canUseFeature } from '../../../../lib/planLimits'
 import { isNative, isIOS } from '../../../../lib/platform'
+import RecorderSheet from '../components/RecorderSheet'
 import { planLabel } from '../../../../config/pricing'
 import { PlusIcon, MessageIcon } from '../icons'
 import { haptic } from '../../../../lib/haptics'
@@ -116,6 +117,11 @@ export default function MessagesScreen({ app }) {
   const pickFrom = (ref) => () => { if (ref.current) { ref.current.value = ''; ref.current.click() } }
   const onFile = (e) => { const f = e.target.files?.[0]; if (f) setMediaFile(f) }
 
+  // Android captures media IN the webview (RecorderSheet) — external
+  // camera/pickers get the app process reaped by One UI's LMK before the result
+  // returns. 'video' | 'photo' | false.
+  const [recorder, setRecorder] = useState(false)
+
   const submit = async () => {
     if (!canSubmit) return
     setBusy(true)
@@ -186,7 +192,7 @@ export default function MessagesScreen({ app }) {
       {loading ? (
         <Busy />
       ) : data.length === 0 ? (
-        <div className="card-light" style={{ padding: 18 }}><p className="rdet" style={{ margin: 0 }}>{isNative() && !isIOS() ? 'No messages yet. Write a sealed letter for someone you love — video and photo messages are coming to Android soon.' : 'No messages yet. Write a sealed note, record a video, or leave a photo for someone you love.'}</p></div>
+        <div className="card-light" style={{ padding: 18 }}><p className="rdet" style={{ margin: 0 }}>No messages yet. Write a sealed note, record a video, or leave a photo for someone you love.</p></div>
       ) : (
         <div className="fx col gap12">
           {data.map(m => {
@@ -287,17 +293,9 @@ export default function MessagesScreen({ app }) {
             <button className="grab" aria-label="Close" onClick={resetSheet} style={{ display: 'block', border: 0, cursor: 'pointer', padding: 10, margin: '-10px auto 4px', background: 'none' }}><span style={{ display: 'block', width: 36, height: 4, borderRadius: 99, background: 'var(--color-stone-300)' }} /></button>
             <h3 className="sh-title">Write a message</h3>
 
-            {/* Type selector. Video/photo composition is deferred on Android:
-                One UI kills the app process while the heavy media pickers
-                (gallery/camera) are open — verified repeatedly on a Galaxy
-                Fold 7 with logcat ("Start proc … for top-activity" on return,
-                file never delivered) — and an HTML input's result cannot
-                survive process death. Lightweight pickers are fine (Vault
-                document upload works). v1.1: restored-result native capture.
-                iOS + web keep all three types; existing media messages still
-                render on Android. */}
+            {/* Type selector */}
             <div className="fx" style={{ gap: 8, marginBottom: 4 }}>
-              {(isNative() && !isIOS() ? TYPES.filter(t => t.key === 'note') : TYPES).map(({ key, label, Icon }) => {
+              {TYPES.map(({ key, label, Icon }) => {
                 const on = msgType === key
                 return (
                   <button
@@ -381,6 +379,14 @@ export default function MessagesScreen({ app }) {
                       onClick={() => setMediaFile(null)}
                     >Choose a different {msgType === 'video' ? 'video' : 'photo'}</button>
                   </div>
+                ) : isNative() && !isIOS() ? (
+                  // Android: in-webview capture only. The gallery/Files pickers
+                  // background the app and One UI's low-memory killer reaps it
+                  // before the pick returns (verified on a Galaxy Fold 7), so a
+                  // gallery upload can't complete. Capture never backgrounds.
+                  <button className="btn btn-sm w100 fx ac jc" style={{ gap: 6 }} onClick={() => setRecorder(msgType === 'video' ? 'video' : 'photo')}>
+                    <CameraIcon />{msgType === 'video' ? 'Record a video' : 'Take a photo'}
+                  </button>
                 ) : (
                   <div className="fx" style={{ gap: 8, marginTop: 2 }}>
                     <button className="btn btn-sm f1 fx ac jc" style={{ gap: 6 }} onClick={pickFrom(captureRef)}>
@@ -392,11 +398,15 @@ export default function MessagesScreen({ app }) {
                   </div>
                 )}
                 <p className="rdet" style={{ margin: '8px 0 0', fontSize: 11.5 }}>
-                  {msgType === 'video' ? 'Record yourself now, or upload an existing video (mp4 / mov).' : 'Take a photo, or choose a meaningful image from your library.'}
+                  {isNative() && !isIOS()
+                    ? (msgType === 'video' ? 'Record a video message for the people you love.' : 'Take a photo to keep with this message.')
+                    : (msgType === 'video' ? 'Record yourself now, or upload an existing video.' : 'Take a photo now, or upload a meaningful one from your library.')}
                 </p>
-                {/* Hidden inputs: capture opens the camera; the other opens the library. */}
-                <input ref={captureRef} type="file" accept={accept} capture="user" style={{ display: 'none' }} onChange={onFile} />
-                <input ref={libraryRef} type="file" accept={accept} style={{ display: 'none' }} onChange={onFile} />
+                {/* Hidden inputs (iOS + web only): capture opens the camera; the
+                    other the library. Android uses the in-webview RecorderSheet —
+                    an HTML input's result dies with the reaped process there. */}
+                {(!isNative() || isIOS()) && <input ref={captureRef} type="file" accept={accept} capture="user" style={{ display: 'none' }} onChange={onFile} />}
+                {(!isNative() || isIOS()) && <input ref={libraryRef} type="file" accept={accept} style={{ display: 'none' }} onChange={onFile} />}
               </>
             )}
 
@@ -451,6 +461,15 @@ export default function MessagesScreen({ app }) {
             </button>
           </div>
         </div>
+      )}
+
+      {/* Android in-webview capture (video or photo) — never leaves the process. */}
+      {recorder && (
+        <RecorderSheet
+          mode={recorder}
+          onUse={(file) => { setMediaFile(file); setRecorder(false) }}
+          onClose={() => setRecorder(false)}
+        />
       )}
     </SecScreen>
   )
