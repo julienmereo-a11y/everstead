@@ -55,15 +55,11 @@ export default function AboutMeScreen({ app }) {
     catch { app.say('Could not upload that photo.', 'error') }
   }
   const pickAvatar = async (e) => {
+    // Take the pick as-is, like the (working) Vault document upload — the Android
+    // Files picker often reports a content:// image as application/octet-stream
+    // (or no type), and gating on that silently dropped valid photos.
     const file = e.target.files?.[0]
-    if (!file) return
-    // Android's upload input is mixed-type (light Files picker — see the header
-    // note), so it can return a non-image; guard the kind. An empty type from
-    // some providers is allowed (the avatars bucket accepts it either way).
-    if (ANDROID_CAPTURE && file.type && !file.type.startsWith('image/')) {
-      app.say('Please choose a photo (image file).', 'error'); e.target.value = ''; return
-    }
-    applyPickedPhoto(file)
+    if (file) applyPickedPhoto(file)
   }
   // Open the gallery/Files picker (all platforms). Android additionally offers an
   // in-webview "Take photo" (RecorderSheet) button alongside this.

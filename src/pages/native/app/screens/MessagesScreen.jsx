@@ -116,21 +116,13 @@ export default function MessagesScreen({ app }) {
   }
 
   const pickFrom = (ref) => () => { if (ref.current) { ref.current.value = ''; ref.current.click() } }
-  const onFile = (e) => {
-    const f = e.target.files?.[0]
-    if (!f) return
-    // Android's gallery upload uses a MIXED-type file input (see `uploadAccept`)
-    // so it lands on the lightweight Files picker instead of the reap-prone
-    // system Photo Picker — which means non-media files can appear, so enforce
-    // the expected kind here. (An empty `type` from some providers is allowed:
-    // we can't tell, and the server-side CHECK still guards the bucket.)
-    if (ANDROID && f.type && !f.type.startsWith(msgType === 'video' ? 'video/' : 'image/')) {
-      app.say(msgType === 'video' ? 'Please choose a video file.' : 'Please choose a photo.', 'error')
-      e.target.value = ''
-      return
-    }
-    setMediaFile(f)
-  }
+  // Take the picked file as-is — exactly like the (working) Vault document
+  // upload. We deliberately do NOT gate on file.type: the Android Files picker
+  // often reports a content:// pick as application/octet-stream (or no type at
+  // all), and rejecting on that silently dropped valid photos. The mixed accept
+  // already biases the picker to images, and the storage bucket CHECK is the
+  // real guard.
+  const onFile = (e) => { const f = e.target.files?.[0]; if (f) setMediaFile(f) }
 
   // Android captures media IN the webview (RecorderSheet) — external
   // camera/pickers get the app process reaped by One UI's LMK before the result
@@ -396,6 +388,16 @@ export default function MessagesScreen({ app }) {
                     {msgType === 'video' && previewUrl && (
                       <video src={previewUrl} controls playsInline style={{ width: '100%', maxHeight: 240, borderRadius: 12, background: '#000' }} />
                     )}
+                    {/* Always-visible confirmation: on Android a content:// pick
+                        can't always render as a blob preview, but the file IS
+                        attached and will upload — say so plainly. */}
+                    <div className="rdet fx ac" style={{ gap: 6, marginTop: 8, color: 'var(--color-sage-700)', fontWeight: 600, fontSize: 13 }}>
+                      <span style={{ color: 'var(--color-sage-600)' }}>✓</span>
+                      <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                        {mediaFile.name || (msgType === 'video' ? 'Video attached' : 'Photo attached')}
+                        {mediaFile.size ? ` · ${(mediaFile.size / 1024 / 1024).toFixed(1)} MB` : ''}
+                      </span>
+                    </div>
                     <button
                       className="btn btn-sm w100"
                       style={{ marginTop: 8, background: '#fff', color: 'var(--color-navy-800)', border: '1px solid var(--color-stone-200)' }}
