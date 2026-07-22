@@ -3,6 +3,7 @@ import { useAboutMe } from '../../../../hooks/useData'
 import { useAuth } from '../../../../contexts/AuthContext'
 import { initialsOf } from '../helpers'
 import { isNative, isIOS } from '../../../../lib/platform'
+import { startPickKeepAlive, stopPickKeepAlive } from '../../../../lib/pickKeepAlive'
 import RecorderSheet from '../components/RecorderSheet'
 import SecScreen, { Busy } from '../components/SecScreen'
 
@@ -55,15 +56,27 @@ export default function AboutMeScreen({ app }) {
     catch { app.say('Could not upload that photo.', 'error') }
   }
   const pickAvatar = async (e) => {
+    stopPickKeepAlive()
     // Take the pick as-is, like the (working) Vault document upload — the Android
     // Files picker often reports a content:// image as application/octet-stream
     // (or no type), and gating on that silently dropped valid photos.
     const file = e.target.files?.[0]
     if (file) applyPickedPhoto(file)
   }
-  // Open the gallery/Files picker (all platforms). Android additionally offers an
-  // in-webview "Take photo" (RecorderSheet) button alongside this.
-  const changePhoto = () => fileInput.current?.click()
+  // Open the gallery/Files picker (all platforms). Raise the app to foreground
+  // priority first (Android-only no-op elsewhere) so the picker can't get the
+  // process reaped mid-pick. Fire-and-forget: the .click() must stay in this
+  // user-gesture tick. Android also offers an in-webview "Take photo" button.
+  const changePhoto = () => {
+    startPickKeepAlive()
+    fileInput.current?.click()
+  }
+  // Stop the keep-alive when the app returns to the foreground (covers cancel).
+  useEffect(() => {
+    const onVisible = () => { if (!document.hidden) stopPickKeepAlive() }
+    document.addEventListener('visibilitychange', onVisible)
+    return () => { document.removeEventListener('visibilitychange', onVisible); stopPickKeepAlive() }
+  }, [])
 
   const onSave = async () => {
     setBusy(true)
