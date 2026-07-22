@@ -77,9 +77,15 @@ export default function BiometricGate({ children }) {
 
   if (!runNative) return children
 
-  if (locked) {
-    return (
-      <div className="min-h-screen bg-navy-950 flex flex-col items-center justify-center gap-5 px-8">
+  // The lock renders as an opaque OVERLAY above the still-mounted app — never
+  // as a replacement for it. Unmounting children here destroyed all in-flight
+  // state whenever the lock engaged: a video picked from the system camera or
+  // gallery (a >60s round-trip backgrounds the app past the lock threshold)
+  // vanished with the composer sheet, and unlocking "restarted" the app from
+  // scratch. Privacy is identical — the overlay is fully opaque — but state
+  // survives, so unlock resumes exactly where the user left off.
+  const lockOverlay = locked ? (
+      <div className="fixed inset-0 z-[9999] min-h-screen bg-navy-950 flex flex-col items-center justify-center gap-5 px-8">
         <img src="/logo-v2-white.png" alt="Everstead" className="h-11 w-auto opacity-95 mb-2" />
         <div className="flex items-center gap-2">
           <LockKeyhole size={16} className="text-sage-300" />
@@ -126,12 +132,15 @@ export default function BiometricGate({ children }) {
           {confirmExit ? 'Tap again to sign out — your passcode will be reset' : 'Forgotten your passcode? Sign out'}
         </button>
       </div>
-    )
-  }
+  ) : null
 
-  // Brief hold while we read the lock state (avoids a flash of content before the
-  // lock screen). Bounded by the 2.5s safety timeout, so it can never persist.
-  if (checking) return <div className="min-h-screen bg-navy-950" />
-
-  return children
+  return (
+    <>
+      {children}
+      {lockOverlay}
+      {/* Brief opaque hold while the lock state loads (avoids flashing content
+          before the lock). Bounded by the 2.5s safety timeout. */}
+      {checking && !locked && <div className="fixed inset-0 z-[9999] min-h-screen bg-navy-950" />}
+    </>
+  )
 }

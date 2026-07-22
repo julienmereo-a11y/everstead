@@ -2,6 +2,7 @@ import React, { useState, useRef, useMemo, useEffect } from 'react'
 import { useMessages, usePeople } from '../../../../hooks/useData'
 import { useAuth } from '../../../../contexts/AuthContext'
 import { canUseFeature } from '../../../../lib/planLimits'
+import { isNative, isIOS } from '../../../../lib/platform'
 import { planLabel } from '../../../../config/pricing'
 import { PlusIcon, MessageIcon } from '../icons'
 import { haptic } from '../../../../lib/haptics'
@@ -185,7 +186,7 @@ export default function MessagesScreen({ app }) {
       {loading ? (
         <Busy />
       ) : data.length === 0 ? (
-        <div className="card-light" style={{ padding: 18 }}><p className="rdet" style={{ margin: 0 }}>No messages yet. Write a sealed note, record a video, or leave a photo for someone you love.</p></div>
+        <div className="card-light" style={{ padding: 18 }}><p className="rdet" style={{ margin: 0 }}>{isNative() && !isIOS() ? 'No messages yet. Write a sealed letter for someone you love — video and photo messages are coming to Android soon.' : 'No messages yet. Write a sealed note, record a video, or leave a photo for someone you love.'}</p></div>
       ) : (
         <div className="fx col gap12">
           {data.map(m => {
@@ -286,9 +287,13 @@ export default function MessagesScreen({ app }) {
             <button className="grab" aria-label="Close" onClick={resetSheet} style={{ display: 'block', border: 0, cursor: 'pointer', padding: 10, margin: '-10px auto 4px', background: 'none' }}><span style={{ display: 'block', width: 36, height: 4, borderRadius: 99, background: 'var(--color-stone-300)' }} /></button>
             <h3 className="sh-title">Write a message</h3>
 
-            {/* Type selector */}
+            {/* Type selector. Video/photo composition is hidden on Android for
+                now: the system media picker reliably kills the app process
+                mid-pick on some devices (e.g. Samsung One UI), losing the file.
+                Text letters work everywhere; iOS + web keep all three. Existing
+                video/photo messages still render in the list below regardless. */}
             <div className="fx" style={{ gap: 8, marginBottom: 4 }}>
-              {TYPES.map(({ key, label, Icon }) => {
+              {(isNative() && !isIOS() ? TYPES.filter(t => t.key === 'note') : TYPES).map(({ key, label, Icon }) => {
                 const on = msgType === key
                 return (
                   <button
