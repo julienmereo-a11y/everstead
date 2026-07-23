@@ -48,6 +48,15 @@
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+    <!-- The CAMERA / RECORD_AUDIO permissions above IMPLY required hardware,
+         which silently dropped 427 camera-less/mic-less devices (tablets, TVs,
+         Chromebooks) from the Play catalogue. Everstead is fully usable without
+         either — letters, documents, and gallery uploads need no camera, and
+         RecorderSheet fails soft when hardware is missing — so declare the
+         features optional. -->
+    <uses-feature android:name="android.hardware.camera" android:required="false" />
+    <uses-feature android:name="android.hardware.camera.any" android:required="false" />
+    <uses-feature android:name="android.hardware.microphone" android:required="false" />
     <!-- Short foreground service that keeps the app alive during a media pick
          (see the <service> above). The shortService type has NO type-specific
          permission (FOREGROUND_SERVICE_SHORT_SERVICE does not exist in the
