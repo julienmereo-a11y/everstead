@@ -141,7 +141,14 @@ export default function MessagesScreen({ app }) {
   // all), and rejecting on that silently dropped valid photos. The mixed accept
   // already biases the picker to images, and the storage bucket CHECK is the
   // real guard.
-  const onFile = (e) => { stopPickKeepAlive(); const f = e.target.files?.[0]; if (f) setMediaFile(f) }
+  const onFile = (e) => {
+    stopPickKeepAlive()
+    const f = e.target.files?.[0]
+    // Surfaces in logcat (Capacitor/Console) — the definitive signal that the
+    // picker actually delivered a file, vs. a cancel/back-out.
+    console.log('[upload] picked:', f ? `${f.name} ${f.size}B ${f.type}` : 'none (cancelled)')
+    if (f) setMediaFile(f)
+  }
 
   // Android captures media IN the webview (RecorderSheet) — external
   // camera/pickers get the app process reaped by One UI's LMK before the result
@@ -206,15 +213,13 @@ export default function MessagesScreen({ app }) {
   // for evening users west of Greenwich).
   const localTomorrow = () => { const d = new Date(Date.now() + 86400000); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}` }
 
+  // Pure media accept routes Android to the system Photo Picker — the gallery
+  // grid users expect (camera roll + Google Photos). It backgrounds the app,
+  // but MediaPickService (startPickKeepAlive) now holds us at foreground
+  // priority so the process survives; a mixed-accept detour to the Files
+  // browser was tried and users just bounced off it (it's a file manager, not
+  // a gallery).
   const accept = msgType === 'video' ? 'video/*' : 'image/*'
-  // On Android, a media-only accept (image/* or video/*) makes the WebView hand
-  // off to the system Photo Picker — a separate process that lets One UI's
-  // low-memory killer reap Everstead before the pick returns (verified at length
-  // on a Galaxy Fold 7). A MIXED accept routes to the lightweight Files/Documents
-  // picker instead — the same picker the Vault document upload uses, which
-  // survives reliably. We widen with application/pdf and validate the kind in
-  // onFile. iOS/web keep the native, kind-filtered picker.
-  const uploadAccept = ANDROID ? `${accept},application/pdf` : accept
 
   return (
     <SecScreen
@@ -446,9 +451,10 @@ export default function MessagesScreen({ app }) {
                 </p>
                 {/* Camera capture input is iOS/web only — Android captures in the
                     RecorderSheet. The library/upload input renders everywhere;
-                    on Android it uses the mixed accept to reach the Files picker. */}
+                    on Android its pure media accept opens the system Photo
+                    Picker (gallery grid), kept safe by the pick keep-alive. */}
                 {(!isNative() || isIOS()) && <input ref={captureRef} type="file" accept={accept} capture="user" style={{ display: 'none' }} onChange={onFile} />}
-                <input ref={libraryRef} type="file" accept={uploadAccept} style={{ display: 'none' }} onChange={onFile} />
+                <input ref={libraryRef} type="file" accept={accept} style={{ display: 'none' }} onChange={onFile} />
               </>
             )}
 

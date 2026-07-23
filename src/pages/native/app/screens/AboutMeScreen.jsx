@@ -7,11 +7,11 @@ import { startPickKeepAlive, stopPickKeepAlive } from '../../../../lib/pickKeepA
 import RecorderSheet from '../components/RecorderSheet'
 import SecScreen, { Busy } from '../components/SecScreen'
 
-// Android gives two ways to set the avatar: "Upload photo" (a MIXED-type file
-// input that routes to the lightweight Files picker — the media-only picker
-// hands off to the system Photo Picker, a separate process One UI reaps before
-// the pick returns), and "Take photo" (RecorderSheet, in-webview capture, which
-// never backgrounds the app). iOS + web keep the normal <input type=file>.
+// Android gives two ways to set the avatar: "Upload photo" (system Photo Picker
+// — the gallery grid; it backgrounds the app, but the pick keep-alive foreground
+// service stops One UI from reaping the process mid-pick) and "Take photo"
+// (RecorderSheet, in-webview capture, which never backgrounds the app).
+// iOS + web keep the normal <input type=file>.
 const ANDROID_CAPTURE = isNative() && !isIOS()
 
 export default function AboutMeScreen({ app }) {
@@ -57,10 +57,10 @@ export default function AboutMeScreen({ app }) {
   }
   const pickAvatar = async (e) => {
     stopPickKeepAlive()
-    // Take the pick as-is, like the (working) Vault document upload — the Android
-    // Files picker often reports a content:// image as application/octet-stream
-    // (or no type), and gating on that silently dropped valid photos.
+    // Take the pick as-is — no type gating (pickers can report octet-stream for
+    // valid images, and gating silently dropped them).
     const file = e.target.files?.[0]
+    console.log('[avatar] picked:', file ? `${file.name} ${file.size}B ${file.type}` : 'none (cancelled)')
     if (file) applyPickedPhoto(file)
   }
   // Open the gallery/Files picker (all platforms). Raise the app to foreground
@@ -98,7 +98,7 @@ export default function AboutMeScreen({ app }) {
             ? <img src={avatar} alt="" style={{ width: 76, height: 76, borderRadius: '999px', objectFit: 'cover' }} />
             : <span className="avatar avatar-round" style={{ width: 76, height: 76, fontSize: 28 }}>{initialsOf(form.full_name || 'You')}</span>}
         </button>
-        <input ref={fileInput} type="file" accept={ANDROID_CAPTURE ? 'image/*,application/pdf' : 'image/*'} style={{ display: 'none' }} onChange={pickAvatar} />
+        <input ref={fileInput} type="file" accept="image/*" style={{ display: 'none' }} onChange={pickAvatar} />
         {ANDROID_CAPTURE ? (
           <div className="fx ac" style={{ gap: 18, marginTop: 2 }}>
             <button className="linkbtn" style={{ width: 'auto', margin: 0, color: 'var(--color-navy-600)' }} onClick={() => setCapture(true)}>Take photo</button>
