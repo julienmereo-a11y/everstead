@@ -4,6 +4,7 @@ import { Link, useNavigate, useLocation, useSearchParams } from 'react-router-do
 import { useTranslation } from 'react-i18next'
 import { Mail, Lock, Eye, EyeOff, ArrowRight, ShieldCheck } from 'lucide-react'
 import { supabase } from '../lib/supabase'
+import { isNative } from '../lib/platform'
 
 function GoogleIcon() {
   return (
@@ -256,21 +257,31 @@ export default function Login() {
                 <h1 style={{ fontFamily: 'Georgia, serif', fontSize: '28px', fontWeight: '400', color: '#0d1628', marginBottom: '6px', letterSpacing: '-0.01em' }}>{t('step1.title')}</h1>
                 <p style={{ fontSize: '14px', color: '#78716c', marginBottom: '28px' }}>{t('step1.subtitle')}</p>
 
-                <button
-                  type="button"
-                  onClick={handleGoogleSignIn}
-                  className="w-full flex items-center justify-center gap-3 transition-colors hover:bg-stone-50"
-                  style={{ border: '1px solid #e5e2dc', backgroundColor: '#ffffff', color: '#0d1628', fontWeight: '500', fontSize: '14px', padding: '12px', borderRadius: '9999px', marginBottom: '20px', cursor: 'pointer' }}
-                >
-                  <GoogleIcon />
-                  {t('step1.googleButton')}
-                </button>
+                {/* Web only: Google blocks OAuth inside embedded webviews
+                    (disallowed_useragent), so in the native apps this button was
+                    a dead end. Google-account users can set a password via
+                    "Forgot password" until native Google sign-in ships (v1.1 —
+                    system browser + deep link; iOS will then also need Sign in
+                    with Apple per guideline 4.8). */}
+                {!isNative() && (
+                  <>
+                    <button
+                      type="button"
+                      onClick={handleGoogleSignIn}
+                      className="w-full flex items-center justify-center gap-3 transition-colors hover:bg-stone-50"
+                      style={{ border: '1px solid #e5e2dc', backgroundColor: '#ffffff', color: '#0d1628', fontWeight: '500', fontSize: '14px', padding: '12px', borderRadius: '9999px', marginBottom: '20px', cursor: 'pointer' }}
+                    >
+                      <GoogleIcon />
+                      {t('step1.googleButton')}
+                    </button>
 
-                <div className="flex items-center gap-3" style={{ marginBottom: '20px' }}>
-                  <div className="flex-1 h-px bg-stone-200" />
-                  <span style={{ fontSize: '12px', color: '#a8a29e' }}>{t('step1.divider')}</span>
-                  <div className="flex-1 h-px bg-stone-200" />
-                </div>
+                    <div className="flex items-center gap-3" style={{ marginBottom: '20px' }}>
+                      <div className="flex-1 h-px bg-stone-200" />
+                      <span style={{ fontSize: '12px', color: '#a8a29e' }}>{t('step1.divider')}</span>
+                      <div className="flex-1 h-px bg-stone-200" />
+                    </div>
+                  </>
+                )}
 
                 <form onSubmit={handleSendCode} className="space-y-4">
                   <div>
