@@ -35,29 +35,44 @@ function ensurePlugin() {
 }
 if (ANDROID) ensurePlugin()
 
+// True while one of OUR picks is in flight — BiometricGate uses this to skip
+// the 60s background re-lock: attaching a photo/video isn't "leaving the app",
+// and getting bounced to the passcode screen mid-attach loses the flow.
+let pickInProgress = false
+export const isPickInProgress = () => pickInProgress
+
 export async function pickMedia(kind /* 'photo' | 'video' */) {
   if (!ANDROID) return null
   await ensurePlugin()
   if (!plugin) throw new Error('picker unavailable')
-  let res
+  pickInProgress = true
   try {
-    res = await plugin.pick({ kind })
-  } catch (e) {
-    const msg = String(e?.message || e)
-    if (msg.includes('cancelled')) return null // user backed out — not an error
-    console.log('[upload] pick failed:', msg)
-    throw e
+    let res
+    try {
+      res = await plugin.pick({ kind })
+    } catch (e) {
+      const msg = String(e?.message || e)
+      if (msg.includes('cancelled')) return null // user backed out — not an error
+      console.log('[upload] pick failed:', msg)
+      throw e
+    }
+    if (!res?.path && !res?.uri) return null
+    // Photos come back as a cache-file path (native transcode to real JPEG —
+    // Samsung's HEIC can't be decoded by any web engine); videos as their
+    // content:// URI. Both stream through Capacitor's local-server proxy.
+    const src = Capacitor.convertFileSrc(res.path || res.uri)
+    const r = await fetch(src)
+    if (!r.ok) { console.log('[upload] content fetch failed:', r.status); throw new Error(`fetch ${r.status}`) }
+    const blob = await r.blob()
+    const type = res.mime || blob.type || (kind === 'video' ? 'video/mp4' : 'image/jpeg')
+    const name = res.name || `${kind}-${Date.now()}.${(type.split('/')[1] || 'bin').split('+')[0]}`
+    console.log('[upload] picked:', `${name} ${blob.size}B ${type}`)
+    return new File([blob], name, { type })
+  } finally {
+    // Linger a few seconds: the resume events that follow the pick must also
+    // see "pick in progress", or the lock check races the promise resolution.
+    setTimeout(() => { pickInProgress = false }, 5000)
   }
-  if (!res?.uri) return null
-  // Read the picked bytes through Capacitor's content:// proxy.
-  const src = Capacitor.convertFileSrc(res.uri)
-  const r = await fetch(src)
-  if (!r.ok) { console.log('[upload] content fetch failed:', r.status); throw new Error(`fetch ${r.status}`) }
-  const blob = await r.blob()
-  const type = res.mime || blob.type || (kind === 'video' ? 'video/mp4' : 'image/jpeg')
-  const name = res.name || `${kind}-${Date.now()}.${(type.split('/')[1] || 'bin').split('+')[0]}`
-  console.log('[upload] picked:', `${name} ${blob.size}B ${type}`)
-  return new File([blob], name, { type })
 }
 
 // Legacy exports (keep-alive around a WebView-driven pick). The gallery flows

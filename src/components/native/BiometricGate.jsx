@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import { LockKeyhole } from 'lucide-react'
 import { isNative } from '../../lib/platform'
 import { getLockState, verifyPasscode, verifyBiometric, clearPasscode } from './appLock'
+import { isPickInProgress } from '../../lib/pickKeepAlive'
 import { haptic } from '../../lib/haptics'
 
 // Local device-lock layer for the iOS app, sitting above the route tree. The lock
@@ -66,7 +67,10 @@ export default function BiometricGate({ children }) {
         appStateHandle = await App.addListener('appStateChange', async ({ isActive }) => {
           if (!isActive) { backgroundedAt.current = Date.now(); return }
           const elapsed = backgroundedAt.current ? Date.now() - backgroundedAt.current : 0
-          if (elapsed >= BACKGROUND_LOCK_THRESHOLD_MS) maybeLock()
+          // A gallery pick WE launched backgrounds the app (often >60s for a
+          // video browse) — that's not "leaving the app", so don't bounce the
+          // user to the passcode mid-attach.
+          if (elapsed >= BACKGROUND_LOCK_THRESHOLD_MS && !isPickInProgress()) maybeLock()
         })
       } catch { /* app-state listener unavailable — non-fatal */ }
     })()
