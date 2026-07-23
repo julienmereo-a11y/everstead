@@ -28,11 +28,11 @@
             <meta-data android:name="android.support.FILE_PROVIDER_PATHS" android:resource="@xml/file_paths" />
         </provider>
 
-        <!-- Holds the app at foreground priority WHILE the system photo/file
-             picker is open, so One UI's low-memory killer can't reap the process
+        <!-- Holds the app at foreground priority WHILE the system photo picker
+             is open, so One UI's low-memory killer can't reap the process
              mid-pick (verified: a full-system memory-pressure reap took Everstead
-             down along with ~12 other cached apps). Started only on an explicit
-             Upload tap, stopped the instant the app returns to the foreground. -->
+             down along with ~12 other cached apps). Started and stopped by
+             MediaPickKeepAlivePlugin around each pick. -->
         <service
             android:name=".MediaPickService"
             android:exported="false"
@@ -49,8 +49,8 @@
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
     <!-- Short foreground service that keeps the app alive during a media pick
-         (see the <service> above). Short-service type needs no Play data-safety
-         declaration beyond naming the type. -->
+         (see the <service> above). The shortService type has NO type-specific
+         permission (FOREGROUND_SERVICE_SHORT_SERVICE does not exist in the
+         SDK) and is exempt from Play's typed-FGS declaration form. -->
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SHORT_SERVICE" />
 </manifest>

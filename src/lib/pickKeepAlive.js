@@ -7,10 +7,12 @@ import { isNative, isIOS } from './platform'
 // event ever reached the page even with process/activity/webview all alive.
 // The plugin opens the system photo picker directly, holds a short foreground
 // service for the duration (One UI's low-memory killer reaps backgrounded
-// webview apps mid-pick), and returns a content:// URI that we read back
-// through Capacitor's /_capacitor_content_ proxy.
+// webview apps mid-pick), transcodes photos to real JPEG natively (Samsung
+// shoots HEIC, which no web engine decodes), and returns a path/URI that we
+// read back through Capacitor's local-server proxy.
 //
-// pickMedia(kind) → File, or null if the user cancelled.
+// pickMedia(kind) → File, or null if the user cancelled (or a pick is already
+// in flight — double-tapping Upload must not stack two picker activities).
 
 const ANDROID = isNative() && !isIOS()
 
@@ -39,13 +41,29 @@ if (ANDROID) ensurePlugin()
 // the 60s background re-lock: attaching a photo/video isn't "leaving the app",
 // and getting bounced to the passcode screen mid-attach loses the flow.
 let pickInProgress = false
+let pickPending = false
+let lingerTimer = null
 export const isPickInProgress = () => pickInProgress
 
 export async function pickMedia(kind /* 'photo' | 'video' */) {
   if (!ANDROID) return null
-  await ensurePlugin()
-  if (!plugin) throw new Error('picker unavailable')
+  if (pickPending) return null // a picker is already open — ignore the extra tap
+  // Claim the slot BEFORE any await — two taps in the same frame would both
+  // pass the guard otherwise and stack two picker activities.
+  pickPending = true
   pickInProgress = true
+  try {
+    await ensurePlugin()
+    if (!plugin) throw new Error('picker unavailable')
+  } catch (e) {
+    // No picker ever opened — release both flags or the lock-skip sticks forever.
+    pickPending = false
+    pickInProgress = false
+    throw e
+  }
+  // A stale linger timer from the PREVIOUS pick must not clear the flag while
+  // this pick is open (e.g. "Choose a different photo" within 5s).
+  clearTimeout(lingerTimer); lingerTimer = null
   try {
     let res
     try {
@@ -57,9 +75,8 @@ export async function pickMedia(kind /* 'photo' | 'video' */) {
       throw e
     }
     if (!res?.path && !res?.uri) return null
-    // Photos come back as a cache-file path (native transcode to real JPEG —
-    // Samsung's HEIC can't be decoded by any web engine); videos as their
-    // content:// URI. Both stream through Capacitor's local-server proxy.
+    // Photos come back as a cache-file path (native JPEG transcode); videos as
+    // their content:// URI. Both stream through the local-server proxy.
     const src = Capacitor.convertFileSrc(res.path || res.uri)
     const r = await fetch(src)
     if (!r.ok) { console.log('[upload] content fetch failed:', r.status); throw new Error(`fetch ${r.status}`) }
@@ -69,26 +86,10 @@ export async function pickMedia(kind /* 'photo' | 'video' */) {
     console.log('[upload] picked:', `${name} ${blob.size}B ${type}`)
     return new File([blob], name, { type })
   } finally {
+    pickPending = false
     // Linger a few seconds: the resume events that follow the pick must also
     // see "pick in progress", or the lock check races the promise resolution.
-    setTimeout(() => { pickInProgress = false }, 5000)
+    clearTimeout(lingerTimer)
+    lingerTimer = setTimeout(() => { pickInProgress = false; lingerTimer = null }, 5000)
   }
-}
-
-// Legacy exports (keep-alive around a WebView-driven pick). The gallery flows
-// now use pickMedia() end-to-end; these remain for any future external-activity
-// flow that needs reap protection.
-let safetyTimer = null
-
-export function startPickKeepAlive() {
-  if (!ANDROID) return
-  ensurePlugin().then(() => { if (plugin) plugin.start().catch(() => {}) })
-  clearTimeout(safetyTimer)
-  safetyTimer = setTimeout(stopPickKeepAlive, 120000)
-}
-
-export function stopPickKeepAlive() {
-  if (!ANDROID) return
-  clearTimeout(safetyTimer); safetyTimer = null
-  ensurePlugin().then(() => { if (plugin) plugin.stop().catch(() => {}) })
 }

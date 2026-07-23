@@ -24,8 +24,13 @@ const ANDROID_CAPTURE = isNative() && !isIOS()
 // the UPLOAD run by whichever instance is alive; a URL-only stash written after
 // the upload always missed the fresh mount (verified: bytes in the bucket,
 // avatar_url never set, screen showing nothing).
-let pickedAvatar = null // { url, at } — uploaded URL, wins over server row until Save
-const freshPickedAvatar = () => (pickedAvatar && Date.now() - pickedAvatar.at < 10 * 60 * 1000 ? pickedAvatar.url : null)
+// ANDROID-ONLY and bound to the signed-in user: on web/iOS the baseline
+// behavior (navigate away without Save = photo discarded) must stay — an
+// unscoped stash let a rejected photo silently reattach for 10 minutes, even
+// across a sign-out on a shared browser.
+let pickedAvatar = null // { url, at, userId } — uploaded URL, wins over server row until Save
+const freshPickedAvatar = (userId) =>
+  (pickedAvatar && pickedAvatar.userId === userId && Date.now() - pickedAvatar.at < 10 * 60 * 1000 ? pickedAvatar.url : null)
 let avatarFileStash = null    // { file, at } — picked but not yet uploaded
 let deliverAvatarToLive = null // (file) => void, bound to the mounted screen
 
@@ -47,7 +52,7 @@ export default function AboutMeScreen({ app }) {
     // A photo picked this session always wins over the server row: hooks
     // refetch on app resume (which the pick itself triggers), and the server's
     // avatar_url is stale until the user taps Save.
-    const picked = freshPickedAvatar()
+    const picked = freshPickedAvatar(auth.user?.id || null)
     if (picked) setAvatar(picked)
     // Never ask for what we already know: the name was given at onboarding
     // (profiles.full_name), so start from it — mirrors the web's AboutMeSection.
@@ -74,9 +79,12 @@ export default function AboutMeScreen({ app }) {
   const applyPickedPhoto = async (file) => {
     try {
       const url = await uploadAvatar(file)
-      // Stash BEFORE setAvatar: if this instance was unmounted mid-pick, the
-      // setState is a no-op, but the freshly mounted screen restores from here.
-      pickedAvatar = { url, at: Date.now() }
+      // Upload done — the file stash's job is over; the URL stash takes it
+      // from here. Stash BEFORE setAvatar: if this instance was unmounted
+      // mid-upload, the setState is a no-op, but the next mount restores from
+      // pickedAvatar. Android-only + user-bound (see module-scope note).
+      avatarFileStash = null
+      if (ANDROID_CAPTURE) pickedAvatar = { url, at: Date.now(), userId: auth.user?.id || null }
       setAvatar(url)
       app.say('Photo added — tap Save to keep it')
     } catch { app.say('Could not upload that photo.', 'error') }
@@ -104,14 +112,22 @@ export default function AboutMeScreen({ app }) {
   }
 
   // Register as the live delivery target and consume any picked file waiting
-  // from a previous instance of this screen.
+  // from a previous instance of this screen. Delivery does NOT clear the file
+  // stash — the delivered-to instance can be wiped by the shell reset an
+  // instant later; applyPickedPhoto clears it once the upload has succeeded.
   useEffect(() => {
-    deliverAvatarToLive = (file) => { avatarFileStash = null; applyPickedPhoto(file) }
-    if (avatarFileStash && Date.now() - avatarFileStash.at < 3 * 60 * 1000) {
+    deliverAvatarToLive = (file) => { applyPickedPhoto(file) }
+    if (avatarFileStash && Date.now() - avatarFileStash.at >= 3 * 60 * 1000) avatarFileStash = null // purge, don't hold the File
+    if (avatarFileStash) {
       const f = avatarFileStash.file
-      avatarFileStash = null
+      avatarFileStash = null // consumed by THIS live instance — upload starts now
       console.log('[upload] restored avatar file after remount')
       applyPickedPhoto(f)
+    } else {
+      // No file waiting, but a finished upload may have landed while no
+      // instance was mounted (upload outlives the instance that started it).
+      const picked = freshPickedAvatar(auth.user?.id || null)
+      if (picked) setAvatar(picked)
     }
     return () => { deliverAvatarToLive = null }
     // eslint-disable-next-line react-hooks/exhaustive-deps

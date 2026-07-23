@@ -5,7 +5,8 @@ import { getLockState, verifyPasscode, verifyBiometric, clearPasscode } from './
 import { isPickInProgress } from '../../lib/pickKeepAlive'
 import { haptic } from '../../lib/haptics'
 
-// Local device-lock layer for the iOS app, sitting above the route tree. The lock
+// Local device-lock layer for the native apps (iOS + Android), sitting above
+// the route tree. The lock
 // is ACTIVE whenever the user has set a passcode (see appLock / SecuritySetup): the
 // app locks on cold start and after being backgrounded for a while. Face ID / Touch
 // ID is an optional shortcut on top of the passcode.
@@ -140,7 +141,12 @@ export default function BiometricGate({ children }) {
 
   return (
     <>
-      {children}
+      {/* display:contents = layout-neutral wrapper; inert while locked so
+          VoiceOver/TalkBack can't swipe-read the content behind the opaque
+          overlay. React 18 needs the empty-string form for inert. */}
+      <div style={{ display: 'contents' }} inert={locked ? '' : undefined}>
+        {children}
+      </div>
       {lockOverlay}
       {/* Brief opaque hold while the lock state loads (avoids flashing content
           before the lock). Bounded by the 2.5s safety timeout. */}

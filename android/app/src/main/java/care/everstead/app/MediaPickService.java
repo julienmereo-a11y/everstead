@@ -13,12 +13,12 @@ import android.os.IBinder;
 import androidx.core.app.NotificationCompat;
 
 // A short-lived foreground service that holds Everstead at foreground priority
-// while the OS media/file picker is open. On memory-tight devices (notably
-// Samsung One UI) a backgrounded web-view app is a prime low-memory-killer target
-// and gets reaped mid-pick — destroying the composer AND the file the user just
-// chose. A foreground service moves the process well below the reap threshold for
-// the few seconds the picker is up. It is stopped the instant the app returns to
-// the foreground (see lib/pickKeepAlive.js), so the notification barely shows.
+// while the OS media picker is open. On memory-tight devices (notably Samsung
+// One UI) a backgrounded web-view app is a prime low-memory-killer target and
+// gets reaped mid-pick — destroying the composer AND the file the user just
+// chose. A foreground service moves the process well below the reap threshold
+// for the duration of the pick. Started and stopped by
+// MediaPickKeepAlivePlugin around each pick, so the notification barely shows.
 public class MediaPickService extends Service {
     private static final String CHANNEL_ID = "media_pick";
     private static final int NOTIF_ID = 4711;
@@ -31,9 +31,20 @@ public class MediaPickService extends Service {
         } else {
             startForeground(NOTIF_ID, notification);
         }
-        // We stop it explicitly from JS; if the system ever restarts it, don't
-        // re-deliver the intent.
+        // The plugin stops it when the pick resolves; if the system ever
+        // restarts it, don't re-deliver the intent.
         return START_NOT_STICKY;
+    }
+
+    // Android 14+ gives a shortService ~3 minutes, then calls onTimeout(); a
+    // service that doesn't stop itself promptly gets the app killed with an
+    // ANR ("A foreground service ... did not stop within its timeout") — i.e.
+    // parking in the gallery for >3 minutes would crash the app the keep-alive
+    // exists to protect. Losing FGS priority is strictly better than dying;
+    // the pick itself continues unprotected.
+    @Override
+    public void onTimeout(int startId) {
+        stopSelf();
     }
 
     private Notification buildNotification() {

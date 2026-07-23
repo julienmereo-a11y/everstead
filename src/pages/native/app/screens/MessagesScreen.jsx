@@ -90,6 +90,12 @@ export default function MessagesScreen({ app }) {
   // Two-step confirm for "Release now" — the highest-stakes, least reversible
   // tap in the app (for email recipients it immediately sends the link).
   const [confirmId, setConfirmId] = useState(null)
+  // Android in-webview capture (RecorderSheet): 'video' | 'photo' | false.
+  // Declared HERE, with the other hooks — this once sat below the
+  // `if (!entitled)` early return, which is a hook-order violation that threw
+  // ("Rendered more hooks than during the previous render") the moment `plan`
+  // flipped on a mounted screen — i.e. seconds after an in-app upgrade.
+  const [recorder, setRecorder] = useState(false)
 
   const captureRef = useRef(null)  // camera (record video / take photo)
   const libraryRef = useRef(null)  // photo/video library
@@ -102,15 +108,23 @@ export default function MessagesScreen({ app }) {
   // from a pick that outlived a previous instance of this screen (see the
   // module-scope stash notes above TYPES).
   useEffect(() => {
+    // Delivery must NOT clear the stashes: the pick can resolve into a
+    // still-mounted instance that the shell reset then wipes ~0.5s later — if
+    // delivery consumed the stash, the fresh mount would find nothing and the
+    // file/draft would vanish. Stashes are cleared only on deliberate
+    // close/submit (resetSheet) or when the file-restore below consumes them.
     deliverToLive = (f, kind) => {
       setMsgType(kind); setMediaFile(f); setSheet(true)
-      draftStash = null; fileStash = null
     }
+    // Expired stashes are purged, not just skipped — otherwise a 19MB video
+    // File sits referenced in module scope for the whole session.
     const fresh = (s) => s && Date.now() - s.at < STASH_TTL
-    if (fresh(draftStash)) {
+    if (draftStash && !fresh(draftStash)) draftStash = null
+    if (fileStash && !fresh(fileStash)) fileStash = null
+    if (draftStash) {
       setForm(draftStash.form); setMsgType(draftStash.msgType); setSheet(true)
     }
-    if (fresh(fileStash)) {
+    if (fileStash) {
       console.log('[upload] restored picked file after remount')
       setMsgType(fileStash.msgType); setMediaFile(fileStash.file); setSheet(true)
       draftStash = null; fileStash = null
@@ -174,11 +188,6 @@ export default function MessagesScreen({ app }) {
   // No type gating on the pick — pickers can report octet-stream (or nothing)
   // for valid media, and gating silently dropped good files.
   const onFile = (e) => { const f = e.target.files?.[0]; if (f) setMediaFile(f) }
-
-  // Android captures media IN the webview (RecorderSheet) — external
-  // camera/pickers get the app process reaped by One UI's LMK before the result
-  // returns. 'video' | 'photo' | false.
-  const [recorder, setRecorder] = useState(false)
 
   const submit = async () => {
     if (!canSubmit) return
@@ -459,8 +468,9 @@ export default function MessagesScreen({ app }) {
                     >
                       <CameraIcon />{msgType === 'video' ? 'Record' : 'Take photo'}
                     </button>
-                    {/* Upload from the gallery — on Android this rides the mixed
-                        accept (uploadAccept) → lightweight Files picker. */}
+                    {/* Upload from the gallery — Android goes through the native
+                        pick plugin (uploadFromGallery); iOS/web use the hidden
+                        libraryRef input. */}
                     <button className="btn btn-sm f1 fx ac jc" style={{ gap: 6, background: '#fff', color: 'var(--color-navy-800)', border: '1px solid var(--color-stone-200)' }} onClick={ANDROID ? uploadFromGallery : pickFrom(libraryRef)}>
                       <UploadIcon />Upload
                     </button>

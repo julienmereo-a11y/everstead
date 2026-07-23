@@ -27,6 +27,10 @@ export default function RecorderSheet({ mode = 'video', onUse, onClose }) {
   const recorderRef = useRef(null)
   const chunksRef = useRef([])
   const timerRef = useRef(null)
+  const mountedRef = useRef(true)
+  // Mirrors reviewUrl for the unmount cleanup — the effect's closure sees only
+  // the first render's value (null), which silently leaked every recording.
+  const reviewUrlRef = useRef(null)
   const [phase, setPhase] = useState('starting') // starting | ready | recording | review | error
   const [seconds, setSeconds] = useState(0)
   const [reviewUrl, setReviewUrl] = useState(null)
@@ -44,6 +48,9 @@ export default function RecorderSheet({ mode = 'video', onUse, onClose }) {
         video: { facingMode: 'user', width: { ideal: 1280 }, height: { ideal: 720 } },
         audio: !isPhoto,
       })
+      // The sheet may have closed while getUserMedia was pending (Retake → ✕):
+      // stop the tracks now or the camera/mic stay live until process death.
+      if (!mountedRef.current) { stream.getTracks().forEach(t => t.stop()); return }
       streamRef.current = stream
       if (videoRef.current) { videoRef.current.srcObject = stream; videoRef.current.play().catch(() => {}) }
       setPhase('ready')
@@ -55,10 +62,11 @@ export default function RecorderSheet({ mode = 'video', onUse, onClose }) {
     ;(async () => { await acquire(); if (cancelled) stopStream() })()
     return () => {
       cancelled = true
+      mountedRef.current = false
       clearInterval(timerRef.current)
       try { recorderRef.current?.state !== 'inactive' && recorderRef.current?.stop() } catch { /* already stopped */ }
       stopStream()
-      if (reviewUrl) URL.revokeObjectURL(reviewUrl)
+      if (reviewUrlRef.current) URL.revokeObjectURL(reviewUrlRef.current)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
@@ -75,8 +83,10 @@ export default function RecorderSheet({ mode = 'video', onUse, onClose }) {
     // photo should read the right way round.
     ctx.drawImage(v, 0, 0, canvas.width, canvas.height)
     canvas.toBlob((b) => {
-      if (!b) return
-      setBlob(b); setReviewUrl(URL.createObjectURL(b))
+      if (!b || !mountedRef.current) return
+      const url = URL.createObjectURL(b)
+      reviewUrlRef.current = url
+      setBlob(b); setReviewUrl(url)
       stopStream(); setPhase('review')
     }, 'image/jpeg', 0.92)
   }
@@ -91,9 +101,13 @@ export default function RecorderSheet({ mode = 'video', onUse, onClose }) {
     chunksRef.current = []
     rec.ondataavailable = (e) => { if (e.data?.size) chunksRef.current.push(e.data) }
     rec.onstop = () => {
+      // Unmount-triggered stop: don't mint an object URL nobody can revoke.
+      if (!mountedRef.current) { chunksRef.current = []; return }
       const type = rec.mimeType || mimeType || 'video/webm'
       const b = new Blob(chunksRef.current, { type })
-      setBlob(b); setReviewUrl(URL.createObjectURL(b))
+      const url = URL.createObjectURL(b)
+      reviewUrlRef.current = url
+      setBlob(b); setReviewUrl(url)
       stopStream(); setPhase('review')
     }
     recorderRef.current = rec
@@ -110,6 +124,7 @@ export default function RecorderSheet({ mode = 'video', onUse, onClose }) {
 
   const retake = () => {
     if (reviewUrl) URL.revokeObjectURL(reviewUrl)
+    reviewUrlRef.current = null
     setReviewUrl(null); setBlob(null)
     acquire()
   }
