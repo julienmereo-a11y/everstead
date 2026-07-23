@@ -3,7 +3,7 @@ import { useMessages, usePeople } from '../../../../hooks/useData'
 import { useAuth } from '../../../../contexts/AuthContext'
 import { canUseFeature } from '../../../../lib/planLimits'
 import { isNative, isIOS } from '../../../../lib/platform'
-import { startPickKeepAlive, stopPickKeepAlive } from '../../../../lib/pickKeepAlive'
+import { pickMedia } from '../../../../lib/pickKeepAlive'
 import RecorderSheet from '../components/RecorderSheet'
 import { planLabel } from '../../../../config/pricing'
 import { PlusIcon, MessageIcon } from '../icons'
@@ -85,14 +85,6 @@ export default function MessagesScreen({ app }) {
   const previewUrl = useMemo(() => (mediaFile ? URL.createObjectURL(mediaFile) : null), [mediaFile])
   useEffect(() => () => { if (previewUrl) URL.revokeObjectURL(previewUrl) }, [previewUrl])
 
-  // Stop the pick keep-alive as soon as the app is back in the foreground — the
-  // service is only needed WHILE we're backgrounded behind the picker. This also
-  // covers a cancelled pick, where onChange never fires.
-  useEffect(() => {
-    const onVisible = () => { if (!document.hidden) stopPickKeepAlive() }
-    document.addEventListener('visibilitychange', onVisible)
-    return () => { document.removeEventListener('visibilitychange', onVisible); stopPickKeepAlive() }
-  }, [])
 
   // Free (and legacy Essential) users see an upgrade prompt instead of the
   // compose UI — matching the website, which swaps the composer for an upsell.
@@ -126,29 +118,22 @@ export default function MessagesScreen({ app }) {
   }
 
   const pickFrom = (ref) => () => { if (ref.current) { ref.current.value = ''; ref.current.click() } }
-  // Gallery upload: raise the app to foreground priority BEFORE opening the
-  // picker (Android-only no-op elsewhere), so One UI can't reap the process
-  // while it's backgrounded behind the picker. startPickKeepAlive is
-  // fire-and-forget — the .click() must stay in this same user-gesture tick or
-  // the browser blocks the file dialog.
-  const openUpload = () => {
-    startPickKeepAlive()
-    if (libraryRef.current) { libraryRef.current.value = ''; libraryRef.current.click() }
+  // Android gallery upload goes through the NATIVE picker plugin (pickMedia) —
+  // the WebView's own file-chooser chain silently dropped results on the Fold
+  // (picker returned, no change event ever reached the page). The plugin opens
+  // the photo picker directly, keeps the app alive during the pick, and hands
+  // back a File. iOS/web keep the plain input below.
+  const uploadFromGallery = async () => {
+    try {
+      const f = await pickMedia(msgType === 'video' ? 'video' : 'photo')
+      if (f) setMediaFile(f)
+    } catch {
+      app.say(`Could not read that ${msgType === 'video' ? 'video' : 'photo'}. Please try again.`, 'error')
+    }
   }
-  // Take the picked file as-is — exactly like the (working) Vault document
-  // upload. We deliberately do NOT gate on file.type: the Android Files picker
-  // often reports a content:// pick as application/octet-stream (or no type at
-  // all), and rejecting on that silently dropped valid photos. The mixed accept
-  // already biases the picker to images, and the storage bucket CHECK is the
-  // real guard.
-  const onFile = (e) => {
-    stopPickKeepAlive()
-    const f = e.target.files?.[0]
-    // Surfaces in logcat (Capacitor/Console) — the definitive signal that the
-    // picker actually delivered a file, vs. a cancel/back-out.
-    console.log('[upload] picked:', f ? `${f.name} ${f.size}B ${f.type}` : 'none (cancelled)')
-    if (f) setMediaFile(f)
-  }
+  // No type gating on the pick — pickers can report octet-stream (or nothing)
+  // for valid media, and gating silently dropped good files.
+  const onFile = (e) => { const f = e.target.files?.[0]; if (f) setMediaFile(f) }
 
   // Android captures media IN the webview (RecorderSheet) — external
   // camera/pickers get the app process reaped by One UI's LMK before the result
@@ -213,12 +198,7 @@ export default function MessagesScreen({ app }) {
   // for evening users west of Greenwich).
   const localTomorrow = () => { const d = new Date(Date.now() + 86400000); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}` }
 
-  // Pure media accept routes Android to the system Photo Picker — the gallery
-  // grid users expect (camera roll + Google Photos). It backgrounds the app,
-  // but MediaPickService (startPickKeepAlive) now holds us at foreground
-  // priority so the process survives; a mixed-accept detour to the Files
-  // browser was tried and users just bounced off it (it's a file manager, not
-  // a gallery).
+  // iOS/web only — Android uploads go through pickMedia (native plugin).
   const accept = msgType === 'video' ? 'video/*' : 'image/*'
 
   return (
@@ -441,7 +421,7 @@ export default function MessagesScreen({ app }) {
                     </button>
                     {/* Upload from the gallery — on Android this rides the mixed
                         accept (uploadAccept) → lightweight Files picker. */}
-                    <button className="btn btn-sm f1 fx ac jc" style={{ gap: 6, background: '#fff', color: 'var(--color-navy-800)', border: '1px solid var(--color-stone-200)' }} onClick={openUpload}>
+                    <button className="btn btn-sm f1 fx ac jc" style={{ gap: 6, background: '#fff', color: 'var(--color-navy-800)', border: '1px solid var(--color-stone-200)' }} onClick={ANDROID ? uploadFromGallery : pickFrom(libraryRef)}>
                       <UploadIcon />Upload
                     </button>
                   </div>
@@ -449,12 +429,10 @@ export default function MessagesScreen({ app }) {
                 <p className="rdet" style={{ margin: '8px 0 0', fontSize: 11.5 }}>
                   {msgType === 'video' ? 'Record yourself now, or upload an existing video.' : 'Take a photo now, or upload a meaningful one from your library.'}
                 </p>
-                {/* Camera capture input is iOS/web only — Android captures in the
-                    RecorderSheet. The library/upload input renders everywhere;
-                    on Android its pure media accept opens the system Photo
-                    Picker (gallery grid), kept safe by the pick keep-alive. */}
+                {/* Hidden inputs are iOS/web only — Android captures in the
+                    RecorderSheet and uploads via the native picker plugin. */}
                 {(!isNative() || isIOS()) && <input ref={captureRef} type="file" accept={accept} capture="user" style={{ display: 'none' }} onChange={onFile} />}
-                <input ref={libraryRef} type="file" accept={accept} style={{ display: 'none' }} onChange={onFile} />
+                {(!isNative() || isIOS()) && <input ref={libraryRef} type="file" accept={accept} style={{ display: 'none' }} onChange={onFile} />}
               </>
             )}
 

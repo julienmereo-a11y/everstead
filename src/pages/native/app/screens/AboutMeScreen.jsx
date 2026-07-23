@@ -3,7 +3,7 @@ import { useAboutMe } from '../../../../hooks/useData'
 import { useAuth } from '../../../../contexts/AuthContext'
 import { initialsOf } from '../helpers'
 import { isNative, isIOS } from '../../../../lib/platform'
-import { startPickKeepAlive, stopPickKeepAlive } from '../../../../lib/pickKeepAlive'
+import { pickMedia } from '../../../../lib/pickKeepAlive'
 import RecorderSheet from '../components/RecorderSheet'
 import SecScreen, { Busy } from '../components/SecScreen'
 
@@ -56,27 +56,22 @@ export default function AboutMeScreen({ app }) {
     catch { app.say('Could not upload that photo.', 'error') }
   }
   const pickAvatar = async (e) => {
-    stopPickKeepAlive()
     // Take the pick as-is — no type gating (pickers can report octet-stream for
     // valid images, and gating silently dropped them).
     const file = e.target.files?.[0]
-    console.log('[avatar] picked:', file ? `${file.name} ${file.size}B ${file.type}` : 'none (cancelled)')
     if (file) applyPickedPhoto(file)
   }
-  // Open the gallery/Files picker (all platforms). Raise the app to foreground
-  // priority first (Android-only no-op elsewhere) so the picker can't get the
-  // process reaped mid-pick. Fire-and-forget: the .click() must stay in this
-  // user-gesture tick. Android also offers an in-webview "Take photo" button.
-  const changePhoto = () => {
-    startPickKeepAlive()
-    fileInput.current?.click()
+  // Android uploads via the native picker plugin — the WebView file-chooser
+  // chain silently dropped results on the Fold. iOS/web keep the plain input.
+  const changePhoto = async () => {
+    if (!ANDROID_CAPTURE) { fileInput.current?.click(); return }
+    try {
+      const file = await pickMedia('photo')
+      if (file) applyPickedPhoto(file)
+    } catch {
+      app.say('Could not read that photo. Please try again.', 'error')
+    }
   }
-  // Stop the keep-alive when the app returns to the foreground (covers cancel).
-  useEffect(() => {
-    const onVisible = () => { if (!document.hidden) stopPickKeepAlive() }
-    document.addEventListener('visibilitychange', onVisible)
-    return () => { document.removeEventListener('visibilitychange', onVisible); stopPickKeepAlive() }
-  }, [])
 
   const onSave = async () => {
     setBusy(true)
@@ -98,7 +93,7 @@ export default function AboutMeScreen({ app }) {
             ? <img src={avatar} alt="" style={{ width: 76, height: 76, borderRadius: '999px', objectFit: 'cover' }} />
             : <span className="avatar avatar-round" style={{ width: 76, height: 76, fontSize: 28 }}>{initialsOf(form.full_name || 'You')}</span>}
         </button>
-        <input ref={fileInput} type="file" accept="image/*" style={{ display: 'none' }} onChange={pickAvatar} />
+        {!ANDROID_CAPTURE && <input ref={fileInput} type="file" accept="image/*" style={{ display: 'none' }} onChange={pickAvatar} />}
         {ANDROID_CAPTURE ? (
           <div className="fx ac" style={{ gap: 18, marginTop: 2 }}>
             <button className="linkbtn" style={{ width: 'auto', margin: 0, color: 'var(--color-navy-600)' }} onClick={() => setCapture(true)}>Take photo</button>

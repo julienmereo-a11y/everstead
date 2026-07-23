@@ -1,41 +1,74 @@
 import { isNative, isIOS } from './platform'
 
-// Android only: hold the app at foreground priority while a system photo/file
-// picker is open, so One UI's low-memory killer can't reap the process mid-pick.
-// The device log proved a full-system memory-pressure reap takes a backgrounded
-// web-view app down; a short foreground service keeps it out of the killable
-// bucket for the few seconds the picker is up. No-op on iOS/web (they don't reap
-// this way), so callers can use it unconditionally.
+// Android gallery pick, fully native-side (MediaPickKeepAlivePlugin).
+//
+// Why not an <input type=file>: on a Galaxy Fold 7 the WebView's file-chooser
+// chain silently dropped the picked photo — the picker returned, but no change
+// event ever reached the page even with process/activity/webview all alive.
+// The plugin opens the system photo picker directly, holds a short foreground
+// service for the duration (One UI's low-memory killer reaps backgrounded
+// webview apps mid-pick), and returns a content:// URI that we read back
+// through Capacitor's /_capacitor_content_ proxy.
+//
+// pickMedia(kind) → File, or null if the user cancelled.
 
 const ANDROID = isNative() && !isIOS()
 
-// A Capacitor plugin proxy is a FAKE THENABLE: if it is ever returned *through* a
-// promise chain, the runtime calls `.then()` on it and every method then dies
-// with `"MediaPickKeepAlive.then() is not implemented"`. So we register it into a
-// module-level variable and NEVER return the proxy from a .then()/async callback.
+// A Capacitor plugin proxy is a FAKE THENABLE: if it is ever returned *through*
+// a promise chain, the runtime calls `.then()` on it and every method dies with
+// `"MediaPickKeepAlive.then() is not implemented"`. So we assign it to a module
+// variable and NEVER return the proxy from a .then()/async callback.
 let plugin = null
+let Capacitor = null
 let initPromise = null
 function ensurePlugin() {
   if (!ANDROID) return Promise.resolve()
   if (!initPromise) {
     initPromise = import('@capacitor/core')
-      .then((core) => { plugin = core.registerPlugin('MediaPickKeepAlive') }) // assign, don't return
+      .then((core) => {
+        Capacitor = core.Capacitor
+        plugin = core.registerPlugin('MediaPickKeepAlive') // assign, don't return
+      })
       .catch(() => { plugin = null })
   }
   return initPromise
 }
-// Warm the import up front so `start()` can fire the instant Upload is tapped.
 if (ANDROID) ensurePlugin()
 
+export async function pickMedia(kind /* 'photo' | 'video' */) {
+  if (!ANDROID) return null
+  await ensurePlugin()
+  if (!plugin) throw new Error('picker unavailable')
+  let res
+  try {
+    res = await plugin.pick({ kind })
+  } catch (e) {
+    const msg = String(e?.message || e)
+    if (msg.includes('cancelled')) return null // user backed out — not an error
+    console.log('[upload] pick failed:', msg)
+    throw e
+  }
+  if (!res?.uri) return null
+  // Read the picked bytes through Capacitor's content:// proxy.
+  const src = Capacitor.convertFileSrc(res.uri)
+  const r = await fetch(src)
+  if (!r.ok) { console.log('[upload] content fetch failed:', r.status); throw new Error(`fetch ${r.status}`) }
+  const blob = await r.blob()
+  const type = res.mime || blob.type || (kind === 'video' ? 'video/mp4' : 'image/jpeg')
+  const name = res.name || `${kind}-${Date.now()}.${(type.split('/')[1] || 'bin').split('+')[0]}`
+  console.log('[upload] picked:', `${name} ${blob.size}B ${type}`)
+  return new File([blob], name, { type })
+}
+
+// Legacy exports (keep-alive around a WebView-driven pick). The gallery flows
+// now use pickMedia() end-to-end; these remain for any future external-activity
+// flow that needs reap protection.
 let safetyTimer = null
 
-// Fire-and-forget: must NOT be awaited by the caller, because the file input's
-// .click() has to run in the same user-gesture tick or the browser blocks it.
 export function startPickKeepAlive() {
   if (!ANDROID) return
   ensurePlugin().then(() => { if (plugin) plugin.start().catch(() => {}) })
   clearTimeout(safetyTimer)
-  // Backstop: shortService may run ~3 min max; never hold it that long.
   safetyTimer = setTimeout(stopPickKeepAlive, 120000)
 }
 
