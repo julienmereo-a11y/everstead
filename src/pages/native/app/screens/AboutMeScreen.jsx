@@ -14,14 +14,20 @@ import SecScreen, { Busy } from '../components/SecScreen'
 // iOS + web keep the normal <input type=file>.
 const ANDROID_CAPTURE = isNative() && !isIOS()
 
-// Picked-avatar rescue (module scope — survives a screen remount). Two verified
+// Picked-avatar rescue (module scope — survives a screen remount). Verified
 // failure modes on the Fold: (1) the pick backgrounds the app and hooks refetch
 // on resume, so the data-sync effect clobbered the just-picked preview with the
 // stale server avatar_url; (2) a shell reset mid-pick unmounts the screen, so
-// setAvatar lands in a dead instance (the upload + toast still ran — "photo
-// saved but there is no photo"). The uploaded URL is kept here until Save.
-let pickedAvatar = null // { url, at }
+// the awaited pick resolves into a DEAD instance. Crucially the reset lands
+// ~0.5s after the pick resolves but the upload takes ~1.5s — so the picked FILE
+// must be stashed immediately at pick-resolution (like MessagesScreen does) and
+// the UPLOAD run by whichever instance is alive; a URL-only stash written after
+// the upload always missed the fresh mount (verified: bytes in the bucket,
+// avatar_url never set, screen showing nothing).
+let pickedAvatar = null // { url, at } — uploaded URL, wins over server row until Save
 const freshPickedAvatar = () => (pickedAvatar && Date.now() - pickedAvatar.at < 10 * 60 * 1000 ? pickedAvatar.url : null)
+let avatarFileStash = null    // { file, at } — picked but not yet uploaded
+let deliverAvatarToLive = null // (file) => void, bound to the mounted screen
 
 export default function AboutMeScreen({ app }) {
   const auth = useAuth()
@@ -82,16 +88,34 @@ export default function AboutMeScreen({ app }) {
     if (file) applyPickedPhoto(file)
   }
   // Android uploads via the native picker plugin — the WebView file-chooser
-  // chain silently dropped results on the Fold. iOS/web keep the plain input.
+  // chain silently dropped results on the Fold. Delivery goes through
+  // deliverAvatarToLive/avatarFileStash so the shell reset that follows the
+  // pick can't swallow the file (see the module-scope notes above).
   const changePhoto = async () => {
     if (!ANDROID_CAPTURE) { fileInput.current?.click(); return }
     try {
       const file = await pickMedia('photo')
-      if (file) applyPickedPhoto(file)
+      if (!file) return // cancelled
+      avatarFileStash = { file, at: Date.now() }
+      if (deliverAvatarToLive) deliverAvatarToLive(file)
     } catch {
       app.say('Could not read that photo. Please try again.', 'error')
     }
   }
+
+  // Register as the live delivery target and consume any picked file waiting
+  // from a previous instance of this screen.
+  useEffect(() => {
+    deliverAvatarToLive = (file) => { avatarFileStash = null; applyPickedPhoto(file) }
+    if (avatarFileStash && Date.now() - avatarFileStash.at < 3 * 60 * 1000) {
+      const f = avatarFileStash.file
+      avatarFileStash = null
+      console.log('[upload] restored avatar file after remount')
+      applyPickedPhoto(f)
+    }
+    return () => { deliverAvatarToLive = null }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const onSave = async () => {
     setBusy(true)
