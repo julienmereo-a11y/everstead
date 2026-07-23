@@ -96,6 +96,8 @@ const DEMO = {
   ],
   messages: [
     { id: 1, title: 'For your wedding day', recipient_name: 'Sophie', recipient_role: 'Daughter', type: 'note', content: 'My darling Sophie — if you are reading this…', released: false },
+    { id: 2, title: 'A video for your 18th birthday', recipient_name: 'Oliver', recipient_role: 'Grandson', type: 'video', content: 'Happy birthday, my boy. A few things I want you to know…', released: false, release_timing: 'on_date', release_at: '2031-06-14T12:00:00Z' },
+    { id: 3, title: 'Us at the lake, 1987', recipient_name: 'Tom', recipient_role: 'Husband', type: 'photo', content: 'The summer everything began.', released: false },
   ],
   aboutMe: {
     full_name: 'Eleanor Whitmore', date_of_birth: '1958-04-12',
@@ -112,7 +114,10 @@ const DEMO = {
 }
 
 export default function MobileAppDemo() {
-  const [screen, setScreen] = useState('home')
+  // Demo-only deep link (/mobile?demo=1&screen=vault): store-listing screenshot
+  // tooling opens each screen directly. Harmless otherwise — bad values just
+  // fall through to the default screen render.
+  const [screen, setScreen] = useState(() => new URLSearchParams(window.location.search).get('screen') || 'home')
   const [d, setD] = useState(DEMO)
   const [sheet, setSheet] = useState(null)
   const [sheetPrefill, setSheetPrefill] = useState(null)
