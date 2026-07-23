@@ -24,6 +24,19 @@ const TYPES = [
   { key: 'photo', label: 'Photo',  Icon: ImageIcon },
 ]
 
+// Composer rescue (module scope — survives a screen remount). Picking from the
+// gallery backgrounds the app; on resume the shell can reset, which unmounts
+// this screen. The picked file then lands in a DEAD instance's setState and
+// silently vanishes (verified on the Fold: '[upload] picked' logged, UI never
+// changed). So: the draft is stashed when Upload is tapped, the file when the
+// pick resolves, and delivery goes through `deliverToLive`, which always points
+// at the currently mounted instance. A freshly mounted screen consumes whatever
+// is waiting. Cleared on deliberate close/submit.
+const STASH_TTL = 3 * 60 * 1000
+let draftStash = null    // { form, msgType, at }
+let fileStash = null     // { file, msgType, at }
+let deliverToLive = null // (file, msgType) => void, bound to the mounted screen
+
 // Message media lives in the PRIVATE `messages` bucket — mint a short-lived
 // signed URL to display it (the owner's storage policy scopes it to their own
 // folder). Demo rows have no real media, so this renders nothing in demo.
@@ -85,6 +98,26 @@ export default function MessagesScreen({ app }) {
   const previewUrl = useMemo(() => (mediaFile ? URL.createObjectURL(mediaFile) : null), [mediaFile])
   useEffect(() => () => { if (previewUrl) URL.revokeObjectURL(previewUrl) }, [previewUrl])
 
+  // Register as the live delivery target and restore any stashed draft/file
+  // from a pick that outlived a previous instance of this screen (see the
+  // module-scope stash notes above TYPES).
+  useEffect(() => {
+    deliverToLive = (f, kind) => {
+      setMsgType(kind); setMediaFile(f); setSheet(true)
+      draftStash = null; fileStash = null
+    }
+    const fresh = (s) => s && Date.now() - s.at < STASH_TTL
+    if (fresh(draftStash)) {
+      setForm(draftStash.form); setMsgType(draftStash.msgType); setSheet(true)
+    }
+    if (fresh(fileStash)) {
+      console.log('[upload] restored picked file after remount')
+      setMsgType(fileStash.msgType); setMediaFile(fileStash.file); setSheet(true)
+      draftStash = null; fileStash = null
+    }
+    return () => { deliverToLive = null }
+  }, [])
+
 
   // Free (and legacy Essential) users see an upgrade prompt instead of the
   // compose UI — matching the website, which swaps the composer for an upsell.
@@ -114,6 +147,7 @@ export default function MessagesScreen({ app }) {
   const canSubmit = recipientOk && form.title.trim() && (!isMedia || mediaFile) && timingOk && !busy
 
   const resetSheet = () => {
+    draftStash = null; fileStash = null // deliberate close — nothing to rescue
     setSheet(false); setMsgType('note'); setMediaFile(null); setForm(EMPTY_FORM)
   }
 
@@ -122,13 +156,19 @@ export default function MessagesScreen({ app }) {
   // the WebView's own file-chooser chain silently dropped results on the Fold
   // (picker returned, no change event ever reached the page). The plugin opens
   // the photo picker directly, keeps the app alive during the pick, and hands
-  // back a File. iOS/web keep the plain input below.
+  // back a File. Delivery goes via deliverToLive/fileStash so a shell reset
+  // mid-pick can't swallow it. iOS/web keep the plain input below.
   const uploadFromGallery = async () => {
+    const kind = msgType === 'video' ? 'video' : 'photo'
+    draftStash = { form, msgType, at: Date.now() }
     try {
-      const f = await pickMedia(msgType === 'video' ? 'video' : 'photo')
-      if (f) setMediaFile(f)
+      const f = await pickMedia(kind)
+      if (!f) { draftStash = null; return } // cancelled
+      fileStash = { file: f, msgType, at: Date.now() }
+      if (deliverToLive) deliverToLive(f, msgType)
     } catch {
-      app.say(`Could not read that ${msgType === 'video' ? 'video' : 'photo'}. Please try again.`, 'error')
+      draftStash = null
+      app.say(`Could not read that ${kind}. Please try again.`, 'error')
     }
   }
   // No type gating on the pick — pickers can report octet-stream (or nothing)

@@ -14,6 +14,15 @@ import SecScreen, { Busy } from '../components/SecScreen'
 // iOS + web keep the normal <input type=file>.
 const ANDROID_CAPTURE = isNative() && !isIOS()
 
+// Picked-avatar rescue (module scope — survives a screen remount). Two verified
+// failure modes on the Fold: (1) the pick backgrounds the app and hooks refetch
+// on resume, so the data-sync effect clobbered the just-picked preview with the
+// stale server avatar_url; (2) a shell reset mid-pick unmounts the screen, so
+// setAvatar lands in a dead instance (the upload + toast still ran — "photo
+// saved but there is no photo"). The uploaded URL is kept here until Save.
+let pickedAvatar = null // { url, at }
+const freshPickedAvatar = () => (pickedAvatar && Date.now() - pickedAvatar.at < 10 * 60 * 1000 ? pickedAvatar.url : null)
+
 export default function AboutMeScreen({ app }) {
   const auth = useAuth()
   const profile = app.profile || auth.profile
@@ -29,6 +38,11 @@ export default function AboutMeScreen({ app }) {
   const fileInput = useRef(null)
 
   useEffect(() => {
+    // A photo picked this session always wins over the server row: hooks
+    // refetch on app resume (which the pick itself triggers), and the server's
+    // avatar_url is stale until the user taps Save.
+    const picked = freshPickedAvatar()
+    if (picked) setAvatar(picked)
     // Never ask for what we already know: the name was given at onboarding
     // (profiles.full_name), so start from it — mirrors the web's AboutMeSection.
     if (!data) {
@@ -42,7 +56,7 @@ export default function AboutMeScreen({ app }) {
       reflections: data.reflections || '',
     })
     setEvents(Array.isArray(data.life_events) ? data.life_events : [])
-    setAvatar(data.avatar_url || '')
+    if (!picked) setAvatar(data.avatar_url || '')
   }, [data, profile?.full_name])
 
   const set = (k) => (e) => setForm(f => ({ ...f, [k]: e.target.value }))
@@ -52,8 +66,14 @@ export default function AboutMeScreen({ app }) {
 
   const [capture, setCapture] = useState(false)
   const applyPickedPhoto = async (file) => {
-    try { const url = await uploadAvatar(file); setAvatar(url); app.say('Photo added — tap Save to keep it') }
-    catch { app.say('Could not upload that photo.', 'error') }
+    try {
+      const url = await uploadAvatar(file)
+      // Stash BEFORE setAvatar: if this instance was unmounted mid-pick, the
+      // setState is a no-op, but the freshly mounted screen restores from here.
+      pickedAvatar = { url, at: Date.now() }
+      setAvatar(url)
+      app.say('Photo added — tap Save to keep it')
+    } catch { app.say('Could not upload that photo.', 'error') }
   }
   const pickAvatar = async (e) => {
     // Take the pick as-is — no type gating (pickers can report octet-stream for
@@ -79,6 +99,7 @@ export default function AboutMeScreen({ app }) {
       // avatar_url must ride along with the save — the picked photo lives in
       // separate state, and the website persists it the same way (with the form).
       await save({ ...form, avatar_url: avatar || null, life_events: events.filter(e => e.year || e.description) })
+      pickedAvatar = null // persisted — the server row is the truth again
       app.say('About Me saved')
     } catch { app.say('Could not save. Please try again.', 'error') } finally { setBusy(false) }
   }
