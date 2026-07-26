@@ -43,6 +43,14 @@ Everstead is an organisation platform, not a legal service — use it alongside 
 
 Because the most loving thing you can leave behind is a life that's easy to find.
 
+Terms of Use: https://www.everstead.care/terms
+Privacy Policy: https://www.everstead.care/privacy
+
+(The Terms of Use line is REQUIRED in the description — Apple 3.1.2 rejected
+v1.0 build 3 on 2026-07-25 for a missing functional EULA link in the metadata,
+even though the in-app paywall links both documents. Metadata-only fix; same
+binary resubmitted.)
+
 ## What's New  (v1.0 release notes)
 Welcome to Everstead. This is our very first release — one calm, secure place to gather your accounts, documents, trusted people and wishes, organised for life and ready for your family. We'd love to hear what you think.
 
