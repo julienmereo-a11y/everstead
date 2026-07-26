@@ -1,0 +1,40 @@
+import React from 'react'
+import { useTranslation } from 'react-i18next'
+
+// Official store badges linking to the app listings. Assets in /public/badges
+// are the untouched official artwork (Google's badge generator + Apple's badge
+// API), localized EN/FR to match the site tree.
+//
+// The App Store badge stays hidden until APP_STORE_URL is set — flip it the
+// moment Apple approves v1.0 (App Store Connect app id 6791210842).
+export const PLAY_STORE_URL = 'https://play.google.com/store/apps/details?id=care.everstead.app'
+export const APP_STORE_URL = null // → 'https://apps.apple.com/gb/app/id6791210842' once approved
+
+export default function StoreBadges({ className = '' }) {
+  const { i18n } = useTranslation()
+  const fr = i18n.language === 'fr'
+  return (
+    <div className={`flex flex-wrap items-center gap-3 ${className}`}>
+      <a href={PLAY_STORE_URL} target="_blank" rel="noopener noreferrer" className="hover:opacity-80 transition-opacity">
+        {/* Google's generic badge PNG carries built-in padding — slightly taller
+            so the visible badge optically matches Apple's 40px one. */}
+        <img
+          src={fr ? '/badges/google-play-fr.png' : '/badges/google-play-en.png'}
+          alt={fr ? 'Disponible sur Google Play' : 'Get it on Google Play'}
+          className="h-[59px] w-auto -m-[9px]"
+          loading="lazy"
+        />
+      </a>
+      {APP_STORE_URL && (
+        <a href={APP_STORE_URL} target="_blank" rel="noopener noreferrer" className="hover:opacity-80 transition-opacity">
+          <img
+            src={fr ? '/badges/app-store-fr.svg' : '/badges/app-store-en.svg'}
+            alt={fr ? 'Télécharger dans l’App Store' : 'Download on the App Store'}
+            className="h-10 w-auto"
+            loading="lazy"
+          />
+        </a>
+      )}
+    </div>
+  )
+}

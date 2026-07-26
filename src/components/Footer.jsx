@@ -1,6 +1,7 @@
 import React from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import StoreBadges from './StoreBadges'
 
 // ── Trustpilot rating (manual) ───────────────────────────────────────────────
 // We do NOT recreate Trustpilot's trademarked stars. Instead, drop a genuine,
@@ -135,6 +136,7 @@ export default function Footer() {
             <div className="pt-1">
               <TrustpilotBadge />
             </div>
+            <StoreBadges className="pt-2" />
           </div>
 
           {/* Columns */}
