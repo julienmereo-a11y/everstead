@@ -20,6 +20,7 @@ import GuidedOnboarding     from '../components/GuidedOnboarding'
 import { redirectToCheckout, redirectToCustomerPortal, PLANS } from '../lib/stripe'
 import { baseDocumentAccess } from '../lib/documentAccess'
 import { PRICING, PLAN_LABELS, planLabel } from '../config/pricing'
+import { trackEvent } from '../lib/analytics'
 import { isAtLimit, getLimit, canUseFeature } from '../lib/planLimits'
 import { useAccounts }      from '../hooks/useData'
 import { useDocuments }     from '../hooks/useData'
@@ -308,6 +309,17 @@ export default function Dashboard() {
   const isDemo          = searchParams.get('demo') === 'true'
   const checkoutSuccess = searchParams.get('checkout') === 'success'
 
+  // Conversion event: fired here (the post-payment landing) rather than in the payment
+  // form, because 3DS/SCA card confirmations redirect through Stripe and back — the
+  // form's success handler never runs in that flow, but everyone lands on
+  // /dashboard?checkout=success. Effect runs once per mount.
+  useEffect(() => {
+    if (checkoutSuccess && !isDemo) {
+      trackEvent('subscription_created', { plan: profile?.plan || 'unknown' })
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
   // Honour ?tab= param so /settings and other deep-links open the right section
   const tabParam = searchParams.get('tab')
   const DASHBOARD_TABS = ['overview','aboutme','assistant','accounts','documents','people','family','messages','instructions','subscriptions','alerts','activity','resources','settings']
@@ -552,6 +564,7 @@ export default function Dashboard() {
     if (isDemo) { navigate('/get-started'); return }
     setUpgradeError(null)
     const targetPlan = planId || activeProfile.plan || 'essential'
+    trackEvent('upgrade_click', { plan: targetPlan, billing: billingCycle, from_plan: activeProfile.plan })
     try {
       await redirectToCheckout({
         plan:            targetPlan,

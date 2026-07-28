@@ -1,5 +1,6 @@
 import React from 'react'
 import { useTranslation } from 'react-i18next'
+import { trackEvent } from '../lib/analytics'
 
 // Official store badges linking to the app listings. Assets in /public/badges
 // are the untouched official artwork (Google's badge generator + Apple's badge
@@ -10,12 +11,18 @@ import { useTranslation } from 'react-i18next'
 export const PLAY_STORE_URL = 'https://play.google.com/store/apps/details?id=care.everstead.app'
 export const APP_STORE_URL = null // → 'https://apps.apple.com/gb/app/id6791210842' once approved
 
-export default function StoreBadges({ className = '' }) {
+export default function StoreBadges({ className = '', location = 'footer' }) {
   const { i18n } = useTranslation()
   const fr = i18n.language === 'fr'
   return (
     <div className={`flex flex-wrap items-center gap-3 ${className}`}>
-      <a href={PLAY_STORE_URL} target="_blank" rel="noopener noreferrer" className="hover:opacity-80 transition-opacity">
+      <a
+        href={PLAY_STORE_URL}
+        target="_blank"
+        rel="noopener noreferrer"
+        onClick={() => trackEvent('app_store_click', { store: 'google_play', location })}
+        className="hover:opacity-80 transition-opacity"
+      >
         {/* Google's generic badge PNG carries built-in padding — slightly taller
             so the visible badge optically matches Apple's 40px one. */}
         <img
@@ -26,7 +33,13 @@ export default function StoreBadges({ className = '' }) {
         />
       </a>
       {APP_STORE_URL && (
-        <a href={APP_STORE_URL} target="_blank" rel="noopener noreferrer" className="hover:opacity-80 transition-opacity">
+        <a
+          href={APP_STORE_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          onClick={() => trackEvent('app_store_click', { store: 'app_store', location })}
+          className="hover:opacity-80 transition-opacity"
+        >
           <img
             src={fr ? '/badges/app-store-fr.svg' : '/badges/app-store-en.svg'}
             alt={fr ? 'Télécharger dans l’App Store' : 'Download on the App Store'}

@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useLayoutEffect, useRef } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { trackEvent } from '../lib/analytics'
 import { Menu, X, ChevronDown, Users } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { useAuth } from '../contexts/AuthContext'
@@ -222,6 +223,7 @@ export default function Nav({ topOffset = 0 }) {
                 </Link>
                 <Link
                   to="/get-started"
+                  onClick={() => trackEvent('cta_click', { location: 'nav', cta: 'get_started' })}
                   className="btn-aurora text-sm font-semibold px-4 py-2 rounded-full transition-transform hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-navy-400"
                 >
                   {t('nav.getStarted')}
@@ -301,6 +303,7 @@ export default function Nav({ topOffset = 0 }) {
                   </Link>
                   <Link
                     to="/get-started"
+                    onClick={() => trackEvent('cta_click', { location: 'nav_mobile', cta: 'get_started' })}
                     className="flex items-center justify-center btn-aurora text-sm font-semibold px-4 py-3 rounded-full transition-transform hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-navy-400"
                   >
                     {t('nav.getStarted')}

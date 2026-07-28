@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useReveal } from '../components/useReveal'
 import { PRICING } from '../config/pricing'
+import { trackEvent } from '../lib/analytics'
 import {
   ShieldCheck, Lock, Users, FileText, CheckCircle2, ArrowRight,
   ChevronDown, Bell, Share2, BookOpen, Heart,
@@ -239,6 +240,7 @@ export default function Home() {
             <div className="mt-8 sm:mt-10 flex flex-wrap items-center gap-3.5 animate-fade-up animate-delay-100">
               <Link
                 to="/get-started"
+                onClick={() => trackEvent('cta_click', { location: 'home_hero', cta: 'get_started' })}
                 className="btn-aurora inline-flex items-center gap-2 font-semibold text-base px-8 py-4 rounded-full transition-transform hover:-translate-y-0.5"
               >
                 {t('hero.ctaPrimary')}
@@ -246,6 +248,7 @@ export default function Home() {
               </Link>
               <Link
                 to="/how-it-works"
+                onClick={() => trackEvent('cta_click', { location: 'home_hero', cta: 'how_it_works' })}
                 className="group inline-flex items-center gap-1.5 text-stone-100 font-medium text-[0.95rem] px-6 py-4 rounded-full border transition-colors hover:border-white"
                 style={{ background: 'rgba(255,255,255,0.06)', borderColor: 'rgba(255,255,255,0.35)' }}
               >
@@ -559,6 +562,7 @@ export default function Home() {
                 </ul>
                 <Link
                   to={isFree ? '/get-started?plan=free' : `/get-started?plan=${id}&billing=${annualPricing ? 'yearly' : 'monthly'}`}
+                  onClick={() => trackEvent('cta_click', { location: 'home_pricing', cta: id })}
                   className={`block text-center py-2.5 px-4 rounded-full text-sm font-semibold transition-colors ${
                     highlight
                       ? 'btn-aurora'

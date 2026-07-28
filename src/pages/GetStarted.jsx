@@ -10,6 +10,7 @@ import { Elements, PaymentElement, useStripe, useElements } from '@stripe/react-
 import { useAuth } from '../contexts/AuthContext'
 import { PLANS, getStripe } from '../lib/stripe'
 import { PRICING } from '../config/pricing'
+import { trackEvent } from '../lib/analytics'
 import { supabase } from '../lib/supabase'
 
 // Stripe endpoints require the caller's JWT — the server derives the user from it
@@ -482,6 +483,7 @@ export default function GetStarted() {
     e.preventDefault()
     setError(null)
     setLoading(true)
+    trackEvent('signup_started', { plan: selectedPlan })
 
     try {
       // 0. Sanctions check — block restricted countries before any registration
@@ -510,6 +512,7 @@ export default function GetStarted() {
 
       const { access_token, refresh_token } = await registerRes.json()
       await supabase.auth.setSession({ access_token, refresh_token })
+      trackEvent('signup_completed', { plan: selectedPlan })
 
       const { data: { user } } = await supabase.auth.getUser()
 
@@ -555,6 +558,7 @@ export default function GetStarted() {
       const { clientSecret: secret, customerId } = await intentRes.json()
       setClientSecret(secret)
       setStripeCustomerId(customerId)
+      trackEvent('checkout_started', { plan: selectedPlan, billing: annualBilling ? 'yearly' : 'monthly' })
       setStep(3)
     } catch (err) {
       setError(err.message ?? 'Something went wrong. Please try again.')
@@ -853,7 +857,10 @@ export default function GetStarted() {
                   directly under the two cards, above the Everstead Pro band. */}
               <div className="text-center mt-6">
                 <button
-                  onClick={() => setStep(clientSecret ? 3 : 2)}
+                  onClick={() => {
+                    trackEvent('plan_selected', { plan: selectedPlan, billing: annualBilling ? 'yearly' : 'monthly' })
+                    setStep(clientSecret ? 3 : 2)
+                  }}
                   className="btn-aurora inline-flex items-center gap-2 text-white font-semibold text-sm px-8 py-3.5 rounded-full transition-transform hover:-translate-y-0.5"
                 >
                   {clientSecret

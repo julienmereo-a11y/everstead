@@ -1,5 +1,6 @@
 import React from 'react'
 import { Smartphone, X } from 'lucide-react'
+import { trackEvent } from '../lib/analytics'
 
 // Slim site-wide announcement bar for the upcoming mobile apps.
 //
@@ -45,6 +46,7 @@ export default function AppBanner({ onDismiss }) {
               href="https://play.google.com/store/apps/details?id=care.everstead.app"
               target="_blank"
               rel="noopener noreferrer"
+              onClick={() => trackEvent('app_store_click', { store: 'google_play', location: 'banner' })}
               className="font-semibold underline underline-offset-2 decoration-white/50 hover:decoration-white"
             >
               Google Play
