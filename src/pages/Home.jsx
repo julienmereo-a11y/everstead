@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next'
 import { useReveal } from '../components/useReveal'
 import { PRICING } from '../config/pricing'
 import { trackEvent } from '../lib/analytics'
+import StoreBadges from '../components/StoreBadges'
 import {
   ShieldCheck, Lock, Users, FileText, CheckCircle2, ArrowRight,
   ChevronDown, Bell, Share2, BookOpen, Heart,
@@ -590,6 +591,27 @@ export default function Home() {
             {t('pricing.trialNote')}{' '}
             <Link to="/pricing" className="text-stone-400 hover:text-white underline underline-offset-2 transition-colors">{t('pricing.fullDetails')}</Link>
           </p>
+        </div>
+      </section>
+
+      {/* ── Get the app ────────────────────────────────────────────── */}
+      <section className="py-16 lg:py-20 bg-white">
+        <div className="max-w-5xl mx-auto px-6 lg:px-8">
+          <div className="reveal rounded-3xl bg-navy-950 text-white px-8 py-10 lg:px-12 lg:py-12 grid md:grid-cols-[1fr_auto] items-center gap-8">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-widest text-sage-300 mb-3">{t('app.eyebrow')}</p>
+              <h2 className="font-display text-3xl lg:text-4xl font-light leading-snug mb-3 text-balance">
+                {t('app.title')}
+              </h2>
+              <p className="text-sm text-stone-300 leading-relaxed max-w-xl">
+                {t('app.desc')}
+              </p>
+            </div>
+            <div className="flex flex-col items-start md:items-end gap-2.5 shrink-0">
+              <StoreBadges location="home_app_section" />
+              <p className="text-xs text-stone-400">{t('app.iosNote')}</p>
+            </div>
+          </div>
         </div>
       </section>
 
