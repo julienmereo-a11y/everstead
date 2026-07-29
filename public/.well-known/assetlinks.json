@@ -1,0 +1,16 @@
+[
+  {
+    "relation": [
+      "delegate_permission/common.handle_all_urls",
+      "delegate_permission/common.get_login_creds"
+    ],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "care.everstead.app",
+      "sha256_cert_fingerprints": [
+        "82:34:61:A8:DE:58:A7:BA:72:21:55:50:3D:49:78:86:36:3C:49:F6:D5:8A:1F:0D:54:00:E3:E7:DC:A9:58:C8",
+        "0A:CD:47:CC:F9:90:CE:9E:9A:90:E9:AF:12:35:10:B6:1E:72:05:D1:11:24:1B:B4:2B:50:3D:83:9C:FD:D7:86"
+      ]
+    }
+  }
+]
