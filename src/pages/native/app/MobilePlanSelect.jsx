@@ -31,9 +31,11 @@ export default function MobilePlanSelect({ onSubscribed, onBack, demo }) {
 
   const p = PRICING[PLAN_KEY]
   const name = planLabel(PLAN_KEY)
-  // Always lead with the monthly figure; on yearly, show the annual total small.
+  // Guideline 3.1.2(c): the BILLED amount must be the most clear and conspicuous
+  // price on the screen. Yearly bills £95.88/year, so that figure leads at full
+  // size; the per-month equivalent is strictly subordinate (small note below).
   const price = annual
-    ? { big: p.annual.perMonthDisplay, unit: '/month', note: `${p.annual.perYearDisplay} billed annually` }
+    ? { big: p.annual.perYearDisplay, unit: '/year', note: `that's ${p.annual.perMonthDisplay} a month — save 20%` }
     : { big: p.monthly.display, unit: '/month', note: 'billed monthly' }
 
   const subscribe = async () => {

@@ -155,3 +155,31 @@ RevenueCat, OneSignal) ship their own manifests; we do not restate their API use
 
 If you later add an analytics/attribution SDK, or start collecting anything above
 that isn't listed, update BOTH this manifest and the ASC questionnaire together.
+
+## 6. Build 4 resubmission — responses to the 27 July 2026 rejection
+
+### 5.1.1(i) / 5.1.2(i) — third-party AI data sharing
+The app's AI Assistant is powered by Claude (Anthropic), called server-side via
+our Supabase Edge Function; the ONLY data transmitted is the message text the
+user actively types into the chat (no vault data is read or sent).
+
+Fixed in build 4:
+- **In-app consent BEFORE any data is sent**: the first time a user opens the
+  AI Assistant they see a consent screen that (a) discloses exactly what is
+  sent — the text they type; (b) names the recipient — Anthropic; (c) states it
+  is processed on Everstead's behalf and never used to train AI models; and
+  (d) links the Privacy Policy. Nothing can be sent until the user taps
+  "Agree and continue". Declining returns to the previous screen.
+  Reviewer path: More → AI Assistant.
+- **Privacy Policy** (everstead.care/privacy) now has a dedicated section,
+  "AI features (the Everstead Assistant)", covering what data is sent, how it
+  is collected (only what the user submits), all uses, the recipient
+  (Anthropic PBC as processor under a DPA with equivalent protection), and the
+  user's controls (consent + a Settings toggle that disables AI entirely).
+
+### 3.1.2(c) — subscription pricing prominence
+The yearly option previously displayed the calculated per-month figure (£7.99)
+as the largest price element. In build 4 the BILLED amount (£95.88/year) is
+the largest, most prominent price on the paywall; the per-month equivalent
+("that's £7.99 a month — save 20%") is a small subordinate note beneath it.
+Reviewer path: Settings → Upgrade (or any locked feature) → toggle "Yearly".

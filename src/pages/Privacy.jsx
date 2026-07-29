@@ -28,6 +28,16 @@ We operate on infrastructure with SOC 2-aligned controls, automated backups, and
 We may share minimal data with service providers (subprocessors) who help us operate the platform — including hosting, database, email delivery, payments, error monitoring, and AI-assisted guidance. Each subprocessor is bound by a written Data Processing Agreement and provides appropriate UK GDPR safeguards. The full, up-to-date list is published at /subprocessors. We may disclose information if required by law or to protect the rights, property, or safety of Everstead, our users, or the public.`,
   },
   {
+    title: 'AI features (the Everstead Assistant)',
+    content: `Some Everstead features are powered by artificial intelligence — the Everstead Assistant chat, document scanning, and AI-assisted writing suggestions. These features use Claude, an AI service provided by Anthropic PBC, acting as our data processor.
+
+What is sent: when you use an AI feature, the text you type into it (and, where a feature lets you attach one, the file you choose to share) is transmitted securely to Anthropic to generate a response. AI features only receive what you actively submit to them — they cannot browse your vault, documents, messages, or account on their own.
+
+How it is used: solely to generate the response you asked for. Your data is never used to train Anthropic's AI models, and is never used for advertising or profiling. Anthropic is bound by a written Data Processing Agreement with UK GDPR safeguards providing protection equivalent to this policy, and is listed with our other subprocessors at everstead.care/subprocessors.
+
+Your choice: in our mobile apps, AI features ask for your explicit consent before anything is sent. You can turn AI features off entirely at any time in Settings → AI features — the rest of Everstead works fully without them.`,
+  },
+  {
     title: 'Your rights and controls',
     content: `You can access, update, or delete your account and plan content at any time from your account settings. You can export your full plan in a structured format on request. Upon account deletion, your data is removed from our systems within 30 days.
 

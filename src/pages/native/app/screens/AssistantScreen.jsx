@@ -1,6 +1,8 @@
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { supabase } from '../../../../lib/supabase'
 import { useAuth } from '../../../../contexts/AuthContext'
+import { hasAiConsent, grantAiConsent } from '../../../../lib/aiConsent'
+import { isNative } from '../../../../lib/platform'
 import SecScreen from '../components/SecScreen'
 
 // AI Assistant — the same `ai-assistant` Supabase Edge Function the web uses.
@@ -20,6 +22,23 @@ export default function AssistantScreen({ app }) {
   const [error, setError] = useState(null)
   const scroller = useRef(null)
 
+  // App Store guideline 5.1.2(i): explicit, informed consent BEFORE any message
+  // is sent to the third-party AI service (Anthropic). null = still checking.
+  const [consent, setConsent] = useState(null)
+  const userId = auth.user?.id || (app.demo ? 'demo' : 'anon')
+  useEffect(() => {
+    let on = true
+    hasAiConsent(userId).then(v => { if (on) setConsent(v) })
+    return () => { on = false }
+  }, [userId])
+  const agree = async () => { await grantAiConsent(userId); setConsent(true) }
+  const openPrivacy = async (e) => {
+    e.preventDefault()
+    const url = 'https://www.everstead.care/privacy'
+    if (isNative()) { try { const { Browser } = await import('@capacitor/browser'); await Browser.open({ url }); return } catch { /* fall through */ } }
+    window.open(url, '_blank', 'noopener')
+  }
+
   // Respect the profile's AI toggle (Settings → AI features), like the website —
   // when off, the assistant is hidden from More AND unreachable here.
   const profile = app.profile || auth.profile
@@ -31,6 +50,39 @@ export default function AssistantScreen({ app }) {
             AI features are turned off for your account. You can switch them back on in Settings → AI features.
           </p>
         </div>
+      </SecScreen>
+    )
+  }
+
+  // Consent screen — rendered INSTEAD of the chat until the user agrees, so
+  // nothing can reach the AI service first. Shown in demo mode too (it's part
+  // of the real product flow).
+  if (consent !== true) {
+    return (
+      <SecScreen title="AI Assistant" onBack={() => app.go('more')}>
+        {consent === false && (
+          <div className="card-light" style={{ padding: 20 }}>
+            <h3 className="serif" style={{ fontSize: 20, fontWeight: 600, margin: '0 0 10px' }}>Before you start</h3>
+            <p className="rdet" style={{ margin: 0, lineHeight: 1.6 }}>
+              The Assistant is powered by Claude, an AI service from <strong>Anthropic</strong>.
+              When you send a message, <strong>the text you type</strong> is sent securely to
+              Anthropic to generate a reply, processed on Everstead's behalf and{' '}
+              <strong>never used to train AI models</strong>.
+            </p>
+            <p className="rdet" style={{ margin: '10px 0 0', lineHeight: 1.6 }}>
+              The Assistant only sees what you write here — it cannot open your vault,
+              documents or messages on its own. Please avoid typing passwords or full
+              account numbers.
+            </p>
+            <p className="rdet" style={{ margin: '10px 0 0', lineHeight: 1.6 }}>
+              Details are in our{' '}
+              <a href="https://www.everstead.care/privacy" onClick={openPrivacy} style={{ color: 'var(--color-navy-600)', textDecoration: 'underline' }}>Privacy Policy</a>.
+              You can turn AI features off anytime in Settings.
+            </p>
+            <button className="btn w100" style={{ marginTop: 16 }} onClick={agree}>Agree and continue</button>
+            <button className="linkbtn w100" style={{ marginTop: 8, color: 'var(--color-stone-500)' }} onClick={() => app.go('more')}>Not now</button>
+          </div>
+        )}
       </SecScreen>
     )
   }
