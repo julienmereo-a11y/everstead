@@ -12,9 +12,9 @@ import { trackEvent } from '../lib/analytics'
 // editing — both offsets read from here.
 export const APP_BANNER_HEIGHT = 40
 
-// v2: re-shown to visitors who dismissed the old "coming soon" banner — the
-// message changed materially (the Android app is now LIVE on Google Play).
-const DISMISS_KEY = 'everstead_app_banner_dismissed_v2'
+// v3: re-shown once more — the message changed materially again (the app is
+// now live on BOTH stores: App Store + Google Play).
+const DISMISS_KEY = 'everstead_app_banner_dismissed_v3'
 
 /** True once the visitor has dismissed the banner (bump the key's suffix to re-show). */
 export function isAppBannerDismissed() {
@@ -41,7 +41,17 @@ export default function AppBanner({ onDismiss }) {
         <p className="flex items-center gap-2 text-xs sm:text-sm font-medium leading-none text-center">
           <Smartphone size={14} className="shrink-0" aria-hidden="true" />
           <span>
-            The Everstead app is here — now on{' '}
+            The Everstead app is here — on the{' '}
+            <a
+              href="https://apps.apple.com/gb/app/id6791210842"
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => trackEvent('app_store_click', { store: 'app_store', location: 'banner' })}
+              className="font-semibold underline underline-offset-2 decoration-white/50 hover:decoration-white"
+            >
+              App Store
+            </a>{' '}
+            and{' '}
             <a
               href="https://play.google.com/store/apps/details?id=care.everstead.app"
               target="_blank"
@@ -51,7 +61,7 @@ export default function AppBanner({ onDismiss }) {
             >
               Google Play
             </a>
-            , with <span className="font-semibold">iOS</span> coming soon.
+            .
           </span>
         </p>
         <button

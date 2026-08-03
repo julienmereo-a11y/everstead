@@ -6,10 +6,9 @@ import { trackEvent } from '../lib/analytics'
 // are the untouched official artwork (Google's badge generator + Apple's badge
 // API), localized EN/FR to match the site tree.
 //
-// The App Store badge stays hidden until APP_STORE_URL is set — flip it the
-// moment Apple approves v1.0 (App Store Connect app id 6791210842).
 export const PLAY_STORE_URL = 'https://play.google.com/store/apps/details?id=care.everstead.app'
-export const APP_STORE_URL = null // → 'https://apps.apple.com/gb/app/id6791210842' once approved
+// v1.0 approved 30 July 2026 — both stores live.
+export const APP_STORE_URL = 'https://apps.apple.com/gb/app/id6791210842'
 
 export default function StoreBadges({ className = '', location = 'footer' }) {
   const { i18n } = useTranslation()
