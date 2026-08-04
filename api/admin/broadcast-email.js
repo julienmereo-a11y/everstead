@@ -1,130 +1,29 @@
-import { Resend } from 'resend'
 import { requireAdmin, adminDb as db } from '../_lib/admin-auth.js'
+import { SENDERS, AUDIENCES, firstName, resolveAudience, sendToRecipients, sendTestEmail } from '../_lib/broadcast.js'
 import { withSentry, captureException } from '../lib/sentry.js'
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Admin-only: broadcast an email to all users or a specific group.
 //
-// POST { mode, audience, emails?, subject, message, respectMarketingPrefs }
+// POST { mode, audience, emails?, subject, message, respectMarketingPrefs,
+//        sender, scheduledAt?, id? }
 //   mode 'preview' → resolve the audience and return { count, sample } only.
 //   mode 'test'    → send the composed email to the CALLING ADMIN only.
-//   mode 'send'    → send to the resolved audience, then write an audit row
-//                    to admin_broadcasts (service-role-only table).
+//   mode 'send'    → without scheduledAt: send now to the resolved audience and
+//                    audit to admin_broadcasts (status 'sent').
+//                    WITH scheduledAt (ISO 8601, future): store the broadcast as
+//                    status 'scheduled' — api/cron/send-scheduled-broadcasts.js
+//                    delivers it when due. The audience is re-resolved AT SEND
+//                    TIME, so people who join before then are included.
+//   mode 'list'    → recent broadcasts (scheduled first) for the panel.
+//   mode 'cancel'  → { id }: cancel a still-scheduled broadcast.
 //
-// Audiences (resolved server-side from profiles — the client is never trusted
-// with the recipient list, except 'emails' which is intersected with profiles
-// so this can never be used to email arbitrary addresses):
-//   all · free · essential · family · advisor · founding · trialing ·
-//   payment_issue (trial_expired/past_due) · emails (explicit list)
-//
-// Every audience excludes suspended accounts and rows without an email, and is
-// deduped case-insensitively. respectMarketingPrefs (default true) additionally
-// drops anyone who unsubscribed from marketing (marketing_emails_enabled=false)
-// — keep it on for anything promotional; turn it off only for genuine
-// service/account notices, which UK PECR permits without marketing consent.
-//
-// {{name}} in subject/message is replaced with the recipient's first name.
-// Sending uses Resend's batch API in chunks of 50; failures are counted and
-// reported, never thrown mid-run (a bad address must not abort the broadcast).
+// Audience/rendering semantics live in api/_lib/broadcast.js (shared with the
+// cron): server-side resolution, marketing-unsubscribe respect, suspended-account
+// exclusion, dedupe, {{name}} personalisation, URL auto-linking.
 // ─────────────────────────────────────────────────────────────────────────────
 
-const resend = new Resend(process.env.RESEND_API_KEY)
-// Selectable senders — a strict allowlist (never client-supplied free text). All are
-// on the Resend-verified everstead.care domain; replies reach the same mailbox
-// (hello@ and support@ are Workspace aliases of julien@).
-const SENDERS = {
-  hello:   'Everstead <hello@everstead.care>',
-  julien:  'Julien from Everstead <julien@everstead.care>',
-  support: 'Everstead Support <support@everstead.care>',
-}
-const BATCH_SIZE = 50
-const AUDIENCES = new Set(['all', 'free', 'essential', 'family', 'advisor', 'founding', 'trialing', 'payment_issue', 'emails'])
-
-const esc = (s) => String(s ?? '').replace(/[&<>"']/g, c => (
-  { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]
-))
-
-const firstName = (fullName) => (fullName || '').trim().split(/\s+/)[0] || 'there'
-
-const personalise = (text, name) => text.replaceAll('{{name}}', name)
-
-// Turn bare URLs in already-escaped text into clickable links. Runs AFTER esc(),
-// so any & in a query string is already &amp; — the correct encoding inside an
-// href attribute. Trailing sentence punctuation is kept outside the link.
-function linkify(escapedText) {
-  return escapedText.replace(/https?:\/\/[^\s<]+/g, (url) => {
-    const trail = (/[.,;:!?)\]]+$/.exec(url) || [''])[0]
-    const clean = trail ? url.slice(0, -trail.length) : url
-    return `<a href="${clean}" style="color:#4c7d47;text-decoration:underline;">${clean}</a>${trail}`
-  })
-}
-
-// Escaped plain text → paragraphs (blank line), line breaks, clickable URLs.
-function messageHtml(message) {
-  return esc(message).trim()
-    .split(/\n{2,}/)
-    .map(p => `<p style="margin:0 0 16px;color:#4a5568;font-size:16px;line-height:1.7;">${linkify(p).replace(/\n/g, '<br/>')}</p>`)
-    .join('\n')
-}
-
-function emailHtml({ message, name }) {
-  return `<!DOCTYPE html>
-<html>
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
-<body style="margin:0;padding:0;background:#f5f4f0;font-family:Georgia,serif;">
-  <table width="100%" cellpadding="0" cellspacing="0" style="background:#f5f4f0;padding:40px 0;">
-    <tr><td align="center">
-      <table width="560" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:12px;overflow:hidden;max-width:560px;width:100%;">
-        <tr><td style="background:#2d5082;background:linear-gradient(100deg,#2d5082 0%,#6f6bc6 50%,#6e9b6a 100%);padding:28px 40px;text-align:center;">
-          <img src="https://www.everstead.care/logo-v2-white.png" alt="Everstead" width="160" style="display:block;margin:0 auto;height:auto;max-width:160px;" />
-        </td></tr>
-        <tr><td style="padding:40px;">
-          ${messageHtml(personalise(message, name))}
-        </td></tr>
-        <tr><td style="padding:24px 40px;border-top:1px solid #e8e5e0;">
-          <p style="margin:0 0 6px;color:#9ca3af;font-size:13px;line-height:1.5;">You're receiving this because you have an Everstead account.</p>
-          <p style="margin:0;color:#9ca3af;font-size:13px;line-height:1.5;">
-            <a href="${process.env.VITE_APP_URL || 'https://www.everstead.care'}/dashboard?tab=settings" style="color:#4c7d47;">Manage your email preferences</a>
-            · <a href="mailto:support@everstead.care" style="color:#4c7d47;">support@everstead.care</a>
-          </p>
-        </td></tr>
-      </table>
-    </td></tr>
-  </table>
-</body></html>`
-}
-
-async function resolveAudience({ audience, emails, respectMarketingPrefs }) {
-  let query = db.from('profiles')
-    .select('id, email, full_name, plan, subscription_status, is_founding_member, marketing_emails_enabled, is_suspended')
-    .not('email', 'is', null)
-
-  if (['free', 'essential', 'family', 'advisor'].includes(audience)) query = query.eq('plan', audience)
-  if (audience === 'founding')      query = query.eq('is_founding_member', true)
-  if (audience === 'trialing')      query = query.eq('subscription_status', 'trialing')
-  if (audience === 'payment_issue') query = query.in('subscription_status', ['trial_expired', 'past_due'])
-
-  const { data, error } = await query.limit(10000)
-  if (error) throw new Error(`Could not resolve audience: ${error.message}`)
-
-  let rows = (data ?? []).filter(u => u.is_suspended !== true)
-  if (respectMarketingPrefs) rows = rows.filter(u => u.marketing_emails_enabled !== false)
-
-  if (audience === 'emails') {
-    const wanted = new Set((emails ?? []).map(e => String(e).trim().toLowerCase()).filter(Boolean))
-    if (wanted.size === 0) return []
-    rows = rows.filter(u => wanted.has(u.email.toLowerCase()))
-  }
-
-  // Dedupe case-insensitively (family members can share inbox conventions).
-  const seen = new Set()
-  return rows.filter(u => {
-    const key = u.email.toLowerCase()
-    if (seen.has(key)) return false
-    seen.add(key)
-    return true
-  })
-}
+const MAX_SCHEDULE_DAYS = 60
 
 async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' })
@@ -139,16 +38,40 @@ async function handler(req, res) {
     message = '',
     respectMarketingPrefs = true,
     sender = 'hello',
+    scheduledAt = null,
+    id = null,
   } = req.body ?? {}
 
-  if (!AUDIENCES.has(audience)) return res.status(400).json({ error: 'Unknown audience' })
-  const from = SENDERS[sender]
-  if (!from) return res.status(400).json({ error: 'Unknown sender' })
-  if (mode !== 'preview' && (!subject.trim() || !message.trim())) {
-    return res.status(400).json({ error: 'Subject and message are required' })
-  }
-
   try {
+    if (mode === 'list') {
+      const { data, error } = await db.from('admin_broadcasts')
+        .select('id, audience, sender, subject, status, scheduled_at, sent_at, recipient_count, failed_count, created_at')
+        .order('created_at', { ascending: false })
+        .limit(20)
+      if (error) throw new Error(error.message)
+      return res.status(200).json({ broadcasts: data ?? [] })
+    }
+
+    if (mode === 'cancel') {
+      if (!id) return res.status(400).json({ error: 'Missing id' })
+      // Only a still-scheduled row can be cancelled — once 'sending'/'sent' it's gone.
+      const { data, error } = await db.from('admin_broadcasts')
+        .update({ status: 'cancelled' })
+        .eq('id', id)
+        .eq('status', 'scheduled')
+        .select('id')
+      if (error) throw new Error(error.message)
+      if (!data?.length) return res.status(409).json({ error: 'Too late — this broadcast is no longer scheduled.' })
+      return res.status(200).json({ cancelled: true })
+    }
+
+    if (!AUDIENCES.has(audience)) return res.status(400).json({ error: 'Unknown audience' })
+    const from = SENDERS[sender]
+    if (!from) return res.status(400).json({ error: 'Unknown sender' })
+    if (mode !== 'preview' && (!subject.trim() || !message.trim())) {
+      return res.status(400).json({ error: 'Subject and message are required' })
+    }
+
     const recipients = await resolveAudience({ audience, emails, respectMarketingPrefs })
 
     if (mode === 'preview') {
@@ -160,51 +83,53 @@ async function handler(req, res) {
 
     if (mode === 'test') {
       const name = firstName((await db.from('profiles').select('full_name').eq('id', admin.id).maybeSingle()).data?.full_name)
-      const { error } = await resend.emails.send({
-        from,
-        to: admin.email,
-        subject: `[TEST] ${personalise(subject, name)}`,
-        html: emailHtml({ message, name }),
-      })
-      if (error) throw new Error(error.message || 'Test send failed')
+      await sendTestEmail({ to: admin.email, name, from, subject, message })
       return res.status(200).json({ test: true, to: admin.email })
     }
 
     // mode === 'send'
     if (recipients.length === 0) return res.status(400).json({ error: 'No recipients match this audience' })
 
-    let sent = 0
-    let failed = 0
-    for (let i = 0; i < recipients.length; i += BATCH_SIZE) {
-      const chunk = recipients.slice(i, i + BATCH_SIZE)
-      try {
-        const { data, error } = await resend.batch.send(chunk.map(u => {
-          const name = firstName(u.full_name)
-          return {
-            from,
-            to: u.email,
-            subject: personalise(subject, name),
-            html: emailHtml({ message, name }),
-          }
-        }))
-        if (error) { failed += chunk.length; continue }
-        sent += data?.data?.length ?? chunk.length
-      } catch (err) {
-        // One bad batch must not abort the broadcast — count it and continue.
-        failed += chunk.length
-        captureException(err, { endpoint: 'admin/broadcast-email', stage: 'batch', offset: i })
+    if (scheduledAt) {
+      const when = new Date(scheduledAt)
+      if (Number.isNaN(when.getTime())) return res.status(400).json({ error: 'Invalid schedule time' })
+      if (when.getTime() < Date.now() - 60_000) return res.status(400).json({ error: 'Schedule time is in the past' })
+      if (when.getTime() > Date.now() + MAX_SCHEDULE_DAYS * 86_400_000) {
+        return res.status(400).json({ error: `Schedule at most ${MAX_SCHEDULE_DAYS} days ahead` })
       }
+      const { data, error } = await db.from('admin_broadcasts').insert({
+        sent_by: admin.id,
+        audience,
+        sender,
+        subject,
+        message,
+        respect_marketing_prefs: respectMarketingPrefs,
+        audience_emails: audience === 'emails' ? (emails ?? []) : null,
+        status: 'scheduled',
+        scheduled_at: when.toISOString(),
+      }).select('id').single()
+      if (error) throw new Error(error.message)
+      // recipient count is indicative only — the audience re-resolves at send time.
+      return res.status(200).json({ scheduled: true, id: data.id, at: when.toISOString(), estimatedCount: recipients.length })
     }
+
+    const { sent, failed } = await sendToRecipients({
+      recipients, from, subject, message,
+      onChunkError: (err, offset) => captureException(err, { endpoint: 'admin/broadcast-email', stage: 'batch', offset }),
+    })
 
     await db.from('admin_broadcasts').insert({
       sent_by: admin.id,
       audience,
-      sender: from,
+      sender,
       subject,
       message,
       recipient_count: sent,
       failed_count: failed,
       respect_marketing_prefs: respectMarketingPrefs,
+      audience_emails: audience === 'emails' ? (emails ?? []) : null,
+      status: 'sent',
+      sent_at: new Date().toISOString(),
     })
 
     return res.status(200).json({ sent, failed, total: recipients.length })

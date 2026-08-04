@@ -22,6 +22,7 @@
     { "path": "/api/cron/birthday",            "schedule": "0 8 * * *"   },
     { "path": "/api/cron/gift-delivery",       "schedule": "0 * * * *"   },
     { "path": "/api/cron/message-delivery",    "schedule": "15 * * * *"  },
-    { "path": "/api/cron/document-expiry",    "schedule": "30 9 * * *"  }
+    { "path": "/api/cron/document-expiry",    "schedule": "30 9 * * *"  },
+    { "path": "/api/cron/send-scheduled-broadcasts", "schedule": "*/10 * * * *" }
   ]
 }

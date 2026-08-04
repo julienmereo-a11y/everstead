@@ -2090,8 +2090,11 @@ function EmailSection({ isDemo }) {
   const [previewLoading, setPreviewLoading] = useState(false)
   const [confirmText, setConfirmText]   = useState(null)   // null = not confirming; '' = open
   const [busy, setBusy]                 = useState(null)   // 'test' | 'send'
-  const [result, setResult]             = useState(null)   // { test, to } | { sent, failed }
+  const [result, setResult]             = useState(null)   // { test, to } | { sent, failed } | { scheduled, at }
   const [error, setError]               = useState(null)
+  const [scheduleAt, setScheduleAt]     = useState('')     // datetime-local; '' = send immediately
+  const [broadcasts, setBroadcasts]     = useState([])     // scheduled + recent, from mode:'list'
+  const [cancellingId, setCancellingId] = useState(null)
 
   const emailList = emailsText.split(/[\s,;]+/).map(e => e.trim()).filter(Boolean)
   const composed  = subject.trim() && message.trim()
@@ -2136,15 +2139,43 @@ function EmailSection({ isDemo }) {
     finally { setBusy(null) }
   }
 
+  const loadBroadcasts = async () => {
+    if (isDemo) { setBroadcasts([]); return }
+    try {
+      const data = await post({ mode: 'list' })
+      setBroadcasts(data.broadcasts ?? [])
+    } catch { /* the list is informational — never block composing */ }
+  }
+  useEffect(() => { loadBroadcasts() }, []) // eslint-disable-line react-hooks/exhaustive-deps
+
   const send = async () => {
     setError(null); setResult(null); setBusy('send')
     try {
-      if (isDemo) { await new Promise(r => setTimeout(r, 900)); setResult({ sent: preview?.count ?? 0, failed: 0 }) }
-      else setResult(await post({ mode: 'send', sender, audience, emails: emailList, subject, message, respectMarketingPrefs: respectPrefs }))
+      const scheduledAt = scheduleAt ? new Date(scheduleAt).toISOString() : null
+      if (isDemo) {
+        await new Promise(r => setTimeout(r, 900))
+        setResult(scheduledAt ? { scheduled: true, at: scheduledAt } : { sent: preview?.count ?? 0, failed: 0 })
+      } else {
+        setResult(await post({ mode: 'send', sender, audience, emails: emailList, subject, message, respectMarketingPrefs: respectPrefs, scheduledAt }))
+      }
       setConfirmText(null)
+      if (scheduledAt) { setScheduleAt(''); loadBroadcasts() }
     } catch (err) { setError(err.message) }
     finally { setBusy(null) }
   }
+
+  const cancelBroadcast = async (id) => {
+    setCancellingId(id)
+    try {
+      await post({ mode: 'cancel', id })
+      await loadBroadcasts()
+    } catch (err) { setError(err.message) }
+    finally { setCancellingId(null) }
+  }
+
+  const fmtWhen = (iso) => iso ? new Date(iso).toLocaleString('en-GB', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) : ''
+  const scheduledRows = broadcasts.filter(b => b.status === 'scheduled')
+  const recentRows    = broadcasts.filter(b => b.status !== 'scheduled').slice(0, 5)
 
   return (
     <div className="grid lg:grid-cols-[1fr_360px] gap-6 items-start">
@@ -2250,19 +2281,38 @@ function EmailSection({ isDemo }) {
             {busy === 'test' ? <Loader2 size={14} className="animate-spin" /> : <Mail size={14} />} Send myself a test
           </button>
 
+          <div>
+            <label className="block text-xs font-semibold text-stone-600 mb-1.5">Schedule (optional)</label>
+            <input
+              type="datetime-local"
+              value={scheduleAt}
+              onChange={e => setScheduleAt(e.target.value)}
+              className="w-full text-sm border border-stone-200 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-navy-300"
+            />
+            <p className="text-xs text-stone-400 mt-1">
+              {scheduleAt
+                ? 'Delivered within ~10 minutes of this time. Recipients are re-counted when it actually sends.'
+                : 'Leave empty to send immediately.'}
+            </p>
+          </div>
+
           {confirmText === null ? (
             <button
               onClick={() => { setResult(null); setError(null); setConfirmText('') }}
               disabled={!composed || busy !== null || !preview?.count}
               className="w-full inline-flex items-center justify-center gap-2 btn-aurora text-white text-sm font-semibold px-4 py-2.5 rounded-full disabled:opacity-40"
             >
-              <Send size={14} /> Send to {preview?.count ?? 0} user{preview?.count === 1 ? '' : 's'}…
+              {scheduleAt
+                ? <><Clock size={14} /> Schedule for {fmtWhen(new Date(scheduleAt).toISOString())}…</>
+                : <><Send size={14} /> Send to {preview?.count ?? 0} user{preview?.count === 1 ? '' : 's'}…</>}
             </button>
           ) : (
             <div className="space-y-2">
               <p className="text-xs text-stone-600 leading-relaxed">
-                This emails <span className="font-semibold">{preview?.count}</span> real
-                {' '}user{preview?.count === 1 ? '' : 's'} and cannot be recalled. Type <span className="font-mono font-semibold">SEND</span> to confirm.
+                {scheduleAt
+                  ? <>This schedules the email to <span className="font-semibold">~{preview?.count}</span> user{preview?.count === 1 ? '' : 's'} for <span className="font-semibold">{fmtWhen(new Date(scheduleAt).toISOString())}</span> (you can cancel until it sends). Type <span className="font-mono font-semibold">SEND</span> to confirm.</>
+                  : <>This emails <span className="font-semibold">{preview?.count}</span> real
+                    {' '}user{preview?.count === 1 ? '' : 's'} and cannot be recalled. Type <span className="font-mono font-semibold">SEND</span> to confirm.</>}
               </p>
               <input
                 type="text"
@@ -2277,7 +2327,7 @@ function EmailSection({ isDemo }) {
                   disabled={confirmText !== 'SEND' || busy !== null}
                   className="flex-1 inline-flex items-center justify-center gap-2 btn-aurora text-white text-sm font-semibold px-4 py-2.5 rounded-full disabled:opacity-40"
                 >
-                  {busy === 'send' ? <Loader2 size={14} className="animate-spin" /> : <Send size={14} />} Confirm send
+                  {busy === 'send' ? <Loader2 size={14} className="animate-spin" /> : <Send size={14} />} {scheduleAt ? 'Confirm schedule' : 'Confirm send'}
                 </button>
                 <button
                   onClick={() => setConfirmText(null)}
@@ -2295,7 +2345,12 @@ function EmailSection({ isDemo }) {
               Test sent to {result.to} — check your inbox before the real send.
             </p>
           )}
-          {result && !result.test && (
+          {result?.scheduled && (
+            <p className="text-xs text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-xl px-3 py-2.5">
+              Scheduled for {fmtWhen(result.at)} — you can cancel it below until it sends.
+            </p>
+          )}
+          {result && !result.test && !result.scheduled && (
             <p className="text-xs text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-xl px-3 py-2.5">
               Sent to {result.sent} user{result.sent === 1 ? '' : 's'}{result.failed > 0 ? ` · ${result.failed} failed` : ''}.
             </p>
@@ -2304,6 +2359,50 @@ function EmailSection({ isDemo }) {
             <p className="text-xs text-red-700 bg-red-50 border border-red-200 rounded-xl px-3 py-2.5">{error}</p>
           )}
         </div>
+
+        {(scheduledRows.length > 0 || recentRows.length > 0) && (
+          <div className="bg-white border border-stone-200 rounded-2xl p-6 space-y-4">
+            {scheduledRows.length > 0 && (
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-widest text-stone-400 mb-2.5">Scheduled</p>
+                <div className="space-y-2">
+                  {scheduledRows.map(b => (
+                    <div key={b.id} className="flex items-start justify-between gap-3 bg-amber-50 border border-amber-200 rounded-xl px-3.5 py-2.5">
+                      <div className="min-w-0">
+                        <p className="text-xs font-semibold text-navy-900 truncate">{b.subject}</p>
+                        <p className="text-xs text-stone-500 mt-0.5">
+                          {BROADCAST_AUDIENCES.find(([v]) => v === b.audience)?.[1] ?? b.audience} · {fmtWhen(b.scheduled_at)}
+                        </p>
+                      </div>
+                      <button
+                        onClick={() => cancelBroadcast(b.id)}
+                        disabled={cancellingId !== null}
+                        className="shrink-0 text-xs font-semibold text-red-600 hover:text-red-700 underline underline-offset-2 disabled:opacity-40"
+                      >
+                        {cancellingId === b.id ? 'Cancelling…' : 'Cancel'}
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+            {recentRows.length > 0 && (
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-widest text-stone-400 mb-2.5">Recent</p>
+                <div className="space-y-1.5">
+                  {recentRows.map(b => (
+                    <div key={b.id} className="flex items-center justify-between gap-3 px-1">
+                      <p className="text-xs text-stone-600 truncate">{b.subject}</p>
+                      <p className="text-xs text-stone-400 shrink-0">
+                        {b.status === 'sent' ? `${b.recipient_count} sent` : b.status} · {fmtWhen(b.sent_at || b.created_at)}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
 
         <p className="text-xs text-stone-400 leading-relaxed px-1">
           Every broadcast is logged (who sent it, audience, counts). Suspended accounts are always excluded;
