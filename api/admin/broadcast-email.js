@@ -41,11 +41,22 @@ const firstName = (fullName) => (fullName || '').trim().split(/\s+/)[0] || 'ther
 
 const personalise = (text, name) => text.replaceAll('{{name}}', name)
 
-// Escaped plain text → paragraphs (blank line) and line breaks.
+// Turn bare URLs in already-escaped text into clickable links. Runs AFTER esc(),
+// so any & in a query string is already &amp; — the correct encoding inside an
+// href attribute. Trailing sentence punctuation is kept outside the link.
+function linkify(escapedText) {
+  return escapedText.replace(/https?:\/\/[^\s<]+/g, (url) => {
+    const trail = (/[.,;:!?)\]]+$/.exec(url) || [''])[0]
+    const clean = trail ? url.slice(0, -trail.length) : url
+    return `<a href="${clean}" style="color:#4c7d47;text-decoration:underline;">${clean}</a>${trail}`
+  })
+}
+
+// Escaped plain text → paragraphs (blank line), line breaks, clickable URLs.
 function messageHtml(message) {
   return esc(message).trim()
     .split(/\n{2,}/)
-    .map(p => `<p style="margin:0 0 16px;color:#4a5568;font-size:16px;line-height:1.7;">${p.replace(/\n/g, '<br/>')}</p>`)
+    .map(p => `<p style="margin:0 0 16px;color:#4a5568;font-size:16px;line-height:1.7;">${linkify(p).replace(/\n/g, '<br/>')}</p>`)
     .join('\n')
 }
 
