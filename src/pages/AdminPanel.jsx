@@ -2059,6 +2059,14 @@ function exportCsv(users) {
 // ─────────────────────────────────────────────────────────────
 // EMAIL — broadcast to all users or a group (api/admin/broadcast-email)
 // ─────────────────────────────────────────────────────────────
+// Mirrors the server-side SENDERS allowlist in api/admin/broadcast-email.js —
+// the key is validated there, so an unknown value is rejected, never sent.
+const BROADCAST_SENDERS = [
+  ['hello',   'Everstead — hello@everstead.care'],
+  ['julien',  'Julien from Everstead — julien@everstead.care'],
+  ['support', 'Everstead Support — support@everstead.care'],
+]
+
 const BROADCAST_AUDIENCES = [
   ['all',           'All users'],
   ['free',          'Everstead (free)'],
@@ -2072,6 +2080,7 @@ const BROADCAST_AUDIENCES = [
 ]
 
 function EmailSection({ isDemo }) {
+  const [sender, setSender]             = useState('hello')
   const [audience, setAudience]         = useState('all')
   const [emailsText, setEmailsText]     = useState('')
   const [respectPrefs, setRespectPrefs] = useState(true)
@@ -2122,7 +2131,7 @@ function EmailSection({ isDemo }) {
     setError(null); setResult(null); setBusy('test')
     try {
       if (isDemo) { await new Promise(r => setTimeout(r, 600)); setResult({ test: true, to: 'you@demo' }) }
-      else setResult(await post({ mode: 'test', audience, emails: emailList, subject, message, respectMarketingPrefs: respectPrefs }))
+      else setResult(await post({ mode: 'test', sender, audience, emails: emailList, subject, message, respectMarketingPrefs: respectPrefs }))
     } catch (err) { setError(err.message) }
     finally { setBusy(null) }
   }
@@ -2131,7 +2140,7 @@ function EmailSection({ isDemo }) {
     setError(null); setResult(null); setBusy('send')
     try {
       if (isDemo) { await new Promise(r => setTimeout(r, 900)); setResult({ sent: preview?.count ?? 0, failed: 0 }) }
-      else setResult(await post({ mode: 'send', audience, emails: emailList, subject, message, respectMarketingPrefs: respectPrefs }))
+      else setResult(await post({ mode: 'send', sender, audience, emails: emailList, subject, message, respectMarketingPrefs: respectPrefs }))
       setConfirmText(null)
     } catch (err) { setError(err.message) }
     finally { setBusy(null) }
@@ -2141,6 +2150,18 @@ function EmailSection({ isDemo }) {
     <div className="grid lg:grid-cols-[1fr_360px] gap-6 items-start">
       {/* ── Compose ── */}
       <div className="bg-white border border-stone-200 rounded-2xl p-6 space-y-5">
+        <div>
+          <label className="block text-xs font-semibold text-stone-600 mb-1.5">From</label>
+          <select
+            value={sender}
+            onChange={e => setSender(e.target.value)}
+            className="w-full text-sm border border-stone-200 rounded-xl px-3 py-2.5 bg-white focus:outline-none focus:ring-2 focus:ring-navy-300"
+          >
+            {BROADCAST_SENDERS.map(([v, l]) => <option key={v} value={v}>{l}</option>)}
+          </select>
+          <p className="text-xs text-stone-400 mt-1">Replies go to the selected address — all three reach your inbox.</p>
+        </div>
+
         <div>
           <label className="block text-xs font-semibold text-stone-600 mb-1.5">Audience</label>
           <select

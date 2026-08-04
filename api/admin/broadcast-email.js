@@ -29,7 +29,14 @@ import { withSentry, captureException } from '../lib/sentry.js'
 // ─────────────────────────────────────────────────────────────────────────────
 
 const resend = new Resend(process.env.RESEND_API_KEY)
-const FROM = 'Everstead <hello@everstead.care>'
+// Selectable senders — a strict allowlist (never client-supplied free text). All are
+// on the Resend-verified everstead.care domain; replies reach the same mailbox
+// (hello@ and support@ are Workspace aliases of julien@).
+const SENDERS = {
+  hello:   'Everstead <hello@everstead.care>',
+  julien:  'Julien from Everstead <julien@everstead.care>',
+  support: 'Everstead Support <support@everstead.care>',
+}
 const BATCH_SIZE = 50
 const AUDIENCES = new Set(['all', 'free', 'essential', 'family', 'advisor', 'founding', 'trialing', 'payment_issue', 'emails'])
 
@@ -131,9 +138,12 @@ async function handler(req, res) {
     subject = '',
     message = '',
     respectMarketingPrefs = true,
+    sender = 'hello',
   } = req.body ?? {}
 
   if (!AUDIENCES.has(audience)) return res.status(400).json({ error: 'Unknown audience' })
+  const from = SENDERS[sender]
+  if (!from) return res.status(400).json({ error: 'Unknown sender' })
   if (mode !== 'preview' && (!subject.trim() || !message.trim())) {
     return res.status(400).json({ error: 'Subject and message are required' })
   }
@@ -151,7 +161,7 @@ async function handler(req, res) {
     if (mode === 'test') {
       const name = firstName((await db.from('profiles').select('full_name').eq('id', admin.id).maybeSingle()).data?.full_name)
       const { error } = await resend.emails.send({
-        from: FROM,
+        from,
         to: admin.email,
         subject: `[TEST] ${personalise(subject, name)}`,
         html: emailHtml({ message, name }),
@@ -171,7 +181,7 @@ async function handler(req, res) {
         const { data, error } = await resend.batch.send(chunk.map(u => {
           const name = firstName(u.full_name)
           return {
-            from: FROM,
+            from,
             to: u.email,
             subject: personalise(subject, name),
             html: emailHtml({ message, name }),
@@ -189,6 +199,7 @@ async function handler(req, res) {
     await db.from('admin_broadcasts').insert({
       sent_by: admin.id,
       audience,
+      sender: from,
       subject,
       message,
       recipient_count: sent,
