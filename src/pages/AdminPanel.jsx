@@ -2056,6 +2056,243 @@ function exportCsv(users) {
   URL.revokeObjectURL(url)
 }
 
+// ─────────────────────────────────────────────────────────────
+// EMAIL — broadcast to all users or a group (api/admin/broadcast-email)
+// ─────────────────────────────────────────────────────────────
+const BROADCAST_AUDIENCES = [
+  ['all',           'All users'],
+  ['free',          'Everstead (free)'],
+  ['family',        'Everstead+'],
+  ['essential',     'Essential (grandfathered)'],
+  ['advisor',       'Everstead Pro (advisers)'],
+  ['founding',      'Founding members'],
+  ['trialing',      'Currently on trial'],
+  ['payment_issue', 'Payment issue (trial expired / past due)'],
+  ['emails',        'Specific emails…'],
+]
+
+function EmailSection({ isDemo }) {
+  const [audience, setAudience]         = useState('all')
+  const [emailsText, setEmailsText]     = useState('')
+  const [respectPrefs, setRespectPrefs] = useState(true)
+  const [subject, setSubject]           = useState('')
+  const [message, setMessage]           = useState('')
+  const [preview, setPreview]           = useState(null)   // { count, sample }
+  const [previewLoading, setPreviewLoading] = useState(false)
+  const [confirmText, setConfirmText]   = useState(null)   // null = not confirming; '' = open
+  const [busy, setBusy]                 = useState(null)   // 'test' | 'send'
+  const [result, setResult]             = useState(null)   // { test, to } | { sent, failed }
+  const [error, setError]               = useState(null)
+
+  const emailList = emailsText.split(/[\s,;]+/).map(e => e.trim()).filter(Boolean)
+  const composed  = subject.trim() && message.trim()
+
+  const post = async (body) => {
+    const { data: { session } } = await supabase.auth.getSession()
+    const res = await fetch('/api/admin/broadcast-email', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${session?.access_token}` },
+      body: JSON.stringify(body),
+    })
+    const data = await res.json().catch(() => ({}))
+    if (!res.ok) throw new Error(data.error || 'Request failed')
+    return data
+  }
+
+  // Live recipient count — debounced so typing in the emails box doesn't spam the API.
+  useEffect(() => {
+    if (isDemo) { setPreview({ count: audience === 'all' ? 24 : 6, sample: ['demo@example.com'] }); return }
+    let cancelled = false
+    setPreviewLoading(true)
+    const t = setTimeout(async () => {
+      try {
+        const data = await post({ mode: 'preview', audience, emails: emailList, respectMarketingPrefs: respectPrefs })
+        if (!cancelled) setPreview(data)
+      } catch {
+        if (!cancelled) setPreview(null)
+      } finally {
+        if (!cancelled) setPreviewLoading(false)
+      }
+    }, 400)
+    return () => { cancelled = true; clearTimeout(t) }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [audience, emailsText, respectPrefs, isDemo])
+
+  const sendTest = async () => {
+    setError(null); setResult(null); setBusy('test')
+    try {
+      if (isDemo) { await new Promise(r => setTimeout(r, 600)); setResult({ test: true, to: 'you@demo' }) }
+      else setResult(await post({ mode: 'test', audience, emails: emailList, subject, message, respectMarketingPrefs: respectPrefs }))
+    } catch (err) { setError(err.message) }
+    finally { setBusy(null) }
+  }
+
+  const send = async () => {
+    setError(null); setResult(null); setBusy('send')
+    try {
+      if (isDemo) { await new Promise(r => setTimeout(r, 900)); setResult({ sent: preview?.count ?? 0, failed: 0 }) }
+      else setResult(await post({ mode: 'send', audience, emails: emailList, subject, message, respectMarketingPrefs: respectPrefs }))
+      setConfirmText(null)
+    } catch (err) { setError(err.message) }
+    finally { setBusy(null) }
+  }
+
+  return (
+    <div className="grid lg:grid-cols-[1fr_360px] gap-6 items-start">
+      {/* ── Compose ── */}
+      <div className="bg-white border border-stone-200 rounded-2xl p-6 space-y-5">
+        <div>
+          <label className="block text-xs font-semibold text-stone-600 mb-1.5">Audience</label>
+          <select
+            value={audience}
+            onChange={e => setAudience(e.target.value)}
+            className="w-full text-sm border border-stone-200 rounded-xl px-3 py-2.5 bg-white focus:outline-none focus:ring-2 focus:ring-navy-300"
+          >
+            {BROADCAST_AUDIENCES.map(([v, l]) => <option key={v} value={v}>{l}</option>)}
+          </select>
+        </div>
+
+        {audience === 'emails' && (
+          <div>
+            <label className="block text-xs font-semibold text-stone-600 mb-1.5">Email addresses</label>
+            <textarea
+              rows={3}
+              value={emailsText}
+              onChange={e => setEmailsText(e.target.value)}
+              placeholder="one@example.com, two@example.com — commas, spaces or new lines"
+              className="w-full text-sm border border-stone-200 rounded-xl px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-navy-300"
+            />
+            <p className="text-xs text-stone-400 mt-1">Only addresses belonging to existing accounts will receive it.</p>
+          </div>
+        )}
+
+        <label className="flex items-start gap-2.5 cursor-pointer">
+          <input
+            type="checkbox"
+            checked={respectPrefs}
+            onChange={e => setRespectPrefs(e.target.checked)}
+            className="mt-0.5 rounded border-stone-300"
+          />
+          <span className="text-xs text-stone-600 leading-relaxed">
+            <span className="font-semibold">Respect marketing unsubscribes</span> — skip anyone who opted out of
+            marketing emails. Untick only for genuine service/account notices.
+          </span>
+        </label>
+
+        <div>
+          <label className="block text-xs font-semibold text-stone-600 mb-1.5">Subject</label>
+          <input
+            type="text"
+            value={subject}
+            onChange={e => setSubject(e.target.value)}
+            placeholder="e.g. The Everstead app is now on Google Play"
+            className="w-full text-sm border border-stone-200 rounded-xl px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-navy-300"
+          />
+        </div>
+
+        <div>
+          <label className="block text-xs font-semibold text-stone-600 mb-1.5">Message</label>
+          <textarea
+            rows={10}
+            value={message}
+            onChange={e => setMessage(e.target.value)}
+            placeholder={"Hi {{name}},\n\nWrite your message here. Blank lines start a new paragraph.\n\nWarm regards,\nJulien"}
+            className="w-full text-sm border border-stone-200 rounded-xl px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-navy-300 font-mono"
+          />
+          <p className="text-xs text-stone-400 mt-1">
+            <code className="bg-stone-100 px-1 rounded">{'{{name}}'}</code> becomes the recipient's first name.
+            Sent in the branded Everstead template with an email-preferences footer.
+          </p>
+        </div>
+      </div>
+
+      {/* ── Recipients + actions ── */}
+      <div className="space-y-4">
+        <div className="bg-white border border-stone-200 rounded-2xl p-6">
+          <p className="text-xs font-semibold uppercase tracking-widest text-stone-400 mb-2">Recipients</p>
+          <p className="font-display text-4xl font-light text-navy-950">
+            {previewLoading ? <Loader2 size={26} className="animate-spin text-stone-300" /> : (preview?.count ?? '—')}
+          </p>
+          {preview?.sample?.length > 0 && (
+            <p className="text-xs text-stone-400 mt-2 leading-relaxed break-all">
+              e.g. {preview.sample.slice(0, 3).join(', ')}{preview.count > 3 ? ', …' : ''}
+            </p>
+          )}
+        </div>
+
+        <div className="bg-white border border-stone-200 rounded-2xl p-6 space-y-3">
+          <button
+            onClick={sendTest}
+            disabled={!composed || busy !== null}
+            className="w-full inline-flex items-center justify-center gap-2 text-sm font-semibold border border-navy-200 text-navy-800 px-4 py-2.5 rounded-full hover:bg-navy-50 transition-colors disabled:opacity-40"
+          >
+            {busy === 'test' ? <Loader2 size={14} className="animate-spin" /> : <Mail size={14} />} Send myself a test
+          </button>
+
+          {confirmText === null ? (
+            <button
+              onClick={() => { setResult(null); setError(null); setConfirmText('') }}
+              disabled={!composed || busy !== null || !preview?.count}
+              className="w-full inline-flex items-center justify-center gap-2 btn-aurora text-white text-sm font-semibold px-4 py-2.5 rounded-full disabled:opacity-40"
+            >
+              <Send size={14} /> Send to {preview?.count ?? 0} user{preview?.count === 1 ? '' : 's'}…
+            </button>
+          ) : (
+            <div className="space-y-2">
+              <p className="text-xs text-stone-600 leading-relaxed">
+                This emails <span className="font-semibold">{preview?.count}</span> real
+                {' '}user{preview?.count === 1 ? '' : 's'} and cannot be recalled. Type <span className="font-mono font-semibold">SEND</span> to confirm.
+              </p>
+              <input
+                type="text"
+                value={confirmText}
+                onChange={e => setConfirmText(e.target.value)}
+                placeholder="SEND"
+                className="w-full text-sm border border-stone-200 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-navy-300"
+              />
+              <div className="flex gap-2">
+                <button
+                  onClick={send}
+                  disabled={confirmText !== 'SEND' || busy !== null}
+                  className="flex-1 inline-flex items-center justify-center gap-2 btn-aurora text-white text-sm font-semibold px-4 py-2.5 rounded-full disabled:opacity-40"
+                >
+                  {busy === 'send' ? <Loader2 size={14} className="animate-spin" /> : <Send size={14} />} Confirm send
+                </button>
+                <button
+                  onClick={() => setConfirmText(null)}
+                  disabled={busy !== null}
+                  className="text-sm font-medium text-stone-500 px-4 py-2.5 rounded-full border border-stone-200 hover:bg-stone-50"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          )}
+
+          {result?.test && (
+            <p className="text-xs text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-xl px-3 py-2.5">
+              Test sent to {result.to} — check your inbox before the real send.
+            </p>
+          )}
+          {result && !result.test && (
+            <p className="text-xs text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-xl px-3 py-2.5">
+              Sent to {result.sent} user{result.sent === 1 ? '' : 's'}{result.failed > 0 ? ` · ${result.failed} failed` : ''}.
+            </p>
+          )}
+          {error && (
+            <p className="text-xs text-red-700 bg-red-50 border border-red-200 rounded-xl px-3 py-2.5">{error}</p>
+          )}
+        </div>
+
+        <p className="text-xs text-stone-400 leading-relaxed px-1">
+          Every broadcast is logged (who sent it, audience, counts). Suspended accounts are always excluded;
+          duplicates are removed automatically.
+        </p>
+      </div>
+    </div>
+  )
+}
+
 function UsersSection({ isDemo }) {
   const [users, setUsers]           = useState(isDemo ? DEMO_USERS : [])
   const [loading, setLoading]       = useState(!isDemo)
@@ -2337,6 +2574,7 @@ export default function AdminPanel() {
     { id: 'overview', label: 'Overview', Icon: LayoutDashboard },
     { id: 'reports',  label: 'Reports',  Icon: Clock },
     { id: 'users',    label: 'Users',    Icon: UserRound },
+    { id: 'email',    label: 'Email',    Icon: Mail },
     { id: 'advisers', label: 'Advisers', Icon: Building2 },
     { id: 'team',     label: 'Team',     Icon: Users },
   ]
@@ -2493,6 +2731,16 @@ export default function AdminPanel() {
               <p className="text-sm text-stone-500 mt-1">Profile details and readiness progress — no private plan content is shown</p>
             </div>
             <UsersSection isDemo={isDemo} />
+          </>
+        )}
+
+        {activeTab === 'email' && (
+          <>
+            <div>
+              <h1 className="text-2xl font-semibold text-navy-950">Email users</h1>
+              <p className="text-sm text-stone-500 mt-1">Send an announcement to everyone, a plan group, or specific accounts — with a test send first</p>
+            </div>
+            <EmailSection isDemo={isDemo} />
           </>
         )}
 
