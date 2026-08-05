@@ -17,6 +17,19 @@ import { withSentry, captureException } from '../lib/sentry.js'
 async function handler(req, res) {
   const authHeader = req.headers['authorization']
   if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+    // TEMPORARY DIAGNOSTIC (2026-08-05): every cron on the project is 401ing even
+    // though CRON_SECRET exists in Vercel (Production+Preview). Log which SIDE is
+    // wrong — presence + lengths only, NEVER values. Remove once root-caused.
+    const expected = process.env.CRON_SECRET
+    console.log('cron-auth-diag', JSON.stringify({
+      ua: req.headers['user-agent'] || null,
+      hasAuthHeader: authHeader != null,
+      authHeaderLen: authHeader?.length ?? 0,
+      startsWithBearer: authHeader?.startsWith('Bearer ') ?? false,
+      hasEnvSecret: expected != null,
+      envSecretLen: expected?.length ?? 0,
+      lenMatch: authHeader != null && expected != null && authHeader.length === `Bearer ${expected}`.length,
+    }))
     return res.status(401).json({ error: 'Unauthorized' })
   }
 
