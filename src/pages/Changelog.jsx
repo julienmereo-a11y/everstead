@@ -5,6 +5,45 @@ import { Link } from 'react-router-dom'
 
 const entries = [
   {
+    date: 'August 2026',
+    tag: 'New',
+    tagColor: 'bg-sage-100 text-sage-700',
+    title: 'The Everstead app — now on iPhone and Android',
+    items: [
+      'Everstead is now a real app, available on the App Store and Google Play.',
+      'Everything you’ve organised — accounts, documents, trusted people and wishes — in your pocket, always in sync with the website.',
+      'Sign in with your usual email and password and pick up exactly where you left off.',
+      'Keep your vault private on your phone with a PIN, plus Face ID on iPhone.',
+      'Record video and photo messages for the people you love, straight from the app.',
+      'Add a document the moment it’s in your hand — snap, upload, done.',
+    ],
+  },
+  {
+    date: 'August 2026',
+    tag: 'Improvement',
+    tagColor: 'bg-blue-50 text-blue-700',
+    title: 'Lots of little things, made smoother',
+    items: [
+      'Previewing an uploaded document now opens reliably, with one-click download.',
+      'When the AI scans a document for you, it now files it under the right type every time.',
+      'Gifting is simpler: Everstead+ is the gift — just choose how many years to give.',
+      'The blog now shows the newest articles first, and there’s a new plain-language guide: “What happens to your pension when you die in the UK?”',
+    ],
+  },
+  {
+    date: 'July 2026',
+    tag: 'New',
+    tagColor: 'bg-sage-100 text-sage-700',
+    title: 'A free plan for everyone',
+    items: [
+      'Everstead now starts free — organise the essentials at no cost, with no card required, forever.',
+      'The free plan includes the full guided setup with Your AI Assistant, your complete About Me, a readiness score, and a starter vault: one account, one document and one trusted person.',
+      'Our plans have new names: the Family plan is now Everstead+, and the Adviser plan is now Everstead Pro. Nothing else changes — existing members keep their exact plan, price and features.',
+      'When you reach a free-plan limit, a friendly note shows what Everstead+ adds — no interruptions, no pop-ups.',
+      'A simpler sign-up: two clear choices, and upgrading later takes everything you’ve set up with you.',
+    ],
+  },
+  {
     date: 'July 2026',
     tag: 'New',
     tagColor: 'bg-sage-100 text-sage-700',
