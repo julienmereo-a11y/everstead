@@ -10,7 +10,9 @@
     { "source": "/((?!api/).*)", "destination": "/index.html" }
   ],
   "functions": {
-    "api/data/export.js": { "maxDuration": 60 }
+    "api/data/export.js": { "maxDuration": 60 },
+    "api/admin/broadcast-email.js": { "maxDuration": 300 },
+    "api/cron/send-scheduled-broadcasts.js": { "maxDuration": 300 }
   },
   "crons": [
     { "path": "/api/cron/trial-reminders",    "schedule": "0 9 * * *"   },

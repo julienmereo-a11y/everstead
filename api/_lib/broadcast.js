@@ -115,26 +115,72 @@ export async function resolveAudience({ audience, emails, respectMarketingPrefs 
 // Send one composed broadcast to already-resolved recipients via Resend's batch
 // API, personalised per recipient. Failures are counted, never thrown mid-run —
 // one bad chunk must not abort the broadcast. onChunkError gets non-fatal errors.
+const sleep = (ms) => new Promise(r => setTimeout(r, ms))
+
+async function sendBatch(chunk, { from, subject, message }) {
+  try {
+    return await resend.batch.send(chunk.map(u => {
+      const name = firstName(u.full_name)
+      return {
+        from,
+        to: u.email,
+        subject: personalise(subject, name),
+        html: emailHtml({ message, name }),
+      }
+    }))
+  } catch (err) {
+    return { error: err }
+  }
+}
+
+// Resilient delivery. Lessons from the 2026-08-05 broadcast (50 sent / 23 failed
+// with the error swallowed): batches are paced (the Resend rate limit is shared
+// with every cron on the key), a failed batch is retried once, and if it still
+// fails the chunk falls back to INDIVIDUAL sends — so a single bad address can
+// 422 only itself, never the other recipients in its batch. Errors are logged
+// (message/status only — never recipient addresses).
 export async function sendToRecipients({ recipients, from, subject, message, onChunkError }) {
   let sent = 0
   let failed = 0
   for (let i = 0; i < recipients.length; i += BATCH_SIZE) {
     const chunk = recipients.slice(i, i + BATCH_SIZE)
-    try {
-      const { data, error } = await resend.batch.send(chunk.map(u => {
+    if (i > 0) await sleep(1200)
+
+    let result = await sendBatch(chunk, { from, subject, message })
+    if (result.error) {
+      console.log('broadcast: batch failed, retrying once —',
+        result.error?.message || result.error?.name || 'unknown error', '· offset', i)
+      await sleep(1500)
+      result = await sendBatch(chunk, { from, subject, message })
+    }
+    if (!result.error) {
+      sent += result.data?.data?.length ?? chunk.length
+      continue
+    }
+
+    console.log('broadcast: batch retry failed, falling back to individual sends —',
+      result.error?.message || result.error?.name || 'unknown error', '· offset', i)
+    onChunkError?.(result.error instanceof Error ? result.error : new Error(result.error?.message || 'batch send failed'), i)
+    for (const u of chunk) {
+      await sleep(600)
+      try {
         const name = firstName(u.full_name)
-        return {
+        const { error } = await resend.emails.send({
           from,
           to: u.email,
           subject: personalise(subject, name),
           html: emailHtml({ message, name }),
+        })
+        if (error) {
+          failed += 1
+          console.log('broadcast: individual send failed —', error?.message || error?.name || 'unknown error')
+        } else {
+          sent += 1
         }
-      }))
-      if (error) { failed += chunk.length; continue }
-      sent += data?.data?.length ?? chunk.length
-    } catch (err) {
-      failed += chunk.length
-      onChunkError?.(err, i)
+      } catch (err) {
+        failed += 1
+        console.log('broadcast: individual send threw —', err?.message || 'unknown error')
+      }
     }
   }
   return { sent, failed }
