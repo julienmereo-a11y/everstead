@@ -117,7 +117,7 @@ export async function resolveAudience({ audience, emails, respectMarketingPrefs 
 // one bad chunk must not abort the broadcast. onChunkError gets non-fatal errors.
 const sleep = (ms) => new Promise(r => setTimeout(r, ms))
 
-async function sendBatch(chunk, { from, subject, message }) {
+async function sendBatch(chunk, { from, subject, message, idempotencyKey }) {
   try {
     return await resend.batch.send(chunk.map(u => {
       const name = firstName(u.full_name)
@@ -127,7 +127,7 @@ async function sendBatch(chunk, { from, subject, message }) {
         subject: personalise(subject, name),
         html: emailHtml({ message, name }),
       }
-    }))
+    }), idempotencyKey ? { idempotencyKey } : undefined)
   } catch (err) {
     return { error: err }
   }
@@ -139,19 +139,24 @@ async function sendBatch(chunk, { from, subject, message }) {
 // fails the chunk falls back to INDIVIDUAL sends — so a single bad address can
 // 422 only itself, never the other recipients in its batch. Errors are logged
 // (message/status only — never recipient addresses).
-export async function sendToRecipients({ recipients, from, subject, message, onChunkError }) {
+export async function sendToRecipients({ recipients, from, subject, message, onChunkError, runId }) {
   let sent = 0
   let failed = 0
   for (let i = 0; i < recipients.length; i += BATCH_SIZE) {
     const chunk = recipients.slice(i, i + BATCH_SIZE)
     if (i > 0) await sleep(1200)
 
-    let result = await sendBatch(chunk, { from, subject, message })
+    // The idempotency key makes the retry safe: if the batch was ACCEPTED but the
+    // response failed (the 2026-08-05 broadcast — Resend delivered all 23 of a
+    // chunk we counted as failed), retrying with the same key is deduped
+    // server-side instead of double-sending.
+    const idempotencyKey = runId ? `broadcast-${runId}-chunk-${i}` : undefined
+    let result = await sendBatch(chunk, { from, subject, message, idempotencyKey })
     if (result.error) {
       console.log('broadcast: batch failed, retrying once —',
         result.error?.message || result.error?.name || 'unknown error', '· offset', i)
       await sleep(1500)
-      result = await sendBatch(chunk, { from, subject, message })
+      result = await sendBatch(chunk, { from, subject, message, idempotencyKey })
     }
     if (!result.error) {
       sent += result.data?.data?.length ?? chunk.length
@@ -170,7 +175,7 @@ export async function sendToRecipients({ recipients, from, subject, message, onC
           to: u.email,
           subject: personalise(subject, name),
           html: emailHtml({ message, name }),
-        })
+        }, runId ? { idempotencyKey: `broadcast-${runId}-r-${i + chunk.indexOf(u)}` } : undefined)
         if (error) {
           failed += 1
           console.log('broadcast: individual send failed —', error?.message || error?.name || 'unknown error')

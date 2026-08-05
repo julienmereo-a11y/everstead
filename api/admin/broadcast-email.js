@@ -115,6 +115,7 @@ async function handler(req, res) {
 
     const { sent, failed } = await sendToRecipients({
       recipients, from, subject, message,
+      runId: crypto.randomUUID(), // idempotency base — a retried batch can't double-send
       onChunkError: (err, offset) => captureException(err, { endpoint: 'admin/broadcast-email', stage: 'batch', offset }),
     })
 

@@ -74,6 +74,7 @@ async function handler(req, res) {
         from,
         subject: row.subject,
         message: row.message,
+        runId: row.id, // idempotency base — a retried batch can't double-send
         onChunkError: (err, offset) => captureException(err, { endpoint: 'cron/send-scheduled-broadcasts', stage: 'batch', id: row.id, offset }),
       })
       await db.from('admin_broadcasts')
