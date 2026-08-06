@@ -12,6 +12,7 @@ import {
 import { getLiveReports, updateReportStatus, verifyReport, setOwnerStatus } from '../lib/demoData'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../contexts/AuthContext'
+import { planLabel } from '../config/pricing'
 
 // ─────────────────────────────────────────────────────────────
 // CONSTANTS
@@ -617,12 +618,19 @@ const DEMO_USERS = [
   { id: 'u5', full_name: 'Tom Blackwell',    email: 'tom@example.com',     phone: '+44 7700 900555', country: 'United Kingdom', nationality: 'British',  plan: 'family',    subscription_status: 'cancelling',    billing_cycle: 'monthly', readiness_score: 55, created_at: '2026-03-28T16:00:00Z', trial_ends_at: null,                   stripe_customer_id: 'cus_demo5', stripe_subscription_id: 'sub_demo5', accounts_count: 4, documents_count: 3, people_count: 2, instructions_count: 3, wishes_count: 1 },
   { id: 'u6', full_name: 'Helen Marsh',      email: 'helen@example.com',   phone: '+44 7700 900666', country: 'Ireland',        nationality: 'Irish',     plan: 'essential', subscription_status: 'cancelled',     billing_cycle: 'monthly', readiness_score: 28, created_at: '2026-03-01T10:00:00Z', trial_ends_at: null,                   stripe_customer_id: 'cus_demo6', stripe_subscription_id: null,        accounts_count: 2, documents_count: 1, people_count: 1, instructions_count: 0, wishes_count: 0 },
   { id: 'u7', full_name: 'David Osei',       email: 'david@example.com',   phone: '+44 7700 900777', country: 'United Kingdom', nationality: 'Ghanaian', plan: 'essential', subscription_status: 'trial_expired', billing_cycle: 'monthly', readiness_score: 20, created_at: '2026-04-20T12:00:00Z', trial_ends_at: '2026-05-04T12:00:00Z', stripe_customer_id: 'cus_demo7', stripe_subscription_id: 'sub_demo7', accounts_count: 1, documents_count: 0, people_count: 0, instructions_count: 0, wishes_count: 0 },
+  { id: 'u8',  full_name: 'Amara Diallo',    email: 'amara@example.com',   phone: null,              country: 'United Kingdom', nationality: 'French',   plan: 'free',      subscription_status: null,        billing_cycle: 'monthly', readiness_score: 18, created_at: '2026-07-28T11:00:00Z', trial_ends_at: null, stripe_customer_id: null, stripe_subscription_id: null, entitlement_source: 'stripe',    accounts_count: 1, documents_count: 0, people_count: 1, instructions_count: 0, wishes_count: 0 },
+  { id: 'u9',  full_name: 'Peter Hollis',    email: 'peterh@example.com',  phone: '+44 7700 900999', country: 'United Kingdom', nationality: 'British',  plan: 'free',      subscription_status: 'cancelled', billing_cycle: 'monthly', readiness_score: 40, created_at: '2026-05-12T09:30:00Z', trial_ends_at: null, stripe_customer_id: null, stripe_subscription_id: null, entitlement_source: 'apple_iap', accounts_count: 3, documents_count: 2, people_count: 1, instructions_count: 1, wishes_count: 0 },
+  { id: 'u10', full_name: 'Grace Adeyemi',   email: 'grace@example.com',   phone: '+44 7700 901010', country: 'United Kingdom', nationality: 'Nigerian', plan: 'family',    subscription_status: 'active',    billing_cycle: 'yearly',  readiness_score: 52, created_at: '2026-08-01T09:00:00Z', trial_ends_at: null, stripe_customer_id: null, stripe_subscription_id: null, entitlement_source: 'apple_iap', accounts_count: 4, documents_count: 2, people_count: 2, instructions_count: 2, wishes_count: 1 },
 ]
 
 // ─────────────────────────────────────────────────────────────
 // USERS SECTION
 // ─────────────────────────────────────────────────────────────
+// Keyed by internal plan KEY (free/essential/family/advisor) — display text
+// always comes from planLabel() so the new names (Everstead, Everstead+,
+// Everstead Pro) are spelled in exactly one place: src/config/pricing.js.
 const PLAN_BADGE = {
+  free:      'bg-teal-50 text-teal-700 border-teal-200',
   essential: 'bg-stone-100 text-stone-600 border-stone-200',
   family:    'bg-blue-50 text-blue-700 border-blue-200',
   advisor:   'bg-purple-50 text-purple-700 border-purple-200',
@@ -1015,9 +1023,11 @@ function UserRow({ u }) {
   const [open, setOpen] = useState(false)
   const [trialEndsAt, setTrialEndsAt] = useState(u.trial_ends_at) // local — updated on extend
   const statusCls  = STATUS_COLOR[u.subscription_status] ?? STATUS_COLOR.incomplete
-  const planCls    = PLAN_BADGE[u.plan] ?? PLAN_BADGE.essential
+  const planCls    = PLAN_BADGE[u.plan] ?? PLAN_BADGE.free
   const daysLeft   = trialEndsAt ? Math.ceil((new Date(trialEndsAt) - Date.now()) / 86400000) : null
-  const statusLabel = STATUS_LABEL[u.subscription_status] ?? (u.subscription_status?.replace(/_/g, ' ') ?? '—')
+  const statusLabel = u.plan === 'free' && !u.subscription_status
+    ? 'Free plan'
+    : STATUS_LABEL[u.subscription_status] ?? (u.subscription_status?.replace(/_/g, ' ') ?? '—')
 
   // Build Stripe dashboard URLs
   const stripeCustomerUrl     = u.stripe_customer_id     ? `https://dashboard.stripe.com/customers/${u.stripe_customer_id}` : null
@@ -1035,7 +1045,7 @@ function UserRow({ u }) {
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 flex-wrap">
             <p className="text-sm font-semibold text-navy-900 truncate">{u.full_name ?? '—'}</p>
-            <span className={`text-xs font-medium px-2 py-0.5 rounded-full border capitalize ${planCls}`}>{u.plan}</span>
+            <span className={`text-xs font-medium px-2 py-0.5 rounded-full border ${planCls}`}>{planLabel(u.plan)}</span>
             {u.is_founding_member && (
               <span
                 className="inline-flex items-center gap-1 text-xs font-semibold px-2 py-0.5 rounded-full text-white"
@@ -1196,9 +1206,35 @@ function UserRow({ u }) {
 // New-signup rates (20% annual structure). Existing subscribers may be on older
 // prices, so MRR is an estimate. `yearly` = per-month-when-billed-annually.
 const MRR_RATES = {
+  free:      { monthly: 0, yearly: 0 },
   essential: { monthly: 3.99, yearly: 3.19 },
   family:    { monthly: 9.99, yearly: 7.99 },
   advisor:   { monthly: 60, yearly: 48 },
+}
+const mrrOf = (u) => (MRR_RATES[u.plan] ?? { monthly: 0, yearly: 0 })[u.billing_cycle ?? 'monthly'] ?? 0
+
+// Display order + a one-line reminder of what each plan is.
+const PLAN_ORDER = [
+  { key: 'free',      note: 'no card — the permanent free tier' },
+  { key: 'family',    note: 'what new members upgrade to' },
+  { key: 'essential', note: 'retired — grandfathered subscribers only' },
+  { key: 'advisor',   note: 'sold to firms via demo' },
+]
+
+const SOURCE_LABEL = { stripe: 'Stripe', apple_iap: 'App Store', google_play: 'Google Play' }
+
+const fmtGbp = (n) => '£' + Math.round(n).toLocaleString('en-GB')
+
+function KpiCard({ label, value, title, lines }) {
+  return (
+    <div className="bg-white border border-stone-200 rounded-2xl px-5 py-4">
+      <p className="text-xs text-stone-500 mb-1">{label}</p>
+      <p className="text-3xl font-semibold text-navy-950" title={title}>{value}</p>
+      {lines.filter(Boolean).map((l, i) => (
+        <p key={i} className="text-xs text-stone-400 mt-0.5">{l}</p>
+      ))}
+    </div>
+  )
 }
 
 function OverviewSection({ isDemo }) {
@@ -1230,21 +1266,66 @@ function OverviewSection({ isDemo }) {
     setTimeout(() => setLinkSent(null), 3000)
   }
 
-  const active     = users.filter(u => ['active', 'trialing'].includes(u.subscription_status))
-  const trialing   = users.filter(u => u.subscription_status === 'trialing')
-  const churned    = users.filter(u => ['cancelled', 'canceled'].includes(u.subscription_status))
-  const issues     = users.filter(u => ['trial_expired', 'past_due'].includes(u.subscription_status))
-  const cancelling = users.filter(u => u.subscription_status === 'cancelling')
-  const pendingDel = users.filter(u => u.subscription_status === 'pending_deletion')
+  // ── Groups ──────────────────────────────────────────────────────────────
+  // "Paying" = a live billed subscription; cancelling users stay billed until
+  // their period ends. Founding members' first year is free, so their MRR is
+  // shown separately as deferred rather than counted as revenue today.
+  const freeMembers = users.filter(u => u.plan === 'free')
+  const downgraded  = freeMembers.filter(u => ['cancelled', 'canceled'].includes(u.subscription_status))
+  const paying      = users.filter(u => u.plan !== 'free' && ['active', 'cancelling'].includes(u.subscription_status))
+  const cancelling  = paying.filter(u => u.subscription_status === 'cancelling')
+  const trialing    = users.filter(u => u.subscription_status === 'trialing')
+  const pastDue     = users.filter(u => ['past_due', 'trial_expired'].includes(u.subscription_status))
+  const pendingDel  = users.filter(u => u.subscription_status === 'pending_deletion')
 
-  const mrr = active.reduce((sum, u) => {
-    const rates = MRR_RATES[u.plan] ?? { monthly: 0, yearly: 0 }
-    return sum + (rates[u.billing_cycle ?? 'monthly'] ?? 0)
-  }, 0)
+  const payingCharged  = paying.filter(u => !u.is_founding_member)
+  const payingFounding = paying.filter(u => u.is_founding_member)
+  const mrr         = payingCharged.reduce((s, u) => s + mrrOf(u), 0)
+  const mrrDeferred = payingFounding.reduce((s, u) => s + mrrOf(u), 0)
+
+  const sourceCounts = ['stripe', 'apple_iap', 'google_play']
+    .map(k => ({ k, n: paying.filter(u => (u.entitlement_source ?? 'stripe') === k).length }))
+    .filter(({ n }) => n > 0)
+
+  const last30 = users.filter(u => Date.now() - new Date(u.created_at) < 30 * 86400000)
+
+  // ── Signups by week (last 8 weeks, Monday start), split by current plan ──
+  const monday = new Date(); monday.setHours(0, 0, 0, 0)
+  monday.setDate(monday.getDate() - ((monday.getDay() + 6) % 7))
+  const weeks = Array.from({ length: 8 }, (_, idx) => {
+    const start = new Date(monday); start.setDate(start.getDate() - (7 - idx) * 7)
+    const end = new Date(start); end.setDate(end.getDate() + 7)
+    const inWeek = users.filter(u => { const c = new Date(u.created_at); return c >= start && c < end })
+    return { start, paid: inWeek.filter(u => u.plan !== 'free').length, free: inWeek.filter(u => u.plan === 'free').length }
+  })
+  const weekMax   = Math.max(1, ...weeks.map(w => w.paid + w.free))
+  const weekTotal = weeks.reduce((s, w) => s + w.paid + w.free, 0)
+
+  // ── Per-plan breakdown ──
+  const planRows = PLAN_ORDER.map(({ key, note }) => {
+    const members = users.filter(u => u.plan === key)
+    const act  = members.filter(u => u.subscription_status === 'active').length
+    const canc = members.filter(u => u.subscription_status === 'cancelling').length
+    const tri  = members.filter(u => u.subscription_status === 'trialing').length
+    const iss  = members.filter(u => ['past_due', 'trial_expired'].includes(u.subscription_status)).length
+    const chu  = members.filter(u => ['cancelled', 'canceled'].includes(u.subscription_status)).length
+    const other = members.length - act - canc - tri - iss - chu
+    const planMrr = members
+      .filter(u => ['active', 'cancelling'].includes(u.subscription_status) && !u.is_founding_member)
+      .reduce((s, u) => s + mrrOf(u), 0)
+    return { key, note, members, act, canc, tri, iss, chu, other, planMrr }
+  })
+
+  // People worth acting on, most urgent first. Statuses are mutually exclusive.
+  const attention = [
+    ...pendingDel.map(u => ({ u, label: 'Pending deletion', cls: 'bg-red-50 text-red-700 border-red-200' })),
+    ...pastDue.map(u => ({ u, label: STATUS_LABEL[u.subscription_status] ?? 'Payment issue', cls: 'bg-red-50 text-red-700 border-red-200' })),
+    ...cancelling.map(u => ({ u, label: 'Cancelling', cls: 'bg-amber-50 text-amber-700 border-amber-200' })),
+  ]
 
   const recent = [...users]
     .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
-    .slice(0, 6)
+    .slice(0, 8)
 
   const endingSoon = trialing.filter(u => {
     if (!u.trial_ends_at) return false
@@ -1252,70 +1333,121 @@ function OverviewSection({ isDemo }) {
     return d >= 0 && d <= 7
   }).sort((a, b) => new Date(a.trial_ends_at) - new Date(b.trial_ends_at))
 
-  const planCounts = ['essential', 'family', 'advisor'].map(plan => ({
-    plan,
-    count: active.filter(u => u.plan === plan).length,
-    mrr: active.filter(u => u.plan === plan).reduce((s, u) => {
-      const rates = MRR_RATES[plan] ?? { monthly: 0, yearly: 0 }
-      return s + (rates[u.billing_cycle ?? 'monthly'] ?? 0)
-    }, 0),
-  }))
-
-  const foundingCount  = users.filter(u => u.is_founding_member).length
-  const totalReferrals = users.reduce((s, u) => s + (u.referral_count || 0), 0)
-  const noSubCount     = users.filter(u => u.plan !== 'advisor' && !u.stripe_subscription_id).length
-
   if (loading) return (
     <div className="flex items-center justify-center py-20">
       <Loader2 size={24} className="animate-spin text-stone-400" />
     </div>
   )
 
+  const seg = (n, total, cls) => n > 0 && (
+    <div className={`h-full ${cls}`} style={{ width: `${(n / Math.max(1, total)) * 100}%` }} />
+  )
+
   return (
     <div className="space-y-8">
       {/* KPI row */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-white border border-stone-200 rounded-2xl px-5 py-4">
-          <p className="text-xs text-stone-500 mb-1">Est. MRR</p>
-          <p className="text-3xl font-semibold text-navy-950">£{mrr.toLocaleString()}</p>
-          <p className="text-xs text-stone-400 mt-0.5">active + trialing users</p>
+        <KpiCard
+          label="Est. MRR"
+          value={fmtGbp(mrr)}
+          title={`£${mrr.toFixed(2)} — estimate; grandfathered prices may differ`}
+          lines={[
+            `${payingCharged.length} charged subscriber${payingCharged.length === 1 ? '' : 's'}`,
+            payingFounding.length > 0 && `+${fmtGbp(mrrDeferred)}/mo when ${payingFounding.length} founding free year${payingFounding.length === 1 ? '' : 's'} end${payingFounding.length === 1 ? 's' : ''}`,
+          ]}
+        />
+        <KpiCard
+          label="Members"
+          value={users.length}
+          lines={[`+${last30.length} in the last 30 days`]}
+        />
+        <KpiCard
+          label="Paying subscriptions"
+          value={paying.length}
+          lines={[
+            sourceCounts.map(({ k, n }) => `${n} ${SOURCE_LABEL[k]}`).join(' · ') || 'none yet',
+            cancelling.length > 0 && `${cancelling.length} cancelling at period end`,
+          ]}
+        />
+        <KpiCard
+          label="Free members"
+          value={freeMembers.length}
+          lines={[
+            'your upgrade pipeline',
+            downgraded.length > 0 && `${downgraded.length} downgraded after cancelling`,
+          ]}
+        />
+      </div>
+
+      {/* Members by plan */}
+      <div className="bg-white border border-stone-200 rounded-2xl p-6">
+        <div className="flex items-baseline justify-between mb-1">
+          <h3 className="font-semibold text-navy-950">Members by plan</h3>
+          <span className="text-xs text-stone-400">{users.length} members total</span>
         </div>
-        <StatCard label="Total users"    value={users.length}   Icon={Users}        color="bg-navy-100 text-navy-700" />
-        <StatCard label="Active / trial" value={active.length}  Icon={CheckCircle2} color="bg-emerald-100 text-emerald-700" />
-        <StatCard label="Churned"        value={churned.length} Icon={XCircle}      color="bg-stone-200 text-stone-600" />
+        <p className="text-xs text-stone-400 mb-5">Every member, whatever their status — each bar shows how that plan's members break down</p>
+        <div className="space-y-5">
+          {planRows.map(({ key, note, members, act, canc, tri, iss, chu, other, planMrr }) => (
+            <div key={key}>
+              <div className="flex items-center gap-2 mb-1.5 flex-wrap">
+                <span className={`text-xs font-medium px-2 py-0.5 rounded-full border ${PLAN_BADGE[key] ?? PLAN_BADGE.free}`}>{planLabel(key)}</span>
+                <span className="text-xs text-stone-400">{note}</span>
+                <span className="ml-auto text-sm font-semibold text-navy-900">{members.length}</span>
+                <span className="text-xs text-stone-400 w-20 text-right">{fmtGbp(planMrr)} MRR</span>
+              </div>
+              <div className="flex bg-stone-100 rounded-full h-2 overflow-hidden">
+                {seg(act, members.length, 'bg-emerald-500')}
+                {seg(canc, members.length, 'bg-amber-400')}
+                {seg(tri, members.length, 'bg-sky-400')}
+                {seg(iss, members.length, 'bg-red-400')}
+                {seg(chu, members.length, 'bg-stone-400')}
+                {seg(other, members.length, 'bg-stone-300')}
+              </div>
+              <p className="text-xs text-stone-400 mt-1">
+                {[
+                  act > 0 && `${act} active`,
+                  canc > 0 && `${canc} cancelling`,
+                  tri > 0 && `${tri} on trial`,
+                  iss > 0 && `${iss} payment issue${iss === 1 ? '' : 's'}`,
+                  chu > 0 && (key === 'free' ? `${chu} downgraded from paid` : `${chu} churned`),
+                  other > 0 && (key === 'free' ? `${other} never paid` : `${other} no subscription`),
+                ].filter(Boolean).join(' · ') || 'no members yet'}
+              </p>
+            </div>
+          ))}
+        </div>
       </div>
 
-      {/* Secondary stats */}
-      <div className="grid grid-cols-3 gap-4">
-        <StatCard label="Founding members"     value={foundingCount}  Icon={Sparkles}    color="bg-indigo-100 text-indigo-700" />
-        <StatCard label="Converted referrals"  value={totalReferrals} Icon={Users}       color="bg-sky-100 text-sky-700" />
-        <StatCard label="No subscription yet"  value={noSubCount}     Icon={CreditCard}  color="bg-amber-100 text-amber-700" />
-      </div>
-
-      {/* Alerts */}
-      <div className="space-y-3">
-        {issues.length > 0 && (
-          <div className="flex items-center gap-3 bg-red-50 border border-red-200 rounded-xl px-4 py-3">
-            <AlertCircle size={15} className="text-red-500 shrink-0" />
-            <p className="text-sm text-red-700 font-medium">
-              {issues.length} user{issues.length > 1 ? 's' : ''} with a payment issue (trial expired or past due)
-            </p>
-          </div>
-        )}
-        {pendingDel.length > 0 && (
-          <div className="flex items-center gap-3 bg-red-50 border border-red-200 rounded-xl px-4 py-3">
-            <Trash2 size={15} className="text-red-500 shrink-0" />
-            <p className="text-sm text-red-700 font-medium">
-              {pendingDel.length} user{pendingDel.length > 1 ? 's' : ''} scheduled for hard deletion — check the cron timeline
-            </p>
-          </div>
-        )}
-        {cancelling.length > 0 && (
-          <div className="flex items-center gap-3 bg-amber-50 border border-amber-200 rounded-xl px-4 py-3">
-            <AlertCircle size={15} className="text-amber-500 shrink-0" />
-            <p className="text-sm text-amber-700 font-medium">
-              {cancelling.length} user{cancelling.length > 1 ? 's' : ''} cancelling — consider reaching out
-            </p>
+      {/* Signups per week */}
+      <div className="bg-white border border-stone-200 rounded-2xl p-6">
+        <div className="flex items-baseline justify-between mb-1">
+          <h3 className="font-semibold text-navy-950">Signups — last 8 weeks</h3>
+          <span className="text-xs text-stone-400">{weekTotal} total</span>
+        </div>
+        <p className="text-xs text-stone-400 mb-4">
+          <span className="inline-block w-2 h-2 rounded-full bg-navy-500 mr-1" /> paid plan
+          <span className="inline-block w-2 h-2 rounded-full bg-stone-300 ml-3 mr-1" /> free plan
+          <span className="ml-2">(by current plan — later upgrades count as paid)</span>
+        </p>
+        {weekTotal === 0 ? (
+          <p className="text-sm text-stone-400 py-6 text-center">No signups in the last 8 weeks.</p>
+        ) : (
+          <div className="flex items-end gap-2">
+            {weeks.map((w, idx) => {
+              const total = w.paid + w.free
+              return (
+                <div key={idx} className="flex-1 flex flex-col items-center gap-1 min-w-0">
+                  <span className="text-xs font-semibold text-navy-900 h-4">{total || ''}</span>
+                  <div className="w-full flex flex-col justify-end" style={{ height: '5.5rem' }}>
+                    {w.free > 0 && <div className="w-full bg-stone-300 rounded-t" style={{ height: `${(w.free / weekMax) * 100}%` }} />}
+                    {w.paid > 0 && <div className={`w-full bg-navy-500 ${w.free > 0 ? '' : 'rounded-t'}`} style={{ height: `${(w.paid / weekMax) * 100}%` }} />}
+                  </div>
+                  <span className="text-[10px] text-stone-400 whitespace-nowrap">
+                    {new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'short' }).format(w.start)}
+                  </span>
+                </div>
+              )
+            })}
           </div>
         )}
       </div>
@@ -1328,48 +1460,49 @@ function OverviewSection({ isDemo }) {
             <p className="text-sm text-stone-400">No users yet.</p>
           ) : (
             <div className="space-y-3">
-              {recent.map(u => {
-                const statusCls = STATUS_COLOR[u.subscription_status] ?? STATUS_COLOR.incomplete
-                const planCls   = PLAN_BADGE[u.plan] ?? PLAN_BADGE.essential
-                return (
-                  <div key={u.id} className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-full bg-navy-100 text-navy-700 flex items-center justify-center text-xs font-semibold shrink-0">
-                      {u.full_name?.[0]?.toUpperCase() ?? '?'}
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-navy-900 truncate">{u.full_name ?? u.email}</p>
-                      <p className="text-xs text-stone-400">{fmtDate(u.created_at)}</p>
-                    </div>
-                    <span className={`text-xs font-medium px-2 py-0.5 rounded-full border capitalize ${planCls}`}>{u.plan}</span>
-                    <span className={`text-xs font-medium px-2 py-0.5 rounded-full border ${statusCls}`}>
+              {recent.map(u => (
+                <div key={u.id} className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-full bg-navy-100 text-navy-700 flex items-center justify-center text-xs font-semibold shrink-0">
+                    {u.full_name?.[0]?.toUpperCase() ?? '?'}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium text-navy-900 truncate">{u.full_name ?? u.email}</p>
+                    <p className="text-xs text-stone-400">{fmtDate(u.created_at)}</p>
+                  </div>
+                  <span className={`text-xs font-medium px-2 py-0.5 rounded-full border shrink-0 ${PLAN_BADGE[u.plan] ?? PLAN_BADGE.free}`}>{planLabel(u.plan)}</span>
+                  {u.subscription_status && (
+                    <span className={`text-xs font-medium px-2 py-0.5 rounded-full border shrink-0 ${STATUS_COLOR[u.subscription_status] ?? STATUS_COLOR.incomplete}`}>
                       {STATUS_LABEL[u.subscription_status] ?? u.subscription_status}
                     </span>
-                  </div>
-                )
-              })}
+                  )}
+                </div>
+              ))}
             </div>
           )}
         </div>
 
         {/* Right column */}
         <div className="space-y-6">
-          {/* Plan breakdown */}
+          {/* Needs attention */}
           <div className="bg-white border border-stone-200 rounded-2xl p-6">
-            <h3 className="font-semibold text-navy-950 mb-4">
-              Plan breakdown <span className="text-stone-400 font-normal text-sm">(active + trial)</span>
-            </h3>
-            <div className="space-y-3">
-              {planCounts.map(({ plan, count, mrr: planMrr }) => (
-                <div key={plan} className="flex items-center gap-3">
-                  <span className={`text-xs font-medium px-2 py-0.5 rounded-full border capitalize w-20 text-center ${PLAN_BADGE[plan] ?? PLAN_BADGE.essential}`}>{plan}</span>
-                  <div className="flex-1 bg-stone-100 rounded-full h-2 overflow-hidden">
-                    <div className="h-full bg-navy-500 rounded-full" style={{ width: active.length ? `${(count / active.length) * 100}%` : '0%' }} />
+            <h3 className="font-semibold text-navy-950 mb-1">Needs attention</h3>
+            <p className="text-xs text-stone-400 mb-4">Payment issues, cancellations and pending deletions</p>
+            {attention.length === 0 ? (
+              <p className="text-sm text-stone-400">All clear 🎉</p>
+            ) : (
+              <div className="space-y-3">
+                {attention.map(({ u, label, cls }) => (
+                  <div key={u.id} className="flex items-center gap-3">
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium text-navy-900 truncate">{u.full_name ?? u.email}</p>
+                      <p className="text-xs text-stone-400 truncate">{u.email}</p>
+                    </div>
+                    <span className={`text-xs font-medium px-2 py-0.5 rounded-full border shrink-0 ${PLAN_BADGE[u.plan] ?? PLAN_BADGE.free}`}>{planLabel(u.plan)}</span>
+                    <span className={`text-xs font-semibold px-2 py-0.5 rounded-full border shrink-0 ${cls}`}>{label}</span>
                   </div>
-                  <span className="text-sm font-semibold text-navy-900 w-6 text-right">{count}</span>
-                  <span className="text-xs text-stone-400 w-16 text-right">£{planMrr} MRR</span>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Trials ending soon */}
