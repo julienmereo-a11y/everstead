@@ -16,33 +16,22 @@ async function handler(req, res) {
     return res.status(401).json({ error: 'Unauthorized' })
   }
 
-  const results = { reminded: 0, warned: 0, deleted: 0, errors: [] }
+  const results = { expired: 0, reminded: 0, warned: 0, deleted: 0, errors: [] }
 
   // ── Step 1: Mark expired trials ──────────────────────────────
-  // Set trial_expired status and schedule deletion 30 days after trial end
-  await supabase.rpc('mark_expired_trials').catch(async () => {
-    // Fallback inline if RPC doesn't exist
-    const { data: expired } = await supabase
-      .from('profiles')
-      .select('id, trial_ends_at')
-      .eq('subscription_status', 'trialing')
-      .lt('trial_ends_at', new Date().toISOString())
-      .not('trial_ends_at', 'is', null)
-      // Store-managed IAP (Apple + Google) auto-handle the trial→charge lifecycle,
-      // so they must never enter our Stripe-oriented expiry/deletion sweep.
-      .not('entitlement_source', 'in', '("apple_iap","google_play")')
-
-    for (const p of expired ?? []) {
-      await supabase
-        .from('profiles')
-        .update({
-          subscription_status:  'trial_expired',
-          scheduled_deletion_at: new Date(new Date(p.trial_ends_at).getTime() + 30 * 86400000).toISOString(),
-        })
-        .eq('id', p.id)
-        .eq('subscription_status', 'trialing') // prevent overwriting active/cancelled
-    }
-  })
+  // mark_expired_trials (api/migrations/mark_expired_trials.sql) flips overdue
+  // non-IAP trials to trial_expired and schedules deletion at trial end + 30
+  // days, floored at now + 14 days so the 7-day warning in step 3 always has
+  // room even when a trial is flipped late. Errors surface in the result
+  // object — a PostgREST builder is a thenable with no .catch(), and chaining
+  // one threw the TypeError that killed this whole cron until 2026-08-06.
+  const { data: expiredCount, error: expireErr } = await supabase.rpc('mark_expired_trials')
+  if (expireErr) {
+    captureException(new Error(expireErr.message), { endpoint: 'cron/trial-reminders', stage: 'mark-expired' })
+    results.errors.push(`mark-expired: ${expireErr.message}`)
+  } else {
+    results.expired = expiredCount ?? 0
+  }
 
   // ── Step 2: Trial reminder emails (7 / 3 / 1 days before expiry) ──
   const { data: trialing } = await supabase

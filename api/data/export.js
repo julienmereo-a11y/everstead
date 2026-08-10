@@ -173,13 +173,16 @@ async function handler(req, res) {
     })
 
     // ── Log to activity_log ───────────────────────────────────────────────────
-    await supabase.from('activity_log').insert({
+    // NB: no .catch() here — a PostgREST builder is a thenable without one, and
+    // chaining it threw before the ZIP was sent, 500ing every export.
+    const { error: logErr } = await supabase.from('activity_log').insert({
       user_id:   userId,
       action:    'data_export',
       entity:    'account',
       entity_id: userId,
       meta:      { exported_at: exportTs, file: `everstead-export-${exportDate}.zip` },
-    }).catch(err => console.error('export: activity log failed', err.message))
+    })
+    if (logErr) console.error('export: activity log failed', logErr.message)
 
     // ── Stream ZIP back ───────────────────────────────────────────────────────
     res.setHeader('Content-Type', 'application/zip')
