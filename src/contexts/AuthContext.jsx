@@ -106,6 +106,33 @@ export function AuthProvider({ children }) {
     setDelegateInvites(withOwners)
   }, [])
 
+  // ── Native OAuth deep-link return (Android Google sign-in) ──
+  // The system browser finishes at care.everstead.app://auth-callback, which
+  // AuthRedirectActivity relays into the running app; Capacitor surfaces it
+  // here as appUrlOpen. Session tokens ride in the URL fragment (implicit
+  // flow) — handleAuthCallbackUrl sets the session, onAuthStateChange below
+  // does the rest (profile fetch, device check, RevenueCat login).
+  useEffect(() => {
+    if (!isNative()) return
+    let handle
+    ;(async () => {
+      try {
+        const { App } = await import('@capacitor/app')
+        handle = await App.addListener('appUrlOpen', async ({ url }) => {
+          const { isAuthCallbackUrl, handleAuthCallbackUrl } = await import('../lib/nativeGoogleAuth')
+          if (!isAuthCallbackUrl(url)) return
+          const outcome = await handleAuthCallbackUrl(url)
+          console.log('[auth] oauth callback:', outcome)
+          try { const { Browser } = await import('@capacitor/browser'); await Browser.close() } catch { /* sheet already closed */ }
+          // Land signed-in users at the root: RootRoute routes them into the
+          // app shell. Cancel/failure stays wherever the user was (login).
+          if (outcome === 'signed-in') window.location.assign('/')
+        })
+      } catch { /* listener is native-only plumbing — never block the app */ }
+    })()
+    return () => { handle?.remove?.() }
+  }, [])
+
   // ── Bootstrap session ────────────────────────────────────────
   useEffect(() => {
     supabase.auth.getSession().then(async ({ data: { session } }) => {

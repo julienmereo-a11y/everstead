@@ -28,6 +28,24 @@
             <meta-data android:name="android.support.FILE_PROVIDER_PATHS" android:resource="@xml/file_paths" />
         </provider>
 
+        <!-- OAuth deep-link relay (see AuthRedirectActivity): receives
+             care.everstead.app://auth-callback from the system browser and
+             re-delivers it to the existing MainActivity — which must stay
+             launchMode="standard" for file-chooser results, so it can't take
+             VIEW intents directly without spawning a second instance. -->
+        <activity
+            android:name=".AuthRedirectActivity"
+            android:exported="true"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"
+            android:excludeFromRecents="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="care.everstead.app" android:host="auth-callback" />
+            </intent-filter>
+        </activity>
+
         <!-- Holds the app at foreground priority WHILE the system photo picker
              is open, so One UI's low-memory killer can't reap the process
              mid-pick (verified: a full-system memory-pressure reap took Everstead

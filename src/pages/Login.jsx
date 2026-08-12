@@ -4,7 +4,7 @@ import { Link, useNavigate, useLocation, useSearchParams } from 'react-router-do
 import { useTranslation } from 'react-i18next'
 import { Mail, Lock, Eye, EyeOff, ArrowRight, ShieldCheck } from 'lucide-react'
 import { supabase } from '../lib/supabase'
-import { isNative } from '../lib/platform'
+import { isNative, isIOS } from '../lib/platform'
 
 function GoogleIcon() {
   return (
@@ -78,6 +78,17 @@ export default function Login() {
   }
 
   const handleGoogleSignIn = async () => {
+    // Android app: Google blocks OAuth in embedded webviews, so the flow runs
+    // in the system browser and returns via deep link (see nativeGoogleAuth).
+    if (isNative() && !isIOS()) {
+      try {
+        const { signInWithGoogleNative } = await import('../lib/nativeGoogleAuth')
+        await signInWithGoogleNative()
+      } catch {
+        setError(t('errors.generic', 'Something went wrong. Please try again.'))
+      }
+      return
+    }
     const dest = redirectParam
       ? `${window.location.origin}${redirectParam}`
       : `${window.location.origin}/dashboard`
@@ -257,13 +268,11 @@ export default function Login() {
                 <h1 style={{ fontFamily: 'Georgia, serif', fontSize: '28px', fontWeight: '400', color: '#0d1628', marginBottom: '6px', letterSpacing: '-0.01em' }}>{t('step1.title')}</h1>
                 <p style={{ fontSize: '14px', color: '#78716c', marginBottom: '28px' }}>{t('step1.subtitle')}</p>
 
-                {/* Web only: Google blocks OAuth inside embedded webviews
-                    (disallowed_useragent), so in the native apps this button was
-                    a dead end. Google-account users can set a password via
-                    "Forgot password" until native Google sign-in ships (v1.1 —
-                    system browser + deep link; iOS will then also need Sign in
-                    with Apple per guideline 4.8). */}
-                {!isNative() && (
+                {/* Web + Android app (native flow via system browser + deep
+                    link). Hidden ONLY on iOS: offering Google sign-in there
+                    obliges Sign in with Apple alongside it (guideline 4.8) —
+                    both ship together in a later iOS release. */}
+                {(!isNative() || !isIOS()) && (
                   <>
                     <button
                       type="button"
