@@ -101,7 +101,10 @@ export default function MobileAuthFlow() {
     try {
       const { signInWithAppleNative } = await import('../../../lib/nativeAppleAuth')
       await signInWithAppleNative() // 'cancelled' resolves quietly — no error UI
-    } catch {
+    } catch (e) {
+      // Surfaces in the Xcode console (and logcat) — the ASAuthorization and
+      // Supabase failure modes are indistinguishable without it.
+      console.log('[auth] apple sign-in error:', e?.message || e, e?.code || '')
       setError('Apple sign-in could not complete. Please try again.')
     }
   }
