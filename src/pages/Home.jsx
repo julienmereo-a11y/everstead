@@ -8,7 +8,7 @@ import { trackEvent } from '../lib/analytics'
 import StoreBadges from '../components/StoreBadges'
 import {
   ShieldCheck, Lock, Users, FileText, CheckCircle2, ArrowRight,
-  ChevronDown, Bell, Share2, BookOpen, Heart,
+  Bell, Share2, BookOpen, Heart,
   UserCircle, Sparkles, UserCheck, MapPin, BadgeCheck, Landmark
 } from 'lucide-react'
 
@@ -194,24 +194,24 @@ export default function Home() {
 
       {/* ── HERO ─────────────────────────────────────────────────── */}
       {/* Full-bleed photo/video hero: media layer → veil → vignette → grain → content.
-          Content is bottom-anchored (not centred) so the layout reads as a calm,
-          photographic "big lower-left headline" hero rather than a text-on-gradient one. */}
-      <section className="relative min-h-screen flex flex-col justify-end overflow-hidden bg-navy-950 grain">
+          Centred composition: eyebrow → headline → subcopy → CTAs, with the trust
+          strip pinned to the bottom edge behind a hairline. */}
+      <section className="relative min-h-screen flex flex-col overflow-hidden bg-navy-950 grain">
 
         {/* Media — poster photo, with the looping video layered on top (desktop only,
             to avoid forcing a ~38MB autoplay download on mobile connections) */}
         <img
-          src="/hero-living-room.png"
+          src="/hero-garden.jpg"
           alt=""
           aria-hidden="true"
           className="absolute inset-0 w-full h-full object-cover"
-          style={{ objectPosition: 'center 60%' }}
+          style={{ objectPosition: '62% 55%' }}
         />
         <video
           className="hidden lg:block absolute inset-0 w-full h-full object-cover"
           style={{ objectPosition: 'center 60%' }}
-          src="/videohero.mp4"
-          poster="/hero-living-room.png"
+          src="/videoherov2.mp4"
+          poster="/hero-garden.jpg"
           autoPlay
           muted
           loop
@@ -223,63 +223,53 @@ export default function Home() {
           className="absolute inset-0 pointer-events-none"
           style={{ background: 'linear-gradient(200deg, rgba(11,18,32,0.38) 0%, rgba(11,18,32,0.62) 46%, rgba(9,14,26,0.9) 100%)' }}
         />
-        {/* Vignette — anchors the headline corner */}
+        {/* Vignette — anchors the centred composition */}
         <div
           className="absolute inset-0 pointer-events-none"
-          style={{ background: 'radial-gradient(120% 90% at 30% 88%, rgba(6,10,20,0.55) 0%, transparent 55%)' }}
+          style={{ background: 'radial-gradient(120% 90% at 50% 85%, rgba(6,10,20,0.55) 0%, transparent 60%)' }}
         />
 
-        <div className="relative max-w-7xl mx-auto px-6 lg:px-8 w-full pt-40 pb-12 sm:pb-16 lg:pb-[4.5rem]">
-          <div className="max-w-[46rem]">
-            <h1 className="font-display text-[2.75rem] leading-[1.18] sm:text-6xl sm:leading-[1.14] lg:text-7xl lg:leading-[1.12] xl:text-[5rem] xl:leading-[1.1] font-light text-white text-balance animate-fade-up">
-              {t('hero.title1')}<em className="not-italic text-sage-300">{t('hero.titleEm')}</em>{t('hero.title2')}
-            </h1>
+        <div className="relative flex-1 flex flex-col items-center justify-center text-center max-w-4xl mx-auto px-6 w-full pt-32 pb-10">
+          <h1 className="font-display text-[2.75rem] leading-[1.18] sm:text-6xl sm:leading-[1.14] lg:text-7xl lg:leading-[1.12] font-light text-white text-balance animate-fade-up">
+            {t('hero.title1')}<em className="not-italic text-sage-300">{t('hero.titleEm')}</em>{t('hero.title2')}
+          </h1>
 
-            {/* Hairline rule */}
-            <div className="mt-8 sm:mt-10 h-px w-full max-w-[28rem]" style={{ background: 'rgba(255,255,255,0.28)' }} />
+          <p className="mt-7 max-w-2xl text-lg sm:text-xl leading-relaxed text-stone-200 animate-fade-up animate-delay-100">
+            {t('hero.eyebrow')}
+          </p>
 
-            <div className="mt-8 sm:mt-10 flex flex-wrap items-center gap-3.5 animate-fade-up animate-delay-100">
-              <Link
-                to="/get-started"
-                onClick={() => trackEvent('cta_click', { location: 'home_hero', cta: 'get_started' })}
-                className="btn-aurora inline-flex items-center gap-2 font-semibold text-base px-8 py-4 rounded-full transition-transform hover:-translate-y-0.5"
-              >
-                {t('hero.ctaPrimary')}
-                <ArrowRight size={18} />
-              </Link>
-              <Link
-                to="/how-it-works"
-                onClick={() => trackEvent('cta_click', { location: 'home_hero', cta: 'how_it_works' })}
-                className="group inline-flex items-center gap-1.5 text-stone-100 font-medium text-[0.95rem] px-6 py-4 rounded-full border transition-colors hover:border-white"
-                style={{ background: 'rgba(255,255,255,0.06)', borderColor: 'rgba(255,255,255,0.35)' }}
-              >
-                {t('hero.ctaSecondary')}
-                <ArrowRight size={15} className="transition-transform group-hover:translate-x-0.5" />
-              </Link>
-            </div>
-
-            <p className="mt-6 text-[0.95rem] text-stone-200 animate-fade-up animate-delay-200">
-              {t('hero.eyebrow')}
-            </p>
-
-            <p className="text-xs text-stone-300 mt-3 animate-fade-up animate-delay-200" style={{ letterSpacing: '0.02em' }}>
-              🔒 {t('hero.trustEncryption')} &nbsp;·&nbsp; 🇬🇧 {t('hero.trustUk')} &nbsp;·&nbsp;{' '}
-              <a
-                href="https://www.trustpilot.com/review/everstead.care"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-stone-300 hover:text-white transition-colors"
-                aria-label={t('hero.trustpilotAria')}
-              >
-                {t('hero.trustpilotPre')} <span className="font-medium text-[#00b67a]">{t('hero.trustpilotExcellent')}</span> {t('hero.trustpilotPost')}
-              </a>
-            </p>
+          <div className="mt-9 flex flex-wrap items-center justify-center gap-3.5 animate-fade-up animate-delay-100">
+            <Link
+              to="/get-started"
+              onClick={() => trackEvent('cta_click', { location: 'home_hero', cta: 'get_started' })}
+              className="btn-aurora inline-flex items-center gap-2 font-semibold text-base px-8 py-4 rounded-full transition-transform hover:-translate-y-0.5"
+            >
+              {t('hero.ctaPrimary')}
+              <ArrowRight size={18} />
+            </Link>
+            <Link
+              to="/how-it-works"
+              onClick={() => trackEvent('cta_click', { location: 'home_hero', cta: 'how_it_works' })}
+              className="group inline-flex items-center gap-1.5 text-stone-100 font-medium text-[0.95rem] px-6 py-4 rounded-full border transition-colors hover:border-white"
+              style={{ background: 'rgba(255,255,255,0.06)', borderColor: 'rgba(255,255,255,0.35)' }}
+            >
+              {t('hero.ctaSecondary')}
+              <ArrowRight size={15} className="transition-transform group-hover:translate-x-0.5" />
+            </Link>
           </div>
-        </div>
 
-        {/* Scroll hint */}
-        <div className="relative self-center mb-6 flex flex-col items-center gap-1 text-stone-300 animate-bounce">
-          <ChevronDown size={18} />
+          <p className="mt-7 text-xs sm:text-[0.8rem] text-stone-300 animate-fade-up animate-delay-200" style={{ letterSpacing: '0.02em' }}>
+            🔒 {t('hero.trustEncryption')} &nbsp;·&nbsp; 🇬🇧 {t('hero.trustUk')} &nbsp;·&nbsp;{' '}
+            <a
+              href="https://www.trustpilot.com/review/everstead.care"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-stone-300 hover:text-white transition-colors"
+              aria-label={t('hero.trustpilotAria')}
+            >
+              {t('hero.trustpilotPre')} <span className="font-medium text-[#00b67a]">{t('hero.trustpilotExcellent')}</span> {t('hero.trustpilotPost')}
+            </a>
+          </p>
         </div>
       </section>
 
