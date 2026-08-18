@@ -200,11 +200,19 @@ export default function Home() {
 
         {/* Media — poster photo, with the looping video layered on top (desktop only,
             to avoid forcing a ~38MB autoplay download on mobile connections) */}
+        {/* Mobile gets a portrait crop of the same frame; larger screens the
+            landscape still, with the looping video on top from lg up. */}
+        <img
+          src="/hero-garden-mobile.jpg"
+          alt=""
+          aria-hidden="true"
+          className="sm:hidden absolute inset-0 w-full h-full object-cover"
+        />
         <img
           src="/hero-garden.jpg"
           alt=""
           aria-hidden="true"
-          className="absolute inset-0 w-full h-full object-cover"
+          className="hidden sm:block absolute inset-0 w-full h-full object-cover"
           style={{ objectPosition: '62% 55%' }}
         />
         <video
