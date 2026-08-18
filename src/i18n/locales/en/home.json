@@ -177,8 +177,7 @@
   "app": {
     "eyebrow": "The Everstead app",
     "title": "Your plan, in your pocket.",
-    "desc": "Add documents, check your readiness score, and keep everything up to date from your phone. Now on Google Play — iOS is coming soon.",
-    "iosNote": "iOS app coming soon to the App Store"
+    "desc": "Add documents, check your readiness score, and keep everything up to date from your phone. Now on the App Store and Google Play."
   },
   "gift": {
     "eyebrow": "A gift that says: I've sorted it.",

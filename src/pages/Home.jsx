@@ -609,7 +609,6 @@ export default function Home() {
             </div>
             <div className="flex flex-col items-start md:items-end gap-2.5 shrink-0">
               <StoreBadges location="home_app_section" />
-              <p className="text-xs text-stone-400">{t('app.iosNote')}</p>
             </div>
           </div>
         </div>

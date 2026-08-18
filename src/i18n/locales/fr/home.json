@@ -177,8 +177,7 @@
   "app": {
     "eyebrow": "L'application Everstead",
     "title": "Votre plan, dans votre poche.",
-    "desc": "Ajoutez des documents, suivez votre score de préparation et gardez tout à jour depuis votre téléphone. Disponible sur Google Play — l'app iOS arrive bientôt.",
-    "iosNote": "L'app iOS arrive bientôt sur l'App Store"
+    "desc": "Ajoutez des documents, suivez votre score de préparation et gardez tout à jour depuis votre téléphone. Disponible sur l'App Store et Google Play."
   },
   "gift": {
     "eyebrow": "Un cadeau qui dit : je m'en suis occupé.",
