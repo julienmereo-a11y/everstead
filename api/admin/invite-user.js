@@ -3,8 +3,8 @@ import { requireAdmin } from '../_lib/admin-auth.js'
 import { withSentry, captureException } from '../lib/sentry.js'
 
 // Admin-only: invite a new person to sign up on Everstead. The admin picks whether
-// they should get the FOUNDING50 offer (first year free, Family Yearly) or a normal
-// signup. We email them the matching signup link.
+// they should get the FOUNDING50 offer (Everstead+ free for life, Family Yearly) or
+// a normal signup. We email them the matching signup link.
 const resend = new Resend(process.env.RESEND_API_KEY)
 const APP = process.env.VITE_APP_URL || 'https://www.everstead.care'
 
@@ -13,7 +13,7 @@ const button = (href, label) =>
 
 function inviteHtml({ url, founding }) {
   const line = founding
-    ? `You've been invited as a <strong>founding member</strong> of Everstead — your <strong>first year is free</strong>. Set up your family's secure vault for accounts, documents, trusted people and final wishes.`
+    ? `You've been invited as a <strong>founding member</strong> of Everstead — <strong>Everstead+ is yours for life, free</strong>. Set up your family's secure vault for accounts, documents, trusted people and final wishes.`
     : `You've been invited to <strong>Everstead</strong> — a secure place to gather your family's accounts, documents, trusted people and final wishes, so loved ones aren't left searching.`
   return `<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
 <body style="margin:0;padding:0;background:#f5f4f0;font-family:Georgia,serif;">
@@ -51,7 +51,7 @@ async function handler(req, res) {
     await resend.emails.send({
       from:    'Everstead <hello@everstead.care>',
       to:      email,
-      subject: founding ? "You're invited to Everstead — first year free" : "You're invited to Everstead",
+      subject: founding ? "You're invited to Everstead — Everstead+ free for life" : "You're invited to Everstead",
       html:    inviteHtml({ url, founding }),
     })
     return res.status(200).json({ ok: true })

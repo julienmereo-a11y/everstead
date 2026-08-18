@@ -75,7 +75,7 @@ async function handler(req, res) {
     }
 
     // Now create the subscription — card is confirmed so no payment risk.
-    // A 100%-off promo (FOUNDING50 = first year free) REPLACES the trial: the
+    // A 100%-off promo (FOUNDING50 = Everstead+ free for life) REPLACES the trial: the
     // discounted period is the free time, so adding a 14-day trial on top just
     // makes Stripe show a "14-day trial" instead of the free year. We drop the
     // trial only when Stripe confirms the coupon is genuinely 100% off, so a

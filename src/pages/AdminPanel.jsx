@@ -1050,7 +1050,7 @@ function UserRow({ u }) {
               <span
                 className="inline-flex items-center gap-1 text-xs font-semibold px-2 py-0.5 rounded-full text-white"
                 style={{ background: 'linear-gradient(100deg,#2d5082,#6f6bc6,#6e9b6a)' }}
-                title="Founding member (registered with FOUNDING50)"
+                title="Founding member — Everstead+ for life"
               >
                 <Sparkles size={11} /> Founding
               </span>
@@ -1268,20 +1268,18 @@ function OverviewSection({ isDemo }) {
 
   // ── Groups ──────────────────────────────────────────────────────────────
   // "Paying" = a live billed subscription; cancelling users stay billed until
-  // their period ends. Founding members' first year is free, so their MRR is
-  // shown separately as deferred rather than counted as revenue today.
+  // their period ends. Founding members have Everstead+ for life — never
+  // billed, so they're counted separately and contribute no MRR, ever.
   const freeMembers = users.filter(u => u.plan === 'free')
   const downgraded  = freeMembers.filter(u => ['cancelled', 'canceled'].includes(u.subscription_status))
-  const paying      = users.filter(u => u.plan !== 'free' && ['active', 'cancelling'].includes(u.subscription_status))
+  const founding    = users.filter(u => u.is_founding_member)
+  const paying      = users.filter(u => !u.is_founding_member && u.plan !== 'free' && ['active', 'cancelling'].includes(u.subscription_status))
   const cancelling  = paying.filter(u => u.subscription_status === 'cancelling')
   const trialing    = users.filter(u => u.subscription_status === 'trialing')
   const pastDue     = users.filter(u => ['past_due', 'trial_expired'].includes(u.subscription_status))
   const pendingDel  = users.filter(u => u.subscription_status === 'pending_deletion')
 
-  const payingCharged  = paying.filter(u => !u.is_founding_member)
-  const payingFounding = paying.filter(u => u.is_founding_member)
-  const mrr         = payingCharged.reduce((s, u) => s + mrrOf(u), 0)
-  const mrrDeferred = payingFounding.reduce((s, u) => s + mrrOf(u), 0)
+  const mrr = paying.reduce((s, u) => s + mrrOf(u), 0)
 
   const sourceCounts = ['stripe', 'apple_iap', 'google_play']
     .map(k => ({ k, n: paying.filter(u => (u.entitlement_source ?? 'stripe') === k).length }))
@@ -1352,8 +1350,8 @@ function OverviewSection({ isDemo }) {
           value={fmtGbp(mrr)}
           title={`£${mrr.toFixed(2)} — estimate; grandfathered prices may differ`}
           lines={[
-            `${payingCharged.length} charged subscriber${payingCharged.length === 1 ? '' : 's'}`,
-            payingFounding.length > 0 && `+${fmtGbp(mrrDeferred)}/mo when ${payingFounding.length} founding free year${payingFounding.length === 1 ? '' : 's'} end${payingFounding.length === 1 ? 's' : ''}`,
+            `${paying.length} paying subscriber${paying.length === 1 ? '' : 's'}`,
+            founding.length > 0 && `${founding.length} founding — Everstead+ for life, £0`,
           ]}
         />
         <KpiCard
@@ -1524,7 +1522,7 @@ function OverviewSection({ isDemo }) {
                       <button
                         onClick={() => sendFoundingLink(u.email)}
                         disabled={linkSent === u.email}
-                        title="Email them the founding offer (first year free)"
+                        title="Email them the founding offer (Everstead+ free for life)"
                         className="text-xs font-medium text-navy-700 hover:text-navy-900 disabled:opacity-50 shrink-0"
                       >
                         {linkSent === u.email ? 'Sent ✓' : 'Founding link'}

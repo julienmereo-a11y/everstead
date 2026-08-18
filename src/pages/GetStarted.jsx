@@ -176,7 +176,7 @@ export default function GetStarted() {
   const referralCode = searchParams.get('ref') || null
   const trialDays    = referralCode ? 21 : 14
 
-  // Promo code from ?promo= URL param (e.g. FOUNDING50 — first year free).
+  // Promo code from ?promo= URL param (e.g. FOUNDING50 — Everstead+ free for life).
   // Validated against Stripe on mount; threaded into create-subscription.
   // Persisted in sessionStorage so it survives OAuth and ?resume= round-trips
   // that bring the user back to /get-started WITHOUT the query param — otherwise
@@ -194,7 +194,7 @@ export default function GetStarted() {
   const [promoState, setPromoState] = useState({ status: 'idle', label: null, reason: null })
   // The founding offer is a Family-plan offer, so an active promo locks the plan to Family.
   const planLocked = !!promoCode
-  // Once the discount is confirmed valid, lead the copy with the free year
+  // Once the discount is confirmed valid, lead the copy with the lifetime deal
   // (the 14-day trial stays only as a quiet cancel-anytime safety).
   const foundingActive = planLocked && promoState.status === 'valid'
 
@@ -602,7 +602,7 @@ export default function GetStarted() {
           </h1>
           <p className="mt-4 text-stone-300 text-base leading-relaxed max-w-md mx-auto">
             {foundingActive
-              ? <><span className="text-sage-300 font-semibold">Your first year is free.</span> Add your card to claim your founding place — you won't be charged during your first year, and you can cancel any time.</>
+              ? <><span className="text-sage-300 font-semibold">Everstead+ is yours for life, free.</span> Add your card to claim your founding place — it won't be charged, and you can cancel any time.</>
               : referralCode
               ? <><span className="text-sage-300 font-semibold">You've been referred — enjoy a 21-day free trial.</span> Enter your card details and you won't be charged until day 21.</>
               : selectedPlan === 'free'

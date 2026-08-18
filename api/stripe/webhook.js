@@ -259,6 +259,32 @@ async function handler(req, res) {
   // Fires at period end when cancel_at_period_end subscription expires.
   if (event.type === 'customer.subscription.deleted') {
     const subscription = event.data.object
+
+    // Founding members keep Everstead+ for life. Their Stripe subscription
+    // going away (retired in favour of the lifetime comp, or cancelled for any
+    // reason) must never downgrade them — land them on the comp instead, and
+    // no winback email: they haven't left.
+    const { data: foundingProfile } = await supabase
+      .from('profiles')
+      .select('id')
+      .eq('stripe_customer_id', subscription.customer)
+      .eq('is_founding_member', true)
+      .maybeSingle()
+    if (foundingProfile) {
+      await supabase
+        .from('profiles')
+        .update({
+          plan: 'family',
+          subscription_status: 'active',
+          stripe_subscription_id: null,
+          current_period_end: null,
+          cancel_at: null,
+          trial_ends_at: null,
+        })
+        .eq('id', foundingProfile.id)
+      return res.status(200).json({ received: true, founding_comp: true })
+    }
+
     const { data: deletedProfiles } = await supabase
       .from('profiles')
       .update({ subscription_status: 'cancelled', plan: 'free', current_period_end: null, cancel_at: null })
