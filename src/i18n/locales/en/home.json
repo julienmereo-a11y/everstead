@@ -24,10 +24,10 @@
     "mobilePhotoAlt": "A daughter and her father organising their family's plan together at home"
   },
   "trustBar": {
-    "security": { "label": "Bank-level security", "sub": "AES-256 encryption" },
-    "access": { "label": "Access management", "sub": "You decide who can see what" },
-    "residency": { "label": "UK data residency", "sub": "Fully GDPR compliant" },
-    "soc2": { "label": "SOC 2 compliant", "sub": "Built on SOC 2 infrastructure" }
+    "setup": { "label": "15 minutes to set up", "sub": "Start with the essentials tonight" },
+    "onePlace": { "label": "Everything in one place", "sub": "Accounts, documents, final wishes" },
+    "share": { "label": "Share on your terms", "sub": "A partner, a child, a solicitor — you decide" },
+    "free": { "label": "Free to start", "sub": "No card, no commitment" }
   },
   "why": {
     "eyebrow": "Why Everstead",

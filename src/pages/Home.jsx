@@ -9,7 +9,7 @@ import StoreBadges from '../components/StoreBadges'
 import {
   ShieldCheck, Lock, Users, FileText, CheckCircle2, ArrowRight,
   Bell, Share2, BookOpen, Heart,
-  UserCircle, Sparkles, UserCheck, MapPin, BadgeCheck, Landmark
+  UserCircle, Landmark, Clock, FolderOpen, PiggyBank
 } from 'lucide-react'
 
 const painPoints = [
@@ -66,11 +66,13 @@ export default function Home() {
   // /fr pages canonicalise to the /fr URL tree; English stays at the root.
   const urlPrefix = i18n.language === 'fr' ? '/fr' : ''
 
+  // Benefit strip, not a compliance strip — B2C visitors buy outcomes. The
+  // security story lives in the hero trust line and the Security section below.
   const trustItems = [
-    { icon: Lock,       label: t('trustBar.security.label'),  sub: t('trustBar.security.sub') },
-    { icon: UserCheck,  label: t('trustBar.access.label'),    sub: t('trustBar.access.sub') },
-    { icon: MapPin,     label: t('trustBar.residency.label'), sub: t('trustBar.residency.sub') },
-    { icon: BadgeCheck, label: t('trustBar.soc2.label'),      sub: t('trustBar.soc2.sub') },
+    { icon: Clock,      label: t('trustBar.setup.label'),    sub: t('trustBar.setup.sub') },
+    { icon: FolderOpen, label: t('trustBar.onePlace.label'), sub: t('trustBar.onePlace.sub') },
+    { icon: Share2,     label: t('trustBar.share.label'),    sub: t('trustBar.share.sub') },
+    { icon: PiggyBank,  label: t('trustBar.free.label'),     sub: t('trustBar.free.sub') },
   ]
 
   // "Why Everstead" — three calm pillars (replaces the old six-card feature grid).

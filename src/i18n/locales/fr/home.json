@@ -24,10 +24,22 @@
     "mobilePhotoAlt": "Une fille et son père organisent ensemble le plan de leur famille, à la maison"
   },
   "trustBar": {
-    "security": { "label": "Chiffrement AES-256", "sub": "Au repos et en transit" },
-    "access": { "label": "Gestion des accès", "sub": "Vous décidez qui peut voir quoi" },
-    "residency": { "label": "Données hébergées au Royaume-Uni", "sub": "Pleinement conforme au RGPD" },
-    "soc2": { "label": "Conformité SOC 2", "sub": "Bâti sur une infrastructure SOC 2" }
+    "setup": {
+      "label": "15 minutes pour tout mettre en place",
+      "sub": "Commencez par l'essentiel dès ce soir"
+    },
+    "onePlace": {
+      "label": "Tout au même endroit",
+      "sub": "Comptes, documents, dernières volontés"
+    },
+    "share": {
+      "label": "Partagez selon vos règles",
+      "sub": "Un conjoint, un enfant, un notaire — vous décidez"
+    },
+    "free": {
+      "label": "Gratuit pour commencer",
+      "sub": "Sans carte, sans engagement"
+    }
   },
   "why": {
     "eyebrow": "Pourquoi Everstead",
