@@ -1,6 +1,7 @@
 import React from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import { TRANSLATED_PATHS } from '../i18n'
 import StoreBadges from './StoreBadges'
 
 // ── Trustpilot rating (manual) ───────────────────────────────────────────────
@@ -101,17 +102,27 @@ const cols = [
   },
 ]
 
-// Discreet "English" link — shown ONLY in the French footer. Language is decided
-// purely by the URL path; this is the one exit back to the root (English) tree.
+// Discreet language link. Language is decided purely by the URL path; the
+// French footer links back to the root (English) tree, and the English footer
+// links to /fr — same page when it's translated, the French home otherwise.
 // Plain <a>: the router basename differs per locale, so a <Link> can't cross trees.
 // useLocation() is basename-relative, so `pathname` IS the root-equivalent path.
-function EnglishLink() {
+function LanguageLink() {
   const { i18n } = useTranslation()
   const { pathname } = useLocation()
-  if (i18n.language !== 'fr') return null
+  if (i18n.language === 'fr') {
+    return (
+      <a href={pathname} hrefLang="en" className="hover:text-stone-400 transition-colors">
+        English
+      </a>
+    )
+  }
+  const target = TRANSLATED_PATHS.has(pathname)
+    ? `/fr${pathname === '/' ? '' : pathname}`
+    : '/fr'
   return (
-    <a href={pathname} hrefLang="en" className="hover:text-stone-400 transition-colors">
-      English
+    <a href={target} hrefLang="fr" className="hover:text-stone-400 transition-colors">
+      Français
     </a>
   )
 }
@@ -165,7 +176,7 @@ export default function Footer() {
             <Link to="/cookies" className="hover:text-stone-400 transition-colors">{t('footer.bottom.cookies')}</Link>
             <Link to="/accessibility" className="hover:text-stone-400 transition-colors">{t('footer.bottom.accessibility')}</Link>
             <Link to="/security" className="hover:text-stone-400 transition-colors">{t('footer.bottom.trust')}</Link>
-            <EnglishLink />
+            <LanguageLink />
           </div>
         </div>
       </div>

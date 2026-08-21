@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Helmet } from 'react-helmet-async'
+import HreflangLinks from '../components/HreflangLinks'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useReveal } from '../components/useReveal'
@@ -192,6 +193,7 @@ export default function Home() {
         ],
       })}</script>
     </Helmet>
+    <HreflangLinks path="/" />
     <div className="bg-stone-50">
 
       {/* ── HERO ─────────────────────────────────────────────────── */}

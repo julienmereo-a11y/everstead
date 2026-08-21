@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { Helmet } from 'react-helmet-async'
+import HreflangLinks from '../components/HreflangLinks'
 import { Link, useNavigate, useLocation, useSearchParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { Mail, Lock, Eye, EyeOff, ArrowRight, ShieldCheck } from 'lucide-react'
@@ -247,6 +248,7 @@ export default function Login() {
       <title>{t('meta.title')}</title>
       <meta name="robots" content="noindex, nofollow" />
     </Helmet>
+    <HreflangLinks path="/login" />
     <div className="min-h-screen flex" style={{ backgroundColor: '#f8f7f5' }}>
       <LeftPanel />
 

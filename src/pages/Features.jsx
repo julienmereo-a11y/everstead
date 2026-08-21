@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { Helmet } from 'react-helmet-async'
+import HreflangLinks from '../components/HreflangLinks'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useReveal } from '../components/useReveal'
@@ -90,6 +91,7 @@ export default function Features() {
       <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:image" content="https://www.everstead.care/og-image.png" />
     </Helmet>
+    <HreflangLinks path="/features" />
     <div className="bg-stone-50 pt-24">
 
       {/* ── Hero ───────────────────────────────────────────────────────── */}

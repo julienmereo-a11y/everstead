@@ -35,7 +35,6 @@
     },
     "essential": {
       "name": "Essential",
-      "promo": "OFFRE DE LANCEMENT",
       "description": "Pour les particuliers qui souhaitent mettre de l'ordre dans leurs comptes, leurs documents et leurs volontés.",
       "features": [
         "Jusqu'à 10 comptes et documents",
@@ -46,12 +45,12 @@
         "Votre assistant IA"
       ],
       "cta": "Commencer",
-      "upsellNote": "Besoin de plus ? Everstead+ comprend deux espaces privés — un seul abonnement pour deux personnes."
+      "upsellNote": "Besoin de plus ? Everstead+ comprend deux espaces privés — un seul abonnement pour deux personnes.",
+      "retired": true
     },
     "family": {
       "name": "Everstead+",
       "badge": "Le plus populaire",
-      "promo": "OFFRE DE LANCEMENT",
       "description": "Pour les couples et les familles — deux espaces privés, une protection partagée.",
       "features": [
         "Deux espaces privés — un seul abonnement",

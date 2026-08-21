@@ -1,6 +1,7 @@
 import React from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { Helmet } from 'react-helmet-async'
+import HreflangLinks from '../components/HreflangLinks'
 import { useTranslation } from 'react-i18next'
 import { useReveal } from '../components/useReveal'
 import {
@@ -85,6 +86,7 @@ function UseCasePage({ slug }) {
       <meta property="og:description" content={tagline} />
       <meta property="og:url" content={`${baseUrl}/use-cases/${slug}`} />
     </Helmet>
+    <HreflangLinks path="/use-cases" />
     <div className="bg-stone-50 pt-24">
 
       {/* Hero */}

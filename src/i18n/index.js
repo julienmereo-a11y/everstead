@@ -29,6 +29,13 @@ import frLogin from './locales/fr/login.json'
 
 export const SUPPORTED_LANGUAGES = ['en', 'fr']
 
+// Route paths (locale-neutral) that exist in BOTH language trees. Drives the
+// footer language link and the hreflang alternates — add a path here when its
+// page gains a full French translation.
+export const TRANSLATED_PATHS = new Set([
+  '/', '/features', '/how-it-works', '/pricing', '/security', '/use-cases', '/login',
+])
+
 export function languageFromPath(pathname) {
   return pathname === '/fr' || pathname.startsWith('/fr/') ? 'fr' : 'en'
 }

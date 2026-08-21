@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { Helmet } from 'react-helmet-async'
+import HreflangLinks from '../components/HreflangLinks'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useReveal } from '../components/useReveal'
@@ -59,6 +60,7 @@ export default function Security() {
         mainEntity: faqItems.map(({ q, a }) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } })),
       })}</script>
     </Helmet>
+    <HreflangLinks path="/security" />
     <div className="bg-stone-50 pt-24">
 
       {/* ── HERO ─────────────────────────────────────────────── */}

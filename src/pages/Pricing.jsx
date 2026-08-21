@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from 'react'
 import { Helmet } from 'react-helmet-async'
+import HreflangLinks from '../components/HreflangLinks'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useReveal } from '../components/useReveal'
@@ -116,6 +117,7 @@ export default function Pricing() {
       <meta name="twitter:image" content="https://www.everstead.care/og-image.png" />
       <script type="application/ld+json">{JSON.stringify(faqSchema)}</script>
     </Helmet>
+    <HreflangLinks path="/pricing" />
     <div className="bg-stone-50 pt-24">
       <section className="py-20 lg:py-28 grain relative overflow-hidden">
         <div className="absolute inset-0 aurora-bg" />
