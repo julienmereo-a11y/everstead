@@ -1,0 +1,47 @@
+{
+  "meta": {
+    "title": "Contact — Everstead",
+    "description": "Get in touch with the Everstead team. Questions, press inquiries, partnership requests, or technical support — we read every message.",
+    "ogTitle": "Contact — Everstead",
+    "ogDescription": "Get in touch with the Everstead team. We read every message and reply within one business day."
+  },
+  "hero": {
+    "eyebrow": "Contact",
+    "title": "We'd love to hear from you.",
+    "subtitle": "Questions, partnership inquiries, press requests — we read every message."
+  },
+  "info": {
+    "title": "Get in touch",
+    "generalLabel": "General inquiries",
+    "supportLabel": "Support",
+    "supportHours": "Mon–Fri, 9am–5pm GMT",
+    "demoCard": {
+      "title": "Looking to book a demo?",
+      "body": "Estate advisers and professionals can schedule a guided walkthrough of Everstead Pro.",
+      "cta": "Book an adviser demo"
+    }
+  },
+  "form": {
+    "name": { "label": "Name", "placeholder": "Your name" },
+    "email": { "label": "Email", "placeholder": "you@example.com" },
+    "subject": {
+      "label": "Subject",
+      "placeholder": "Select a topic",
+      "options": {
+        "general": "General question",
+        "support": "Technical support",
+        "partnership": "Adviser / partnership inquiry",
+        "press": "Press or media",
+        "other": "Other"
+      }
+    },
+    "message": { "label": "Message", "placeholder": "How can we help?" },
+    "submit": "Send message",
+    "sending": "Sending…",
+    "error": "Something went wrong sending your message. Please email us directly at hello@everstead.care."
+  },
+  "sent": {
+    "title": "Message sent",
+    "body": "We'll get back to you within 1–2 business days."
+  }
+}

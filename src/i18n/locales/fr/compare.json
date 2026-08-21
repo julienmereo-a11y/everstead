@@ -1,0 +1,227 @@
+{
+  "index": {
+    "meta": {
+      "title": "Comment Everstead se compare — Everstead face aux alternatives",
+      "description": "Découvrez comment Everstead se compare aux services de rédaction de testaments, aux coffres à documents et au statu quo — et pourquoi les familles le choisissent. Des comparatifs côte à côte pour les familles britanniques.",
+      "ogTitle": "Comment Everstead se compare",
+      "ogDescription": "Everstead face aux alternatives — des comparatifs côte à côte pour les familles britanniques."
+    },
+    "eyebrow": "Notre comparatif",
+    "title": "Pourquoi les familles choisissent Everstead.",
+    "subtitle": "Vous hésitez entre un service de rédaction de testaments, un coffre à documents ou un simple tableur ? Voici un comparatif honnête, côte à côte — et pourquoi Everstead sort du lot.",
+    "vs": "vs",
+    "seeComparison": "Voir le comparatif",
+    "cta": {
+      "title": "Le comparatif le plus simple, c'est d'essayer.",
+      "body": "14 jours d'essai gratuit. Accès complet. Annulez avant la fin et ne payez rien.",
+      "button": "Commencez votre essai gratuit"
+    }
+  },
+  "detail": {
+    "metaTitle": "{{tagline}} — Everstead",
+    "eyebrow": "Everstead vs {{name}}",
+    "seePricing": "Voir les tarifs",
+    "eversteadBadge": "Espace personnel",
+    "verdictEyebrow": "Notre verdict — Everstead l'emporte",
+    "tableTitle": "Comparatif des fonctionnalités",
+    "tableFeature": "Fonctionnalité",
+    "tableFootnote": "D'après des informations publiquement disponibles. Les fonctionnalités peuvent évoluer. Dernière vérification : mai 2026.",
+    "alsoTitle": "Ce que {{name}} propose aussi",
+    "alsoIntro": "En toute honnêteté, {{name}} fait certaines choses qu'Everstead ne fait pas — et c'est voulu. Il s'agit d'un service distinct, à utiliser <em>en complément</em> d'Everstead, et non à sa place :",
+    "alsoOutro": "Rien de tout cela ne remplace ce que fait Everstead : garder l'ensemble de votre succession organisée, à jour et prête pour les personnes de confiance.",
+    "differenceTitle": "La vraie différence",
+    "ctaTitle": "Essayez Everstead gratuitement pendant 14 jours",
+    "ctaBody": "Sans engagement. Accès complet. Annulez avant la fin de l'essai et ne payez rien."
+  },
+  "competitors": {
+    "farewill": {
+      "name": "Farewill",
+      "category": "Rédaction de testaments et règlement de succession",
+      "tagline": "Everstead vs Farewill",
+      "headline": "Farewill rédige votre testament. Everstead organise toute votre vie.",
+      "subhead": "Farewill est un service de rédaction de testaments. Everstead est un espace personnel sécurisé — un registre vivant et à jour de vos comptes, documents et volontés, utile dès aujourd'hui et prêt pour votre famille au moment où ça compte.",
+      "eversteadDesc": "Un espace personnel sécurisé pour organiser tout ce qui compte — comptes, documents, instructions et dernières volontés — avec un accès contrôlé pour les personnes de confiance.",
+      "competitorDesc": "Une société de services juridiques en ligne proposant la rédaction de testaments, l'aide au règlement de la succession et l'organisation d'obsèques. Un service ponctuel, centré sur les documents juridiques.",
+      "rows": [
+        "Coffre à documents sécurisé",
+        "Espace évolutif — mise à jour à tout moment",
+        "Contrôle d'accès des personnes de confiance",
+        "Guide pas à pas pour l'exécuteur testamentaire",
+        "Score de préparation",
+        "Messages personnels et dernières volontés",
+        "Rappels d'anniversaires et de dates importantes",
+        "Everstead+ (2 espaces)"
+      ],
+      "competitorAlso": ["Rédaction de testament en ligne", "Aide au règlement de la succession", "Organisation d'obsèques"],
+      "verdict": "Pour organiser l'ensemble de votre succession — et faire en sorte que votre famille puisse réellement agir — Everstead l'emporte nettement. Utilisez Farewill pour le testament lui-même ; comptez sur Everstead pour tout ce qui l'entoure.",
+      "positioning": [
+        "Farewill et Everstead répondent à des problèmes différents. Farewill vous aide à rédiger un testament valide — un document ponctuel. Everstead vous aide à garder tout le reste organisé : où sont vos comptes, qui doit être contacté, quelles sont vos volontés et quelles instructions votre famille doit suivre.",
+        "La plupart des gens ont besoin des deux. Un testament indique à la justice ce qu'il advient de vos biens. Everstead indique à votre famille comment retrouver tout le reste — et reste à jour au fil de votre vie.",
+        "Si vous avez déjà un testament, Everstead est la suite naturelle : un registre sécurisé et vivant qui rend votre succession réellement gérable."
+      ],
+      "price": "À partir de 3,99 £/mois (14 jours d'essai gratuit)",
+      "competitorPrice": "À partir de 90 £ en paiement unique pour un testament simple",
+      "cta": "Commencez votre essai gratuit"
+    },
+    "settld": {
+      "name": "Settld",
+      "category": "Notification après décès",
+      "tagline": "Everstead vs Settld",
+      "headline": "Settld aide après un décès. Everstead aide avant.",
+      "subhead": "Settld est un service de notification gratuit qui aide les familles à clôturer des comptes et à informer les organismes après un décès. Everstead est un espace personnel proactif qui évite d'emblée à votre famille d'avoir à chercher dans l'urgence.",
+      "eversteadDesc": "Un espace personnel sécurisé que vous construisez de votre vivant — pour que ceux que vous aimez disposent de tout ce qu'il leur faut, organisé et accessible, sans avoir à chercher.",
+      "competitorDesc": "Un service gratuit qui aide les personnes endeuillées à notifier banques, fournisseurs et autres organismes après un décès. Réactif, centré sur l'après-décès, et conçu pour des exécuteurs testamentaires déjà en plein deuil.",
+      "rows": [
+        "Préparation proactive — construisez avant que quoi que ce soit n'arrive",
+        "Coffre à documents sécurisé",
+        "Registre des comptes et des actifs",
+        "Gestion des accès des personnes de confiance",
+        "Score de préparation et suggestions",
+        "Instructions étape par étape pour votre famille",
+        "Messages personnels et dernières volontés",
+        "Everstead+ (2 espaces privés)"
+      ],
+      "competitorAlso": ["Notifications aux organismes après un décès — prévenir banques, fournisseurs et prestataires (Settld est gratuit pour cela)"],
+      "verdict": "Everstead est le meilleur choix pour presque tout le monde, car il agit avant que quoi que ce soit n'arrive — pendant que vous pouvez encore vous préparer. Settld n'aide qu'après coup. Le bon réflexe, c'est Everstead dès maintenant, pour que votre famille n'ait jamais à chercher dans l'urgence.",
+      "positioning": [
+        "Settld et Everstead sont complémentaires plutôt que concurrents. Settld s'utilise après un décès — il aide les familles à notifier banques, fournisseurs, caisses de retraite et autres institutions. C'est réellement utile, mais c'est réactif : la famille est déjà en plein deuil, à la recherche d'informations.",
+        "Everstead est proactif. C'est là que vous consignez vos comptes, téléversez vos documents, rédigez vos instructions et accordez l'accès aux personnes de confiance — avant que quoi que ce soit n'arrive.",
+        "Quand le pire arrive, une famille disposant d'un espace Everstead sait déjà où tout se trouve. Elle pourra toujours utiliser Settld pour notifier les institutions — mais elle ne passera pas des semaines à reconstituer une vie entière.",
+        "C'est la différence entre une carte restée à la maison et une carte déjà entre leurs mains."
+      ],
+      "price": "À partir de 3,99 £/mois (14 jours d'essai gratuit)",
+      "competitorPrice": "Gratuit",
+      "cta": "Commencez votre essai gratuit"
+    },
+    "safekeep": {
+      "name": "SafeKeep",
+      "category": "Planification successorale numérique",
+      "tagline": "Everstead vs SafeKeep",
+      "headline": "SafeKeep stocke vos informations. Everstead organise toute votre succession.",
+      "subhead": "Les deux plateformes vous aident à regrouper vos informations importantes au même endroit. La différence tient à la profondeur — Everstead ajoute un espace famille, un portail conseiller, un score de préparation et des outils qui aident réellement les exécuteurs testamentaires à agir le moment venu.",
+      "eversteadDesc": "Un espace personnel sécurisé pour organiser tout ce qui compte — comptes, documents, instructions et dernières volontés — avec accès contrôlé, un portail conseiller et le forfait Everstead+ à deux espaces pour les couples.",
+      "competitorDesc": "Une plateforme de stockage numérique pour documents importants et coordonnées de comptes. Centrée sur les particuliers qui stockent leurs données personnelles en toute sécurité, avec une interface soignée et des fonctions de partage basiques.",
+      "rows": [
+        "Coffre à documents sécurisé",
+        "Registre des comptes et des actifs",
+        "Contrôle d'accès des personnes de confiance",
+        "Everstead+ — deux espaces privés",
+        "Score de préparation",
+        "Instructions étape par étape pour l'exécuteur testamentaire",
+        "Messages personnels et dernières volontés",
+        "Portail conseiller et gestion de clientèle",
+        "Données hébergées au Royaume-Uni (conformité RGPD britannique)",
+        "Rappels intelligents et suivi de progression",
+        "Export complet des données (droit à la portabilité)"
+      ],
+      "verdict": "Les deux stockent vos informations — seul Everstead les transforme en un plan que votre famille peut suivre. Sur chaque dimension qui compte au-delà du stockage, Everstead est le choix le plus solide.",
+      "positioning": [
+        "Everstead et SafeKeep partagent un principe de base : placer vos informations importantes dans un endroit sécurisé et accessible. Si c'est tout ce dont vous avez besoin, les deux produits font l'affaire.",
+        "Mais Everstead a été conçu autour d'un problème plus large. Les familles n'ont pas seulement besoin de stockage — elles ont besoin d'organisation, de repères, et que les bonnes personnes aient le bon accès au bon moment. C'est pourquoi nous avons créé le score de préparation (pour voir exactement ce qui manque), les instructions étape par étape pour l'exécuteur testamentaire (pour que votre famille sache quoi faire, et pas seulement où sont les choses) et un contrôle d'accès par rôle qui va bien au-delà d'un mot de passe partagé.",
+        "Everstead+ est la différence la plus nette. Deux espaces entièrement privés — un seul abonnement. Chacun des deux membres d'un couple peut organiser sa propre succession, ne partager que ce qu'il choisit, et n'a jamais à regrouper ses informations privées dans un compte unique. SafeKeep n'a pas d'équivalent.",
+        "Le portail conseiller est l'autre grande différence. Everstead fonctionne comme un outil professionnel pour les planificateurs financiers, les conseillers financiers indépendants et les notaires spécialisés en successions qui gèrent plusieurs clients — avec un portail co-brandé, un suivi de la progression des clients et des fonctions de collaboration que SafeKeep ne propose pas.",
+        "Si vous cherchez un coffre-fort numérique, les deux options méritent d'être considérées. Si vous voulez que votre famille sache réellement quoi faire au moment où ça compte, Everstead va plus loin."
+      ],
+      "price": "À partir de 3,99 £/mois (14 jours d'essai gratuit)",
+      "competitorPrice": "À partir de 5,99 £/mois",
+      "cta": "Commencez votre essai gratuit"
+    },
+    "octopus-legacy": {
+      "name": "Octopus Legacy",
+      "category": "Testaments et planification successorale",
+      "tagline": "Everstead vs Octopus Legacy",
+      "headline": "Octopus Legacy s'occupe de votre testament. Everstead organise tout le reste.",
+      "subhead": "Octopus Legacy est un service de rédaction de testaments et de planification successorale. Everstead est un espace vivant et à jour — où tout ce qui compte est organisé, sécurisé et prêt pour les personnes de confiance.",
+      "eversteadDesc": "Un espace personnel sécurisé pour organiser comptes, documents, instructions et dernières volontés — mis à jour au fil de votre vie, avec un accès contrôlé pour les personnes de confiance et le forfait Everstead+ pour les couples.",
+      "competitorDesc": "Une société de services juridiques proposant testaments en ligne, LPA (mandats de protection future) et accompagnement au règlement de la succession. Une entreprise engagée, attachée à rendre la planification successorale accessible. Solide sur les documents juridiques ; ce n'est pas une plateforme de stockage ni d'organisation des données.",
+      "rows": [
+        "Coffre à documents sécurisé",
+        "Registre des comptes et des actifs",
+        "Contrôle d'accès des personnes de confiance",
+        "Espace évolutif — mise à jour à tout moment",
+        "Everstead+ — deux espaces privés",
+        "Score de préparation",
+        "Instructions étape par étape pour l'exécuteur testamentaire",
+        "Messages personnels et dernières volontés",
+        "Portail conseiller"
+      ],
+      "competitorAlso": ["Rédaction de testament en ligne", "Mise en place d'un LPA (mandat de protection future)", "Accompagnement au règlement de la succession"],
+      "verdict": "Un testament est essentiel — mais ce n'est qu'un document. Everstead est le registre vivant de tout le reste dont votre famille a besoin, tenu à jour et prêt. Pour une préparation successorale réelle, Everstead est le socle le plus solide ; ajoutez-y un testament d'Octopus Legacy en complément.",
+      "positioning": [
+        "Octopus Legacy et Everstead répondent à des problèmes différents, et la plupart des personnes qui réfléchissent à leur succession gagneront à utiliser les deux.",
+        "Octopus Legacy est une société de services juridiques — elle vous aide à rédiger un testament, à mettre en place un LPA (mandat de protection future) et à traverser le règlement de la succession. C'est un travail important. Un testament juridiquement valide est essentiel, et Octopus Legacy le fait bien.",
+        "Everstead, c'est tout ce qui entoure le testament. C'est là que vous conservez les coordonnées de vos comptes, téléversez vos documents, rédigez vos instructions et dites à votre famille quoi faire le moment venu. Le tout mis à jour au fil de votre vie. Votre exécuteur testamentaire n'a pas seulement un document juridique — il a une feuille de route.",
+        "Everstead+ est quelque chose qu'Octopus Legacy ne propose pas : deux espaces entièrement privés sous un seul abonnement, pour les couples qui veulent organiser leurs successions chacun de leur côté, sans partager d'informations personnelles sensibles.",
+        "Voyez le testament comme une destination. Everstead est la carte qui y mène votre famille."
+      ],
+      "price": "À partir de 3,99 £/mois (14 jours d'essai gratuit)",
+      "competitorPrice": "À partir de 90 £ pour un testament simple",
+      "cta": "Commencez votre essai gratuit"
+    },
+    "lyfeguard": {
+      "name": "Lyfeguard",
+      "category": "Coffre-fort numérique de transmission",
+      "tagline": "Everstead vs Lyfeguard",
+      "headline": "Les deux coffres protègent votre héritage. Un seul donne à votre famille une longueur d'avance.",
+      "subhead": "Lyfeguard et Everstead proposent tous deux des coffres-forts numériques sécurisés pour vos informations importantes. La différence, c'est la suite — Everstead ajoute un score de préparation, un guide étape par étape pour l'exécuteur testamentaire et Everstead+ avec deux espaces privés.",
+      "eversteadDesc": "Une plateforme proactive de planification successorale — pas un simple stockage, mais un système actif avec suivi de préparation, instructions pour l'exécuteur testamentaire, le forfait Everstead+ à deux espaces et un portail conseiller pour les professionnels.",
+      "competitorDesc": "Une plateforme d'héritage numérique pour stocker en toute sécurité documents personnels, coordonnées de comptes et dernières volontés — avec des contrôles de partage pour les contacts désignés.",
+      "rows": [
+        "Coffre à documents sécurisé",
+        "Registre des comptes et des actifs",
+        "Contrôle d'accès des personnes de confiance",
+        "Messages personnels et dernières volontés",
+        "Everstead+ — deux espaces privés",
+        "Score de préparation",
+        "Instructions étape par étape pour l'exécuteur testamentaire",
+        "Rappels intelligents et suggestions de progression",
+        "Portail conseiller et gestion de clientèle",
+        "Données hébergées au Royaume-Uni (conformité RGPD britannique)",
+        "Export complet des données (droit à la portabilité)"
+      ],
+      "verdict": "Deux coffres sécurisés — mais seul Everstead dit à votre famille quoi faire ensuite, mesure votre préparation et offre aux couples deux espaces privés dans un seul forfait. Everstead est la solution la plus complète.",
+      "positioning": [
+        "Lyfeguard et Everstead partent du même constat : vos informations doivent être sécurisées, organisées et accessibles aux bonnes personnes au moment où ça compte. Les deux sont d'honnêtes alternatives au classeur fermé à clé.",
+        "L'écart se creuse dès qu'on pose la question : que se passe-t-il une fois les informations stockées ? Lyfeguard est avant tout un coffre. Everstead est un coffre avec une direction — un score de préparation qui montre exactement ce qui est incomplet, des instructions étape par étape que votre exécuteur testamentaire peut suivre sans deviner, et des rappels intelligents qui gardent votre plan à jour au fil de votre vie.",
+        "Everstead+ est la différence la plus marquante. Deux espaces totalement séparés et privés — un pour chaque personne — sous un seul abonnement. Chacun des deux membres d'un couple peut organiser sa propre succession de façon indépendante, sans aucune obligation de regrouper ou de partager ses données privées. Le modèle de partage de Lyfeguard suppose un compte par foyer.",
+        "Et pour les conseillers : Everstead comprend un portail dédié pour les planificateurs financiers, les conseillers financiers indépendants et les professionnels de la succession qui souhaitent proposer l'organisation successorale dans le cadre de leur service client. Lyfeguard n'a pas d'équivalent.",
+        "Si vous voulez un endroit sûr pour stocker des fichiers importants, les deux produits remplissent leur rôle. Si vous voulez que votre famille sache exactement quoi faire — et se sente réellement préparée — Everstead est fait pour cela."
+      ],
+      "price": "À partir de 3,99 £/mois (14 jours d'essai gratuit)",
+      "competitorPrice": "À partir de 4,99 £/mois",
+      "cta": "Commencez votre essai gratuit"
+    },
+    "doing-nothing": {
+      "name": "un tableur",
+      "category": "La boîte à chaussures ou le dossier sur l'ordinateur",
+      "tagline": "Everstead vs ne rien faire",
+      "headline": "La plupart des gens laissent à leur famille un tableur, une boîte à chaussures, ou rien du tout.",
+      "subhead": "Vous ne choisissez pas vraiment entre Everstead et un concurrent. Vous choisissez entre un plan organisé et la version que vous en avez aujourd'hui — le plus souvent un tableur à moitié rempli, une pile de papiers et la note mentale « je m'en occuperai un jour ».",
+      "eversteadDesc": "Un plan sécurisé, chiffré et fondé sur les rôles, que votre famille peut réellement utiliser. Mis à jour au fil de votre vie. Partageable section par section. Chiffrement AES-256, hébergement au Royaume-Uni, conformité RGPD britannique — et conçu pour que les bonnes personnes voient les bonnes choses au bon moment, et rien de plus.",
+      "competitorDesc": "Des post-it, un document Word sur l'ordinateur, une liste imprimée dans un tiroir, un tableur qui n'a pas été mis à jour depuis deux ans, des mots de passe dans la tête de quelqu'un, ou — le plus souvent — l'idée que « ça finira bien par s'arranger ».",
+      "rows": [
+        "Tout au même endroit",
+        "Les personnes de confiance savent où chercher",
+        "Mis à jour au fil de votre vie",
+        "Chiffré et à accès contrôlé",
+        "Partage section par section",
+        "Guide étape par étape pour l'exécuteur testamentaire",
+        "Score de préparation pour savoir ce qui manque",
+        "Lettres personnelles et dernières volontés préservées",
+        "Fonctionne même si votre ordinateur est verrouillé ou perdu",
+        "Récupérable quand la mémoire fait défaut",
+        "Gratuit — pendant les 14 premiers jours"
+      ],
+      "verdict": "Il n'y a pas vraiment de match. Un tableur ou un tiroir de papiers fait défaut à votre famille au pire moment possible. Everstead est la version organisée, sécurisée et partageable de tout ce que vous aviez de toute façon l'intention de noter.",
+      "positioning": [
+        "Presque personne ne renonce à se préparer en pensant que cela n'a pas d'importance. On y renonce parce que les alternatives sont toutes mauvaises.",
+        "Un tableur est privé, mais inutile à quiconque le moment venu. Un dossier imprimé devient obsolète dès qu'un mot de passe change. Une pile de papiers dans un tiroir suppose que chacun saura de quel tiroir il s'agit. Dire à votre conjoint « tout est sur mon ordinateur » suppose qu'il se souviendra du mot de passe, trouvera le bon dossier et comprendra ce qu'il a sous les yeux, en plein deuil.",
+        "Everstead existe parce que le statu quo ne fonctionne pas vraiment pour la plupart des familles. Quand rien n'est en place, le coût se mesure en semaines de démarches, en comptes perdus, en échéances manquées et en stress familial au pire moment possible.",
+        "Pour moins que le prix d'un café par semaine, Everstead devient la version structurée de ce que vous auriez noté de toute façon — sécurisée, partageable, à jour et prête. Le plus dur, c'est de commencer ; tout le reste n'est qu'une question de mise à jour."
+      ],
+      "price": "À partir de 3,99 £/mois (14 jours d'essai gratuit)",
+      "competitorPrice": "Gratuit — et très coûteux au moment où ça compte",
+      "cta": "Commencez à organiser votre succession"
+    }
+  }
+}

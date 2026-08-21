@@ -1,42 +1,43 @@
 import React, { useState } from 'react'
 import { Helmet } from 'react-helmet-async'
+import HreflangLinks from '../components/HreflangLinks'
 import { Link } from 'react-router-dom'
+import { useTranslation, Trans } from 'react-i18next'
 import {
   ArrowRight, CheckCheck, Lock, AlertCircle, Loader2, CreditCard, Gift as GiftIcon,
 } from 'lucide-react'
 import { PRICING } from '../config/pricing'
 import { Elements, PaymentElement, useStripe, useElements } from '@stripe/react-stripe-js'
 import { getStripe } from '../lib/stripe'
+import i18n from '../i18n'
+import enGift from '../i18n/locales/en/gift.json'
+import frGift from '../i18n/locales/fr/gift.json'
+
+// The `gift` namespace is registered here rather than in src/i18n/index.js so
+// the page (lazy-loaded in App.jsx) stays self-contained. Module-level, so it
+// runs once, before the component ever renders.
+if (!i18n.hasResourceBundle('en', 'gift')) i18n.addResourceBundle('en', 'gift', enGift)
+if (!i18n.hasResourceBundle('fr', 'gift')) i18n.addResourceBundle('fr', 'gift', frGift)
 
 // ─────────────────────────────────────────────────────────────
-// CONSTANTS
+// CONSTANTS (non-text meta — all visible copy lives in the "gift" namespace)
 // ─────────────────────────────────────────────────────────────
 
 // A gift is a new paid subscription for the recipient. Essential is retired, so the
 // only giftable plan is Everstead+ (Everstead Pro is sold to professionals via demo,
-// and the Free tier needs no gifting).
+// and the Free tier needs no gifting). Copy for the plan card: `plan.*` keys.
 const GIFT_PLANS = [
   {
     id: 'family',
-    name: 'Everstead+',
     yearlyPrice: PRICING.family.annual.perYear,
-    desc: 'Two private vaults, one subscription.',
-    badge: 'The complete gift',
-    features: [
-      'Everything in Everstead, uncapped',
-      'Two private vaults — one for each person',
-      'Each person keeps their own private data',
-      'Up to 10 trusted contacts',
-      '25 GB secure storage',
-      'Share only what you choose',
-    ],
   },
 ]
 
+// `highlight: true` renders the "Most thoughtful" badge (step1.mostThoughtful).
 const YEAR_OPTIONS = [
-  { years: 1, label: '1 year' },
-  { years: 2, label: '2 years' },
-  { years: 3, label: '3 years', badge: 'Most thoughtful' },
+  { years: 1 },
+  { years: 2 },
+  { years: 3, highlight: true },
 ]
 
 // ─────────────────────────────────────────────────────────────
@@ -64,12 +65,12 @@ const inputClass = 'w-full border border-stone-300 rounded-lg px-4 py-2.5 text-s
 function GiftPaymentForm({ plan, years, gifterName, gifterEmail, recipientName, recipientEmail, personalMessage, scheduledSendAt, sendNow, amountPence, onSuccess }) {
   const stripe   = useStripe()
   const elements = useElements()
+  const { t } = useTranslation('gift')
   const [loading, setLoading] = useState(false)
   const [error,   setError]   = useState(null)
 
-  const planObj    = GIFT_PLANS.find(p => p.id === plan)
   const totalGBP   = (amountPence / 100).toFixed(2)
-  const yearsLabel = years === 1 ? '1 year' : `${years} years`
+  const yearsLabel = t('years', { count: years })
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -111,7 +112,7 @@ function GiftPaymentForm({ plan, years, gifterName, gifterEmail, recipientName, 
 
       if (!confirmRes.ok) {
         const { error: confErr } = await confirmRes.json().catch(() => ({}))
-        throw new Error(confErr || 'Could not confirm gift. Please contact support@everstead.care.')
+        throw new Error(confErr || t('errors.confirmFailed'))
       }
 
       onSuccess()
@@ -125,15 +126,15 @@ function GiftPaymentForm({ plan, years, gifterName, gifterEmail, recipientName, 
     <form onSubmit={handleSubmit} className="space-y-5">
       {/* Order summary */}
       <div className="bg-stone-50 border border-stone-200 rounded-xl p-4 mb-2">
-        <p className="text-xs font-semibold text-stone-500 mb-3">Order summary</p>
+        <p className="text-xs font-semibold text-stone-500 mb-3">{t('payment.orderSummary')}</p>
         <div className="space-y-1.5">
           <div className="flex justify-between text-sm">
-            <span className="text-stone-600">{planObj?.name} — {yearsLabel}</span>
+            <span className="text-stone-600">{t('planYears', { plan: t('plan.name'), years: yearsLabel })}</span>
             <span className="font-semibold text-navy-900">£{totalGBP}</span>
           </div>
           <div className="flex justify-between text-xs text-stone-400">
-            <span>For: {recipientName || recipientEmail}</span>
-            <span>{sendNow ? 'Sent immediately' : 'Scheduled delivery'}</span>
+            <span>{t('payment.forRecipient', { recipient: recipientName || recipientEmail })}</span>
+            <span>{sendNow ? t('payment.sentImmediately') : t('payment.scheduledDelivery')}</span>
           </div>
         </div>
       </div>
@@ -153,16 +154,16 @@ function GiftPaymentForm({ plan, years, gifterName, gifterEmail, recipientName, 
         className="btn-aurora w-full text-white font-semibold text-sm py-3.5 rounded-full transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
       >
         {loading ? (
-          <><Loader2 size={15} className="animate-spin" />Processing…</>
+          <><Loader2 size={15} className="animate-spin" />{t('payment.processing')}</>
         ) : (
-          <><GiftIcon size={15} />Send the gift →</>
+          <><GiftIcon size={15} />{t('payment.sendGift')}</>
         )}
       </button>
 
       <div className="flex items-start gap-3 bg-stone-100 rounded-xl p-4">
         <Lock size={14} className="text-navy-600 mt-0.5 flex-shrink-0" />
         <p className="text-xs text-stone-500 leading-relaxed">
-          Your card details are handled directly by Stripe and never touch our servers. Secured with 256-bit encryption.
+          {t('payment.securityNote')}
         </p>
       </div>
     </form>
@@ -174,6 +175,7 @@ function GiftPaymentForm({ plan, years, gifterName, gifterEmail, recipientName, 
 // ─────────────────────────────────────────────────────────────
 
 export default function Gift() {
+  const { t, i18n } = useTranslation('gift')
   const [step, setStep]           = useState(1)
   // Everstead+ is the only giftable plan, so this is fixed (not user-selected).
   const [selectedPlan] = useState('family')
@@ -197,9 +199,15 @@ export default function Gift() {
 
   const handleChange = e => setForm(v => ({ ...v, [e.target.name]: e.target.value }))
 
-  const planObj    = GIFT_PLANS.find(p => p.id === selectedPlan)
-  const totalGBP   = planObj ? (planObj.yearlyPrice * selectedYears).toFixed(2) : '0.00'
-  const yearsLabel = selectedYears === 1 ? '1 year' : `${selectedYears} years`
+  const localePrefix = i18n.language === 'fr' ? '/fr' : ''
+  const pageUrl = `https://www.everstead.care${localePrefix}/gift`
+  const dateLocale = i18n.language === 'fr' ? 'fr-FR' : 'en-GB'
+
+  const planObj      = GIFT_PLANS.find(p => p.id === selectedPlan)
+  const planName     = t('plan.name')
+  const planFeatures = t('plan.features', { returnObjects: true })
+  const totalGBP     = planObj ? (planObj.yearlyPrice * selectedYears).toFixed(2) : '0.00'
+  const yearsLabel   = t('years', { count: selectedYears })
 
   // Step 1 → Step 2
   const handleContinueToDetails = () => {
@@ -229,7 +237,7 @@ export default function Gift() {
 
       if (!res.ok) {
         const { error: apiErr } = await res.json().catch(() => ({}))
-        throw new Error(apiErr || 'Could not set up payment. Please try again.')
+        throw new Error(apiErr || t('errors.setupFailed'))
       }
 
       const { clientSecret: secret, intentId: iid, amountPence: ap } = await res.json()
@@ -257,37 +265,38 @@ export default function Gift() {
     (sendNow || (scheduledDate && new Date(scheduledDate) > new Date()))
 
   const STEPS = [
-    { n: 1, label: 'Gift length' },
-    { n: 2, label: 'Recipient details' },
-    { n: 3, label: 'Payment' },
+    { n: 1, label: t('stepIndicator.length') },
+    { n: 2, label: t('stepIndicator.details') },
+    { n: 3, label: t('stepIndicator.payment') },
   ]
 
   return (
     <>
       <Helmet>
-        <title>Give an Everstead gift | Everstead</title>
-        <meta name="description" content="Give the gift of peace of mind. Purchase an Everstead plan for someone you care about." />
-        <link rel="canonical" href="https://www.everstead.care/gift" />
+        <title>{t('meta.title')}</title>
+        <meta name="description" content={t('meta.description')} />
+        <link rel="canonical" href={pageUrl} />
         <meta property="og:type" content="website" />
-        <meta property="og:title" content="Give an Everstead gift | Everstead" />
-        <meta property="og:description" content="Give the gift of peace of mind. Purchase an Everstead plan for someone you care about." />
-        <meta property="og:url" content="https://www.everstead.care/gift" />
+        <meta property="og:title" content={t('meta.title')} />
+        <meta property="og:description" content={t('meta.description')} />
+        <meta property="og:url" content={pageUrl} />
         <meta property="og:image" content="https://www.everstead.care/og-image.png" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:image" content="https://www.everstead.care/og-image.png" />
       </Helmet>
+      <HreflangLinks path="/gift" />
       <div className="min-h-screen">
 
         {/* ── HERO ── */}
         <section className="pt-32 pb-16 lg:pt-40 lg:pb-20 grain relative overflow-hidden">
           <div className="absolute inset-0 aurora-bg" />
           <div className="relative max-w-3xl mx-auto px-6 text-center">
-            <p className="text-xs font-semibold uppercase tracking-widest text-sage-400 mb-4">Gift an Everstead plan</p>
+            <p className="text-xs font-semibold uppercase tracking-widest text-sage-400 mb-4">{t('hero.eyebrow')}</p>
             <h1 className="font-display text-4xl lg:text-5xl font-light text-white leading-tight text-balance">
-              Give the gift of peace of mind.
+              {t('hero.title')}
             </h1>
             <p className="mt-4 text-stone-300 text-base leading-relaxed max-w-md mx-auto">
-              Help someone you care about protect what matters most — their family, their wishes, their plan.
+              {t('hero.subtitle')}
             </p>
           </div>
         </section>
@@ -321,28 +330,26 @@ export default function Gift() {
             {/* ── STEP 1: Choose plan & duration ── */}
             {step === 1 && (
               <div>
-                <h2 className="font-display text-3xl font-light text-navy-950 text-center mb-3">How long is your gift?</h2>
-                <p className="text-center text-stone-500 text-sm mb-10">You're gifting {planObj?.name} — choose how many years to give.</p>
+                <h2 className="font-display text-3xl font-light text-navy-950 text-center mb-3">{t('step1.title')}</h2>
+                <p className="text-center text-stone-500 text-sm mb-10">{t('step1.subtitle', { plan: planName })}</p>
 
                 {/* What's included — Everstead+ is the only giftable plan, so this is a
                     fixed summary rather than a choice */}
                 <div className="rounded-2xl border border-stone-200 bg-white p-6 mb-8">
                   <div className="flex items-start justify-between gap-3 mb-1">
                     <div>
-                      <h3 className="font-semibold text-navy-900">{planObj?.name}</h3>
-                      {planObj?.badge && (
-                        <span className="inline-block mt-1 text-[10px] font-semibold bg-sage-100 text-sage-700 px-2 py-0.5 rounded-full">
-                          {planObj.badge}
-                        </span>
-                      )}
+                      <h3 className="font-semibold text-navy-900">{planName}</h3>
+                      <span className="inline-block mt-1 text-[10px] font-semibold bg-sage-100 text-sage-700 px-2 py-0.5 rounded-full">
+                        {t('plan.badge')}
+                      </span>
                     </div>
                     <p className="font-display text-xl font-light text-navy-950 whitespace-nowrap">
-                      £{planObj?.yearlyPrice.toFixed(2)}<span className="text-xs text-stone-400 ml-1">/year</span>
+                      £{planObj?.yearlyPrice.toFixed(2)}<span className="text-xs text-stone-400 ml-1">{t('plan.perYear')}</span>
                     </p>
                   </div>
-                  <p className="text-stone-500 text-xs mb-4 leading-relaxed">{planObj?.desc}</p>
+                  <p className="text-stone-500 text-xs mb-4 leading-relaxed">{t('plan.desc')}</p>
                   <ul className="grid sm:grid-cols-2 gap-x-4 gap-y-1.5">
-                    {planObj?.features.map(f => (
+                    {planFeatures.map(f => (
                       <li key={f} className="flex items-start gap-2 text-xs text-stone-600">
                         <svg className="w-3.5 h-3.5 text-sage-500 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                           <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
@@ -355,7 +362,7 @@ export default function Gift() {
 
                 {/* Year selector — the primary choice on this step */}
                 <div className="mb-10">
-                  <p className="text-xs font-semibold text-stone-600 mb-3">How many years?</p>
+                  <p className="text-xs font-semibold text-stone-600 mb-3">{t('step1.howManyYears')}</p>
                   <div className="grid grid-cols-3 gap-3">
                     {YEAR_OPTIONS.map(opt => (
                       <button
@@ -367,12 +374,12 @@ export default function Gift() {
                             : 'border-stone-200 bg-white hover:border-navy-300'
                         }`}
                       >
-                        {opt.badge && (
+                        {opt.highlight && (
                           <span className="absolute -top-2 left-1/2 -translate-x-1/2 bg-sage-500 text-white text-[10px] font-semibold px-2 py-0.5 rounded-full whitespace-nowrap">
-                            {opt.badge}
+                            {t('step1.mostThoughtful')}
                           </span>
                         )}
-                        <p className="font-display text-xl font-light text-navy-950">{opt.label}</p>
+                        <p className="font-display text-xl font-light text-navy-950">{t('years', { count: opt.years })}</p>
                         <p className="text-xs text-stone-400 mt-0.5">
                           £{((planObj?.yearlyPrice || 0) * opt.years).toFixed(2)}
                         </p>
@@ -385,8 +392,8 @@ export default function Gift() {
                 <div className="bg-white border border-stone-200 rounded-2xl p-6 mb-6">
                   <div className="flex justify-between items-center">
                     <div>
-                      <p className="text-sm font-semibold text-navy-900">{planObj?.name} — {yearsLabel}</p>
-                      <p className="text-xs text-stone-400 mt-0.5">One-time gift payment</p>
+                      <p className="text-sm font-semibold text-navy-900">{t('planYears', { plan: planName, years: yearsLabel })}</p>
+                      <p className="text-xs text-stone-400 mt-0.5">{t('step1.oneTimePayment')}</p>
                     </div>
                     <p className="font-display text-3xl font-light text-navy-950">£{totalGBP}</p>
                   </div>
@@ -396,7 +403,7 @@ export default function Gift() {
                   onClick={handleContinueToDetails}
                   className="btn-aurora w-full flex items-center justify-center gap-2 text-white font-semibold text-sm px-8 py-3.5 rounded-full transition-transform hover:-translate-y-0.5"
                 >
-                  Continue <ArrowRight size={16} />
+                  {t('step1.continue')} <ArrowRight size={16} />
                 </button>
               </div>
             )}
@@ -404,11 +411,11 @@ export default function Gift() {
             {/* ── STEP 2: Recipient & gifter details ── */}
             {step === 2 && (
               <div>
-                <h2 className="font-display text-3xl font-light text-navy-950 text-center mb-2">Recipient details</h2>
+                <h2 className="font-display text-3xl font-light text-navy-950 text-center mb-2">{t('step2.title')}</h2>
                 <p className="text-center text-stone-500 text-sm mb-10">
-                  Gifting{' '}
+                  {t('step2.gifting')}{' '}
                   <button onClick={() => setStep(1)} className="text-navy-700 underline underline-offset-2 font-medium hover:text-navy-900">
-                    {planObj?.name} — {yearsLabel}
+                    {t('planYears', { plan: planName, years: yearsLabel })}
                   </button>
                 </p>
 
@@ -421,50 +428,50 @@ export default function Gift() {
 
                 <form onSubmit={handleContinueToPayment} className="space-y-5">
                   <div className="space-y-1">
-                    <p className="text-xs font-semibold uppercase tracking-wider text-stone-400">About the recipient</p>
+                    <p className="text-xs font-semibold uppercase tracking-wider text-stone-400">{t('step2.aboutRecipient')}</p>
                   </div>
 
-                  <Field label="Recipient's name" required={false}>
+                  <Field label={t('step2.recipientName.label')} required={false}>
                     <input
                       type="text" name="recipientName" value={form.recipientName} onChange={handleChange}
-                      placeholder="Jane Smith (optional)"
+                      placeholder={t('step2.recipientName.placeholder')}
                       className={inputClass}
                     />
                   </Field>
 
-                  <Field label="Recipient's email" required>
+                  <Field label={t('step2.recipientEmail.label')} required>
                     <input
                       type="email" name="recipientEmail" value={form.recipientEmail} onChange={handleChange}
-                      placeholder="jane@example.com" required
+                      placeholder={t('step2.recipientEmail.placeholder')} required
                       className={inputClass}
                     />
                   </Field>
 
                   <div className="pt-2 space-y-1">
-                    <p className="text-xs font-semibold uppercase tracking-wider text-stone-400">About you</p>
+                    <p className="text-xs font-semibold uppercase tracking-wider text-stone-400">{t('step2.aboutYou')}</p>
                   </div>
 
-                  <Field label="Your name" required>
+                  <Field label={t('step2.gifterName.label')} required>
                     <input
                       type="text" name="gifterName" value={form.gifterName} onChange={handleChange}
-                      placeholder="Your full name" required
+                      placeholder={t('step2.gifterName.placeholder')} required
                       className={inputClass}
                     />
                   </Field>
 
-                  <Field label="Your email" required>
+                  <Field label={t('step2.gifterEmail.label')} required>
                     <input
                       type="email" name="gifterEmail" value={form.gifterEmail} onChange={handleChange}
-                      placeholder="your@email.com" required
+                      placeholder={t('step2.gifterEmail.placeholder')} required
                       className={inputClass}
                     />
-                    <p className="text-xs text-stone-400 mt-1">Your confirmation receipt will be sent here.</p>
+                    <p className="text-xs text-stone-400 mt-1">{t('step2.gifterEmail.note')}</p>
                   </Field>
 
-                  <Field label="Personal message" required={false}>
+                  <Field label={t('step2.personalMessage.label')} required={false}>
                     <textarea
                       name="personalMessage" value={form.personalMessage} onChange={handleChange}
-                      placeholder="Write a note for the recipient… (optional)"
+                      placeholder={t('step2.personalMessage.placeholder')}
                       rows={3}
                       className={`${inputClass} resize-none`}
                     />
@@ -472,7 +479,7 @@ export default function Gift() {
 
                   {/* Delivery scheduling */}
                   <div className="pt-2">
-                    <p className="text-xs font-semibold text-stone-600 mb-3">When should we deliver the gift?</p>
+                    <p className="text-xs font-semibold text-stone-600 mb-3">{t('step2.delivery.title')}</p>
                     <div className="space-y-2">
                       <label className="flex items-center gap-3 cursor-pointer">
                         <input
@@ -480,7 +487,7 @@ export default function Gift() {
                           onChange={() => { setSendNow(true); setScheduledDate('') }}
                           className="accent-navy-800"
                         />
-                        <span className="text-sm text-navy-900">Send immediately after payment</span>
+                        <span className="text-sm text-navy-900">{t('step2.delivery.sendNow')}</span>
                       </label>
                       <label className="flex items-center gap-3 cursor-pointer">
                         <input
@@ -488,7 +495,7 @@ export default function Gift() {
                           onChange={() => setSendNow(false)}
                           className="accent-navy-800"
                         />
-                        <span className="text-sm text-navy-900">Schedule for a specific date</span>
+                        <span className="text-sm text-navy-900">{t('step2.delivery.schedule')}</span>
                       </label>
                     </div>
 
@@ -512,9 +519,9 @@ export default function Gift() {
                     className="btn-aurora w-full text-white font-semibold text-sm py-3.5 rounded-full transition-transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                   >
                     {loading ? (
-                      <><Loader2 size={15} className="animate-spin" />Setting up…</>
+                      <><Loader2 size={15} className="animate-spin" />{t('step2.settingUp')}</>
                     ) : (
-                      <><CreditCard size={15} />Continue to payment</>
+                      <><CreditCard size={15} />{t('step2.continueToPayment')}</>
                     )}
                   </button>
                 </form>
@@ -524,9 +531,9 @@ export default function Gift() {
             {/* ── STEP 3: Payment ── */}
             {step === 3 && clientSecret && (
               <div>
-                <h2 className="font-display text-3xl font-light text-navy-950 text-center mb-2">Payment</h2>
+                <h2 className="font-display text-3xl font-light text-navy-950 text-center mb-2">{t('step3.title')}</h2>
                 <p className="text-center text-stone-500 text-sm mb-8">
-                  One-time payment · No recurring charges
+                  {t('step3.subtitle')}
                 </p>
 
                 <Elements
@@ -576,23 +583,33 @@ export default function Gift() {
                 <div className="w-16 h-16 bg-sage-100 rounded-full flex items-center justify-center mx-auto mb-6">
                   <GiftIcon size={28} className="text-sage-600" />
                 </div>
-                <h2 className="font-display text-3xl font-light text-navy-950 mb-3">Your gift is on its way.</h2>
+                <h2 className="font-display text-3xl font-light text-navy-950 mb-3">{t('confirmation.title')}</h2>
                 <p className="text-stone-500 text-base leading-relaxed max-w-sm mx-auto mb-2">
                   {sendNow
-                    ? <>We've sent the gift to <strong className="text-navy-900">{form.recipientName || form.recipientEmail}</strong> right away. You'll receive a confirmation by email shortly.</>
-                    : <>Your gift is scheduled to arrive on <strong className="text-navy-900">{new Date(scheduledDate).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}</strong>. You'll receive a confirmation by email shortly.</>
+                    ? <Trans
+                        t={t}
+                        i18nKey="confirmation.sentNow"
+                        values={{ recipient: form.recipientName || form.recipientEmail }}
+                        components={{ bold: <strong className="text-navy-900" /> }}
+                      />
+                    : <Trans
+                        t={t}
+                        i18nKey="confirmation.scheduled"
+                        values={{ date: new Date(scheduledDate).toLocaleDateString(dateLocale, { day: 'numeric', month: 'long', year: 'numeric' }) }}
+                        components={{ bold: <strong className="text-navy-900" /> }}
+                      />
                   }
                 </p>
-                <p className="text-stone-400 text-sm mb-10">A receipt has been sent to {form.gifterEmail}.</p>
+                <p className="text-stone-400 text-sm mb-10">{t('confirmation.receiptSent', { email: form.gifterEmail })}</p>
 
                 <div className="bg-navy-50 border border-navy-100 rounded-2xl p-6 text-left max-w-sm mx-auto">
-                  <p className="text-sm font-semibold text-navy-800 mb-1">Want to protect your own plan too?</p>
-                  <p className="text-xs text-stone-500 mb-4 leading-relaxed">Start your own Everstead account and get 14 days free.</p>
+                  <p className="text-sm font-semibold text-navy-800 mb-1">{t('confirmation.upsellTitle')}</p>
+                  <p className="text-xs text-stone-500 mb-4 leading-relaxed">{t('confirmation.upsellBody')}</p>
                   <Link
                     to="/get-started"
                     className="btn-aurora inline-flex items-center gap-2 text-white font-semibold text-sm px-5 py-2.5 rounded-full transition-transform hover:-translate-y-0.5"
                   >
-                    Start your free trial <ArrowRight size={14} />
+                    {t('confirmation.upsellCta')} <ArrowRight size={14} />
                   </Link>
                 </div>
               </div>
@@ -606,12 +623,7 @@ export default function Gift() {
           <section className="py-12 border-t border-stone-200 bg-stone-50">
             <div className="max-w-3xl mx-auto px-6">
               <div className="flex flex-wrap justify-center gap-8">
-                {[
-                  { label: 'Secure one-time payment' },
-                  { label: 'Delivered by email' },
-                  { label: 'Valid for 12 months' },
-                  { label: 'No card needed to redeem' },
-                ].map(({ label }) => (
+                {t('trust.items', { returnObjects: true }).map(label => (
                   <div key={label} className="flex items-center gap-2 text-stone-500">
                     <Lock size={13} className="text-navy-600" />
                     <span className="text-sm font-medium">{label}</span>

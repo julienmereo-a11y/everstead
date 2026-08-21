@@ -1,0 +1,49 @@
+{
+  "meta": {
+    "title": "Notre engagement sur les données — Everstead",
+    "description": "Vos données vous appartiennent. Exportez tout à tout moment, engagement de préavis de 90 jours, et nous ne vendrons jamais vos données. L'engagement complet d'Everstead sur les données.",
+    "ogDescription": "Vos données vous appartiennent. Exportez tout à tout moment, engagement de préavis de 90 jours, et nous ne vendrons jamais vos données."
+  },
+  "hero": {
+    "eyebrow": "Engagement données",
+    "title": "Vos données vous appartiennent. Toujours.",
+    "subtitle": "Everstead est conçu pour durer. Mais nous croyons que vous ne devriez jamais vous sentir captif."
+  },
+  "promises": [
+    {
+      "title": "Exportez tout, à tout moment",
+      "body": "Vous pouvez télécharger à tout moment une copie complète de l'ensemble de votre plan Everstead — comptes, documents, instructions, dernières volontés et plus encore — dans des formats standard et lisibles. Sans obstacles, sans attente.",
+      "cta": "Exporter vos données →"
+    },
+    {
+      "title": "90 jours de préavis si quoi que ce soit change",
+      "body": "Si Everstead venait à cesser son activité, nous nous engageons à donner à chaque utilisateur un préavis d'au moins 90 jours, à maintenir un accès gratuit à l'exportation de ses données et à fournir des indications claires sur la marche à suivre. Votre plan ne disparaîtra jamais sans avertissement."
+    },
+    {
+      "title": "Nous ne vendrons jamais vos données",
+      "body": "Everstead ne vend, ne partage ni ne monétise vos données personnelles. Jamais. Nos revenus proviennent des abonnements — pas de vos données. Tous les détails figurent dans notre Politique de confidentialité.",
+      "cta": "Lire notre Politique de confidentialité →"
+    }
+  ],
+  "commitment": {
+    "title": "Notre engagement dans son intégralité",
+    "intro": "Everstead Digital Ltd est une société immatriculée en Angleterre et au pays de Galles (numéro de société 17166825). Nous prenons au sérieux notre responsabilité envers nos utilisateurs.",
+    "lead": "Nous nous engageons à ce qui suit :",
+    "items": [
+      "Vous pouvez exporter l'intégralité de vos données à tout moment depuis les réglages de votre tableau de bord.",
+      "Si Everstead venait à cesser son activité pour quelque raison que ce soit, tous les utilisateurs recevront un préavis écrit d'au moins 90 jours avant toute suppression de données.",
+      "Pendant toute période de cessation d'activité, l'exportation des données restera gratuite et sans restriction pour tous les utilisateurs, quel que soit le statut de leur abonnement.",
+      "Nous ne vendrons jamais vos données personnelles à des tiers.",
+      "Vous avez le droit de demander la suppression de vos données à tout moment en écrivant à hello@everstead.care."
+    ],
+    "contact": {
+      "prefix": "Pour toute question concernant vos données ou cet engagement, écrivez-nous à",
+      "suffix": "Nous vous répondrons sous 2 jours ouvrés."
+    },
+    "lastUpdated": "Dernière mise à jour : mai 2026 · Everstead Digital Ltd · everstead.care"
+  },
+  "cta": {
+    "export": "Exporter mes données",
+    "privacy": "Lire notre Politique de confidentialité"
+  }
+}

@@ -1,9 +1,11 @@
 import React, { useState } from 'react'
 import { Helmet } from 'react-helmet-async'
 import { Link } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { Loader2, CheckCircle2, ArrowLeft } from 'lucide-react'
 
 export default function ForgotPassword() {
+  const { t } = useTranslation('login')
   const [email, setEmail]           = useState('')
   const [submitting, setSubmitting] = useState(false)
   const [sent, setSent]             = useState(false)
@@ -21,11 +23,11 @@ export default function ForgotPassword() {
       })
       if (!res.ok) {
         const data = await res.json().catch(() => ({}))
-        throw new Error(data.error || 'Something went wrong. Please try again.')
+        throw new Error(data.error || t('forgot.errors.generic'))
       }
       setSent(true)
     } catch (err) {
-      setError(err.message ?? 'Something went wrong. Please try again.')
+      setError(err.message ?? t('forgot.errors.generic'))
     } finally {
       setSubmitting(false)
     }
@@ -42,33 +44,33 @@ export default function ForgotPassword() {
               <div className="w-14 h-14 rounded-full bg-sage-100 flex items-center justify-center mx-auto mb-5">
                 <CheckCircle2 size={24} className="text-sage-600" />
               </div>
-              <h1 className="font-display text-2xl font-light text-navy-950 mb-2" style={{ fontFamily: 'Georgia, serif' }}>Check your inbox</h1>
+              <h1 className="font-display text-2xl font-light text-navy-950 mb-2" style={{ fontFamily: 'Georgia, serif' }}>{t('forgot.sentTitle')}</h1>
               <p className="text-stone-500 text-sm leading-relaxed mb-6">
-                We've sent a password reset link to <strong>{email}</strong>. It expires in 1 hour.
+                {t('forgot.sentBody1')} <strong>{email}</strong>{t('forgot.sentBody2')}
               </p>
               <Link
                 to="/login"
                 className="inline-flex items-center gap-2 text-navy-700 font-medium text-sm hover:text-navy-900 transition-colors"
               >
-                <ArrowLeft size={13} /> Back to login
+                <ArrowLeft size={13} /> {t('forgot.backToLogin')}
               </Link>
             </div>
           ) : (
             <>
               <div className="mb-7">
-                <h1 className="font-display text-2xl font-light text-navy-950 mb-1" style={{ fontFamily: 'Georgia, serif' }}>Forgot your password?</h1>
-                <p className="text-stone-500 text-sm">Enter your email address and we'll send you a reset link.</p>
+                <h1 className="font-display text-2xl font-light text-navy-950 mb-1" style={{ fontFamily: 'Georgia, serif' }}>{t('forgot.title')}</h1>
+                <p className="text-stone-500 text-sm">{t('forgot.subtitle')}</p>
               </div>
 
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
-                  <label className="block text-xs font-semibold text-stone-600 mb-1.5">Email address</label>
+                  <label className="block text-xs font-semibold text-stone-600 mb-1.5">{t('forgot.emailLabel')}</label>
                   <input
                     type="email"
                     value={email}
                     onChange={e => setEmail(e.target.value)}
                     required
-                    placeholder="you@example.com"
+                    placeholder={t('forgot.emailPlaceholder')}
                     className="w-full border border-stone-300 rounded-lg px-4 py-3 text-sm text-navy-900 placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-navy-400 focus:border-navy-400 bg-white transition"
                   />
                 </div>
@@ -82,7 +84,7 @@ export default function ForgotPassword() {
                   disabled={submitting}
                   className="btn-aurora w-full text-white font-semibold text-sm py-3.5 rounded-full transition-colors disabled:opacity-60 flex items-center justify-center gap-2"
                 >
-                  {submitting ? <><Loader2 size={15} className="animate-spin" />Sending…</> : 'Send reset link'}
+                  {submitting ? <><Loader2 size={15} className="animate-spin" />{t('forgot.submitLoading')}</> : t('forgot.submit')}
                 </button>
               </form>
 
@@ -91,7 +93,7 @@ export default function ForgotPassword() {
                   to="/login"
                   className="inline-flex items-center gap-2 text-sm text-stone-500 hover:text-navy-700 transition-colors"
                 >
-                  <ArrowLeft size={13} /> Back to login
+                  <ArrowLeft size={13} /> {t('forgot.backToLogin')}
                 </Link>
               </div>
             </>

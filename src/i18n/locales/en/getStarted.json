@@ -1,0 +1,186 @@
+{
+  "meta": {
+    "title": "Get Started — Everstead",
+    "description": "Start your Everstead plan in minutes. Choose your plan, create your account, and begin your 14-day free trial. No charge until the trial ends.",
+    "ogTitle": "Get Started — Everstead",
+    "ogDescription": "Start your estate plan in minutes. 14-day free trial on every plan — card required, no charge until the trial ends."
+  },
+  "hero": {
+    "invitedBy": "Invited by",
+    "poweredBy": "· powered by Everstead",
+    "eyebrow": "Get started",
+    "title": "Start your plan in minutes.",
+    "subtitleFoundingLead": "Everstead+ is yours for life, free.",
+    "subtitleFoundingBody": "Add your card to claim your founding place — it won't be charged, and you can cancel any time.",
+    "subtitleReferralLead": "You've been referred — enjoy a 21-day free trial.",
+    "subtitleReferralBody": "Enter your card details and you won't be charged until day 21.",
+    "subtitleFreeLead": "Start free — no card required.",
+    "subtitleFreeBody": "Set up the essentials with Your AI Assistant, and upgrade to Everstead+ whenever you're ready.",
+    "subtitleDefault": "{{days}}-day free trial. Enter your card details — you won't be charged until the trial ends."
+  },
+  "promo": {
+    "applied": "Founding offer applied — {{label}}.",
+    "code": "Code {{code}}",
+    "invalid": "Code {{code}} couldn't be applied — {{reason}}. You can still start your free trial.",
+    "checking": "Checking your code…",
+    "appliedAtCheckout": "· applied at checkout",
+    "fallbackInvalid": "Code not valid",
+    "fallbackError": "Could not validate code"
+  },
+  "geo": {
+    "loading": "Just a moment…",
+    "sanctionedTitle": "Everstead is not available in your country.",
+    "sanctionedBody": "We're unable to offer our services in your location due to regulatory restrictions.",
+    "blockedTitle": "Everstead is not currently available in your location.",
+    "blockedBody": "We're focused on a small number of markets right now. We hope to expand — check back soon.",
+    "softWarnLead": "Everstead is currently designed for people in the UK and Ireland.",
+    "softWarnBody": "Some features may not match the legal requirements in your country — but we're expanding, so this may change.",
+    "dismiss": "Dismiss"
+  },
+  "billing": {
+    "billedAnnuallyLocked": "Billed annually",
+    "monthly": "Monthly",
+    "yearly": "Yearly",
+    "savingActive": "✓ Saving 20%",
+    "save": "Save 20%"
+  },
+  "stepIndicator": {
+    "choosePlan": "Choose plan",
+    "yourDetails": "Your details",
+    "createAccount": "Create account",
+    "payment": "Payment"
+  },
+  "plans": {
+    "free": {
+      "name": "Everstead",
+      "desc": "Free forever. Organise the essentials — no card required.",
+      "features": [
+        "Full guided setup with Your AI Assistant",
+        "Your About Me profile",
+        "1 account · 1 document · 1 trusted person"
+      ]
+    },
+    "family": {
+      "name": "Everstead+",
+      "badge": "Most popular",
+      "desc": "For couples and households — two private vaults, one subscription, shared protection.",
+      "features": [
+        "Two private vaults — one subscription",
+        "Unlimited accounts & documents",
+        "Up to 10 trusted contacts",
+        "Unlimited instructions & wishes",
+        "Personal messages & final wishes",
+        "25 GB secure storage",
+        "Your AI Assistant"
+      ]
+    },
+    "launchOffer": "Launch offer",
+    "freePrice": "Free",
+    "forever": "forever",
+    "noCard": "No card required",
+    "planWithName": "{{plan}} plan",
+    "perMonth": "/ month",
+    "billedAnnuallyDetail": "billed annually (£{{price}}/year) · Save 20%",
+    "billedMonthly": "billed monthly"
+  },
+  "step1": {
+    "titleFounding": "Your founding offer",
+    "title": "Choose your plan",
+    "foundingNotePrefix": "The founding offer applies to the",
+    "foundingNoteSuffix": "plan — free for life for founding members. The plan is set for you below.",
+    "backToPayment": "Back to payment with {{plan}}",
+    "continueWith": "Continue with {{plan}}",
+    "microFree": "Free forever · No card required",
+    "microFounding": "Everstead+ free for life · Cancel any time",
+    "microTrial": "{{days}}-day free trial · Cancel before it ends and pay nothing",
+    "pro": {
+      "desc": "For solicitors, will-writers, and financial advisers — a co-branded, multi-client workspace. Pricing on application.",
+      "learnMore": "Learn more",
+      "bookDemo": "Book a demo"
+    }
+  },
+  "oauth": {
+    "title": "One last step",
+    "subtitleFounding": "We just need a few more details before setting up your founding place.",
+    "subtitleTrial": "We just need a few more details before setting up your trial.",
+    "termsPrefix": "By continuing you agree to our",
+    "settingUp": "Setting up…",
+    "continueToPayment": "Continue to payment"
+  },
+  "fields": {
+    "fullName": "Full name",
+    "fullNamePlaceholder": "Jane Smith",
+    "email": "Email address",
+    "emailPlaceholder": "jane@example.com",
+    "password": "Password",
+    "passwordPlaceholder": "Min. 8 characters",
+    "showPassword": "Show password",
+    "hidePassword": "Hide password",
+    "country": "Country of residence",
+    "selectCountry": "Select country…",
+    "oneMoreDetail": "One more detail"
+  },
+  "passwordStrength": {
+    "weak": "Weak",
+    "fair": "Fair",
+    "strong": "Strong"
+  },
+  "step2": {
+    "title": "Create your account",
+    "startingWith": "Starting with the",
+    "yearlyBilling": "yearly billing",
+    "monthlyBilling": "monthly billing",
+    "googleButton": "Continue with Google",
+    "divider": "or continue with email",
+    "termsPrefix": "By creating an account you agree to our",
+    "creating": "Creating your account…",
+    "createFree": "Create my free account",
+    "claimFounding": "Claim my founding place",
+    "startTrial": "Start my Everstead trial",
+    "trustFree": "No card required — Everstead is free to start. You can upgrade to Everstead+ whenever you're ready, and your data comes with you.",
+    "trustFounding": "Your card is stored securely by Stripe. As a founding member, Everstead+ is free for life — £0, and it will never be charged. You can cancel any time.",
+    "trustTrial": "Your card is stored securely by Stripe and will not be charged until your {{days}}-day trial ends. Cancel anytime before then and pay nothing.",
+    "haveAccount": "Already have an account?",
+    "signIn": "Sign in",
+    "exportNote": "Not ready to commit? You can export all your data anytime.",
+    "dataPromise": "Our data promise →"
+  },
+  "terms": {
+    "termsOfService": "Terms of Service",
+    "and": "and",
+    "privacyPolicy": "Privacy Policy"
+  },
+  "step3": {
+    "title": "Add your card",
+    "subtitleFounding": "Everstead+ is yours for life, free. Add your card to claim your founding place — it won't be charged, and you can cancel any time.",
+    "subtitleTrial": "Your card won't be charged for {{days}} days. Cancel any time before then and pay nothing.",
+    "billedAnnually": "billed annually",
+    "billedMonthly": "billed monthly",
+    "changePlan": "Change plan",
+    "switchSave": "💡 Switch to annual and save",
+    "switchSaveAmount": "£{{amount}}/yr (20%)",
+    "switchCta": "Switch to annual →",
+    "stripeNote": "Your card details are handled directly by Stripe and never touch our servers. Secured with 256-bit encryption."
+  },
+  "checkout": {
+    "processing": "Processing…",
+    "claimFreeYear": "Claim my founding place",
+    "startTrial": "Start my {{days}}-day free trial",
+    "finePrintFounding": "Everstead+ is free for life for founding members — cancel any time.",
+    "finePrintTrial": "You won't be charged until day {{days}}. Cancel any time before then."
+  },
+  "trustFooter": {
+    "encryption": "AES-256 encryption",
+    "firstYearFree": "Free for life",
+    "trial": "{{days}}-day free trial",
+    "trustedBy": "Trusted by families & advisers"
+  },
+  "errors": {
+    "restrictedCountry": "We're unable to offer our services in your country due to regulatory restrictions. If you believe this is an error, please contact support@everstead.care.",
+    "sessionExpired": "Session expired. Please sign in again.",
+    "paymentSetup": "Could not set up payment. Please try again.",
+    "accountCreate": "Could not create account. Please try again.",
+    "generic": "Something went wrong. Please try again.",
+    "subscriptionActivate": "Could not activate your subscription. Please contact support."
+  }
+}

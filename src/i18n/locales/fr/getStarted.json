@@ -1,0 +1,186 @@
+{
+  "meta": {
+    "title": "Commencer — Everstead",
+    "description": "Lancez votre plan Everstead en quelques minutes. Choisissez votre forfait, créez votre compte et commencez vos 14 jours d'essai gratuit. Aucun débit avant la fin de l'essai.",
+    "ogTitle": "Commencer — Everstead",
+    "ogDescription": "Organisez votre succession en quelques minutes. 14 jours d'essai gratuit sur chaque forfait — carte requise, aucun débit avant la fin de l'essai."
+  },
+  "hero": {
+    "invitedBy": "Invité par",
+    "poweredBy": "· propulsé par Everstead",
+    "eyebrow": "Commencer",
+    "title": "Lancez votre plan en quelques minutes.",
+    "subtitleFoundingLead": "Everstead+ est à vous à vie, gratuitement.",
+    "subtitleFoundingBody": "Ajoutez votre carte pour réserver votre place de membre fondateur — elle ne sera pas débitée, et vous pouvez annuler à tout moment.",
+    "subtitleReferralLead": "Vous avez été parrainé — profitez de 21 jours d'essai gratuit.",
+    "subtitleReferralBody": "Saisissez les informations de votre carte — vous ne serez pas débité avant le 21e jour.",
+    "subtitleFreeLead": "Commencez gratuitement — sans carte bancaire.",
+    "subtitleFreeBody": "Mettez en place l'essentiel avec votre assistant IA, et passez à Everstead+ quand vous serez prêt.",
+    "subtitleDefault": "{{days}} jours d'essai gratuit. Saisissez les informations de votre carte — vous ne serez pas débité avant la fin de l'essai."
+  },
+  "promo": {
+    "applied": "Offre fondateur appliquée — {{label}}.",
+    "code": "Code {{code}}",
+    "invalid": "Le code {{code}} n'a pas pu être appliqué — {{reason}}. Vous pouvez tout de même commencer votre essai gratuit.",
+    "checking": "Vérification de votre code…",
+    "appliedAtCheckout": "· appliqué au paiement",
+    "fallbackInvalid": "Code non valide",
+    "fallbackError": "Impossible de vérifier le code"
+  },
+  "geo": {
+    "loading": "Un instant…",
+    "sanctionedTitle": "Everstead n'est pas disponible dans votre pays.",
+    "sanctionedBody": "Nous ne pouvons pas proposer nos services dans votre région en raison de restrictions réglementaires.",
+    "blockedTitle": "Everstead n'est pas encore disponible dans votre région.",
+    "blockedBody": "Nous nous concentrons pour l'instant sur un petit nombre de marchés. Nous espérons nous développer — revenez bientôt.",
+    "softWarnLead": "Everstead est aujourd'hui conçu pour les personnes résidant au Royaume-Uni et en Irlande.",
+    "softWarnBody": "Certaines fonctionnalités peuvent ne pas correspondre aux exigences légales de votre pays — mais nous nous développons, et cela pourrait changer.",
+    "dismiss": "Fermer"
+  },
+  "billing": {
+    "billedAnnuallyLocked": "Facturation annuelle",
+    "monthly": "Mensuel",
+    "yearly": "Annuel",
+    "savingActive": "✓ Économie de 20 %",
+    "save": "Économisez 20 %"
+  },
+  "stepIndicator": {
+    "choosePlan": "Choix du forfait",
+    "yourDetails": "Vos informations",
+    "createAccount": "Création du compte",
+    "payment": "Paiement"
+  },
+  "plans": {
+    "free": {
+      "name": "Everstead",
+      "desc": "Gratuit pour toujours. Organisez l'essentiel — sans carte bancaire.",
+      "features": [
+        "Configuration guidée complète avec votre assistant IA",
+        "Votre profil « À propos de moi »",
+        "1 compte · 1 document · 1 personne de confiance"
+      ]
+    },
+    "family": {
+      "name": "Everstead+",
+      "badge": "Le plus populaire",
+      "desc": "Pour les couples et les foyers — deux espaces privés, un seul abonnement, une protection partagée.",
+      "features": [
+        "Deux espaces privés — un seul abonnement",
+        "Comptes et documents illimités",
+        "Jusqu'à 10 personnes de confiance",
+        "Instructions et volontés illimitées",
+        "Messages personnels et dernières volontés",
+        "25 Go de stockage sécurisé",
+        "Votre assistant IA"
+      ]
+    },
+    "launchOffer": "Offre de lancement",
+    "freePrice": "Gratuit",
+    "forever": "pour toujours",
+    "noCard": "Sans carte bancaire",
+    "planWithName": "forfait {{plan}}",
+    "perMonth": "/ mois",
+    "billedAnnuallyDetail": "facturation annuelle ({{price}} £/an) · Économisez 20 %",
+    "billedMonthly": "facturation mensuelle"
+  },
+  "step1": {
+    "titleFounding": "Votre offre fondateur",
+    "title": "Choisissez votre forfait",
+    "foundingNotePrefix": "L'offre fondateur s'applique au forfait",
+    "foundingNoteSuffix": "— offert à vie aux membres fondateurs. Le forfait est déjà sélectionné pour vous ci-dessous.",
+    "backToPayment": "Revenir au paiement avec {{plan}}",
+    "continueWith": "Continuer avec {{plan}}",
+    "microFree": "Gratuit pour toujours · Sans carte bancaire",
+    "microFounding": "Everstead+ offert à vie · Annulez à tout moment",
+    "microTrial": "{{days}} jours d'essai gratuit · Annulez avant la fin sans rien payer",
+    "pro": {
+      "desc": "Pour les notaires, les rédacteurs de testaments et les conseillers financiers — un espace de travail multi-clients co-brandé. Tarif sur demande.",
+      "learnMore": "En savoir plus",
+      "bookDemo": "Réserver une démo"
+    }
+  },
+  "oauth": {
+    "title": "Une dernière étape",
+    "subtitleFounding": "Il ne nous manque que quelques informations pour préparer votre place de membre fondateur.",
+    "subtitleTrial": "Il ne nous manque que quelques informations pour préparer votre essai.",
+    "termsPrefix": "En continuant, vous acceptez nos",
+    "settingUp": "Mise en place…",
+    "continueToPayment": "Continuer vers le paiement"
+  },
+  "fields": {
+    "fullName": "Nom complet",
+    "fullNamePlaceholder": "Marie Dupont",
+    "email": "Adresse e-mail",
+    "emailPlaceholder": "marie@exemple.com",
+    "password": "Mot de passe",
+    "passwordPlaceholder": "8 caractères minimum",
+    "showPassword": "Afficher le mot de passe",
+    "hidePassword": "Masquer le mot de passe",
+    "country": "Pays de résidence",
+    "selectCountry": "Sélectionnez un pays…",
+    "oneMoreDetail": "Un dernier détail"
+  },
+  "passwordStrength": {
+    "weak": "Faible",
+    "fair": "Moyen",
+    "strong": "Fort"
+  },
+  "step2": {
+    "title": "Créez votre compte",
+    "startingWith": "Vous commencez avec le",
+    "yearlyBilling": "facturation annuelle",
+    "monthlyBilling": "facturation mensuelle",
+    "googleButton": "Continuer avec Google",
+    "divider": "ou continuez par e-mail",
+    "termsPrefix": "En créant un compte, vous acceptez nos",
+    "creating": "Création de votre compte…",
+    "createFree": "Créer mon compte gratuit",
+    "claimFounding": "Réserver ma place de membre fondateur",
+    "startTrial": "Commencer mon essai Everstead",
+    "trustFree": "Sans carte bancaire — Everstead est gratuit pour commencer. Vous pourrez passer à Everstead+ quand vous serez prêt, et vos données vous suivront.",
+    "trustFounding": "Votre carte est conservée en toute sécurité par Stripe. En tant que membre fondateur, Everstead+ est offert à vie — 0 £, elle ne sera jamais débitée. Annulez à tout moment.",
+    "trustTrial": "Votre carte est conservée en toute sécurité par Stripe et ne sera pas débitée avant la fin de vos {{days}} jours d'essai. Annulez à tout moment avant la fin et vous ne payez rien.",
+    "haveAccount": "Vous avez déjà un compte ?",
+    "signIn": "Se connecter",
+    "exportNote": "Pas prêt à vous engager ? Vous pouvez exporter toutes vos données à tout moment.",
+    "dataPromise": "Notre engagement données →"
+  },
+  "terms": {
+    "termsOfService": "Conditions d'utilisation",
+    "and": "et notre",
+    "privacyPolicy": "Politique de confidentialité"
+  },
+  "step3": {
+    "title": "Ajoutez votre carte",
+    "subtitleFounding": "Everstead+ est à vous, à vie, gratuitement. Ajoutez votre carte pour réserver votre place de membre fondateur — elle ne sera pas débitée, et vous pouvez annuler à tout moment.",
+    "subtitleTrial": "Votre carte ne sera pas débitée pendant {{days}} jours. Annulez à tout moment avant la fin et vous ne payez rien.",
+    "billedAnnually": "facturation annuelle",
+    "billedMonthly": "facturation mensuelle",
+    "changePlan": "Changer de forfait",
+    "switchSave": "💡 Passez à l'annuel et économisez",
+    "switchSaveAmount": "{{amount}} £/an (20 %)",
+    "switchCta": "Passer à l'annuel →",
+    "stripeNote": "Les informations de votre carte sont traitées directement par Stripe et ne transitent jamais par nos serveurs. Sécurisé par un chiffrement 256 bits."
+  },
+  "checkout": {
+    "processing": "Traitement en cours…",
+    "claimFreeYear": "Réserver ma place de membre fondateur",
+    "startTrial": "Commencer mes {{days}} jours d'essai gratuit",
+    "finePrintFounding": "Everstead+ est offert à vie aux membres fondateurs — annulez à tout moment.",
+    "finePrintTrial": "Vous ne serez pas débité avant le {{days}}e jour. Annulez à tout moment avant cette date."
+  },
+  "trustFooter": {
+    "encryption": "Chiffrement AES-256",
+    "firstYearFree": "Offert à vie",
+    "trial": "{{days}} jours d'essai gratuit",
+    "trustedBy": "La confiance des familles et des conseillers"
+  },
+  "errors": {
+    "restrictedCountry": "Nous ne pouvons pas proposer nos services dans votre pays en raison de restrictions réglementaires. Si vous pensez qu'il s'agit d'une erreur, veuillez contacter support@everstead.care.",
+    "sessionExpired": "Votre session a expiré. Veuillez vous reconnecter.",
+    "paymentSetup": "Impossible de configurer le paiement. Veuillez réessayer.",
+    "accountCreate": "Impossible de créer le compte. Veuillez réessayer.",
+    "generic": "Une erreur est survenue. Veuillez réessayer.",
+    "subscriptionActivate": "Impossible d'activer votre abonnement. Veuillez contacter le support."
+  }
+}

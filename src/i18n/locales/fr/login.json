@@ -64,5 +64,47 @@
   "errors": {
     "generic": "Une erreur est survenue. Veuillez réessayer."
   },
-  "trustBadge": "🔒 Chiffrement au repos et en transit · Hébergement conforme au RGPD · ICO n° 17166825"
+  "trustBadge": "🔒 Chiffrement au repos et en transit · Hébergement conforme au RGPD · ICO n° 17166825",
+  "forgot": {
+    "title": "Mot de passe oublié ?",
+    "subtitle": "Saisissez votre adresse e-mail et nous vous enverrons un lien de réinitialisation.",
+    "emailLabel": "Adresse e-mail",
+    "emailPlaceholder": "vous@exemple.com",
+    "submit": "Envoyer le lien de réinitialisation",
+    "submitLoading": "Envoi en cours…",
+    "backToLogin": "Retour à la connexion",
+    "sentTitle": "Vérifiez votre boîte de réception",
+    "sentBody1": "Nous vous avons envoyé un lien de réinitialisation à",
+    "sentBody2": ". Il expire dans une heure.",
+    "errors": {
+      "generic": "Une erreur est survenue. Veuillez réessayer."
+    }
+  },
+  "reset": {
+    "title": "Définissez un nouveau mot de passe",
+    "subtitle": "Choisissez un mot de passe solide pour votre compte Everstead.",
+    "newPasswordLabel": "Nouveau mot de passe",
+    "newPasswordPlaceholder": "Au moins 8 caractères",
+    "confirmPasswordLabel": "Confirmez le mot de passe",
+    "confirmPasswordPlaceholder": "Saisissez à nouveau votre mot de passe",
+    "showPassword": "Afficher le mot de passe",
+    "hidePassword": "Masquer le mot de passe",
+    "strength": {
+      "weak": "Faible",
+      "fair": "Moyen",
+      "strong": "Fort"
+    },
+    "submit": "Définir le nouveau mot de passe",
+    "submitLoading": "Mise à jour…",
+    "doneTitle": "Mot de passe mis à jour",
+    "doneBody": "Votre nouveau mot de passe a bien été enregistré. Nous vous redirigeons vers votre tableau de bord…",
+    "checking": "Vérification de votre lien de réinitialisation…",
+    "checkingHint": "Si rien ne se passe,",
+    "requestNewLink": "demandez un nouveau lien",
+    "errors": {
+      "mismatch": "Les mots de passe ne correspondent pas.",
+      "tooShort": "Le mot de passe doit contenir au moins 8 caractères.",
+      "generic": "Une erreur est survenue. Veuillez réessayer."
+    }
+  }
 }

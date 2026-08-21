@@ -1,0 +1,109 @@
+{
+  "meta": {
+    "title": "Offrez Everstead en cadeau | Everstead",
+    "description": "Offrez la sérénité en cadeau. Achetez un abonnement Everstead pour une personne qui vous est chère."
+  },
+  "hero": {
+    "eyebrow": "Offrez un abonnement Everstead",
+    "title": "Offrez la sérénité en cadeau.",
+    "subtitle": "Aidez une personne qui vous est chère à protéger ce qui compte le plus — sa famille, ses volontés, son plan."
+  },
+  "stepIndicator": {
+    "length": "Durée du cadeau",
+    "details": "Coordonnées du destinataire",
+    "payment": "Paiement"
+  },
+  "plan": {
+    "name": "Everstead+",
+    "badge": "Le cadeau complet",
+    "desc": "Deux espaces privés, un seul abonnement.",
+    "features": [
+      "Tout Everstead, sans limite",
+      "Deux espaces privés — un pour chacun",
+      "Chacun garde ses données privées",
+      "Jusqu'à 10 personnes de confiance",
+      "25 Go de stockage sécurisé",
+      "Ne partagez que ce que vous choisissez"
+    ],
+    "perYear": "/an"
+  },
+  "years_one": "{{count}} an",
+  "years_other": "{{count}} ans",
+  "planYears": "{{plan}} — {{years}}",
+  "step1": {
+    "title": "Quelle durée pour votre cadeau ?",
+    "subtitle": "Vous offrez {{plan}} — choisissez le nombre d'années à offrir.",
+    "howManyYears": "Combien d'années ?",
+    "mostThoughtful": "Le plus attentionné",
+    "oneTimePayment": "Cadeau réglé en une seule fois",
+    "continue": "Continuer"
+  },
+  "step2": {
+    "title": "Coordonnées du destinataire",
+    "gifting": "Vous offrez",
+    "aboutRecipient": "À propos du destinataire",
+    "aboutYou": "À propos de vous",
+    "recipientName": {
+      "label": "Nom du destinataire",
+      "placeholder": "Marie Dupont (facultatif)"
+    },
+    "recipientEmail": {
+      "label": "Adresse e-mail du destinataire",
+      "placeholder": "marie@exemple.com"
+    },
+    "gifterName": {
+      "label": "Votre nom",
+      "placeholder": "Votre nom complet"
+    },
+    "gifterEmail": {
+      "label": "Votre adresse e-mail",
+      "placeholder": "vous@exemple.com",
+      "note": "Votre reçu de confirmation sera envoyé à cette adresse."
+    },
+    "personalMessage": {
+      "label": "Message personnel",
+      "placeholder": "Écrivez un petit mot pour le destinataire… (facultatif)"
+    },
+    "delivery": {
+      "title": "Quand devons-nous envoyer le cadeau ?",
+      "sendNow": "Envoyer immédiatement après le paiement",
+      "schedule": "Programmer à une date précise"
+    },
+    "settingUp": "Préparation…",
+    "continueToPayment": "Continuer vers le paiement"
+  },
+  "step3": {
+    "title": "Paiement",
+    "subtitle": "Paiement unique · Aucun prélèvement récurrent"
+  },
+  "payment": {
+    "orderSummary": "Récapitulatif de commande",
+    "forRecipient": "Pour : {{recipient}}",
+    "sentImmediately": "Envoyé immédiatement",
+    "scheduledDelivery": "Envoi programmé",
+    "processing": "Traitement en cours…",
+    "sendGift": "Envoyer le cadeau →",
+    "securityNote": "Vos coordonnées bancaires sont traitées directement par Stripe et ne transitent jamais par nos serveurs. Sécurisé par un chiffrement 256 bits."
+  },
+  "confirmation": {
+    "title": "Votre cadeau est en route.",
+    "sentNow": "Nous avons envoyé le cadeau à <bold>{{recipient}}</bold> immédiatement. Vous recevrez une confirmation par e-mail sous peu.",
+    "scheduled": "Votre cadeau arrivera le <bold>{{date}}</bold>. Vous recevrez une confirmation par e-mail sous peu.",
+    "receiptSent": "Un reçu a été envoyé à {{email}}.",
+    "upsellTitle": "Et si vous protégiez aussi votre propre plan ?",
+    "upsellBody": "Créez votre propre compte Everstead et profitez de 14 jours gratuits.",
+    "upsellCta": "Commencez votre essai gratuit"
+  },
+  "errors": {
+    "confirmFailed": "Impossible de confirmer le cadeau. Veuillez contacter support@everstead.care.",
+    "setupFailed": "Impossible de préparer le paiement. Veuillez réessayer."
+  },
+  "trust": {
+    "items": [
+      "Paiement unique sécurisé",
+      "Envoyé par e-mail",
+      "Valable 12 mois",
+      "Aucune carte requise pour l'activer"
+    ]
+  }
+}

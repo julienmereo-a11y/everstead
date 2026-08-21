@@ -1,57 +1,49 @@
 import React from 'react'
 import { Helmet } from 'react-helmet-async'
+import HreflangLinks from '../components/HreflangLinks'
 import { Link } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { useReveal } from '../components/useReveal'
+import i18n from '../i18n'
+import enCookies from '../i18n/locales/en/cookies.json'
+import frCookies from '../i18n/locales/fr/cookies.json'
 
-const categories = [
-  {
-    name: 'Essential cookies',
-    required: true,
-    description:
-      'These cookies are strictly necessary for Everstead to function. They keep you securely logged in, protect your session against fraud, and ensure the platform works correctly. They cannot be disabled — the service cannot operate without them. No consent is required under UK PECR.',
-    examples: 'Authentication session tokens, security tokens, user preference cookies.',
-    provider: 'Everstead Digital Ltd',
-    retention: 'Session / up to 1 year',
-  },
-  {
-    name: 'Analytics cookies',
-    required: false,
-    description:
-      'We use Google Analytics to understand how visitors use our website — which pages are visited, how long people spend on them, and how they arrive. This helps us improve the product. These cookies are only placed after you give your consent. No personally identifiable information is collected.',
-    examples: '_ga, _gid, _gat',
-    provider: 'Google LLC (data may be processed in the USA under standard contractual clauses)',
-    retention: 'Up to 2 years',
-  },
-  {
-    name: 'Marketing cookies',
-    required: false,
-    description:
-      'We use Meta Pixel to measure the effectiveness of our advertising on Facebook and Instagram. This cookie is only placed after you consent to marketing cookies. We do not use it to build advertising profiles or sell your data.',
-    examples: '_fbp, _fbc',
-    provider: 'Meta Platforms Ireland Ltd',
-    retention: 'Up to 3 months',
-  },
-]
+// Self-registered namespace (keeps src/i18n/index.js untouched). Safe to move
+// into the central resources map later — re-adding the same bundle is a no-op.
+i18n.addResourceBundle('en', 'cookies', enCookies)
+i18n.addResourceBundle('fr', 'cookies', frCookies)
+
+// Non-text metadata — all visible copy lives in the "cookies" i18n namespace.
+const CATEGORY_REQUIRED = [true, false, false]
 
 export default function Cookies() {
   useReveal()
+  const { t } = useTranslation('cookies')
+
+  const localePrefix = i18n.language === 'fr' ? '/fr' : ''
+  const pageUrl = `https://www.everstead.care${localePrefix}/cookies`
+
+  const categories = t('categories', { returnObjects: true })
+    .map((cat, i) => ({ ...cat, required: CATEGORY_REQUIRED[i] }))
+
   return (
     <>
       <Helmet>
-        <title>Cookie Policy — Everstead</title>
-        <meta name="description" content="How Everstead uses cookies — what they are, which ones we set, and how to manage your preferences." />
-        <link rel="canonical" href="https://www.everstead.care/cookies" />
+        <title>{t('meta.title')}</title>
+        <meta name="description" content={t('meta.description')} />
+        <link rel="canonical" href={pageUrl} />
       </Helmet>
+      <HreflangLinks path="/cookies" />
 
       <div className="bg-stone-50 pt-24 min-h-screen">
         <section className="py-16 lg:py-20 grain relative overflow-hidden">
           <div className="absolute inset-0 aurora-bg" />
           <div className="relative max-w-3xl mx-auto px-6 lg:px-8 text-center">
-            <p className="text-xs font-semibold uppercase tracking-widest text-sage-400 mb-4 animate-fade-in">Legal</p>
+            <p className="text-xs font-semibold uppercase tracking-widest text-sage-400 mb-4 animate-fade-in">{t('header.eyebrow')}</p>
             <h1 className="font-display text-4xl lg:text-5xl font-light text-white leading-tight text-balance animate-fade-up">
-              Cookie Policy
+              {t('header.title')}
             </h1>
-            <p className="mt-4 text-stone-400 text-sm animate-fade-up animate-delay-100">Last updated May 2026</p>
+            <p className="mt-4 text-stone-400 text-sm animate-fade-up animate-delay-100">{t('header.updated')}</p>
           </div>
         </section>
 
@@ -59,35 +51,35 @@ export default function Cookies() {
           <div className="max-w-3xl mx-auto px-6 lg:px-8 space-y-10">
 
             <div className="reveal">
-              <h2 className="font-display text-xl font-medium text-navy-950 mb-3">What are cookies?</h2>
+              <h2 className="font-display text-xl font-medium text-navy-950 mb-3">{t('what.title')}</h2>
               <p className="text-stone-600 text-sm leading-relaxed">
-                Cookies are small text files placed on your device when you visit a website. They help websites function correctly and allow us to understand how people use Everstead so we can improve it.
+                {t('what.body')}
               </p>
             </div>
 
             <div className="reveal">
-              <h2 className="font-display text-xl font-medium text-navy-950 mb-6">Cookies we use</h2>
+              <h2 className="font-display text-xl font-medium text-navy-950 mb-6">{t('cookiesWeUse.title')}</h2>
               <div className="space-y-6">
                 {categories.map(cat => (
                   <div key={cat.name} className="rounded-2xl border border-stone-200 bg-white p-6">
                     <div className="flex items-center justify-between mb-3">
                       <h3 className="font-semibold text-navy-900 text-sm">{cat.name}</h3>
                       <span className={`text-xs font-medium px-2.5 py-1 rounded-full ${cat.required ? 'bg-navy-100 text-navy-700' : 'bg-stone-100 text-stone-600'}`}>
-                        {cat.required ? 'Always active' : 'Consent required'}
+                        {cat.required ? t('badges.alwaysActive') : t('badges.consentRequired')}
                       </span>
                     </div>
                     <p className="text-stone-600 text-sm leading-relaxed mb-4">{cat.description}</p>
                     <div className="grid sm:grid-cols-3 gap-3 text-xs">
                       <div>
-                        <p className="font-semibold text-stone-500 uppercase tracking-wide mb-1">Examples</p>
+                        <p className="font-semibold text-stone-500 uppercase tracking-wide mb-1">{t('labels.examples')}</p>
                         <p className="text-stone-500 font-mono">{cat.examples}</p>
                       </div>
                       <div>
-                        <p className="font-semibold text-stone-500 uppercase tracking-wide mb-1">Provider</p>
+                        <p className="font-semibold text-stone-500 uppercase tracking-wide mb-1">{t('labels.provider')}</p>
                         <p className="text-stone-500">{cat.provider}</p>
                       </div>
                       <div>
-                        <p className="font-semibold text-stone-500 uppercase tracking-wide mb-1">Retention</p>
+                        <p className="font-semibold text-stone-500 uppercase tracking-wide mb-1">{t('labels.retention')}</p>
                         <p className="text-stone-500">{cat.retention}</p>
                       </div>
                     </div>
@@ -97,39 +89,39 @@ export default function Cookies() {
             </div>
 
             <div className="reveal">
-              <h2 className="font-display text-xl font-medium text-navy-950 mb-3">What we do not use</h2>
+              <h2 className="font-display text-xl font-medium text-navy-950 mb-3">{t('notUse.title')}</h2>
               <p className="text-stone-600 text-sm leading-relaxed">
-                Everstead does not use advertising profiling cookies, social media tracking pixels (beyond the Meta Pixel described above), or any third-party data broker technologies. We never sell your data to third parties.
+                {t('notUse.body')}
               </p>
             </div>
 
             <div className="reveal">
-              <h2 className="font-display text-xl font-medium text-navy-950 mb-3">Managing your preferences</h2>
+              <h2 className="font-display text-xl font-medium text-navy-950 mb-3">{t('managing.title')}</h2>
               <p className="text-stone-600 text-sm leading-relaxed mb-3">
-                When you first visit Everstead, a cookie banner will ask for your consent to non-essential cookies. You can change or withdraw your consent at any time by clicking <strong>"Cookie settings"</strong> in the footer of any page.
+                {t('managing.p1Before')} <strong>{t('managing.p1Strong')}</strong> {t('managing.p1After')}
               </p>
               <p className="text-stone-600 text-sm leading-relaxed">
-                You can also manage cookies through your browser settings. Please note that disabling essential cookies may prevent you from logging in or using parts of the platform.
-              </p>
-            </div>
-
-            <div className="reveal">
-              <h2 className="font-display text-xl font-medium text-navy-950 mb-3">Legal basis</h2>
-              <p className="text-stone-600 text-sm leading-relaxed">
-                Our use of cookies complies with the UK Privacy and Electronic Communications Regulations (PECR) and UK GDPR. Essential cookies are set on the basis of legitimate interest. Analytics and marketing cookies are set only on the basis of your explicit consent.
+                {t('managing.p2')}
               </p>
             </div>
 
             <div className="reveal">
-              <h2 className="font-display text-xl font-medium text-navy-950 mb-3">Contact</h2>
+              <h2 className="font-display text-xl font-medium text-navy-950 mb-3">{t('legalBasis.title')}</h2>
               <p className="text-stone-600 text-sm leading-relaxed">
-                Questions about our use of cookies? Email us at{' '}
+                {t('legalBasis.body')}
+              </p>
+            </div>
+
+            <div className="reveal">
+              <h2 className="font-display text-xl font-medium text-navy-950 mb-3">{t('contact.title')}</h2>
+              <p className="text-stone-600 text-sm leading-relaxed">
+                {t('contact.intro')}{' '}
                 <a href="mailto:hello@everstead.care" className="text-navy-700 hover:text-navy-900 underline">hello@everstead.care</a>{' '}
-                or see our full{' '}
-                <Link to="/privacy" className="text-navy-700 hover:text-navy-900 underline">Privacy Policy</Link>.
+                {t('contact.orSee')}{' '}
+                <Link to="/privacy" className="text-navy-700 hover:text-navy-900 underline">{t('contact.privacyPolicy')}</Link>.
               </p>
               <p className="mt-4 text-stone-400 text-xs">
-                Everstead Digital Ltd — registered in England &amp; Wales, No. 17166825. ICO registration no. 00013988672.
+                {t('contact.company')}
               </p>
             </div>
 

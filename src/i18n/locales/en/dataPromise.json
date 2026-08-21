@@ -1,0 +1,49 @@
+{
+  "meta": {
+    "title": "Our Data Promise — Everstead",
+    "description": "Your data belongs to you. Export everything anytime, 90-day wind-down commitment, and we will never sell your data. Everstead's full data promise.",
+    "ogDescription": "Your data belongs to you. Export everything anytime, 90-day wind-down commitment, and we will never sell your data."
+  },
+  "hero": {
+    "eyebrow": "Data Promise",
+    "title": "Your data belongs to you. Always.",
+    "subtitle": "Everstead is built to last. But we believe you should never feel locked in."
+  },
+  "promises": [
+    {
+      "title": "Export everything, anytime",
+      "body": "You can download a complete copy of your entire Everstead plan at any time — accounts, documents, instructions, wishes, and more — in standard readable formats. No hoops, no waiting.",
+      "cta": "Export your data →"
+    },
+    {
+      "title": "90 days notice if anything changes",
+      "body": "If Everstead ever ceases trading, we commit to giving every user a minimum of 90 days notice, continued free access to export their data, and clear guidance on what to do next. Your plan will never disappear without warning."
+    },
+    {
+      "title": "We will never sell your data",
+      "body": "Everstead does not sell, share, or monetise your personal data. Ever. We make money from subscriptions — not from you. Full details are in our Privacy Policy.",
+      "cta": "Read our Privacy Policy →"
+    }
+  ],
+  "commitment": {
+    "title": "Our commitment in full",
+    "intro": "Everstead Digital Ltd is registered in England and Wales (Company No. 17166825). We take our responsibility to our users seriously.",
+    "lead": "We commit to the following:",
+    "items": [
+      "You can export your complete data at any time from your dashboard settings.",
+      "If Everstead ceases trading for any reason, we will give all users a minimum of 90 days written notice before any data is deleted.",
+      "During any wind-down period, data export will remain free and unrestricted for all users regardless of subscription status.",
+      "We will never sell your personal data to third parties.",
+      "You have the right to request deletion of your data at any time by contacting hello@everstead.care."
+    ],
+    "contact": {
+      "prefix": "If you have any questions about your data or this commitment, please contact us at",
+      "suffix": "We will respond within 2 business days."
+    },
+    "lastUpdated": "Last updated: May 2026 · Everstead Digital Ltd · everstead.care"
+  },
+  "cta": {
+    "export": "Export my data",
+    "privacy": "Read our Privacy Policy"
+  }
+}

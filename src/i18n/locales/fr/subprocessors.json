@@ -1,0 +1,74 @@
+{
+  "meta": {
+    "title": "Sous-traitants — Everstead",
+    "description": "Les prestataires de services tiers auxquels Everstead fait appel pour fournir la plateforme — leur rôle, le lieu de traitement des données et les garanties de transfert en place au titre du RGPD britannique (UK GDPR)."
+  },
+  "effectiveDate": "27 mai 2026",
+  "hero": {
+    "eyebrow": "Légal · Protection des données",
+    "title": "Sous-traitants",
+    "lastUpdated": "Dernière mise à jour : {{date}}"
+  },
+  "intro": {
+    "p1": "Pour exploiter la plateforme Everstead, nous faisons appel à un petit nombre de prestataires tiers de confiance (« sous-traitants ultérieurs »). Chacun d'eux a signé un accord de traitement des données avec {{company}} et offre des garanties appropriées au titre du RGPD britannique (UK GDPR).",
+    "p2": "Cette page constitue la liste officielle et à jour. Elle est incorporée par référence au <dpaLink>DPA conseillers</dpaLink> (clause 6) et à la <privacyLink>Politique de confidentialité</privacyLink>."
+  },
+  "card": {
+    "privacyPolicyLink": "Politique de confidentialité ↗",
+    "purposeLabel": "Finalité",
+    "locationLabel": "Localisation des données",
+    "transferLabel": "Garantie de transfert"
+  },
+  "list": [
+    {
+      "purpose": "Base de données PostgreSQL managée, authentification et stockage chiffré des fichiers du coffre.",
+      "location": "UE (Irlande) — données hébergées dans la région de Francfort",
+      "transferMechanism": "IDTA britannique / CCT de l'UE"
+    },
+    {
+      "purpose": "Hébergement web et fonctions serverless (site Everstead et points de terminaison de l'API).",
+      "location": "États-Unis / réseau edge mondial",
+      "transferMechanism": "IDTA britannique / CCT de l'UE"
+    },
+    {
+      "purpose": "Facturation des abonnements et traitement des paiements. Les données de carte ne transitent jamais par les serveurs d'Everstead.",
+      "location": "Irlande (UE) — Stripe agit en qualité de responsable du traitement indépendant pour la prévention de la fraude",
+      "transferMechanism": "CCT de l'UE (le cas échéant)"
+    },
+    {
+      "purpose": "Envoi d'e-mails transactionnels (vérification de compte, rappels de fin d'essai, factures, notifications du coffre).",
+      "location": "États-Unis",
+      "transferMechanism": "IDTA britannique / CCT de l'UE"
+    },
+    {
+      "purpose": "Surveillance des erreurs et rapports d'incident. Ne reçoit que le contexte technique des erreurs — jamais le contenu du coffre.",
+      "location": "États-Unis",
+      "transferMechanism": "IDTA britannique / CCT de l'UE"
+    },
+    {
+      "purpose": "Assistant propulsé par l'IA, analyse de documents et aide contextuelle dans le produit. Traite les messages ainsi que les documents ou images qu'un membre choisit de soumettre à une fonctionnalité d'IA — il ne dispose d'aucun accès global au coffre du membre et n'intervient que lorsque les fonctionnalités d'IA sont activées.",
+      "location": "États-Unis",
+      "transferMechanism": "IDTA britannique / CCT de l'UE · traitement régi par les conditions commerciales de l'API d'Anthropic ; Anthropic n'entraîne pas ses modèles sur les données d'Everstead"
+    }
+  ],
+  "changes": {
+    "title": "Modifications de cette liste",
+    "p1": "Nous informerons nos clients — par e-mail et par un avis publié sur cette page — au moins <strong>30 jours avant</strong> l'ajout ou le remplacement d'un sous-traitant. Les clients du forfait conseiller peuvent s'opposer à une modification pendant ce délai ; si nous ne parvenons pas à résoudre l'objection, le client peut résilier son abonnement pour ce motif, sans pénalité.",
+    "p2": "Abonnez-vous ci-dessous pour recevoir les notifications de modification par e-mail. Votre adresse ne sera utilisée que pour les avis relatifs aux sous-traitants — jamais à des fins marketing."
+  },
+  "form": {
+    "placeholder": "vous@exemple.com",
+    "emailAria": "Adresse e-mail pour les notifications relatives aux sous-traitants",
+    "submit": "S'abonner",
+    "submitting": "Abonnement en cours…",
+    "error": "L'abonnement n'a pas abouti. Veuillez réessayer.",
+    "successTitle": "Votre abonnement est confirmé.",
+    "successBody": "Un e-mail de confirmation est en route. Vous pouvez vous désabonner à tout moment depuis n'importe quel e-mail de notification."
+  },
+  "footer": {
+    "note": "{{company}} est le responsable du traitement des données de compte des membres Everstead et le sous-traitant du contenu du coffre déposé par les membres ou par les conseillers pour le compte de leurs clients. Pour le détail complet, consultez la <privacyLink>Politique de confidentialité</privacyLink> et le <dpaLink>DPA conseillers</dpaLink>.",
+    "privacyPolicy": "Politique de confidentialité",
+    "adviserDpa": "DPA conseillers",
+    "security": "Sécurité"
+  }
+}

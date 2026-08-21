@@ -1,0 +1,72 @@
+{
+  "meta": {
+    "title": "Politique de cookies — Everstead",
+    "description": "Comment Everstead utilise les cookies — ce qu'ils sont, ceux que nous déposons et comment gérer vos préférences."
+  },
+  "header": {
+    "eyebrow": "Légal",
+    "title": "Politique de cookies",
+    "updated": "Dernière mise à jour : mai 2026"
+  },
+  "badges": {
+    "alwaysActive": "Toujours actifs",
+    "consentRequired": "Consentement requis"
+  },
+  "labels": {
+    "examples": "Exemples",
+    "provider": "Fournisseur",
+    "retention": "Durée de conservation"
+  },
+  "categories": [
+    {
+      "name": "Cookies essentiels",
+      "description": "Ces cookies sont strictement nécessaires au fonctionnement d'Everstead. Ils vous maintiennent connecté en toute sécurité, protègent votre session contre la fraude et garantissent le bon fonctionnement de la plateforme. Ils ne peuvent pas être désactivés — le service ne peut pas fonctionner sans eux. Aucun consentement n'est requis au titre du règlement britannique PECR.",
+      "examples": "Jetons de session d'authentification, jetons de sécurité, cookies de préférences utilisateur.",
+      "provider": "Everstead Digital Ltd",
+      "retention": "Session / jusqu'à 1 an"
+    },
+    {
+      "name": "Cookies d'analyse",
+      "description": "Nous utilisons Google Analytics pour comprendre comment les visiteurs utilisent notre site web — quelles pages sont consultées, combien de temps les visiteurs y passent et comment ils y arrivent. Cela nous aide à améliorer le produit. Ces cookies ne sont déposés qu'après que vous avez donné votre consentement. Aucune information permettant de vous identifier personnellement n'est collectée.",
+      "examples": "_ga, _gid, _gat",
+      "provider": "Google LLC (les données peuvent être traitées aux États-Unis dans le cadre de clauses contractuelles types)",
+      "retention": "Jusqu'à 2 ans"
+    },
+    {
+      "name": "Cookies marketing",
+      "description": "Nous utilisons le pixel Meta (Meta Pixel) pour mesurer l'efficacité de nos publicités sur Facebook et Instagram. Ce cookie n'est déposé qu'après votre consentement aux cookies marketing. Nous ne l'utilisons pas pour établir des profils publicitaires ni pour vendre vos données.",
+      "examples": "_fbp, _fbc",
+      "provider": "Meta Platforms Ireland Ltd",
+      "retention": "Jusqu'à 3 mois"
+    }
+  ],
+  "what": {
+    "title": "Qu'est-ce qu'un cookie ?",
+    "body": "Les cookies sont de petits fichiers texte déposés sur votre appareil lorsque vous visitez un site web. Ils aident les sites à fonctionner correctement et nous permettent de comprendre comment Everstead est utilisé afin de l'améliorer."
+  },
+  "cookiesWeUse": {
+    "title": "Les cookies que nous utilisons"
+  },
+  "notUse": {
+    "title": "Ce que nous n'utilisons pas",
+    "body": "Everstead n'utilise pas de cookies de profilage publicitaire, de pixels de suivi de réseaux sociaux (au-delà du pixel Meta décrit ci-dessus) ni aucune technologie de courtiers en données tiers. Nous ne vendons jamais vos données à des tiers."
+  },
+  "managing": {
+    "title": "Gérer vos préférences",
+    "p1Before": "Lors de votre première visite sur Everstead, un bandeau de cookies vous demande votre consentement pour les cookies non essentiels. Vous pouvez modifier ou retirer votre consentement à tout moment en cliquant sur",
+    "p1Strong": "« Paramètres des cookies »",
+    "p1After": "dans le pied de page de chaque page.",
+    "p2": "Vous pouvez également gérer les cookies via les paramètres de votre navigateur. Veuillez noter que la désactivation des cookies essentiels peut vous empêcher de vous connecter ou d'utiliser certaines parties de la plateforme."
+  },
+  "legalBasis": {
+    "title": "Base légale",
+    "body": "Notre utilisation des cookies est conforme au règlement britannique sur la vie privée et les communications électroniques (Privacy and Electronic Communications Regulations, PECR) et au RGPD britannique (UK GDPR). Les cookies essentiels sont déposés sur le fondement de l'intérêt légitime. Les cookies d'analyse et marketing ne sont déposés que sur le fondement de votre consentement explicite."
+  },
+  "contact": {
+    "title": "Contact",
+    "intro": "Des questions sur notre utilisation des cookies ? Écrivez-nous à l'adresse",
+    "orSee": "ou consultez l'intégralité de notre",
+    "privacyPolicy": "Politique de confidentialité",
+    "company": "Everstead Digital Ltd — société immatriculée en Angleterre et au pays de Galles sous le n° 17166825. Numéro d'enregistrement ICO : 00013988672."
+  }
+}

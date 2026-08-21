@@ -1,253 +1,94 @@
 import React from 'react'
 import { Helmet } from 'react-helmet-async'
-import { useParams, Link } from 'react-router-dom'
+import HreflangLinks from '../components/HreflangLinks'
+import { useParams, Link, useLocation } from 'react-router-dom'
+import { useTranslation, Trans } from 'react-i18next'
+import i18n from '../i18n'
 import { useReveal } from '../components/useReveal'
 import { CheckCircle2, XCircle, ArrowRight } from 'lucide-react'
 import NotFound from './NotFound'
+import enCompare from '../i18n/locales/en/compare.json'
+import frCompare from '../i18n/locales/fr/compare.json'
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Competitor data — add new entries here to create new comparison pages
-// ─────────────────────────────────────────────────────────────────────────────
-const competitors = {
-  farewill: {
-    name: 'Farewill',
-    category: 'Will writing & probate',
-    tagline: 'Everstead vs Farewill',
-    headline: 'Farewill writes your will. Everstead organises your whole life.',
-    subhead: 'Farewill is a will-writing service. Everstead is a secure personal vault — a living, updated record of your accounts, documents, and wishes that\'s useful today and ready for your family when it counts.',
-    eversteadDesc: 'A secure personal vault for organising everything that matters — accounts, documents, instructions, and final wishes — with controlled access for the people you trust.',
-    competitorDesc: 'An online legal services company offering will writing, probate assistance, and funeral planning. A one-time service focused on legal documents.',
-    rows: [
-      { feature: 'Secure document vault',           everstead: true,  them: false },
-      { feature: 'Ongoing vault — update any time', everstead: true,  them: false },
-      { feature: 'Trusted contact access control',  everstead: true,  them: false },
-      { feature: 'Step-by-step executor guide',     everstead: true,  them: false },
-      { feature: 'Readiness score',                 everstead: true,  them: false },
-      { feature: 'Personal messages & final wishes',everstead: true,  them: false },
-      { feature: 'Birthday & anniversary reminders',everstead: true,  them: false },
-      { feature: 'Everstead+ (2 vaults)',           everstead: true,  them: false },
-    ],
-    competitorAlso: ['Online will drafting', 'Probate assistance', 'Funeral planning'],
-    verdict: 'For organising your whole estate — and making sure your family can actually act on it — Everstead is the clear winner. Use Farewill for the will document itself; rely on Everstead for everything around it.',
-    positioning: `Farewill and Everstead solve different problems. Farewill helps you write a legal will — a one-time document. Everstead helps you keep everything else organised: where your accounts are, who should be contacted, what your wishes are, and what instructions your family should follow.
-
-Most people need both. A will tells the court what happens to your assets. Everstead tells your family how to find everything else — and keeps it updated as your life changes.
-
-If you already have a will, Everstead is the natural next step: a secure, living record that makes your estate genuinely manageable.`,
-    price: 'From £3.99/month (14-day free trial)',
-    competitorPrice: 'From £90 one-time for a basic will',
-    cta: 'Start your free trial',
-  },
-
-  settld: {
-    name: 'Settld',
-    category: 'Post-bereavement notification',
-    tagline: 'Everstead vs Settld',
-    headline: 'Settld helps after a death. Everstead helps before.',
-    subhead: 'Settld is a free notification service that helps families cancel accounts and inform companies after someone has died. Everstead is a proactive personal vault that makes sure your family never has to scramble in the first place.',
-    eversteadDesc: 'A secure personal vault you build while you\'re alive — so the people you love have everything they need, organised and accessible, without having to search.',
-    competitorDesc: 'A free service that helps the bereaved notify banks, utilities, and other companies after a death. Reactive, post-death focused, and built for executors already in the middle of grief.',
-    rows: [
-      { feature: 'Proactive planning — build before anything happens', everstead: true,  them: false },
-      { feature: 'Secure document vault',                              everstead: true,  them: false },
-      { feature: 'Account & asset register',                           everstead: true,  them: false },
-      { feature: 'Trusted contact access management',                  everstead: true,  them: false },
-      { feature: 'Readiness score & prompts',                          everstead: true,  them: false },
-      { feature: 'Step-by-step instructions for your family',          everstead: true,  them: false },
-      { feature: 'Personal messages & final wishes',                   everstead: true,  them: false },
-      { feature: 'Everstead+ (2 private vaults)',                      everstead: true,  them: false },
-    ],
-    competitorAlso: ['Post-death company notifications — telling banks, utilities and providers after a death (Settld is free for this)'],
-    verdict: 'Everstead is the better choice for nearly everyone, because it works before anything happens — while you can still prepare. Settld only helps afterwards. The smart move is Everstead now, so your family never has to scramble in the first place.',
-    positioning: `Settld and Everstead are complementary rather than competing. Settld is used after someone has died — it helps families notify banks, utilities, pension providers, and other institutions. That's genuinely useful, but it's reactive: the family is already in the middle of grief, searching for information.
-
-Everstead is proactive. It's where you record your accounts, upload your documents, write your instructions, and grant access to the people you trust — before anything happens.
-
-When the worst does happen, a family with an Everstead vault already knows where everything is. They still might use Settld to notify institutions — but they won't spend weeks piecing together a life from scratch.
-
-The difference is the difference between a map left at home and a map that was already in their hands.`,
-    price: 'From £3.99/month (14-day free trial)',
-    competitorPrice: 'Free',
-    cta: 'Start your free trial',
-  },
-
-  safekeep: {
-    name: 'SafeKeep',
-    category: 'Digital estate planning',
-    tagline: 'Everstead vs SafeKeep',
-    headline: 'SafeKeep stores your information. Everstead organises your whole estate.',
-    subhead: 'Both platforms help you keep important information in one place. The difference is in the depth — Everstead adds a family vault, an adviser portal, an Estate Readiness Score, and tools that actually help executors act when the time comes.',
-    eversteadDesc: 'A secure personal vault for organising everything that matters — accounts, documents, instructions, and final wishes — with controlled access, an adviser portal, and a dual-vault Everstead+ plan for couples.',
-    competitorDesc: 'A digital storage platform for important documents and account details. Focused on individuals storing personal data securely, with a clean interface and basic sharing features.',
-    rows: [
-      { feature: 'Secure document vault',                everstead: true,  them: true  },
-      { feature: 'Account & asset register',             everstead: true,  them: true  },
-      { feature: 'Trusted contact access control',       everstead: true,  them: true  },
-      { feature: 'Everstead+ — two private vaults',     everstead: true,  them: false },
-      { feature: 'Estate Readiness Score',               everstead: true,  them: false },
-      { feature: 'Step-by-step executor instructions',   everstead: true,  them: false },
-      { feature: 'Personal messages & final wishes',     everstead: true,  them: false },
-      { feature: 'Adviser portal & client management',   everstead: true,  them: false },
-      { feature: 'UK data residency (UK GDPR compliant)',everstead: true,  them: false },
-      { feature: 'Smart reminders & progress tracking',  everstead: true,  them: false },
-      { feature: 'Full data export (right to portability)', everstead: true,  them: false },
-    ],
-    positioning: `Everstead and SafeKeep share a basic premise: put your important information somewhere secure and accessible. If that's all you need, both products work.
-
-But Everstead was built around a bigger problem. Families don't just need storage — they need organisation, guidance, and the right people to have the right access at the right time. That's why we built the Estate Readiness Score (so you can see exactly what's missing), step-by-step executor instructions (so your family knows what to do, not just where things are), and role-based access control that goes far beyond a shared password.
-
-Everstead+ is the sharpest difference. Two completely private vaults — one subscription. A couple can each organise their own estate, share only what they choose, and never have to combine their private information into a single account. SafeKeep has no equivalent.
-
-The adviser portal is the other. Everstead works as a professional tool for financial planners, IFAs, and estate solicitors managing multiple clients — with a co-branded portal, client progress tracking, and collaboration features that SafeKeep doesn't offer.
-
-If you're looking for a digital vault, both options are worth considering. If you want your family to actually know what to do when it counts, Everstead goes further.`,
-    verdict: 'Both store your information — only Everstead turns it into a plan your family can act on. On every dimension that matters after storage, Everstead is the stronger choice.',
-    price: 'From £3.99/month (14-day free trial)',
-    competitorPrice: 'From £5.99/mo',
-    cta: 'Start your free trial',
-  },
-
-  'octopus-legacy': {
-    name: 'Octopus Legacy',
-    category: 'Wills & legacy planning',
-    tagline: 'Everstead vs Octopus Legacy',
-    headline: 'Octopus Legacy handles your will. Everstead organises everything else.',
-    subhead: 'Octopus Legacy is a will-writing and legacy planning service. Everstead is a living, updated vault — where everything that matters is organised, secured, and ready for the people you trust.',
-    eversteadDesc: 'A secure personal vault for organising accounts, documents, instructions, and final wishes — updated as your life changes, with controlled access for trusted contacts and an Everstead+ plan for couples.',
-    competitorDesc: 'A legal services company offering online wills, LPAs, and probate support. Mission-driven, with a focus on making estate planning accessible. Strong on legal documents; not a data storage or organisation platform.',
-    rows: [
-      { feature: 'Secure document vault',                everstead: true,  them: false },
-      { feature: 'Account & asset register',             everstead: true,  them: false },
-      { feature: 'Trusted contact access control',       everstead: true,  them: false },
-      { feature: 'Ongoing vault — update any time',      everstead: true,  them: false },
-      { feature: 'Everstead+ — two private vaults',     everstead: true,  them: false },
-      { feature: 'Estate Readiness Score',               everstead: true,  them: false },
-      { feature: 'Step-by-step executor instructions',   everstead: true,  them: false },
-      { feature: 'Personal messages & final wishes',     everstead: true,  them: false },
-      { feature: 'Adviser portal',                       everstead: true,  them: false },
-    ],
-    competitorAlso: ['Online will drafting', 'Lasting Power of Attorney setup', 'Probate support'],
-    verdict: 'A will is essential — but it is one document. Everstead is the living record of everything else your family needs, kept current and ready. For genuine estate readiness, Everstead is the stronger foundation; add a will from Octopus Legacy alongside it.',
-    positioning: `Octopus Legacy and Everstead solve different problems, and most people who think about estate planning will benefit from both.
-
-Octopus Legacy is a legal services company — they help you draft a will, set up a Lasting Power of Attorney, and navigate probate. That's important work. A legally valid will is essential, and Octopus Legacy does that well.
-
-Everstead is everything around the will. It's where you keep your account details, upload your documents, write your instructions, and tell your family what to do when the time comes. It's updated as your life changes. Your executor doesn't just have a legal document — they have a roadmap.
-
-Everstead+ is something Octopus Legacy doesn't offer: two completely private vaults under one subscription, for couples who want to organise their own estates separately without sharing sensitive personal information.
-
-Think of a will as a destination. Everstead is the map that gets your family there.`,
-    price: 'From £3.99/month (14-day free trial)',
-    competitorPrice: 'From £90 for a basic will',
-    cta: 'Start your free trial',
-  },
-
-  lyfeguard: {
-    name: 'Lyfeguard',
-    category: 'Digital legacy vault',
-    tagline: 'Everstead vs Lyfeguard',
-    headline: 'Both vaults secure your legacy. Only one keeps your family a step ahead.',
-    subhead: 'Lyfeguard and Everstead both offer secure digital vaults for important information. The difference is what happens next — Everstead adds an Estate Readiness Score, step-by-step executor guidance, and Everstead+ with two private vaults.',
-    eversteadDesc: 'A proactive estate planning platform — not just storage, but an active system with readiness tracking, executor instructions, a dual-vault Everstead+ plan, and an adviser portal for professionals.',
-    competitorDesc: 'A digital legacy platform for securely storing personal documents, account details, and final wishes — with sharing controls for nominated contacts.',
-    rows: [
-      { feature: 'Secure document vault',                everstead: true,  them: true  },
-      { feature: 'Account & asset register',             everstead: true,  them: true  },
-      { feature: 'Trusted contact access control',       everstead: true,  them: true  },
-      { feature: 'Personal messages & final wishes',     everstead: true,  them: true  },
-      { feature: 'Everstead+ — two private vaults',     everstead: true,  them: false },
-      { feature: 'Estate Readiness Score',               everstead: true,  them: false },
-      { feature: 'Step-by-step executor instructions',   everstead: true,  them: false },
-      { feature: 'Smart reminders & progress prompts',   everstead: true,  them: false },
-      { feature: 'Adviser portal & client management',   everstead: true,  them: false },
-      { feature: 'UK data residency (UK GDPR compliant)',everstead: true,  them: false },
-      { feature: 'Full data export (right to portability)', everstead: true,  them: false },
-    ],
-    positioning: `Lyfeguard and Everstead both start from the same place: your information should be secure, organised, and accessible to the right people when it matters. Both are honest alternatives to a locked filing cabinet.
-
-The gap opens when you ask: what happens after someone stores their information? Lyfeguard is primarily a vault. Everstead is a vault with direction — an Estate Readiness Score that shows you exactly what's incomplete, step-by-step instructions your executor can follow without guessing, and smart reminders that keep your plan current as your life changes.
-
-Everstead+ is the most distinctive difference. Two completely separate, private vaults — one for each person — under a single subscription. A couple can each organise their own estate independently, with no obligation to combine or share their private data. Lyfeguard's sharing model assumes one account per household.
-
-And for advisers: Everstead includes a dedicated portal for financial planners, IFAs, and estate professionals who want to offer estate organisation as part of their client service. Lyfeguard has no equivalent.
-
-If you want a secure place to store important files, both products do the job. If you want your family to know exactly what to do — and to feel genuinely prepared — Everstead is built for that.`,
-    verdict: 'Two secure vaults — but only Everstead tells your family what to do next, scores your readiness, and gives couples two private vaults in one plan. Everstead is the more complete solution.',
-    price: 'From £3.99/month (14-day free trial)',
-    competitorPrice: 'From £4.99/mo',
-    cta: 'Start your free trial',
-  },
-
-  'doing-nothing': {
-    name: 'a spreadsheet',
-    category: 'The shoebox or the laptop folder',
-    tagline: 'Everstead vs. doing nothing',
-    headline: "Most people leave their family a spreadsheet, a shoebox, or nothing at all.",
-    subhead: "You're not really choosing between Everstead and a competitor. You're choosing between an organised plan and the version of this you're doing today — usually a half-finished spreadsheet, a stack of paperwork, and a mental note to 'sort it out one day'.",
-    eversteadDesc: 'A secure, encrypted, role-based plan your family can actually use. Updates as your life changes. Shareable section by section. AES-256 encrypted, UK-hosted, UK GDPR compliant — and built so the right people see the right things at the right time, and nothing more.',
-    competitorDesc: "Sticky notes, a Word doc on the laptop, a printed list in a desk drawer, a spreadsheet that hasn't been updated in two years, account passwords in someone's head, or — most commonly — the assumption that 'it'll work itself out'.",
-    rows: [
-      { feature: 'Everything in one place',                       everstead: true,  them: false },
-      { feature: 'Trusted contacts know where to look',           everstead: true,  them: false },
-      { feature: 'Updated as your life changes',                  everstead: true,  them: false },
-      { feature: 'Encrypted and access-controlled',               everstead: true,  them: false },
-      { feature: 'Section-by-section sharing',                    everstead: true,  them: false },
-      { feature: 'Step-by-step executor guidance',                everstead: true,  them: false },
-      { feature: 'Readiness score so you know what is missing',   everstead: true,  them: false },
-      { feature: 'Personal letters and final wishes preserved',   everstead: true,  them: false },
-      { feature: 'Works when your laptop is locked or lost',      everstead: true,  them: false },
-      { feature: 'Recoverable when memory fails',                 everstead: true,  them: false },
-      { feature: 'Free — for the first 14 days',                  everstead: true,  them: true  },
-    ],
-    positioning: `Almost no one fails to plan because they think planning is unimportant. They fail because the alternatives are all bad.
-
-A spreadsheet is private but useless to anyone else when it matters. A printed folder gets out of date the moment a password changes. A pile of paperwork in a drawer assumes everyone will know which drawer. Telling your spouse "it's all on my laptop" assumes they'll remember the password, find the right folder, and recognise what they're looking at while grieving.
-
-Everstead exists because the status quo isn't actually working for most families. The cost when nothing is in place is measured in weeks of admin, lost accounts, missed deadlines, and family stress in the worst possible moment.
-
-For less than the price of a coffee a week, Everstead becomes the structured version of what you would have written down anyway — secure, sharable, updated, and ready. The hardest part is starting; everything after that is just keeping it current.`,
-    verdict: 'There is no real contest here. A spreadsheet or a drawer of papers fails your family at the worst possible moment. Everstead is the organised, secure, shareable version of everything you would otherwise have meant to write down.',
-    price: 'From £3.99/month (14-day free trial)',
-    competitorPrice: 'Free — and very expensive when it counts',
-    cta: 'Start organising your estate',
-  },
+// The "compare" namespace is registered here (not in src/i18n/index.js) so the
+// JSON ships with this lazy-loaded page instead of the main bundle.
+if (!i18n.hasResourceBundle('en', 'compare')) {
+  i18n.addResourceBundle('en', 'compare', enCompare)
+  i18n.addResourceBundle('fr', 'compare', frCompare)
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Component
+// NON-TEXT DATA — all visible copy lives in the "compare" i18n namespace.
+// ROW_THEM_FLAGS holds the competitor-column tick per feature row, in the same
+// order as competitors.<slug>.rows in the namespace (Everstead's column is
+// always a tick). Add a new slug here + in both compare.json files to create a
+// new comparison page.
 // ─────────────────────────────────────────────────────────────────────────────
+const ROW_THEM_FLAGS = {
+  farewill:         [false, false, false, false, false, false, false, false],
+  settld:           [false, false, false, false, false, false, false, false],
+  safekeep:         [true, true, true, false, false, false, false, false, false, false, false],
+  'octopus-legacy': [false, false, false, false, false, false, false, false, false],
+  lyfeguard:        [true, true, true, true, false, false, false, false, false, false, false],
+  'doing-nothing':  [false, false, false, false, false, false, false, false, false, false, true],
+}
+
 // Display order for the index grid
 const COMPARE_ORDER = [
   'doing-nothing', 'farewill', 'octopus-legacy',
   'safekeep', 'lyfeguard', 'settld',
 ]
 
+// ─────────────────────────────────────────────────────────────────────────────
+// Component
+// ─────────────────────────────────────────────────────────────────────────────
 export default function Compare() {
   useReveal()
   const { slug } = useParams()
+  const { t, i18n: i18nInstance } = useTranslation('compare')
+  // Hoisted above the early returns — hooks must run on every render.
+  const { pathname } = useLocation()
 
   // No slug → render the comparison index
   if (!slug) return <CompareIndex />
 
-  const data = competitors[slug]
-  if (!data) return <NotFound />
+  if (!ROW_THEM_FLAGS[slug]) return <NotFound />
 
-  const { name, tagline, headline, subhead, eversteadDesc, competitorDesc, rows, positioning, price, competitorPrice, cta, category, verdict, competitorAlso } = data
+  const localePrefix = i18nInstance.language === 'fr' ? '/fr' : ''
+  const pageUrl = `https://www.everstead.care${localePrefix}/compare/${slug}`
+
+  const c = `competitors.${slug}`
+  const name = t(`${c}.name`)
+  const tagline = t(`${c}.tagline`)
+  const headline = t(`${c}.headline`)
+  const subhead = t(`${c}.subhead`)
+  const eversteadDesc = t(`${c}.eversteadDesc`)
+  const competitorDesc = t(`${c}.competitorDesc`)
+  const category = t(`${c}.category`)
+  const verdict = t(`${c}.verdict`)
+  const price = t(`${c}.price`)
+  const competitorPrice = t(`${c}.competitorPrice`)
+  const cta = t(`${c}.cta`)
+  const rows = t(`${c}.rows`, { returnObjects: true })
+    .map((feature, i) => ({ feature, everstead: true, them: ROW_THEM_FLAGS[slug][i] }))
+  const competitorAlso = t(`${c}.competitorAlso`, { returnObjects: true, defaultValue: [] })
+  const positioning = t(`${c}.positioning`, { returnObjects: true })
 
   return (
     <>
       <Helmet>
-        <title>{tagline} — Everstead</title>
+        <title>{t('detail.metaTitle', { tagline })}</title>
         <meta name="description" content={subhead} />
-        <link rel="canonical" href={`https://www.everstead.care/compare/${slug}`} />
+        <link rel="canonical" href={pageUrl} />
         <meta property="og:type" content="website" />
-        <meta property="og:title" content={`${tagline} — Everstead`} />
+        <meta property="og:title" content={t('detail.metaTitle', { tagline })} />
         <meta property="og:description" content={subhead} />
-        <meta property="og:url" content={`https://www.everstead.care/compare/${slug}`} />
+        <meta property="og:url" content={pageUrl} />
         <meta property="og:image" content="https://www.everstead.care/og-image.png" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:image" content="https://www.everstead.care/og-image.png" />
       </Helmet>
+      <HreflangLinks path={pathname} />
 
       <div className="bg-stone-50 min-h-screen">
 
@@ -255,7 +96,7 @@ export default function Compare() {
         <section className="pt-44 pb-20 lg:pt-52 lg:pb-28 grain relative overflow-hidden">
           <div className="absolute inset-0 aurora-bg" />
           <div className="relative max-w-4xl mx-auto px-6 lg:px-8 text-center reveal">
-            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-sage-300 mb-5">Everstead vs {name}</p>
+            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-sage-300 mb-5">{t('detail.eyebrow', { name })}</p>
             <h1 className="font-display text-4xl lg:text-6xl font-light text-white leading-tight text-balance">
               {headline}
             </h1>
@@ -267,7 +108,7 @@ export default function Compare() {
                 {cta} <ArrowRight size={14} />
               </Link>
               <Link to="/pricing" className="inline-flex items-center justify-center gap-2 border border-white/20 text-white px-6 py-3 rounded-full text-sm font-semibold hover:bg-white/10 transition-colors">
-                See pricing
+                {t('detail.seePricing')}
               </Link>
             </div>
           </div>
@@ -282,7 +123,7 @@ export default function Compare() {
                 <div className="flex items-center gap-3 mb-4">
                   <img src="/logo-v2-dark.png" alt="Everstead" className="h-6 w-auto" onError={e => e.target.style.display='none'} />
                   <span className="font-semibold text-navy-900">Everstead</span>
-                  <span className="text-xs bg-sage-100 text-sage-700 px-2 py-0.5 rounded-full font-medium">Personal vault</span>
+                  <span className="text-xs bg-sage-100 text-sage-700 px-2 py-0.5 rounded-full font-medium">{t('detail.eversteadBadge')}</span>
                 </div>
                 <p className="text-sm leading-relaxed text-stone-600">{eversteadDesc}</p>
                 <p className="mt-4 text-xs text-stone-400 font-medium">{price}</p>
@@ -303,7 +144,7 @@ export default function Compare() {
               <div className="reveal rounded-2xl bg-sage-50 border border-sage-200 p-7 lg:p-8">
                 <div className="flex items-center gap-2 mb-3">
                   <CheckCircle2 size={18} className="text-sage-600" />
-                  <p className="text-xs font-semibold uppercase tracking-[0.2em] text-sage-700">Our verdict — Everstead wins</p>
+                  <p className="text-xs font-semibold uppercase tracking-[0.2em] text-sage-700">{t('detail.verdictEyebrow')}</p>
                 </div>
                 <p className="text-navy-900 text-lg leading-relaxed">{verdict}</p>
               </div>
@@ -311,12 +152,12 @@ export default function Compare() {
 
             {/* Feature comparison table */}
             <div className="reveal">
-              <h2 className="font-display text-3xl font-light text-navy-950 mb-8">Feature comparison</h2>
+              <h2 className="font-display text-3xl font-light text-navy-950 mb-8">{t('detail.tableTitle')}</h2>
               <div className="rounded-2xl border border-stone-200 overflow-hidden bg-white">
                 {/* Header */}
                 <div className="grid grid-cols-3 bg-navy-50 border-b border-stone-200">
                   <div className="px-6 py-4 col-span-1">
-                    <p className="text-xs font-semibold text-stone-500 uppercase tracking-widest">Feature</p>
+                    <p className="text-xs font-semibold text-stone-500 uppercase tracking-widest">{t('detail.tableFeature')}</p>
                   </div>
                   <div className="px-6 py-4 text-center border-l border-stone-200">
                     <p className="text-xs font-semibold text-navy-700 uppercase tracking-widest">Everstead</p>
@@ -341,15 +182,15 @@ export default function Compare() {
                   </div>
                 ))}
               </div>
-              <p className="mt-3 text-xs text-stone-400">Based on publicly available information. Features may change. Last reviewed May 2026.</p>
+              <p className="mt-3 text-xs text-stone-400">{t('detail.tableFootnote')}</p>
             </div>
 
             {/* What the competitor also offers — honest aside */}
             {Array.isArray(competitorAlso) && competitorAlso.length > 0 && (
               <div className="reveal rounded-2xl border border-stone-200 bg-white p-7">
-                <h3 className="font-semibold text-navy-900 mb-2">What {name} also offers</h3>
+                <h3 className="font-semibold text-navy-900 mb-2">{t('detail.alsoTitle', { name })}</h3>
                 <p className="text-sm text-stone-600 leading-relaxed mb-4">
-                  In fairness, {name} does some things Everstead doesn't — and that's by design. These are a separate service you can use <em>alongside</em> Everstead, not instead of it:
+                  <Trans t={t} i18nKey="detail.alsoIntro" values={{ name }} components={{ em: <em /> }} />
                 </p>
                 <ul className="space-y-2">
                   {competitorAlso.map((item, i) => (
@@ -360,16 +201,16 @@ export default function Compare() {
                   ))}
                 </ul>
                 <p className="text-sm text-stone-500 leading-relaxed mt-4">
-                  None of these replace what Everstead does: keeping your whole estate organised, current, and ready for the people you trust.
+                  {t('detail.alsoOutro')}
                 </p>
               </div>
             )}
 
             {/* The real difference */}
             <div className="reveal">
-              <h2 className="font-display text-3xl font-light text-navy-950 mb-6">The real difference</h2>
+              <h2 className="font-display text-3xl font-light text-navy-950 mb-6">{t('detail.differenceTitle')}</h2>
               <div className="space-y-4">
-                {positioning.split('\n\n').map((para, i) => (
+                {positioning.map((para, i) => (
                   <p key={i} className="text-stone-600 text-sm leading-relaxed">{para}</p>
                 ))}
               </div>
@@ -377,9 +218,9 @@ export default function Compare() {
 
             {/* CTA */}
             <div className="reveal rounded-2xl aurora-field aurora-dim px-10 py-10 text-center">
-              <h2 className="font-display text-2xl font-light text-white mb-3">Try Everstead free for 14 days</h2>
+              <h2 className="font-display text-2xl font-light text-white mb-3">{t('detail.ctaTitle')}</h2>
               <p className="text-stone-400 text-sm leading-relaxed mb-6 max-w-md mx-auto">
-                No commitment. Full access. Cancel before the trial ends and pay nothing.
+                {t('detail.ctaBody')}
               </p>
               <Link
                 to="/get-started"
@@ -401,35 +242,46 @@ export default function Compare() {
 // ─────────────────────────────────────────────────────────────────────────────
 function CompareIndex() {
   useReveal()
+  const { t, i18n: i18nInstance } = useTranslation('compare')
+
+  const localePrefix = i18nInstance.language === 'fr' ? '/fr' : ''
+  const pageUrl = `https://www.everstead.care${localePrefix}/compare`
+
   const cards = COMPARE_ORDER
-    .filter(slug => competitors[slug])
-    .map(slug => ({ slug, ...competitors[slug] }))
+    .filter(slug => ROW_THEM_FLAGS[slug])
+    .map(slug => ({
+      slug,
+      name: t(`competitors.${slug}.name`),
+      category: t(`competitors.${slug}.category`),
+      headline: t(`competitors.${slug}.headline`),
+    }))
 
   return (
     <>
       <Helmet>
-        <title>How Everstead compares — Everstead vs the alternatives</title>
-        <meta name="description" content="See how Everstead compares to will-writing services, document vaults, and the do-nothing status quo — and why families choose it. Side-by-side feature comparisons for UK families." />
-        <link rel="canonical" href="https://www.everstead.care/compare" />
-        <meta property="og:title" content="How Everstead compares" />
-        <meta property="og:description" content="Everstead vs the alternatives — side-by-side comparisons for UK families." />
-        <meta property="og:url" content="https://www.everstead.care/compare" />
+        <title>{t('index.meta.title')}</title>
+        <meta name="description" content={t('index.meta.description')} />
+        <link rel="canonical" href={pageUrl} />
+        <meta property="og:title" content={t('index.meta.ogTitle')} />
+        <meta property="og:description" content={t('index.meta.ogDescription')} />
+        <meta property="og:url" content={pageUrl} />
         <meta property="og:image" content="https://www.everstead.care/og-image.png" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:image" content="https://www.everstead.care/og-image.png" />
       </Helmet>
+      <HreflangLinks path="/compare" />
 
       <div className="bg-stone-50 min-h-screen">
         {/* Hero */}
         <section className="pt-44 pb-16 lg:pt-52 lg:pb-20 grain relative overflow-hidden">
           <div className="absolute inset-0 aurora-bg" />
           <div className="relative max-w-3xl mx-auto px-6 lg:px-8 text-center reveal">
-            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-sage-300 mb-5">How we compare</p>
+            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-sage-300 mb-5">{t('index.eyebrow')}</p>
             <h1 className="font-display text-4xl lg:text-6xl font-light text-white leading-tight text-balance">
-              Why families choose Everstead.
+              {t('index.title')}
             </h1>
             <p className="mt-5 text-lg leading-relaxed text-stone-300 max-w-2xl mx-auto">
-              Weighing up a will-writing service, a document vault, or just a spreadsheet? Here's an honest, side-by-side look at how Everstead compares — and why it comes out ahead.
+              {t('index.subtitle')}
             </p>
           </div>
         </section>
@@ -446,13 +298,13 @@ function CompareIndex() {
                 >
                   <div className="flex items-center gap-2.5 mb-3">
                     <span className="font-semibold text-navy-900">Everstead</span>
-                    <span className="text-stone-300">vs</span>
+                    <span className="text-stone-300">{t('index.vs')}</span>
                     <span className="font-semibold text-navy-900">{name}</span>
                   </div>
                   <p className="text-xs font-medium uppercase tracking-widest text-stone-400 mb-3">{category}</p>
                   <p className="text-sm text-stone-600 leading-relaxed flex-1">{headline}</p>
                   <span className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-navy-800 group-hover:gap-2.5 transition-all">
-                    See the comparison <ArrowRight size={14} />
+                    {t('index.seeComparison')} <ArrowRight size={14} />
                   </span>
                 </Link>
               ))}
@@ -460,15 +312,15 @@ function CompareIndex() {
 
             {/* CTA */}
             <div className="reveal mt-14 rounded-2xl aurora-field aurora-dim px-8 py-9 text-center">
-              <h2 className="font-display text-2xl font-light text-white mb-3">The simplest comparison is trying it.</h2>
+              <h2 className="font-display text-2xl font-light text-white mb-3">{t('index.cta.title')}</h2>
               <p className="text-stone-400 text-sm leading-relaxed mb-6 max-w-md mx-auto">
-                14-day free trial. Full access. Cancel before it ends and pay nothing.
+                {t('index.cta.body')}
               </p>
               <Link
                 to="/get-started"
                 className="btn-aurora inline-flex items-center gap-2 text-white px-6 py-3 rounded-full text-sm font-semibold transition-colors"
               >
-                Start your free trial <ArrowRight size={14} />
+                {t('index.cta.button')} <ArrowRight size={14} />
               </Link>
             </div>
           </div>

@@ -1,100 +1,51 @@
 import React from 'react'
 import { Helmet } from 'react-helmet-async'
+import HreflangLinks from '../components/HreflangLinks'
+import { useTranslation } from 'react-i18next'
 import { useReveal } from '../components/useReveal'
+import i18n from '../i18n'
+import enPrivacy from '../i18n/locales/en/privacy.json'
+import frPrivacy from '../i18n/locales/fr/privacy.json'
 
-const sections = [
-  {
-    title: 'Information we collect',
-    content: `We collect information you provide directly when you create an account, including your name, email address, and password. We also collect the content you add to your plan — account references, document metadata, instructions, and wishes — which is stored encrypted at rest.
-
-We collect limited usage data (pages visited, features used) to improve the platform. We do not use third-party advertising trackers. We do not sell your data to third parties.`,
-  },
-  {
-    title: 'How we use your information',
-    content: `Your information is used solely to operate and improve Everstead. Specifically: to provide the service you've signed up for, to send operational communications (account notices, security alerts), to respond to support requests, and to analyze aggregate usage patterns to improve features.
-
-We do not use your personal plan content for any purpose other than serving it to you and the people you explicitly authorize.`,
-  },
-  {
-    title: 'Data storage and security',
-    content: `All data is encrypted at rest using AES-256 and in transit using TLS 1.3. Your plan content — accounts, documents, instructions, and wishes — is treated as highly sensitive and stored with bank-equivalent security standards.
-
-We operate on infrastructure with SOC 2-aligned controls, automated backups, and redundant storage across multiple secure locations. Our team accesses your data only when strictly necessary for support, and such access is logged.`,
-  },
-  {
-    title: 'Sharing and disclosure',
-    content: `We do not sell, rent, or share your personal information with third parties for marketing or advertising purposes.
-
-We may share minimal data with service providers (subprocessors) who help us operate the platform — including hosting, database, email delivery, payments, error monitoring, and AI-assisted guidance. Each subprocessor is bound by a written Data Processing Agreement and provides appropriate UK GDPR safeguards. The full, up-to-date list is published at /subprocessors. We may disclose information if required by law or to protect the rights, property, or safety of Everstead, our users, or the public.`,
-  },
-  {
-    title: 'AI features (the Everstead Assistant)',
-    content: `Some Everstead features are powered by artificial intelligence — the Everstead Assistant chat, document scanning, and AI-assisted writing suggestions. These features use Claude, an AI service provided by Anthropic PBC, acting as our data processor.
-
-What is sent: when you use an AI feature, the text you type into it (and, where a feature lets you attach one, the file you choose to share) is transmitted securely to Anthropic to generate a response. AI features only receive what you actively submit to them — they cannot browse your vault, documents, messages, or account on their own.
-
-How it is used: solely to generate the response you asked for. Your data is never used to train Anthropic's AI models, and is never used for advertising or profiling. Anthropic is bound by a written Data Processing Agreement with UK GDPR safeguards providing protection equivalent to this policy, and is listed with our other subprocessors at everstead.care/subprocessors.
-
-Your choice: in our mobile apps, AI features ask for your explicit consent before anything is sent. You can turn AI features off entirely at any time in Settings → AI features — the rest of Everstead works fully without them.`,
-  },
-  {
-    title: 'Your rights and controls',
-    content: `You can access, update, or delete your account and plan content at any time from your account settings. You can export your full plan in a structured format on request. Upon account deletion, your data is removed from our systems within 30 days.
-
-If you are located in the UK or European Economic Area, you have additional rights under UK GDPR and EU GDPR, including rights of access, rectification, erasure, and data portability. Contact us at privacy@everstead.care to exercise these rights.`,
-  },
-  {
-    title: 'Data portability',
-    content: `You have the right to receive a copy of your personal data in a structured, commonly used, and machine-readable format. You can exercise this right at any time by visiting your dashboard settings and clicking "Export my data". Your export includes accounts, documents, instructions, wishes, trusted contacts, and your activity log — in standard JSON and file formats.
-
-If Everstead Digital Ltd ceases trading, we commit to providing a minimum of 90 days notice and continued free access to data export for all users. Full details are available at everstead.care/data-promise.`,
-  },
-  {
-    title: 'Cookies',
-    content: `Everstead uses strictly necessary session cookies to keep you logged in. We do not use third-party tracking or advertising cookies. You can disable cookies in your browser settings, though some platform features may not function correctly without them.`,
-  },
-  {
-    title: 'Children',
-    content: `Everstead is not intended for children under 18. We do not knowingly collect personal information from minors. If you believe we have inadvertently collected information from a child, please contact us immediately.`,
-  },
-  {
-    title: 'Changes to this policy',
-    content: `We may update this Privacy Policy from time to time. If we make material changes, we will notify you by email or by a prominent notice on the platform prior to the change becoming effective. The date at the top of this policy reflects the most recent update.`,
-  },
-  {
-    title: 'Contact',
-    content: `Questions about this policy or your data? Contact us at privacy@everstead.care.
-
-Data controller: EVERSTEAD DIGITAL LTD (company number 17166825), London, England, United Kingdom.`,
-  },
-]
+// Self-registered namespace (keeps src/i18n/index.js untouched). Safe to move
+// into the central resources map later — re-adding the same bundle is a no-op.
+i18n.addResourceBundle('en', 'privacy', enPrivacy)
+i18n.addResourceBundle('fr', 'privacy', frPrivacy)
 
 export default function Privacy() {
   useReveal()
+  const { t } = useTranslation('privacy')
+
+  const localePrefix = i18n.language === 'fr' ? '/fr' : ''
+  const pageUrl = `https://www.everstead.care${localePrefix}/privacy`
+
+  const sections = t('sections', { returnObjects: true })
+
   return (
     <>
     <Helmet>
-      <title>Privacy Policy — Everstead</title>
-      <meta name="description" content="How Everstead collects, uses, and protects your personal information. Your data is encrypted, never sold, and always under your control." />
-      <link rel="canonical" href="https://www.everstead.care/privacy" />
+      <title>{t('meta.title')}</title>
+      <meta name="description" content={t('meta.description')} />
+      <link rel="canonical" href={pageUrl} />
     </Helmet>
+    <HreflangLinks path="/privacy" />
     <div className="bg-stone-50 min-h-screen">
       {/* Header */}
       <section className="pt-40 pb-16 lg:pt-44 lg:pb-20 grain relative overflow-hidden">
         <div className="absolute inset-0 aurora-bg" />
         <div className="relative max-w-3xl mx-auto px-6 lg:px-8 text-center">
-          <p className="text-xs font-semibold uppercase tracking-widest text-sage-400 mb-4 animate-fade-in">Legal</p>
+          <p className="text-xs font-semibold uppercase tracking-widest text-sage-400 mb-4 animate-fade-in">{t('header.eyebrow')}</p>
           <h1 className="font-display text-4xl lg:text-5xl font-light text-white leading-tight text-balance animate-fade-up">
-            Privacy Policy
+            {t('header.title')}
           </h1>
-          <p className="mt-4 text-stone-400 text-sm animate-fade-up animate-delay-100">Last updated April 24, 2026</p>
+          <p className="mt-4 text-stone-400 text-sm animate-fade-up animate-delay-100">{t('header.updated')}</p>
         </div>
       </section>
 
       <section className="py-20 lg:py-28">
         <div className="max-w-3xl mx-auto px-6 lg:px-8">
           <div className="prose-style space-y-10">
-            {sections.map(({ title, content }, i) => (
+            {sections.map(({ title, content }) => (
               <div key={title} className="reveal">
                 <h2 className="font-display text-xl font-medium text-navy-950 mb-3">{title}</h2>
                 {content.split('\n\n').map((para, j) => (
@@ -104,76 +55,64 @@ export default function Privacy() {
             ))}
 
             <div id="cookies" className="reveal space-y-6">
-              <h2 className="font-display text-xl font-medium text-navy-950">Cookie Policy</h2>
+              <h2 className="font-display text-xl font-medium text-navy-950">{t('cookiePolicy.title')}</h2>
 
               <div className="space-y-3">
-                <h3 className="font-semibold text-navy-900 text-sm">What are cookies?</h3>
+                <h3 className="font-semibold text-navy-900 text-sm">{t('cookiePolicy.what.title')}</h3>
                 <p className="text-stone-600 text-sm leading-relaxed">
-                  Cookies are small text files placed on your device when you visit a website.
-                  They help websites function correctly and provide information to website owners.
+                  {t('cookiePolicy.what.body')}
                 </p>
               </div>
 
               <div className="space-y-3">
-                <h3 className="font-semibold text-navy-900 text-sm">How we use cookies</h3>
-                <p className="text-stone-600 text-sm leading-relaxed">Everstead uses two types of cookies:</p>
+                <h3 className="font-semibold text-navy-900 text-sm">{t('cookiePolicy.how.title')}</h3>
+                <p className="text-stone-600 text-sm leading-relaxed">{t('cookiePolicy.how.intro')}</p>
 
                 <div className="space-y-2">
-                  <h4 className="font-semibold text-navy-800 text-sm">Essential cookies (always active)</h4>
+                  <h4 className="font-semibold text-navy-800 text-sm">{t('cookiePolicy.how.essential.title')}</h4>
                   <p className="text-stone-600 text-sm leading-relaxed">
-                    These cookies are strictly necessary for Everstead to function. They keep you
-                    securely logged in, protect your session against fraud, and ensure the platform
-                    operates correctly. These cookies cannot be disabled as the service cannot work
-                    without them. No consent is required for these cookies under UK PECR.
+                    {t('cookiePolicy.how.essential.body')}
                   </p>
                   <p className="text-stone-600 text-sm leading-relaxed">
-                    Examples include: authentication session cookies, security tokens, user preference cookies.
+                    {t('cookiePolicy.how.essential.examples')}
                   </p>
                 </div>
 
                 <div className="space-y-2">
-                  <h4 className="font-semibold text-navy-800 text-sm">Analytics cookies (require your consent)</h4>
+                  <h4 className="font-semibold text-navy-800 text-sm">{t('cookiePolicy.how.analytics.title')}</h4>
                   <p className="text-stone-600 text-sm leading-relaxed">
-                    We use Google Analytics to understand how visitors use our website — which pages
-                    are visited, how long people spend on them, and where they come from. This helps
-                    us improve Everstead. These cookies are only placed on your device after you give
-                    your consent. No personally identifiable information is collected through analytics cookies.
+                    {t('cookiePolicy.how.analytics.body')}
                   </p>
                   <p className="text-stone-600 text-sm leading-relaxed">
-                    Provider: Google Analytics (Google LLC). Data may be processed in the USA under standard contractual clauses.
+                    {t('cookiePolicy.how.analytics.provider')}
                   </p>
                 </div>
               </div>
 
               <div className="space-y-3">
-                <h3 className="font-semibold text-navy-900 text-sm">What we do not use</h3>
+                <h3 className="font-semibold text-navy-900 text-sm">{t('cookiePolicy.notUse.title')}</h3>
                 <p className="text-stone-600 text-sm leading-relaxed">
-                  Everstead does not use advertising cookies, marketing tracking pixels, social media
-                  cookies, or any third-party tracking technologies beyond Google Analytics. We never
-                  sell your data.
+                  {t('cookiePolicy.notUse.body')}
                 </p>
               </div>
 
               <div className="space-y-3">
-                <h3 className="font-semibold text-navy-900 text-sm">Managing your cookie preferences</h3>
+                <h3 className="font-semibold text-navy-900 text-sm">{t('cookiePolicy.managing.title')}</h3>
                 <p className="text-stone-600 text-sm leading-relaxed">
-                  You can change or withdraw your cookie consent at any time by clicking
-                  "Cookie settings" in the footer of our website. You can also control cookies
-                  through your browser settings — please note that disabling essential cookies
-                  may affect the functionality of the platform.
+                  {t('cookiePolicy.managing.body')}
                 </p>
               </div>
 
               <div className="space-y-3">
-                <h3 className="font-semibold text-navy-900 text-sm">Contact</h3>
+                <h3 className="font-semibold text-navy-900 text-sm">{t('cookiePolicy.contact.title')}</h3>
                 <p className="text-stone-600 text-sm leading-relaxed">
-                  If you have any questions about our use of cookies, please contact us at{' '}
+                  {t('cookiePolicy.contact.intro')}{' '}
                   <a href="mailto:hello@everstead.care" className="text-navy-700 hover:text-navy-900 underline">hello@everstead.care</a>.
                 </p>
               </div>
 
               <p className="text-stone-500 text-xs leading-relaxed italic">
-                Last updated: May 2026. Everstead Digital Ltd, registered in England &amp; Wales, No. 17166825. ICO registration no. 00013988672.
+                {t('cookiePolicy.footnote')}
               </p>
             </div>
           </div>

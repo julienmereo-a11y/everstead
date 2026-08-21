@@ -1,126 +1,66 @@
 import React, { useState } from 'react'
 import { Helmet } from 'react-helmet-async'
+import HreflangLinks from '../components/HreflangLinks'
 import { Link } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
+import i18n from '../i18n'
 import { useReveal } from '../components/useReveal'
 import {
   Users, ShieldCheck, BarChart2, Briefcase, ArrowRight,
   CheckCircle2, Building2, FileText, Clock, Shield, BookOpen
 } from 'lucide-react'
 import EmailCaptureCard from '../components/EmailCaptureCard'
+import enForAdvisers from '../i18n/locales/en/forAdvisers.json'
+import frForAdvisers from '../i18n/locales/fr/forAdvisers.json'
 
-const adviserLeadMagnets = [
-  {
-    source: 'adviser-inheritance-conversations',
-    icon: Users,
-    label: 'Conversations',
-    title: "The Adviser's Guide to Inheritance Conversations",
-    summary: 'Seven framings IFAs and solicitors use to open the estate conversation with clients — without sounding morbid or salesy. Drawn from pilot practices.',
-    buttonLabel: 'Email me the guide',
-  },
-  {
-    source: 'adviser-pre-bereavement-checklist',
-    icon: FileText,
-    label: 'Template',
-    title: 'Pre-bereavement client checklist',
-    summary: 'A working six-section template covering identity, financial inventory, documents, the family map, emotional preparation, and your firm-side process. Use as-is or adapt for your practice.',
-    buttonLabel: 'Email me the checklist',
-  },
-  {
-    source: 'adviser-positioning-playbook',
-    icon: BookOpen,
-    label: 'Playbook',
-    title: 'Estate organisation as a value-add: pricing & positioning playbook',
-    summary: "How UK practices are positioning, pricing (£300-£1,500), and delivering estate organisation as a structured service — including the retention math at the generational transition.",
-    buttonLabel: 'Email me the playbook',
-  },
+// The "forAdvisers" namespace is registered here (not in src/i18n/index.js) so
+// the JSON ships with this lazy-loaded page instead of the main bundle.
+if (!i18n.hasResourceBundle('en', 'forAdvisers')) {
+  i18n.addResourceBundle('en', 'forAdvisers', enForAdvisers)
+  i18n.addResourceBundle('fr', 'forAdvisers', frForAdvisers)
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// NON-TEXT DATA (icons, ids, analytics sources — all visible copy lives in the
+// "forAdvisers" i18n namespace, in the same array order as these)
+// ─────────────────────────────────────────────────────────────────────────────
+
+const LEAD_MAGNET_META = [
+  { source: 'adviser-inheritance-conversations', icon: Users },
+  { source: 'adviser-pre-bereavement-checklist', icon: FileText },
+  { source: 'adviser-positioning-playbook', icon: BookOpen },
 ]
 
-const benefits = [
-  {
-    icon: Briefcase,
-    title: 'Clients arrive better prepared',
-    desc: 'When a client has an Everstead vault, your initial meetings go deeper. No more spending the first hour hunting for account numbers or discovering a missing LPA.',
-  },
-  {
-    icon: Users,
-    title: 'Co-branded client portal',
-    desc: 'Your firm\'s name and branding appear inside the client\'s vault. Every time they log in, they see your relationship — not a third-party tool.',
-  },
-  {
-    icon: BarChart2,
-    title: 'Track readiness across your book',
-    desc: 'See which clients have completed their estate plan, who still has gaps, and where the biggest risks sit — across all your clients in one workspace.',
-  },
-  {
-    icon: ShieldCheck,
-    title: 'Your liability, protected',
-    desc: 'Everstead is an organisation and access tool — it does not give financial, legal, or tax advice. Its scope is clearly defined in its terms of service. Recommending it to clients does not create professional liability for your firm.',
-  },
-  {
-    icon: FileText,
-    title: 'Document visibility on your terms',
-    desc: 'Clients choose what to share with you. You can view uploaded documents, account registers, and instructions — only what they\'ve explicitly granted you access to.',
-  },
-  {
-    icon: ShieldCheck,
-    title: 'Compliant data handling',
-    desc: 'UK data residency, AES-256 encryption, and full GDPR compliance. Your clients\' data is held to the same standard you\'d expect from any professional tool.',
-  },
-]
+const BENEFIT_ICONS = [Briefcase, Users, BarChart2, ShieldCheck, FileText, ShieldCheck]
 
-const ifaBullets = [
-  'First meeting spent finding basic account information',
-  'Clients with no record of digital assets or subscriptions',
-  'Executors calling you after a death with basic questions',
-  'LPAs and wills that haven\'t been reviewed in years',
-  'No way to track client readiness across your book',
-]
+const STEP_NUMS = ['01', '02', '03', '04']
 
-const solicitorBullets = [
-  'Weeks spent chasing documents before probate can begin',
-  'Clients who die with no clear record of their assets',
-  'Families calling in distress without knowing what their loved one had',
-  'Wills and LPAs that can\'t be located when needed',
-  'No single source of truth before administration begins',
-]
-
-const useCases = [
-  {
-    title: 'Independent financial advisers',
-    desc: 'Add estate organisation to your service without building it yourself. Clients with organised estates make better decisions and trust you more.',
-  },
-  {
-    title: 'Estate solicitors',
-    desc: 'Reduce the back-and-forth before probate. When a client\'s vault is complete, your team has what they need without weeks of document-chasing.',
-  },
-  {
-    title: 'Accountants & tax advisers',
-    desc: 'Help clients track assets, subscriptions, and accounts in one place. A cleaner picture at year-end — and far fewer surprises.',
-  },
-  {
-    title: 'Wealth managers',
-    desc: 'Differentiate your offering by giving high-net-worth clients a tool their bank doesn\'t. The family vault positions you as genuinely comprehensive.',
-  },
-]
-
-const steps = [
-  { num: '01', title: 'Apply for early access', desc: 'We\'re working directly with the first 50 advisory firms. Tell us a bit about your practice and we\'ll be in touch within 48 hours.' },
-  { num: '02', title: 'Onboard your team', desc: 'We set up your co-branded workspace, add your team members, and walk you through the adviser portal in under an hour.' },
-  { num: '03', title: 'Invite your clients', desc: 'Clients receive a branded invitation to set up their vault. Most complete their first session in under 30 minutes.' },
-  { num: '04', title: 'Manage from one place', desc: 'See every client\'s readiness score, access shared documents, and track progress — all in your adviser dashboard.' },
-]
-
-const trustSignals = [
-  { icon: Shield,        label: 'UK data residency' },
-  { icon: ShieldCheck,   label: 'AES-256 encryption' },
-  { icon: CheckCircle2,  label: 'GDPR compliant' },
-  { icon: Briefcase,     label: 'No financial advice given' },
-  { icon: Building2,     label: 'SOC 2 infrastructure' },
-]
+const TRUST_ICONS = [Shield, ShieldCheck, CheckCircle2, Briefcase, Building2]
 
 export default function ForAdvisors() {
   useReveal()
   const [tab, setTab] = useState('ifa')
+  const { t, i18n: i18nInstance } = useTranslation('forAdvisers')
+
+  const localePrefix = i18nInstance.language === 'fr' ? '/fr' : ''
+  const pageUrl = `https://www.everstead.care${localePrefix}/for-advisers`
+
+  const trustSignals = t('trustSignals', { returnObjects: true })
+    .map((label, i) => ({ icon: TRUST_ICONS[i], label }))
+
+  const ifaBullets = t('problem.ifaBullets', { returnObjects: true })
+  const solicitorBullets = t('problem.solicitorBullets', { returnObjects: true })
+
+  const benefits = t('benefits.items', { returnObjects: true })
+    .map((item, i) => ({ ...item, icon: BENEFIT_ICONS[i] }))
+
+  const steps = t('steps.items', { returnObjects: true })
+    .map((item, i) => ({ ...item, num: STEP_NUMS[i] }))
+
+  const useCases = t('useCases.items', { returnObjects: true })
+
+  const adviserLeadMagnets = t('resources.items', { returnObjects: true })
+    .map((item, i) => ({ ...item, ...LEAD_MAGNET_META[i] }))
 
   const scrollToBenefits = (e) => {
     e.preventDefault()
@@ -130,17 +70,18 @@ export default function ForAdvisors() {
   return (
     <>
       <Helmet>
-        <title>Everstead for Advisers — Estate Organisation for Your Clients</title>
-        <meta name="description" content="Give your clients a co-branded estate vault they'll actually use. Everstead for advisers includes a client portal, readiness tracking, and document access — built for IFAs, solicitors, and wealth managers." />
-        <link rel="canonical" href="https://www.everstead.care/for-advisers" />
+        <title>{t('meta.title')}</title>
+        <meta name="description" content={t('meta.description')} />
+        <link rel="canonical" href={pageUrl} />
         <meta property="og:type" content="website" />
-        <meta property="og:title" content="Everstead for Advisers — Estate Organisation for Your Clients" />
-        <meta property="og:description" content="Give your clients a co-branded estate vault they'll actually use. Everstead for advisers includes a client portal, readiness tracking, and document access." />
-        <meta property="og:url" content="https://www.everstead.care/for-advisers" />
+        <meta property="og:title" content={t('meta.ogTitle')} />
+        <meta property="og:description" content={t('meta.ogDescription')} />
+        <meta property="og:url" content={pageUrl} />
         <meta property="og:image" content="https://www.everstead.care/og-image.png" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:image" content="https://www.everstead.care/og-image.png" />
       </Helmet>
+      <HreflangLinks path="/for-advisers" />
 
       <div className="bg-stone-50 min-h-screen">
 
@@ -149,19 +90,19 @@ export default function ForAdvisors() {
         <section className="pt-44 pb-20 lg:pt-52 lg:pb-28 grain relative overflow-hidden">
           <div className="absolute inset-0 aurora-bg" />
           <div className="relative max-w-4xl mx-auto px-6 lg:px-8 text-center reveal">
-            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-sage-300 mb-5">For advisers</p>
+            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-sage-300 mb-5">{t('hero.eyebrow')}</p>
             <h1 className="font-display text-4xl lg:text-6xl font-light text-white leading-tight text-balance">
-              Your clients need an organised estate. We help them build one.
+              {t('hero.title')}
             </h1>
             <p className="mt-5 text-lg leading-relaxed text-stone-300 max-w-2xl mx-auto">
-              Everstead gives advisers a co-branded client vault — with readiness tracking, document access, and a portal your clients open between every meeting.
+              {t('hero.subtitle')}
             </p>
             <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
               <Link to="/book-demo" className="btn-aurora inline-flex items-center justify-center gap-2 text-white px-6 py-3 rounded-full text-sm font-semibold transition-transform hover:-translate-y-0.5">
-                Book a demo <ArrowRight size={14} />
+                {t('hero.bookDemo')} <ArrowRight size={14} />
               </Link>
               <a href="#benefits" onClick={scrollToBenefits} className="inline-flex items-center justify-center gap-2 border border-white/20 text-white px-6 py-3 rounded-full text-sm font-semibold hover:bg-white/10 transition-colors">
-                See how it works
+                {t('hero.seeHow')}
               </a>
             </div>
           </div>
@@ -186,15 +127,15 @@ export default function ForAdvisors() {
           <div className="max-w-4xl mx-auto px-6 lg:px-8 reveal">
             <div className="grid md:grid-cols-2 gap-12 items-center">
               <div>
-                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-sage-600 mb-4">The problem</p>
+                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-sage-600 mb-4">{t('problem.eyebrow')}</p>
                 <h2 className="font-display text-3xl lg:text-4xl font-light text-navy-950 text-balance leading-tight mb-6">
-                  Most clients come to meetings unprepared — and both of you know it.
+                  {t('problem.title')}
                 </h2>
                 <p className="text-stone-600 text-sm leading-relaxed mb-4">
-                  They can't find the pension statement from 2019. They haven't updated their LPA since their divorce. Their digital accounts are scattered across six different email addresses, and their spouse doesn't know any of the passwords.
+                  {t('problem.p1')}
                 </p>
                 <p className="text-stone-600 text-sm leading-relaxed">
-                  The result: the first hour of every review is spent on administration, not advice. And when the worst happens, the executor spends months chasing information that should have been organised years earlier.
+                  {t('problem.p2')}
                 </p>
               </div>
               <div>
@@ -204,13 +145,13 @@ export default function ForAdvisors() {
                     onClick={() => setTab('ifa')}
                     className={`px-4 py-1.5 rounded-lg text-xs font-semibold transition-colors ${tab === 'ifa' ? 'bg-white text-navy-900 shadow-sm' : 'text-stone-500 hover:text-navy-800'}`}
                   >
-                    For IFAs
+                    {t('problem.tabIfa')}
                   </button>
                   <button
                     onClick={() => setTab('solicitor')}
                     className={`px-4 py-1.5 rounded-lg text-xs font-semibold transition-colors ${tab === 'solicitor' ? 'bg-white text-navy-900 shadow-sm' : 'text-stone-500 hover:text-navy-800'}`}
                   >
-                    For Solicitors
+                    {t('problem.tabSolicitor')}
                   </button>
                 </div>
                 <div className="space-y-3">
@@ -230,8 +171,8 @@ export default function ForAdvisors() {
         <section id="benefits" className="py-20 lg:py-28 bg-stone-50">
           <div className="max-w-6xl mx-auto px-6 lg:px-8">
             <div className="text-center mb-14 reveal">
-              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-sage-600 mb-4">What you get</p>
-              <h2 className="font-display text-3xl lg:text-4xl font-light text-navy-950">Everything your practice needs. Nothing it doesn't.</h2>
+              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-sage-600 mb-4">{t('benefits.eyebrow')}</p>
+              <h2 className="font-display text-3xl lg:text-4xl font-light text-navy-950">{t('benefits.title')}</h2>
             </div>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
               {benefits.map(({ icon: Icon, title, desc }, i) => (
@@ -250,8 +191,8 @@ export default function ForAdvisors() {
                 <Clock size={18} className="text-navy-700" />
               </div>
               <div>
-                <h3 className="font-semibold text-navy-900 text-sm mb-1">Ongoing, not one-off</h3>
-                <p className="text-stone-500 text-sm leading-relaxed">Estate organisation isn't a single meeting — it's ongoing. Everstead keeps clients engaged between reviews, with smart reminders that flag changes and gaps.</p>
+                <h3 className="font-semibold text-navy-900 text-sm mb-1">{t('benefits.ongoing.title')}</h3>
+                <p className="text-stone-500 text-sm leading-relaxed">{t('benefits.ongoing.desc')}</p>
               </div>
             </div>
           </div>
@@ -261,8 +202,8 @@ export default function ForAdvisors() {
         <section className="py-20 lg:py-28 bg-white">
           <div className="max-w-4xl mx-auto px-6 lg:px-8">
             <div className="text-center mb-14 reveal">
-              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-sage-600 mb-4">Getting started</p>
-              <h2 className="font-display text-3xl lg:text-4xl font-light text-navy-950">Up and running in days, not months.</h2>
+              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-sage-600 mb-4">{t('steps.eyebrow')}</p>
+              <h2 className="font-display text-3xl lg:text-4xl font-light text-navy-950">{t('steps.title')}</h2>
             </div>
             <div className="grid sm:grid-cols-2 gap-6">
               {steps.map(({ num, title, desc }, i) => (
@@ -280,8 +221,8 @@ export default function ForAdvisors() {
         <section className="py-20 lg:py-28 bg-stone-50">
           <div className="max-w-5xl mx-auto px-6 lg:px-8">
             <div className="text-center mb-14 reveal">
-              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-sage-600 mb-4">Who uses it</p>
-              <h2 className="font-display text-3xl lg:text-4xl font-light text-navy-950">Built for professionals who deal with estates.</h2>
+              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-sage-600 mb-4">{t('useCases.eyebrow')}</p>
+              <h2 className="font-display text-3xl lg:text-4xl font-light text-navy-950">{t('useCases.title')}</h2>
             </div>
             <div className="grid md:grid-cols-2 gap-6">
               {useCases.map(({ title, desc }, i) => (
@@ -305,12 +246,12 @@ export default function ForAdvisors() {
         <section id="resources" className="py-20 bg-stone-50 border-t border-stone-100">
           <div className="max-w-5xl mx-auto px-6 lg:px-8">
             <div className="text-center mb-12 reveal">
-              <p className="text-xs font-semibold uppercase tracking-[0.22em] text-sage-600 mb-4">Adviser resources</p>
+              <p className="text-xs font-semibold uppercase tracking-[0.22em] text-sage-600 mb-4">{t('resources.eyebrow')}</p>
               <h2 className="font-display text-3xl lg:text-4xl font-light text-navy-950 leading-tight max-w-2xl mx-auto">
-                Practical content, written for practitioners.
+                {t('resources.title')}
               </h2>
               <p className="mt-4 text-stone-500 text-sm leading-relaxed max-w-xl mx-auto">
-                No registration to read — just give us an email and we'll send it. We won't pass it on, and you can unsubscribe at any time.
+                {t('resources.body')}
               </p>
             </div>
 
@@ -326,13 +267,13 @@ export default function ForAdvisors() {
         <section className="py-20 bg-white">
           <div className="max-w-2xl mx-auto px-6 lg:px-8 text-center reveal">
             <h2 className="font-display text-3xl lg:text-4xl font-light text-navy-950 mb-5">
-              We're onboarding our first adviser partners now.
+              {t('earlyAccess.title')}
             </h2>
             <p className="text-stone-500 text-sm leading-relaxed mb-8">
-              Everstead is in early access. We're working directly with a small cohort of IFAs, solicitors, and estate planners to shape how the adviser portal develops. If you work with clients on estate or later life planning, we'd like to hear from you.
+              {t('earlyAccess.body')}
             </p>
             <Link to="/book-demo" className="inline-flex items-center justify-center gap-2 btn-aurora text-white px-6 py-3 rounded-full text-sm font-semibold transition-transform hover:-translate-y-0.5">
-              Book a 20-minute call <ArrowRight size={14} />
+              {t('earlyAccess.cta')} <ArrowRight size={14} />
             </Link>
           </div>
         </section>
@@ -342,23 +283,15 @@ export default function ForAdvisors() {
           <div className="max-w-4xl mx-auto px-6 lg:px-8 reveal">
             <div className="grid md:grid-cols-2 gap-12 items-start">
               <div>
-                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-sage-600 mb-4">Early access</p>
+                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-sage-600 mb-4">{t('plan.eyebrow')}</p>
                 <h2 className="font-display text-3xl font-light text-navy-950 mb-6 leading-tight">
-                  Join the first cohort of adviser partners.
+                  {t('plan.title')}
                 </h2>
                 <p className="text-stone-600 text-sm leading-relaxed mb-6">
-                  We're working personally with our first adviser firms — with a direct line to the founding team. You help shape the product. We handle everything else.
+                  {t('plan.body')}
                 </p>
                 <div className="space-y-3">
-                  {[
-                    'Multi-client workspace',
-                    'Co-branded client portal',
-                    'Estate Readiness Score per client',
-                    'Document & account access (client-permissioned)',
-                    'Adviser collaboration tools',
-                    'Priority support',
-                    'No commitment during early access',
-                  ].map((item, i) => (
+                  {t('plan.features', { returnObjects: true }).map((item, i) => (
                     <div key={i} className="flex items-center gap-3">
                       <CheckCircle2 size={15} className="text-sage-500 shrink-0" />
                       <span className="text-sm text-stone-700">{item}</span>
@@ -367,15 +300,15 @@ export default function ForAdvisors() {
                 </div>
               </div>
               <div className="bg-white rounded-2xl p-8 border border-stone-200 shadow-sm">
-                <h3 className="font-semibold text-navy-900 mb-2">First 50 firms — onboarded personally</h3>
+                <h3 className="font-semibold text-navy-900 mb-2">{t('plan.card.title')}</h3>
                 <p className="text-stone-500 text-sm leading-relaxed mb-6">
-                  We're working directly with the first 50 advisory firms. You get a personal onboarding session, a direct line to the founding team, and the ability to shape how the adviser portal develops.
+                  {t('plan.card.body')}
                 </p>
                 <Link
                   to="/book-demo"
                   className="w-full inline-flex items-center justify-center gap-2 btn-aurora text-white px-6 py-3 rounded-full text-sm font-semibold transition-transform hover:-translate-y-0.5"
                 >
-                  Book a 20-minute demo <ArrowRight size={14} />
+                  {t('plan.card.cta')} <ArrowRight size={14} />
                 </Link>
               </div>
             </div>
@@ -386,17 +319,17 @@ export default function ForAdvisors() {
         <section className="py-20 bg-white">
           <div className="max-w-2xl mx-auto px-6 lg:px-8 text-center reveal">
             <h2 className="font-display text-3xl font-light text-navy-950 mb-4">
-              The adviser channel built around your practice.
+              {t('bottom.title')}
             </h2>
             <p className="text-stone-500 text-sm leading-relaxed mb-8 max-w-lg mx-auto">
-              Estate planning software built around advisers, not just individuals. Give your clients a vault they'll return to — and a tool that makes your practice more efficient.
+              {t('bottom.body')}
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link to="/book-demo" className="inline-flex items-center justify-center gap-2 btn-aurora text-white px-6 py-3 rounded-full text-sm font-semibold transition-transform hover:-translate-y-0.5">
-                Book a demo <ArrowRight size={14} />
+                {t('bottom.bookDemo')} <ArrowRight size={14} />
               </Link>
               <Link to="/contact" className="inline-flex items-center justify-center gap-2 border border-stone-200 text-navy-900 px-6 py-3 rounded-full text-sm font-semibold hover:bg-stone-50 transition-colors">
-                Send us a message
+                {t('bottom.contact')}
               </Link>
             </div>
           </div>
@@ -412,6 +345,7 @@ export default function ForAdvisors() {
 // ─────────────────────────────────────────────────────────────────────────────
 function AdviserLeadMagnetCard({ source, icon: Icon, label, title, summary, buttonLabel }) {
   const [open, setOpen] = useState(false)
+  const { t } = useTranslation('forAdvisers')
 
   return (
     <div className="rounded-2xl bg-white border border-stone-200 p-6 flex flex-col">
@@ -427,8 +361,8 @@ function AdviserLeadMagnetCard({ source, icon: Icon, label, title, summary, butt
       {open ? (
         <EmailCaptureCard
           source={source}
-          title="Where should we send it?"
-          subtitle="One email. No registration. Unsubscribe any time."
+          title={t('resources.emailTitle')}
+          subtitle={t('resources.emailSubtitle')}
           buttonLabel={buttonLabel}
         />
       ) : (

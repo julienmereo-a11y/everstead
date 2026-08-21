@@ -1,0 +1,72 @@
+{
+  "meta": {
+    "title": "Cookie Policy — Everstead",
+    "description": "How Everstead uses cookies — what they are, which ones we set, and how to manage your preferences."
+  },
+  "header": {
+    "eyebrow": "Legal",
+    "title": "Cookie Policy",
+    "updated": "Last updated May 2026"
+  },
+  "badges": {
+    "alwaysActive": "Always active",
+    "consentRequired": "Consent required"
+  },
+  "labels": {
+    "examples": "Examples",
+    "provider": "Provider",
+    "retention": "Retention"
+  },
+  "categories": [
+    {
+      "name": "Essential cookies",
+      "description": "These cookies are strictly necessary for Everstead to function. They keep you securely logged in, protect your session against fraud, and ensure the platform works correctly. They cannot be disabled — the service cannot operate without them. No consent is required under UK PECR.",
+      "examples": "Authentication session tokens, security tokens, user preference cookies.",
+      "provider": "Everstead Digital Ltd",
+      "retention": "Session / up to 1 year"
+    },
+    {
+      "name": "Analytics cookies",
+      "description": "We use Google Analytics to understand how visitors use our website — which pages are visited, how long people spend on them, and how they arrive. This helps us improve the product. These cookies are only placed after you give your consent. No personally identifiable information is collected.",
+      "examples": "_ga, _gid, _gat",
+      "provider": "Google LLC (data may be processed in the USA under standard contractual clauses)",
+      "retention": "Up to 2 years"
+    },
+    {
+      "name": "Marketing cookies",
+      "description": "We use Meta Pixel to measure the effectiveness of our advertising on Facebook and Instagram. This cookie is only placed after you consent to marketing cookies. We do not use it to build advertising profiles or sell your data.",
+      "examples": "_fbp, _fbc",
+      "provider": "Meta Platforms Ireland Ltd",
+      "retention": "Up to 3 months"
+    }
+  ],
+  "what": {
+    "title": "What are cookies?",
+    "body": "Cookies are small text files placed on your device when you visit a website. They help websites function correctly and allow us to understand how people use Everstead so we can improve it."
+  },
+  "cookiesWeUse": {
+    "title": "Cookies we use"
+  },
+  "notUse": {
+    "title": "What we do not use",
+    "body": "Everstead does not use advertising profiling cookies, social media tracking pixels (beyond the Meta Pixel described above), or any third-party data broker technologies. We never sell your data to third parties."
+  },
+  "managing": {
+    "title": "Managing your preferences",
+    "p1Before": "When you first visit Everstead, a cookie banner will ask for your consent to non-essential cookies. You can change or withdraw your consent at any time by clicking",
+    "p1Strong": "\"Cookie settings\"",
+    "p1After": "in the footer of any page.",
+    "p2": "You can also manage cookies through your browser settings. Please note that disabling essential cookies may prevent you from logging in or using parts of the platform."
+  },
+  "legalBasis": {
+    "title": "Legal basis",
+    "body": "Our use of cookies complies with the UK Privacy and Electronic Communications Regulations (PECR) and UK GDPR. Essential cookies are set on the basis of legitimate interest. Analytics and marketing cookies are set only on the basis of your explicit consent."
+  },
+  "contact": {
+    "title": "Contact",
+    "intro": "Questions about our use of cookies? Email us at",
+    "orSee": "or see our full",
+    "privacyPolicy": "Privacy Policy",
+    "company": "Everstead Digital Ltd — registered in England & Wales, No. 17166825. ICO registration no. 00013988672."
+  }
+}

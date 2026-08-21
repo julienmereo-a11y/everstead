@@ -64,5 +64,47 @@
   "errors": {
     "generic": "Something went wrong."
   },
-  "trustBadge": "🔒 Bank-level AES-256 encryption · UK-registered · ICO No. 17166825"
+  "trustBadge": "🔒 Bank-level AES-256 encryption · UK-registered · ICO No. 17166825",
+  "forgot": {
+    "title": "Forgot your password?",
+    "subtitle": "Enter your email address and we'll send you a reset link.",
+    "emailLabel": "Email address",
+    "emailPlaceholder": "you@example.com",
+    "submit": "Send reset link",
+    "submitLoading": "Sending…",
+    "backToLogin": "Back to login",
+    "sentTitle": "Check your inbox",
+    "sentBody1": "We've sent a password reset link to",
+    "sentBody2": ". It expires in 1 hour.",
+    "errors": {
+      "generic": "Something went wrong. Please try again."
+    }
+  },
+  "reset": {
+    "title": "Set a new password",
+    "subtitle": "Choose a strong password for your Everstead account.",
+    "newPasswordLabel": "New password",
+    "newPasswordPlaceholder": "At least 8 characters",
+    "confirmPasswordLabel": "Confirm password",
+    "confirmPasswordPlaceholder": "Repeat your password",
+    "showPassword": "Show password",
+    "hidePassword": "Hide password",
+    "strength": {
+      "weak": "Weak",
+      "fair": "Fair",
+      "strong": "Strong"
+    },
+    "submit": "Set new password",
+    "submitLoading": "Updating…",
+    "doneTitle": "Password updated",
+    "doneBody": "Your new password has been set. Redirecting you to the dashboard…",
+    "checking": "Verifying your reset link…",
+    "checkingHint": "If nothing happens,",
+    "requestNewLink": "request a new link",
+    "errors": {
+      "mismatch": "Passwords do not match.",
+      "tooShort": "Password must be at least 8 characters.",
+      "generic": "Something went wrong. Please try again."
+    }
+  }
 }

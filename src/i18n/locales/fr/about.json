@@ -1,0 +1,107 @@
+{
+  "meta": {
+    "title": "À propos d'Everstead — Pourquoi nous existons",
+    "description": "Everstead a été créé pour qu'aucune famille n'ait à passer son deuil à chercher des papiers. Découvrez qui nous sommes, pourquoi nous avons construit cette plateforme, et ce qui guide chacune de nos décisions."
+  },
+  "hero": {
+    "eyebrow": "Notre mission",
+    "title": "Aucune famille ne devrait passer son deuil à chercher des papiers.",
+    "subtitle": "Everstead existe pour que cela n'arrive jamais. Nous transformons le travail écrasant d'organiser un patrimoine en quelque chose qu'une famille peut faire ensemble — dans le calme, en toute clarté, et bien avant que cela ne devienne urgent.",
+    "ctaPrimary": "Commencer à tout organiser",
+    "ctaSecondary": "Voir comment ça marche"
+  },
+  "origin": {
+    "eyebrow": "Où tout a commencé",
+    "quote": "« Après un deuil, nous avons passé un mois entier simplement à chercher. Des numéros de compte, des contrats d'assurance, des comptes en ligne, des abonnements à résilier. Tout cela en plein deuil. C'était un chaos évitable. »",
+    "attribution": "— Julien, fondateur d'Everstead",
+    "para1": "Cette expérience n'a rien d'unique. Des millions de familles traversent la même épreuve chaque année — non pas par manque d'attention, mais parce que personne ne leur a jamais donné un moyen simple de se préparer.",
+    "para2": "Everstead a été créé pour combler ce manque. Organiser son patrimoine devrait se faire une seule fois, dans le calme, selon vos règles. Le bénéfice, lui, dure pour toujours — pour vous, pour votre famille, et pour les personnes de confiance qui prendront le relais."
+  },
+  "founder": {
+    "eyebrow": "Derrière Everstead",
+    "photoAlt": "Julien Thuy, fondateur d'Everstead",
+    "name": "Julien Thuy",
+    "role": "Fondateur, Everstead",
+    "location": "Londres, Royaume-Uni",
+    "title": "Un produit né d'une expérience vécue — pas d'une salle de réunion.",
+    "paragraphs": [
+      "Everstead est né après avoir traversé la réalité douloureuse et désorganisée d'un deuil à gérer. Des semaines à chercher des numéros de compte, à relancer les banques, à résilier des abonnements — tout en essayant de faire son deuil. Le genre de problème qu'aucun produit ne semblait conçu pour résoudre.",
+      "Cette expérience a rendu une chose évidente : les outils dont on a réellement besoin quand le pire arrive doivent être construits avant qu'il n'arrive. Non pas par un grand éditeur de logiciels, mais par quelqu'un qui comprend ce qu'une famille traverse vraiment — et qui tient profondément à bien faire les choses.",
+      "Everstead est construit avec cette responsabilité en son cœur. Chaque choix de conception, chaque mot, chaque décision de sécurité répond à la même question : ferais-je confiance à cet outil pour ma propre famille ?"
+    ]
+  },
+  "mission": {
+    "eyebrow": "Notre raison d'être",
+    "title": "Rendre la part pratique du deuil gérable — avant même que le besoin ne se présente.",
+    "para1": "Organiser son patrimoine a toujours été important. Mais les outils d'aujourd'hui — notaires, tableurs, classeurs — n'ont jamais été pensés pour des familles modernes dont la vie s'étend sur des dizaines de comptes et de plateformes numériques.",
+    "para2": "Nous construisons la plateforme qui réunit chaque compte, document, instruction et personne de confiance dans un seul espace privé, structuré et sécurisé — conçu précisément pour le moment où tout compte le plus.",
+    "stats": [
+      {
+        "stat": "Plus de 4 semaines",
+        "label": "Temps moyen passé par les familles à localiser les actifs après un décès",
+        "note": "Source : études britanniques sur le deuil"
+      },
+      {
+        "stat": "Plus de 15 000 £",
+        "label": "Valeur estimée des actifs numériques et comptes non réclamés, laissés sans instructions",
+        "note": "D'après des données financières des consommateurs britanniques"
+      },
+      {
+        "stat": "1 sur 3",
+        "label": "Un adulte britannique sur trois n'a aucun plan documenté pour ses comptes et ses actifs",
+        "note": "Études YouGov / Solicitors for the Elderly"
+      }
+    ]
+  },
+  "values": {
+    "eyebrow": "Ce qui guide chacune de nos décisions",
+    "title": "Nos valeurs",
+    "items": [
+      {
+        "title": "L'empathie avant tout",
+        "desc": "Chaque décision — des mots que nous choisissons aux écrans que nous concevons — commence par la même question : quel effet cela fait-il à quelqu'un en plein deuil ? La clarté et le calme ne sont pas un supplément. Ils sont le produit tout entier."
+      },
+      {
+        "title": "La confiance est le produit",
+        "desc": "La sécurité et la confidentialité ne sont pas des fonctionnalités ajoutées après coup. Elles sont la raison d'être de la plateforme. Nous traitons vos informations avec le même sérieux qu'un notaire ou un conseiller de famille de confiance. Et cette confiance, nous nous employons à la mériter chaque jour."
+      },
+      {
+        "title": "Préparé dans le calme, utile dans l'épreuve",
+        "desc": "Le meilleur moment pour s'organiser, c'est avant que quoi que ce soit n'arrive. Nous concevons pour les dimanches après-midi tranquilles — pour que, si le pire survient, votre famille dispose de tout ce dont elle a besoin sans avoir à poser la moindre question."
+      }
+    ]
+  },
+  "testimonials": {
+    "eyebrow": "Ce que disent les familles",
+    "items": [
+      {
+        "quote": "« Je repoussais cela depuis des années. Everstead a rendu la tâche moins écrasante — je m'y suis mise un dimanche après-midi, et j'ai senti un poids immense me quitter. Mes enfants savent désormais exactement quoi faire. »",
+        "name": "Margaret, 67 ans",
+        "location": "Surrey"
+      },
+      {
+        "quote": "« Quand mon père nous a quittés, nous partions de rien. Il a fallu des mois pour régler sa succession. J'ai depuis mis en place Everstead pour que mes enfants ne traversent jamais la même chose. C'est la chose la plus responsable que j'aie faite pour eux. »",
+        "name": "David, 58 ans",
+        "location": "Édimbourg"
+      }
+    ]
+  },
+  "commitment": {
+    "eyebrow": "Notre engagement envers vous",
+    "title": "Nous ne vendrons jamais vos données. Nous ne transigerons jamais sur la sécurité. Nous serons toujours de votre côté.",
+    "points": [
+      "Vos données vous appartiennent — toujours. Vous pouvez les exporter ou les supprimer à tout moment.",
+      "Chaque document, compte et information que vous conservez est protégé par un chiffrement AES-256, au repos et en transit.",
+      "Nous ne diffusons pas de publicité, ne vendons pas l'accès à vos données et ne les partageons avec aucun tiers.",
+      "Chaque autorisation par rôle existe pour que les bonnes personnes ne voient que ce dont elles ont besoin.",
+      "Nous sommes enregistrés au Royaume-Uni et soumis au droit britannique de la protection des données (ICO n° 17166825)."
+    ]
+  },
+  "cta": {
+    "eyebrow": "Envie de commencer ?",
+    "title": "Offrez à votre famille la clarté qu'elle mérite.",
+    "body": "Il faut moins d'un après-midi pour mettre de l'ordre dans vos affaires. Le soulagement — pour vous comme pour eux — dure toute une vie.",
+    "primary": "Commencez votre Everstead",
+    "secondary": "Échanger avec nous"
+  }
+}

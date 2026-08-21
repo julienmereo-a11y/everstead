@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Helmet } from 'react-helmet-async'
+import HreflangLinks from '../components/HreflangLinks'
 import { Link, useSearchParams, useNavigate } from 'react-router-dom'
 import {
   CheckCircle2, ArrowRight, Shield, Lock, Users,
@@ -7,11 +8,20 @@ import {
   CreditCard, Zap, Star, X,
 } from 'lucide-react'
 import { Elements, PaymentElement, useStripe, useElements } from '@stripe/react-stripe-js'
+import { useTranslation } from 'react-i18next'
+import i18n from '../i18n'
+import enGetStarted from '../i18n/locales/en/getStarted.json'
+import frGetStarted from '../i18n/locales/fr/getStarted.json'
 import { useAuth } from '../contexts/AuthContext'
 import { PLANS, getStripe } from '../lib/stripe'
 import { PRICING } from '../config/pricing'
 import { trackEvent } from '../lib/analytics'
 import { supabase } from '../lib/supabase'
+
+// Self-registered namespace (page-scoped strings stay in this lazy chunk;
+// central src/i18n/index.js keeps only the shared always-loaded namespaces).
+i18n.addResourceBundle('en', 'getStarted', enGetStarted)
+i18n.addResourceBundle('fr', 'getStarted', frGetStarted)
 
 // Stripe endpoints require the caller's JWT — the server derives the user from it
 // (never from a client-supplied userId).
@@ -26,29 +36,17 @@ async function stripeAuthHeaders() {
 
 // Essential is retired — no longer offered to new signups (existing subscribers keep it).
 // Free is the no-card entry tier; Everstead+ (key 'family') keeps its 14-day card trial.
+// NON-TEXT META ONLY — all visible copy (name, desc, features, badge) lives in the
+// "getStarted" i18n namespace under plans.<id>, merged inside the component below.
 const PLAN_OPTIONS = [
   {
     id: 'free',
-    name: 'Everstead',
     isFree: true,
-    desc: 'Free forever. Organise the essentials — no card required.',
-    features: ['Full guided setup with Your AI Assistant', 'Your About Me profile', '1 account · 1 document · 1 trusted person'],
   },
   {
     id: 'family',
-    name: 'Everstead+',
     monthly: PRICING.family.monthly.perMonth, yearly: PRICING.family.annual.perMonth,
-    desc: 'For couples and households — two private vaults, one subscription, shared protection.',
-    features: [
-      'Two private vaults — one subscription',
-      'Unlimited accounts & documents',
-      'Up to 10 trusted contacts',
-      'Unlimited instructions & wishes',
-      'Personal messages & final wishes',
-      '25 GB secure storage',
-      'Your AI Assistant',
-    ],
-    badge: 'Most popular',
+    badge: true,     // translated badge text comes from plans.family.badge
     highlight: true, // rendered as the dark, featured card (mirrors /pricing)
   },
   // Everstead Pro (advisers) is intentionally NOT a self-serve option — it's sold via
@@ -129,7 +127,7 @@ const GEO_CONFIG = {
   ]),
 }
 
-// Password strength checker
+// Password strength checker — `label` is an i18n key under passwordStrength.*
 function getPasswordStrength(pw) {
   if (!pw) return { score: 0, label: '', color: '' }
   let score = 0
@@ -138,9 +136,9 @@ function getPasswordStrength(pw) {
   if (/[A-Z]/.test(pw)) score++
   if (/[0-9]/.test(pw)) score++
   if (/[^A-Za-z0-9]/.test(pw)) score++
-  if (score <= 1) return { score, label: 'Weak',   color: 'bg-red-400'   }
-  if (score <= 3) return { score, label: 'Fair',   color: 'bg-amber-400' }
-  return              { score, label: 'Strong', color: 'bg-emerald-500' }
+  if (score <= 1) return { score, label: 'weak',   color: 'bg-red-400'   }
+  if (score <= 3) return { score, label: 'fair',   color: 'bg-amber-400' }
+  return              { score, label: 'strong', color: 'bg-emerald-500' }
 }
 
 // ─────────────────────────────────────────────────────────────
@@ -148,9 +146,20 @@ function getPasswordStrength(pw) {
 // ─────────────────────────────────────────────────────────────
 
 export default function GetStarted() {
+  const { t } = useTranslation('getStarted')
   const { signUp, user } = useAuth()
   const [searchParams] = useSearchParams()
   const navigate       = useNavigate()
+
+  // Display copy for the plan cards — PLAN_OPTIONS holds the non-text meta,
+  // all visible strings come from the "getStarted" namespace (plans.<id>.*).
+  const planOptions = PLAN_OPTIONS.map(p => ({
+    ...p,
+    name:     t(`plans.${p.id}.name`),
+    desc:     t(`plans.${p.id}.desc`),
+    features: t(`plans.${p.id}.features`, { returnObjects: true }),
+    badge:    p.badge ? t(`plans.${p.id}.badge`) : undefined,
+  }))
 
   // Geo access control — 'loading' | 'allowed' | 'soft-warn' | 'blocked-africa' | 'blocked-sanctioned'
   const [geoStatus, setGeoStatus]     = useState('loading')
@@ -211,9 +220,9 @@ export default function GetStarted() {
       .then(data => {
         if (cancelled) return
         if (data?.valid) setPromoState({ status: 'valid', label: data.label, reason: null })
-        else             setPromoState({ status: 'invalid', label: null, reason: data?.reason || 'Code not valid' })
+        else             setPromoState({ status: 'invalid', label: null, reason: data?.reason || t('promo.fallbackInvalid') })
       })
-      .catch(() => { if (!cancelled) setPromoState({ status: 'invalid', label: null, reason: 'Could not validate code' }) })
+      .catch(() => { if (!cancelled) setPromoState({ status: 'invalid', label: null, reason: t('promo.fallbackError') }) })
     return () => { cancelled = true }
   }, [promoCode])
 
@@ -431,11 +440,11 @@ export default function GetStarted() {
     setLoading(true)
     try {
       if (RESTRICTED_COUNTRIES.has(form.country)) {
-        throw new Error('We\'re unable to offer our services in your country due to regulatory restrictions. If you believe this is an error, please contact support@everstead.care.')
+        throw new Error(t('errors.restrictedCountry'))
       }
 
       const { data: { session } } = await supabase.auth.getSession()
-      if (!session) throw new Error('Session expired. Please sign in again.')
+      if (!session) throw new Error(t('errors.sessionExpired'))
 
       await supabase.from('profiles').upsert(
         { id: session.user.id, country: form.country || null },
@@ -464,7 +473,7 @@ export default function GetStarted() {
       })
       if (!intentRes.ok) {
         const { error } = await intentRes.json().catch(() => ({}))
-        throw new Error(error || 'Could not set up payment. Please try again.')
+        throw new Error(error || t('errors.paymentSetup'))
       }
       const { clientSecret: secret, customerId } = await intentRes.json()
       setClientSecret(secret)
@@ -472,7 +481,7 @@ export default function GetStarted() {
       setIsOAuthProfile(false)
       setStep(3)
     } catch (err) {
-      setError(err.message ?? 'Something went wrong. Please try again.')
+      setError(err.message ?? t('errors.generic'))
     } finally {
       setLoading(false)
     }
@@ -488,7 +497,7 @@ export default function GetStarted() {
     try {
       // 0. Sanctions check — block restricted countries before any registration
       if (RESTRICTED_COUNTRIES.has(form.country)) {
-        throw new Error('We\'re unable to offer our services in your country due to regulatory restrictions. If you believe this is an error, please contact support@everstead.care.')
+        throw new Error(t('errors.restrictedCountry'))
       }
 
       // 1. Register server-side to bypass Supabase CAPTCHA protection
@@ -507,7 +516,7 @@ export default function GetStarted() {
 
       if (!registerRes.ok) {
         const { error } = await registerRes.json().catch(() => ({}))
-        throw new Error(error || 'Could not create account. Please try again.')
+        throw new Error(error || t('errors.accountCreate'))
       }
 
       const { access_token, refresh_token } = await registerRes.json()
@@ -552,7 +561,7 @@ export default function GetStarted() {
 
       if (!intentRes.ok) {
         const { error } = await intentRes.json().catch(() => ({}))
-        throw new Error(error || 'Could not set up payment. Please try again.')
+        throw new Error(error || t('errors.paymentSetup'))
       }
 
       const { clientSecret: secret, customerId } = await intentRes.json()
@@ -561,7 +570,7 @@ export default function GetStarted() {
       trackEvent('checkout_started', { plan: selectedPlan, billing: annualBilling ? 'yearly' : 'monthly' })
       setStep(3)
     } catch (err) {
-      setError(err.message ?? 'Something went wrong. Please try again.')
+      setError(err.message ?? t('errors.generic'))
       setStep(2)
     } finally {
       setLoading(false)
@@ -571,13 +580,14 @@ export default function GetStarted() {
   return (
     <>
     <Helmet>
-      <title>Get Started — Everstead</title>
-      <meta name="description" content="Start your Everstead plan in minutes. Choose your plan, create your account, and begin your 14-day free trial. No charge until the trial ends." />
+      <title>{t('meta.title')}</title>
+      <meta name="description" content={t('meta.description')} />
       <link rel="canonical" href="https://www.everstead.care/get-started" />
-      <meta property="og:title" content="Get Started — Everstead" />
-      <meta property="og:description" content="Start your estate plan in minutes. 14-day free trial on every plan — card required, no charge until the trial ends." />
+      <meta property="og:title" content={t('meta.ogTitle')} />
+      <meta property="og:description" content={t('meta.ogDescription')} />
       <meta property="og:url" content="https://www.everstead.care/get-started" />
     </Helmet>
+    <HreflangLinks path="/get-started" />
     <div className="bg-stone-50 pt-24 min-h-screen">
 
       {/* ── HERO ──────────────────────────────────────────────── */}
@@ -592,22 +602,22 @@ export default function GetStarted() {
                 </span>
               )}
               <p className="text-sm text-stone-300">
-                Invited by <span className="font-semibold text-white">{adviserFirm.firm_name}</span> · powered by Everstead
+                {t('hero.invitedBy')}{' '}<span className="font-semibold text-white">{adviserFirm.firm_name}</span>{' '}{t('hero.poweredBy')}
               </p>
             </div>
           )}
-          <p className="text-xs font-semibold uppercase tracking-widest text-sage-400 mb-4">Get started</p>
+          <p className="text-xs font-semibold uppercase tracking-widest text-sage-400 mb-4">{t('hero.eyebrow')}</p>
           <h1 className="font-display text-4xl lg:text-5xl font-light text-white leading-tight text-balance">
-            Start your plan in minutes.
+            {t('hero.title')}
           </h1>
           <p className="mt-4 text-stone-300 text-base leading-relaxed max-w-md mx-auto">
             {foundingActive
-              ? <><span className="text-sage-300 font-semibold">Everstead+ is yours for life, free.</span> Add your card to claim your founding place — it won't be charged, and you can cancel any time.</>
+              ? <><span className="text-sage-300 font-semibold">{t('hero.subtitleFoundingLead')}</span>{' '}{t('hero.subtitleFoundingBody')}</>
               : referralCode
-              ? <><span className="text-sage-300 font-semibold">You've been referred — enjoy a 21-day free trial.</span> Enter your card details and you won't be charged until day 21.</>
+              ? <><span className="text-sage-300 font-semibold">{t('hero.subtitleReferralLead')}</span>{' '}{t('hero.subtitleReferralBody')}</>
               : selectedPlan === 'free'
-              ? <><span className="text-sage-300 font-semibold">Start free — no card required.</span> Set up the essentials with Your AI Assistant, and upgrade to Everstead+ whenever you're ready.</>
-              : `${trialDays}-day free trial. Enter your card details — you won't be charged until the trial ends.`
+              ? <><span className="text-sage-300 font-semibold">{t('hero.subtitleFreeLead')}</span>{' '}{t('hero.subtitleFreeBody')}</>
+              : t('hero.subtitleDefault', { days: trialDays })
             }
           </p>
 
@@ -619,18 +629,18 @@ export default function GetStarted() {
               {promoState.status === 'valid' && (
                 <div className="inline-flex items-center gap-2 rounded-full bg-sage-500/15 border border-sage-400/30 px-5 py-2.5 text-sm">
                   <span aria-hidden="true">🎉</span>
-                  <span className="text-sage-200 font-semibold">Founding offer applied — {promoState.label.toLowerCase()}.</span>
-                  <span className="text-stone-400 hidden sm:inline">Code {promoCode}</span>
+                  <span className="text-sage-200 font-semibold">{t('promo.applied', { label: promoState.label.toLowerCase() })}</span>
+                  <span className="text-stone-400 hidden sm:inline">{t('promo.code', { code: promoCode })}</span>
                 </div>
               )}
               {promoState.status === 'invalid' && (
                 <div className="inline-flex items-center gap-2 rounded-full bg-amber-500/10 border border-amber-400/30 px-5 py-2.5 text-sm">
-                  <span className="text-amber-200">Code {promoCode} couldn't be applied — {promoState.reason.toLowerCase()}. You can still start your free trial.</span>
+                  <span className="text-amber-200">{t('promo.invalid', { code: promoCode, reason: promoState.reason.toLowerCase() })}</span>
                 </div>
               )}
               {promoState.status === 'checking' && (
                 <div className="inline-flex items-center gap-2 rounded-full bg-white/5 border border-white/10 px-5 py-2.5 text-sm">
-                  <span className="text-stone-400">Checking your code…</span>
+                  <span className="text-stone-400">{t('promo.checking')}</span>
                 </div>
               )}
             </div>
@@ -647,7 +657,7 @@ export default function GetStarted() {
           {geoStatus === 'loading' && (
             <div className="flex flex-col items-center justify-center py-24 gap-4">
               <div className="w-8 h-8 rounded-full border-2 border-stone-200 border-t-navy-600 animate-spin" />
-              <p className="text-stone-400 text-sm">Just a moment…</p>
+              <p className="text-stone-400 text-sm">{t('geo.loading')}</p>
             </div>
           )}
 
@@ -658,10 +668,10 @@ export default function GetStarted() {
                 <Shield size={22} className="text-red-400" />
               </div>
               <h2 className="font-display text-2xl font-light text-navy-950 mb-3" style={{ fontFamily: 'Georgia, serif' }}>
-                Everstead is not available in your country.
+                {t('geo.sanctionedTitle')}
               </h2>
               <p className="text-stone-500 text-sm leading-relaxed">
-                We're unable to offer our services in your location due to regulatory restrictions.
+                {t('geo.sanctionedBody')}
               </p>
             </div>
           )}
@@ -673,10 +683,10 @@ export default function GetStarted() {
                 <Shield size={22} className="text-stone-400" />
               </div>
               <h2 className="font-display text-2xl font-light text-navy-950 mb-3" style={{ fontFamily: 'Georgia, serif' }}>
-                Everstead is not currently available in your location.
+                {t('geo.blockedTitle')}
               </h2>
               <p className="text-stone-500 text-sm leading-relaxed">
-                We're focused on a small number of markets right now. We hope to expand — check back soon.
+                {t('geo.blockedBody')}
               </p>
             </div>
           )}
@@ -685,12 +695,12 @@ export default function GetStarted() {
           {geoStatus === 'soft-warn' && !geoDismissed && (
             <div className="mb-8 flex items-start gap-3 bg-amber-50 border border-amber-200 rounded-2xl px-5 py-4">
               <div className="flex-1 text-sm text-amber-800 leading-relaxed">
-                <span className="font-semibold">Everstead is currently designed for people in the UK and Ireland.</span>{' '}
-                Some features may not match the legal requirements in your country — but we're expanding, so this may change.
+                <span className="font-semibold">{t('geo.softWarnLead')}</span>{' '}
+                {t('geo.softWarnBody')}
               </div>
               <button
                 onClick={() => setGeoDismissed(true)}
-                aria-label="Dismiss"
+                aria-label={t('geo.dismiss')}
                 className="text-amber-500 hover:text-amber-700 transition-colors flex-shrink-0 mt-0.5"
               >
                 <X size={16} />
@@ -708,7 +718,7 @@ export default function GetStarted() {
               {planLocked ? (
                 <div className="inline-flex items-center gap-2 bg-white border border-stone-200 rounded-full px-5 py-2 shadow-sm text-sm">
                   <Lock size={13} className="text-stone-400" />
-                  <span className="font-medium text-navy-800">Billed annually</span>
+                  <span className="font-medium text-navy-800">{t('billing.billedAnnuallyLocked')}</span>
                 </div>
               ) : (
                 <div className="inline-flex items-center gap-1 bg-white border border-stone-200 rounded-full p-1 shadow-sm">
@@ -716,16 +726,16 @@ export default function GetStarted() {
                     onClick={() => setAnnualBilling(false)}
                     className={`px-5 py-1.5 text-sm font-medium rounded-full transition-colors ${!annualBilling ? 'bg-navy-800 text-white' : 'text-stone-500 hover:text-navy-800'}`}
                   >
-                    Monthly
+                    {t('billing.monthly')}
                   </button>
                   <button
                     onClick={() => setAnnualBilling(true)}
                     className={`px-5 py-1.5 text-sm font-medium rounded-full transition-colors ${annualBilling ? 'bg-navy-800 text-white' : 'text-stone-500 hover:text-navy-800'}`}
                   >
-                    Yearly{' '}
+                    {t('billing.yearly')}{' '}
                     {annualBilling
-                      ? <span className="text-sage-300 font-semibold ml-1">✓ Saving 20%</span>
-                      : <span className="text-sage-500 font-semibold ml-1">Save 20%</span>
+                      ? <span className="text-sage-300 font-semibold ml-1">{t('billing.savingActive')}</span>
+                      : <span className="text-sage-500 font-semibold ml-1">{t('billing.save')}</span>
                     }
                   </button>
                 </div>
@@ -737,9 +747,9 @@ export default function GetStarted() {
           {step <= 3 && (
             <div className="flex items-center justify-center gap-3 mb-14">
               {[
-                { n: 1, label: 'Choose plan' },
-                { n: 2, label: isOAuthProfile ? 'Your details' : 'Create account' },
-                { n: 3, label: 'Payment' },
+                { n: 1, label: t('stepIndicator.choosePlan') },
+                { n: 2, label: isOAuthProfile ? t('stepIndicator.yourDetails') : t('stepIndicator.createAccount') },
+                { n: 3, label: t('stepIndicator.payment') },
               ].map(({ n, label }, i, arr) => (
                 <React.Fragment key={n}>
                   <div className={`flex items-center gap-2 ${step >= n ? 'text-navy-800' : 'text-stone-400'}`}>
@@ -764,15 +774,15 @@ export default function GetStarted() {
           {step === 1 && (
             <div>
               <h2 className="font-display text-3xl font-light text-navy-950 text-center mb-4">
-                {planLocked ? 'Your founding offer' : 'Choose your plan'}
+                {planLocked ? t('step1.titleFounding') : t('step1.title')}
               </h2>
               {planLocked && (
                 <p className="text-center text-stone-500 text-sm mb-8 max-w-md mx-auto">
-                  The founding offer applies to the <span className="font-semibold text-navy-800">Everstead+</span> plan — your first year is free. The plan is set for you below.
+                  {t('step1.foundingNotePrefix')} <span className="font-semibold text-navy-800">Everstead+</span> {t('step1.foundingNoteSuffix')}
                 </p>
               )}
               <div className="grid md:grid-cols-2 gap-5 mb-8 max-w-2xl mx-auto">
-                {PLAN_OPTIONS.map(plan => {
+                {planOptions.map(plan => {
                   const locked = planLocked && plan.id !== 'family'
                   return (
                   <button
@@ -807,7 +817,7 @@ export default function GetStarted() {
                         )}
                         {plan.promo && (
                           <span className="inline-block bg-amber-400 text-amber-950 text-xs font-semibold px-3 py-1 rounded-full">
-                            Launch offer
+                            {t('plans.launchOffer')}
                           </span>
                         )}
                       </div>
@@ -820,21 +830,21 @@ export default function GetStarted() {
                       {plan.isFree ? (
                         <>
                           <div className="flex items-end gap-2">
-                            <span className="font-display text-4xl font-light">Free</span>
-                            <span className={`pb-1.5 text-sm ${plan.highlight ? 'text-stone-400' : 'text-stone-500'}`}>forever</span>
+                            <span className="font-display text-4xl font-light">{t('plans.freePrice')}</span>
+                            <span className={`pb-1.5 text-sm ${plan.highlight ? 'text-stone-400' : 'text-stone-500'}`}>{t('plans.forever')}</span>
                           </div>
-                          <p className="mt-1.5 text-[11px] text-stone-400">No card required</p>
+                          <p className="mt-1.5 text-[11px] text-stone-400">{t('plans.noCard')}</p>
                         </>
                       ) : (
                         <>
                           <div className="flex items-end gap-2">
                             <span className="font-display text-4xl font-light">£{annualBilling ? plan.yearly : plan.monthly}</span>
-                            <span className={`pb-1.5 text-sm ${plan.highlight ? 'text-stone-400' : 'text-stone-500'}`}>/ month</span>
+                            <span className={`pb-1.5 text-sm ${plan.highlight ? 'text-stone-400' : 'text-stone-500'}`}>{t('plans.perMonth')}</span>
                           </div>
                           <p className="mt-1.5 text-[11px] text-stone-400">
                             {annualBilling
-                              ? `billed annually (£${PRICING.family.annual.perYear.toFixed(2)}/year) · Save 20%`
-                              : 'billed monthly'}
+                              ? t('plans.billedAnnuallyDetail', { price: PRICING.family.annual.perYear.toFixed(2) })
+                              : t('plans.billedMonthly')}
                           </p>
                         </>
                       )}
@@ -864,16 +874,16 @@ export default function GetStarted() {
                   className="btn-aurora inline-flex items-center gap-2 text-white font-semibold text-sm px-8 py-3.5 rounded-full transition-transform hover:-translate-y-0.5"
                 >
                   {clientSecret
-                    ? <>Back to payment with {PLAN_OPTIONS.find(p => p.id === selectedPlan)?.name}</>
-                    : <>Continue with {PLAN_OPTIONS.find(p => p.id === selectedPlan)?.name}</>}
+                    ? t('step1.backToPayment', { plan: planOptions.find(p => p.id === selectedPlan)?.name })
+                    : t('step1.continueWith', { plan: planOptions.find(p => p.id === selectedPlan)?.name })}
                   <ArrowRight size={16} />
                 </button>
                 <p className="mt-3 text-xs text-stone-400">
                   {selectedPlan === 'free'
-                    ? 'Free forever · No card required'
+                    ? t('step1.microFree')
                     : foundingActive
-                    ? 'Your first year is free · Cancel any time and pay nothing'
-                    : `${trialDays}-day free trial · Cancel before it ends and pay nothing`}
+                    ? t('step1.microFounding')
+                    : t('step1.microTrial', { days: trialDays })}
                 </p>
               </div>
 
@@ -885,15 +895,15 @@ export default function GetStarted() {
                   <div className="sm:max-w-sm">
                     <p className="text-sm font-semibold text-sage-300">Everstead Pro</p>
                     <p className="mt-1.5 text-stone-300 text-xs leading-relaxed">
-                      For solicitors, will-writers, and financial advisers — a co-branded, multi-client workspace. Pricing on application.
+                      {t('step1.pro.desc')}
                     </p>
                   </div>
                   <div className="mt-4 sm:mt-0 flex flex-col sm:flex-row gap-3 shrink-0">
                     <Link to="/for-advisers" className="inline-flex items-center justify-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold border border-white/25 text-white hover:bg-white/10 transition-colors">
-                      Learn more
+                      {t('step1.pro.learnMore')}
                     </Link>
                     <Link to="/book-demo" className="btn-aurora inline-flex items-center justify-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold">
-                      Book a demo <ArrowRight size={15} />
+                      {t('step1.pro.bookDemo')} <ArrowRight size={15} />
                     </Link>
                   </div>
                 </div>
@@ -904,9 +914,9 @@ export default function GetStarted() {
           {/* ── STEP 2a: OAuth profile completion (Google users only) ─ */}
           {step === 2 && isOAuthProfile && (
             <div className="max-w-md mx-auto">
-              <h2 className="font-display text-3xl font-light text-navy-950 text-center mb-2">One last step</h2>
+              <h2 className="font-display text-3xl font-light text-navy-950 text-center mb-2">{t('oauth.title')}</h2>
               <p className="text-center text-stone-500 text-sm mb-10">
-                We just need a few more details before setting up your {foundingActive ? 'founding place' : 'trial'}.
+                {foundingActive ? t('oauth.subtitleFounding') : t('oauth.subtitleTrial')}
               </p>
 
               {error && (
@@ -919,19 +929,19 @@ export default function GetStarted() {
               <form onSubmit={handleOAuthProfileSubmit} className="space-y-4">
 
                 {/* Country of residence */}
-                <Field label="Country of residence" required>
+                <Field label={t('fields.country')} required>
                   <select name="country" value={form.country} onChange={handleChange} required autoFocus className={inputClass}>
-                    <option value="">Select country…</option>
+                    <option value="">{t('fields.selectCountry')}</option>
                     {COUNTRIES.map(c => <option key={c.code} value={c.name}>{c.name}</option>)}
                   </select>
                 </Field>
 
                 {/* Terms */}
                 <p className="text-xs text-stone-400 leading-relaxed pt-1">
-                  By continuing you agree to our{' '}
-                  <Link to="/terms" className="text-navy-700 underline underline-offset-2" target="_blank">Terms of Service</Link>
-                  {' '}and{' '}
-                  <Link to="/privacy" className="text-navy-700 underline underline-offset-2" target="_blank">Privacy Policy</Link>.
+                  {t('oauth.termsPrefix')}{' '}
+                  <Link to="/terms" className="text-navy-700 underline underline-offset-2" target="_blank">{t('terms.termsOfService')}</Link>
+                  {' '}{t('terms.and')}{' '}
+                  <Link to="/privacy" className="text-navy-700 underline underline-offset-2" target="_blank">{t('terms.privacyPolicy')}</Link>.
                 </p>
 
                 <button
@@ -943,9 +953,9 @@ export default function GetStarted() {
                   onMouseLeave={e => e.currentTarget.style.backgroundColor = '#4c7d47'}
                 >
                   {loading ? (
-                    <><Loader2 size={15} className="animate-spin" />Setting up…</>
+                    <><Loader2 size={15} className="animate-spin" />{t('oauth.settingUp')}</>
                   ) : (
-                    <><CreditCard size={15} />Continue to payment</>
+                    <><CreditCard size={15} />{t('oauth.continueToPayment')}</>
                   )}
                 </button>
               </form>
@@ -955,16 +965,16 @@ export default function GetStarted() {
           {/* ── STEP 2b: Email account creation ───────────────────── */}
           {step === 2 && !isOAuthProfile && (
             <div className="max-w-md mx-auto">
-              <h2 className="font-display text-3xl font-light text-navy-950 text-center mb-2">Create your account</h2>
+              <h2 className="font-display text-3xl font-light text-navy-950 text-center mb-2">{t('step2.title')}</h2>
               <p className="text-center text-stone-500 text-sm mb-10">
-                Starting with the{' '}
+                {t('step2.startingWith')}{' '}
                 <button
                   onClick={() => setStep(1)}
                   className="text-navy-700 underline underline-offset-2 font-medium hover:text-navy-900"
                 >
-                  {PLAN_OPTIONS.find(p => p.id === selectedPlan)?.name} plan
+                  {t('plans.planWithName', { plan: planOptions.find(p => p.id === selectedPlan)?.name })}
                 </button>
-                {' '}· {annualBilling ? 'yearly billing' : 'monthly billing'}
+                {' '}· {annualBilling ? t('step2.yearlyBilling') : t('step2.monthlyBilling')}
               </p>
 
               {/* Google sign-up */}
@@ -974,12 +984,12 @@ export default function GetStarted() {
                 className="w-full flex items-center justify-center gap-3 border border-stone-300 bg-white text-navy-900 font-medium text-sm py-3 rounded-full hover:bg-stone-50 transition-colors mb-5"
               >
                 <GoogleIcon />
-                Continue with Google
+                {t('step2.googleButton')}
               </button>
 
               <div className="flex items-center gap-3 mb-5">
                 <div className="flex-1 h-px bg-stone-200" />
-                <span className="text-xs text-stone-400">or continue with email</span>
+                <span className="text-xs text-stone-400">{t('step2.divider')}</span>
                 <div className="flex-1 h-px bg-stone-200" />
               </div>
 
@@ -993,34 +1003,34 @@ export default function GetStarted() {
               <form onSubmit={handleSubmit} className="space-y-4">
 
                 {/* Full name */}
-                <Field label="Full name" required>
+                <Field label={t('fields.fullName')} required>
                   <input
                     type="text" name="fullName" value={form.fullName} onChange={handleChange}
-                    placeholder="Jane Smith" required autoFocus
+                    placeholder={t('fields.fullNamePlaceholder')} required autoFocus
                     className={inputClass}
                   />
                 </Field>
 
                 {/* Email */}
-                <Field label="Email address" required>
+                <Field label={t('fields.email')} required>
                   <input
                     type="email" name="email" value={form.email} onChange={handleChange}
-                    placeholder="jane@example.com" required
+                    placeholder={t('fields.emailPlaceholder')} required
                     className={inputClass}
                   />
                 </Field>
 
                 {/* Password */}
-                <Field label="Password" required>
+                <Field label={t('fields.password')} required>
                   <div className="relative">
                     <input
                       type={showPw ? 'text' : 'password'} name="password" value={form.password} onChange={handleChange}
-                      placeholder="Min. 8 characters" required minLength={8}
+                      placeholder={t('fields.passwordPlaceholder')} required minLength={8}
                       className={`${inputClass} pr-10`}
                     />
                     <button
                       type="button" onClick={() => setShowPw(v => !v)}
-                      aria-label={showPw ? 'Hide password' : 'Show password'}
+                      aria-label={showPw ? t('fields.hidePassword') : t('fields.showPassword')}
                       className="absolute right-3 top-1/2 -translate-y-1/2 text-stone-400 hover:text-stone-600 transition-colors"
                     >
                       {showPw ? <EyeOff size={15} /> : <Eye size={15} />}
@@ -1037,7 +1047,7 @@ export default function GetStarted() {
                       <p className={`text-xs font-medium ${
                         passwordStrength.score <= 1 ? 'text-red-500' :
                         passwordStrength.score <= 3 ? 'text-amber-600' : 'text-emerald-600'
-                      }`}>{passwordStrength.label}</p>
+                      }`}>{t(`passwordStrength.${passwordStrength.label}`)}</p>
                     </div>
                   )}
                 </Field>
@@ -1052,14 +1062,14 @@ export default function GetStarted() {
                   <div className="pt-4 space-y-4">
                     <div className="flex items-center gap-3">
                       <div className="flex-1 h-px bg-stone-200" />
-                      <span className="text-xs text-stone-400 font-medium">One more detail</span>
+                      <span className="text-xs text-stone-400 font-medium">{t('fields.oneMoreDetail')}</span>
                       <div className="flex-1 h-px bg-stone-200" />
                     </div>
 
                     {/* Country of residence */}
-                    <Field label="Country of residence" required>
+                    <Field label={t('fields.country')} required>
                       <select name="country" value={form.country} onChange={handleChange} required={basicFieldsValid} className={inputClass}>
-                        <option value="">Select country…</option>
+                        <option value="">{t('fields.selectCountry')}</option>
                         {COUNTRIES.map(c => <option key={c.code} value={c.name}>{c.name}</option>)}
                       </select>
                     </Field>
@@ -1068,10 +1078,10 @@ export default function GetStarted() {
 
                 {/* Terms */}
                 <p className="text-xs text-stone-400 leading-relaxed pt-1">
-                  By creating an account you agree to our{' '}
-                  <Link to="/terms" className="text-navy-700 underline underline-offset-2" target="_blank">Terms of Service</Link>
-                  {' '}and{' '}
-                  <Link to="/privacy" className="text-navy-700 underline underline-offset-2" target="_blank">Privacy Policy</Link>.
+                  {t('step2.termsPrefix')}{' '}
+                  <Link to="/terms" className="text-navy-700 underline underline-offset-2" target="_blank">{t('terms.termsOfService')}</Link>
+                  {' '}{t('terms.and')}{' '}
+                  <Link to="/privacy" className="text-navy-700 underline underline-offset-2" target="_blank">{t('terms.privacyPolicy')}</Link>.
                 </p>
 
                 <button
@@ -1083,11 +1093,11 @@ export default function GetStarted() {
                   onMouseLeave={e => e.currentTarget.style.backgroundColor = '#4c7d47'}
                 >
                   {loading ? (
-                    <><Loader2 size={15} className="animate-spin" />Creating your account…</>
+                    <><Loader2 size={15} className="animate-spin" />{t('step2.creating')}</>
                   ) : selectedPlan === 'free' ? (
-                    <><CheckCircle2 size={15} />Create my free account</>
+                    <><CheckCircle2 size={15} />{t('step2.createFree')}</>
                   ) : (
-                    <><CreditCard size={15} />{foundingActive ? 'Claim my founding place' : 'Start my Everstead trial'}</>
+                    <><CreditCard size={15} />{foundingActive ? t('step2.claimFounding') : t('step2.startTrial')}</>
                   )}
                 </button>
               </form>
@@ -1097,20 +1107,20 @@ export default function GetStarted() {
                 <Lock size={14} className="text-navy-600 mt-0.5 flex-shrink-0" />
                 <p className="text-xs text-stone-500 leading-relaxed">
                   {selectedPlan === 'free'
-                    ? <>No card required — Everstead is free to start. You can upgrade to Everstead+ whenever you're ready, and your data comes with you.</>
+                    ? t('step2.trustFree')
                     : foundingActive
-                    ? <>Your card is stored securely by Stripe. As a founding member, your first year is free — £0 for 12 months — and billing only begins after that. Cancel any time before then and pay nothing.</>
-                    : <>Your card is stored securely by Stripe and will not be charged until your {trialDays}-day trial ends. Cancel anytime before then and pay nothing.</>}
+                    ? t('step2.trustFounding')
+                    : t('step2.trustTrial', { days: trialDays })}
                 </p>
               </div>
 
               <p className="text-center mt-5 text-xs text-stone-400">
-                Already have an account?{' '}
-                <Link to="/login" className="text-navy-700 font-medium hover:text-navy-900">Sign in</Link>
+                {t('step2.haveAccount')}{' '}
+                <Link to="/login" className="text-navy-700 font-medium hover:text-navy-900">{t('step2.signIn')}</Link>
               </p>
               <p className="text-center mt-3 text-xs text-stone-400">
-                Not ready to commit? You can export all your data anytime.{' '}
-                <Link to="/data-promise" className="text-navy-600 hover:text-navy-800">Our data promise →</Link>
+                {t('step2.exportNote')}{' '}
+                <Link to="/data-promise" className="text-navy-600 hover:text-navy-800">{t('step2.dataPromise')}</Link>
               </p>
             </div>
           )}
@@ -1118,27 +1128,27 @@ export default function GetStarted() {
           {/* ── STEP 3: Inline payment ─────────────────────── */}
           {step === 3 && clientSecret && (
             <div className="max-w-md mx-auto">
-              <h2 className="font-display text-3xl font-light text-navy-950 text-center mb-2">Add your card</h2>
+              <h2 className="font-display text-3xl font-light text-navy-950 text-center mb-2">{t('step3.title')}</h2>
               <p className="text-center text-stone-500 text-sm mb-3">
                 {foundingActive
-                  ? <>You won't be charged during your free first year. Add your card to claim your founding place — cancel any time.</>
-                  : `Your card won't be charged for ${trialDays} days. Cancel any time before then and pay nothing.`}
+                  ? t('step3.subtitleFounding')
+                  : t('step3.subtitleTrial', { days: trialDays })}
               </p>
               <p className={`text-center text-sm text-stone-600 ${promoCode && promoState.status === 'valid' ? 'mb-3' : 'mb-8'}`}>
-                {PLAN_OPTIONS.find(p => p.id === selectedPlan)?.name} plan · {annualBilling ? 'billed annually' : 'billed monthly'}
+                {t('plans.planWithName', { plan: planOptions.find(p => p.id === selectedPlan)?.name })} · {annualBilling ? t('step3.billedAnnually') : t('step3.billedMonthly')}
                 {' · '}
                 <button
                   onClick={() => setStep(1)}
                   className="text-navy-700 underline underline-offset-2 font-medium hover:text-navy-900"
                 >
-                  Change plan
+                  {t('step3.changePlan')}
                 </button>
               </p>
               {promoCode && promoState.status === 'valid' && (
                 <div className="mb-8 mx-auto max-w-sm flex items-center justify-center gap-2 rounded-xl bg-sage-50 border border-sage-200 px-4 py-2.5 text-sm">
                   <span aria-hidden="true">🎉</span>
                   <span className="text-sage-700 font-semibold">{promoState.label}</span>
-                  <span className="text-stone-400">· applied at checkout</span>
+                  <span className="text-stone-400">{t('promo.appliedAtCheckout')}</span>
                 </div>
               )}
 
@@ -1148,13 +1158,13 @@ export default function GetStarted() {
                 return (
                   <div className="mb-5 flex items-center justify-between bg-sage-50 border border-sage-200 rounded-xl px-4 py-3">
                     <p className="text-xs text-sage-700">
-                      💡 Switch to annual and save <strong>£{saving}/yr (20%)</strong>
+                      {t('step3.switchSave')} <strong>{t('step3.switchSaveAmount', { amount: saving })}</strong>
                     </p>
                     <button
                       onClick={() => setAnnualBilling(true)}
                       className="text-xs font-semibold text-sage-700 hover:text-sage-900 underline underline-offset-2 ml-3 whitespace-nowrap"
                     >
-                      Switch to annual →
+                      {t('step3.switchCta')}
                     </button>
                   </div>
                 )
@@ -1197,7 +1207,7 @@ export default function GetStarted() {
               <div className="mt-5 flex items-start gap-3 bg-stone-100 rounded-xl p-4">
                 <Lock size={14} className="text-navy-600 mt-0.5 flex-shrink-0" />
                 <p className="text-xs text-stone-500 leading-relaxed">
-                  Your card details are handled directly by Stripe and never touch our servers. Secured with 256-bit encryption.
+                  {t('step3.stripeNote')}
                 </p>
               </div>
             </div>
@@ -1213,9 +1223,9 @@ export default function GetStarted() {
         <div className="max-w-3xl mx-auto px-6">
           <div className="flex flex-wrap justify-center gap-8">
             {[
-              { icon: Lock,   label: 'AES-256 encryption'          },
-              { icon: Shield, label: foundingActive ? 'First year free' : `${trialDays}-day free trial` },
-              { icon: Users,  label: 'Trusted by families & advisers' },
+              { icon: Lock,   label: t('trustFooter.encryption') },
+              { icon: Shield, label: foundingActive ? t('trustFooter.firstYearFree') : t('trustFooter.trial', { days: trialDays }) },
+              { icon: Users,  label: t('trustFooter.trustedBy') },
             ].map(({ icon: Icon, label }) => (
               <div key={label} className="flex items-center gap-2 text-stone-500">
                 <Icon size={15} className="text-navy-600" />
@@ -1234,6 +1244,7 @@ export default function GetStarted() {
 // INLINE CHECKOUT FORM (step 3)
 // ─────────────────────────────────────────────────────────────
 function CheckoutForm({ trialDays, plan, billingCycle, customerId, referredBy, promoCode }) {
+  const { t } = useTranslation('getStarted')
   const stripe   = useStripe()
   const elements = useElements()
   const [loading, setLoading] = useState(false)
@@ -1284,7 +1295,7 @@ function CheckoutForm({ trialDays, plan, billingCycle, customerId, referredBy, p
 
       if (!subRes.ok) {
         const { error } = await subRes.json().catch(() => ({}))
-        throw new Error(error || 'Could not activate your subscription. Please contact support.')
+        throw new Error(error || t('errors.subscriptionActivate'))
       }
 
       try { sessionStorage.removeItem('everstead_promo') } catch {}
@@ -1312,16 +1323,16 @@ function CheckoutForm({ trialDays, plan, billingCycle, customerId, referredBy, p
         className="btn-aurora w-full text-white font-semibold text-sm py-3.5 rounded-full transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
       >
         {loading ? (
-          <><Loader2 size={15} className="animate-spin" />Processing…</>
+          <><Loader2 size={15} className="animate-spin" />{t('checkout.processing')}</>
         ) : (
-          <><CreditCard size={15} />{promoCode ? 'Claim my free year' : `Start my ${trialDays}-day free trial`}</>
+          <><CreditCard size={15} />{promoCode ? t('checkout.claimFreeYear') : t('checkout.startTrial', { days: trialDays })}</>
         )}
       </button>
 
       <p className="text-center text-xs text-stone-400">
         {promoCode
-          ? 'Your first year is free — cancel any time before it ends.'
-          : `You won't be charged until day ${trialDays}. Cancel any time before then.`}
+          ? t('checkout.finePrintFounding')
+          : t('checkout.finePrintTrial', { days: trialDays })}
       </p>
     </form>
   )

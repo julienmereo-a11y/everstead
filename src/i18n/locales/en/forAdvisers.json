@@ -1,0 +1,179 @@
+{
+  "meta": {
+    "title": "Everstead for Advisers — Estate Organisation for Your Clients",
+    "description": "Give your clients a co-branded estate vault they'll actually use. Everstead for advisers includes a client portal, readiness tracking, and document access — built for IFAs, solicitors, and wealth managers.",
+    "ogTitle": "Everstead for Advisers — Estate Organisation for Your Clients",
+    "ogDescription": "Give your clients a co-branded estate vault they'll actually use. Everstead for advisers includes a client portal, readiness tracking, and document access."
+  },
+  "hero": {
+    "eyebrow": "For advisers",
+    "title": "Your clients need an organised estate. We help them build one.",
+    "subtitle": "Everstead gives advisers a co-branded client vault — with readiness tracking, document access, and a portal your clients open between every meeting.",
+    "bookDemo": "Book a demo",
+    "seeHow": "See how it works"
+  },
+  "trustSignals": [
+    "UK data residency",
+    "AES-256 encryption",
+    "GDPR compliant",
+    "No financial advice given",
+    "SOC 2 infrastructure"
+  ],
+  "problem": {
+    "eyebrow": "The problem",
+    "title": "Most clients come to meetings unprepared — and both of you know it.",
+    "p1": "They can't find the pension statement from 2019. They haven't updated their LPA since their divorce. Their digital accounts are scattered across six different email addresses, and their spouse doesn't know any of the passwords.",
+    "p2": "The result: the first hour of every review is spent on administration, not advice. And when the worst happens, the executor spends months chasing information that should have been organised years earlier.",
+    "tabIfa": "For IFAs",
+    "tabSolicitor": "For Solicitors",
+    "ifaBullets": [
+      "First meeting spent finding basic account information",
+      "Clients with no record of digital assets or subscriptions",
+      "Executors calling you after a death with basic questions",
+      "LPAs and wills that haven't been reviewed in years",
+      "No way to track client readiness across your book"
+    ],
+    "solicitorBullets": [
+      "Weeks spent chasing documents before probate can begin",
+      "Clients who die with no clear record of their assets",
+      "Families calling in distress without knowing what their loved one had",
+      "Wills and LPAs that can't be located when needed",
+      "No single source of truth before administration begins"
+    ]
+  },
+  "benefits": {
+    "eyebrow": "What you get",
+    "title": "Everything your practice needs. Nothing it doesn't.",
+    "items": [
+      {
+        "title": "Clients arrive better prepared",
+        "desc": "When a client has an Everstead vault, your initial meetings go deeper. No more spending the first hour hunting for account numbers or discovering a missing LPA."
+      },
+      {
+        "title": "Co-branded client portal",
+        "desc": "Your firm's name and branding appear inside the client's vault. Every time they log in, they see your relationship — not a third-party tool."
+      },
+      {
+        "title": "Track readiness across your book",
+        "desc": "See which clients have completed their estate plan, who still has gaps, and where the biggest risks sit — across all your clients in one workspace."
+      },
+      {
+        "title": "Your liability, protected",
+        "desc": "Everstead is an organisation and access tool — it does not give financial, legal, or tax advice. Its scope is clearly defined in its terms of service. Recommending it to clients does not create professional liability for your firm."
+      },
+      {
+        "title": "Document visibility on your terms",
+        "desc": "Clients choose what to share with you. You can view uploaded documents, account registers, and instructions — only what they've explicitly granted you access to."
+      },
+      {
+        "title": "Compliant data handling",
+        "desc": "UK data residency, AES-256 encryption, and full GDPR compliance. Your clients' data is held to the same standard you'd expect from any professional tool."
+      }
+    ],
+    "ongoing": {
+      "title": "Ongoing, not one-off",
+      "desc": "Estate organisation isn't a single meeting — it's ongoing. Everstead keeps clients engaged between reviews, with smart reminders that flag changes and gaps."
+    }
+  },
+  "steps": {
+    "eyebrow": "Getting started",
+    "title": "Up and running in days, not months.",
+    "items": [
+      {
+        "title": "Apply for early access",
+        "desc": "We're working directly with the first 50 advisory firms. Tell us a bit about your practice and we'll be in touch within 48 hours."
+      },
+      {
+        "title": "Onboard your team",
+        "desc": "We set up your co-branded workspace, add your team members, and walk you through the adviser portal in under an hour."
+      },
+      {
+        "title": "Invite your clients",
+        "desc": "Clients receive a branded invitation to set up their vault. Most complete their first session in under 30 minutes."
+      },
+      {
+        "title": "Manage from one place",
+        "desc": "See every client's readiness score, access shared documents, and track progress — all in your adviser dashboard."
+      }
+    ]
+  },
+  "useCases": {
+    "eyebrow": "Who uses it",
+    "title": "Built for professionals who deal with estates.",
+    "items": [
+      {
+        "title": "Independent financial advisers",
+        "desc": "Add estate organisation to your service without building it yourself. Clients with organised estates make better decisions and trust you more."
+      },
+      {
+        "title": "Estate solicitors",
+        "desc": "Reduce the back-and-forth before probate. When a client's vault is complete, your team has what they need without weeks of document-chasing."
+      },
+      {
+        "title": "Accountants & tax advisers",
+        "desc": "Help clients track assets, subscriptions, and accounts in one place. A cleaner picture at year-end — and far fewer surprises."
+      },
+      {
+        "title": "Wealth managers",
+        "desc": "Differentiate your offering by giving high-net-worth clients a tool their bank doesn't. The family vault positions you as genuinely comprehensive."
+      }
+    ]
+  },
+  "resources": {
+    "eyebrow": "Adviser resources",
+    "title": "Practical content, written for practitioners.",
+    "body": "No registration to read — just give us an email and we'll send it. We won't pass it on, and you can unsubscribe at any time.",
+    "emailTitle": "Where should we send it?",
+    "emailSubtitle": "One email. No registration. Unsubscribe any time.",
+    "items": [
+      {
+        "label": "Conversations",
+        "title": "The Adviser's Guide to Inheritance Conversations",
+        "summary": "Seven framings IFAs and solicitors use to open the estate conversation with clients — without sounding morbid or salesy. Drawn from pilot practices.",
+        "buttonLabel": "Email me the guide"
+      },
+      {
+        "label": "Template",
+        "title": "Pre-bereavement client checklist",
+        "summary": "A working six-section template covering identity, financial inventory, documents, the family map, emotional preparation, and your firm-side process. Use as-is or adapt for your practice.",
+        "buttonLabel": "Email me the checklist"
+      },
+      {
+        "label": "Playbook",
+        "title": "Estate organisation as a value-add: pricing & positioning playbook",
+        "summary": "How UK practices are positioning, pricing (£300-£1,500), and delivering estate organisation as a structured service — including the retention math at the generational transition.",
+        "buttonLabel": "Email me the playbook"
+      }
+    ]
+  },
+  "earlyAccess": {
+    "title": "We're onboarding our first adviser partners now.",
+    "body": "Everstead is in early access. We're working directly with a small cohort of IFAs, solicitors, and estate planners to shape how the adviser portal develops. If you work with clients on estate or later life planning, we'd like to hear from you.",
+    "cta": "Book a 20-minute call"
+  },
+  "plan": {
+    "eyebrow": "Early access",
+    "title": "Join the first cohort of adviser partners.",
+    "body": "We're working personally with our first adviser firms — with a direct line to the founding team. You help shape the product. We handle everything else.",
+    "features": [
+      "Multi-client workspace",
+      "Co-branded client portal",
+      "Estate Readiness Score per client",
+      "Document & account access (client-permissioned)",
+      "Adviser collaboration tools",
+      "Priority support",
+      "No commitment during early access"
+    ],
+    "card": {
+      "title": "First 50 firms — onboarded personally",
+      "body": "We're working directly with the first 50 advisory firms. You get a personal onboarding session, a direct line to the founding team, and the ability to shape how the adviser portal develops.",
+      "cta": "Book a 20-minute demo"
+    }
+  },
+  "bottom": {
+    "title": "The adviser channel built around your practice.",
+    "body": "Estate planning software built around advisers, not just individuals. Give your clients a vault they'll return to — and a tool that makes your practice more efficient.",
+    "bookDemo": "Book a demo",
+    "contact": "Send us a message"
+  }
+}

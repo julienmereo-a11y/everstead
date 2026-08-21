@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react'
 import { Helmet } from 'react-helmet-async'
 import { useNavigate, Link } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { Loader2, Eye, EyeOff, CheckCircle2, Shield } from 'lucide-react'
 import { supabase } from '../lib/supabase'
 
+// `label` is an i18n key suffix under login:reset.strength.*
 function getPasswordStrength(pw) {
   if (!pw) return { score: 0, label: '', color: '' }
   let score = 0
@@ -12,12 +14,13 @@ function getPasswordStrength(pw) {
   if (/[A-Z]/.test(pw)) score++
   if (/[0-9]/.test(pw)) score++
   if (/[^A-Za-z0-9]/.test(pw)) score++
-  if (score <= 1) return { score, label: 'Weak',   color: 'bg-red-400'    }
-  if (score <= 3) return { score, label: 'Fair',   color: 'bg-amber-400'  }
-  return              { score, label: 'Strong', color: 'bg-emerald-500' }
+  if (score <= 1) return { score, label: 'weak',   color: 'bg-red-400'    }
+  if (score <= 3) return { score, label: 'fair',   color: 'bg-amber-400'  }
+  return              { score, label: 'strong', color: 'bg-emerald-500' }
 }
 
 export default function ResetPassword() {
+  const { t } = useTranslation('login')
   const navigate = useNavigate()
   const [password, setPassword]     = useState('')
   const [confirm, setConfirm]       = useState('')
@@ -45,8 +48,8 @@ export default function ResetPassword() {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    if (password !== confirm) { setError('Passwords do not match.'); return }
-    if (password.length < 8)  { setError('Password must be at least 8 characters.'); return }
+    if (password !== confirm) { setError(t('reset.errors.mismatch')); return }
+    if (password.length < 8)  { setError(t('reset.errors.tooShort')); return }
     setError(null)
     setSubmitting(true)
     try {
@@ -55,7 +58,7 @@ export default function ResetPassword() {
       setDone(true)
       setTimeout(() => navigate('/dashboard'), 3000)
     } catch (err) {
-      setError(err.message ?? 'Something went wrong. Please try again.')
+      setError(err.message ?? t('reset.errors.generic'))
     } finally {
       setSubmitting(false)
     }
@@ -79,19 +82,19 @@ export default function ResetPassword() {
               <div className="w-14 h-14 rounded-full bg-sage-100 flex items-center justify-center mx-auto mb-5">
                 <CheckCircle2 size={24} className="text-sage-600" />
               </div>
-              <h1 className="font-display text-2xl font-light text-navy-950 mb-2" style={{ fontFamily: 'Georgia, serif' }}>Password updated</h1>
+              <h1 className="font-display text-2xl font-light text-navy-950 mb-2" style={{ fontFamily: 'Georgia, serif' }}>{t('reset.doneTitle')}</h1>
               <p className="text-stone-500 text-sm leading-relaxed">
-                Your new password has been set. Redirecting you to the dashboard…
+                {t('reset.doneBody')}
               </p>
             </div>
           ) : !sessionReady ? (
             <div className="text-center py-8">
               <Loader2 size={24} className="animate-spin text-navy-400 mx-auto mb-4" />
-              <p className="text-stone-500 text-sm">Verifying your reset link…</p>
+              <p className="text-stone-500 text-sm">{t('reset.checking')}</p>
               <p className="text-stone-400 text-xs mt-2">
-                If nothing happens,{' '}
+                {t('reset.checkingHint')}{' '}
                 <Link to="/forgot-password" className="text-navy-600 hover:text-navy-900 underline">
-                  request a new link
+                  {t('reset.requestNewLink')}
                 </Link>
                 .
               </p>
@@ -99,13 +102,13 @@ export default function ResetPassword() {
           ) : (
             <>
               <div className="mb-7">
-                <h1 className="font-display text-2xl font-light text-navy-950 mb-1" style={{ fontFamily: 'Georgia, serif' }}>Set a new password</h1>
-                <p className="text-stone-500 text-sm">Choose a strong password for your Everstead account.</p>
+                <h1 className="font-display text-2xl font-light text-navy-950 mb-1" style={{ fontFamily: 'Georgia, serif' }}>{t('reset.title')}</h1>
+                <p className="text-stone-500 text-sm">{t('reset.subtitle')}</p>
               </div>
 
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
-                  <label className="block text-xs font-semibold text-stone-600 mb-1.5">New password</label>
+                  <label className="block text-xs font-semibold text-stone-600 mb-1.5">{t('reset.newPasswordLabel')}</label>
                   <div className="relative">
                     <input
                       type={showPw ? 'text' : 'password'}
@@ -113,14 +116,14 @@ export default function ResetPassword() {
                       onChange={e => setPassword(e.target.value)}
                       required
                       minLength={8}
-                      placeholder="At least 8 characters"
+                      placeholder={t('reset.newPasswordPlaceholder')}
                       autoComplete="new-password"
                       className="w-full border border-stone-300 rounded-lg px-4 py-3 pr-10 text-sm text-navy-900 placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-navy-400 focus:border-navy-400 bg-white transition"
                     />
                     <button
                       type="button"
                       onClick={() => setShowPw(v => !v)}
-                      aria-label={showPw ? 'Hide password' : 'Show password'}
+                      aria-label={showPw ? t('reset.hidePassword') : t('reset.showPassword')}
                       className="absolute right-3 top-1/2 -translate-y-1/2 text-stone-400 hover:text-stone-700 transition-colors"
                     >
                       {showPw ? <EyeOff size={16} /> : <Eye size={16} />}
@@ -134,23 +137,23 @@ export default function ResetPassword() {
                           style={{ width: `${(strength.score / 5) * 100}%` }}
                         />
                       </div>
-                      <span className="text-xs text-stone-400 w-12">{strength.label}</span>
+                      <span className="text-xs text-stone-400 w-12">{t(`reset.strength.${strength.label}`)}</span>
                     </div>
                   )}
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-stone-600 mb-1.5">Confirm password</label>
+                  <label className="block text-xs font-semibold text-stone-600 mb-1.5">{t('reset.confirmPasswordLabel')}</label>
                   <input
                     type={showPw ? 'text' : 'password'}
                     value={confirm}
                     onChange={e => setConfirm(e.target.value)}
                     required
-                    placeholder="Repeat your password"
+                    placeholder={t('reset.confirmPasswordPlaceholder')}
                     autoComplete="new-password"
                     className={`w-full border rounded-lg px-4 py-3 text-sm text-navy-900 placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-navy-400 focus:border-navy-400 bg-white transition ${mismatch ? 'border-red-300 focus:ring-red-300' : 'border-stone-300'}`}
                   />
-                  {mismatch && <p className="text-xs text-red-500 mt-1">Passwords do not match.</p>}
+                  {mismatch && <p className="text-xs text-red-500 mt-1">{t('reset.errors.mismatch')}</p>}
                 </div>
 
                 {error && (
@@ -162,7 +165,7 @@ export default function ResetPassword() {
                   disabled={submitting || mismatch || password.length < 8}
                   className="btn-aurora w-full text-white font-semibold text-sm py-3.5 rounded-full transition-colors disabled:opacity-60 flex items-center justify-center gap-2"
                 >
-                  {submitting ? <><Loader2 size={15} className="animate-spin" />Updating…</> : 'Set new password'}
+                  {submitting ? <><Loader2 size={15} className="animate-spin" />{t('reset.submitLoading')}</> : t('reset.submit')}
                 </button>
               </form>
             </>

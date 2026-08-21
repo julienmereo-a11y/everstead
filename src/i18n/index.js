@@ -34,6 +34,9 @@ export const SUPPORTED_LANGUAGES = ['en', 'fr']
 // page gains a full French translation.
 export const TRANSLATED_PATHS = new Set([
   '/', '/features', '/how-it-works', '/pricing', '/security', '/use-cases', '/login',
+  '/get-started', '/forgot-password', '/reset-password', '/contact', '/book-demo',
+  '/about', '/gift', '/compare', '/for-advisers',
+  '/privacy', '/cookies', '/accessibility', '/data-promise', '/subprocessors',
 ])
 
 export function languageFromPath(pathname) {
