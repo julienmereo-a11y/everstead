@@ -16,17 +16,17 @@ export default function FamilyInviteEmail({ primaryName, secondaryEmail, inviteU
                 {primaryName || 'Someone'} has invited you to Everstead
               </h1>
               <p style={{ margin: '0 0 16px', color: '#4a5568', fontSize: '16px', lineHeight: '1.6' }}>
-                <strong>{primaryName || 'Someone'}</strong> has invited you to set up your own private Everstead vault — as part of their Everstead+ plan.
+                <strong>{primaryName || 'Someone'}</strong> has invited you to set up your own private Everstead vault, as part of their Everstead+ plan.
               </p>
               <p style={{ margin: '0 0 16px', color: '#4a5568', fontSize: '16px', lineHeight: '1.6' }}>
                 You'll have your own completely private account. <strong>{primaryName || 'They'}</strong> won't be able to see your documents, accounts, or wishes unless you choose to share them.
               </p>
               <ul style={{ margin: '0 0 32px', padding: '0', listStyle: 'none' }}>
                 {[
-                  'Your own private vault — fully separate from theirs',
+                  'Your own private vault, fully separate from theirs',
                   'Organise your accounts, documents, and final wishes',
                   'Control exactly what, if anything, you share',
-                  'Covered by their Everstead+ plan — no extra cost to you',
+                  'Covered by their Everstead+ plan, no extra cost to you',
                 ].map(item => (
                   <li key={item} style={{ display: 'flex', alignItems: 'flex-start', gap: '10px', marginBottom: '10px' }}>
                     <span style={{ color: '#4c7d47', fontSize: '16px', lineHeight: '1.4', flexShrink: 0 }}>✓</span>
@@ -49,7 +49,7 @@ export default function FamilyInviteEmail({ primaryName, secondaryEmail, inviteU
               <p style={{ margin: '0', color: '#9ca3af', fontSize: '13px', lineHeight: '1.5' }}>
                 Questions? <a href="mailto:support@everstead.care" style={{ color: '#4c7d47' }}>support@everstead.care</a>
                 <br />
-                <span style={{ marginTop: '8px', display: 'block' }}>— Julien, Everstead</span>
+                <span style={{ marginTop: '8px', display: 'block' }}>: Julien, Everstead</span>
               </p>
             </td></tr>
           </tbody>

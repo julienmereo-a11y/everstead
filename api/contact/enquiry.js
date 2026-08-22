@@ -26,8 +26,8 @@ async function handler(req, res) {
   // Build subject (Resend takes this as a structured field — escaped for safety anyway)
   const subject =
     type === 'book-demo'
-      ? `New adviser demo request — ${esc(fields['Firm'] || fields['Full name'] || 'Unknown firm')}`
-      : `New contact form message — ${esc(fields['Subject'] || fields['Name'] || 'No subject')}`
+      ? `New adviser demo request, ${esc(fields['Firm'] || fields['Full name'] || 'Unknown firm')}`
+      : `New contact form message, ${esc(fields['Subject'] || fields['Name'] || 'No subject')}`
 
   // Build plain HTML body from fields
   const rows = Object.entries(fields)
@@ -41,7 +41,7 @@ async function handler(req, res) {
 <body style="margin:0;padding:32px;background:#f9fafb;font-family:system-ui,sans-serif;">
   <table style="max-width:560px;width:100%;background:#ffffff;border-radius:12px;border:1px solid #e5e7eb;overflow:hidden;">
     <tr><td style="background:#2d5082;background:linear-gradient(100deg,#2d5082 0%,#6f6bc6 50%,#6e9b6a 100%);padding:20px 24px;">
-      <p style="margin:0;color:#ffffff;font-size:16px;font-weight:600;">Everstead — ${type === 'book-demo' ? 'Adviser Demo Request' : 'Contact Form'}</p>
+      <p style="margin:0;color:#ffffff;font-size:16px;font-weight:600;">Everstead, ${type === 'book-demo' ? 'Adviser Demo Request' : 'Contact Form'}</p>
     </td></tr>
     <tr><td style="padding:24px;">
       <table style="width:100%;border-collapse:collapse;">

@@ -111,7 +111,7 @@ async function handler(req, res) {
         await resend.emails.send({
           from:    'Everstead <hello@everstead.care>',
           to:      profile.email,
-          subject: `Good news — your Everstead trial has been extended`,
+          subject: `Good news, your Everstead trial has been extended`,
           html:    trialExtendedHtml(profile.full_name, extendDays, endDate),
         }).catch(console.error)
       }
@@ -220,18 +220,18 @@ function cancellationHtml(firstName, accessEndDate) {
         <tr><td style="padding:40px;">
           <h1 style="margin:0 0 20px;color:#0d1628;font-size:24px;font-weight:normal;">We're sorry to see you go, ${firstName}.</h1>
           <p style="margin:0 0 16px;color:#4a5568;font-size:16px;line-height:1.7;">
-            We've confirmed the cancellation of your Everstead plan.${accessEndDate ? ` You'll keep full access until <strong>${accessEndDate}</strong> — nothing changes until then.` : " You'll keep full access until the end of your current billing period."}
+            We've confirmed the cancellation of your Everstead plan.${accessEndDate ? ` You'll keep full access until <strong>${accessEndDate}</strong>, nothing changes until then.` : " You'll keep full access until the end of your current billing period."}
           </p>
           <p style="margin:0 0 16px;color:#4a5568;font-size:16px;line-height:1.7;">
             We built Everstead because we believe every family deserves clarity, not chaos. We're sorry we didn't get the chance to be part of yours.
           </p>
           <p style="margin:0 0 32px;color:#4a5568;font-size:16px;line-height:1.7;">
-            If you have a moment, we'd genuinely love to hear from you. What could we have done better? Was there something missing? Your feedback — even just a sentence — would mean a lot to us and help us build something better for the next family.
+            If you have a moment, we'd genuinely love to hear from you. What could we have done better? Was there something missing? Your feedback (even just a sentence) would mean a lot to us and help us build something better for the next family.
           </p>
           <p style="margin:0 0 20px;color:#4a5568;font-size:16px;line-height:1.7;">
             If you ever change your mind, your account will be here. We'll keep your data safe for 30 days.
           </p>
-          <p style="margin:0 0 8px;color:#4a5568;font-size:15px;line-height:1.7;font-weight:600;">Before you go — don't forget to export your data.</p>
+          <p style="margin:0 0 8px;color:#4a5568;font-size:15px;line-height:1.7;font-weight:600;">Before you go, don't forget to export your data.</p>
           <p style="margin:0 0 24px;color:#4a5568;font-size:15px;line-height:1.7;">
             Everything you've added to your Everstead plan is yours to keep. You can download a complete copy of your accounts, documents, instructions, and wishes from your dashboard before your access ends.
           </p>
@@ -262,7 +262,7 @@ function trialExtendedHtml(name, days, endDate) {
         <tr><td style="padding:40px;">
           <h1 style="margin:0 0 16px;color:#0d1628;font-size:24px;font-weight:normal;">Good news, ${name || 'there'}</h1>
           <p style="margin:0 0 16px;color:#4a5568;font-size:16px;line-height:1.7;">
-            We've extended your Everstead free trial by <strong>${days} days</strong>. Your trial now runs until <strong>${endDate}</strong> — no action needed on your end.
+            We've extended your Everstead free trial by <strong>${days} days</strong>. Your trial now runs until <strong>${endDate}</strong>, no action needed on your end.
           </p>
           <p style="margin:0 0 32px;color:#4a5568;font-size:16px;line-height:1.7;">
             Use the extra time to get your estate plan in order. If you have any questions or need help getting started, just reply to this email.

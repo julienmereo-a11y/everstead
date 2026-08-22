@@ -59,7 +59,7 @@ function familyAccessRevokedHtml(secondaryName, appUrl) {
             Hi ${secondaryName || 'there'},
           </p>
           <p style="margin:0 0 16px;color:#4a5568;font-size:16px;line-height:1.6;">
-            Your access to Everstead+ has ended. Your vault and all your data are safe — but you'll need your own plan to keep using Everstead.
+            Your access to Everstead+ has ended. Your vault and all your data are safe, but you'll need your own plan to keep using Everstead.
           </p>
           <p style="margin:0 0 32px;color:#4a5568;font-size:16px;line-height:1.6;">
             If you'd like to continue, you can start your own plan in minutes. Your existing data will be preserved.
@@ -76,7 +76,7 @@ function familyAccessRevokedHtml(secondaryName, appUrl) {
         <tr><td style="padding:24px 40px;border-top:1px solid #e8e5e0;">
           <p style="margin:0;color:#9ca3af;font-size:13px;line-height:1.5;">
             Questions? <a href="mailto:support@everstead.care" style="color:#4c7d47;">support@everstead.care</a><br />
-            <span style="display:block;margin-top:8px;">— Julien, Everstead</span>
+            <span style="display:block;margin-top:8px;">: Julien, Everstead</span>
           </p>
         </td></tr>
       </table>

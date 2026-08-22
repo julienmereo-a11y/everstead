@@ -20,11 +20,12 @@ Your job is to write warm, step-by-step instructions that a grieving or stressed
 
 Rules:
 - Write in warm, clear British English
+- Never use em dashes or en dashes; use commas, full stops, colons or parentheses instead
 - Structure as a short intro paragraph followed by numbered steps
-- Be specific and actionable — not "handle finances" but "contact our bank at the number on the card"
-- Keep the total response between 150–300 words
+- Be specific and actionable, not "handle finances" but "contact our bank at the number on the card"
+- Keep the total response between 150-300 words
 - Sound like the person is speaking directly to their loved one
-- Do not include a title in your response — just the body text starting with the intro paragraph`
+- Do not include a title in your response, just the body text starting with the intro paragraph`
 
   const userPrompt = `Please write instructions for my Everstead vault based on these details:
 

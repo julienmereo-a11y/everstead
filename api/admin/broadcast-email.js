@@ -61,7 +61,7 @@ async function handler(req, res) {
         .eq('status', 'scheduled')
         .select('id')
       if (error) throw new Error(error.message)
-      if (!data?.length) return res.status(409).json({ error: 'Too late — this broadcast is no longer scheduled.' })
+      if (!data?.length) return res.status(409).json({ error: 'Too late, this broadcast is no longer scheduled.' })
       return res.status(200).json({ cancelled: true })
     }
 
@@ -115,7 +115,7 @@ async function handler(req, res) {
 
     const { sent, failed } = await sendToRecipients({
       recipients, from, subject, message,
-      runId: crypto.randomUUID(), // idempotency base — a retried batch can't double-send
+      runId: crypto.randomUUID(), // idempotency base, a retried batch can't double-send
       onChunkError: (err, offset) => captureException(err, { endpoint: 'admin/broadcast-email', stage: 'batch', offset }),
     })
 

@@ -32,7 +32,7 @@ async function handler(req, res) {
     }
     console.log('cron-auth-diag', JSON.stringify(diag))
     if (ua.startsWith('vercel-cron')) {
-      captureException(new Error('CRON_SECRET mismatch — scheduled jobs are being rejected'), {
+      captureException(new Error('CRON_SECRET mismatch, scheduled jobs are being rejected'), {
         endpoint: 'cron/send-scheduled-broadcasts', ...diag,
       })
     }
@@ -74,7 +74,7 @@ async function handler(req, res) {
         from,
         subject: row.subject,
         message: row.message,
-        runId: row.id, // idempotency base — a retried batch can't double-send
+        runId: row.id, // idempotency base, a retried batch can't double-send
         onChunkError: (err, offset) => captureException(err, { endpoint: 'cron/send-scheduled-broadcasts', stage: 'batch', id: row.id, offset }),
       })
       await db.from('admin_broadcasts')

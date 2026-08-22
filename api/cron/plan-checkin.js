@@ -114,7 +114,7 @@ function planCheckinHtml(name, accountCount, documentCount, contactCount) {
 
   const summary = hasContent
     ? `Right now your vault holds ${accountCount} financial ${accountCount === 1 ? 'account' : 'accounts'}, ${documentCount} ${documentCount === 1 ? 'document' : 'documents'}, and ${contactCount} trusted ${contactCount === 1 ? 'contact' : 'contacts'}.`
-    : `Your vault is still mostly empty — even ten minutes now makes a real difference to the people you love.`
+    : `Your vault is still mostly empty, even ten minutes now makes a real difference to the people you love.`
 
   return `<!DOCTYPE html>
 <html>
@@ -131,7 +131,7 @@ function planCheckinHtml(name, accountCount, documentCount, contactCount) {
             ${first}, a quiet six-month check-in.
           </h1>
           <p style="margin:0 0 16px;color:#4a5568;font-size:16px;line-height:1.7;">
-            Life moves on between the big moments. A new account opened, a policy renewed, a house move, a change in who you'd trust to act for you — small things that quietly fall out of date.
+            Life moves on between the big moments. A new account opened, a policy renewed, a house move, a change in who you'd trust to act for you, small things that quietly fall out of date.
           </p>
           <p style="margin:0 0 16px;color:#4a5568;font-size:16px;line-height:1.7;">
             ${summary} It only takes a few minutes to make sure it still reflects where your life is today.
@@ -142,15 +142,15 @@ function planCheckinHtml(name, accountCount, documentCount, contactCount) {
           <table cellpadding="0" cellspacing="0" style="margin:0 0 32px;width:100%;background:#f9f8f6;border-radius:10px;padding:8px;">
             <tr>
               <td style="padding:10px 14px;vertical-align:top;font-size:20px;line-height:1;">🏦</td>
-              <td style="padding:10px 0;color:#4a5568;font-size:14px;line-height:1.6;"><strong>Anything new to add?</strong> — a recent account, pension, policy, or subscription that isn't in your vault yet.</td>
+              <td style="padding:10px 0;color:#4a5568;font-size:14px;line-height:1.6;"><strong>Anything new to add?</strong>, a recent account, pension, policy, or subscription that isn't in your vault yet.</td>
             </tr>
             <tr>
               <td style="padding:10px 14px;vertical-align:top;font-size:20px;line-height:1;">🤝</td>
-              <td style="padding:10px 0;color:#4a5568;font-size:14px;line-height:1.6;"><strong>Are your trusted people still right?</strong> — relationships change; make sure the people with access are still the ones you'd choose.</td>
+              <td style="padding:10px 0;color:#4a5568;font-size:14px;line-height:1.6;"><strong>Are your trusted people still right?</strong>, relationships change; make sure the people with access are still the ones you'd choose.</td>
             </tr>
             <tr>
               <td style="padding:10px 14px;vertical-align:top;font-size:20px;line-height:1;">📄</td>
-              <td style="padding:10px 0;color:#4a5568;font-size:14px;line-height:1.6;"><strong>Any documents to refresh?</strong> — an updated will, a renewed insurance policy, or a new passport.</td>
+              <td style="padding:10px 0;color:#4a5568;font-size:14px;line-height:1.6;"><strong>Any documents to refresh?</strong>, an updated will, a renewed insurance policy, or a new passport.</td>
             </tr>
           </table>
 
@@ -160,7 +160,7 @@ function planCheckinHtml(name, accountCount, documentCount, contactCount) {
           </a>
 
           <p style="margin:32px 0 0;color:#6b7280;font-size:14px;line-height:1.6;">
-            — Julien, founder of Everstead
+Julien, founder of Everstead
           </p>
         </td></tr>
         <tr><td style="padding:24px 40px;border-top:1px solid #e8e5e0;">

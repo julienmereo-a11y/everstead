@@ -102,7 +102,7 @@ async function handler(req, res) {
         from:    'Everstead <hello@everstead.care>',
         to:      p.email,
         subject: isTrialing
-          ? 'Your Everstead trial has started — card saved'
+          ? 'Your Everstead trial has started, card saved'
           : 'Your Everstead subscription is confirmed',
         html: paymentConfirmedHtml(p.full_name, p.plan, isTrialing, subscription.trial_end ?? subscription.current_period_end,
           subscription.trial_end && subscription.created ? Math.round((subscription.trial_end - subscription.created) / 86400) : 14),
@@ -131,8 +131,8 @@ async function handler(req, res) {
         from:    'Everstead <hello@everstead.care>',
         to:      FOUNDER_TO,
         subject: isFounding
-          ? `🎉 New FOUNDING member — ${p.full_name || p.email}`
-          : `💳 Card captured — ${p.full_name || p.email} (${metaPlan || p.plan || 'unknown'})`,
+          ? `🎉 New FOUNDING member, ${p.full_name || p.email}`
+          : `💳 Card captured, ${p.full_name || p.email} (${metaPlan || p.plan || 'unknown'})`,
         html:    ownerNewSignupHtml({
           name:         p.full_name,
           email:        p.email,
@@ -207,7 +207,7 @@ async function handler(req, res) {
         from:    'Everstead <hello@everstead.care>',
         to:      updatedProfile.email,
         subject: isTrialing
-          ? 'Your Everstead trial has started — card saved'
+          ? 'Your Everstead trial has started, card saved'
           : 'Your Everstead subscription is confirmed',
         html: paymentConfirmedHtml(
           updatedProfile.full_name,
@@ -228,8 +228,8 @@ async function handler(req, res) {
         from:    'Everstead <hello@everstead.care>',
         to:      FOUNDER_TO,
         subject: isFounding
-          ? `🎉 New FOUNDING member — ${updatedProfile.full_name || updatedProfile.email}`
-          : `💳 New subscriber — ${updatedProfile.full_name || updatedProfile.email} (${metaPlan || updatedProfile.plan || 'unknown'})`,
+          ? `🎉 New FOUNDING member, ${updatedProfile.full_name || updatedProfile.email}`
+          : `💳 New subscriber, ${updatedProfile.full_name || updatedProfile.email} (${metaPlan || updatedProfile.plan || 'unknown'})`,
         html:    ownerNewSignupHtml({
           name:           updatedProfile.full_name,
           email:          updatedProfile.email,
@@ -301,7 +301,7 @@ async function handler(req, res) {
       await resend.emails.send({
         from:    'Everstead <hello@everstead.care>',
         to:      p.email,
-        subject: 'Your Everstead data is safe — come back any time',
+        subject: 'Your Everstead data is safe, come back any time',
         html:    cancellationWinbackHtml(p.full_name),
       }).catch(console.error)
     }
@@ -382,7 +382,7 @@ async function handler(req, res) {
       await resend.emails.send({
         from:    'Everstead <hello@everstead.care>',
         to:      p.email,
-        subject: 'Welcome to Family — your second vault is ready',
+        subject: 'Welcome to Family, your second vault is ready',
         html:    upgradeConfirmedHtml(p.full_name),
       }).catch(console.error)
     }
@@ -485,7 +485,7 @@ async function handler(req, res) {
       await resend.emails.send({
         from:    'Everstead <hello@everstead.care>',
         to:      existing.email,
-        subject: 'Action required — payment failed for Everstead',
+        subject: 'Action required, payment failed for Everstead',
         html:    paymentFailedHtml(existing.full_name, existing.plan),
       }).catch(console.error)
     }
@@ -539,7 +539,7 @@ function paymentConfirmedHtml(name, plan, isTrialing, periodEnd, trialDays = 14)
     : null
 
   const bodyText = isTrialing
-    ? `Your card has been saved for your <strong>${planLabel(plan)}</strong> plan. Your ${trialDays}-day free trial is now active — you won't be charged until it ends${chargeDate ? ` on <strong>${chargeDate}</strong>` : ''}.`
+    ? `Your card has been saved for your <strong>${planLabel(plan)}</strong> plan. Your ${trialDays}-day free trial is now active, you won't be charged until it ends${chargeDate ? ` on <strong>${chargeDate}</strong>` : ''}.`
     : `Your <strong>${planLabel(plan)}</strong> plan is now active. Your payment was confirmed and your subscription starts today.`
 
   return emailShell(`
@@ -558,7 +558,7 @@ function trialEndingReminderHtml(name, plan, endDate) {
       Your 14-day free trial on the <strong>${planLabel(plan)}</strong> plan ends${endDate ? ` on <strong>${endDate}</strong>` : ' soon'}.
     </p>
     <p style="margin:0 0 32px;color:#4a5568;font-size:16px;line-height:1.6;">
-      Your card on file will be charged automatically when the trial ends. No action is needed — just continue using Everstead.
+      Your card on file will be charged automatically when the trial ends. No action is needed, just continue using Everstead.
       If you'd like to cancel before being charged, you can do so from your account settings.
     </p>
     <a href="${process.env.VITE_APP_URL}/dashboard" style="display:inline-block;background:#2d5082;background:linear-gradient(100deg,#2d5082 0%,#6f6bc6 50%,#6e9b6a 100%);color:#ffffff;text-decoration:none;padding:14px 28px;border-radius:9999px;font-size:15px;">Go to dashboard →</a>
@@ -636,7 +636,7 @@ function ownerNewSignupHtml({ name, email, plan, billingCycle, isTrialing, trial
             ${row('Email', `<a href="mailto:${email}" style="color:#4c7d47;">${email}</a>`)}
             ${row('Plan', plan ? plan.charAt(0).toUpperCase() + plan.slice(1) : '—')}
             ${row('Billing', billingCycle ? billingCycle.charAt(0).toUpperCase() + billingCycle.slice(1) : '—')}
-            ${isFounding ? row('Founding member', 'Yes — FOUNDING50 (first year free)') : ''}
+            ${isFounding ? row('Founding member', 'Yes: FOUNDING50 (first year free)') : ''}
             ${row('Type', isTrialing ? '14-day trial' : 'Paid immediately')}
             ${trialEndDate ? row('Trial ends', trialEndDate) : ''}
             ${referredBy ? row('Referred by', referredBy) : ''}
@@ -671,23 +671,23 @@ function upgradeConfirmedHtml(name) {
     <table cellpadding="0" cellspacing="0" style="margin:0 0 32px;width:100%;background:#f9f8f6;border-radius:10px;padding:8px;">
       <tr>
         <td style="padding:10px 14px;vertical-align:top;font-size:18px;line-height:1;">👫</td>
-        <td style="padding:10px 0;color:#1a202c;font-size:14px;line-height:1.6;"><strong>Two private vaults</strong> — invite your partner or family member to their own secure vault under the same subscription</td>
+        <td style="padding:10px 0;color:#1a202c;font-size:14px;line-height:1.6;"><strong>Two private vaults</strong>, invite your partner or family member to their own secure vault under the same subscription</td>
       </tr>
       <tr>
         <td style="padding:10px 14px;vertical-align:top;font-size:18px;line-height:1;">👥</td>
-        <td style="padding:10px 0;color:#1a202c;font-size:14px;line-height:1.6;"><strong>Up to 10 trusted contacts</strong> — more people who can access your plan when it matters</td>
+        <td style="padding:10px 0;color:#1a202c;font-size:14px;line-height:1.6;"><strong>Up to 10 trusted contacts</strong>, more people who can access your plan when it matters</td>
       </tr>
       <tr>
         <td style="padding:10px 14px;vertical-align:top;font-size:18px;line-height:1;">💬</td>
-        <td style="padding:10px 0;color:#1a202c;font-size:14px;line-height:1.6;"><strong>Personal messages</strong> — write messages to the people you love, delivered when the time comes</td>
+        <td style="padding:10px 0;color:#1a202c;font-size:14px;line-height:1.6;"><strong>Personal messages</strong>, write messages to the people you love, delivered when the time comes</td>
       </tr>
       <tr>
         <td style="padding:10px 14px;vertical-align:top;font-size:18px;line-height:1;">📦</td>
-        <td style="padding:10px 0;color:#1a202c;font-size:14px;line-height:1.6;"><strong>25 GB storage</strong> — plenty of space for documents, photos, and everything important</td>
+        <td style="padding:10px 0;color:#1a202c;font-size:14px;line-height:1.6;"><strong>25 GB storage</strong>, plenty of space for documents, photos, and everything important</td>
       </tr>
     </table>
     <a href="${APP_URL}/dashboard" style="display:inline-block;background:#2d5082;background:linear-gradient(100deg,#2d5082 0%,#6f6bc6 50%,#6e9b6a 100%);color:#ffffff;text-decoration:none;padding:14px 28px;border-radius:9999px;font-size:15px;">Go to my vault →</a>
-    <p style="margin:32px 0 0;color:#6b7280;font-size:14px;line-height:1.6;">— Julien, founder of Everstead</p>
+    <p style="margin:32px 0 0;color:#6b7280;font-size:14px;line-height:1.6;">: Julien, founder of Everstead</p>
   `)
 }
 
@@ -699,13 +699,13 @@ function referralConversionHtml(referrerName, newMemberName) {
       Your referral just joined, ${first}. 🎉
     </h1>
     <p style="margin:0 0 16px;color:#4a5568;font-size:16px;line-height:1.7;">
-      <strong>${newMemberName}</strong> just signed up to Everstead using your referral link. Thank you for sharing — it genuinely means a lot.
+      <strong>${newMemberName}</strong> just signed up to Everstead using your referral link. Thank you for sharing, it genuinely means a lot.
     </p>
     <p style="margin:0 0 32px;color:#4a5568;font-size:16px;line-height:1.7;">
       If you haven't already claimed your referral reward, you can find it in your dashboard under Settings.
     </p>
     <a href="${APP_URL}/dashboard" style="display:inline-block;background:#2d5082;background:linear-gradient(100deg,#2d5082 0%,#6f6bc6 50%,#6e9b6a 100%);color:#ffffff;text-decoration:none;padding:14px 28px;border-radius:9999px;font-size:15px;">View my dashboard →</a>
-    <p style="margin:32px 0 0;color:#6b7280;font-size:14px;line-height:1.6;">— Julien, founder of Everstead</p>
+    <p style="margin:32px 0 0;color:#6b7280;font-size:14px;line-height:1.6;">: Julien, founder of Everstead</p>
   `)
 }
 
@@ -762,7 +762,7 @@ function cancellationWinbackHtml(name) {
             ${firstName}, your data is safe.
           </h1>
           <p style="margin:0 0 16px;color:#4a5568;font-size:16px;line-height:1.7;">
-            Your Everstead subscription has ended — but everything you've built is still here. Your accounts, documents, instructions, and wishes will be safely stored for <strong>30 days</strong>.
+            Your Everstead subscription has ended, but everything you've built is still here. Your accounts, documents, instructions, and wishes will be safely stored for <strong>30 days</strong>.
           </p>
           <p style="margin:0 0 32px;color:#4a5568;font-size:16px;line-height:1.7;">
             After 30 days, your data will be permanently deleted in line with our privacy policy.
@@ -784,14 +784,14 @@ function cancellationWinbackHtml(name) {
           </table>
 
           <p style="margin:0 0 24px;color:#4a5568;font-size:15px;line-height:1.7;">
-            If you'd like to come back, it takes 30 seconds — your trial has ended but you can restart on any plan.
+            If you'd like to come back, it takes 30 seconds, your trial has ended but you can restart on any plan.
           </p>
           <a href="${APP_URL}/get-started"
              style="display:inline-block;background:#2d5082;background:linear-gradient(100deg,#2d5082 0%,#6f6bc6 50%,#6e9b6a 100%);color:#ffffff;text-decoration:none;padding:14px 28px;border-radius:9999px;font-size:15px;margin-bottom:32px;">
             Restart my account →
           </a>
           <p style="margin:0;color:#6b7280;font-size:14px;line-height:1.6;">
-            — Julien, founder of Everstead
+Julien, founder of Everstead
           </p>
         </td></tr>
         <tr><td style="padding:24px 40px;border-top:1px solid #e8e5e0;">

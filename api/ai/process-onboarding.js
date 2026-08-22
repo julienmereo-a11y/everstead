@@ -29,14 +29,14 @@ Return a JSON object with exactly these fields:
   - name: string
   - role: string (one of: executor, next_of_kin, solicitor, accountant, other)
   - notes: string (any details mentioned)
-- onboardingSummary: string (1–2 warm sentences summarising what you've set up for them)
+- onboardingSummary: string (1-2 warm sentences summarising what you've set up for them)
 
 Rules:
 - Only include entries where the user actually provided information (skip blanks or "none"/"not sure")
-- Be generous with interpretation — if they say "I bank with Barclays" create a Barclays bank account entry
+- Be generous with interpretation, if they say "I bank with Barclays" create a Barclays bank account entry
 - For executor: if they name someone, add them as a person with role "executor"
 - Keep notes brief and factual
-- Return ONLY valid JSON — no markdown, no explanation`
+- Return ONLY valid JSON, no markdown, no explanation`
 
   const userPrompt = `Here are the onboarding answers from ${firstName || 'this user'}:
 

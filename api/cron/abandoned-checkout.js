@@ -19,7 +19,7 @@ const PLAN_META = {
   family: {
     label:    'Everstead+',
     price:    '£7.99/month (billed annually) or £9.99/month',
-    features: ['Two private vaults — one subscription', 'Share only what you choose', '10 trusted contacts', '25 GB storage'],
+    features: ['Two private vaults, one subscription', 'Share only what you choose', '10 trusted contacts', '25 GB storage'],
   },
   advisor: {
     label:    'Everstead Pro',
@@ -74,7 +74,7 @@ async function handler(req, res) {
       await resend.emails.send({
         from:    'Julien at Everstead <hello@everstead.care>',
         to:      user.email,
-        subject: `${user.full_name?.split(' ')[0] || 'Your'} Everstead trial is ready — one step left`,
+        subject: `${user.full_name?.split(' ')[0] || 'Your'} Everstead trial is ready, one step left`,
         html:    buildEmail(user),
       })
 
@@ -147,7 +147,7 @@ function buildEmail(user) {
             </h1>
 
             <p style="margin:0 0 16px;color:#4a5568;font-size:16px;line-height:1.7;">
-              You chose the <strong>${plan.label}</strong> plan and created your account — but didn't quite finish. Your 14-day free trial is still reserved for you.
+              You chose the <strong>${plan.label}</strong> plan and created your account, but didn't quite finish. Your 14-day free trial is still reserved for you.
             </p>
 
             <p style="margin:0 0 28px;color:#4a5568;font-size:16px;line-height:1.7;">
@@ -181,11 +181,11 @@ function buildEmail(user) {
             </table>
 
             <p style="margin:0 0 8px;color:#6b7280;font-size:15px;line-height:1.6;">
-              It takes about 30 seconds — your account and details are already saved.
+              It takes about 30 seconds, your account and details are already saved.
             </p>
 
             <p style="margin:28px 0 0;color:#6b7280;font-size:15px;line-height:1.6;">
-              — Julien, founder of Everstead
+Julien, founder of Everstead
             </p>
 
           </td>

@@ -104,7 +104,7 @@ function notificationHtml({ summary, effectiveDate, changes, unsubLink }) {
       <p style="margin:0 0 16px;font-size:15px;line-height:1.6;">${escapeHtml(summary)}</p>
       ${changeList}
       <p style="margin:16px 0 0;font-size:14px;line-height:1.6;color:#4b5563;">
-        The full list of current subprocessors — purpose, data location, and transfer safeguards — is at
+        The full list of current subprocessors (purpose, data location, and transfer safeguards) is at
         <a href="${APP_URL}/subprocessors" style="color:#4c7d47;">everstead.care/subprocessors</a>.
       </p>
       <p style="margin:24px 0 0;font-size:14px;line-height:1.6;color:#4b5563;">

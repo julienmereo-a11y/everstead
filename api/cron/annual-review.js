@@ -79,7 +79,7 @@ async function handler(req, res) {
       await resend.emails.send({
         from:    'Everstead <hello@everstead.care>',
         to:      user.email,
-        subject: "It's been a year — is your Everstead plan still accurate?",
+        subject: "It's been a year, is your Everstead plan still accurate?",
         html:    annualReviewHtml(user.full_name, user.plan, accountCount ?? 0, documentCount ?? 0, contactCount ?? 0),
       })
 
@@ -122,7 +122,7 @@ function annualReviewHtml(name, plan, accountCount, documentCount, contactCount)
             ${first}, it's been a year.
           </h1>
           <p style="margin:0 0 16px;color:#4a5568;font-size:16px;line-height:1.7;">
-            You've had your <strong>${planName}</strong> plan for about 12 months — with ${accountCount} financial ${accountCount === 1 ? 'account' : 'accounts'}, ${documentCount} ${documentCount === 1 ? 'document' : 'documents'}, and ${contactCount} trusted ${contactCount === 1 ? 'contact' : 'contacts'} in your vault.
+            You've had your <strong>${planName}</strong> plan for about 12 months, with ${accountCount} financial ${accountCount === 1 ? 'account' : 'accounts'}, ${documentCount} ${documentCount === 1 ? 'document' : 'documents'}, and ${contactCount} trusted ${contactCount === 1 ? 'contact' : 'contacts'} in your vault.
           </p>
           <p style="margin:0 0 16px;color:#4a5568;font-size:16px;line-height:1.7;">
             A lot can change in a year. It only takes a few minutes to check that your plan still reflects your life.
@@ -133,15 +133,15 @@ function annualReviewHtml(name, plan, accountCount, documentCount, contactCount)
           <table cellpadding="0" cellspacing="0" style="margin:0 0 32px;width:100%;background:#f9f8f6;border-radius:10px;padding:8px;">
             <tr>
               <td style="padding:10px 14px;vertical-align:top;font-size:20px;line-height:1;">🏡</td>
-              <td style="padding:10px 0;color:#4a5568;font-size:14px;line-height:1.6;"><strong>New property or assets</strong> — a new home, inheritance, pension, or investment account that isn't in your plan yet.</td>
+              <td style="padding:10px 0;color:#4a5568;font-size:14px;line-height:1.6;"><strong>New property or assets</strong>, a new home, inheritance, pension, or investment account that isn't in your plan yet.</td>
             </tr>
             <tr>
               <td style="padding:10px 14px;vertical-align:top;font-size:20px;line-height:1;">💼</td>
-              <td style="padding:10px 0;color:#4a5568;font-size:14px;line-height:1.6;"><strong>Pension changes</strong> — a new employer, a transferred pension, or a defined benefit scheme with updated beneficiaries.</td>
+              <td style="padding:10px 0;color:#4a5568;font-size:14px;line-height:1.6;"><strong>Pension changes</strong>, a new employer, a transferred pension, or a defined benefit scheme with updated beneficiaries.</td>
             </tr>
             <tr>
               <td style="padding:10px 14px;vertical-align:top;font-size:20px;line-height:1;">🤝</td>
-              <td style="padding:10px 0;color:#4a5568;font-size:14px;line-height:1.6;"><strong>Executor or trusted contact update</strong> — a relationship change, bereavement, or simply someone better placed to act on your behalf.</td>
+              <td style="padding:10px 0;color:#4a5568;font-size:14px;line-height:1.6;"><strong>Executor or trusted contact update</strong>, a relationship change, bereavement, or simply someone better placed to act on your behalf.</td>
             </tr>
           </table>
 
@@ -151,7 +151,7 @@ function annualReviewHtml(name, plan, accountCount, documentCount, contactCount)
           </a>
 
           <p style="margin:32px 0 0;color:#6b7280;font-size:14px;line-height:1.6;">
-            — Julien, founder of Everstead
+Julien, founder of Everstead
           </p>
         </td></tr>
         <tr><td style="padding:24px 40px;border-top:1px solid #e8e5e0;">

@@ -44,7 +44,7 @@ function page(title, message) {
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>${title} — Everstead</title>
+  <title>${title} | Everstead</title>
   <style>
     body { margin:0; font-family: system-ui, -apple-system, 'Segoe UI', sans-serif; background:#f8f7f5; color:#1f2937; min-height:100vh; display:flex; align-items:center; justify-content:center; padding:24px; }
     .card { max-width:480px; background:#ffffff; border:1px solid #e7e5e4; border-radius:16px; padding:40px 32px; text-align:center; box-shadow: 0 1px 2px rgba(0,0,0,0.04); }

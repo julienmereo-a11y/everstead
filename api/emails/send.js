@@ -107,7 +107,7 @@ async function handler(req, res) {
       await resend.emails.send({
         from:    'Everstead <hello@everstead.care>',
         to:      'julien@everstead.care',
-        subject: `🆕 New registration — ${name || email} (${plan || 'essential'})`,
+        subject: `🆕 New registration, ${name || email} (${plan || 'essential'})`,
         html:    ownerRegistrationHtml({ name, email, plan, billingCycle }),
       })
 
@@ -163,8 +163,8 @@ function welcomeHtml(name, plan) {
         </td></tr>
         <tr><td style="padding:40px;">
           <h1 style="margin:0 0 16px;color:#0d1628;font-size:24px;font-weight:normal;">Welcome, ${name || 'there'}</h1>
-          <p style="margin:0 0 16px;color:#4a5568;font-size:16px;line-height:1.6;">Thank you for joining Everstead. You're on the <strong>${planName}</strong> plan${isFree ? ' — free forever, with no card required.' : ' — your 14-day free trial starts now.'}</p>
-          <p style="margin:0 0 16px;color:#4a5568;font-size:16px;line-height:1.6;">Everstead helps you organise everything your family needs to know — accounts, documents, contacts, and instructions — all in one secure, private place.</p>
+          <p style="margin:0 0 16px;color:#4a5568;font-size:16px;line-height:1.6;">Thank you for joining Everstead. You're on the <strong>${planName}</strong> plan${isFree ? ' (free forever, with no card required.' : ') your 14-day free trial starts now.'}</p>
+          <p style="margin:0 0 16px;color:#4a5568;font-size:16px;line-height:1.6;">Everstead helps you organise everything your family needs to know (accounts, documents, contacts, and instructions) all in one secure, private place.</p>
           <p style="margin:0 0 32px;color:#4a5568;font-size:16px;line-height:1.6;">Start by adding your first account or uploading an important document.</p>
           <a href="${process.env.VITE_APP_URL}/dashboard" style="display:inline-block;background:#2d5082;background:linear-gradient(100deg,#2d5082 0%,#6f6bc6 50%,#6e9b6a 100%);color:#ffffff;text-decoration:none;padding:14px 28px;border-radius:9999px;font-size:15px;">Go to your dashboard →</a>
         </td></tr>
@@ -221,13 +221,13 @@ function adminInviteHtml(email, inviteUrl) {
         <tr><td style="padding:44px 40px 36px;">
           <p style="margin:0 0 8px;color:#4c7d47;font-size:12px;font-weight:bold;letter-spacing:0.15em;text-transform:uppercase;">Admin access</p>
           <h1 style="margin:0 0 20px;color:#ffffff;font-size:26px;font-weight:normal;line-height:1.3;">You've been invited to the Everstead admin team</h1>
-          <p style="margin:0 0 20px;color:#8a9ab5;font-size:15px;line-height:1.7;">Hi ${email},<br><br>You've been granted admin access to the Everstead internal panel. Click below to set up your account — the link is unique to you and expires after use.</p>
+          <p style="margin:0 0 20px;color:#8a9ab5;font-size:15px;line-height:1.7;">Hi ${email},<br><br>You've been granted admin access to the Everstead internal panel. Click below to set up your account, the link is unique to you and expires after use.</p>
           <table cellpadding="0" cellspacing="0" style="margin:0 0 32px;">
             <tr><td style="background:#2d5082;background:linear-gradient(100deg,#2d5082 0%,#6f6bc6 50%,#6e9b6a 100%);border-radius:9999px;">
               <a href="${inviteUrl}" style="display:inline-block;padding:14px 32px;color:#ffffff;text-decoration:none;font-size:15px;">Set up admin account →</a>
             </td></tr>
           </table>
-          <p style="margin:0;color:#4a5568;font-size:13px;line-height:1.6;">If you weren't expecting this, ignore this email — no account will be created without clicking the link above.</p>
+          <p style="margin:0;color:#4a5568;font-size:13px;line-height:1.6;">If you weren't expecting this, ignore this email, no account will be created without clicking the link above.</p>
         </td></tr>
         <tr><td style="padding:24px 40px 32px;border-top:1px solid #1e2d4a;">
           <p style="margin:0;color:#4a5568;font-size:12px;"><a href="mailto:hello@everstead.care" style="color:#4c7d47;text-decoration:none;">hello@everstead.care</a></p>
@@ -260,7 +260,7 @@ function inviteHtml(inviteeName, ownerName, role, inviteToken) {
           </h1>
           <p style="margin:0 0 20px;color:#5a6475;font-size:15px;line-height:1.7;">
             Hi${inviteeName ? ` ${inviteeName}` : ''},<br><br>
-            <strong>${ownerName || 'Someone'}</strong> has added you as their <strong>${role || 'trusted contact'}</strong> on Everstead — a secure digital estate plan that ensures their wishes and important information are organised and accessible when needed.
+            <strong>${ownerName || 'Someone'}</strong> has added you as their <strong>${role || 'trusted contact'}</strong> on Everstead, a secure digital estate plan that ensures their wishes and important information are organised and accessible when needed.
           </p>
           <p style="margin:0 0 32px;color:#5a6475;font-size:15px;line-height:1.7;">Create your free account to accept the invitation and view the sections you've been given access to.</p>
           <table cellpadding="0" cellspacing="0" style="margin:0 0 32px;">
@@ -311,7 +311,7 @@ function toolReportHtml(name, score, answers) {
   const missing = (answers || [])
     .map((a, i) => ({ q: QUESTIONS[i], pts: typeof a?.points === 'number' ? a.points : 0 }))
     .filter(x => x.pts < 20)
-    .map(x => `<li style="margin:0 0 8px;font-size:14px;color:#4a5568;line-height:1.5;">${x.pts === 0 ? '❌' : '⚠️'} ${x.q?.full || 'Item'} — ${x.pts === 0 ? 'not yet in place' : 'partially complete'}</li>`)
+    .map(x => `<li style="margin:0 0 8px;font-size:14px;color:#4a5568;line-height:1.5;">${x.pts === 0 ? '❌' : '⚠️'} ${x.q?.full || 'Item'}, ${x.pts === 0 ? 'not yet in place' : 'partially complete'}</li>`)
     .join('')
 
   return `<!DOCTYPE html>
@@ -343,7 +343,7 @@ function toolReportHtml(name, score, answers) {
             <p style="margin:0;font-size:15px;color:#14532d;">🎉 Your plan is in excellent shape. Well done.</p>
           </div>`}
           <div style="margin:32px 0 0;text-align:center;">
-            <p style="margin:0 0 16px;color:#4a5568;font-size:15px;line-height:1.6;">Everstead is where you put all of this in one secure place — your accounts, documents, trusted people, and final wishes.</p>
+            <p style="margin:0 0 16px;color:#4a5568;font-size:15px;line-height:1.6;">Everstead is where you put all of this in one secure place, your accounts, documents, trusted people, and final wishes.</p>
             <a href="${appUrl}/get-started" style="display:inline-block;background:#2d5082;background:linear-gradient(100deg,#2d5082 0%,#6f6bc6 50%,#6e9b6a 100%);color:#ffffff;text-decoration:none;padding:14px 28px;border-radius:9999px;font-size:15px;">Start your free plan →</a>
           </div>
         </td></tr>
@@ -444,7 +444,7 @@ function ownerRegistrationHtml({ name, email, plan, billingCycle }) {
           <h1 style="margin:0 0 6px;color:#0d1628;font-size:22px;font-weight:normal;">
             ${name || email} just created an account
           </h1>
-          <p style="margin:0 0 24px;color:#9ca3af;font-size:13px;">Card not yet entered — awaiting Stripe checkout</p>
+          <p style="margin:0 0 24px;color:#9ca3af;font-size:13px;">Card not yet entered, awaiting Stripe checkout</p>
           <table width="100%" cellpadding="0" cellspacing="0">
             ${row('Name', name || '—')}
             ${row('Email', `<a href="mailto:${email}" style="color:#4c7d47;">${email}</a>`)}

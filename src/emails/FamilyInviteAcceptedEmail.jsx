@@ -33,7 +33,7 @@ export default function FamilyInviteAcceptedEmail({ primaryName, secondaryName }
               <p style={{ margin: '0', color: '#9ca3af', fontSize: '13px', lineHeight: '1.5' }}>
                 Questions? <a href="mailto:support@everstead.care" style={{ color: '#4c7d47' }}>support@everstead.care</a>
                 <br />
-                <span style={{ marginTop: '8px', display: 'block' }}>— Julien, Everstead</span>
+                <span style={{ marginTop: '8px', display: 'block' }}>: Julien, Everstead</span>
               </p>
             </td></tr>
           </tbody>

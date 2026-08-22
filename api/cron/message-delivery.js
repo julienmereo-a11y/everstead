@@ -67,7 +67,7 @@ async function handler(req, res) {
         .eq('released', false)
         .select('id')
       if (updErr) throw updErr
-      if (!claimed?.length) continue // lost the race — manual release already handled it
+      if (!claimed?.length) continue // lost the race, manual release already handled it
 
       // 2. Deliver. If the email fails, UNDO the claim so the next hourly run
       //    retries — otherwise a scheduled letter would silently never arrive.
@@ -82,7 +82,7 @@ async function handler(req, res) {
           })
         } catch (mailErr) {
           await supabase.from('messages')
-            .update({ released: false, released_at: null }) // keep view_token — reused next run
+            .update({ released: false, released_at: null }) // keep view_token, reused next run
             .eq('id', msg.id)
           throw mailErr
         }
@@ -109,7 +109,7 @@ function messageLinkHtml(senderName, recipientName, viewUrl) {
     </div>
     <div style="background:#fff;border:1px solid #e7e5e4;border-top:0;border-radius:0 0 16px 16px;padding:28px;">
       <p style="margin:0 0 14px;font-size:15px;line-height:1.65;">${hi}</p>
-      <p style="margin:0 0 22px;font-size:15px;line-height:1.65;color:#44403c;">${escapeHtml(senderName)} has set aside a private message for you through Everstead. You can read it using the secure link below — no account is needed.</p>
+      <p style="margin:0 0 22px;font-size:15px;line-height:1.65;color:#44403c;">${escapeHtml(senderName)} has set aside a private message for you through Everstead. You can read it using the secure link below, no account is needed.</p>
       <a href="${viewUrl}" style="display:inline-block;background:linear-gradient(100deg,#2d5082 0%,#6f6bc6 50%,#6e9b6a 100%);color:#fff;font-weight:600;font-size:15px;text-decoration:none;padding:13px 26px;border-radius:9999px;">Read your message</a>
       <p style="margin:22px 0 0;font-size:12px;line-height:1.6;color:#a8a29e;">This link is private to you. If you weren't expecting this, you can safely ignore it.</p>
     </div>

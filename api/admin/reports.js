@@ -78,7 +78,7 @@ async function handler(req, res) {
           resource_name: ownerStatus,
           metadata:      { report_id: report.id, report_type: report.type },
         })
-      } catch { /* audit logging is best-effort — never block the verification */ }
+      } catch { /* audit logging is best-effort, never block the verification */ }
     }
     return res.status(200).json({ report: toUi(report) })
   }

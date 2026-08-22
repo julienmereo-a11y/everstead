@@ -70,7 +70,7 @@ function familyInviteAcceptedHtml(primaryName, secondaryName, appUrl) {
         <tr><td style="padding:24px 40px;border-top:1px solid #e8e5e0;">
           <p style="margin:0;color:#9ca3af;font-size:13px;line-height:1.5;">
             Questions? <a href="mailto:support@everstead.care" style="color:#4c7d47;">support@everstead.care</a><br />
-            <span style="display:block;margin-top:8px;">— Julien, Everstead</span>
+            <span style="display:block;margin-top:8px;">: Julien, Everstead</span>
           </p>
         </td></tr>
       </table>

@@ -131,7 +131,7 @@ function reminderGiftHtml({ gift, planName, yearsLabel }) {
         <tr><td style="padding:40px;">
           <h1 style="margin:0 0 16px;color:#0d1628;font-size:24px;font-weight:normal;">You have an unclaimed gift, ${recipientFirst}.</h1>
           <p style="margin:0 0 16px;color:#4a5568;font-size:16px;line-height:1.6;">
-            Just a gentle reminder — <strong>${gifterDisplay}</strong> gave you an Everstead <strong>${planName}</strong> plan for <strong>${yearsLabel}</strong> a week ago and it's waiting for you.
+            Just a gentle reminder, <strong>${gifterDisplay}</strong> gave you an Everstead <strong>${planName}</strong> plan for <strong>${yearsLabel}</strong> a week ago and it's waiting for you.
           </p>
           <p style="margin:0 0 32px;color:#4a5568;font-size:16px;line-height:1.6;">
             It takes about 2 minutes to claim. No credit card needed.
@@ -163,7 +163,7 @@ function recipientGiftHtml({ gift, planName, yearsLabel }) {
   const personalMessageBlock = gift.personal_message
     ? `<blockquote style="margin:24px 0;padding:16px 20px;border-left:3px solid #4c7d47;background:#f9f8f6;border-radius:0 8px 8px 0;">
         <p style="margin:0;color:#374151;font-size:15px;line-height:1.7;font-style:italic;">"${gift.personal_message}"</p>
-        <p style="margin:8px 0 0;color:#6b7280;font-size:13px;">— ${gift.gifter_name || 'Your gift giver'}</p>
+        <p style="margin:8px 0 0;color:#6b7280;font-size:13px;">, ${gift.gifter_name || 'Your gift giver'}</p>
       </blockquote>`
     : ''
 
@@ -179,7 +179,7 @@ function recipientGiftHtml({ gift, planName, yearsLabel }) {
         <tr><td style="padding:40px;">
           <h1 style="margin:0 0 16px;color:#0d1628;font-size:24px;font-weight:normal;">A gift for you, ${recipientFirst}.</h1>
           <p style="margin:0 0 16px;color:#4a5568;font-size:16px;line-height:1.6;">
-            <strong>${gifterDisplay}</strong> has given you an Everstead <strong>${planName}</strong> plan for <strong>${yearsLabel}</strong> — a genuinely thoughtful gift for your peace of mind and the people you love.
+            <strong>${gifterDisplay}</strong> has given you an Everstead <strong>${planName}</strong> plan for <strong>${yearsLabel}</strong>, a genuinely thoughtful gift for your peace of mind and the people you love.
           </p>
           ${personalMessageBlock}
           <table cellpadding="0" cellspacing="0" style="width:100%;border:1px solid #e8e5e0;border-radius:8px;overflow:hidden;margin:24px 0 32px;">

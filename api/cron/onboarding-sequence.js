@@ -35,7 +35,7 @@ const SEQUENCE = [
     n:          3,
     field:      'onboarding_email_3_sent_at',
     afterDays:  7,
-    subject:    'Your will, passport, and pension — stored in one safe place',
+    subject:    'Your will, passport, and pension, stored in one safe place',
     html:       email3Html,
   },
   {
@@ -212,19 +212,19 @@ function email1Html(name, _plan, userId) {
       ${first}, let's start with what you own.
     </h1>
     <p style="margin:0 0 16px;color:#4a5568;font-size:16px;line-height:1.7;">
-      The foundation of any good estate plan is a clear picture of your finances — bank accounts, investments, pensions, property. It's what your family would need to find in an emergency.
+      The foundation of any good estate plan is a clear picture of your finances, bank accounts, investments, pensions, property. It's what your family would need to find in an emergency.
     </p>
     <p style="margin:0 0 24px;color:#4a5568;font-size:16px;line-height:1.7;">
       In Everstead you can add all of them in a few minutes. Here's what to include:
     </p>
     <table cellpadding="0" cellspacing="0" style="margin:0 0 32px;width:100%;">
-      ${tip('🏦', '<strong>Bank accounts</strong> — current accounts, savings, ISAs')}
-      ${tip('📈', '<strong>Investments & pensions</strong> — workplace pensions, SIPPs, stocks & shares')}
-      ${tip('🏠', '<strong>Property</strong> — your home, buy-to-lets, land')}
-      ${tip('🛡️', '<strong>Insurance policies</strong> — life, critical illness, income protection')}
+      ${tip('🏦', '<strong>Bank accounts</strong>, current accounts, savings, ISAs')}
+      ${tip('📈', '<strong>Investments & pensions</strong>, workplace pensions, SIPPs, stocks & shares')}
+      ${tip('🏠', '<strong>Property</strong>, your home, buy-to-lets, land')}
+      ${tip('🛡️', '<strong>Insurance policies</strong>, life, critical illness, income protection')}
     </table>
     ${cta(`${APP_URL}/dashboard`, 'Add my first account →')}
-    <p style="margin:32px 0 0;color:#6b7280;font-size:14px;line-height:1.6;">— Julien, founder of Everstead</p>
+    <p style="margin:32px 0 0;color:#6b7280;font-size:14px;line-height:1.6;">: Julien, founder of Everstead</p>
   `, userId)
 }
 
@@ -238,16 +238,16 @@ function email2Html(name, _plan, userId) {
       Who would handle things if you couldn't?
     </h1>
     <p style="margin:0 0 16px;color:#4a5568;font-size:16px;line-height:1.7;">
-      Hi ${first}. One of the most important things you can do in Everstead is name the people who should have access to your plan — your spouse, a sibling, a solicitor, or a close friend.
+      Hi ${first}. One of the most important things you can do in Everstead is name the people who should have access to your plan, your spouse, a sibling, a solicitor, or a close friend.
     </p>
     <p style="margin:0 0 16px;color:#4a5568;font-size:16px;line-height:1.7;">
-      These are your <strong>trusted contacts</strong>. They only get access when you grant it — but when the time comes, they'll know exactly where everything is and what to do.
+      These are your <strong>trusted contacts</strong>. They only get access when you grant it, but when the time comes, they'll know exactly where everything is and what to do.
     </p>
     <p style="margin:0 0 32px;color:#4a5568;font-size:16px;line-height:1.7;">
       It takes 60 seconds and makes an enormous difference.
     </p>
     ${cta(`${APP_URL}/dashboard`, 'Add a trusted contact →')}
-    <p style="margin:32px 0 0;color:#6b7280;font-size:14px;line-height:1.6;">— Julien, founder of Everstead</p>
+    <p style="margin:32px 0 0;color:#6b7280;font-size:14px;line-height:1.6;">: Julien, founder of Everstead</p>
   `, userId)
 }
 
@@ -264,16 +264,16 @@ function email3Html(name, _plan, userId) {
       Hi ${first}. Think about where your will is right now. Your passport. Your pension statements. Your life insurance policy. Could your family find them quickly if they needed to?
     </p>
     <p style="margin:0 0 24px;color:#4a5568;font-size:16px;line-height:1.7;">
-      Everstead's encrypted vault keeps them in one place — organised, accessible, and private. Here's what's worth uploading first:
+      Everstead's encrypted vault keeps them in one place, organised, accessible, and private. Here's what's worth uploading first:
     </p>
     <table cellpadding="0" cellspacing="0" style="margin:0 0 32px;width:100%;">
-      ${tip('📜', '<strong>Your will</strong> — or a note about where the original is stored')}
-      ${tip('🪪', '<strong>Passport & ID</strong> — the numbers matter as much as the documents')}
-      ${tip('📄', '<strong>Pension & insurance</strong> — policy numbers, provider contacts')}
-      ${tip('🏡', '<strong>Property deeds</strong> — especially if you own without a mortgage')}
+      ${tip('📜', '<strong>Your will</strong>, or a note about where the original is stored')}
+      ${tip('🪪', '<strong>Passport & ID</strong>, the numbers matter as much as the documents')}
+      ${tip('📄', '<strong>Pension & insurance</strong>, policy numbers, provider contacts')}
+      ${tip('🏡', '<strong>Property deeds</strong>, especially if you own without a mortgage')}
     </table>
     ${cta(`${APP_URL}/dashboard`, 'Upload my first document →')}
-    <p style="margin:32px 0 0;color:#6b7280;font-size:14px;line-height:1.6;">— Julien, founder of Everstead</p>
+    <p style="margin:32px 0 0;color:#6b7280;font-size:14px;line-height:1.6;">: Julien, founder of Everstead</p>
   `, userId)
 }
 
@@ -287,19 +287,19 @@ function email4Html(name, _plan, userId) {
       The one thing most people forget.
     </h1>
     <p style="margin:0 0 16px;color:#4a5568;font-size:16px;line-height:1.7;">
-      Hi ${first}. Accounts and documents are essential — but there's something just as important that almost everyone overlooks: <strong>instructions</strong>.
+      Hi ${first}. Accounts and documents are essential, but there's something just as important that almost everyone overlooks: <strong>instructions</strong>.
     </p>
     <p style="margin:0 0 16px;color:#4a5568;font-size:16px;line-height:1.7;">
       What should your family do first? Who should they call? Where is the spare key? What are your funeral wishes? What happens to the dog?
     </p>
     <p style="margin:0 0 16px;color:#4a5568;font-size:16px;line-height:1.7;">
-      In Everstead you can write step-by-step instructions your trusted contacts will see the moment they need them. It sounds morbid — but families who have it say it's one of the most generous things you can leave behind.
+      In Everstead you can write step-by-step instructions your trusted contacts will see the moment they need them. It sounds morbid, but families who have it say it's one of the most generous things you can leave behind.
     </p>
     <p style="margin:0 0 32px;color:#4a5568;font-size:16px;line-height:1.7;">
       It doesn't need to be perfect. Just start.
     </p>
     ${cta(`${APP_URL}/dashboard`, 'Write my first instruction →')}
-    <p style="margin:32px 0 0;color:#6b7280;font-size:14px;line-height:1.6;">— Julien, founder of Everstead</p>
+    <p style="margin:32px 0 0;color:#6b7280;font-size:14px;line-height:1.6;">: Julien, founder of Everstead</p>
   `, userId)
 }
 
@@ -315,16 +315,16 @@ function email5Html(name, plan, accountCount = 0, documentCount = 0, contactCoun
 
   // Identify gaps to surface
   const gaps = []
-  if (accountCount === 0) gaps.push("You haven't added any financial accounts yet — it only takes 2 minutes.")
-  if (documentCount === 0) gaps.push('Your document vault is empty — uploading your will or pension statement is a great first step.')
-  if (contactCount === 0) gaps.push("You haven't named a trusted contact yet — this is the person who'd act on your behalf if needed.")
+  if (accountCount === 0) gaps.push("You haven't added any financial accounts yet, it only takes 2 minutes.")
+  if (documentCount === 0) gaps.push('Your document vault is empty, uploading your will or pension statement is a great first step.')
+  if (contactCount === 0) gaps.push("You haven't named a trusted contact yet, this is the person who'd act on your behalf if needed.")
 
   const gapsHtml = gaps.length > 0
     ? `<table cellpadding="0" cellspacing="0" style="margin:16px 0 24px;width:100%;background:#fdf8f0;border-radius:10px;padding:8px;">
         ${gaps.map(g => `<tr><td style="padding:10px 14px;vertical-align:top;font-size:18px;line-height:1;">💡</td><td style="padding:10px 0;color:#92400e;font-size:14px;line-height:1.6;">${g}</td></tr>`).join('')}
       </table>`
     : `<p style="margin:0 0 24px;color:#4a5568;font-size:16px;line-height:1.7;">
-        Your plan is shaping up well — keep it up.
+        Your plan is shaping up well, keep it up.
       </p>`
 
   return layout(`
@@ -332,7 +332,7 @@ function email5Html(name, plan, accountCount = 0, documentCount = 0, contactCoun
       A quick note from me.
     </h1>
     <p style="margin:0 0 16px;color:#4a5568;font-size:16px;line-height:1.7;">
-      Hi ${first}, it's Julien — I started Everstead after watching my own family struggle to piece together a loved one's affairs under enormous stress. I built it so no one else would have to go through that.
+      Hi ${first}, it's Julien: I started Everstead after watching my own family struggle to piece together a loved one's affairs under enormous stress. I built it so no one else would have to go through that.
     </p>
     <p style="margin:0 0 16px;color:#4a5568;font-size:16px;line-height:1.7;">
       You've had two weeks with your <strong>${planName}</strong> plan. Here's where things stand:
@@ -342,13 +342,13 @@ function email5Html(name, plan, accountCount = 0, documentCount = 0, contactCoun
     </p>
     ${gapsHtml}
     <p style="margin:0 0 16px;color:#4a5568;font-size:16px;line-height:1.7;">
-      If you got stuck on anything, or there's something I can help you set up — just hit reply. I read every message.
+      If you got stuck on anything, or there's something I can help you set up, just hit reply. I read every message.
     </p>
     <p style="margin:0 0 32px;color:#4a5568;font-size:16px;line-height:1.7;">
-      And if your trial is ending soon — everything you've built is still here, ready to go.
+      And if your trial is ending soon, everything you've built is still here, ready to go.
     </p>
     ${cta(`${APP_URL}/dashboard`, 'Go to my vault →')}
-    <p style="margin:32px 0 0;color:#6b7280;font-size:14px;line-height:1.6;">— Julien, founder of Everstead</p>
+    <p style="margin:32px 0 0;color:#6b7280;font-size:14px;line-height:1.6;">: Julien, founder of Everstead</p>
   `, userId)
 }
 
@@ -406,22 +406,22 @@ function recoveryHtml(name, userId) {
       Is something getting in the way?
     </h1>
     <p style="margin:0 0 16px;color:#4a5568;font-size:16px;line-height:1.7;">
-      Hi ${first}, it's Julien — I'm writing personally because I noticed you signed up a week ago and haven't added anything to your vault yet. That's pretty common, and usually for one of three reasons:
+      Hi ${first}, it's Julien: I'm writing personally because I noticed you signed up a week ago and haven't added anything to your vault yet. That's pretty common, and usually for one of three reasons:
     </p>
     <p style="margin:0 0 14px;color:#4a5568;font-size:16px;line-height:1.7;">
-      <strong>1. You're not sure where to start.</strong> Honestly, the easiest first step is adding one account — a current account, a savings account, your work pension. It takes about 90 seconds and the rest gets easier from there.
+      <strong>1. You're not sure where to start.</strong> Honestly, the easiest first step is adding one account, a current account, a savings account, your work pension. It takes about 90 seconds and the rest gets easier from there.
     </p>
     <p style="margin:0 0 14px;color:#4a5568;font-size:16px;line-height:1.7;">
-      <strong>2. The timing isn't right.</strong> You meant to come back to it. Life got busy. That's OK — your account is here whenever you're ready, and your trial doesn't start counting against you until you actually use the platform.
+      <strong>2. The timing isn't right.</strong> You meant to come back to it. Life got busy. That's OK, your account is here whenever you're ready, and your trial doesn't start counting against you until you actually use the platform.
     </p>
     <p style="margin:0 0 24px;color:#4a5568;font-size:16px;line-height:1.7;">
-      <strong>3. Something's broken or confusing.</strong> If anything didn't work the way you expected — sign-in, navigation, finding where to add things — please just reply and tell me. I'll either fix it or walk you through it.
+      <strong>3. Something's broken or confusing.</strong> If anything didn't work the way you expected (sign-in, navigation, finding where to add things) please just reply and tell me. I'll either fix it or walk you through it.
     </p>
     <p style="margin:0 0 28px;color:#4a5568;font-size:16px;line-height:1.7;">
       Hit reply if you want a hand. Otherwise, the simplest possible next step is below.
     </p>
     ${cta(`${APP_URL}/dashboard`, 'Add one account in 90 seconds →')}
-    <p style="margin:32px 0 0;color:#6b7280;font-size:14px;line-height:1.6;">— Julien, founder of Everstead</p>
+    <p style="margin:32px 0 0;color:#6b7280;font-size:14px;line-height:1.6;">: Julien, founder of Everstead</p>
   `, userId)
 }
 

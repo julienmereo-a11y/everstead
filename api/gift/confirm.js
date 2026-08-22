@@ -84,7 +84,7 @@ function gifterConfirmationHtml({ gifterName, recipientName, recipientEmail, pla
         </td></tr>
         <tr><td style="padding:40px;">
           <h1 style="margin:0 0 16px;color:#0d1628;font-size:24px;font-weight:normal;">Gift confirmed, ${firstName}.</h1>
-          <p style="margin:0 0 16px;color:#4a5568;font-size:16px;line-height:1.6;">You've given ${recipientName || recipientEmail} an Everstead <strong>${planName}</strong> plan for <strong>${yearsLabel}</strong> — the gift of peace of mind, at our launch offer price, guaranteed for life.</p>
+          <p style="margin:0 0 16px;color:#4a5568;font-size:16px;line-height:1.6;">You've given ${recipientName || recipientEmail} an Everstead <strong>${planName}</strong> plan for <strong>${yearsLabel}</strong>, the gift of peace of mind, at our launch offer price, guaranteed for life.</p>
           <p style="margin:0 0 32px;color:#4a5568;font-size:16px;line-height:1.6;">${deliveryStr}</p>
           <table cellpadding="0" cellspacing="0" style="width:100%;border:1px solid #e8e5e0;border-radius:8px;overflow:hidden;margin-bottom:32px;">
             <tr><td style="padding:16px 20px;background:#f9f8f6;">

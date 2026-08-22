@@ -77,7 +77,7 @@ async function handler(req, res) {
     await resend.emails.send({
       from:    'Everstead <hello@everstead.care>',
       to:      email,
-      subject: `${code} — your Everstead sign-in code`,
+      subject: `${code}, your Everstead sign-in code`,
       html:    mfaHtml(code),
     }).catch(err => console.error('mfa email error:', err))
   }

@@ -24,7 +24,7 @@ async function notifyFounderOfSignup({ name, email, plan }) {
       from:    'Everstead <hello@everstead.care>',
       to:      FOUNDER_TO,
       replyTo: email || undefined,
-      subject: `🆕 New signup — ${name || email}${plan ? ` (${plan})` : ''}`,
+      subject: `🆕 New signup, ${name || email}${plan ? ` (${plan})` : ''}`,
       html: `<!DOCTYPE html><html><head><meta charset="utf-8"></head>
 <body style="margin:0;padding:32px;background:#f9fafb;font-family:system-ui,sans-serif;">
   <table style="max-width:560px;margin:0 auto;background:#fff;border-radius:12px;border:1px solid #e5e7eb;overflow:hidden;">
@@ -58,7 +58,7 @@ async function checkRateLimit(ip) {
     .eq('endpoint', 'delegate-register')
     .gte('created_at', windowStart)
 
-  if (error) return false // fail open — don't block on DB error
+  if (error) return false // fail open, don't block on DB error
   return (count ?? 0) >= 5
 }
 

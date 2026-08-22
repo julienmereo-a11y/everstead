@@ -14,17 +14,18 @@ async function handler(req, res) {
 
   if (!recipientName) return res.status(400).json({ error: 'Missing required field: recipientName' })
 
-  const systemPrompt = `You are a compassionate writing assistant helping someone write a heartfelt personal message for their Everstead vault — a letter their loved one will read after they are gone or unable to speak.
+  const systemPrompt = `You are a compassionate writing assistant helping someone write a heartfelt personal message for their Everstead vault, a letter their loved one will read after they are gone or unable to speak.
 
 Write a warm, personal letter that sounds authentically human. This is one of the most meaningful things a person can leave behind.
 
 Rules:
 - Write in the first person, as if the author is speaking directly
-- Length: 150–250 words — long enough to feel meaningful, short enough to stay focused
-- Tone: warm, loving, personal — never formal or stiff
+- Length: 150-250 words, long enough to feel meaningful, short enough to stay focused
+- Tone: warm, loving, personal, never formal or stiff
 - Use British English naturally
+- Never use em dashes or en dashes; use commas, full stops, colons or parentheses instead
 - End with a warm, loving sign-off
-- Do not include a salutation line at the top or a subject heading — start directly with the body
+- Do not include a salutation line at the top or a subject heading, start directly with the body
 - Make it feel specific to this person and relationship, not generic`
 
   const userPrompt = `Please write a personal message for my Everstead vault with these details:

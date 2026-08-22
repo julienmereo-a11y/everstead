@@ -57,7 +57,7 @@ async function handler(req, res) {
       from:    'Everstead <hello@everstead.care>',
       to:      FEEDBACK_TO,
       replyTo: clean.email || undefined,
-      subject: `💬 Feedback${clean.category ? ` (${clean.category})` : ''}${clean.rating ? ` · ${clean.rating}/5` : ''} — ${clean.name || clean.email || 'user'}`,
+      subject: `💬 Feedback${clean.category ? ` (${clean.category})` : ''}${clean.rating ? ` · ${clean.rating}/5` : ''}, ${clean.name || clean.email || 'user'}`,
       html: `
 <!DOCTYPE html><html><head><meta charset="utf-8"></head>
 <body style="margin:0;padding:32px;background:#f9fafb;font-family:system-ui,sans-serif;">

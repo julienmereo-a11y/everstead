@@ -96,7 +96,7 @@ function deletionHtml(name) {
         <tr><td style="padding:40px;">
           <h1 style="margin:0 0 16px;color:#0d1628;font-size:24px;font-weight:normal;">Account deleted, ${firstName}.</h1>
           <p style="margin:0 0 16px;color:#4a5568;font-size:16px;line-height:1.6;">
-            We've confirmed the deletion of your Everstead account. Any active subscription has been cancelled immediately — you will not be charged again.
+            We've confirmed the deletion of your Everstead account. Any active subscription has been cancelled immediately, you will not be charged again.
           </p>
           <p style="margin:0 0 16px;color:#4a5568;font-size:16px;line-height:1.6;">
             Your account is scheduled for deletion within <strong>30 days</strong>. If this was a mistake, contact us within that window and we'll do our best to help.
@@ -107,7 +107,7 @@ function deletionHtml(name) {
           </p>
           <a href="https://www.everstead.care/dashboard?tab=settings" style="display:inline-block;background:#2d5082;background:linear-gradient(100deg,#2d5082 0%,#6f6bc6 50%,#6e9b6a 100%);color:#ffffff;text-decoration:none;padding:14px 28px;border-radius:9999px;font-size:15px;margin-bottom:24px;">Export my data →</a>
           <p style="margin:0 0 32px;color:#4a5568;font-size:16px;line-height:1.6;">
-            We're sorry to see you go. If you have a moment, we'd genuinely love to know what we could have done better — just reply to this email.
+            We're sorry to see you go. If you have a moment, we'd genuinely love to know what we could have done better, just reply to this email.
           </p>
           <a href="mailto:support@everstead.care" style="display:inline-block;background:#f5f4f0;color:#0d1628;text-decoration:none;padding:12px 24px;border-radius:8px;font-size:14px;border:1px solid #e8e5e0;">Contact support</a>
         </td></tr>

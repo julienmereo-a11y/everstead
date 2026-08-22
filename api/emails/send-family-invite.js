@@ -50,10 +50,10 @@ function familyInviteHtml(primaryName, inviteUrl) {
     { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]
   ))
   const items = [
-    'Your own private vault — fully separate from theirs',
+    'Your own private vault, fully separate from theirs',
     'Organise your accounts, documents, and final wishes',
     'Control exactly what, if anything, you share',
-    'Covered by their Everstead+ plan — no extra cost to you',
+    'Covered by their Everstead+ plan, no extra cost to you',
   ]
   const listItems = items.map(item =>
     `<tr>
@@ -77,7 +77,7 @@ function familyInviteHtml(primaryName, inviteUrl) {
             ${primaryName || 'Someone'} has invited you to Everstead
           </h1>
           <p style="margin:0 0 16px;color:#4a5568;font-size:16px;line-height:1.6;">
-            <strong>${primaryName || 'Someone'}</strong> has invited you to set up your own private Everstead vault — as part of their Everstead+ plan.
+            <strong>${primaryName || 'Someone'}</strong> has invited you to set up your own private Everstead vault, as part of their Everstead+ plan.
           </p>
           <p style="margin:0 0 20px;color:#4a5568;font-size:16px;line-height:1.6;">
             You'll have your own completely private account. <strong>${primaryName || 'They'}</strong> won't be able to see your documents, accounts, or wishes unless you choose to share them.
@@ -97,7 +97,7 @@ function familyInviteHtml(primaryName, inviteUrl) {
         <tr><td style="padding:24px 40px;border-top:1px solid #e8e5e0;">
           <p style="margin:0;color:#9ca3af;font-size:13px;line-height:1.5;">
             Questions? <a href="mailto:support@everstead.care" style="color:#4c7d47;">support@everstead.care</a><br />
-            <span style="display:block;margin-top:8px;">— Julien, Everstead</span>
+            <span style="display:block;margin-top:8px;">: Julien, Everstead</span>
           </p>
         </td></tr>
       </table>

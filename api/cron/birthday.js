@@ -117,7 +117,7 @@ function birthdayHtml(name, age) {
             Happy birthday, ${first}!
           </h1>
           <p style="margin:0 0 16px;color:#4a5568;font-size:16px;line-height:1.7;">
-            Today is a great day to take a moment for yourself — and maybe a few minutes for the people you love.
+            Today is a great day to take a moment for yourself, and maybe a few minutes for the people you love.
           </p>
           ${milestoneParagraph}
           <p style="margin:0 0 32px;color:#4a5568;font-size:16px;line-height:1.7;">
@@ -128,7 +128,7 @@ function birthdayHtml(name, age) {
             Review my plan →
           </a>
           <p style="margin:32px 0 0;color:#6b7280;font-size:14px;line-height:1.6;">
-            — The Everstead team
+The Everstead team
           </p>
         </td></tr>
         <tr><td style="padding:24px 40px;border-top:1px solid #e8e5e0;">

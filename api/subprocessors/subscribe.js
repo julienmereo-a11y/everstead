@@ -104,7 +104,7 @@ function confirmationHtml(unsubLink) {
     <tr><td style="padding:28px 24px;">
       <p style="margin:0 0 16px;font-size:15px;line-height:1.6;">You're confirmed.</p>
       <p style="margin:0 0 16px;font-size:14px;line-height:1.6;color:#4b5563;">
-        We'll email you at least 30 days before we add or replace any third-party subprocessor — the providers that help us run the Everstead platform (hosting, database, payments, email, error monitoring, AI guidance). You can review the current list any time at
+        We'll email you at least 30 days before we add or replace any third-party subprocessor, the providers that help us run the Everstead platform (hosting, database, payments, email, error monitoring, AI guidance). You can review the current list any time at
         <a href="https://www.everstead.care/subprocessors" style="color:#4c7d47;">everstead.care/subprocessors</a>.
       </p>
       <p style="margin:0;font-size:13px;line-height:1.6;color:#6b7280;">

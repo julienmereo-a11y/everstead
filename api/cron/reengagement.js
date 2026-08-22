@@ -120,7 +120,7 @@ async function handler(req, res) {
 // ─────────────────────────────────────────────────────────────────────────────
 function nudgeSubject(missing) {
   if (missing.includes('contacts') && missing.includes('accounts')) {
-    return 'Your Everstead plan is still empty — let\'s fix that'
+    return 'Your Everstead plan is still empty, let\'s fix that'
   }
   if (missing.includes('contacts')) {
     return 'One thing missing from your Everstead plan'
@@ -148,7 +148,7 @@ function nudgeHtml(name, plan, hasAccounts, hasContacts, hasDocuments, userId) {
       icon:  hasAccounts ? '✅' : '⬜',
       label: hasAccounts
         ? 'Financial accounts added'
-        : '<strong>Add a financial account</strong> — bank, pension, investment, or property',
+        : '<strong>Add a financial account</strong>, bank, pension, investment, or property',
       href:  `${APP_URL}/dashboard`,
     },
     {
@@ -156,7 +156,7 @@ function nudgeHtml(name, plan, hasAccounts, hasContacts, hasDocuments, userId) {
       icon:  hasContacts ? '✅' : '⬜',
       label: hasContacts
         ? 'Trusted contact invited'
-        : '<strong>Invite a trusted contact</strong> — someone who should have access to your plan',
+        : '<strong>Invite a trusted contact</strong>, someone who should have access to your plan',
       href:  `${APP_URL}/dashboard`,
     },
     {
@@ -164,7 +164,7 @@ function nudgeHtml(name, plan, hasAccounts, hasContacts, hasDocuments, userId) {
       icon:  hasDocuments ? '✅' : '⬜',
       label: hasDocuments
         ? 'Document uploaded to your vault'
-        : '<strong>Upload a document</strong> — your will, passport, pension statement',
+        : '<strong>Upload a document</strong>, your will, passport, pension statement',
       href:  `${APP_URL}/dashboard`,
     },
   ]
@@ -191,7 +191,7 @@ function nudgeHtml(name, plan, hasAccounts, hasContacts, hasDocuments, userId) {
             ${first}, your plan is almost ready.
           </h1>
           <p style="margin:0 0 16px;color:#4a5568;font-size:16px;line-height:1.7;">
-            You started your <strong>${planName}</strong> plan — great first step. A few things left to make your estate plan genuinely useful if something unexpected happens:
+            You started your <strong>${planName}</strong> plan, great first step. A few things left to make your estate plan genuinely useful if something unexpected happens:
           </p>
           <table cellpadding="0" cellspacing="0" style="margin:24px 0 32px;width:100%;background:#f9f8f6;border-radius:10px;padding:8px;">
             ${checklistRows}
@@ -201,7 +201,7 @@ function nudgeHtml(name, plan, hasAccounts, hasContacts, hasDocuments, userId) {
             Continue my plan →
           </a>
           <p style="margin:32px 0 0;color:#6b7280;font-size:14px;line-height:1.6;">
-            — Julien, founder of Everstead
+Julien, founder of Everstead
           </p>
         </td></tr>
         <tr><td style="padding:24px 40px;border-top:1px solid #e8e5e0;">

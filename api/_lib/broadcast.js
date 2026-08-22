@@ -153,7 +153,7 @@ export async function sendToRecipients({ recipients, from, subject, message, onC
     const idempotencyKey = runId ? `broadcast-${runId}-chunk-${i}` : undefined
     let result = await sendBatch(chunk, { from, subject, message, idempotencyKey })
     if (result.error) {
-      console.log('broadcast: batch failed, retrying once —',
+      console.log('broadcast: batch failed, retrying once, ',
         result.error?.message || result.error?.name || 'unknown error', '· offset', i)
       await sleep(1500)
       result = await sendBatch(chunk, { from, subject, message, idempotencyKey })
@@ -163,7 +163,7 @@ export async function sendToRecipients({ recipients, from, subject, message, onC
       continue
     }
 
-    console.log('broadcast: batch retry failed, falling back to individual sends —',
+    console.log('broadcast: batch retry failed, falling back to individual sends, ',
       result.error?.message || result.error?.name || 'unknown error', '· offset', i)
     onChunkError?.(result.error instanceof Error ? result.error : new Error(result.error?.message || 'batch send failed'), i)
     for (const u of chunk) {
@@ -178,13 +178,13 @@ export async function sendToRecipients({ recipients, from, subject, message, onC
         }, runId ? { idempotencyKey: `broadcast-${runId}-r-${i + chunk.indexOf(u)}` } : undefined)
         if (error) {
           failed += 1
-          console.log('broadcast: individual send failed —', error?.message || error?.name || 'unknown error')
+          console.log('broadcast: individual send failed, ', error?.message || error?.name || 'unknown error')
         } else {
           sent += 1
         }
       } catch (err) {
         failed += 1
-        console.log('broadcast: individual send threw —', err?.message || 'unknown error')
+        console.log('broadcast: individual send threw, ', err?.message || 'unknown error')
       }
     }
   }

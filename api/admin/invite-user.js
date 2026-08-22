@@ -13,8 +13,8 @@ const button = (href, label) =>
 
 function inviteHtml({ url, founding }) {
   const line = founding
-    ? `You've been invited as a <strong>founding member</strong> of Everstead — <strong>Everstead+ is yours for life, free</strong>. Set up your family's secure vault for accounts, documents, trusted people and final wishes.`
-    : `You've been invited to <strong>Everstead</strong> — a secure place to gather your family's accounts, documents, trusted people and final wishes, so loved ones aren't left searching.`
+    ? `You've been invited as a <strong>founding member</strong> of Everstead, <strong>Everstead+ is yours for life, free</strong>. Set up your family's secure vault for accounts, documents, trusted people and final wishes.`
+    : `You've been invited to <strong>Everstead</strong>, a secure place to gather your family's accounts, documents, trusted people and final wishes, so loved ones aren't left searching.`
   return `<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
 <body style="margin:0;padding:0;background:#f5f4f0;font-family:Georgia,serif;">
   <table width="100%" cellpadding="0" cellspacing="0" style="background:#f5f4f0;padding:40px 0;"><tr><td align="center">
@@ -51,7 +51,7 @@ async function handler(req, res) {
     await resend.emails.send({
       from:    'Everstead <hello@everstead.care>',
       to:      email,
-      subject: founding ? "You're invited to Everstead — Everstead+ free for life" : "You're invited to Everstead",
+      subject: founding ? "You're invited to Everstead: Everstead+ free for life" : "You're invited to Everstead",
       html:    inviteHtml({ url, founding }),
     })
     return res.status(200).json({ ok: true })

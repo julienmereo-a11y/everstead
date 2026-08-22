@@ -43,7 +43,7 @@ async function handler(req, res) {
   res.setHeader('Content-Type', 'text/html')
   return res.status(200).send(page(
     'You\'ve been unsubscribed',
-    'You won\'t receive marketing emails from Everstead any more. You\'ll still receive emails about your account — such as payment confirmations and trial reminders.'
+    'You won\'t receive marketing emails from Everstead any more. You\'ll still receive emails about your account, such as payment confirmations and trial reminders.'
   ))
 }
 
@@ -53,7 +53,7 @@ function page(title, message) {
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>${title} — Everstead</title>
+  <title>${title} | Everstead</title>
 </head>
 <body style="margin:0;padding:0;background:#f5f4f0;font-family:Georgia,serif;min-height:100vh;display:flex;align-items:center;justify-content:center;">
   <div style="max-width:480px;width:100%;margin:40px auto;padding:0 24px;text-align:center;">

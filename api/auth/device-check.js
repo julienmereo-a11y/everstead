@@ -82,7 +82,7 @@ function newDeviceHtml(userAgent) {
     <p style="margin:0 0 16px;padding:12px 14px;background:#f5f5f4;border-radius:10px;font-size:13px;color:#44506a">${ua}</p>
     <p style="margin:0 0 12px;color:#44506a">If this was you, you can ignore this email.</p>
     <p style="margin:0 0 12px;color:#44506a"><strong>If this wasn't you</strong>, please reset your password right away and review who has access in your dashboard.</p>
-    <p style="margin:20px 0 0;font-size:12px;color:#8a8a8a">Everstead — your plan, kept safe.</p>
+    <p style="margin:20px 0 0;font-size:12px;color:#8a8a8a">Everstead, your plan, kept safe.</p>
   </body></html>`
 }
 

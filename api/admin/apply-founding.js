@@ -11,7 +11,7 @@ import { withSentry, captureException } from '../lib/sentry.js'
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY)
 const FAMILY_YEARLY = process.env.VITE_STRIPE_FAMILY_YEARLY
 const FOUNDING_CODE = 'FOUNDING50'
-const NO_CARD = 'No card on file — this user needs to add a card. Send them the FOUNDING50 checkout link (…/get-started?promo=FOUNDING50) to claim it.'
+const NO_CARD = 'No card on file, this user needs to add a card. Send them the FOUNDING50 checkout link (…/get-started?promo=FOUNDING50) to claim it.'
 
 async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' })
@@ -48,7 +48,7 @@ async function handler(req, res) {
     return res.status(409).json({ error: 'No FOUNDING50 promotion code or coupon found in Stripe. Create a promotion code "FOUNDING50" that points to a 100%-off (repeating, 12 months) coupon.' })
   }
   if (coupon.percent_off !== 100) {
-    return res.status(409).json({ error: `Found FOUNDING50 in Stripe, but it's ${coupon.percent_off ? coupon.percent_off + '% off' : 'not a percentage discount'} — the founding deal needs a 100%-off coupon.` })
+    return res.status(409).json({ error: `Found FOUNDING50 in Stripe, but it's ${coupon.percent_off ? coupon.percent_off + '% off' : 'not a percentage discount'}, the founding deal needs a 100%-off coupon.` })
   }
 
   const meta = { plan: 'family', billing_cycle: 'yearly', promo_code: FOUNDING_CODE, founding_applied: 'true', user_id: userId }
@@ -60,7 +60,7 @@ async function handler(req, res) {
       // ── Case 1: modify the existing subscription ──
       const sub = await stripe.subscriptions.retrieve(prof.stripe_subscription_id)
       if (['canceled', 'incomplete_expired'].includes(sub.status)) {
-        return res.status(409).json({ error: 'Their subscription is cancelled — send them the FOUNDING50 link to re-subscribe.' })
+        return res.status(409).json({ error: 'Their subscription is cancelled, send them the FOUNDING50 link to re-subscribe.' })
       }
       const itemId = sub.items.data[0]?.id
       const params = {

@@ -115,16 +115,16 @@ function giftRedeemedHtml(name, planName, gifterName, trialEndStr) {
             Your vault is ready, ${first}. 🎁
           </h1>
           <p style="margin:0 0 16px;color:#4a5568;font-size:16px;line-height:1.7;">
-            ${gifterName ? `<strong>${gifterName}</strong> gave you` : 'You\'ve received'} an Everstead <strong>${planName}</strong> plan — and it's now active. Your vault is set up and waiting for you.
+            ${gifterName ? `<strong>${gifterName}</strong> gave you` : 'You\'ve received'} an Everstead <strong>${planName}</strong> plan, and it's now active. Your vault is set up and waiting for you.
           </p>
           <p style="margin:0 0 16px;color:#4a5568;font-size:16px;line-height:1.7;">
             This is a gift, so there's no card required. You have access until <strong>${trialEndStr}</strong>.
           </p>
           <p style="margin:0 0 32px;color:#4a5568;font-size:16px;line-height:1.7;">
-            Start by adding your first account or uploading an important document — it only takes a few minutes to build something genuinely useful.
+            Start by adding your first account or uploading an important document, it only takes a few minutes to build something genuinely useful.
           </p>
           <a href="${APP_URL}/dashboard" style="display:inline-block;background:#2d5082;background:linear-gradient(100deg,#2d5082 0%,#6f6bc6 50%,#6e9b6a 100%);color:#ffffff;text-decoration:none;padding:14px 28px;border-radius:9999px;font-size:15px;">Go to my vault →</a>
-          <p style="margin:32px 0 0;color:#6b7280;font-size:14px;line-height:1.6;">— The Everstead team</p>
+          <p style="margin:32px 0 0;color:#6b7280;font-size:14px;line-height:1.6;">: The Everstead team</p>
         </td></tr>
         <tr><td style="padding:24px 40px;border-top:1px solid #e8e5e0;">
           <p style="margin:0;color:#9ca3af;font-size:13px;line-height:1.5;">

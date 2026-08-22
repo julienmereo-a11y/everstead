@@ -80,7 +80,7 @@ async function handler(req, res) {
       from:    'Everstead <hello@everstead.care>',
       to:      reporterEmail,
       subject: type === 'death'
-        ? 'What to do now — a guide, and the support available to you'
+        ? 'What to do now, a guide, and the support available to you'
         : 'We have received your report',
       html:    type === 'death' ? guideHtml(reporterName, ownerName) : confirmHtml(reporterName, ownerName),
     })
@@ -94,7 +94,7 @@ async function handler(req, res) {
     await resend.emails.send({
       from:    'Everstead <hello@everstead.care>',
       to:      TEAM_TO,
-      subject: `${type === 'death' ? '🕊️ Death' : '⚠️ Incapacity'} report to verify — ${ownerName}`,
+      subject: `${type === 'death' ? '🕊️ Death' : '⚠️ Incapacity'} report to verify, ${ownerName}`,
       html:    teamHtml(type, { reporterName, reporterEmail, owner, ...b }),
     })
   } catch (err) {
@@ -133,20 +133,20 @@ function link(href, label) {
 function guideHtml(reporterName, ownerName) {
   const body = `
     <p style="margin:0 0 16px;font-size:15px;line-height:1.65;">Dear ${escapeHtml(reporterName)},</p>
-    <p style="margin:0 0 20px;font-size:15px;line-height:1.65;color:#44403c;">We're so sorry for the loss of ${escapeHtml(ownerName)}. When you feel ready, here are the practical steps families in the UK usually need to take. There's no rush — take what's useful and leave the rest for later.</p>
+    <p style="margin:0 0 20px;font-size:15px;line-height:1.65;color:#44403c;">We're so sorry for the loss of ${escapeHtml(ownerName)}. When you feel ready, here are the practical steps families in the UK usually need to take. There's no rush, take what's useful and leave the rest for later.</p>
 
     <p style="margin:0 0 8px;font-size:13px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:#2d5082;">In the first few days</p>
     <ul style="margin:0 0 22px;padding-left:20px;font-size:15px;line-height:1.7;color:#44403c;">
-      <li>Register the death (within 5 days in England, Wales &amp; Northern Ireland; 8 in Scotland) — ${link('https://www.gov.uk/register-a-death', 'gov.uk/register-a-death')}</li>
-      <li>Use <strong>Tell Us Once</strong> to notify most government departments in one step — ${link('https://www.gov.uk/after-a-death/organisations-you-need-to-contact-and-tell-us-once', 'the organisations to contact')}</li>
-      <li>Order extra copies of the death certificate — banks and providers each ask for one</li>
+      <li>Register the death (within 5 days in England, Wales &amp; Northern Ireland; 8 in Scotland), ${link('https://www.gov.uk/register-a-death', 'gov.uk/register-a-death')}</li>
+      <li>Use <strong>Tell Us Once</strong> to notify most government departments in one step, ${link('https://www.gov.uk/after-a-death/organisations-you-need-to-contact-and-tell-us-once', 'the organisations to contact')}</li>
+      <li>Order extra copies of the death certificate, banks and providers each ask for one</li>
     </ul>
 
     <p style="margin:0 0 8px;font-size:13px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:#2d5082;">In the following weeks</p>
     <ul style="margin:0 0 22px;padding-left:20px;font-size:15px;line-height:1.7;color:#44403c;">
-      <li>Notify banks, pensions and providers; deal with the will and probate — ${link('https://www.gov.uk/applying-for-probate', 'gov.uk/applying-for-probate')}</li>
-      <li>Check whether you're entitled to bereavement benefits — ${link('https://www.gov.uk/bereavement-support-payment', 'Bereavement Support Payment')}</li>
-      <li>Full overview of everything after a death — ${link('https://www.gov.uk/after-a-death', 'gov.uk/after-a-death')}</li>
+      <li>Notify banks, pensions and providers; deal with the will and probate, ${link('https://www.gov.uk/applying-for-probate', 'gov.uk/applying-for-probate')}</li>
+      <li>Check whether you're entitled to bereavement benefits, ${link('https://www.gov.uk/bereavement-support-payment', 'Bereavement Support Payment')}</li>
+      <li>Full overview of everything after a death, ${link('https://www.gov.uk/after-a-death', 'gov.uk/after-a-death')}</li>
     </ul>
 
     <div style="background:#f5f8f4;border:1px solid #dfeadd;border-radius:12px;padding:18px 20px;margin:0 0 22px;">
@@ -157,7 +157,7 @@ function guideHtml(reporterName, ownerName) {
     </div>
 
     <p style="margin:0 0 6px;font-size:13px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:#2d5082;">Support for you</p>
-    <p style="margin:0 0 4px;font-size:15px;line-height:1.65;color:#44403c;">Grief is heavy. Cruse Bereavement Support offers free help — ${link('https://www.cruse.org.uk/', 'cruse.org.uk')}.</p>`
+    <p style="margin:0 0 4px;font-size:15px;line-height:1.65;color:#44403c;">Grief is heavy. Cruse Bereavement Support offers free help, ${link('https://www.cruse.org.uk/', 'cruse.org.uk')}.</p>`
   return shell('A guide for the days ahead', body)
 }
 
