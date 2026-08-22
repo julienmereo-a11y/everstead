@@ -162,6 +162,9 @@ async function handler(req, res) {
     const profileRole = wantsTrial ? 'owner' : 'delegate'
     const plan        = req.body.plan
     const isFree      = plan === 'free'
+    // Whitelisted language preference ('fr' signups come from the /fr funnel);
+    // handle_new_user stamps profiles.language at INSERT.
+    const language    = ['en', 'fr'].includes(req.body.language) ? req.body.language : 'en'
     // Create user server-side (bypasses captcha). Auto-confirm email. Pass the plan in
     // metadata so the handle_new_user trigger stamps profiles.plan at INSERT — this is
     // the ONLY way the client can end up on 'free', since the profile guard trigger
@@ -169,7 +172,7 @@ async function handler(req, res) {
     const { data: created, error: createErr } = await supabase.auth.admin.createUser({
       email,
       password,
-      user_metadata: { full_name: name ?? email, role: profileRole, ...(plan ? { plan } : {}) },
+      user_metadata: { full_name: name ?? email, role: profileRole, language, ...(plan ? { plan } : {}) },
       email_confirm: true,
     })
     if (createErr) return res.status(400).json({ error: createErr.message })

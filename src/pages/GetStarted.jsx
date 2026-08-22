@@ -146,7 +146,7 @@ function getPasswordStrength(pw) {
 // ─────────────────────────────────────────────────────────────
 
 export default function GetStarted() {
-  const { t } = useTranslation('getStarted')
+  const { t, i18n } = useTranslation('getStarted')
   const { signUp, user } = useAuth()
   const [searchParams] = useSearchParams()
   const navigate       = useNavigate()
@@ -447,7 +447,9 @@ export default function GetStarted() {
       if (!session) throw new Error(t('errors.sessionExpired'))
 
       await supabase.from('profiles').upsert(
-        { id: session.user.id, country: form.country || null },
+        // OAuth signups skip the register endpoint, so the language preference
+        // is captured here instead of via the signup trigger.
+        { id: session.user.id, country: form.country || null, language: i18n.language === 'fr' ? 'fr' : 'en' },
         { onConflict: 'id', ignoreDuplicates: false }
       )
 
@@ -511,6 +513,7 @@ export default function GetStarted() {
           password:   form.password,
           name:       form.fullName,
           plan:       selectedPlan,
+          language:   i18n.language === 'fr' ? 'fr' : 'en',
         }),
       })
 

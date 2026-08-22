@@ -1,10 +1,10 @@
 {
   "meta": {
-    "title": "Everstead — Votre vie, organisée.",
-    "description": "Everstead aide les familles à organiser en toute sécurité leurs comptes, documents, instructions et dernières volontés — avec une IA qui vous accompagne à chaque étape. Commencez votre essai gratuit dès aujourd'hui.",
+    "title": "Everstead — Le coffre numérique pour préparer votre succession",
+    "description": "Comptes, assurance-vie, documents et dernières volontés réunis dans un coffre numérique sécurisé, à partager avec vos proches ou votre notaire le moment venu. Préparez votre succession sereinement — gratuit pour commencer.",
     "ogTitle": "Everstead — Votre vie, organisée.",
-    "ogDescription": "Everstead est le foyer sécurisé de vos comptes, documents et décisions importantes — organisés pour vous aujourd'hui, et prêts pour votre famille quand cela compte.",
-    "jsonLdDescription": "Un espace personnel sécurisé pour les familles. Organisez comptes, documents et décisions importantes — accessibles aujourd'hui, et prêts pour vos proches le moment venu."
+    "ogDescription": "Le coffre numérique sécurisé qui réunit vos comptes, vos documents et vos volontés — organisés pour vous aujourd'hui, prêts pour vos proches le moment venu.",
+    "jsonLdDescription": "Coffre numérique sécurisé pour organiser sa succession : comptes, contrats d'assurance-vie, documents et dernières volontés — accessibles aujourd'hui, et transmis aux personnes de confiance le moment venu."
   },
   "hero": {
     "eyebrow": "Organisez vos comptes, documents et dernières volontés",
@@ -15,7 +15,7 @@
     "ctaPrimary": "Commencer gratuitement",
     "ctaSecondary": "Voir comment ça marche",
     "trustEncryption": "Chiffrement AES-256 au repos et en transit",
-    "trustUk": "Basé au Royaume-Uni",
+    "trustUk": "🛡️ Conforme au RGPD",
     "trustpilotAria": "Noté Excellent sur Trustpilot — lisez nos avis",
     "trustpilotPre": "Noté",
     "trustpilotExcellent": "Excellent",
@@ -48,8 +48,8 @@
     "subtitle": "Fini les identifiants éparpillés, les papiers égarés et les questions sans réponse. Juste la trace claire et sereine d'une vie bien organisée.",
     "cards": {
       "accounts": {
-        "title": "Comptes et actifs",
-        "desc": "Chaque compte, contrat et abonnement dans une liste claire — pour que rien ne passe entre les mailles du filet.",
+        "title": "Comptes et patrimoine",
+        "desc": "Chaque compte bancaire, contrat d'assurance-vie et abonnement dans une liste claire — pour que rien ne passe entre les mailles du filet.",
         "cta": "Découvrez ce que vous pouvez ajouter"
       },
       "documents": {
@@ -109,12 +109,12 @@
   "reassurance": {
     "title": "Préparer l'avenir, c'est prendre soin des vôtres.",
     "desc": "Everstead transforme la confusion en clarté. Il donne à vos proches des repères concrets quand les décisions pressent et que l'émotion est vive — un cadeau qu'ils apprécieront sincèrement.",
-    "imageAlt": "L'application Everstead — votre plan organisé : comptes et actifs, documents et volontés, et vos personnes de confiance"
+    "imageAlt": "L'application Everstead — votre plan organisé : comptes et patrimoine, documents et volontés, et vos personnes de confiance"
   },
   "security": {
     "eyebrow": "Sécurité et confidentialité",
     "title": "Conçu selon les normes de sécurité les plus strictes — et entièrement sous votre contrôle.",
-    "desc": "Everstead repose sur un chiffrement AES-256 au repos et en transit, et sur une infrastructure hébergée au Royaume-Uni, conforme au RGPD. Vos informations restent privées par défaut — visibles uniquement des personnes que vous choisissez, pour les seuls éléments que vous choisissez, et seulement quand vous le décidez. C'est votre espace, et vous seul décidez qui peut y entrer.",
+    "desc": "Everstead repose sur un chiffrement AES-256 au repos et en transit, et sur une infrastructure conforme au RGPD. Vos informations restent privées par défaut — visibles uniquement des personnes que vous choisissez, pour les seuls éléments que vous choisissez, et seulement quand vous le décidez. C'est votre espace, et vous seul décidez qui peut y entrer.",
     "linkPractices": "Découvrir nos pratiques de sécurité",
     "linkPrivacy": "Notre politique de confidentialité",
     "features": [
@@ -183,7 +183,7 @@
         "cta": "Réserver une démo"
       }
     },
-    "trialNote": "Gratuit pour toujours — sans carte. Everstead+ inclut 14 jours d'essai gratuit ; votre carte n'est débitée qu'à la fin.",
+    "trialNote": "Gratuit pour toujours — sans carte. Everstead+ inclut 14 jours d'essai gratuit ; votre carte n'est débitée qu'à la fin.",
     "fullDetails": "Tous les détails des tarifs →"
   },
   "app": {

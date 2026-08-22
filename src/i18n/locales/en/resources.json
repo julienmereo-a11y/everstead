@@ -1,0 +1,88 @@
+{
+  "meta": {
+    "title": "Resources — Everstead Guides, Checklists & Estate Planning Insight",
+    "description": "Free guides, checklists, and tools to help you understand estate planning, prepare your family, and get your affairs in order. Practical, UK-focused resources.",
+    "ogTitle": "Resources — Everstead",
+    "ogDescription": "Guides, checklists, and insight. Everything you need to understand estate planning and get your family plan in order."
+  },
+  "eyebrow": "Resources",
+  "index": {
+    "title": "Guides, checklists, and insight.",
+    "subtitle": "Everything you need to understand estate planning and get your family plan in order."
+  },
+  "sections": {
+    "blog": {
+      "label": "Blog",
+      "desc": "Practical guidance on estate planning, family organisation, and digital life management.",
+      "browse": "Browse blog"
+    },
+    "guides": {
+      "label": "Guides",
+      "desc": "Comprehensive guides on key topics in estate planning and family readiness.",
+      "browse": "Browse guides"
+    },
+    "checklists": {
+      "label": "Checklists",
+      "desc": "Practical, printable checklists to help you build and review your plan.",
+      "browse": "Browse checklists"
+    },
+    "faqs": {
+      "label": "FAQs",
+      "desc": "Answers to the most common questions about Everstead and estate planning.",
+      "browse": "Browse faqs"
+    }
+  },
+  "listing": {
+    "readMore": "Read more",
+    "viewChecklist": "View checklist",
+    "readAnswers": "Read answers",
+    "notFound": "Section not found."
+  },
+  "article": {
+    "backTo": "Back to {{section}}",
+    "inThisGuide": "In this guide",
+    "relatedReading": "Related reading",
+    "notFound": "Article not found.",
+    "backToResources": "Back to resources",
+    "ctaStart": "Start Your Everstead",
+    "startFree": {
+      "eyebrow": "Put this into practice",
+      "title": "Organise the essentials for your family — free.",
+      "body": "Everstead keeps your accounts, documents and trusted people in one secure place, so nobody is ever left guessing. Free forever, no card required.",
+      "cta": "Start free"
+    }
+  },
+  "tools": {
+    "eyebrow": "Free tools",
+    "title": "Practical tools, no sign-up required.",
+    "subtitle": "Use these tools to understand where you stand, get a checklist for administering an estate, or calculate what your digital estate is worth.",
+    "items": {
+      "afterDeath": {
+        "title": "What to do when someone dies",
+        "tag": "AI guide",
+        "desc": "A free, compassionate AI guide through the practical steps after a death in the UK — from the first hours to closing the estate. No sign-up needed.",
+        "cta": "Start the guide",
+        "badge": "Free · No login"
+      },
+      "readiness": {
+        "title": "Estate Readiness Score",
+        "tag": "Quiz",
+        "desc": "Answer 5 questions and get a score out of 100 — plus a breakdown of exactly what you're missing and why it matters.",
+        "cta": "Take the quiz"
+      },
+      "executor": {
+        "title": "Executor Checklist",
+        "tag": "Interactive",
+        "desc": "A complete, interactive checklist for executors in England & Wales — from the first 72 hours to closing the estate. Printable.",
+        "cta": "Open checklist",
+        "badge": "Most linked"
+      },
+      "calculator": {
+        "title": "Digital Estate Calculator",
+        "tag": "Calculator",
+        "desc": "Enter your accounts, pensions, property, and assets to get an estimated estate value — with an IHT threshold alert if you're over £325,000.",
+        "cta": "Calculate now"
+      }
+    }
+  }
+}

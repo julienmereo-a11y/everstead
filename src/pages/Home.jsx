@@ -271,7 +271,7 @@ export default function Home() {
           </div>
 
           <p className="mt-7 text-xs sm:text-[0.8rem] text-stone-300 animate-fade-up animate-delay-200" style={{ letterSpacing: '0.02em' }}>
-            🔒 {t('hero.trustEncryption')} &nbsp;·&nbsp; 🇬🇧 {t('hero.trustUk')} &nbsp;·&nbsp;{' '}
+            🔒 {t('hero.trustEncryption')} &nbsp;·&nbsp; {t('hero.trustUk')} &nbsp;·&nbsp;{' '}
             <a
               href="https://www.trustpilot.com/review/everstead.care"
               target="_blank"

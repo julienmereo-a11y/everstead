@@ -1,17 +1,17 @@
 {
   "meta": {
     "index": {
-      "title": "Cas d'usage — Everstead pour les familles, les exécuteurs testamentaires et les conseillers",
-      "description": "Que vous organisiez vos propres affaires, que vous interveniez comme exécuteur testamentaire ou que vous conseilliez des clients — Everstead est conçu pour le rôle qui est le vôtre.",
+      "title": "Cas d'usage — Everstead pour les familles, les proches et les conseillers",
+      "description": "Que vous organisiez vos propres affaires, que vous vous occupiez des démarches d'une succession ou que vous conseilliez des clients — Everstead est conçu pour le rôle qui est le vôtre.",
       "ogTitle": "Cas d'usage — Everstead",
-      "ogDescription": "Un seul plan. Chaque rôle de la famille. Découvrez comment Everstead accompagne familles, parents, exécuteurs testamentaires et conseillers."
+      "ogDescription": "Un seul plan. Chaque rôle de la famille. Découvrez comment Everstead accompagne les familles, les parents, les proches en charge d'une succession et les conseillers."
     },
     "personaTitle": "{{title}} — Everstead"
   },
   "hero": {
     "eyebrow": "À qui s'adresse Everstead",
     "title": "Un seul plan. Chaque rôle de la famille.",
-    "subtitle": "Que vous organisiez vos propres affaires, que vous interveniez comme exécuteur testamentaire ou que vous conseilliez des clients — Everstead est conçu pour le rôle qui est le vôtre."
+    "subtitle": "Que vous organisiez vos propres affaires, que vous vous occupiez des démarches d'une succession ou que vous conseilliez des clients — Everstead est conçu pour le rôle qui est le vôtre."
   },
   "stats": [
     { "value": "45 min", "label": "Temps moyen de mise en place" },
@@ -21,19 +21,19 @@
   "index": {
     "learnMore": "En savoir plus →",
     "card": {
-      "eyebrow": "Vous ne savez pas par où commencer ?",
+      "eyebrow": "Vous ne savez pas par où commencer ?",
       "title": "La plupart des gens commencent seuls, puis invitent leur famille.",
       "body": "Pas besoin d'avoir tout prévu. Commencez avec ce que vous avez — un compte, un document. Le plan grandit avec vous."
     },
     "fit": {
       "eyebrow": "Un plan, plusieurs personnes",
       "title": "Chaque rôle travaille à partir du même plan — avec accès uniquement à ce dont il a besoin.",
-      "body": "Vous construisez le plan. Vous décidez de ce que chaque personne de confiance peut voir. Un exécuteur testamentaire pourra consulter l'inventaire des comptes et les instructions étape par étape. Un membre de la famille, les lettres personnelles et les contacts d'urgence. Un conseiller, la vue d'ensemble financière. Chacun reçoit exactement ce qu'il lui faut — et rien de plus.",
+      "body": "Vous construisez le plan. Vous décidez de ce que chaque personne de confiance peut voir. La personne qui s'occupera de la succession pourra consulter l'inventaire des comptes et les démarches à suivre. Un membre de la famille, les lettres personnelles et les contacts d'urgence. Un conseiller, la vue d'ensemble financière. Chacun reçoit exactement ce qu'il lui faut — et rien de plus.",
       "link": "Voir comment fonctionnent les accès",
       "roles": [
         { "role": "Vous", "desc": "Contrôle total. Créez, modifiez et gérez tout." },
         { "role": "Membres de la famille", "desc": "Consultent les comptes, documents et instructions que vous partagez." },
-        { "role": "Exécuteur testamentaire", "desc": "Instructions étape par étape et inventaire des comptes." },
+        { "role": "En charge de la succession", "desc": "Démarches étape par étape et inventaire des comptes." },
         { "role": "Conseiller", "desc": "Vue d'ensemble financière et état de préparation." }
       ]
     }
@@ -54,31 +54,31 @@
       "shortName": "les familles",
       "hero": "Assurez-vous que vos proches sachent où tout se trouve — et par quoi commencer.",
       "tagline": "Quand le pire arrive, la confusion coûte bien plus que de l'argent.",
-      "body": "Lorsqu'un membre de la famille décède ou perd son autonomie, ses proches font face à une vague de décisions urgentes, presque sans aucune information pour les guider. Où sont les comptes bancaires ? Qui est le notaire ? Quels prélèvements étaient en place ? Everstead vous offre un lieu unique et organisé pour répondre à tout cela — avant que le besoin ne se présente.",
-      "scenario": "Imaginez que votre conjoint décède subitement un mardi. Dès le jeudi, on vous demande des numéros de compte, des polices d'assurance et le nom de sa caisse de retraite. Vous ne savez pas par où commencer. Cette désorientation — le chaos administratif qui s'ajoute au deuil — c'est précisément ce qu'Everstead est conçu pour éviter.",
+      "body": "Lorsqu'un membre de la famille décède ou perd son autonomie, ses proches font face à une vague de décisions urgentes, presque sans aucune information pour les guider. Où sont les comptes et les livrets ? Qui est le notaire ? Existe-t-il une assurance-vie ? Quels prélèvements étaient en place ? Everstead vous offre un lieu unique et organisé pour répondre à tout cela — avant que le besoin ne se présente.",
+      "scenario": "Imaginez que votre conjoint décède subitement un mardi. Dès le jeudi, il faut obtenir des actes de décès, prévenir la banque — qui bloque ses comptes personnels —, retrouver les contrats d'assurance, le nom de ses caisses de retraite, et réunir les pièces que le notaire vous demande. Vous ne savez pas par où commencer. Cette désorientation — le chaos administratif qui s'ajoute au deuil — c'est précisément ce qu'Everstead est conçu pour éviter.",
       "painPoints": [
-        "Des comptes éparpillés entre plusieurs banques, sans aucun registre central",
+        "Des comptes, livrets et contrats d'assurance-vie éparpillés, sans aucun registre central",
         "Des documents rangés dans des classeurs que personne ne retrouve",
-        "Aucune première démarche claire pour la personne qui devra gérer la succession",
+        "Aucune première démarche claire pour la personne qui devra s'occuper de la succession",
         "Des abonnements qui continuent de prélever pendant des mois après le décès",
         "Des proches en désaccord parce que les volontés n'ont jamais été écrites"
       ],
       "benefits": [
         "Un lieu unique pour tous les comptes, documents et contacts",
-        "Une liste des premières démarches que votre famille peut suivre immédiatement",
+        "Une liste des premières démarches — mairie, banque, notaire — que votre famille peut suivre immédiatement",
         "Un accès aux documents accordé à l'avance aux bonnes personnes",
         "Un inventaire des abonnements et dépenses récurrentes",
         "Vos dernières volontés et messages personnels, clairement consignés",
-        "Un accès d'urgence au coffre à documents pour les situations critiques"
+        "Un accès d'urgence au coffre pour les situations critiques"
       ],
       "features": [
         {
           "title": "Coffre à documents",
-          "body": "Téléversez testaments, polices d'assurance et titres de propriété. Classés et accessibles — plus besoin de fouiller dans les classeurs."
+          "body": "Téléversez contrats d'assurance, titres de propriété et testament — ou indiquez simplement chez quel notaire il est déposé. Classés et accessibles, plus besoin de fouiller dans les classeurs."
         },
         {
           "title": "Premières démarches",
-          "body": "Rédigez, avec vos propres mots, un guide pas à pas pour votre exécuteur testamentaire ou votre famille. Ils le voient dès leur première connexion."
+          "body": "Rédigez, avec vos propres mots, un guide pas à pas pour votre famille : qui prévenir, dans quel ordre, avec quels documents. Ils le voient dès leur première connexion."
         },
         {
           "title": "Accès de confiance",
@@ -92,9 +92,9 @@
       "hero": "Laissez des repères, pas des devinettes, pour chaque décision pratique et personnelle.",
       "tagline": "Vos enfants auront besoin de savoir. Facilitez-leur les choses.",
       "body": "Les parents portent à la fois des responsabilités pratiques et des volontés personnelles qu'ils veulent transmettre à leurs enfants. Le volet financier et logistique n'est que la moitié du chemin — l'autre moitié, ce sont les repères que vous seul pouvez donner. Everstead vous permet de consigner les deux, clairement et en toute confidentialité, pour que rien d'important ne soit passé sous silence.",
-      "scenario": "Vos enfants sont adultes. Ils savent que vous les aimez. Mais s'il vous arrivait quelque chose demain, sauraient-ils auprès de qui est votre retraite ? Qui est votre notaire ? Quelles sont vos volontés pour vos obsèques ? Sauraient-ils ce que vous souhaiteriez pour vos petits-enfants ? Everstead est l'endroit où vous posez tout cela, noir sur blanc.",
+      "scenario": "Vos enfants sont adultes. Ils savent que vous les aimez. Mais s'il vous arrivait quelque chose demain, sauraient-ils auprès de quelles caisses est votre retraite ? Si votre testament est déposé chez un notaire — et lequel ? Qui sont les bénéficiaires de votre assurance-vie ? Quelles sont vos volontés pour vos obsèques ? Sauraient-ils ce que vous souhaiteriez pour vos petits-enfants ? Everstead est l'endroit où vous posez tout cela, noir sur blanc.",
       "painPoints": [
-        "Aucun registre unique des comptes financiers et des polices d'assurance",
+        "Aucun registre unique des comptes, livrets et contrats d'assurance-vie",
         "Les enfants ne savent pas où sont conservés les documents importants",
         "Des volontés personnelles jamais formellement écrites",
         "Des préférences de garde pour les animaux et les proches à charge jamais consignées",
@@ -103,7 +103,7 @@
       "benefits": [
         "Consignez où sont conservés vos documents et comptes essentiels",
         "Laissez des lettres et messages personnels à des membres précis de la famille",
-        "Désignez la garde et les préférences de soin pour vos proches à charge et vos animaux",
+        "Notez vos préférences de garde et de soin pour vos proches à charge et vos animaux",
         "Documentez clairement vos comptes numériques et abonnements",
         "Mettez votre plan à jour au fil de la vie, sans repartir de zéro",
         "Définissez des niveaux d'accès pour que vos enfants ne voient que ce que vous choisissez"
@@ -119,7 +119,7 @@
         },
         {
           "title": "Notes de garde et de soin",
-          "body": "Consignez vos préférences pour les proches à charge, les animaux et les situations de soin — le genre de repères qu'un testament omet souvent."
+          "body": "Consignez vos préférences pour les proches à charge, les animaux et les situations de soin. La loi organise la répartition de votre patrimoine — la réserve héréditaire protège vos enfants — mais elle ne dit rien de vos repères personnels. C'est ici qu'ils se transmettent."
         }
       ]
     },
@@ -129,7 +129,7 @@
       "hero": "Organisez vos affaires avec dignité — comme vous l'entendez.",
       "tagline": "Il ne s'agit pas de la fin. Il s'agit d'être prêt.",
       "body": "Mettre de l'ordre dans ses affaires n'a rien de définitif. C'est l'une des plus belles attentions que vous puissiez avoir pour ceux que vous aimez. Everstead vous donne un contrôle total sur ce que vous partagez, qui peut le voir et la manière dont vos volontés sont exprimées — sans aucune connaissance technique requise.",
-      "scenario": "Vous pensez depuis un moment à mettre de l'ordre dans vos affaires. Mais cela semble une lourde tâche — et peut-être un peu morbide. Everstead vous laisse avancer à votre rythme. Ajoutez votre compte courant cette semaine. Téléversez votre testament le mois prochain. Invitez votre fille quand vous serez prêt. Rien ne presse, et rien n'est jamais définitif tant que vous ne l'avez pas décidé.",
+      "scenario": "Vous pensez depuis un moment à mettre de l'ordre dans vos affaires. Mais cela semble une lourde tâche — et peut-être un peu morbide. Everstead vous laisse avancer à votre rythme. Ajoutez votre compte courant et vos livrets cette semaine. Indiquez le mois prochain chez quel notaire est déposé votre testament. Invitez votre fille quand vous serez prêt. Rien ne presse, et rien n'est jamais définitif tant que vous ne l'avez pas décidé.",
       "painPoints": [
         "Se lancer semble insurmontable — aucun point de départ évident",
         "Une réticence à impliquer la famille avant d'être prêt",
@@ -140,8 +140,8 @@
       "benefits": [
         "Une mise en place progressive — un peu à la fois, sans pression",
         "Désignez un proche de confiance avec un accès limité et précis",
-        "Consignez clairement vos préférences médicales et souhaits de soin",
-        "Un accès d'urgence au coffre à documents quand la situation l'exige",
+        "Consignez vos souhaits de soin, vos directives anticipées et l'existence d'un mandat de protection future",
+        "Un accès d'urgence au coffre quand la situation l'exige",
         "Une interface simple — aucune expertise technique requise",
         "Vous gardez toujours le plein contrôle de qui voit quoi"
       ],
@@ -152,7 +152,7 @@
         },
         {
           "title": "Accès d'urgence",
-          "body": "Désignez une personne de confiance comme contact d'urgence. Si quelque chose arrive soudainement, elle peut accéder immédiatement au coffre à documents — avec tout ce qu'il lui faut."
+          "body": "Désignez une personne de confiance comme contact d'urgence. Si quelque chose arrive soudainement, elle peut accéder immédiatement au coffre — avec tout ce qu'il lui faut."
         },
         {
           "title": "Une mise en place simple et guidée",
@@ -161,24 +161,24 @@
       ]
     },
     "executors": {
-      "title": "Pour les exécuteurs testamentaires",
-      "shortName": "les exécuteurs testamentaires",
+      "title": "Pour ceux qui gèrent une succession",
+      "shortName": "ceux qui gèrent une succession",
       "hero": "Un point de départ clair et organisé pour une responsabilité complexe.",
-      "tagline": "Être désigné exécuteur testamentaire est un honneur. Cela peut aussi être accablant.",
-      "body": "Quand quelqu'un vous désigne comme exécuteur testamentaire, il vous confie une immense responsabilité — souvent à un moment déjà difficile. Le défi n'est pas l'intention, c'est l'information. Où sont les comptes ? Qu'est-ce qui reste en cours ? Qui contacter, et dans quel ordre ? Everstead offre aux exécuteurs testamentaires un point de départ structuré et complet.",
-      "scenario": "Vous avez été désigné exécuteur testamentaire pour un ami proche. Vous êtes en deuil, vous gérez votre propre famille, et vous voilà responsable de clore toute une vie financière — comptes bancaires, retraites, biens immobiliers, prélèvements — presque sans repère pour commencer. Everstead est la passation organisée qui rend cela possible.",
+      "tagline": "S'occuper d'une succession est une marque de confiance. C'est aussi une charge immense.",
+      "body": "En France, c'est le notaire qui règle la succession — mais c'est presque toujours un proche qui s'occupe de tout le reste : prévenir les banques, la CPAM, les caisses de retraite, résilier les abonnements, réunir les pièces demandées. Le défi n'est pas la volonté, c'est l'information. Où sont les comptes ? Qu'est-ce qui reste en cours ? Qui prévenir, et dans quel ordre ? Everstead offre à celui ou celle qui s'en charge un point de départ structuré et complet.",
+      "scenario": "Un ami proche vous a confié qu'il compte sur vous « le jour venu ». Ce jour arrive. Vous êtes en deuil, vous gérez votre propre famille, et vous voilà chargé des démarches : la déclaration de décès à la mairie sous 24 heures, les actes de décès à obtenir, la banque à prévenir — qui bloque les comptes du défunt —, la CPAM, les caisses de retraite, le notaire qui attend ses pièces, les abonnements à résilier. Presque sans repère pour commencer. Everstead est la passation organisée qui rend cela possible.",
       "painPoints": [
-        "Aucun registre unique des comptes, actifs ou polices d'assurance",
-        "Des documents éparpillés entre supports papier et numériques",
-        "Aucune clarté sur l'ordre des démarches ni sur qui contacter en premier",
+        "Aucun registre unique des comptes, contrats et actifs",
+        "Des documents éparpillés entre papiers et espaces numériques — que le notaire finira par demander",
+        "Aucune clarté sur l'ordre des démarches ni sur qui prévenir en premier",
         "Des abonnements qui continuent de prélever après le décès",
         "Aucune traçabilité des décisions prises au cours du processus"
       ],
       "benefits": [
         "Un inventaire organisé des comptes et des actifs, dès le départ",
-        "Des documents déjà téléversés, classés et accessibles",
+        "Des documents déjà téléversés et classés — prêts à transmettre au notaire",
         "Des séquences d'instructions à suivre, étape par étape",
-        "Une liste de contacts avec rôles et liens clairement indiqués",
+        "Une liste de contacts — notaire, banques, assureurs — avec rôles et liens clairement indiqués",
         "Un inventaire des abonnements et factures récurrentes pour des résiliations rapides",
         "Un historique d'accès pour une tenue de dossier transparente"
       ],
@@ -202,12 +202,12 @@
       "shortName": "les conseillers et professionnels",
       "hero": "Proposez l'organisation successorale comme un véritable service à vos clients.",
       "tagline": "L'écart entre la planification juridique et la préparation concrète est là où vos clients ont le plus besoin de vous.",
-      "body": "Conseillers financiers, notaires et gestionnaires de patrimoine aident leurs clients à préparer l'avenir — mais l'organisation concrète de la succession passe souvent entre les mailles du filet. Everstead donne aux professionnels les outils pour combler cet écart : accès collaboratif, visibilité sur la progression des clients, et un cadre structuré qui transforme les intentions en un plan organisé.",
-      "scenario": "Vous avez eu la conversation. Le client a un testament, les bénéficiaires désignés sont à jour et la stratégie de transmission est en place. Mais s'il arrivait quelque chose demain, sa famille saurait-elle où trouver quoi que ce soit ? Votre cabinet recevrait-il un appel à 20 h d'un conjoint endeuillé qui ne sait pas par où commencer ? Everstead est la couche concrète qui rend vos conseils actionnables.",
+      "body": "Conseillers en gestion de patrimoine, notaires et assureurs aident leurs clients à préparer l'avenir — mais l'organisation concrète de la succession passe souvent entre les mailles du filet. Everstead donne aux professionnels les outils pour combler cet écart : accès collaboratif, visibilité sur la progression des clients, et un cadre structuré qui transforme les intentions en un plan organisé.",
+      "scenario": "Vous avez eu la conversation. Le client a un testament, les clauses bénéficiaires de son assurance-vie sont à jour et la stratégie pour alléger les droits de succession est en place. Mais s'il arrivait quelque chose demain, sa famille saurait-elle où trouver quoi que ce soit ? Votre cabinet — ou votre étude — recevrait-il un appel à 20 h d'un conjoint endeuillé qui ne sait pas par où commencer ? Everstead est la couche concrète qui rend vos conseils actionnables.",
       "painPoints": [
         "Les clients ont des plans, mais aucun registre organisé de l'emplacement réel des choses",
         "Des familles sans point de départ clair, malgré des conseils professionnels",
-        "Aucune passation structurée entre le conseiller et la succession du client",
+        "Aucune passation structurée entre le conseiller et la famille du client",
         "Difficile de vérifier que les clients ont bien réalisé les actions convenues",
         "La valeur de votre cabinet n'est visible que lorsqu'il est trop tard pour la démontrer"
       ],
@@ -237,24 +237,24 @@
   },
   "quotes": {
     "families": {
-      "text": "« Nous n'avions aucune idée d'où ma mère gardait quoi que ce soit — sa banque, sa retraite, même son testament. Nous avons passé six mois à tout reconstituer. Everstead aurait tout changé. »",
-      "author": "— Enfant de la défunte et exécutrice testamentaire"
+      "text": "« Nous n'avions aucune idée d'où ma mère gardait quoi que ce soit — sa banque, sa retraite, même son testament. Nous avons passé six mois à tout reconstituer pour le notaire. Everstead aurait tout changé. »",
+      "author": "— Fille de la défunte, en charge des démarches de succession"
     },
     "parents": {
-      "text": "« Le plus dur, ce n'était pas le deuil. C'était la dizaine de décisions pratiques à prendre sans savoir ce qu'elle aurait voulu. C'est exactement ce que je suis déterminée à ne pas laisser à mes enfants. »",
+      "text": "« Le plus dur, ce n'était pas le deuil. C'était la dizaine de décisions pratiques à prendre sans savoir ce qu'elle aurait voulu. C'est exactement ce que je suis déterminée à ne pas laisser à mes enfants. »",
       "author": "— Parent qui prend les devants"
     },
     "aging-adults": {
-      "text": "« J'ai enfin le sentiment d'avoir pris soin de quelque chose d'important. Mes enfants ne seront pas laissés dans l'incertitude. C'est la tranquillité d'esprit que je cherchais. »",
+      "text": "« J'ai enfin le sentiment d'avoir pris soin de quelque chose d'important. Mes enfants ne seront pas laissés dans l'incertitude. C'est la tranquillité d'esprit que je cherchais. »",
       "author": "— Utilisatrice d'Everstead, 71 ans"
     },
     "executors": {
-      "text": "« Exécuteur de trois successions au cours de ma carrière, j'ai appris que l'organisation fait toute la différence. Entre un plan dans Everstead et une chemise de papiers en vrac, l'écart est énorme. »",
+      "text": "« Je règle des successions depuis des années : l'organisation fait toute la différence. Entre une famille qui arrive avec un plan organisé et une chemise de papiers en vrac, l'écart est énorme. »",
       "author": "— Notaire"
     },
     "advisors": {
-      "text": "« C'est devenu une vraie valeur ajoutée pour mon cabinet. Mes clients apprécient que je les aide à se préparer concrètement, pas seulement sur le papier. Les conversations sont meilleures, et les résultats aussi. »",
-      "author": "— Conseiller financier certifié"
+      "text": "« C'est devenu une vraie valeur ajoutée pour mon cabinet. Mes clients apprécient que je les aide à se préparer concrètement, pas seulement sur le papier. Les conversations sont meilleures, et les résultats aussi. »",
+      "author": "— Conseiller en gestion de patrimoine"
     }
   },
   "cta": {
@@ -279,7 +279,7 @@
       "note": "Accès anticipé — nous accompagnons personnellement nos premiers conseillers partenaires"
     },
     "shared": {
-      "readyTitle": "Prêt à mettre de l'ordre dans vos affaires ?",
+      "readyTitle": "Prêt à mettre de l'ordre dans vos affaires ?",
       "readyBody": "Il faut environ 45 minutes pour construire un plan complet. Votre famille aura tout ce qu'il lui faut.",
       "seeHowItWorks": "Voir comment ça marche"
     },

@@ -6,6 +6,7 @@ import {
 } from 'lucide-react'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../contexts/AuthContext'
+import i18n from '../i18n'
 
 // ─────────────────────────────────────────────────────────────
 // HELPERS
@@ -574,6 +575,27 @@ export default function Settings() {
                 )}
               </p>
             </div>
+          </Card>
+
+          {/* ── Language ── */}
+          {/* Drives profiles.language — the app and emails follow this preference
+              (the marketing site's language stays URL-based: / vs /fr). */}
+          <Card>
+            <SectionLabel>Language / Langue</SectionLabel>
+            <p className="text-sm text-stone-500 mb-3">Choose the language for your Everstead account and emails.</p>
+            <select
+              value={profile?.language || 'en'}
+              onChange={async (e) => {
+                const lang = e.target.value
+                setProfile(p => ({ ...p, language: lang }))
+                i18n.changeLanguage(lang)
+                await supabase.from('profiles').update({ language: lang }).eq('id', user.id)
+              }}
+              className="w-full max-w-xs border border-stone-200 rounded-xl px-3 py-2 text-sm text-navy-900 focus:outline-none focus:ring-2 focus:ring-navy-300 bg-white"
+            >
+              <option value="en">English</option>
+              <option value="fr">Français</option>
+            </select>
           </Card>
 
           {/* ── Household section — managing the second vault on Everstead+ ── */}

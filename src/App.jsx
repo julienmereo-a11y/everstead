@@ -36,6 +36,7 @@ const BookDemo              = lazy(() => import('./pages/BookDemo'))
 const Login                 = lazy(() => import('./pages/Login'))
 const Privacy               = lazy(() => import('./pages/Privacy'))
 const Terms                 = lazy(() => import('./pages/Terms'))
+const MentionsLegales       = lazy(() => import('./pages/MentionsLegales'))
 const Resources             = lazy(() => import('./pages/Resources'))
 const ExecutorChecklist     = lazy(() => import('./pages/ExecutorChecklist'))
 const DigitalEstateCalculator = lazy(() => import('./pages/DigitalEstateCalculator'))
@@ -144,6 +145,25 @@ function RootRoute() {
   return <Layout><Home /></Layout>
 }
 
+// The signed-in APP follows the user's saved preference (profiles.language) —
+// there is no URL language signal inside /dashboard etc. The marketing trees
+// stay strictly URL-driven so / and /fr remain two stable, indexable language
+// trees. Native shells always follow the profile preference.
+const APP_LANGUAGE_PREFIXES = ['/dashboard', '/settings', '/advisor-portal', '/delegate-dashboard', '/setup-mfa']
+
+function ProfileLanguage() {
+  const { profile } = useAuth()
+  const { pathname } = useLocation()
+  useEffect(() => {
+    const inApp = isNative() || APP_LANGUAGE_PREFIXES.some(p => pathname === p || pathname.startsWith(`${p}/`))
+    const target = inApp && ['en', 'fr'].includes(profile?.language)
+      ? profile.language
+      : languageFromPath(window.location.pathname)
+    if (i18n.language !== target) i18n.changeLanguage(target)
+  }, [pathname, profile?.language])
+  return null
+}
+
 export default function App() {
   // Locale comes from the URL prefix ONLY: /fr/* → French, else English.
   // The SAME route tree renders under both — basename '/fr' makes every internal
@@ -162,6 +182,7 @@ export default function App() {
     <AuthProvider>
       <BrowserRouter basename={lang === 'fr' ? '/fr' : '/'}>
         <ScrollToTop />
+        <ProfileLanguage />
         <ErrorBoundary>
           <Suspense fallback={<PageLoader />}>
           <BiometricGate>
@@ -267,6 +288,9 @@ export default function App() {
               <Route path="/reset-password"  element={<Layout><ResetPassword /></Layout>} />
               <Route path="/privacy"    element={<Layout><Privacy /></Layout>} />
               <Route path="/terms"      element={<Layout><Terms /></Layout>} />
+              {/* LCEN legal notice for the French market — one route serves both
+                  trees (the /fr basename makes /fr/mentions-legales work). */}
+              <Route path="/mentions-legales" element={<Layout><MentionsLegales /></Layout>} />
               <Route path="/resources"  element={<Layout><Resources /></Layout>} />
               <Route path="/resources/:section" element={<Layout><Resources /></Layout>} />
               <Route path="/resources/:section/:post" element={<Layout><Resources /></Layout>} />

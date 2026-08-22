@@ -1,9 +1,18 @@
 import React from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { Helmet } from 'react-helmet-async'
+import { useTranslation } from 'react-i18next'
 import { useReveal } from '../components/useReveal'
 import { trackEvent } from '../lib/analytics'
 import { BookOpen, FileText, CheckSquare, HelpCircle, ArrowRight, ChevronDown, ArrowLeft, Check, BookMarked } from 'lucide-react'
+import i18n from '../i18n'
+import enResources from '../i18n/locales/en/resources.json'
+import frResources from '../i18n/locales/fr/resources.json'
+
+// Self-registered namespace (keeps src/i18n/index.js untouched). Safe to move
+// into the central resources map later — re-adding the same bundle is a no-op.
+i18n.addResourceBundle('en', 'resources', enResources)
+i18n.addResourceBundle('fr', 'resources', frResources)
 
 // ─────────────────────────────────────────────────────────────────────────────
 // CONTENT DATA
@@ -1550,6 +1559,129 @@ const sections = {
           { type: 'cta', text: 'Everstead is one secure place to keep your documents and account details, with a clear index your trusted people can reach when it matters — shared only with the people you choose.' },
         ],
       },
+
+      // ───────────────────────────────────────────────────────────────────────
+      // FRENCH-LAW ARTICLES (lang: 'fr') — shown only on the /fr tree.
+      // Dates stay in English ('August 2026') so articleSortKey and
+      // scripts/gen-blog-og-images.mjs keep working; displayDate() renders the
+      // French month. Keep slug → title → date → tag on their own lines (the OG
+      // script regex-extracts them in that order).
+      // ───────────────────────────────────────────────────────────────────────
+      {
+        slug: 'assurance-vie-succession',
+        title: 'Assurance-vie et succession : ce que vos bénéficiaires doivent savoir',
+        date: 'August 2026',
+        tag: 'Succession',
+        lang: 'fr',
+        desc: "L'assurance-vie obéit à des règles propres, en marge de la succession : clause bénéficiaire, contrats oubliés, recherche AGIRA. Ce que vos proches doivent savoir — et comment leur simplifier la tâche dès aujourd'hui.",
+        readTime: '9 min de lecture',
+        body: [
+          { type: 'intro', text: "L'assurance-vie est l'un des placements préférés des Français — et elle est souvent choisie précisément pour préparer une transmission. Pourtant, son fonctionnement au moment du décès reste mal compris : le capital ne suit pas le même chemin que le reste du patrimoine, tout repose sur une clause parfois rédigée des années plus tôt, et des contrats restent chaque année sans bénéficiaire simplement parce que personne ne savait qu'ils existaient. Cet article explique, en termes simples, ce que vos bénéficiaires doivent savoir — et ce que vous pouvez faire dès aujourd'hui pour leur simplifier la tâche." },
+          { type: 'toc', items: ["Pourquoi l'assurance-vie est « hors succession »", 'La clause bénéficiaire, pièce maîtresse du contrat', "Ce qui se passe au décès de l'assuré", 'Pourquoi des contrats se perdent', 'La recherche AGIRA, pour retrouver un contrat', 'Comment simplifier la tâche de vos proches dès maintenant'] },
+          { type: 'heading', text: "Pourquoi l'assurance-vie est « hors succession »" },
+          { type: 'text', text: "Lorsqu'un contrat d'assurance-vie désigne un ou plusieurs bénéficiaires, le capital qui leur est versé au décès ne fait, en principe, pas partie de la succession. Il n'est pas réparti par le notaire avec le reste du patrimoine : c'est l'assureur qui le verse directement aux personnes désignées dans la clause bénéficiaire. C'est ce que résume l'expression « hors succession »." },
+          { type: 'text', text: "Cette mécanique a des conséquences très concrètes pour vos proches. Le capital peut leur être versé sans attendre la fin du règlement de la succession, selon des règles de taxation qui lui sont propres — souvent plus favorables que les droits de succession classiques, mais qui dépendent notamment de la date d'ouverture du contrat, de la date des versements et de l'âge auquel ils ont été effectués." },
+          { type: 'note', text: "Le principe « hors succession » connaît des limites — par exemple lorsque les primes versées apparaissent manifestement exagérées par rapport au patrimoine du souscripteur. Et la fiscalité exacte dépend de votre situation : pour des montants importants, faites le point avec votre assureur et votre notaire plutôt que de vous fier à des chiffres trouvés en ligne." },
+          { type: 'heading', text: 'La clause bénéficiaire, pièce maîtresse du contrat' },
+          { type: 'text', text: "Tout repose sur quelques lignes : la clause bénéficiaire, qui désigne la ou les personnes qui recevront le capital. Beaucoup de contrats utilisent une clause type — « mon conjoint, à défaut mes enfants nés ou à naître, à défaut mes héritiers » — qui convient à de nombreuses situations. Mais elle peut aussi être entièrement personnalisée : désigner une personne précise, répartir le capital entre plusieurs bénéficiaires, prévoir des bénéficiaires de second rang." },
+          { type: 'text', text: "Le vrai risque n'est pas d'avoir une clause imparfaite : c'est d'avoir une clause qui ne correspond plus à votre vie. Un divorce, un remariage, une naissance, un décès dans la famille — et la personne désignée il y a quinze ans n'est plus celle que vous choisiriez aujourd'hui. Une clause ambiguë ou obsolète peut retarder le versement, diriger le capital vers la mauvaise personne, ou créer des tensions durables entre vos proches." },
+          { type: 'list', heading: "Les réflexes d'une clause bénéficiaire bien tenue :", items: ['Désigner les bénéficiaires sans ambiguïté — de préférence avec leurs nom, prénom et date de naissance', "Prévoir des bénéficiaires de second rang (« à défaut… ») pour couvrir tous les cas", 'Relire la clause après chaque événement familial important', 'Vérifier la cohérence entre la clause, votre testament et vos autres contrats', "Demander conseil avant de faire accepter formellement le bénéfice à quelqu'un de votre vivant — une acceptation peut rendre la clause très difficile à modifier ensuite"] },
+          { type: 'heading', text: "Ce qui se passe au décès de l'assuré" },
+          { type: 'text', text: "Au décès, les bénéficiaires — ou le notaire chargé de la succession — informent l'assureur en lui adressant un acte de décès. L'assureur vérifie la clause, identifie les bénéficiaires, puis leur demande les pièces nécessaires au versement. Une fois le dossier complet, il doit verser le capital dans un délai encadré par la loi." },
+          { type: 'list', heading: 'Les pièces généralement demandées :', items: ["Un acte de décès de l'assuré", "Une pièce d'identité du bénéficiaire", "Un relevé d'identité bancaire pour recevoir le versement", "Le formulaire de règlement propre à chaque assureur", "Selon les cas, des éléments d'état civil ou des attestations fiscales"] },
+          { type: 'text', text: "Encore faut-il que l'assureur apprenne le décès, et que les bénéficiaires sachent que le contrat existe. C'est là que les choses se compliquent." },
+          { type: 'heading', text: 'Pourquoi des contrats se perdent' },
+          { type: 'text', text: "Un contrat d'assurance-vie peut avoir été souscrit il y a des décennies, auprès d'un assureur qui n'est pas la banque habituelle de la famille, et n'avoir jamais été mentionné à personne. Le bénéficiaire n'est pas automatiquement informé de sa désignation — c'est même fréquent : on désigne un proche sans le lui dire. Au décès, personne ne pense à chercher, les relevés annuels finissent à la corbeille avec le reste du courrier, et le contrat reste dans un tiroir." },
+          { type: 'text', text: "La loi a progressivement renforcé les obligations des assureurs : ils doivent s'informer du décès de leurs assurés et rechercher les bénéficiaires des contrats non réclamés. Mais cette recherche n'est possible que si la clause permet d'identifier les personnes. Les capitaux qui ne trouvent pas leur bénéficiaire finissent par être transférés à la Caisse des Dépôts, où ils peuvent être recherchés en ligne (service Ciclade) — avant d'être, au terme d'un long délai, définitivement acquis à l'État." },
+          { type: 'heading', text: 'La recherche AGIRA, pour retrouver un contrat' },
+          { type: 'text', text: "Si vous pensez être bénéficiaire d'un contrat souscrit par une personne décédée, il existe une démarche simple et gratuite : la recherche AGIRA (Association pour la gestion des informations sur le risque en assurance). Vous adressez une demande — en ligne ou par courrier — précisant l'identité de la personne décédée, accompagnée d'un justificatif de son décès. L'AGIRA transmet alors la demande à l'ensemble des assureurs." },
+          { type: 'list', heading: 'La démarche, en pratique :', items: ["Rassemblez l'acte de décès et les éléments d'identité du défunt", "Adressez votre demande à l'AGIRA, en ligne ou par courrier", 'La demande est relayée auprès de tous les assureurs', "Si un contrat vous désigne, l'assureur vous contacte directement pour organiser le versement", "L'absence de réponse signifie qu'aucun contrat connu ne vous désigne comme bénéficiaire"] },
+          { type: 'note', text: "La recherche AGIRA ne fonctionne qu'après un décès : elle ne permet pas de savoir si un proche vivant a souscrit un contrat. Et elle repose sur la possibilité d'identifier le bénéficiaire — une raison de plus de soigner la rédaction de votre clause." },
+          { type: 'heading', text: 'Comment simplifier la tâche de vos proches dès maintenant' },
+          { type: 'text', text: "Tout ce qui précède se résume à une idée simple : un contrat d'assurance-vie ne protège vraiment vos proches que s'ils savent qu'il existe. La recherche AGIRA est un filet de sécurité précieux, mais elle suppose que quelqu'un pense à chercher. Un inventaire tenu à jour évite le problème à la racine." },
+          { type: 'list', heading: "Un quart d'heure qui change tout :", items: ["Listez chaque contrat : nom de l'assureur, numéro de contrat, date de souscription", 'Notez où se trouvent les documents de chaque contrat', 'Relisez chaque clause bénéficiaire après un événement familial', 'Dites à vos personnes de confiance que ces contrats existent', 'Conservez le tout dans un endroit sûr, accessible au bon moment'] },
+          { type: 'text', text: "C'est exactement le rôle d'un coffre numérique sécurisé comme Everstead : recenser vos comptes et vos contrats, conserver vos documents et vos instructions, et donner à vos personnes de confiance un accès au bon moment. Vos bénéficiaires n'auront pas à deviner — ils sauront." },
+          { type: 'note', text: "Ces informations sont générales et ne constituent pas un conseil juridique. Chaque situation est particulière : pour la rédaction de votre clause bénéficiaire ou le règlement d'une succession, consultez votre notaire ou votre conseiller." },
+          { type: 'related', heading: 'À lire aussi', links: [{ label: 'Testament et réserve héréditaire : ce que vous pouvez (vraiment) transmettre', href: '/resources/blog/testament-reserve-hereditaire' }, { label: 'Le mandat de protection future, expliqué simplement', href: '/resources/blog/mandat-protection-future' }] },
+          { type: 'cta', text: "Everstead réunit vos contrats, vos documents et vos personnes de confiance dans un coffre sécurisé — pour qu'aucun contrat d'assurance-vie ne reste jamais dans un tiroir." },
+        ],
+      },
+      {
+        slug: 'testament-reserve-hereditaire',
+        title: 'Testament et réserve héréditaire : ce que vous pouvez (vraiment) transmettre',
+        date: 'August 2026',
+        tag: 'Succession',
+        lang: 'fr',
+        desc: "Testament olographe ou authentique, réserve héréditaire, quotité disponible, rôle du notaire : ce que le droit français vous laisse décider — et pourquoi un inventaire à jour rend votre testament réellement utile.",
+        readTime: '10 min de lecture',
+        body: [
+          { type: 'intro', text: "En France, on ne transmet pas son patrimoine en toute liberté : la loi réserve une part de votre succession à vos enfants, et un testament ne peut disposer que du reste. Bien compris, ce cadre n'est pas une contrainte : il dessine précisément l'espace dont vous disposez pour organiser les choses à votre façon. Cet article explique les deux grandes formes de testament, le principe de la réserve héréditaire et de la quotité disponible, le rôle du notaire — et pourquoi un inventaire à jour est ce qui rend un testament réellement utile le jour venu." },
+          { type: 'toc', items: ["Ce qu'un testament peut faire — et ne peut pas faire", 'La réserve héréditaire, en deux mots', 'La quotité disponible : votre marge de manœuvre', 'Testament olographe : simple, mais fragile', 'Testament authentique : le formalisme qui sécurise', 'Le rôle du notaire', 'Pourquoi un inventaire à jour change tout'] },
+          { type: 'heading', text: "Ce qu'un testament peut faire — et ne peut pas faire" },
+          { type: 'text', text: "Un testament sert à organiser ce qui vous appartient : désigner qui recevra quoi, faire des legs à des proches ou à des associations, désigner un exécuteur testamentaire, exprimer des volontés personnelles. Sans testament, c'est la loi qui répartit votre patrimoine entre vos héritiers, selon un ordre et des proportions fixés d'avance — un résultat qui ne correspond pas toujours à ce que vous auriez souhaité." },
+          { type: 'text', text: "Mais un testament ne peut pas tout. La limite centrale du droit français s'appelle la réserve héréditaire : une part de votre succession est protégée au profit de certains héritiers, et un testament ne peut pas, en principe, la leur retirer." },
+          { type: 'heading', text: 'La réserve héréditaire, en deux mots' },
+          { type: 'text', text: "Vos enfants sont ce que le droit appelle des héritiers réservataires : la loi leur garantit une part de votre succession, quelle que soit la rédaction de votre testament. Vous pouvez répartir, avantager, organiser — mais pas déshériter un enfant de cette part réservée. La taille de la réserve dépend notamment du nombre d'enfants ; le calcul précis, qui tient compte de votre situation familiale et des donations déjà consenties, relève de votre notaire." },
+          { type: 'text', text: "En l'absence de descendants, le conjoint survivant bénéficie à son tour d'une protection. Et même en présence d'enfants, le conjoint dispose de droits propres, qui peuvent être élargis — dans les limites prévues par la loi — par des outils comme la donation entre époux. Là encore, c'est un sujet à construire avec votre notaire." },
+          { type: 'note', text: "Les fractions exactes de réserve et de quotité disponible dépendent de la composition de votre famille et de votre situation matrimoniale. Plutôt que d'appliquer un tableau trouvé en ligne, faites établir le calcul par votre notaire — c'est rapide, et c'est fiable." },
+          { type: 'heading', text: 'La quotité disponible : votre marge de manœuvre' },
+          { type: 'text', text: "Ce qui n'est pas réservé s'appelle la quotité disponible : c'est la part de votre patrimoine dont vous pouvez disposer librement, par testament ou par donation. Avantager un enfant qui s'est occupé de vous, protéger davantage votre conjoint, gratifier un beau-fils ou une belle-fille que la loi ignore, soutenir une association — tout cela se joue dans la quotité disponible." },
+          { type: 'text', text: "Un point mérite une attention particulière : les donations que vous avez déjà consenties de votre vivant entrent dans le calcul au moment de la succession. C'est une raison de plus d'avoir une vision d'ensemble de ce que vous possédez et de ce que vous avez déjà transmis — et d'en garder une trace écrite." },
+          { type: 'heading', text: 'Testament olographe : simple, mais fragile' },
+          { type: 'text', text: "Le testament olographe est la forme la plus simple : un document écrit entièrement de votre main, daté et signé. Pas de passage obligé chez le notaire, aucun coût, et vous pouvez le refaire autant de fois que nécessaire. Cette simplicité explique qu'il soit, de loin, le plus répandu." },
+          { type: 'list', heading: 'Ses fragilités classiques :', items: ['Il peut être perdu, détruit ou tout simplement jamais retrouvé', "Une formulation ambiguë peut créer des désaccords d'interprétation entre héritiers", 'Un formalisme non respecté — texte tapé à la machine, absence de date ou de signature — peut le rendre nul', "Rédigé sans conseil, il peut contredire la réserve héréditaire ou d'autres dispositions déjà prises", "Il est plus exposé à la contestation qu'un acte reçu par un notaire"] },
+          { type: 'text', text: "La parade est simple : faire relire votre testament olographe par un notaire, puis le lui confier. Il peut alors être inscrit au fichier central des dispositions de dernières volontés, que les notaires consultent au moment de régler une succession — la garantie qu'il sera retrouvé." },
+          { type: 'heading', text: 'Testament authentique : le formalisme qui sécurise' },
+          { type: 'text', text: "Le testament authentique est reçu par un notaire, selon un formalisme précis qui fait intervenir des témoins ou un second notaire. Vous dictez vos volontés, le notaire les met en forme, l'acte est conservé à l'étude et enregistré. Ce formalisme a un coût — des frais réglementés, à demander à votre notaire — mais il apporte trois garanties : le testament ne peut pas se perdre, il est très difficile à contester, et vous bénéficiez du conseil du notaire au moment même où vous rédigez." },
+          { type: 'text', text: "C'est la forme recommandée dès que la situation sort de l'ordinaire : famille recomposée, patrimoine complexe, volonté d'avantager fortement une personne, risque de mésentente entre héritiers, ou simple besoin d'être certain que vos volontés seront comprises comme vous les avez pensées." },
+          { type: 'heading', text: 'Le rôle du notaire' },
+          { type: 'list', heading: 'Ce que le notaire apporte, concrètement :', items: ["Vous dire ce qui est possible — et ce qui ne l'est pas — avant que vous ne rédigiez", 'Vérifier la cohérence entre testament, donations, régime matrimonial et clauses bénéficiaires', "Rédiger ou conserver le testament, et l'inscrire au fichier central des dispositions de dernières volontés", 'Régler la succession le moment venu, en appliquant vos volontés dans le cadre de la loi'] },
+          { type: 'text', text: "Le notaire n'est pas réservé aux grands patrimoines. Une consultation suffit souvent à éviter les erreurs les plus coûteuses — un testament nul pour un défaut de forme, une clause qui contredit la réserve, une donation oubliée qui déséquilibre tout le reste." },
+          { type: 'heading', text: 'Pourquoi un inventaire à jour change tout' },
+          { type: 'text', text: "Un testament s'applique à un patrimoine réel : des comptes, des contrats, des biens, des dettes — et, de plus en plus, une vie numérique. Si vos proches et votre notaire ignorent ce que vous possédez, même le meilleur testament s'applique mal : des actifs oubliés, des démarches qui s'éternisent, des décisions prises à l'aveugle." },
+          { type: 'list', heading: "Ce qu'un inventaire utile contient :", items: ["Vos comptes bancaires et vos produits d'épargne", "Vos contrats d'assurance-vie et l'esprit de leur clause bénéficiaire", "Vos biens immobiliers et l'endroit où se trouvent les titres", 'Vos crédits et vos dettes en cours', 'Vos comptes et abonnements en ligne', "L'endroit où se trouvent votre testament et vos documents importants", 'Les personnes à prévenir : votre notaire, vos personnes de confiance'] },
+          { type: 'text', text: "C'est précisément ce que permet Everstead : un coffre sécurisé où recenser vos comptes, conserver vos documents et vos instructions, et désigner les personnes de confiance qui y auront accès au bon moment. Votre testament dit ce que vous voulez ; votre coffre permet à vos proches de le mettre en œuvre sans rien chercher." },
+          { type: 'note', text: "Ces informations sont générales et ne constituent pas un conseil juridique. La rédaction d'un testament et le calcul de la réserve héréditaire dépendent de votre situation précise : consultez votre notaire." },
+          { type: 'related', heading: 'À lire aussi', links: [{ label: 'Assurance-vie et succession : ce que vos bénéficiaires doivent savoir', href: '/resources/blog/assurance-vie-succession' }, { label: 'Le mandat de protection future, expliqué simplement', href: '/resources/blog/mandat-protection-future' }] },
+          { type: 'cta', text: "Un testament dit vos volontés ; encore faut-il que vos proches retrouvent tout le reste. Everstead réunit comptes, documents, instructions et personnes de confiance dans un coffre sécurisé, à jour et accessible au bon moment." },
+        ],
+      },
+      {
+        slug: 'mandat-protection-future',
+        title: 'Le mandat de protection future, expliqué simplement',
+        date: 'August 2026',
+        tag: 'Protection juridique',
+        lang: 'fr',
+        desc: "Désigner à l'avance qui veillera sur vous et votre patrimoine si vous ne le pouvez plus : ce que permet le mandat de protection future, ses deux formes, et comment le mettre en place sereinement.",
+        readTime: '8 min de lecture',
+        body: [
+          { type: 'intro', text: "Personne n'aime imaginer le jour où il ne pourra plus gérer ses affaires. C'est pourtant l'un des rares sujets où anticiper change tout : le droit français permet de choisir vous-même, à l'avance, la personne qui veillera sur vos intérêts si un accident ou la maladie vous en empêchait. Cet outil s'appelle le mandat de protection future. Cet article explique ce qu'il permet, quand il s'applique, la différence entre ses deux formes — et ce qui se passe si vous n'avez rien prévu." },
+          { type: 'toc', items: ["Qu'est-ce que le mandat de protection future ?", 'Quand le mandat prend-il effet ?', 'Mandat notarié ou sous seing privé : deux formes, deux portées', "Et si vous n'avez rien prévu ? Tutelle, curatelle, habilitation familiale", 'Bien choisir son ou ses mandataires', 'Mettre en place son mandat, pas à pas'] },
+          { type: 'heading', text: "Qu'est-ce que le mandat de protection future ?" },
+          { type: 'text', text: "Le mandat de protection future est un contrat par lequel vous — le mandant — désignez à l'avance une ou plusieurs personnes — les mandataires — chargées de veiller sur vos intérêts le jour où vous ne pourriez plus le faire vous-même. Il peut couvrir la protection de votre personne (votre santé, votre lieu de vie, vos habitudes), la gestion de votre patrimoine, ou les deux : c'est vous qui en définissez l'étendue." },
+          { type: 'text', text: "Tant que vous êtes en pleine possession de vos moyens, le mandat reste dormant : il ne vous retire aucun droit, ne donne aucun pouvoir à personne, et vous pouvez le modifier ou le révoquer. C'est une assurance, pas un renoncement. Il existe aussi une variante dite « pour autrui », qui permet à des parents d'organiser à l'avance la protection d'un enfant qui ne peut pas veiller seul sur ses intérêts." },
+          { type: 'heading', text: 'Quand le mandat prend-il effet ?' },
+          { type: 'text', text: "Le mandat ne s'active pas sur simple décision de la famille. Il prend effet lorsque l'altération de vos facultés est constatée médicalement, par un certificat établi selon une procédure encadrée — le médecin doit figurer sur une liste dédiée — puis après une formalité de mise en œuvre auprès du tribunal. Ce garde-fou protège tout le monde : le mandat ne peut être activé ni trop tôt, ni sans contrôle." },
+          { type: 'text', text: "Une fois le mandat activé, le mandataire agit dans le cadre que vous avez fixé, avec l'obligation de rendre compte de sa gestion. Vos volontés écrites — là où vous souhaitez vivre, ce qui compte pour vous — s'imposent comme référence, au lieu d'être reconstituées de mémoire par des proches sous pression." },
+          { type: 'heading', text: 'Mandat notarié ou sous seing privé : deux formes, deux portées' },
+          { type: 'subheading', text: 'Le mandat notarié' },
+          { type: 'text', text: "Reçu par un notaire, le mandat notarié permet de confier au mandataire des pouvoirs étendus sur votre patrimoine — y compris, sous conditions et avec des garde-fous, certains actes importants comme la vente d'un bien. Le notaire vous conseille au moment de la rédaction, conserve l'acte, et joue ensuite un rôle de contrôle : le mandataire lui rend des comptes. C'est la forme adaptée dès que le patrimoine à gérer est significatif." },
+          { type: 'subheading', text: 'Le mandat sous seing privé' },
+          { type: 'text', text: "Rédigé sans notaire — sur un modèle officiel ou avec l'aide d'un avocat — le mandat sous seing privé est plus simple à mettre en place, mais sa portée est plus limitée : il permet pour l'essentiel les actes de gestion courante. Pour les décisions les plus lourdes, une autorisation du juge reste nécessaire. Des formalités d'enregistrement s'appliquent par ailleurs : renseignez-vous au moment de la signature." },
+          { type: 'note', text: "Le choix entre les deux formes dépend de votre patrimoine, de votre situation familiale et de l'étendue des pouvoirs que vous souhaitez confier. C'est exactement le type d'arbitrage qu'un échange avec votre notaire permet de trancher sereinement." },
+          { type: 'heading', text: "Et si vous n'avez rien prévu ? Tutelle, curatelle, habilitation familiale" },
+          { type: 'text', text: "Sans mandat, si vous perdez la capacité de gérer vos affaires, vos proches devront demander au juge une mesure de protection judiciaire — habilitation familiale, curatelle ou tutelle, selon les situations. Ces mesures protègent réellement, et elles existent précisément pour cela. Mais elles ont un coût humain que l'on mesure mal tant qu'on n'y a pas été confronté." },
+          { type: 'list', heading: "Ce que change le fait d'avoir anticipé :", items: ["Avec un mandat, c'est vous qui choisissez la personne ; sans mandat, c'est le juge qui décide", "Avec un mandat, l'étendue des pouvoirs est celle que vous avez définie ; sans mandat, c'est le cadre légal qui s'impose", 'Avec un mandat, vos volontés personnelles — lieu de vie, habitudes, priorités — sont écrites noir sur blanc', 'Sans mandat, la procédure judiciaire prend du temps, pendant lequel la situation reste bloquée', "Sans mandat, des proches en désaccord peuvent s'opposer devant le juge — au pire moment"] },
+          { type: 'heading', text: 'Bien choisir son ou ses mandataires' },
+          { type: 'text', text: "Le mandataire aura, le jour venu, un vrai pouvoir sur votre vie et vos biens. Choisissez une personne de confiance absolue, suffisamment disponible et à l'aise avec la gestion — et surtout, parlez-lui-en avant : un mandataire qui découvre sa mission le jour où elle commence part avec un lourd handicap. Vous pouvez désigner plusieurs mandataires, répartir les rôles (la personne d'un côté, le patrimoine de l'autre), et prévoir un remplaçant si le premier ne peut plus assurer la mission." },
+          { type: 'heading', text: 'Mettre en place son mandat, pas à pas' },
+          { type: 'list', heading: "Les étapes, dans l'ordre :", items: ['Réfléchissez à ce que vous voulez protéger : votre personne, votre patrimoine, ou les deux', "Parlez-en à la personne pressentie — et à vos proches, pour que personne ne découvre le mandat le jour où il s'applique", 'Choisissez la forme : notariée pour des pouvoirs étendus, sous seing privé pour la gestion courante', 'Rédigez et signez le mandat en respectant le formalisme de la forme choisie', 'Conservez le document dans un endroit sûr et connu de vos personnes de confiance', 'Relisez-le régulièrement, et après chaque changement de situation'] },
+          { type: 'text', text: "Un dernier point, trop souvent oublié : un mandat introuvable ne protège personne. Vos proches doivent savoir qu'il existe, où il se trouve, et qui est le notaire qui l'a reçu le cas échéant. C'est le genre d'information qui a toute sa place dans un coffre sécurisé comme Everstead, aux côtés de vos comptes, de vos documents et de vos instructions — accessible à vos personnes de confiance au bon moment." },
+          { type: 'note', text: "Ces informations sont générales et ne constituent pas un conseil juridique. Le choix de la forme du mandat et l'étendue des pouvoirs confiés méritent un échange avec votre notaire." },
+          { type: 'related', heading: 'À lire aussi', links: [{ label: 'Assurance-vie et succession : ce que vos bénéficiaires doivent savoir', href: '/resources/blog/assurance-vie-succession' }, { label: 'Testament et réserve héréditaire : ce que vous pouvez (vraiment) transmettre', href: '/resources/blog/testament-reserve-hereditaire' }] },
+          { type: 'cta', text: "Un mandat n'est utile que s'il est retrouvé. Everstead conserve vos documents, vos instructions et vos personnes de confiance dans un coffre sécurisé — accessible au bon moment, et jamais perdu." },
+        ],
+      },
     ],
   },
 
@@ -2377,8 +2509,12 @@ const sections = {
 // FREE TOOLS (external pages — not rendered inside Resources router)
 // ─────────────────────────────────────────────────────────────────────────────
 
+// Visible copy lives in the 'resources' i18n namespace under tools.items.<i18nKey>
+// (en strings verbatim there). The title/desc/cta/tag/badge fields here are kept
+// as the source-of-truth reference for the EN strings.
 const tools = [
   {
+    i18nKey: 'afterDeath',
     href: '/what-to-do-when-someone-dies',
     title: 'What to do when someone dies',
     tag: 'AI guide',
@@ -2388,6 +2524,7 @@ const tools = [
     badge: 'Free · No login',
   },
   {
+    i18nKey: 'readiness',
     href: '/estate-readiness-score',
     title: 'Estate Readiness Score',
     tag: 'Quiz',
@@ -2397,6 +2534,7 @@ const tools = [
     badge: null,
   },
   {
+    i18nKey: 'executor',
     href: '/executor-checklist',
     title: 'Executor Checklist',
     tag: 'Interactive',
@@ -2406,6 +2544,7 @@ const tools = [
     badge: 'Most linked',
   },
   {
+    i18nKey: 'calculator',
     href: '/digital-estate-worth',
     title: 'Digital Estate Calculator',
     tag: 'Calculator',
@@ -2467,20 +2606,42 @@ function articleSortKey(d) {
   return iso ? Number(iso.slice(0, 4) + iso.slice(5, 7)) : 0
 }
 
+// Language of a post. Articles without a lang field are English — all the
+// original UK content predates the field, so nothing existing needs editing.
+const postLang = (p) => p.lang || 'en'
+
+// French-language posts store their date in ENGLISH ('August 2026') so that
+// articleSortKey and scripts/gen-blog-og-images.mjs keep working unchanged —
+// the month is translated only at render time, from the article's own language.
+const FR_MONTHS = { January: 'Janvier', February: 'Février', March: 'Mars', April: 'Avril', May: 'Mai', June: 'Juin', July: 'Juillet', August: 'Août', September: 'Septembre', October: 'Octobre', November: 'Novembre', December: 'Décembre' }
+function displayDate(post) {
+  if (postLang(post) !== 'fr' || !post.date) return post.date
+  const m = /^([A-Za-z]+) (\d{4})$/.exec(post.date)
+  return m && FR_MONTHS[m[1]] ? `${FR_MONTHS[m[1]]} ${m[2]}` : post.date
+}
+
 function ArticleDetail({ sectionSlug, postSlug }) {
   useReveal()
+  const { t, i18n: i18nInstance } = useTranslation('resources')
   const sectionData = sections[sectionSlug]
   const post = sectionData?.posts.find(p => p.slug === postSlug)
 
   if (!post) return (
     <div className="bg-stone-50 pt-24 min-h-screen">
-      <div className="py-40 text-center text-stone-500">Article not found. <Link to="/resources" className="text-navy-700 underline">Back to resources</Link></div>
+      <div className="py-40 text-center text-stone-500">{t('article.notFound')} <Link to="/resources" className="text-navy-700 underline">{t('article.backToResources')}</Link></div>
     </div>
   )
 
   const { title, date, tag, readTime, body, desc, slug } = post
+  // Chrome (nav, labels, CTAs) follows the tree the reader is on; the canonical
+  // URL and structured data follow the ARTICLE's own language, so a French post
+  // reached on the English tree still canonicalises to its /fr URL.
+  const uiLang = i18nInstance.language === 'fr' ? 'fr' : 'en'
+  const articleLang = postLang(post)
+  const sectionLabel = t(`sections.${sectionSlug}.label`)
+  const navSections = sectionList.filter(s => sections[s.slug].posts.some(p => postLang(p) === uiLang))
   const SectionIcon = sectionData.icon
-  const url = `https://www.everstead.care/resources/${sectionSlug}/${slug}`
+  const url = `https://www.everstead.care${articleLang === 'fr' ? '/fr' : ''}/resources/${sectionSlug}/${slug}`
   // Blog posts get a per-article title-card OG image, generated by
   // scripts/gen-blog-og-images.mjs into public/og/blog/ (re-run it after adding a
   // post). Other sections fall back to the site-wide card.
@@ -2510,7 +2671,7 @@ function ArticleDetail({ sectionSlug, postSlug }) {
           author: { '@type': 'Organization', name: 'Everstead', url: 'https://www.everstead.care' },
           publisher: { '@type': 'Organization', name: 'Everstead', logo: { '@type': 'ImageObject', url: 'https://www.everstead.care/logo-v2-white.png' } },
           image: ogImage,
-          inLanguage: 'en-GB',
+          inLanguage: articleLang === 'fr' ? 'fr' : 'en-GB',
           mainEntityOfPage: url,
         })}</script>
       </Helmet>
@@ -2522,14 +2683,14 @@ function ArticleDetail({ sectionSlug, postSlug }) {
             to={`/resources/${sectionSlug}`}
             className="inline-flex items-center gap-1.5 text-stone-400 hover:text-white text-xs font-medium mb-8 transition-colors"
           >
-            <ArrowLeft size={13} /> Back to {sectionData.label}
+            <ArrowLeft size={13} /> {t('article.backTo', { section: sectionLabel })}
           </Link>
           <div className="flex flex-wrap items-center gap-3 mb-5">
             <span className="inline-flex items-center gap-1.5 bg-white/10 border border-white/20 text-stone-200 text-xs font-medium px-3 py-1 rounded-full">
-              <SectionIcon size={11} /> {sectionData.label}
+              <SectionIcon size={11} /> {sectionLabel}
             </span>
             <span className="bg-navy-700 text-stone-200 text-xs font-medium px-2.5 py-1 rounded-full border border-white/10">{tag}</span>
-            {date && <span className="text-stone-400 text-xs">{date}</span>}
+            {date && <span className="text-stone-400 text-xs">{displayDate(post)}</span>}
             {readTime && <span className="text-stone-400 text-xs">· {readTime}</span>}
           </div>
           <h1 className="font-display text-3xl lg:text-5xl font-light text-white leading-tight text-balance">{title}</h1>
@@ -2539,14 +2700,14 @@ function ArticleDetail({ sectionSlug, postSlug }) {
       {/* Section nav */}
       <section className="border-b border-stone-200 bg-white sticky top-16 z-10">
         <div className="max-w-5xl mx-auto px-6 lg:px-8 flex gap-1 overflow-x-auto py-3">
-          {sectionList.map(s => (
+          {navSections.map(s => (
             <Link
               key={s.slug}
               to={`/resources/${s.slug}`}
               className={`flex items-center gap-1.5 px-3.5 py-2 text-sm font-medium rounded-md whitespace-nowrap transition-colors ${s.slug === sectionSlug ? 'bg-navy-50 text-navy-800' : 'text-stone-600 hover:bg-stone-100 hover:text-navy-800'}`}
             >
               <s.icon size={14} />
-              {s.label}
+              {t(`sections.${s.slug}.label`)}
             </Link>
           ))}
         </div>
@@ -2562,7 +2723,7 @@ function ArticleDetail({ sectionSlug, postSlug }) {
               )
               if (block.type === 'toc') return (
                 <div key={i} className="bg-stone-100 border border-stone-200 rounded-2xl px-6 py-5">
-                  <p className="text-xs font-semibold uppercase tracking-widest text-stone-500 mb-3">In this guide</p>
+                  <p className="text-xs font-semibold uppercase tracking-widest text-stone-500 mb-3">{t('article.inThisGuide')}</p>
                   <ol className="space-y-2">
                     {block.items.map((item, j) => (
                       <li key={j} className="flex items-start gap-3 text-sm text-navy-800">
@@ -2588,7 +2749,7 @@ function ArticleDetail({ sectionSlug, postSlug }) {
               if (block.type === 'related') return (
                 <div key={i} className="border border-stone-200 rounded-xl px-5 py-4 bg-white">
                   <p className="flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-stone-400 mb-3">
-                    <BookMarked size={12} /> {block.heading || 'Related reading'}
+                    <BookMarked size={12} /> {block.heading || t('article.relatedReading')}
                   </p>
                   <ul className="space-y-2">
                     {block.links.map((l, j) => (
@@ -2646,7 +2807,7 @@ function ArticleDetail({ sectionSlug, postSlug }) {
                     to="/get-started"
                     className="btn-aurora inline-flex items-center gap-2 mt-4 text-sm font-semibold px-5 py-2.5 rounded-full"
                   >
-                    Start Your Everstead <ArrowRight size={14} />
+                    {t('article.ctaStart')} <ArrowRight size={14} />
                   </Link>
                 </div>
               )
@@ -2657,20 +2818,19 @@ function ArticleDetail({ sectionSlug, postSlug }) {
           {/* Start-free CTA — every blog article converts readers to the free tier */}
           {sectionSlug === 'blog' && (
             <div className="mt-12 rounded-2xl bg-navy-950 text-white px-7 py-8 sm:px-9">
-              <p className="text-xs font-semibold uppercase tracking-widest text-sage-300 mb-2.5">Put this into practice</p>
+              <p className="text-xs font-semibold uppercase tracking-widest text-sage-300 mb-2.5">{t('article.startFree.eyebrow')}</p>
               <p className="font-display text-2xl font-light leading-snug mb-2 text-balance">
-                Organise the essentials for your family — free.
+                {t('article.startFree.title')}
               </p>
               <p className="text-sm text-stone-300 leading-relaxed max-w-lg mb-5">
-                Everstead keeps your accounts, documents and trusted people in one secure place,
-                so nobody is ever left guessing. Free forever, no card required.
+                {t('article.startFree.body')}
               </p>
               <Link
                 to="/get-started?plan=free"
                 onClick={() => trackEvent('cta_click', { location: 'blog_article', cta: 'start_free', slug })}
                 className="btn-aurora inline-flex items-center gap-2 text-sm font-semibold px-6 py-3 rounded-full transition-transform hover:-translate-y-0.5"
               >
-                Start free <ArrowRight size={14} />
+                {t('article.startFree.cta')} <ArrowRight size={14} />
               </Link>
             </div>
           )}
@@ -2681,13 +2841,13 @@ function ArticleDetail({ sectionSlug, postSlug }) {
               to={`/resources/${sectionSlug}`}
               className="inline-flex items-center gap-2 text-sm font-medium text-navy-700 hover:text-navy-900 transition-colors"
             >
-              <ArrowLeft size={14} /> Back to {sectionData.label}
+              <ArrowLeft size={14} /> {t('article.backTo', { section: sectionLabel })}
             </Link>
             <Link
               to="/get-started"
               className="inline-flex items-center gap-2 bg-navy-800 text-white text-sm font-semibold px-5 py-2.5 rounded-full hover:bg-navy-700 transition-colors"
             >
-              Start Your Everstead <ArrowRight size={14} />
+              {t('article.ctaStart')} <ArrowRight size={14} />
             </Link>
           </div>
         </div>
@@ -2701,21 +2861,29 @@ function ArticleDetail({ sectionSlug, postSlug }) {
 // ─────────────────────────────────────────────────────────────────────────────
 
 function ResourceSection({ slug }) {
+  const { t, i18n: i18nInstance } = useTranslation('resources')
   const data = sections[slug]
   useReveal()
-  if (!data) return <div className="py-40 text-center text-stone-500">Section not found.</div>
-  const { label, icon: SectionIcon, desc } = data
+  if (!data) return <div className="py-40 text-center text-stone-500">{t('listing.notFound')}</div>
+  const { icon: SectionIcon } = data
+  const label = t(`sections.${slug}.label`)
+  const desc = t(`sections.${slug}.desc`)
+  // Each tree lists only its own language's articles (missing lang ⇒ 'en'), and
+  // only advertises sections that have at least one article in that language.
+  const uiLang = i18nInstance.language === 'fr' ? 'fr' : 'en'
+  const localePrefix = uiLang === 'fr' ? '/fr' : ''
+  const navSections = sectionList.filter(s => sections[s.slug].posts.some(p => postLang(p) === uiLang))
   // Newest first. Stable sort keeps undated posts (guides/FAQs) in authored order.
-  const posts = [...data.posts].sort((a, b) => articleSortKey(b.date) - articleSortKey(a.date))
+  const posts = data.posts.filter(p => postLang(p) === uiLang).sort((a, b) => articleSortKey(b.date) - articleSortKey(a.date))
   return (
     <div className="bg-stone-50 pt-24">
       <Helmet>
         <title>{label} — Everstead</title>
         <meta name="description" content={desc} />
-        <link rel="canonical" href={`https://www.everstead.care/resources/${slug}`} />
+        <link rel="canonical" href={`https://www.everstead.care${localePrefix}/resources/${slug}`} />
         <meta property="og:title" content={`${label} — Everstead`} />
         <meta property="og:description" content={desc} />
-        <meta property="og:url" content={`https://www.everstead.care/resources/${slug}`} />
+        <meta property="og:url" content={`https://www.everstead.care${localePrefix}/resources/${slug}`} />
       </Helmet>
       <section className="py-20 lg:py-28 grain relative overflow-hidden">
         <div className="absolute inset-0 aurora-bg" />
@@ -2723,7 +2891,7 @@ function ResourceSection({ slug }) {
           <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-white/10 mb-7 animate-fade-in">
             <SectionIcon size={24} className="text-white" />
           </div>
-          <p className="text-xs font-semibold uppercase tracking-widest text-sage-400 mb-4 animate-fade-in">Resources</p>
+          <p className="text-xs font-semibold uppercase tracking-widest text-sage-400 mb-4 animate-fade-in">{t('eyebrow')}</p>
           <h1 className="font-display text-5xl lg:text-6xl font-light text-white leading-tight text-balance animate-fade-up">{label}</h1>
           <p className="mt-5 text-stone-300 text-lg leading-relaxed max-w-xl mx-auto animate-fade-up animate-delay-100">{desc}</p>
         </div>
@@ -2732,14 +2900,14 @@ function ResourceSection({ slug }) {
       {/* Section nav */}
       <section className="border-b border-stone-200 bg-white">
         <div className="max-w-5xl mx-auto px-6 lg:px-8 flex gap-1 overflow-x-auto py-3">
-          {sectionList.map(s => (
+          {navSections.map(s => (
             <Link
               key={s.slug}
               to={`/resources/${s.slug}`}
               className={`flex items-center gap-1.5 px-3.5 py-2 text-sm font-medium rounded-md whitespace-nowrap transition-colors ${s.slug === slug ? 'bg-navy-50 text-navy-800' : 'text-stone-600 hover:bg-stone-100 hover:text-navy-800'}`}
             >
               <s.icon size={14} />
-              {s.label}
+              {t(`sections.${s.slug}.label`)}
             </Link>
           ))}
         </div>
@@ -2747,7 +2915,9 @@ function ResourceSection({ slug }) {
 
       <section className="py-16 lg:py-24">
         <div className="max-w-5xl mx-auto px-6 lg:px-8 grid sm:grid-cols-2 gap-6">
-          {posts.map(({ slug: postSlug, title, date, tag, desc: postDesc, readTime }, i) => (
+          {posts.map((post, i) => {
+            const { slug: postSlug, title, date, tag, desc: postDesc, readTime } = post
+            return (
             <Link
               key={postSlug}
               to={`/resources/${slug}/${postSlug}`}
@@ -2755,16 +2925,17 @@ function ResourceSection({ slug }) {
             >
               <div className="flex items-center gap-2 mb-4">
                 <span className="bg-navy-50 text-navy-700 text-xs font-medium px-2.5 py-0.5 rounded-full border border-navy-100">{tag}</span>
-                {date && <span className="text-xs text-stone-400">{date}</span>}
+                {date && <span className="text-xs text-stone-400">{displayDate(post)}</span>}
                 {readTime && <span className="text-xs text-stone-400">· {readTime}</span>}
               </div>
               <h3 className="font-semibold text-navy-900 mb-2 leading-snug group-hover:text-navy-700 transition-colors">{title}</h3>
               <p className="text-stone-500 text-sm leading-relaxed mb-4">{postDesc}</p>
               <span className="inline-flex items-center gap-1 text-xs text-navy-700 font-medium group-hover:gap-2 transition-all">
-                {slug === 'checklists' ? 'View checklist' : slug === 'faqs' ? 'Read answers' : 'Read more'} <ArrowRight size={11} />
+                {slug === 'checklists' ? t('listing.viewChecklist') : slug === 'faqs' ? t('listing.readAnswers') : t('listing.readMore')} <ArrowRight size={11} />
               </span>
             </Link>
-          ))}
+            )
+          })}
         </div>
       </section>
     </div>
@@ -2777,35 +2948,38 @@ function ResourceSection({ slug }) {
 
 function ResourcesIndex() {
   useReveal()
+  const { t, i18n: i18nInstance } = useTranslation('resources')
+  const uiLang = i18nInstance.language === 'fr' ? 'fr' : 'en'
+  const localePrefix = uiLang === 'fr' ? '/fr' : ''
+  // Only advertise sections that have at least one article in this language.
+  const visibleSections = sectionList.filter(s => sections[s.slug].posts.some(p => postLang(p) === uiLang))
   return (
     <>
     <Helmet>
-      <title>Resources — Everstead Guides, Checklists & Estate Planning Insight</title>
-      <meta name="description" content="Free guides, checklists, and tools to help you understand estate planning, prepare your family, and get your affairs in order. Practical, UK-focused resources." />
-      <link rel="canonical" href="https://www.everstead.care/resources" />
-      <meta property="og:title" content="Resources — Everstead" />
-      <meta property="og:description" content="Guides, checklists, and insight. Everything you need to understand estate planning and get your family plan in order." />
-      <meta property="og:url" content="https://www.everstead.care/resources" />
+      <title>{t('meta.title')}</title>
+      <meta name="description" content={t('meta.description')} />
+      <link rel="canonical" href={`https://www.everstead.care${localePrefix}/resources`} />
+      <meta property="og:title" content={t('meta.ogTitle')} />
+      <meta property="og:description" content={t('meta.ogDescription')} />
+      <meta property="og:url" content={`https://www.everstead.care${localePrefix}/resources`} />
     </Helmet>
     <div className="bg-stone-50 pt-24">
       <section className="py-20 lg:py-28 grain relative overflow-hidden">
         <div className="absolute inset-0 aurora-bg" />
         <div className="relative max-w-4xl mx-auto px-6 lg:px-8 text-center">
-          <p className="text-xs font-semibold uppercase tracking-widest text-sage-400 mb-5 animate-fade-in">Resources</p>
+          <p className="text-xs font-semibold uppercase tracking-widest text-sage-400 mb-5 animate-fade-in">{t('eyebrow')}</p>
           <h1 className="font-display text-5xl lg:text-6xl font-light text-white leading-tight text-balance animate-fade-up">
-            Guides, checklists, and insight.
+            {t('index.title')}
           </h1>
           <p className="mt-5 text-stone-300 text-lg leading-relaxed max-w-xl mx-auto animate-fade-up animate-delay-100">
-            Everything you need to understand estate planning and get your family plan in order.
+            {t('index.subtitle')}
           </p>
         </div>
       </section>
 
       <section className="py-20 lg:py-28">
         <div className="max-w-5xl mx-auto px-6 lg:px-8 grid sm:grid-cols-2 gap-6">
-          {sectionList.map(({ slug, label, icon: Icon }, i) => {
-            const data = sections[slug]
-            return (
+          {visibleSections.map(({ slug, icon: Icon }, i) => (
               <Link
                 key={slug}
                 to={`/resources/${slug}`}
@@ -2814,12 +2988,11 @@ function ResourcesIndex() {
                 <div className="w-11 h-11 rounded-xl bg-navy-50 flex items-center justify-center mb-5">
                   <Icon size={22} className="text-navy-700" />
                 </div>
-                <h2 className="font-semibold text-navy-900 mb-2 group-hover:text-navy-700 transition-colors">{label}</h2>
-                <p className="text-stone-500 text-sm leading-relaxed mb-4">{data.desc}</p>
-                <span className="inline-flex items-center gap-1 text-xs text-navy-700 font-medium">Browse {label.toLowerCase()} <ArrowRight size={11} /></span>
+                <h2 className="font-semibold text-navy-900 mb-2 group-hover:text-navy-700 transition-colors">{t(`sections.${slug}.label`)}</h2>
+                <p className="text-stone-500 text-sm leading-relaxed mb-4">{t(`sections.${slug}.desc`)}</p>
+                <span className="inline-flex items-center gap-1 text-xs text-navy-700 font-medium">{t(`sections.${slug}.browse`)} <ArrowRight size={11} /></span>
               </Link>
-            )
-          })}
+          ))}
         </div>
       </section>
 
@@ -2827,12 +3000,12 @@ function ResourcesIndex() {
       <section id="tools" className="py-20 lg:py-28 bg-white border-t border-stone-100">
         <div className="max-w-5xl mx-auto px-6 lg:px-8">
           <div className="mb-12 reveal">
-            <p className="text-xs font-semibold uppercase tracking-widest text-sage-600 mb-3">Free tools</p>
+            <p className="text-xs font-semibold uppercase tracking-widest text-sage-600 mb-3">{t('tools.eyebrow')}</p>
             <h2 className="font-display text-3xl lg:text-4xl font-light text-navy-950 leading-tight">
-              Practical tools, no sign-up required.
+              {t('tools.title')}
             </h2>
             <p className="mt-3 text-stone-500 text-base leading-relaxed max-w-xl">
-              Use these tools to understand where you stand, get a checklist for administering an estate, or calculate what your digital estate is worth.
+              {t('tools.subtitle')}
             </p>
           </div>
           <div className="grid sm:grid-cols-3 gap-6">
@@ -2844,18 +3017,18 @@ function ResourcesIndex() {
               >
                 {tool.badge && (
                   <span className="absolute top-4 right-4 text-[10px] font-semibold uppercase tracking-widest bg-sage-100 text-sage-700 border border-sage-200 px-2 py-0.5 rounded-full">
-                    {tool.badge}
+                    {t(`tools.items.${tool.i18nKey}.badge`)}
                   </span>
                 )}
                 <span className={`self-start text-[11px] font-semibold uppercase tracking-widest border rounded-full px-2.5 py-0.5 mb-5 ${tool.tagColor}`}>
-                  {tool.tag}
+                  {t(`tools.items.${tool.i18nKey}.tag`)}
                 </span>
                 <h3 className="font-semibold text-navy-900 text-base mb-3 group-hover:text-navy-700 transition-colors leading-snug">
-                  {tool.title}
+                  {t(`tools.items.${tool.i18nKey}.title`)}
                 </h3>
-                <p className="text-stone-500 text-sm leading-relaxed flex-1 mb-5">{tool.desc}</p>
+                <p className="text-stone-500 text-sm leading-relaxed flex-1 mb-5">{t(`tools.items.${tool.i18nKey}.desc`)}</p>
                 <span className="inline-flex items-center gap-1.5 text-xs text-navy-700 font-medium">
-                  {tool.cta} <ArrowRight size={11} />
+                  {t(`tools.items.${tool.i18nKey}.cta`)} <ArrowRight size={11} />
                 </span>
               </Link>
             ))}

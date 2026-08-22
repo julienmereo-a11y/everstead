@@ -4,20 +4,25 @@ import HreflangLinks from '../components/HreflangLinks'
 import { useTranslation } from 'react-i18next'
 import { useReveal } from '../components/useReveal'
 import i18n from '../i18n'
-import enTerms from '../i18n/locales/en/terms.json'
-import frTerms from '../i18n/locales/fr/terms.json'
+import enMentionsLegales from '../i18n/locales/en/mentionsLegales.json'
+import frMentionsLegales from '../i18n/locales/fr/mentionsLegales.json'
 
 // Self-registered namespace (keeps src/i18n/index.js untouched). Safe to move
 // into the central resources map later — re-adding the same bundle is a no-op.
-i18n.addResourceBundle('en', 'terms', enTerms)
-i18n.addResourceBundle('fr', 'terms', frTerms)
+i18n.addResourceBundle('en', 'mentionsLegales', enMentionsLegales)
+i18n.addResourceBundle('fr', 'mentionsLegales', frMentionsLegales)
 
-export default function Terms() {
+// French-market legal notice (mentions légales) required by the LCEN for sites
+// targeting France. Primarily served under /fr/mentions-legales; the English
+// tree renders an English version of the same notice. Placeholder strings in
+// square brackets ("[… — à compléter]") must be completed before this page is
+// relied on — never replace them with guessed values.
+export default function MentionsLegales() {
   useReveal()
-  const { t } = useTranslation('terms')
+  const { t } = useTranslation('mentionsLegales')
 
   const localePrefix = i18n.language === 'fr' ? '/fr' : ''
-  const pageUrl = `https://www.everstead.care${localePrefix}/terms`
+  const pageUrl = `https://www.everstead.care${localePrefix}/mentions-legales`
 
   const sections = t('sections', { returnObjects: true })
 
@@ -28,7 +33,7 @@ export default function Terms() {
       <meta name="description" content={t('meta.description')} />
       <link rel="canonical" href={pageUrl} />
     </Helmet>
-    <HreflangLinks path="/terms" />
+    <HreflangLinks path="/mentions-legales" />
     <div className="bg-stone-50 min-h-screen">
       {/* Header */}
       <section className="pt-40 pb-16 lg:pt-44 lg:pb-20 grain relative overflow-hidden">
@@ -43,17 +48,15 @@ export default function Terms() {
       </section>
 
       <section className="py-20 lg:py-28">
-        <div className="max-w-3xl mx-auto px-6 lg:px-8">
-          <div className="space-y-10">
-            {sections.map(({ title, content }) => (
-              <div key={title} className="reveal">
-                <h2 className="font-display text-xl font-medium text-navy-950 mb-3">{title}</h2>
-                {content.split('\n\n').map((para, j) => (
-                  <p key={j} className="text-stone-600 text-sm leading-relaxed mb-3 last:mb-0">{para}</p>
-                ))}
-              </div>
-            ))}
-          </div>
+        <div className="max-w-3xl mx-auto px-6 lg:px-8 space-y-6">
+          {sections.map(({ title, content }) => (
+            <div key={title} className="reveal rounded-2xl bg-white border border-stone-200 px-7 py-6">
+              <h2 className="font-display text-xl font-medium text-navy-950 mb-3">{title}</h2>
+              {content.split('\n\n').map((para, j) => (
+                <p key={j} className="text-stone-600 text-sm leading-relaxed mb-3 last:mb-0">{para}</p>
+              ))}
+            </div>
+          ))}
         </div>
       </section>
     </div>

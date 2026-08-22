@@ -98,6 +98,7 @@ const cols = [
       { key: 'subprocessors', href: '/subprocessors' },
       { key: 'cookiePolicy', href: '/cookies' },
       { key: 'accessibility', href: '/accessibility' },
+      { key: 'mentionsLegales', href: '/mentions-legales' },
     ],
   },
 ]

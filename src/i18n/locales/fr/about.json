@@ -6,16 +6,16 @@
   "hero": {
     "eyebrow": "Notre mission",
     "title": "Aucune famille ne devrait passer son deuil à chercher des papiers.",
-    "subtitle": "Everstead existe pour que cela n'arrive jamais. Nous transformons le travail écrasant d'organiser un patrimoine en quelque chose qu'une famille peut faire ensemble — dans le calme, en toute clarté, et bien avant que cela ne devienne urgent.",
+    "subtitle": "Everstead existe pour que cela n'arrive jamais. Nous transformons la préparation d'une succession — une tâche souvent écrasante — en quelque chose qu'une famille peut faire ensemble, dans le calme, en toute clarté, et bien avant que cela ne devienne urgent.",
     "ctaPrimary": "Commencer à tout organiser",
     "ctaSecondary": "Voir comment ça marche"
   },
   "origin": {
     "eyebrow": "Où tout a commencé",
-    "quote": "« Après un deuil, nous avons passé un mois entier simplement à chercher. Des numéros de compte, des contrats d'assurance, des comptes en ligne, des abonnements à résilier. Tout cela en plein deuil. C'était un chaos évitable. »",
+    "quote": "« Après un deuil, nous avons passé un mois entier simplement à chercher. Des numéros de compte, des contrats d'assurance, des comptes en ligne, des abonnements à résilier. Tout cela en plein deuil. C'était un chaos évitable. »",
     "attribution": "— Julien, fondateur d'Everstead",
     "para1": "Cette expérience n'a rien d'unique. Des millions de familles traversent la même épreuve chaque année — non pas par manque d'attention, mais parce que personne ne leur a jamais donné un moyen simple de se préparer.",
-    "para2": "Everstead a été créé pour combler ce manque. Organiser son patrimoine devrait se faire une seule fois, dans le calme, selon vos règles. Le bénéfice, lui, dure pour toujours — pour vous, pour votre famille, et pour les personnes de confiance qui prendront le relais."
+    "para2": "Everstead a été créé pour combler ce manque. Préparer sa succession devrait se faire une seule fois, dans le calme, selon vos règles. Le bénéfice, lui, dure pour toujours — pour vous, pour votre famille, et pour les personnes de confiance qui prendront le relais."
   },
   "founder": {
     "eyebrow": "Derrière Everstead",
@@ -33,23 +33,23 @@
   "mission": {
     "eyebrow": "Notre raison d'être",
     "title": "Rendre la part pratique du deuil gérable — avant même que le besoin ne se présente.",
-    "para1": "Organiser son patrimoine a toujours été important. Mais les outils d'aujourd'hui — notaires, tableurs, classeurs — n'ont jamais été pensés pour des familles modernes dont la vie s'étend sur des dizaines de comptes et de plateformes numériques.",
+    "para1": "Préparer sa succession a toujours été important. Mais les outils d'aujourd'hui — le dossier chez le notaire, les tableurs, les classeurs — n'ont jamais été pensés pour des familles modernes dont la vie s'étend sur des dizaines de comptes et de plateformes numériques.",
     "para2": "Nous construisons la plateforme qui réunit chaque compte, document, instruction et personne de confiance dans un seul espace privé, structuré et sécurisé — conçu précisément pour le moment où tout compte le plus.",
     "stats": [
       {
-        "stat": "Plus de 4 semaines",
-        "label": "Temps moyen passé par les familles à localiser les actifs après un décès",
-        "note": "Source : études britanniques sur le deuil"
+        "stat": "Des semaines",
+        "label": "de démarches pour les proches lorsque rien n'a été préparé",
+        "note": "Banques, assurances, abonnements : chaque organisme est à prévenir, souvent un par un."
       },
       {
-        "stat": "Plus de 15 000 £",
-        "label": "Valeur estimée des actifs numériques et comptes non réclamés, laissés sans instructions",
-        "note": "D'après des données financières des consommateurs britanniques"
+        "stat": "Introuvables",
+        "label": "Sans inventaire, des comptes en ligne et des contrats d'assurance-vie risquent de ne jamais être retrouvés",
+        "note": "Ce qui n'est consigné nulle part peut rester en déshérence."
       },
       {
         "stat": "1 sur 3",
-        "label": "Un adulte britannique sur trois n'a aucun plan documenté pour ses comptes et ses actifs",
-        "note": "Études YouGov / Solicitors for the Elderly"
+        "label": "Selon une étude britannique, un adulte sur trois n'a aucun plan documenté pour ses comptes et son patrimoine",
+        "note": "Étude YouGov / Solicitors for the Elderly, Royaume-Uni"
       }
     ]
   },
@@ -75,12 +75,12 @@
     "eyebrow": "Ce que disent les familles",
     "items": [
       {
-        "quote": "« Je repoussais cela depuis des années. Everstead a rendu la tâche moins écrasante — je m'y suis mise un dimanche après-midi, et j'ai senti un poids immense me quitter. Mes enfants savent désormais exactement quoi faire. »",
+        "quote": "« Je repoussais cela depuis des années. Everstead a rendu la tâche moins écrasante — je m'y suis mise un dimanche après-midi, et j'ai senti un poids immense me quitter. Mes enfants savent désormais exactement quoi faire. »",
         "name": "Margaret, 67 ans",
         "location": "Surrey"
       },
       {
-        "quote": "« Quand mon père nous a quittés, nous partions de rien. Il a fallu des mois pour régler sa succession. J'ai depuis mis en place Everstead pour que mes enfants ne traversent jamais la même chose. C'est la chose la plus responsable que j'aie faite pour eux. »",
+        "quote": "« Quand mon père nous a quittés, nous partions de rien. Il a fallu des mois pour régler sa succession. J'ai depuis mis en place Everstead pour que mes enfants ne traversent jamais la même chose. C'est la chose la plus responsable que j'aie faite pour eux. »",
         "name": "David, 58 ans",
         "location": "Édimbourg"
       }

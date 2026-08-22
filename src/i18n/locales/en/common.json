@@ -58,7 +58,8 @@
       "adviserDpa": "Adviser DPA",
       "subprocessors": "Subprocessors",
       "cookiePolicy": "Cookie Policy",
-      "accessibility": "Accessibility"
+      "accessibility": "Accessibility",
+      "mentionsLegales": "Legal notice"
     },
     "copyright": "© {{year}} Everstead Digital Ltd. All rights reserved.",
     "bottom": {

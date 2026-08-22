@@ -1,0 +1,37 @@
+{
+  "meta": {
+    "title": "Mentions légales — Everstead",
+    "description": "Mentions légales du site Everstead : éditeur du site, directeur de la publication, hébergement, contact, propriété intellectuelle et médiation de la consommation."
+  },
+  "header": {
+    "eyebrow": "Légal",
+    "title": "Mentions légales",
+    "updated": "Dernière mise à jour : août 2026"
+  },
+  "sections": [
+    {
+      "title": "Éditeur du site",
+      "content": "Le site everstead.care (ci-après « le Site ») est édité par EVERSTEAD DIGITAL LTD, société à responsabilité limitée de droit anglais (private limited company), immatriculée en Angleterre et au pays de Galles sous le numéro 17166825.\n\nSiège social : [Adresse du siège — à compléter], Londres, Angleterre, Royaume-Uni.\n\nTéléphone : [À compléter].\n\nNuméro d'enregistrement auprès de l'ICO (autorité britannique de protection des données) : 00013988672."
+    },
+    {
+      "title": "Directeur de la publication",
+      "content": "Directeur de la publication : [À compléter].\n\nLe directeur de la publication est la personne responsable du contenu éditorial du Site au sens de la loi n° 2004-575 du 21 juin 2004 pour la confiance dans l'économie numérique (LCEN)."
+    },
+    {
+      "title": "Hébergement",
+      "content": "Le Site est hébergé par Vercel Inc., qui assure l'hébergement web et les fonctions serverless (site Everstead et points de terminaison de l'API). Politique de confidentialité : vercel.com/legal/privacy-policy.\n\nLes données des membres sont hébergées par Supabase Inc. — base de données PostgreSQL managée, authentification et stockage chiffré des fichiers du coffre. Localisation des données : UE (Irlande) — données hébergées dans la région de Francfort. Politique de confidentialité : supabase.com/privacy.\n\nLa liste complète et à jour de nos sous-traitants est publiée à l'adresse everstead.care/subprocessors."
+    },
+    {
+      "title": "Contact",
+      "content": "Pour toute question générale : hello@everstead.care.\n\nPour toute question juridique : legal@everstead.care.\n\nPour toute question relative aux données personnelles : privacy@everstead.care."
+    },
+    {
+      "title": "Propriété intellectuelle",
+      "content": "L'ensemble des éléments composant le Site — textes, graphismes, logos, marques, interface et logiciels — est la propriété d'EVERSTEAD DIGITAL LTD ou fait l'objet d'une autorisation d'utilisation. Toute reproduction, représentation, modification ou adaptation, totale ou partielle, du Site ou de l'un de ses éléments, sans autorisation écrite préalable, est interdite.\n\nLes contenus que vous ajoutez à votre espace Everstead demeurent votre propriété, dans les conditions prévues par nos Conditions d'utilisation."
+    },
+    {
+      "title": "Médiation de la consommation",
+      "content": "Conformément aux articles L.612-1 et suivants du Code de la consommation, tout consommateur résidant en France a le droit de recourir gratuitement à un médiateur de la consommation en vue de la résolution amiable d'un litige l'opposant à un professionnel.\n\nMédiateur compétent : [Médiateur de la consommation — désignation en cours]. Les coordonnées du médiateur seront publiées sur cette page dès sa désignation."
+    }
+  ]
+}

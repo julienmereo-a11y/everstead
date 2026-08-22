@@ -1,0 +1,88 @@
+{
+  "meta": {
+    "title": "Ressources — Guides, listes de contrôle et transmission — Everstead",
+    "description": "Des guides, des listes de contrôle et des articles pratiques pour comprendre la transmission, préparer vos proches et mettre vos affaires en ordre — avec des articles dédiés au cadre français.",
+    "ogTitle": "Ressources — Everstead",
+    "ogDescription": "Guides, listes de contrôle et conseils pratiques. Tout ce qu'il faut pour comprendre la transmission et organiser votre plan familial."
+  },
+  "eyebrow": "Ressources",
+  "index": {
+    "title": "Guides, listes et conseils pratiques.",
+    "subtitle": "Tout ce qu'il faut pour comprendre la transmission et mettre en place votre plan familial."
+  },
+  "sections": {
+    "blog": {
+      "label": "Blog",
+      "desc": "Des conseils pratiques sur la succession, l'organisation familiale et la vie numérique.",
+      "browse": "Parcourir le blog"
+    },
+    "guides": {
+      "label": "Guides",
+      "desc": "Des guides complets sur les grands sujets de la transmission et de la préparation familiale.",
+      "browse": "Parcourir les guides"
+    },
+    "checklists": {
+      "label": "Listes de contrôle",
+      "desc": "Des listes pratiques et imprimables pour construire et réviser votre plan.",
+      "browse": "Parcourir les listes"
+    },
+    "faqs": {
+      "label": "FAQ",
+      "desc": "Les réponses aux questions les plus fréquentes sur Everstead et la transmission.",
+      "browse": "Parcourir la FAQ"
+    }
+  },
+  "listing": {
+    "readMore": "Lire l'article",
+    "viewChecklist": "Voir la liste",
+    "readAnswers": "Lire les réponses",
+    "notFound": "Section introuvable."
+  },
+  "article": {
+    "backTo": "Retour — {{section}}",
+    "inThisGuide": "Dans cet article",
+    "relatedReading": "À lire aussi",
+    "notFound": "Article introuvable.",
+    "backToResources": "Retour aux ressources",
+    "ctaStart": "Créer votre Everstead",
+    "startFree": {
+      "eyebrow": "Passez à la pratique",
+      "title": "Organisez l'essentiel pour votre famille — gratuitement.",
+      "body": "Everstead réunit vos comptes, vos documents et vos personnes de confiance dans un coffre sécurisé, pour que personne ne soit laissé dans l'incertitude. Gratuit pour toujours, sans carte bancaire.",
+      "cta": "Commencer gratuitement"
+    }
+  },
+  "tools": {
+    "eyebrow": "Outils gratuits",
+    "title": "Des outils pratiques, sans inscription.",
+    "subtitle": "Ces outils vous aident à savoir où vous en êtes, à suivre les démarches d'une succession ou à estimer votre patrimoine numérique. Ils sont en anglais et pensés pour le Royaume-Uni.",
+    "items": {
+      "afterDeath": {
+        "title": "Que faire après un décès",
+        "tag": "Guide IA",
+        "desc": "Un guide IA gratuit et bienveillant pour traverser les démarches après un décès au Royaume-Uni — des premières heures à la clôture de la succession. Sans inscription.",
+        "cta": "Ouvrir le guide",
+        "badge": "Gratuit · Sans compte"
+      },
+      "readiness": {
+        "title": "Score de préparation",
+        "tag": "Quiz",
+        "desc": "Répondez à 5 questions et obtenez un score sur 100 — avec le détail de ce qui vous manque et pourquoi c'est important.",
+        "cta": "Faire le quiz"
+      },
+      "executor": {
+        "title": "Check-list de l'exécuteur",
+        "tag": "Interactif",
+        "desc": "Une check-list complète et interactive pour les exécuteurs testamentaires en Angleterre et au pays de Galles — des premières 72 heures à la clôture de la succession. Imprimable.",
+        "cta": "Ouvrir la check-list",
+        "badge": "Le plus consulté"
+      },
+      "calculator": {
+        "title": "Calculateur de patrimoine numérique",
+        "tag": "Calculateur",
+        "desc": "Renseignez vos comptes, pensions, biens et actifs pour obtenir une estimation de votre patrimoine — avec une alerte au seuil d'imposition successorale britannique.",
+        "cta": "Calculer"
+      }
+    }
+  }
+}
