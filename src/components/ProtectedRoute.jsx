@@ -25,7 +25,7 @@ export default function ProtectedRoute({ children }) {
 
   const isDelegateOnly   = profile.role === 'delegate'
   const isAdviser        = profile.plan === 'advisor'   // advisers use the adviser portal, not B2C checkout
-  const isFreeTier       = profile.plan === 'free'      // permanent free tier — always admitted, features capped in the DB
+  const isFreeTier       = profile.plan === 'free'      // permanent free tier, always admitted, features capped in the DB
   const onTrialEndedPage = location.pathname === '/trial-ended'
 
   // Advisers belong in the adviser portal. Email/password login already routes them

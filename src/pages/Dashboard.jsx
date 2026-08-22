@@ -117,10 +117,10 @@ function TrialBanner({ daysLeft, onUpgrade }) {
     : warning ? 'bg-stone-700 text-white hover:bg-stone-800'
     : 'btn-aurora text-white hover:bg-navy-700'
   const msg = daysLeft === 1
-    ? "Your free trial ends tomorrow — your card on file will be charged unless you cancel."
+    ? "Your free trial ends tomorrow, your card on file will be charged unless you cancel."
     : daysLeft <= 7
-    ? `Your free trial ends in ${daysLeft} days — your card on file will be charged automatically.`
-    : `You're on a free trial — ${daysLeft} days remaining.`
+    ? `Your free trial ends in ${daysLeft} days, your card on file will be charged automatically.`
+    : `You're on a free trial, ${daysLeft} days remaining.`
   return (
     <div className={`flex items-center justify-between gap-4 px-6 py-3 text-sm ${cls}`}>
       <div className="flex items-center gap-2">
@@ -148,11 +148,11 @@ function TrialExpiredModal({ profile, onUpgrade }) {
         </div>
         <h2 className="font-display text-3xl font-light text-navy-950 mb-3">Your trial has ended</h2>
         <p className="text-stone-500 text-sm leading-relaxed mb-8">
-          Your 14-day free trial has expired. Choose a plan to keep your vault, trusted contacts, and everything you've set up — all your data is safely saved.
+          Your 14-day free trial has expired. Choose a plan to keep your vault, trusted contacts, and everything you've set up, all your data is safely saved.
         </p>
         <div className="space-y-3 mb-8">
           {[
-            { name: 'Everstead+', price: '£9.99/mo', note: 'or £7.99/mo billed annually (£95.88/yr · save 20%) — two private vaults', id: 'family', highlight: profile.plan !== 'advisor' },
+            { name: 'Everstead+', price: '£9.99/mo', note: 'or £7.99/mo billed annually (£95.88/yr · save 20%), two private vaults', id: 'family', highlight: profile.plan !== 'advisor' },
             ...(profile.plan === 'advisor' ? [{ name: 'Everstead Pro', price: '£60/mo', note: 'or £48/mo yearly · For estate advisers', id: 'advisor', highlight: true }] : []),
           ].map(plan => (
             <button
@@ -227,11 +227,11 @@ function AdvisorCancelledModal({ advisorName, onAddPayment }) {
             : <>Your adviser has cancelled their Everstead plan.</>}
         </p>
         <p className="text-stone-500 text-sm leading-relaxed mb-8">
-          The 30-day grace period has ended. Add a payment method to continue — all your accounts, documents, and instructions are saved and waiting for you.
+          The 30-day grace period has ended. Add a payment method to continue, all your accounts, documents, and instructions are saved and waiting for you.
         </p>
         <div className="space-y-3 mb-8">
           {[
-            { name: 'Everstead+', price: '£9.99/mo', note: 'or £7.99/mo billed annually (£95.88/yr · save 20%) — all household members', id: 'family', highlight: true },
+            { name: 'Everstead+', price: '£9.99/mo', note: 'or £7.99/mo billed annually (£95.88/yr · save 20%), all household members', id: 'family', highlight: true },
           ].map(plan => (
             <button
               key={plan.id}
@@ -571,7 +571,7 @@ export default function Dashboard() {
         billingCycle,
         userEmail:       user.email,
         customerId:      activeProfile.stripe_customer_id || undefined,
-        trialPeriodDays: 0, // user is converting from trial — charge immediately
+        trialPeriodDays: 0, // user is converting from trial, charge immediately
       })
     } catch (err) {
       setUpgradeError(err.message)
@@ -621,7 +621,7 @@ export default function Dashboard() {
   return (
     <>
     <Helmet>
-      <title>My Plan — Everstead</title>
+      <title>My Plan | Everstead</title>
       <meta name="robots" content="noindex, nofollow" />
     </Helmet>
     <div className="min-h-screen bg-stone-50 flex flex-col">
@@ -636,7 +636,7 @@ export default function Dashboard() {
       {/* Demo banner */}
       {isDemo && (
         <div className="bg-amber-500 text-white text-xs font-semibold text-center py-2 px-4 flex items-center justify-center gap-3 z-50">
-          <span>Demo mode — data is fictional and no changes are saved.</span>
+          <span>Demo mode, data is fictional and no changes are saved.</span>
           <Link to="/get-started" className="underline hover:no-underline">Start your real plan →</Link>
         </div>
       )}
@@ -719,7 +719,7 @@ export default function Dashboard() {
               )}
               <button
                 onClick={() => { setActiveSection(id); setSidebarOpen(false) }}
-                title={locked ? 'Personal Messages — upgrade to access. Click to see options.' : undefined}
+                title={locked ? 'Personal Messages, upgrade to access. Click to see options.' : undefined}
                 aria-current={isActive && !locked ? 'page' : undefined}
                 className={`w-full flex items-center gap-3 text-sm font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40 ${
                   isActive && !locked
@@ -943,7 +943,7 @@ function OwnerAIGuide({ userName, plan, accountCount, documentCount, contactCoun
       const { supabase: sb } = await import('../lib/supabase')
       const { data: { session } } = await sb.auth.getSession()
       if (!session?.access_token) {
-        setMessages(prev => [...prev, { role: 'assistant', content: 'This is just a preview — sign in to your account to chat with the assistant.' }])
+        setMessages(prev => [...prev, { role: 'assistant', content: 'This is just a preview, sign in to your account to chat with the assistant.' }])
         setLoading(false)
         return
       }
@@ -1184,7 +1184,7 @@ function OverviewSection({ profile, accounts, documents, people, instructions, m
             <span
               className="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1 rounded-full text-white shadow-sm"
               style={{ background: 'linear-gradient(100deg,#2d5082,#6f6bc6,#6e9b6a)' }}
-              title="You joined Everstead as a founding member — thank you for being here from the very start."
+              title="You joined Everstead as a founding member, thank you for being here from the very start."
             >
               <Sparkles size={12} /> Founding member
             </span>
@@ -1206,7 +1206,7 @@ function OverviewSection({ profile, accounts, documents, people, instructions, m
           </div>
           <div className="flex-1 min-w-0">
             <p className="text-xs font-semibold uppercase tracking-widest text-sage-700 mb-0.5">Start here</p>
-            <h3 className="font-display text-lg font-light text-navy-950 leading-snug">Tell your story — start with “About Me”.</h3>
+            <h3 className="font-display text-lg font-light text-navy-950 leading-snug">Tell your story, start with “About Me”.</h3>
             <p className="text-sm text-stone-500 mt-0.5">The easiest, most personal part of your plan. Takes a few minutes, and it's yours to share with the people you love.</p>
           </div>
           <ArrowRight size={18} className="text-sage-600 shrink-0 group-hover:translate-x-0.5 transition-transform" />
@@ -1238,7 +1238,7 @@ function OverviewSection({ profile, accounts, documents, people, instructions, m
           <div className="flex items-start gap-3">
             <RefreshCw size={16} className="text-stone-400 mt-0.5 shrink-0" />
             <p className="text-sm text-stone-600">
-              Your vault hasn't been updated in {daysSinceLogin} days — accounts, documents, or contacts may have changed since you last checked in.
+              Your vault hasn't been updated in {daysSinceLogin} days, accounts, documents, or contacts may have changed since you last checked in.
             </p>
           </div>
           <div className="flex items-center gap-3 shrink-0">
@@ -1294,8 +1294,8 @@ function OverviewSection({ profile, accounts, documents, people, instructions, m
             </div>
           </div>
           <p style={{ fontSize: '12px', color: '#78716c', marginTop: '16px', marginBottom: '20px', lineHeight: 1.5 }}>
-            {score >= 80 ? 'Excellent — your family is well prepared.' :
-             score >= 50 ? 'Good progress — a few items remaining.' :
+            {score >= 80 ? 'Excellent, your family is well prepared.' :
+             score >= 50 ? 'Good progress, a few items remaining.' :
              'Every item you add protects the people you love.'}
           </p>
 
@@ -1374,7 +1374,7 @@ function OverviewSection({ profile, accounts, documents, people, instructions, m
               </div>
               <div className="flex-1 min-w-0">
                 <p className="font-semibold text-navy-900 text-sm">Leave something personal</p>
-                <p className="text-xs text-stone-500 mt-0.5">Write a letter to someone you love — sealed until you choose to release it.</p>
+                <p className="text-xs text-stone-500 mt-0.5">Write a letter to someone you love, sealed until you choose to release it.</p>
               </div>
               <button
                 onClick={() => onNavigate('messages')}
@@ -1390,7 +1390,7 @@ function OverviewSection({ profile, accounts, documents, people, instructions, m
               </div>
               <div className="flex-1 min-w-0">
                 <p className="font-semibold text-navy-900 text-sm">{messages.length} personal {messages.length === 1 ? 'message' : 'messages'} saved</p>
-                <p className="text-xs text-stone-500 mt-0.5">Your words are sealed — ready to be delivered when the time comes.</p>
+                <p className="text-xs text-stone-500 mt-0.5">Your words are sealed, ready to be delivered when the time comes.</p>
               </div>
               <button
                 onClick={() => onNavigate('messages')}
@@ -1417,7 +1417,7 @@ function OverviewSection({ profile, accounts, documents, people, instructions, m
                 </p>
                 <p className="text-xs text-stone-500 mt-0.5 truncate">
                   {isSecondaryUser
-                    ? `Covered by the plan holder — your vault is fully private.`
+                    ? `Covered by the plan holder, your vault is fully private.`
                     : `${familyMembership.secondary_email} has their own private vault under your plan.`}
                 </p>
               </div>
@@ -1448,7 +1448,7 @@ function OverviewSection({ profile, accounts, documents, people, instructions, m
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-semibold text-navy-900">Add your partner or spouse</p>
-                <p className="text-xs text-stone-500 mt-0.5">Your plan includes a second private vault — invite them to set up theirs.</p>
+                <p className="text-xs text-stone-500 mt-0.5">Your plan includes a second private vault, invite them to set up theirs.</p>
               </div>
               <button
                 onClick={() => onNavigate('family')}
@@ -1528,7 +1528,7 @@ function OverviewSection({ profile, accounts, documents, people, instructions, m
               <div className="max-w-lg">
                 <p className="font-semibold text-white text-base">Ready for more? Upgrade to Everstead+</p>
                 <p className="mt-1 text-sm text-stone-300 leading-relaxed">
-                  Unlimited accounts &amp; documents, up to 10 trusted contacts, two private vaults, Personal Messages, and 25 GB of secure storage — everything you've set up comes with you.
+                  Unlimited accounts &amp; documents, up to 10 trusted contacts, two private vaults, Personal Messages, and 25 GB of secure storage, everything you've set up comes with you.
                 </p>
               </div>
             </div>
@@ -1641,7 +1641,7 @@ function AccountsSection({ accounts, loading, add, update, remove, profile, onUp
         // Life event prompt — property additions are a key life milestone
         if (form.category === 'Property') {
           onLifeEvent?.({
-            message: "You've added a property — a significant asset. It's worth making sure your will and trusted contacts reflect this change.",
+            message: "You've added a property, a significant asset. It's worth making sure your will and trusted contacts reflect this change.",
             cta: { label: 'Review trusted contacts →', section: 'people' },
           })
         }
@@ -1888,10 +1888,10 @@ function DocumentAccessEditor({ people, form, setForm }) {
     <div className="border border-stone-200 rounded-xl p-4 space-y-3 bg-stone-50/60">
       <div>
         <p className="text-xs font-semibold text-stone-600">Who can access this document</p>
-        <p className="text-[11px] text-stone-400 mt-0.5">Based on each person's access settings — tick or untick to override for this document only.</p>
+        <p className="text-[11px] text-stone-400 mt-0.5">Based on each person's access settings, tick or untick to override for this document only.</p>
       </div>
       {contacts.length === 0 ? (
-        <p className="text-xs text-stone-400">No trusted people yet — invite someone from the People section, then control their access to each document here.</p>
+        <p className="text-xs text-stone-400">No trusted people yet, invite someone from the People section, then control their access to each document here.</p>
       ) : (
         <div className="space-y-1.5 max-h-44 overflow-y-auto pr-1">
           {contacts.map(person => {
@@ -1926,11 +1926,11 @@ function DocumentAccessEditor({ people, form, setForm }) {
         <select className={input} value={form.release_timing || 'default'} onChange={e => setForm(p => ({ ...p, release_timing: e.target.value }))}>
           <option value="default">Follow each person's access timing</option>
           <option value="immediate">Available now to everyone with access</option>
-          <option value="sealed">Sealed — released only when the time comes</option>
+          <option value="sealed">Sealed, released only when the time comes</option>
         </select>
       </Field>
       {form.release_timing === 'sealed' && (
-        <p className="text-[11px] text-stone-400">Sealed documents stay locked for everyone here — they'll see it exists, but it only opens once your passing is verified by our team.</p>
+        <p className="text-[11px] text-stone-400">Sealed documents stay locked for everyone here, they'll see it exists, but it only opens once your passing is verified by our team.</p>
       )}
     </div>
   )
@@ -2070,12 +2070,12 @@ function DocumentsSection({ documents, loading, uploadFile, update, remove, plan
       const lowerType = form.doc_type?.toLowerCase() ?? ''
       if (lowerType.includes('will')) {
         onLifeEvent?.({
-          message: "Great — your will is uploaded. It's worth checking your trusted contacts and instructions still align with your wishes.",
+          message: "Great, your will is uploaded. It's worth checking your trusted contacts and instructions still align with your wishes.",
           cta: { label: 'Review instructions →', section: 'instructions' },
         })
       } else if (lowerType.includes('lpa')) {
         onLifeEvent?.({
-          message: "You've uploaded an LPA — an important document. Make sure your trusted contacts know who holds it, and that your access settings are up to date.",
+          message: "You've uploaded an LPA, an important document. Make sure your trusted contacts know who holds it, and that your access settings are up to date.",
           cta: { label: 'Review trusted contacts →', section: 'people' },
         })
       }
@@ -2185,7 +2185,7 @@ function DocumentsSection({ documents, loading, uploadFile, update, remove, plan
               />
             </div>
             {warn && (
-              <p className="text-xs text-amber-600 mt-1.5">Storage almost full — consider upgrading your plan.</p>
+              <p className="text-xs text-amber-600 mt-1.5">Storage almost full, consider upgrading your plan.</p>
             )}
           </div>
         )
@@ -2292,7 +2292,7 @@ function DocumentsSection({ documents, loading, uploadFile, update, remove, plan
       </div>
 
       {loading ? <LoadingSpinner /> : documents.length === 0 ? (
-        <EmptyState icon={FileText} label="No documents yet" action="Upload your first document — will, insurance policies, property deeds, and more." onAction={atDocLimit ? undefined : openUpload} />
+        <EmptyState icon={FileText} label="No documents yet" action="Upload your first document, will, insurance policies, property deeds, and more." onAction={atDocLimit ? undefined : openUpload} />
       ) : (
         <div className="bg-white border border-stone-200 rounded-xl overflow-hidden overflow-x-auto">
           <table className="w-full text-sm min-w-[640px]">
@@ -2401,7 +2401,7 @@ function DocumentsSection({ documents, loading, uploadFile, update, remove, plan
             )}
             {aiScanDone && (
               <p className="text-xs text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-xl px-4 py-2.5 flex items-center gap-2">
-                <CheckCircle2 size={13} /> Details extracted — review and edit below before saving.
+                <CheckCircle2 size={13} /> Details extracted, review and edit below before saving.
               </p>
             )}
             <Field label="Document name" required>
@@ -2539,7 +2539,7 @@ function AboutMeSection({ aboutMe, loading, save, uploadAvatar, profile, people,
     e.target.value = '' // allow re-selecting the same file
     if (!file || isDemo || !uploadAvatar) return
     if (!file.type.startsWith('image/')) { setError('Please choose an image file (JPG or PNG).'); return }
-    if (file.size > 5 * 1024 * 1024) { setError('That image is over 5 MB — please choose a smaller one.'); return }
+    if (file.size > 5 * 1024 * 1024) { setError('That image is over 5 MB, please choose a smaller one.'); return }
     setUploadingAvatar(true); setError(null)
     try {
       const url = await uploadAvatar(file)
@@ -2577,7 +2577,7 @@ function AboutMeSection({ aboutMe, loading, save, uploadAvatar, profile, people,
   return (
     <SectionShell
       title="About Me"
-      subtitle="A personal page about who you are — shared only with the people you choose."
+      subtitle="A personal page about who you are, shared only with the people you choose."
     >
       {/* Intro */}
       <div className="rounded-2xl border border-sage-200 bg-sage-50 p-5 mb-6 flex items-start gap-3">
@@ -2585,7 +2585,7 @@ function AboutMeSection({ aboutMe, loading, save, uploadAvatar, profile, people,
           <Heart size={17} />
         </div>
         <p className="text-sm text-stone-700 leading-relaxed">
-          This is the easiest, most personal part of your plan — your story, your passions, the moments that shaped you.
+          This is the easiest, most personal part of your plan, your story, your passions, the moments that shaped you.
           You choose who sees it, and whether it's shared now or kept for when your plan is activated. It's never shown to solicitors or professional advisers.
         </p>
       </div>
@@ -2637,7 +2637,7 @@ function AboutMeSection({ aboutMe, loading, save, uploadAvatar, profile, people,
               <Plus size={14} /> Add event
             </button>
           </div>
-          <p className="text-stone-500 text-xs mb-4">The moments that mattered. e.g. "1985 — Married in Edinburgh"</p>
+          <p className="text-stone-500 text-xs mb-4">The moments that mattered. e.g. "1985: Married in Edinburgh"</p>
           {form.life_events.length === 0 ? (
             <button onClick={addLifeEvent} className="w-full border border-dashed border-stone-200 rounded-xl py-5 text-sm text-stone-400 hover:border-sage-300 hover:text-sage-700 transition-colors">
               + Add your first life event
@@ -2682,7 +2682,7 @@ function AboutMeSection({ aboutMe, loading, save, uploadAvatar, profile, people,
               className={`${aboutInput} resize-none`}
               value={form.passions}
               onChange={e => set('passions', e.target.value)}
-              placeholder="The things you love — hobbies, places, people, causes…"
+              placeholder="The things you love, hobbies, places, people, causes…"
             />
           </Field>
         </div>
@@ -2701,7 +2701,7 @@ function AboutMeSection({ aboutMe, loading, save, uploadAvatar, profile, people,
             </div>
           </Field>
           {!spotifyValid && (
-            <p className="text-xs text-red-600 mt-2">That doesn't look like a Spotify link — it should start with open.spotify.com/…</p>
+            <p className="text-xs text-red-600 mt-2">That doesn't look like a Spotify link, it should start with open.spotify.com/…</p>
           )}
           {embedUrl && (
             <div className="mt-4 rounded-xl overflow-hidden border border-stone-200">
@@ -3117,7 +3117,7 @@ function MessagesSection({ messages: initialMessages, loading, people, isDemo, p
           </div>
           <h3 className="font-display text-xl font-light text-navy-950 mb-2">Leave something behind that matters.</h3>
           <p className="text-stone-600 text-sm leading-relaxed max-w-sm mx-auto mb-6">
-            Write letters, record final wishes, and set release triggers for the people you love — delivered when it matters most. Personal Messages are included in Everstead+.
+            Write letters, record final wishes, and set release triggers for the people you love, delivered when it matters most. Personal Messages are included in Everstead+.
           </p>
           <button
             onClick={onUpgrade}
@@ -3132,13 +3132,13 @@ function MessagesSection({ messages: initialMessages, loading, people, isDemo, p
       <div className="flex items-start gap-3 bg-navy-50 border border-navy-100 rounded-xl px-4 py-3.5 mb-5">
         <Lock size={15} className="text-navy-600 mt-0.5 shrink-0" />
         <p className="text-xs text-navy-700 leading-relaxed">
-          Messages are <strong>sealed</strong> by default — recipients cannot see them until you release them manually, or they are released automatically when Everstead verifies your passing. You can release a message at any time using the button on each card.
+          Messages are <strong>sealed</strong> by default, recipients cannot see them until you release them manually, or they are released automatically when Everstead verifies your passing. You can release a message at any time using the button on each card.
         </p>
       </div>
       )}
 
       {!messagesLocked && (loading ? <LoadingSpinner /> : messages.length === 0 ? (
-        <EmptyState icon={MessageSquare} label="No messages yet" action="Leave a personal note or video message for someone important — your spouse, children, solicitor, or anyone you choose." onAction={() => setShowCompose(true)} />
+        <EmptyState icon={MessageSquare} label="No messages yet" action="Leave a personal note or video message for someone important, your spouse, children, solicitor, or anyone you choose." onAction={() => setShowCompose(true)} />
       ) : (
         <div className="space-y-3">
           {messages.map(msg => {
@@ -3204,7 +3204,7 @@ function MessagesSection({ messages: initialMessages, loading, people, isDemo, p
                       <p className="text-sm font-semibold text-amber-900">Release this message now?</p>
                       <p className="text-xs text-amber-700 mt-0.5">
                         {msg.recipient_email
-                          ? <>Once released, we'll email <strong>{msg.recipient_email}</strong> a private, secure link to view this message — no account needed. This cannot be undone.</>
+                          ? <>Once released, we'll email <strong>{msg.recipient_email}</strong> a private, secure link to view this message, no account needed. This cannot be undone.</>
                           : <>Once released, <strong>{msg.recipient_name}</strong> will be able to see this message immediately on their delegate dashboard. This cannot be undone.</>}
                       </p>
                     </div>
@@ -3258,7 +3258,7 @@ function MessagesSection({ messages: initialMessages, loading, people, isDemo, p
                           />
                         )}
                         {msg.release_timing === 'on_date' && !msg.release_at && (
-                          <span className="text-[11px] text-amber-600">Pick a date — it stays sealed until then.</span>
+                          <span className="text-[11px] text-amber-600">Pick a date, it stays sealed until then.</span>
                         )}
                       </div>
                     )}
@@ -3270,7 +3270,7 @@ function MessagesSection({ messages: initialMessages, loading, people, isDemo, p
                       ) : isDemo ? (
                         <div className="flex flex-col items-center justify-center gap-2 py-8 aurora-field aurora-dim rounded-xl text-white">
                           {msg.type === 'video' ? <Play size={22} /> : <ImageIcon size={22} />}
-                          <p className="text-sm text-stone-300">{msg.type === 'video' ? 'Video' : 'Photo'} stored securely — preview available in your real plan.</p>
+                          <p className="text-sm text-stone-300">{msg.type === 'video' ? 'Video' : 'Photo'} stored securely, preview available in your real plan.</p>
                         </div>
                       ) : (
                         <div className="flex flex-col items-center justify-center gap-3 py-8 bg-white border border-dashed border-stone-200 rounded-xl">
@@ -3449,8 +3449,8 @@ function MessagesSection({ messages: initialMessages, loading, people, isDemo, p
                 >
                   <option value="" disabled>Select a person…</option>
                   {people.length > 0
-                    ? people.map(p => <option key={p.id} value={p.name}>{p.name} — {p.role}</option>)
-                    : <option disabled>No trusted people yet — add someone in People first</option>}
+                    ? people.map(p => <option key={p.id} value={p.name}>{p.name}, {p.role}</option>)
+                    : <option disabled>No trusted people yet, add someone in People first</option>}
                 </select>
               ) : (
                 <div className="space-y-2">
@@ -3465,8 +3465,8 @@ function MessagesSection({ messages: initialMessages, loading, people, isDemo, p
               <label className="block text-xs font-semibold text-stone-600 mb-2">When is it released?</label>
               <div className="grid grid-cols-2 gap-2.5">
                 {[
-                  { value: 'after_death', label: 'When the time comes', desc: 'Released when Everstead verifies your passing — or whenever you choose.' },
-                  { value: 'on_date',     label: 'On a specific date',  desc: 'Delivered automatically — a wedding day, an 18th birthday…' },
+                  { value: 'after_death', label: 'When the time comes', desc: 'Released when Everstead verifies your passing, or whenever you choose.' },
+                  { value: 'on_date',     label: 'On a specific date',  desc: 'Delivered automatically, a wedding day, an 18th birthday…' },
                 ].map(opt => (
                   <button
                     key={opt.value}
@@ -3537,7 +3537,7 @@ function MessagesSection({ messages: initialMessages, loading, people, isDemo, p
                       <Upload size={15} /> Upload {form.type === 'video' ? 'a video' : 'a photo'}
                       <input type="file" accept={form.type === 'video' ? 'video/*' : 'image/*'} className="sr-only" onChange={e => { const f = e.target.files?.[0]; if (f) { setMedia(f); setSaveError(null) } }} />
                     </label>
-                    <p className="text-[11px] text-stone-400 leading-snug text-center">{form.type === 'video' ? 'Record yourself, or upload mp4 / mov / webm.' : 'Upload a jpg or png — a scanned letter or a meaningful photo.'}</p>
+                    <p className="text-[11px] text-stone-400 leading-snug text-center">{form.type === 'video' ? 'Record yourself, or upload mp4 / mov / webm.' : 'Upload a jpg or png, a scanned letter or a meaningful photo.'}</p>
                   </div>
                 )}
               </div>
@@ -3712,7 +3712,7 @@ function PersonAccessForm({ initial, onSave, onCancel, saving, submitLabel }) {
             <div className="flex items-start gap-2.5 bg-emerald-50 border border-emerald-200 rounded-xl px-3.5 py-3">
               <CheckCircle2 size={14} className="text-emerald-600 mt-0.5 shrink-0" />
               <p className="text-xs text-emerald-800 leading-relaxed">
-                <span className="font-semibold">Full access role</span> — Spouse / Partner can view all sections of your plan.
+                <span className="font-semibold">Full access role</span>: Spouse / Partner can view all sections of your plan.
               </p>
             </div>
           ) : (
@@ -3875,7 +3875,7 @@ function PeopleSection({ people, loading, invite, resendInvite, updatePerson, re
               onClick={onUpgrade}
               className="inline-flex items-center gap-2 rounded-full bg-amber-50 border border-amber-200 text-amber-700 text-sm font-semibold px-4 py-2 hover:bg-amber-100 transition-colors"
             >
-              <Lock size={14} /> Limit reached — upgrade
+              <Lock size={14} /> Limit reached, upgrade
             </button>
           )
           : <button onClick={() => setShowInvite(true)} className={primaryBtn}><Plus size={15} />Invite person</button>
@@ -3885,7 +3885,7 @@ function PeopleSection({ people, loading, invite, resendInvite, updatePerson, re
       <div className="mb-4 flex items-start gap-3 bg-sage-50 border border-sage-200 rounded-xl px-4 py-3">
         <ShieldCheck size={15} className="text-sage-700 mt-0.5 shrink-0" />
         <p className="text-sm text-stone-600 flex-1 leading-relaxed">
-          Nothing here is released while you're alive — you decide exactly what each person sees. After a death, a trusted person reports it and our team verifies before any after-death access opens.{' '}
+          Nothing here is released while you're alive, you decide exactly what each person sees. After a death, a trusted person reports it and our team verifies before any after-death access opens.{' '}
           <a href="/security" target="_blank" rel="noopener noreferrer" className="font-medium text-sage-800 underline underline-offset-2 hover:text-sage-900 whitespace-nowrap">How access is released →</a>
         </p>
       </div>
@@ -3972,7 +3972,7 @@ function PeopleSection({ people, loading, invite, resendInvite, updatePerson, re
       )}
 
       {editingPerson && (
-        <Modal title={`Edit access — ${editingPerson.name}`} onClose={() => setEditingPerson(null)}>
+        <Modal title={`Edit access, ${editingPerson.name}`} onClose={() => setEditingPerson(null)}>
           <PersonAccessForm
             initial={{
               id: editingPerson.id,
@@ -4062,7 +4062,7 @@ function InstructionsSection({ instructions, loading, add, update, remove, profi
       const { supabase: sb } = await import('../lib/supabase')
       const { data: { session } } = await sb.auth.getSession()
       if (!session?.access_token) {
-        setAssistantMessages(prev => [...prev, { role: 'assistant', content: 'This is just a preview — sign in to your account to use the assistant.' }])
+        setAssistantMessages(prev => [...prev, { role: 'assistant', content: 'This is just a preview, sign in to your account to use the assistant.' }])
         setAssistantLoading(false)
         return
       }
@@ -4653,7 +4653,7 @@ function ActivitySection({ activity, loading }) {
               <div className="flex-1">
                 <p className="text-sm text-navy-800">
                   <span className="font-medium">{event.action.replace('.', ' ')}</span>
-                  {event.resource_name && <span className="text-stone-500"> — {event.resource_name}</span>}
+                  {event.resource_name && <span className="text-stone-500">, {event.resource_name}</span>}
                 </p>
                 <p className="text-xs text-stone-400 mt-0.5">
                   {new Date(event.created_at).toLocaleString('en-GB')}
@@ -4673,51 +4673,51 @@ function ActivitySection({ activity, loading }) {
 const OWNER_GUIDES = [
   {
     icon: Landmark,
-    title: 'Accounts — what to add',
+    title: 'Accounts, what to add',
     color: 'bg-blue-50 text-blue-700',
     items: [
       { label: 'Bank & current accounts', detail: 'Add the bank name, account number (last 4 digits is fine), and a branch contact or online login hint. Include all accounts the family would need to notify or close.' },
       { label: 'Savings & ISAs', detail: 'Include the provider, account type, and rough value if comfortable. Even a ballpark figure helps your executor prioritise.' },
-      { label: 'Pensions & retirement funds', detail: 'List every pension — workplace, personal, and state. Include the scheme name and a reference number. Many pensions are missed during estate admin.' },
+      { label: 'Pensions & retirement funds', detail: 'List every pension, workplace, personal, and state. Include the scheme name and a reference number. Many pensions are missed during estate admin.' },
       { label: 'Investments & shares', detail: 'Stocks, funds, and ISAs. Note the platform (e.g. Vanguard, Hargreaves Lansdown) and any dealing accounts. Include share certificates if held in paper form.' },
       { label: 'Property', detail: 'Your main home, any buy-to-let, land, or overseas property. Include the title number if known (find it on the Land Registry) and the name of your solicitor.' },
-      { label: 'Insurance policies', detail: 'Life insurance, income protection, critical illness, and home insurance. Record the policy number and the insurer\'s claims contact — not just the broker.' },
+      { label: 'Insurance policies', detail: 'Life insurance, income protection, critical illness, and home insurance. Record the policy number and the insurer\'s claims contact, not just the broker.' },
       { label: 'Digital assets & crypto', detail: 'Cryptocurrency wallets, NFTs, or digital investment accounts. Note the platform and, separately in a secure place, the access recovery method.' },
-      { label: 'Subscriptions to cancel', detail: 'Streaming services, software, memberships, and direct debits. Your executor cannot cancel what they can\'t find — even small ones add up.' },
+      { label: 'Subscriptions to cancel', detail: 'Streaming services, software, memberships, and direct debits. Your executor cannot cancel what they can\'t find, even small ones add up.' },
     ],
   },
   {
     icon: FileText,
-    title: 'Documents — what to upload',
+    title: 'Documents, what to upload',
     color: 'bg-emerald-50 text-emerald-700',
     items: [
       { label: 'Will', detail: 'The single most important document. Upload the signed, witnessed copy. If you have a solicitor-held original, note their contact details in the description.' },
-      { label: 'Lasting Power of Attorney (LPA)', detail: 'Both property & financial affairs and health & welfare LPAs if you have them. If you don\'t, consider making one — it is far harder to arrange once capacity is lost.' },
+      { label: 'Lasting Power of Attorney (LPA)', detail: 'Both property & financial affairs and health & welfare LPAs if you have them. If you don\'t, consider making one, it is far harder to arrange once capacity is lost.' },
       { label: 'Passport & driving licence', detail: 'Useful for identity verification during probate. A scan is fine. Note the expiry date.' },
       { label: 'Birth & marriage certificates', detail: 'Required for probate and benefit claims. Include any deed poll or change of name documents.' },
       { label: 'Property deeds & mortgage documents', detail: 'Title deeds, mortgage statements, and lease agreements for any property you own or part-own.' },
-      { label: 'Insurance schedules', detail: 'The summary page of each policy — not just the renewal letter. Include the policy number and what is covered.' },
-      { label: 'Funeral wishes or pre-paid plan', detail: 'A letter of wishes or pre-paid funeral plan. This does not need to be legally binding — a clear document is enough to guide your family.' },
+      { label: 'Insurance schedules', detail: 'The summary page of each policy, not just the renewal letter. Include the policy number and what is covered.' },
+      { label: 'Funeral wishes or pre-paid plan', detail: 'A letter of wishes or pre-paid funeral plan. This does not need to be legally binding, a clear document is enough to guide your family.' },
       { label: 'Letter of wishes', detail: 'Not part of your will, but a personal note to your executor and family. Cover personal possessions, digital accounts, donations, and anything your will doesn\'t address.' },
     ],
   },
   {
     icon: Users,
-    title: 'People — choosing your trusted contacts',
+    title: 'People, choosing your trusted contacts',
     color: 'bg-violet-50 text-violet-700',
     items: [
-      { label: 'Executor', detail: 'The person responsible for administering your estate. They don\'t need legal expertise — but they need to be organised, trustworthy, and willing. Many people appoint two co-executors as a backup.' },
-      { label: 'Lasting Power of Attorney holder', detail: 'This person can make financial and legal decisions on your behalf if you lose mental capacity. Choose someone you trust completely — this is a significant responsibility.' },
-      { label: 'Next of kin', detail: 'Your closest relative, for emergency notification purposes. Different from your executor — they may be the same person or different.' },
+      { label: 'Executor', detail: 'The person responsible for administering your estate. They don\'t need legal expertise, but they need to be organised, trustworthy, and willing. Many people appoint two co-executors as a backup.' },
+      { label: 'Lasting Power of Attorney holder', detail: 'This person can make financial and legal decisions on your behalf if you lose mental capacity. Choose someone you trust completely, this is a significant responsibility.' },
+      { label: 'Next of kin', detail: 'Your closest relative, for emergency notification purposes. Different from your executor, they may be the same person or different.' },
       { label: 'Solicitor', detail: 'If you use a solicitor to hold your will or LPA, add them as a professional contact with their firm name and direct number. They should be reachable within days, not weeks.' },
-      { label: 'Financial adviser', detail: 'Your adviser will know which accounts and policies exist — add them as a contact. They can assist your executor in identifying assets and claims.' },
+      { label: 'Financial adviser', detail: 'Your adviser will know which accounts and policies exist, add them as a contact. They can assist your executor in identifying assets and claims.' },
       { label: 'Accountant', detail: 'Useful for estates with business interests, rental income, or complex tax affairs. Your executor may need to file a final self-assessment return.' },
       { label: 'How much access to grant', detail: 'Only share what each person needs. Your executor needs the full picture. A family member you\'ve added for emergency contact may only need to see your GP details and next of kin. Use the role-based access controls on each person\'s profile.' },
     ],
   },
   {
     icon: BookOpen,
-    title: 'Instructions — what to write',
+    title: 'Instructions, what to write',
     color: 'bg-amber-50 text-amber-700',
     items: [
       { label: 'First 48 hours', detail: 'What should happen immediately: who to call, which accounts to freeze, where the will is held. Write this for someone who has just received the news and doesn\'t know where to begin.' },
@@ -4725,17 +4725,17 @@ const OWNER_GUIDES = [
       { label: 'Digital account access', detail: 'Email, social media, photo libraries, and cloud storage. State whether accounts should be memorialised, deleted, or passed to someone. Include who holds access to recovery codes.' },
       { label: 'Property & home', detail: 'Where keys are held, utility providers and account numbers, any ongoing maintenance contracts, the alarm code (securely noted), and whether there is a lodger or tenant.' },
       { label: 'Business or self-employment', detail: 'If you run a business or are self-employed, write instructions for any partners, employees, or clients who need to be notified. Include company number and accountant details.' },
-      { label: 'Personal messages', detail: 'Consider using the Personal Messages feature to leave private notes for specific people — these are only released when your executor confirms a life event. It\'s separate from instructions.' },
+      { label: 'Personal messages', detail: 'Consider using the Personal Messages feature to leave private notes for specific people, these are only released when your executor confirms a life event. It\'s separate from instructions.' },
     ],
   },
   {
     icon: MessageSquare,
-    title: 'Personal Messages — a note on timing',
+    title: 'Personal Messages, a note on timing',
     color: 'bg-rose-50 text-rose-700',
     items: [
       { label: 'What they are', detail: 'Personal Messages are private letters or notes addressed to specific trusted people. They are stored encrypted and not visible to anyone until you or your executor releases them.' },
       { label: 'When they are released', detail: 'You can release a message yourself at any time (e.g. for a birthday or milestone). Or your executor can release them once a life event has been reported and verified by Everstead.' },
-      { label: 'What to write', detail: 'Letters to your children or grandchildren, final words to a partner, guidance to a trusted friend. These are not legal documents — write them as you would speak.' },
+      { label: 'What to write', detail: 'Letters to your children or grandchildren, final words to a partner, guidance to a trusted friend. These are not legal documents, write them as you would speak.' },
       { label: 'Available on Everstead+', detail: 'Personal Messages are included in Everstead+. Upgrade to unlock this feature.' },
     ],
   },
@@ -4795,7 +4795,7 @@ function ResourcesSection() {
       <div className="mt-6 bg-navy-50 border border-navy-200 rounded-2xl px-6 py-5 flex flex-col sm:flex-row sm:items-center gap-4">
         <div className="flex-1">
           <p className="font-semibold text-navy-900 text-sm">Need more help?</p>
-          <p className="text-xs text-stone-500 mt-1 leading-relaxed">Our support team is available Monday–Friday, 9am–5pm GMT. We also have guides and FAQs on the resources page.</p>
+          <p className="text-xs text-stone-500 mt-1 leading-relaxed">Our support team is available Monday: Friday, 9am, 5pm GMT. We also have guides and FAQs on the resources page.</p>
         </div>
         <div className="flex gap-3 shrink-0">
           <a href="mailto:support@everstead.care" className="inline-flex items-center gap-2 text-xs font-semibold text-navy-700 border border-navy-300 rounded-full px-3 py-2 hover:bg-navy-100 transition-colors">
@@ -4878,7 +4878,7 @@ function SettingsSection({ profile, isDemo, updateProfile, refreshProfile, onUpg
   // to Free or new users).
   const PLANS = [
     ...(profile.plan === 'essential'
-      ? [{ id: 'essential', name: PLAN_LABELS.essential, tier: 1, monthly: PRICING.essential.monthly.perMonth, yearly: PRICING.essential.annual.perMonth, desc: 'Your current plan — unchanged.' }]
+      ? [{ id: 'essential', name: PLAN_LABELS.essential, tier: 1, monthly: PRICING.essential.monthly.perMonth, yearly: PRICING.essential.annual.perMonth, desc: 'Your current plan, unchanged.' }]
       : []),
     { id: 'family', name: PLAN_LABELS.family, tier: 2, monthly: PRICING.family.monthly.perMonth, yearly: PRICING.family.annual.perMonth, desc: 'Two private vaults, up to 10 trusted contacts, 25 GB storage.' },
   ]
@@ -5125,7 +5125,7 @@ function SettingsSection({ profile, isDemo, updateProfile, refreshProfile, onUpg
   const handlePasswordSave = async (e) => {
     e.preventDefault()
     if (pwForm.next !== pwForm.confirm) { setPwMsg({ type: 'error', text: 'New passwords do not match.' }); return }
-    if (isDemo) { setPwMsg({ type: 'ok', text: 'Demo mode — password changes are not saved.' }); return }
+    if (isDemo) { setPwMsg({ type: 'ok', text: 'Demo mode, password changes are not saved.' }); return }
     setPwSaving(true)
     try {
       const { supabase } = await import('../lib/supabase')
@@ -5255,7 +5255,7 @@ function SettingsSection({ profile, isDemo, updateProfile, refreshProfile, onUpg
           </h2>
           <p className="text-xs text-stone-400 mb-4 leading-relaxed">
             Add an extra layer of security with an authenticator app (Google Authenticator, Authy, 1Password).
-            You'll still sign in with your email verification code — this is an additional optional step.
+            You'll still sign in with your email verification code, this is an additional optional step.
           </p>
           <a
             href="/setup-mfa"
@@ -5347,7 +5347,7 @@ function SettingsSection({ profile, isDemo, updateProfile, refreshProfile, onUpg
                     onClick={() => setBillingCycle(cycle)}
                     className={`px-3 py-1.5 rounded-md text-xs font-semibold transition-all ${billingCycle === cycle ? 'bg-white text-navy-900 shadow-sm' : 'text-stone-500 hover:text-stone-700'}`}
                   >
-                    {cycle === 'monthly' ? 'Monthly' : 'Yearly — save 20%'}
+                    {cycle === 'monthly' ? 'Monthly' : 'Yearly, save 20%'}
                   </button>
                 ))}
               </div>
@@ -5465,7 +5465,7 @@ function SettingsSection({ profile, isDemo, updateProfile, refreshProfile, onUpg
               <Gift size={15} className="text-sage-600" /> Refer a friend
             </h2>
             <p className="text-xs text-stone-400 mb-4">
-              Share your unique link — your friend gets a <span className="font-semibold text-navy-700">21-day free trial</span> instead of 14 days. Estate planning is a team effort.
+              Share your unique link, your friend gets a <span className="font-semibold text-navy-700">21-day free trial</span> instead of 14 days. Estate planning is a team effort.
             </p>
             <ReferralLinkBox referralCode={profile.referral_code || profile.id} />
           </div>
@@ -5478,7 +5478,7 @@ function SettingsSection({ profile, isDemo, updateProfile, refreshProfile, onUpg
           </h2>
           <div className="flex items-start justify-between gap-4 mt-4">
             <p className="text-xs text-stone-500 leading-relaxed max-w-md">
-              Everstead's AI Assistant can help you set up your account and answer questions, using a secure AI provider. Turn this off and no AI is used anywhere in your account — your data is never sent to an AI provider. You can turn it back on any time.
+              Everstead's AI Assistant can help you set up your account and answer questions, using a secure AI provider. Turn this off and no AI is used anywhere in your account, your data is never sent to an AI provider. You can turn it back on any time.
             </p>
             <label className="relative shrink-0 cursor-pointer mt-0.5">
               <input
@@ -5551,7 +5551,7 @@ function SettingsSection({ profile, isDemo, updateProfile, refreshProfile, onUpg
             <Download size={15} className="text-navy-600" /> My data
           </h2>
           <p className="text-xs text-stone-500 mb-5 leading-relaxed">
-            Download a complete copy of everything in your Everstead plan — accounts, documents, instructions, wishes, and more.
+            Download a complete copy of everything in your Everstead plan, accounts, documents, instructions, wishes, and more.
             Your data belongs to you, always.{' '}
             <Link to="/data-promise" className="text-navy-600 hover:text-navy-800 underline underline-offset-2">Our data promise →</Link>
           </p>
@@ -5616,7 +5616,7 @@ function SettingsSection({ profile, isDemo, updateProfile, refreshProfile, onUpg
           ) : deleteStep === 0 ? (
             <>
               <p className="text-xs text-stone-500 mb-4 leading-relaxed">
-                Permanently delete your account and all associated data — documents, contacts, instructions, and settings. This cannot be undone.
+                Permanently delete your account and all associated data, documents, contacts, instructions, and settings. This cannot be undone.
               </p>
               <button
                 onClick={() => setDeleteStep(1)}
@@ -5627,7 +5627,7 @@ function SettingsSection({ profile, isDemo, updateProfile, refreshProfile, onUpg
             </>
           ) : (
             <div className="space-y-4">
-              <p className="text-sm font-semibold text-red-800">Before you go — please confirm:</p>
+              <p className="text-sm font-semibold text-red-800">Before you go, please confirm:</p>
 
               <label className="flex items-start gap-3 cursor-pointer group">
                 <input
@@ -5969,10 +5969,10 @@ const normaliseDocType = (raw) => {
 
 // ── First-run tour: a short, warm walk through the real dashboard ─────────────
 const TOUR_STEPS = [
-  { id: 'overview', icon: Home,       title: 'Welcome home', body: 'Whenever you sign in, this is your calm overview — everything at a glance, no pressure to do it all at once.' },
-  { id: 'accounts', icon: Landmark,   title: 'Your vault', body: 'Your accounts, documents and subscriptions live here — the practical things, gathered safely in one place.' },
-  { id: 'people',   icon: Users,      title: 'The people you trust', body: 'Invite family or an executor and choose exactly what each person can see — and only when the time is right. Nothing is shared until you say so.' },
-  { id: 'aboutme',  icon: UserCircle, title: 'The part that’s really you', body: 'About Me is the heart of it — your story, your wishes, and messages for the people you love. Come back and add to it whenever something comes to mind.' },
+  { id: 'overview', icon: Home,       title: 'Welcome home', body: 'Whenever you sign in, this is your calm overview, everything at a glance, no pressure to do it all at once.' },
+  { id: 'accounts', icon: Landmark,   title: 'Your vault', body: 'Your accounts, documents and subscriptions live here, the practical things, gathered safely in one place.' },
+  { id: 'people',   icon: Users,      title: 'The people you trust', body: 'Invite family or an executor and choose exactly what each person can see, and only when the time is right. Nothing is shared until you say so.' },
+  { id: 'aboutme',  icon: UserCircle, title: 'The part that’s really you', body: 'About Me is the heart of it, your story, your wishes, and messages for the people you love. Come back and add to it whenever something comes to mind.' },
 ]
 function DashboardTour({ setActiveSection, onClose }) {
   const [step, setStep] = useState(0)

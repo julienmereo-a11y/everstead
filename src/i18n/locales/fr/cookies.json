@@ -1,7 +1,7 @@
 {
   "meta": {
-    "title": "Politique de cookies — Everstead",
-    "description": "Comment Everstead utilise les cookies — ce qu'ils sont, ceux que nous déposons et comment gérer vos préférences."
+    "title": "Politique de cookies | Everstead",
+    "description": "Comment Everstead utilise les cookies, ce qu'ils sont, ceux que nous déposons et comment gérer vos préférences."
   },
   "header": {
     "eyebrow": "Légal",
@@ -20,14 +20,14 @@
   "categories": [
     {
       "name": "Cookies essentiels",
-      "description": "Ces cookies sont strictement nécessaires au fonctionnement d'Everstead. Ils vous maintiennent connecté en toute sécurité, protègent votre session contre la fraude et garantissent le bon fonctionnement de la plateforme. Ils ne peuvent pas être désactivés — le service ne peut pas fonctionner sans eux. Aucun consentement n'est requis au titre du règlement britannique PECR.",
+      "description": "Ces cookies sont strictement nécessaires au fonctionnement d'Everstead. Ils vous maintiennent connecté en toute sécurité, protègent votre session contre la fraude et garantissent le bon fonctionnement de la plateforme. Ils ne peuvent pas être désactivés, le service ne peut pas fonctionner sans eux. Aucun consentement n'est requis au titre du règlement britannique PECR.",
       "examples": "Jetons de session d'authentification, jetons de sécurité, cookies de préférences utilisateur.",
       "provider": "Everstead Digital Ltd",
       "retention": "Session / jusqu'à 1 an"
     },
     {
       "name": "Cookies d'analyse",
-      "description": "Nous utilisons Google Analytics pour comprendre comment les visiteurs utilisent notre site web — quelles pages sont consultées, combien de temps les visiteurs y passent et comment ils y arrivent. Cela nous aide à améliorer le produit. Ces cookies ne sont déposés qu'après que vous avez donné votre consentement. Aucune information permettant de vous identifier personnellement n'est collectée.",
+      "description": "Nous utilisons Google Analytics pour comprendre comment les visiteurs utilisent notre site web, quelles pages sont consultées, combien de temps les visiteurs y passent et comment ils y arrivent. Cela nous aide à améliorer le produit. Ces cookies ne sont déposés qu'après que vous avez donné votre consentement. Aucune information permettant de vous identifier personnellement n'est collectée.",
       "examples": "_ga, _gid, _gat",
       "provider": "Google LLC (les données peuvent être traitées aux États-Unis dans le cadre de clauses contractuelles types)",
       "retention": "Jusqu'à 2 ans"
@@ -67,6 +67,6 @@
     "intro": "Des questions sur notre utilisation des cookies ? Écrivez-nous à l'adresse",
     "orSee": "ou consultez l'intégralité de notre",
     "privacyPolicy": "Politique de confidentialité",
-    "company": "Everstead Digital Ltd — société immatriculée en Angleterre et au pays de Galles sous le n° 17166825. Numéro d'enregistrement ICO : 00013988672."
+    "company": "Everstead Digital Ltd, société immatriculée en Angleterre et au pays de Galles sous le n° 17166825. Numéro d'enregistrement ICO : 00013988672."
   }
 }

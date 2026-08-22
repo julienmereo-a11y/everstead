@@ -1,9 +1,9 @@
 {
   "meta": {
-    "title": "Get Started — Everstead",
+    "title": "Get Started | Everstead",
     "description": "Start your Everstead plan in minutes. Choose your plan, create your account, and begin your 14-day free trial. No charge until the trial ends.",
-    "ogTitle": "Get Started — Everstead",
-    "ogDescription": "Start your estate plan in minutes. 14-day free trial on every plan — card required, no charge until the trial ends."
+    "ogTitle": "Get Started | Everstead",
+    "ogDescription": "Start your estate plan in minutes. 14-day free trial on every plan, card required, no charge until the trial ends."
   },
   "hero": {
     "invitedBy": "Invited by",
@@ -11,17 +11,17 @@
     "eyebrow": "Get started",
     "title": "Start your plan in minutes.",
     "subtitleFoundingLead": "Everstead+ is yours for life, free.",
-    "subtitleFoundingBody": "Add your card to claim your founding place — it won't be charged, and you can cancel any time.",
-    "subtitleReferralLead": "You've been referred — enjoy a 21-day free trial.",
+    "subtitleFoundingBody": "Add your card to claim your founding place, it won't be charged, and you can cancel any time.",
+    "subtitleReferralLead": "You've been referred, enjoy a 21-day free trial.",
     "subtitleReferralBody": "Enter your card details and you won't be charged until day 21.",
-    "subtitleFreeLead": "Start free — no card required.",
+    "subtitleFreeLead": "Start free, no card required.",
     "subtitleFreeBody": "Set up the essentials with Your AI Assistant, and upgrade to Everstead+ whenever you're ready.",
-    "subtitleDefault": "{{days}}-day free trial. Enter your card details — you won't be charged until the trial ends."
+    "subtitleDefault": "{{days}}-day free trial. Enter your card details, you won't be charged until the trial ends."
   },
   "promo": {
-    "applied": "Founding offer applied — {{label}}.",
+    "applied": "Founding offer applied, {{label}}.",
     "code": "Code {{code}}",
-    "invalid": "Code {{code}} couldn't be applied — {{reason}}. You can still start your free trial.",
+    "invalid": "Code {{code}} couldn't be applied, {{reason}}. You can still start your free trial.",
     "checking": "Checking your code…",
     "appliedAtCheckout": "· applied at checkout",
     "fallbackInvalid": "Code not valid",
@@ -32,9 +32,9 @@
     "sanctionedTitle": "Everstead is not available in your country.",
     "sanctionedBody": "We're unable to offer our services in your location due to regulatory restrictions.",
     "blockedTitle": "Everstead is not currently available in your location.",
-    "blockedBody": "We're focused on a small number of markets right now. We hope to expand — check back soon.",
+    "blockedBody": "We're focused on a small number of markets right now. We hope to expand, check back soon.",
     "softWarnLead": "Everstead is currently designed for people in the UK and Ireland.",
-    "softWarnBody": "Some features may not match the legal requirements in your country — but we're expanding, so this may change.",
+    "softWarnBody": "Some features may not match the legal requirements in your country, but we're expanding, so this may change.",
     "dismiss": "Dismiss"
   },
   "billing": {
@@ -53,7 +53,7 @@
   "plans": {
     "free": {
       "name": "Everstead",
-      "desc": "Free forever. Organise the essentials — no card required.",
+      "desc": "Free forever. Organise the essentials, no card required.",
       "features": [
         "Full guided setup with Your AI Assistant",
         "Your About Me profile",
@@ -63,9 +63,9 @@
     "family": {
       "name": "Everstead+",
       "badge": "Most popular",
-      "desc": "For couples and households — two private vaults, one subscription, shared protection.",
+      "desc": "For couples and households, two private vaults, one subscription, shared protection.",
       "features": [
-        "Two private vaults — one subscription",
+        "Two private vaults, one subscription",
         "Unlimited accounts & documents",
         "Up to 10 trusted contacts",
         "Unlimited instructions & wishes",
@@ -87,14 +87,14 @@
     "titleFounding": "Your founding offer",
     "title": "Choose your plan",
     "foundingNotePrefix": "The founding offer applies to the",
-    "foundingNoteSuffix": "plan — free for life for founding members. The plan is set for you below.",
+    "foundingNoteSuffix": "plan, free for life for founding members. The plan is set for you below.",
     "backToPayment": "Back to payment with {{plan}}",
     "continueWith": "Continue with {{plan}}",
     "microFree": "Free forever · No card required",
     "microFounding": "Everstead+ free for life · Cancel any time",
     "microTrial": "{{days}}-day free trial · Cancel before it ends and pay nothing",
     "pro": {
-      "desc": "For solicitors, will-writers, and financial advisers — a co-branded, multi-client workspace. Pricing on application.",
+      "desc": "For solicitors, will-writers, and financial advisers, a co-branded, multi-client workspace. Pricing on application.",
       "learnMore": "Learn more",
       "bookDemo": "Book a demo"
     }
@@ -137,8 +137,8 @@
     "createFree": "Create my free account",
     "claimFounding": "Claim my founding place",
     "startTrial": "Start my Everstead trial",
-    "trustFree": "No card required — Everstead is free to start. You can upgrade to Everstead+ whenever you're ready, and your data comes with you.",
-    "trustFounding": "Your card is stored securely by Stripe. As a founding member, Everstead+ is free for life — £0, and it will never be charged. You can cancel any time.",
+    "trustFree": "No card required: Everstead is free to start. You can upgrade to Everstead+ whenever you're ready, and your data comes with you.",
+    "trustFounding": "Your card is stored securely by Stripe. As a founding member, Everstead+ is free for life, £0, and it will never be charged. You can cancel any time.",
     "trustTrial": "Your card is stored securely by Stripe and will not be charged until your {{days}}-day trial ends. Cancel anytime before then and pay nothing.",
     "haveAccount": "Already have an account?",
     "signIn": "Sign in",
@@ -152,7 +152,7 @@
   },
   "step3": {
     "title": "Add your card",
-    "subtitleFounding": "Everstead+ is yours for life, free. Add your card to claim your founding place — it won't be charged, and you can cancel any time.",
+    "subtitleFounding": "Everstead+ is yours for life, free. Add your card to claim your founding place, it won't be charged, and you can cancel any time.",
     "subtitleTrial": "Your card won't be charged for {{days}} days. Cancel any time before then and pay nothing.",
     "billedAnnually": "billed annually",
     "billedMonthly": "billed monthly",
@@ -166,7 +166,7 @@
     "processing": "Processing…",
     "claimFreeYear": "Claim my founding place",
     "startTrial": "Start my {{days}}-day free trial",
-    "finePrintFounding": "Everstead+ is free for life for founding members — cancel any time.",
+    "finePrintFounding": "Everstead+ is free for life for founding members, cancel any time.",
     "finePrintTrial": "You won't be charged until day {{days}}. Cancel any time before then."
   },
   "trustFooter": {

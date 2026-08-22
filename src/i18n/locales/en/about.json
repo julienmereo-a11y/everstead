@@ -1,21 +1,21 @@
 {
   "meta": {
-    "title": "About Everstead — Why we exist",
+    "title": "About Everstead | Why we exist",
     "description": "Everstead was built so no family has to spend their grief searching for paperwork. Learn who we are, why we built this, and what drives every decision we make."
   },
   "hero": {
     "eyebrow": "Our mission",
     "title": "No family should spend their grief searching for paperwork.",
-    "subtitle": "Everstead exists to make sure they never have to. We turn the overwhelming work of estate organisation into something a family can do together — calmly, clearly, and well before it is urgent.",
+    "subtitle": "Everstead exists to make sure they never have to. We turn the overwhelming work of estate organisation into something a family can do together, calmly, clearly, and well before it is urgent.",
     "ctaPrimary": "Start organising",
     "ctaSecondary": "See how it works"
   },
   "origin": {
     "eyebrow": "Where this began",
     "quote": "\"We spent an entire month after a bereavement just trying to find things. Account numbers, insurance policies, online accounts, subscriptions to cancel. All while grieving. It was avoidable chaos.\"",
-    "attribution": "— Julien, Founder of Everstead",
-    "para1": "That experience is not unique. Millions of families go through the same thing every year — not because they did not care, but because no one ever gave them a simple way to prepare.",
-    "para2": "Everstead was built to close that gap. The work of organising your estate should happen once, in calm, on your own terms. The benefit lasts forever — for you, for your family, and for the people you trust to carry things forward."
+    "attribution": "Julien, Founder of Everstead",
+    "para1": "That experience is not unique. Millions of families go through the same thing every year, not because they did not care, but because no one ever gave them a simple way to prepare.",
+    "para2": "Everstead was built to close that gap. The work of organising your estate should happen once, in calm, on your own terms. The benefit lasts forever, for you, for your family, and for the people you trust to carry things forward."
   },
   "founder": {
     "eyebrow": "Who built this",
@@ -23,18 +23,18 @@
     "name": "Julien Thuy",
     "role": "Founder, Everstead",
     "location": "London, UK",
-    "title": "A product built from lived experience — not a boardroom brief.",
+    "title": "A product built from lived experience, not a boardroom brief.",
     "paragraphs": [
-      "Everstead was founded after going through the painful, disorganised reality of managing a bereavement. Weeks of searching for account numbers, chasing banks, cancelling subscriptions — all while trying to grieve. It was the kind of problem no product seemed built to solve.",
-      "That experience made one thing clear: the tools people actually need when the worst happens need to be built before it happens. Not by a large enterprise software company, but by someone who understands what a family is actually going through — and who cares deeply about getting it right.",
+      "Everstead was founded after going through the painful, disorganised reality of managing a bereavement. Weeks of searching for account numbers, chasing banks, cancelling subscriptions, all while trying to grieve. It was the kind of problem no product seemed built to solve.",
+      "That experience made one thing clear: the tools people actually need when the worst happens need to be built before it happens. Not by a large enterprise software company, but by someone who understands what a family is actually going through, and who cares deeply about getting it right.",
       "Everstead is built with that responsibility at its centre. Every design decision, every piece of copy, every security choice is made with the same question in mind: would I trust this with my own family?"
     ]
   },
   "mission": {
     "eyebrow": "What we are here to do",
-    "title": "Make the practical side of loss manageable — before it ever needs to be.",
-    "para1": "Estate planning has always been important. But the tools that exist today — solicitors, spreadsheets, filing cabinets — were never designed for modern families who hold their lives across dozens of digital accounts and platforms.",
-    "para2": "We are building the platform that brings together every account, document, instruction, and trusted contact in one private, structured, secure place — designed specifically for the moment when everything matters most.",
+    "title": "Make the practical side of loss manageable, before it ever needs to be.",
+    "para1": "Estate planning has always been important. But the tools that exist today (solicitors, spreadsheets, filing cabinets) were never designed for modern families who hold their lives across dozens of digital accounts and platforms.",
+    "para2": "We are building the platform that brings together every account, document, instruction, and trusted contact in one private, structured, secure place, designed specifically for the moment when everything matters most.",
     "stats": [
       {
         "stat": "4+ weeks",
@@ -59,7 +59,7 @@
     "items": [
       {
         "title": "Empathy before everything",
-        "desc": "Every decision — from the words we use to the screens we build — begins with the question: how does this feel to someone in the middle of grief? Clarity and calm are not nice-to-haves. They are the whole product."
+        "desc": "Every decision (from the words we use to the screens we build) begins with the question: how does this feel to someone in the middle of grief? Clarity and calm are not nice-to-haves. They are the whole product."
       },
       {
         "title": "Trust is the product",
@@ -75,7 +75,7 @@
     "eyebrow": "What families say",
     "items": [
       {
-        "quote": "\"I'd been putting this off for years. Everstead made it feel manageable — I did it over a Sunday afternoon and felt an enormous weight lift. My children now know exactly what to do.\"",
+        "quote": "\"I'd been putting this off for years. Everstead made it feel manageable: I did it over a Sunday afternoon and felt an enormous weight lift. My children now know exactly what to do.\"",
         "name": "Margaret, 67",
         "location": "Surrey"
       },
@@ -90,7 +90,7 @@
     "eyebrow": "Our commitment to you",
     "title": "We will never sell your data. We will never compromise on security. We will always be on your side.",
     "points": [
-      "Your data belongs to you — always. You can export or delete it at any time.",
+      "Your data belongs to you, always. You can export or delete it at any time.",
       "We use bank-grade AES-256 encryption for every document, account, and record you store.",
       "We do not run ads, sell access to your data, or share it with third parties.",
       "Every role-based permission exists so the right people see only what they need to.",
@@ -100,7 +100,7 @@
   "cta": {
     "eyebrow": "Ready to start?",
     "title": "Give your family the clarity they deserve.",
-    "body": "It takes less than an afternoon to put your house in order. The relief — for you and for them — lasts a lifetime.",
+    "body": "It takes less than an afternoon to put your house in order. The relief (for you and for them) lasts a lifetime.",
     "primary": "Start Your Everstead",
     "secondary": "Talk to us"
   }

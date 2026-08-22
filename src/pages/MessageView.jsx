@@ -29,7 +29,7 @@ export default function MessageView() {
   return (
     <div className="min-h-screen aurora-field aurora-dim flex flex-col">
       <Helmet>
-        <title>A message for you — Everstead</title>
+        <title>A message for you | Everstead</title>
         <meta name="robots" content="noindex" />
       </Helmet>
 

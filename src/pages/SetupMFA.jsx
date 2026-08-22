@@ -132,7 +132,7 @@ export default function SetupMFA() {
   return (
     <>
       <Helmet>
-        <title>Set up two-factor authentication — Everstead</title>
+        <title>Set up two-factor authentication | Everstead</title>
         <meta name="robots" content="noindex, nofollow" />
       </Helmet>
 
@@ -210,7 +210,7 @@ export default function SetupMFA() {
                 onClick={() => { setStep('verify'); setTimeout(() => digitRefs.current[0]?.focus(), 50) }}
                 className="btn-aurora w-full text-white font-semibold text-sm py-3 rounded-full transition-colors flex items-center justify-center gap-2"
               >
-                I've scanned it — continue <ArrowRight size={16} />
+                I've scanned it, continue <ArrowRight size={16} />
               </button>
 
               <div className="mt-4 flex items-start gap-2 text-xs text-stone-400 leading-relaxed">

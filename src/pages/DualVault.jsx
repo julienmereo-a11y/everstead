@@ -21,7 +21,7 @@ const privateBenefits = [
   {
     icon: Share2,
     title: 'Share only what you choose',
-    desc: 'Want to share one section — like your joint accounts — without sharing everything else? That\'s exactly what role-based access is built for.',
+    desc: 'Want to share one section (like your joint accounts) without sharing everything else? That\'s exactly what role-based access is built for.',
   },
 ]
 
@@ -40,7 +40,7 @@ const whyMatters = [
   },
   {
     scenario: 'You want to share some accounts but not others',
-    response: 'Role-based access lets you share individual sections — joint accounts, emergency contacts — while keeping everything else private.',
+    response: 'Role-based access lets you share individual sections (joint accounts, emergency contacts) while keeping everything else private.',
   },
 ]
 
@@ -73,11 +73,11 @@ export default function DualVault() {
   return (
     <>
       <Helmet>
-        <title>Family Vault — Two Private Vaults, One Subscription | Everstead</title>
+        <title>Family Vault | Two Private Vaults, One Subscription | Everstead</title>
         <meta name="description" content="Everstead+ gives couples two completely private vaults under one subscription. Each person keeps their own data. Share only what you choose. No competitor offers this." />
         <link rel="canonical" href="https://www.everstead.care/family-vault" />
         <meta property="og:type" content="website" />
-        <meta property="og:title" content="Family Vault — Two Private Vaults, One Subscription | Everstead" />
+        <meta property="og:title" content="Family Vault | Two Private Vaults, One Subscription | Everstead" />
         <meta property="og:description" content="Two completely private vaults. One subscription. Each person keeps their own data, shares only what they choose. The only estate planning tool built for couples who value their privacy." />
         <meta property="og:url" content="https://www.everstead.care/family-vault" />
         <meta property="og:image" content="https://www.everstead.care/og-image.png" />
@@ -96,7 +96,7 @@ export default function DualVault() {
               Two private vaults. One subscription. No compromises.
             </h1>
             <p className="mt-5 text-lg leading-relaxed text-stone-300 max-w-2xl mx-auto">
-              Most estate planning tools assume couples share everything. Everstead doesn't. Everstead+ gives each person a completely private vault — organised separately, shared only by choice.
+              Most estate planning tools assume couples share everything. Everstead doesn't. Everstead+ gives each person a completely private vault, organised separately, shared only by choice.
             </p>
             <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
               <Link to="/get-started" className="btn-aurora inline-flex items-center justify-center gap-2 text-white px-6 py-3 rounded-full text-sm font-semibold transition-colors">
@@ -118,10 +118,10 @@ export default function DualVault() {
               Most couples don't share everything.<br />Most estate tools assume they do.
             </h2>
             <p className="text-stone-500 text-sm leading-relaxed mb-4">
-              Every other estate organisation platform is built around a single account. If you want your partner to be involved, you share that account — which means they can see everything.
+              Every other estate organisation platform is built around a single account. If you want your partner to be involved, you share that account, which means they can see everything.
             </p>
             <p className="text-stone-500 text-sm leading-relaxed">
-              That's not how families actually work. You might have assets from before the relationship. A business interest you haven't discussed. A pension that's yours. Old accounts your partner doesn't know about. None of that means you're hiding something — it means you deserve your own private space, even within a shared plan.
+              That's not how families actually work. You might have assets from before the relationship. A business interest you haven't discussed. A pension that's yours. Old accounts your partner doesn't know about. None of that means you're hiding something, it means you deserve your own private space, even within a shared plan.
             </p>
           </div>
         </section>
@@ -143,7 +143,7 @@ export default function DualVault() {
                   </div>
                   <div>
                     <p className="font-semibold text-navy-900 text-sm">Your vault</p>
-                    <p className="text-xs text-stone-400">Private — only you can see this</p>
+                    <p className="text-xs text-stone-400">Private, only you can see this</p>
                   </div>
                   <Lock size={14} className="text-navy-400 ml-auto" />
                 </div>
@@ -164,7 +164,7 @@ export default function DualVault() {
                   </div>
                   <div>
                     <p className="font-semibold text-navy-900 text-sm">Your partner's vault</p>
-                    <p className="text-xs text-stone-400">Private — only they can see this</p>
+                    <p className="text-xs text-stone-400">Private, only they can see this</p>
                   </div>
                   <Lock size={14} className="text-sage-400 ml-auto" />
                 </div>
@@ -184,7 +184,7 @@ export default function DualVault() {
               <Share2 size={20} className="text-navy-500 mx-auto mb-3" />
               <h3 className="font-semibold text-navy-900 text-sm mb-2">Sharing is always your choice</h3>
               <p className="text-stone-500 text-sm leading-relaxed">
-                Want to share your joint bank accounts with each other? Share just that section. Your mortgage details, your shared investments — whatever makes sense. Everything else stays private. No all-or-nothing.
+                Want to share your joint bank accounts with each other? Share just that section. Your mortgage details, your shared investments, whatever makes sense. Everything else stays private. No all-or-nothing.
               </p>
             </div>
           </div>
@@ -296,7 +296,7 @@ export default function DualVault() {
               Two vaults. Everything in Everstead. From £9.99/month.
             </h2>
             <p className="text-stone-400 text-sm leading-relaxed mb-8 max-w-xl mx-auto">
-              One subscription for both of you. Each person gets a full, private vault — accounts, documents, instructions, trusted contacts, and final wishes — kept completely separate unless you choose to share.
+              One subscription for both of you. Each person gets a full, private vault (accounts, documents, instructions, trusted contacts, and final wishes) kept completely separate unless you choose to share.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center mb-6">
               <Link to="/get-started" className="btn-aurora inline-flex items-center justify-center gap-2 text-white px-6 py-3 rounded-full text-sm font-semibold transition-colors">

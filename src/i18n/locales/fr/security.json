@@ -1,6 +1,6 @@
 {
   "meta": {
-    "title": "Sécurité — Everstead",
+    "title": "Sécurité | Everstead",
     "description": "Everstead repose sur le chiffrement AES-256 au repos, TLS 1.3 en transit, des contrôles d'accès granulaires et un journal d'audit complet."
   },
   "hero": {
@@ -12,7 +12,7 @@
   "infrastructure": {
     "kicker": "Infrastructure",
     "title": "Une infrastructure certifiée SOC 2, de bout en bout.",
-    "subtitle": "Everstead n'exploite pas ses propres centres de données. Chaque couche de notre infrastructure est opérée par des prestataires détenant des certifications de sécurité indépendantes — vos données sont ainsi protégées à chaque maillon de la chaîne.",
+    "subtitle": "Everstead n'exploite pas ses propres centres de données. Chaque couche de notre infrastructure est opérée par des prestataires détenant des certifications de sécurité indépendantes, vos données sont ainsi protégées à chaque maillon de la chaîne.",
     "items": {
       "supabase": {
         "role": "Base de données, authentification et stockage de fichiers",
@@ -30,7 +30,7 @@
         "role": "Traitement des paiements",
         "cert": "PCI DSS niveau 1",
         "region": "Mondial",
-        "detail": "Tous les paiements sont traités par Stripe, certifié au plus haut niveau du secteur (PCI DSS niveau 1). Everstead ne stocke jamais vos données de carte — elles sont transmises directement à Stripe."
+        "detail": "Tous les paiements sont traités par Stripe, certifié au plus haut niveau du secteur (PCI DSS niveau 1). Everstead ne stocke jamais vos données de carte, elles sont transmises directement à Stripe."
       },
       "resend": {
         "role": "E-mails transactionnels",
@@ -54,7 +54,7 @@
       },
       {
         "title": "Contrôle d'accès par rôles",
-        "desc": "Les autorisations sont granulaires et révocables. Vous définissez précisément ce que chaque personne de confiance peut voir — comptes financiers, documents juridiques, dernières volontés — indépendamment les unes des autres."
+        "desc": "Les autorisations sont granulaires et révocables. Vous définissez précisément ce que chaque personne de confiance peut voir (comptes financiers, documents juridiques, dernières volontés) indépendamment les unes des autres."
       },
       {
         "title": "Journal d'audit complet",
@@ -73,7 +73,7 @@
         "desc": "Un processus défini de réponse aux incidents de sécurité est en place. Dans le cas improbable d'un problème de sécurité, nous informons les utilisateurs concernés rapidement et en toute transparence."
       },
       {
-        "title": "La confidentialité d'abord — toujours",
+        "title": "La confidentialité d'abord, toujours",
         "desc": "Nous ne vendons, ne cédons sous licence ni ne partageons vos informations personnelles avec des tiers à des fins publicitaires ou commerciales. Vos données vous appartiennent. Exportez-les ou supprimez-les à tout moment."
       }
     ]
@@ -82,37 +82,79 @@
     "kicker": "RGPD britannique (UK GDPR) et résidence des données",
     "title": "Vos données restent au Royaume-Uni. Point final.",
     "p1": "Everstead est exploité par EVERSTEAD DIGITAL LTD (numéro de société 17166825), une société immatriculée au Royaume-Uni, et est conforme au RGPD britannique (UK GDPR). Toutes les données personnelles sont stockées et traitées exclusivement à Londres, au Royaume-Uni. Nous ne transférons jamais vos données hors du Royaume-Uni.",
-    "p2": "En tant que responsable du traitement, nous répondons de la manière dont vos données sont collectées, stockées et utilisées. Vous avez le droit d'accéder à vos données, de les corriger, de les exporter et de les supprimer définitivement à tout moment — directement depuis votre tableau de bord ou en nous contactant.",
+    "p2": "En tant que responsable du traitement, nous répondons de la manière dont vos données sont collectées, stockées et utilisées. Vous avez le droit d'accéder à vos données, de les corriger, de les exporter et de les supprimer définitivement à tout moment, directement depuis votre tableau de bord ou en nous contactant.",
     "points": [
-      ["Conforme au RGPD britannique (UK GDPR)", "Le traitement des données respecte les exigences du RGPD britannique"],
-      ["Données hébergées au Royaume-Uni (Londres)", "Aucune donnée transférée hors du Royaume-Uni"],
-      ["Droit d'accès et à la portabilité", "Exportez l'intégralité de votre plan à tout moment"],
-      ["Droit à l'effacement", "Suppression définitive sous 30 jours après la demande"],
-      ["Aucune vente de données à des tiers", "Vos données ne sont jamais vendues ni cédées sous licence"],
-      ["Notification de violation sous 72 heures", "Comme l'exige l'article 33 du RGPD britannique"]
+      [
+        "Conforme au RGPD britannique (UK GDPR)",
+        "Le traitement des données respecte les exigences du RGPD britannique"
+      ],
+      [
+        "Données hébergées au Royaume-Uni (Londres)",
+        "Aucune donnée transférée hors du Royaume-Uni"
+      ],
+      [
+        "Droit d'accès et à la portabilité",
+        "Exportez l'intégralité de votre plan à tout moment"
+      ],
+      [
+        "Droit à l'effacement",
+        "Suppression définitive sous 30 jours après la demande"
+      ],
+      [
+        "Aucune vente de données à des tiers",
+        "Vos données ne sont jamais vendues ni cédées sous licence"
+      ],
+      [
+        "Notification de violation sous 72 heures",
+        "Comme l'exige l'article 33 du RGPD britannique"
+      ]
     ]
   },
   "demo": {
     "kicker": "Autorisations par rôle",
     "title": "Vous décidez qui voit quoi, à tout moment.",
-    "p1": "Les autorisations dans Everstead ne sont pas binaires. Vous n'avez pas besoin de donner à une personne de confiance un accès complet pour lui donner un accès pertinent. Chaque personne de votre plan dispose d'un périmètre défini — que vous pouvez modifier ou révoquer à tout moment.",
-    "p2": "Partagez les références de vos comptes financiers avec votre exécuteur testamentaire, vos souhaits d'obsèques avec vos enfants et l'accès aux documents juridiques avec votre notaire — le tout de façon indépendante et réversible.",
+    "p1": "Les autorisations dans Everstead ne sont pas binaires. Vous n'avez pas besoin de donner à une personne de confiance un accès complet pour lui donner un accès pertinent. Chaque personne de votre plan dispose d'un périmètre défini, que vous pouvez modifier ou révoquer à tout moment.",
+    "p2": "Partagez les références de vos comptes financiers avec votre exécuteur testamentaire, vos souhaits d'obsèques avec vos enfants et l'accès aux documents juridiques avec votre notaire, le tout de façon indépendante et réversible.",
     "matrixLabel": "Exemple de matrice d'accès",
     "people": [
-      { "name": "Sarah (Exécutrice testamentaire)", "access": ["Comptes", "Documents", "Instructions"] },
-      { "name": "David (Notaire)", "access": ["Documents juridiques"] },
-      { "name": "Emma (Fille)", "access": ["Dernières volontés", "Instructions"] },
-      { "name": "James (Conseiller)", "access": ["Comptes financiers", "Docs financiers"] }
+      {
+        "name": "Sarah (Exécutrice testamentaire)",
+        "access": [
+          "Comptes",
+          "Documents",
+          "Instructions"
+        ]
+      },
+      {
+        "name": "David (Notaire)",
+        "access": [
+          "Documents juridiques"
+        ]
+      },
+      {
+        "name": "Emma (Fille)",
+        "access": [
+          "Dernières volontés",
+          "Instructions"
+        ]
+      },
+      {
+        "name": "James (Conseiller)",
+        "access": [
+          "Comptes financiers",
+          "Docs financiers"
+        ]
+      }
     ]
   },
   "release": {
     "kicker": "Comment l'accès est débloqué",
     "title": "Rien ne se déverrouille tout seul. Une personne décide, et une personne vérifie.",
-    "subtitle": "La question la plus importante que se posent les familles est de savoir comment — et quand — leur plan s'ouvre aux personnes de confiance. Voici exactement comment cela fonctionne. Il n'y a ni minuterie silencieuse ni déclenchement automatique pour « inactivité ».",
+    "subtitle": "La question la plus importante que se posent les familles est de savoir comment (et quand) leur plan s'ouvre aux personnes de confiance. Voici exactement comment cela fonctionne. Il n'y a ni minuterie silencieuse ni déclenchement automatique pour « inactivité ».",
     "steps": [
       {
         "title": "De votre vivant",
-        "body": "Vos personnes de confiance ne voient que ce que vous leur avez accordé — et vous pouvez le modifier ou le révoquer à tout moment. Rien n'est communiqué sans votre accord."
+        "body": "Vos personnes de confiance ne voient que ce que vous leur avez accordé, et vous pouvez le modifier ou le révoquer à tout moment. Rien n'est communiqué sans votre accord."
       },
       {
         "title": "Une personne de confiance signale le décès",
@@ -120,10 +162,10 @@
       },
       {
         "title": "Nous vérifions, puis nous ouvrons l'accès",
-        "body": "Notre équipe examine et confirme le signalement — généralement sous deux jours ouvrés. Ce n'est qu'alors que l'accès que vous avez prévu s'ouvre, et que les éventuels messages personnels scellés sont remis."
+        "body": "Notre équipe examine et confirme le signalement, généralement sous deux jours ouvrés. Ce n'est qu'alors que l'accès que vous avez prévu s'ouvre, et que les éventuels messages personnels scellés sont remis."
       }
     ],
-    "note": "Chaque signalement, vérification et modification d'accès est consigné dans votre journal d'audit. L'accès correspond toujours exactement à ce que vous avez décidé — jamais davantage."
+    "note": "Chaque signalement, vérification et modification d'accès est consigné dans votre journal d'audit. L'accès correspond toujours exactement à ce que vous avez décidé, jamais davantage."
   },
   "faq": {
     "kicker": "FAQ sécurité",
@@ -131,7 +173,7 @@
     "items": [
       {
         "q": "Comment l'accès est-il débloqué après mon décès ?",
-        "a": "Il n'y a ni minuterie silencieuse ni déclenchement automatique pour « inactivité ». Une personne de confiance que vous avez désignée signale le décès depuis son propre accès et fournit les informations de l'acte de décès. Notre équipe examine puis vérifie le signalement — généralement sous deux jours ouvrés — et ce n'est qu'alors que l'accès que vous avez prévu s'ouvre à vos personnes de confiance, avec la remise des éventuels messages personnels scellés. De votre vivant, rien n'est communiqué sans votre accord, et chaque étape est consignée dans votre journal d'audit."
+        "a": "Il n'y a ni minuterie silencieuse ni déclenchement automatique pour « inactivité ». Une personne de confiance que vous avez désignée signale le décès depuis son propre accès et fournit les informations de l'acte de décès. Notre équipe examine puis vérifie le signalement (généralement sous deux jours ouvrés) et ce n'est qu'alors que l'accès que vous avez prévu s'ouvre à vos personnes de confiance, avec la remise des éventuels messages personnels scellés. De votre vivant, rien n'est communiqué sans votre accord, et chaque étape est consignée dans votre journal d'audit."
       },
       {
         "q": "Les employés d'Everstead peuvent-ils lire mes documents ?",
@@ -159,7 +201,7 @@
       },
       {
         "q": "Êtes-vous certifiés SOC 2 ?",
-        "a": "Everstead applique les exigences du référentiel SOC 2. Chaque prestataire d'infrastructure sur lequel nous nous appuyons — Supabase, Vercel, Stripe et Resend — détient la certification SOC 2 Type II, et nos propres contrôles sont conçus selon la même norme. Les documents de certification sont disponibles sur demande."
+        "a": "Everstead applique les exigences du référentiel SOC 2. Chaque prestataire d'infrastructure sur lequel nous nous appuyons (Supabase, Vercel, Stripe et Resend) détient la certification SOC 2 Type II, et nos propres contrôles sont conçus selon la même norme. Les documents de certification sont disponibles sur demande."
       }
     ]
   },

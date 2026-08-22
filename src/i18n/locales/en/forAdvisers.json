@@ -1,14 +1,14 @@
 {
   "meta": {
-    "title": "Everstead for Advisers — Estate Organisation for Your Clients",
-    "description": "Give your clients a co-branded estate vault they'll actually use. Everstead for advisers includes a client portal, readiness tracking, and document access — built for IFAs, solicitors, and wealth managers.",
-    "ogTitle": "Everstead for Advisers — Estate Organisation for Your Clients",
+    "title": "Everstead for Advisers | Estate Organisation for Your Clients",
+    "description": "Give your clients a co-branded estate vault they'll actually use. Everstead for advisers includes a client portal, readiness tracking, and document access, built for IFAs, solicitors, and wealth managers.",
+    "ogTitle": "Everstead for Advisers | Estate Organisation for Your Clients",
     "ogDescription": "Give your clients a co-branded estate vault they'll actually use. Everstead for advisers includes a client portal, readiness tracking, and document access."
   },
   "hero": {
     "eyebrow": "For advisers",
     "title": "Your clients need an organised estate. We help them build one.",
-    "subtitle": "Everstead gives advisers a co-branded client vault — with readiness tracking, document access, and a portal your clients open between every meeting.",
+    "subtitle": "Everstead gives advisers a co-branded client vault, with readiness tracking, document access, and a portal your clients open between every meeting.",
     "bookDemo": "Book a demo",
     "seeHow": "See how it works"
   },
@@ -21,7 +21,7 @@
   ],
   "problem": {
     "eyebrow": "The problem",
-    "title": "Most clients come to meetings unprepared — and both of you know it.",
+    "title": "Most clients come to meetings unprepared, and both of you know it.",
     "p1": "They can't find the pension statement from 2019. They haven't updated their LPA since their divorce. Their digital accounts are scattered across six different email addresses, and their spouse doesn't know any of the passwords.",
     "p2": "The result: the first hour of every review is spent on administration, not advice. And when the worst happens, the executor spends months chasing information that should have been organised years earlier.",
     "tabIfa": "For IFAs",
@@ -51,19 +51,19 @@
       },
       {
         "title": "Co-branded client portal",
-        "desc": "Your firm's name and branding appear inside the client's vault. Every time they log in, they see your relationship — not a third-party tool."
+        "desc": "Your firm's name and branding appear inside the client's vault. Every time they log in, they see your relationship, not a third-party tool."
       },
       {
         "title": "Track readiness across your book",
-        "desc": "See which clients have completed their estate plan, who still has gaps, and where the biggest risks sit — across all your clients in one workspace."
+        "desc": "See which clients have completed their estate plan, who still has gaps, and where the biggest risks sit, across all your clients in one workspace."
       },
       {
         "title": "Your liability, protected",
-        "desc": "Everstead is an organisation and access tool — it does not give financial, legal, or tax advice. Its scope is clearly defined in its terms of service. Recommending it to clients does not create professional liability for your firm."
+        "desc": "Everstead is an organisation and access tool, it does not give financial, legal, or tax advice. Its scope is clearly defined in its terms of service. Recommending it to clients does not create professional liability for your firm."
       },
       {
         "title": "Document visibility on your terms",
-        "desc": "Clients choose what to share with you. You can view uploaded documents, account registers, and instructions — only what they've explicitly granted you access to."
+        "desc": "Clients choose what to share with you. You can view uploaded documents, account registers, and instructions, only what they've explicitly granted you access to."
       },
       {
         "title": "Compliant data handling",
@@ -72,7 +72,7 @@
     ],
     "ongoing": {
       "title": "Ongoing, not one-off",
-      "desc": "Estate organisation isn't a single meeting — it's ongoing. Everstead keeps clients engaged between reviews, with smart reminders that flag changes and gaps."
+      "desc": "Estate organisation isn't a single meeting, it's ongoing. Everstead keeps clients engaged between reviews, with smart reminders that flag changes and gaps."
     }
   },
   "steps": {
@@ -93,7 +93,7 @@
       },
       {
         "title": "Manage from one place",
-        "desc": "See every client's readiness score, access shared documents, and track progress — all in your adviser dashboard."
+        "desc": "See every client's readiness score, access shared documents, and track progress, all in your adviser dashboard."
       }
     ]
   },
@@ -111,7 +111,7 @@
       },
       {
         "title": "Accountants & tax advisers",
-        "desc": "Help clients track assets, subscriptions, and accounts in one place. A cleaner picture at year-end — and far fewer surprises."
+        "desc": "Help clients track assets, subscriptions, and accounts in one place. A cleaner picture at year-end, and far fewer surprises."
       },
       {
         "title": "Wealth managers",
@@ -122,14 +122,14 @@
   "resources": {
     "eyebrow": "Adviser resources",
     "title": "Practical content, written for practitioners.",
-    "body": "No registration to read — just give us an email and we'll send it. We won't pass it on, and you can unsubscribe at any time.",
+    "body": "No registration to read, just give us an email and we'll send it. We won't pass it on, and you can unsubscribe at any time.",
     "emailTitle": "Where should we send it?",
     "emailSubtitle": "One email. No registration. Unsubscribe any time.",
     "items": [
       {
         "label": "Conversations",
         "title": "The Adviser's Guide to Inheritance Conversations",
-        "summary": "Seven framings IFAs and solicitors use to open the estate conversation with clients — without sounding morbid or salesy. Drawn from pilot practices.",
+        "summary": "Seven framings IFAs and solicitors use to open the estate conversation with clients, without sounding morbid or salesy. Drawn from pilot practices.",
         "buttonLabel": "Email me the guide"
       },
       {
@@ -141,7 +141,7 @@
       {
         "label": "Playbook",
         "title": "Estate organisation as a value-add: pricing & positioning playbook",
-        "summary": "How UK practices are positioning, pricing (£300-£1,500), and delivering estate organisation as a structured service — including the retention math at the generational transition.",
+        "summary": "How UK practices are positioning, pricing (£300-£1,500), and delivering estate organisation as a structured service, including the retention math at the generational transition.",
         "buttonLabel": "Email me the playbook"
       }
     ]
@@ -154,7 +154,7 @@
   "plan": {
     "eyebrow": "Early access",
     "title": "Join the first cohort of adviser partners.",
-    "body": "We're working personally with our first adviser firms — with a direct line to the founding team. You help shape the product. We handle everything else.",
+    "body": "We're working personally with our first adviser firms, with a direct line to the founding team. You help shape the product. We handle everything else.",
     "features": [
       "Multi-client workspace",
       "Co-branded client portal",
@@ -165,14 +165,14 @@
       "No commitment during early access"
     ],
     "card": {
-      "title": "First 50 firms — onboarded personally",
+      "title": "First 50 firms, onboarded personally",
       "body": "We're working directly with the first 50 advisory firms. You get a personal onboarding session, a direct line to the founding team, and the ability to shape how the adviser portal develops.",
       "cta": "Book a 20-minute demo"
     }
   },
   "bottom": {
     "title": "The adviser channel built around your practice.",
-    "body": "Estate planning software built around advisers, not just individuals. Give your clients a vault they'll return to — and a tool that makes your practice more efficient.",
+    "body": "Estate planning software built around advisers, not just individuals. Give your clients a vault they'll return to, and a tool that makes your practice more efficient.",
     "bookDemo": "Book a demo",
     "contact": "Send us a message"
   }

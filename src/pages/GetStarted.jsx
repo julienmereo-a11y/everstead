@@ -282,7 +282,7 @@ export default function GetStarted() {
         else if (!GEO_CONFIG.allowed.has(cc)) setGeoStatus('soft-warn')
         else                                  setGeoStatus('allowed')
       })
-      .catch(() => setGeoStatus('allowed')) // API failed / timed out — allow silently
+      .catch(() => setGeoStatus('allowed')) // API failed / timed out, allow silently
       .finally(() => clearTimeout(timer))
     return () => { controller.abort(); clearTimeout(timer) }
   }, [])

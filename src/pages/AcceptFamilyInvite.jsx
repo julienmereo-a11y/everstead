@@ -187,7 +187,7 @@ export default function AcceptFamilyInvite() {
                   You've been invited to Everstead
                 </p>
                 <p className="text-stone-400 text-sm mt-2">
-                  <strong className="text-white">{primaryName}</strong> has invited you to set up your own private vault — as part of their Everstead+ plan.
+                  <strong className="text-white">{primaryName}</strong> has invited you to set up your own private vault, as part of their Everstead+ plan.
                 </p>
               </div>
 
@@ -198,7 +198,7 @@ export default function AcceptFamilyInvite() {
                     'Your own completely private vault',
                     'Organise accounts, documents, and final wishes',
                     primaryName + ' cannot see your data unless you share it',
-                    'Covered by their Everstead+ plan — no cost to you',
+                    'Covered by their Everstead+ plan, no cost to you',
                   ].map(item => (
                     <div key={item} className="flex items-start gap-2.5">
                       <CheckCircle2 size={15} className="text-sage-500 mt-0.5 shrink-0" />

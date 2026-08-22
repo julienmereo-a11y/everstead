@@ -143,7 +143,7 @@ export default function MessagesScreen({ app }) {
           <span className="dicon" style={{ margin: '2px auto 14px', width: 44, height: 44, background: 'var(--color-navy-50)', color: 'var(--color-navy-700)' }}><MessageIcon /></span>
           <h3 className="serif" style={{ fontSize: 21, fontWeight: 600, margin: '0 0 6px' }}>An {planLabel('family')} feature</h3>
           <p className="rdet" style={{ margin: '0 auto 18px', lineHeight: 1.55, maxWidth: 280 }}>
-            Write sealed letters, record a video, or leave a photo for the people you love — kept private and released when the time is right.
+            Write sealed letters, record a video, or leave a photo for the people you love, kept private and released when the time is right.
           </p>
           <button className="btn w100" onClick={() => app.go('upgrade')}>Upgrade to {planLabel('family')}</button>
         </div>
@@ -161,7 +161,7 @@ export default function MessagesScreen({ app }) {
   const canSubmit = recipientOk && form.title.trim() && (!isMedia || mediaFile) && timingOk && !busy
 
   const resetSheet = () => {
-    draftStash = null; fileStash = null // deliberate close — nothing to rescue
+    draftStash = null; fileStash = null // deliberate close, nothing to rescue
     setSheet(false); setMsgType('note'); setMediaFile(null); setForm(EMPTY_FORM)
   }
 
@@ -215,7 +215,7 @@ export default function MessagesScreen({ app }) {
           // The message row exists but its media didn't upload — say so
           // honestly rather than a generic failure (the row IS saved).
           resetSheet()
-          app.say(`Message saved, but the ${msgType} didn’t upload — try again from everstead.care.`, 'error')
+          app.say(`Message saved, but the ${msgType} didn’t upload, try again from everstead.care.`, 'error')
           return
         }
       }
@@ -232,7 +232,7 @@ export default function MessagesScreen({ app }) {
         // External recipient: mint the secure view link and email it (server-side).
         await live.releaseExternal(m.id)
         await live.refresh()
-        app.say(`Released — link emailed to ${m.recipient_email}`)
+        app.say(`Released, link emailed to ${m.recipient_email}`)
       } else {
         await update(m.id, { released: true, released_at: new Date().toISOString() })
         app.say('Message released')
@@ -306,7 +306,7 @@ export default function MessagesScreen({ app }) {
                 {!m.released && confirmId === m.id && (
                   <div style={{ marginTop: 12 }}>
                     <p className="rdet" style={{ margin: '0 0 8px', color: 'var(--color-stone-600)' }}>
-                      {m.recipient_name} will be able to {m.type === 'video' ? 'watch' : m.type === 'photo' ? 'see' : 'read'} this straight away{m.recipient_email ? ' — we’ll email them the private link now' : ''}. It can’t be sealed again.
+                      {m.recipient_name} will be able to {m.type === 'video' ? 'watch' : m.type === 'photo' ? 'see' : 'read'} this straight away{m.recipient_email ? ', we’ll email them the private link now' : ''}. It can’t be sealed again.
                     </p>
                     <div className="fx" style={{ gap: 8 }}>
                       <button className="btn btn-sm f1" onClick={() => { setConfirmId(null); release(m) }}>Yes, release it now</button>
@@ -413,8 +413,8 @@ export default function MessagesScreen({ app }) {
                 >
                   <option value="" disabled>Select a person…</option>
                   {people.length > 0
-                    ? people.map(p => <option key={p.id} value={p.name}>{p.name}{p.role ? ` — ${p.role}` : ''}</option>)
-                    : <option disabled>No trusted people yet — add someone in Family first</option>}
+                    ? people.map(p => <option key={p.id} value={p.name}>{p.name}{p.role ? `, ${p.role}` : ''}</option>)
+                    : <option disabled>No trusted people yet, add someone in Family first</option>}
                 </select>
               </>
             ) : (
@@ -422,7 +422,7 @@ export default function MessagesScreen({ app }) {
                 <input className="inp" value={form.recipient_name} onChange={set('recipient_name')} placeholder="Their name (optional)" />
                 <div style={{ height: 8 }} />
                 <input className="inp" type="email" value={form.recipient_email} onChange={set('recipient_email')} placeholder="their@email.com" autoCapitalize="none" autoCorrect="off" />
-                <p className="rdet" style={{ margin: '6px 0 0', fontSize: 11.5 }}>They don't need an account — when it's released, we'll email them a private, secure link.</p>
+                <p className="rdet" style={{ margin: '6px 0 0', fontSize: 11.5 }}>They don't need an account, when it's released, we'll email them a private, secure link.</p>
               </>
             )}
 
@@ -443,7 +443,7 @@ export default function MessagesScreen({ app }) {
                     )}
                     {/* Always-visible confirmation: on Android a content:// pick
                         can't always render as a blob preview, but the file IS
-                        attached and will upload — say so plainly. */}
+                        attached and will upload, say so plainly. */}
                     <div className="rdet fx ac" style={{ gap: 6, marginTop: 8, color: 'var(--color-sage-700)', fontWeight: 600, fontSize: 13 }}>
                       <span style={{ color: 'var(--color-sage-600)' }}>✓</span>
                       <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
@@ -491,7 +491,7 @@ export default function MessagesScreen({ app }) {
             <label className="flabel">When is it released?</label>
             <div className="fx" style={{ gap: 8 }}>
               {[
-                { v: 'after_death', l: 'When the time comes', d: 'On verified passing — or whenever you choose' },
+                { v: 'after_death', l: 'When the time comes', d: 'On verified passing, or whenever you choose' },
                 { v: 'on_date',     l: 'On a specific date',  d: 'A wedding day, an 18th birthday…' },
               ].map(({ v, l, d }) => {
                 const on = form.release_timing === v

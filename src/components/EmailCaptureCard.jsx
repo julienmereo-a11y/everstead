@@ -16,7 +16,7 @@ import { Mail, CheckCircle2 } from 'lucide-react'
 export default function EmailCaptureCard({
   source,
   title       = 'Want the full version by email?',
-  subtitle    = "We'll send it to your inbox. One email — no spam.",
+  subtitle    = "We'll send it to your inbox. One email, no spam.",
   buttonLabel = 'Send it to me',
   metadata    = null,
 }) {
@@ -61,7 +61,7 @@ export default function EmailCaptureCard({
           <div>
             <h3 className="font-display text-xl text-navy-950 mb-2">Check your inbox.</h3>
             <p className="text-sm text-stone-700 leading-relaxed">
-              We've just emailed you the full version. If you don't see it in a minute or two, check your spam folder — and please mark it as <em>not spam</em> so future emails reach you.
+              We've just emailed you the full version. If you don't see it in a minute or two, check your spam folder, and please mark it as <em>not spam</em> so future emails reach you.
             </p>
           </div>
         </div>

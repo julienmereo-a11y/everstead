@@ -6,7 +6,7 @@
   "hero": {
     "eyebrow": "Gift an Everstead plan",
     "title": "Give the gift of peace of mind.",
-    "subtitle": "Help someone you care about protect what matters most — their family, their wishes, their plan."
+    "subtitle": "Help someone you care about protect what matters most, their family, their wishes, their plan."
   },
   "stepIndicator": {
     "length": "Gift length",
@@ -19,7 +19,7 @@
     "desc": "Two private vaults, one subscription.",
     "features": [
       "Everything in Everstead, uncapped",
-      "Two private vaults — one for each person",
+      "Two private vaults, one for each person",
       "Each person keeps their own private data",
       "Up to 10 trusted contacts",
       "25 GB secure storage",
@@ -29,10 +29,10 @@
   },
   "years_one": "{{count}} year",
   "years_other": "{{count}} years",
-  "planYears": "{{plan}} — {{years}}",
+  "planYears": "{{plan}}, {{years}}",
   "step1": {
     "title": "How long is your gift?",
-    "subtitle": "You're gifting {{plan}} — choose how many years to give.",
+    "subtitle": "You're gifting {{plan}}, choose how many years to give.",
     "howManyYears": "How many years?",
     "mostThoughtful": "Most thoughtful",
     "oneTimePayment": "One-time gift payment",

@@ -22,7 +22,7 @@ export default function FamilyScreen({ app }) {
           ))}
         </div>
         <div className="note">
-          Emergency-only members see nothing today. If something happens to you, your executor can unlock exactly what they need — nothing more.
+          Emergency-only members see nothing today. If something happens to you, your executor can unlock exactly what they need, nothing more.
         </div>
       </div>
     </div>

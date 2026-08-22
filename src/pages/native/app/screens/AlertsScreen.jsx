@@ -28,7 +28,7 @@ export default function AlertsScreen({ app }) {
       {loading ? (
         <Busy />
       ) : data.length === 0 ? (
-        <div className="card-light" style={{ padding: 18 }}><p className="rdet" style={{ margin: 0 }}>No alerts — you're all clear.</p></div>
+        <div className="card-light" style={{ padding: 18 }}><p className="rdet" style={{ margin: 0 }}>No alerts, you're all clear.</p></div>
       ) : (
         <div className="card-light ohide">
           {data.map((a, i) => (

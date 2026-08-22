@@ -95,7 +95,7 @@ const DEMO = {
     { id: 2, title: 'Add a Lasting Power of Attorney', detail: 'Everstead suggests adding this next.', severity: 'info', is_read: false, created_at: ago(5 * 86400000) },
   ],
   messages: [
-    { id: 1, title: 'For your wedding day', recipient_name: 'Sophie', recipient_role: 'Daughter', type: 'note', content: 'My darling Sophie — if you are reading this…', released: false },
+    { id: 1, title: 'For your wedding day', recipient_name: 'Sophie', recipient_role: 'Daughter', type: 'note', content: 'My darling Sophie, if you are reading this…', released: false },
     { id: 2, title: 'A video for your 18th birthday', recipient_name: 'Oliver', recipient_role: 'Grandson', type: 'video', content: 'Happy birthday, my boy. A few things I want you to know…', released: false, release_timing: 'on_date', release_at: '2031-06-14T12:00:00Z' },
     { id: 3, title: 'Us at the lake, 1987', recipient_name: 'Tom', recipient_role: 'Husband', type: 'photo', content: 'The summer everything began.', released: false },
   ],
@@ -108,7 +108,7 @@ const DEMO = {
   },
   activity: [
     { id: 1, action: 'document.uploaded', resource_name: 'Life insurance policy', created_at: ago(2 * 86400000) },
-    { id: 2, action: 'account.updated', resource_name: 'Vanguard — Stocks & Shares ISA', created_at: ago(5 * 86400000) },
+    { id: 2, action: 'account.updated', resource_name: 'Vanguard: Stocks & Shares ISA', created_at: ago(5 * 86400000) },
     { id: 3, action: 'person.invited', resource_name: 'Priya Shah', created_at: ago(7 * 86400000) },
   ],
 }
@@ -158,7 +158,7 @@ export default function MobileAppDemo() {
     demoAppend('people', { name, role, invite_status: 'pending', access_grants: { accessAreas: accessAreas || [], accountCategories: [], documentTypes: [], accessTiming: accessTiming || 'always' } }); logActivity('person.invited', name)
     closeSheet(); say(`Invite sent to ${name}`)
   }, [demoAppend, logActivity, closeSheet, say])
-  const onTapAccount = useCallback((a) => say(`${a.name} — detail view coming soon`), [say])
+  const onTapAccount = useCallback((a) => say(`${a.name}, detail view coming soon`), [say])
 
   const onSignOut = useCallback(() => { window.location.href = '/mobile' }, [])
 
@@ -228,7 +228,7 @@ export default function MobileAppDemo() {
       const crossed = [100, 75, 50, 25].find(m => prevScore.current < m && s >= m)
       // Delayed so the action's own toast ("Instruction saved") shows first, then
       // the celebration follows — instead of the two racing for the same slot.
-      if (crossed) setTimeout(() => say(crossed === 100 ? 'Your plan is 100% ready — wonderful work' : `Milestone reached — ${crossed}% ready`, 'success'), 1400)
+      if (crossed) setTimeout(() => say(crossed === 100 ? 'Your plan is 100% ready (wonderful work' : `Milestone reached) ${crossed}% ready`, 'success'), 1400)
     }
     prevScore.current = s
     // eslint-disable-next-line react-hooks/exhaustive-deps

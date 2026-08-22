@@ -38,7 +38,7 @@ const GoogleG = () => (
 // Upgrading to Everstead+ happens later, inside the app (Settings / limit nudges).
 
 const VALUE_PROPS = [
-  { Icon: AccountsIcon, title: 'Accounts & money', sub: 'Banks, pensions and bills — one clear picture.' },
+  { Icon: AccountsIcon, title: 'Accounts & money', sub: 'Banks, pensions and bills, one clear picture.' },
   { Icon: DocIcon,      title: 'Documents',        sub: 'Wills, deeds and policies, safe in one vault.' },
   { Icon: HeartIcon,    title: 'Wishes',           sub: 'Your wishes, recorded for the people you love.' },
 ]
@@ -100,7 +100,7 @@ export default function MobileAuthFlow() {
     setError(null); setInfo(null)
     try {
       const { signInWithAppleNative } = await import('../../../lib/nativeAppleAuth')
-      await signInWithAppleNative() // 'cancelled' resolves quietly — no error UI
+      await signInWithAppleNative() // 'cancelled' resolves quietly, no error UI
     } catch (e) {
       // Surfaces in the Xcode console (and logcat) — the ASAuthorization and
       // Supabase failure modes are indistinguishable without it.
@@ -167,7 +167,7 @@ export default function MobileAuthFlow() {
                 Everything that matters, <span className="aurora">gathered</span> in one secure place.
               </h1>
               <p style={{ fontSize: 15.5, lineHeight: 1.6, color: 'rgba(255,255,255,0.65)', margin: '18px 0 0' }}>
-                Accounts, documents and wishes — organised for today, ready for whatever comes.
+                Accounts, documents and wishes, organised for today, ready for whatever comes.
               </p>
             </div>
           </div>
@@ -196,7 +196,7 @@ export default function MobileAuthFlow() {
             <label className="flabel flabel-dark" style={{ marginTop: 24 }}>Your name</label>
             <input className="inp inp-dark" value={name} onChange={e => setName(e.target.value)} placeholder="e.g. Eleanor Whitmore" autoComplete="name" autoCapitalize="words" enterKeyHint="done" />
             <p style={{ fontSize: 12.5, color: 'rgba(255,255,255,0.5)', margin: '12px 0 0', lineHeight: 1.5 }}>
-              Just your name for now — you can invite family once you're in.
+              Just your name for now, you can invite family once you're in.
             </p>
           </div>
         )}

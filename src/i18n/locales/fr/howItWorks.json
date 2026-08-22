@@ -1,31 +1,40 @@
 {
   "meta": {
-    "title": "Comment ça marche — Everstead",
-    "description": "Découvrez comment Everstead fonctionne — organisez vos comptes, téléversez vos documents avec lecture automatique, rédigez vos instructions avec l'aide de l'IA, et donnez à votre famille tout ce dont elle a besoin. Moins d'une heure pour tout mettre en place."
+    "title": "Comment ça marche | Everstead",
+    "description": "Découvrez comment Everstead fonctionne, organisez vos comptes, téléversez vos documents avec lecture automatique, rédigez vos instructions avec l'aide de l'IA, et donnez à votre famille tout ce dont elle a besoin. Moins d'une heure pour tout mettre en place."
   },
   "schema": {
     "howToName": "Comment organiser votre vie numérique et vos volontés avec Everstead",
-    "howToDescription": "Mettez de l'ordre dans votre vie numérique — comptes, documents, personnes de confiance et dernières volontés — pour que votre famille n'ait jamais à deviner."
+    "howToDescription": "Mettez de l'ordre dans votre vie numérique (comptes, documents, personnes de confiance et dernières volontés) pour que votre famille n'ait jamais à deviner."
   },
   "hero": {
     "eyebrow": "Comment ça marche",
     "titleLine1": "Un après-midi pour tout organiser.",
     "titleLine2": "Une sérénité qui dure.",
-    "subtitle": "Quatre étapes. Moins d'une heure. Tout ce que votre famille doit savoir — organisé, chiffré, et prêt le jour où elle en aura besoin.",
+    "subtitle": "Quatre étapes. Moins d'une heure. Tout ce que votre famille doit savoir, organisé, chiffré, et prêt le jour où elle en aura besoin.",
     "stats": [
-      { "value": "45 min", "label": "Temps moyen de mise en place" },
-      { "value": "15 min", "label": "Révision annuelle" },
-      { "value": "14 jours", "label": "Essai gratuit" }
+      {
+        "value": "45 min",
+        "label": "Temps moyen de mise en place"
+      },
+      {
+        "value": "15 min",
+        "label": "Révision annuelle"
+      },
+      {
+        "value": "14 jours",
+        "label": "Essai gratuit"
+      }
     ]
   },
   "steps": [
     {
       "label": "Dressez votre inventaire",
       "title": "Commencez par cartographier tout ce que vous possédez.",
-      "body": "La plupart des gens ont plus de comptes qu'ils ne l'imaginent — et la plupart des familles ne les retrouvent pas le moment venu. Everstead vous offre un espace structuré pour recenser chaque compte bancaire, bien immobilier, contrat d'assurance et actif numérique. Vous ne téléversez pas de relevés et ne connectez aucun flux bancaire : vous créez une carte claire et lisible, que n'importe quel proche pourrait suivre sans être expert. Vous préférez ne pas le faire seul ? Votre Assistant IA peut vous aider — décrivez-lui un compte avec vos propres mots, ou déposez un document, et il vous proposera une fiche à vérifier et à confirmer.",
+      "body": "La plupart des gens ont plus de comptes qu'ils ne l'imaginent, et la plupart des familles ne les retrouvent pas le moment venu. Everstead vous offre un espace structuré pour recenser chaque compte bancaire, bien immobilier, contrat d'assurance et actif numérique. Vous ne téléversez pas de relevés et ne connectez aucun flux bancaire : vous créez une carte claire et lisible, que n'importe quel proche pourrait suivre sans être expert. Vous préférez ne pas le faire seul ? Votre Assistant IA peut vous aider, décrivez-lui un compte avec vos propres mots, ou déposez un document, et il vous proposera une fiche à vérifier et à confirmer.",
       "bullets": [
         "Comptes bancaires, épargne et ISA",
-        "Retraites — d'entreprise, personnelles et d'État",
+        "Retraites, d'entreprise, personnelles et d'État",
         "Investissements et comptes de courtage",
         "Immobilier et prêts immobiliers",
         "Assurance vie, maladies graves et prévoyance",
@@ -34,10 +43,22 @@
       "preview": {
         "title": "Comptes et actifs",
         "items": [
-          { "label": "Compte courant Barclays", "tag": "Banque" },
-          { "label": "ISA actions Vanguard", "tag": "Investissement" },
-          { "label": "Retraite d'entreprise Nest", "tag": "Retraite" },
-          { "label": "Compte épargne Halifax", "tag": "Épargne" }
+          {
+            "label": "Compte courant Barclays",
+            "tag": "Banque"
+          },
+          {
+            "label": "ISA actions Vanguard",
+            "tag": "Investissement"
+          },
+          {
+            "label": "Retraite d'entreprise Nest",
+            "tag": "Retraite"
+          },
+          {
+            "label": "Compte épargne Halifax",
+            "tag": "Épargne"
+          }
         ],
         "cta": "+ Ajouter un compte"
       }
@@ -45,7 +66,7 @@
     {
       "label": "Rangez vos documents",
       "title": "Donnez à chaque document important une place permanente.",
-      "body": "Un testament introuvable est presque aussi inutile qu'un testament inexistant. Il en va de même pour les contrats d'assurance, les papiers de retraite et les titres de propriété. Le coffre à documents chiffré d'Everstead vous permet de téléverser originaux ou copies numérisées, de les étiqueter et de noter où sont rangés les originaux papier — pour que votre famille trouve tout au même endroit, et non dans trois armoires et chez le notaire. Téléversez un document et nous le lisons pour vous — nom, type et date d'expiration sont extraits automatiquement.",
+      "body": "Un testament introuvable est presque aussi inutile qu'un testament inexistant. Il en va de même pour les contrats d'assurance, les papiers de retraite et les titres de propriété. Le coffre à documents chiffré d'Everstead vous permet de téléverser originaux ou copies numérisées, de les étiqueter et de noter où sont rangés les originaux papier, pour que votre famille trouve tout au même endroit, et non dans trois armoires et chez le notaire. Téléversez un document et nous le lisons pour vous, nom, type et date d'expiration sont extraits automatiquement.",
       "bullets": [
         "Téléversez et organisez votre testament et vos LPA",
         "Conservez passeport, pièce d'identité et acte de naissance",
@@ -57,41 +78,64 @@
       "preview": {
         "title": "Coffre à documents",
         "items": [
-          { "label": "Testament", "tag": "Juridique" },
-          { "label": "Assurance vie — contrat Aviva", "tag": "Assurance" },
-          { "label": "Titres de propriété — 14 Elm St", "tag": "Immobilier" },
-          { "label": "LPA (mandat de protection future)", "tag": "Juridique" }
+          {
+            "label": "Testament",
+            "tag": "Juridique"
+          },
+          {
+            "label": "Assurance vie, contrat Aviva",
+            "tag": "Assurance"
+          },
+          {
+            "label": "Titres de propriété, 14 Elm St",
+            "tag": "Immobilier"
+          },
+          {
+            "label": "LPA (mandat de protection future)",
+            "tag": "Juridique"
+          }
         ],
         "cta": "+ Téléverser un document"
       }
     },
     {
       "label": "Invitez vos personnes de confiance",
-      "title": "Décidez qui voit quoi — et quand.",
-      "body": "C'est ce qui distingue Everstead d'un simple dossier sur votre ordinateur. Vous invitez des personnes précises — votre conjoint, votre exécuteur testamentaire, votre notaire — et choisissez exactement les sections qu'elles peuvent voir. Elles n'accèdent qu'à ce que vous décidez, et seulement quand vous l'accordez. Grâce aux permissions par rôle, vos enfants peuvent voir vos volontés sans vos informations financières ; votre notaire, les documents juridiques et rien d'autre.",
+      "title": "Décidez qui voit quoi, et quand.",
+      "body": "C'est ce qui distingue Everstead d'un simple dossier sur votre ordinateur. Vous invitez des personnes précises (votre conjoint, votre exécuteur testamentaire, votre notaire) et choisissez exactement les sections qu'elles peuvent voir. Elles n'accèdent qu'à ce que vous décidez, et seulement quand vous l'accordez. Grâce aux permissions par rôle, vos enfants peuvent voir vos volontés sans vos informations financières ; votre notaire, les documents juridiques et rien d'autre.",
       "bullets": [
         "Invitez proches, conseillers ou notaires",
-        "Définissez l'accès par catégorie — pas de tout ou rien",
+        "Définissez l'accès par catégorie, pas de tout ou rien",
         "Accordez l'accès d'urgence au coffre pour les situations critiques",
         "Révoquez ou modifiez un accès à tout moment",
-        "Les personnes invitées voient une vue claire et guidée — pas votre tableau de bord complet",
+        "Les personnes invitées voient une vue claire et guidée, pas votre tableau de bord complet",
         "Chaque accès est consigné dans votre historique d'audit"
       ],
       "preview": {
         "title": "Personnes de confiance",
         "items": [
-          { "label": "Sarah Mitchell — Conjointe", "tag": "Accès complet" },
-          { "label": "James Mitchell — Fils", "tag": "Volontés uniquement" },
-          { "label": "Thornton & Co Solicitors", "tag": "Docs juridiques" },
-          { "label": "Ajouter un conseiller financier" }
+          {
+            "label": "Sarah Mitchell: Conjointe",
+            "tag": "Accès complet"
+          },
+          {
+            "label": "James Mitchell: Fils",
+            "tag": "Volontés uniquement"
+          },
+          {
+            "label": "Thornton & Co Solicitors",
+            "tag": "Docs juridiques"
+          },
+          {
+            "label": "Ajouter un conseiller financier"
+          }
         ],
         "cta": "+ Inviter quelqu'un"
       }
     },
     {
       "label": "Rédigez vos instructions",
-      "title": "Dites-leur quoi faire — étape par étape.",
-      "body": "Les documents et les listes de comptes répondent à « où est-ce ? ». Les instructions répondent à « que dois-je faire maintenant ? ». C'est l'étape que la plupart des gens sautent — et celle dont les familles disent avoir eu le plus besoin. Dans Everstead, vous rédigez des consignes claires et ordonnées : qui appeler en premier, quels comptes bloquer, vos souhaits pour les obsèques, que faire du chien. Vous ne savez pas par où commencer ? Nous vous aidons à l'écrire — donnez-nous l'essentiel et nous trouverons les mots.",
+      "title": "Dites-leur quoi faire, étape par étape.",
+      "body": "Les documents et les listes de comptes répondent à « où est-ce ? ». Les instructions répondent à « que dois-je faire maintenant ? ». C'est l'étape que la plupart des gens sautent, et celle dont les familles disent avoir eu le plus besoin. Dans Everstead, vous rédigez des consignes claires et ordonnées : qui appeler en premier, quels comptes bloquer, vos souhaits pour les obsèques, que faire du chien. Vous ne savez pas par où commencer ? Nous vous aidons à l'écrire, donnez-nous l'essentiel et nous trouverons les mots.",
       "bullets": [
         "Rédigez des instructions pas à pas, en langage simple",
         "Consignez vos souhaits d'obsèques et d'inhumation",
@@ -103,10 +147,22 @@
       "preview": {
         "title": "Instructions",
         "items": [
-          { "label": "Les 48 premières heures — qui appeler", "tag": "Urgent" },
-          { "label": "Souhaits d'obsèques et d'inhumation", "tag": "Personnel" },
-          { "label": "Message pour Sarah", "tag": "Privé" },
-          { "label": "Que faire de la maison", "tag": "Immobilier" }
+          {
+            "label": "Les 48 premières heures, qui appeler",
+            "tag": "Urgent"
+          },
+          {
+            "label": "Souhaits d'obsèques et d'inhumation",
+            "tag": "Personnel"
+          },
+          {
+            "label": "Message pour Sarah",
+            "tag": "Privé"
+          },
+          {
+            "label": "Que faire de la maison",
+            "tag": "Immobilier"
+          }
         ],
         "cta": "+ Ajouter une instruction"
       }
@@ -115,22 +171,34 @@
   "familyView": {
     "eyebrow": "De l'autre côté",
     "title": "Ce que votre famille voit le jour où elle en a besoin.",
-    "body": "Quand une personne de confiance que vous avez invitée se connecte, elle ne voit pas tout votre tableau de bord. Elle découvre une vue claire et guidée de ce que vous avez choisi de partager avec elle — organisée par catégorie, avec vos instructions bien en évidence en haut de page.",
+    "body": "Quand une personne de confiance que vous avez invitée se connecte, elle ne voit pas tout votre tableau de bord. Elle découvre une vue claire et guidée de ce que vous avez choisi de partager avec elle, organisée par catégorie, avec vos instructions bien en évidence en haut de page.",
     "points": [
-      "Elle ne voit que les sections que vous avez explicitement partagées — rien d'autre.",
+      "Elle ne voit que les sections que vous avez explicitement partagées, rien d'autre.",
       "Vos instructions pas à pas apparaissent en premier, dans l'ordre où vous les avez écrites.",
       "L'accès d'urgence au coffre peut être accordé instantanément si vous choisissez de l'activer.",
-      "Chaque accès est consigné — vous savez toujours qui a consulté quoi, et quand."
+      "Chaque accès est consigné, vous savez toujours qui a consulté quoi, et quand."
     ],
     "mockup": {
-      "header": "Vue personne de confiance — Sarah Mitchell",
-      "calloutTitle": "Commencez ici — les instructions de James",
+      "header": "Vue personne de confiance: Sarah Mitchell",
+      "calloutTitle": "Commencez ici, les instructions de James",
       "calloutBody": "Étape 1 : appelez Thornton & Co Solicitors au 020 7123 4567…",
       "categories": [
-        { "label": "Comptes et actifs", "count": "12 comptes" },
-        { "label": "Documents importants", "count": "8 documents" },
-        { "label": "Dernières volontés", "count": "3 éléments" },
-        { "label": "Messages personnels", "count": "Privé — pour vous" }
+        {
+          "label": "Comptes et actifs",
+          "count": "12 comptes"
+        },
+        {
+          "label": "Documents importants",
+          "count": "8 documents"
+        },
+        {
+          "label": "Dernières volontés",
+          "count": "3 éléments"
+        },
+        {
+          "label": "Messages personnels",
+          "count": "Privé, pour vous"
+        }
       ]
     }
   },
@@ -146,7 +214,7 @@
       {
         "time": "15 min",
         "label": "Révision annuelle",
-        "desc": "Nous vous envoyons un rappel une fois par an. Mettez à jour ce qui a changé — nouveaux comptes, nouvelles adresses, volontés révisées."
+        "desc": "Nous vous envoyons un rappel une fois par an. Mettez à jour ce qui a changé, nouveaux comptes, nouvelles adresses, volontés révisées."
       },
       {
         "time": "Au besoin",
@@ -161,19 +229,19 @@
     "items": [
       {
         "q": "Puis-je commencer avant d'avoir tout organisé ?",
-        "a": "Oui — et nous vous y encourageons. La plupart des gens commencent avec deux ou trois comptes, puis complètent au fil du temps. Votre score de préparation montre ce qui est terminé et ce qui manque, pour toujours savoir où vous en êtes. Un plan incomplet vaut déjà bien mieux que pas de plan du tout."
+        "a": "Oui, et nous vous y encourageons. La plupart des gens commencent avec deux ou trois comptes, puis complètent au fil du temps. Votre score de préparation montre ce qui est terminé et ce qui manque, pour toujours savoir où vous en êtes. Un plan incomplet vaut déjà bien mieux que pas de plan du tout."
       },
       {
         "q": "Combien de temps faut-il pour tout mettre en place ?",
-        "a": "La plupart des gens réalisent une première version solide en 45 à 90 minutes. Cela comprend l'ajout des comptes principaux, le téléversement ou la mention des documents clés, l'invitation d'une personne de confiance et la rédaction d'instructions de base. La révision annuelle — mettre à jour ce qui a changé — prend généralement 15 à 20 minutes."
+        "a": "La plupart des gens réalisent une première version solide en 45 à 90 minutes. Cela comprend l'ajout des comptes principaux, le téléversement ou la mention des documents clés, l'invitation d'une personne de confiance et la rédaction d'instructions de base. La révision annuelle (mettre à jour ce qui a changé) prend généralement 15 à 20 minutes."
       },
       {
         "q": "Que voit concrètement ma famille le moment venu ?",
-        "a": "Les personnes de confiance que vous avez invitées voient une vue claire et guidée, limitée aux sections que vous avez partagées avec elles. Elles ne voient ni votre tableau de bord complet, ni quoi que ce soit auquel vous n'avez pas explicitement donné accès. Si vous avez activé l'accès d'urgence au coffre, elles peuvent le demander — et vous en êtes averti, sauf si vous l'avez pré-approuvé."
+        "a": "Les personnes de confiance que vous avez invitées voient une vue claire et guidée, limitée aux sections que vous avez partagées avec elles. Elles ne voient ni votre tableau de bord complet, ni quoi que ce soit auquel vous n'avez pas explicitement donné accès. Si vous avez activé l'accès d'urgence au coffre, elles peuvent le demander, et vous en êtes averti, sauf si vous l'avez pré-approuvé."
       },
       {
         "q": "Est-ce la même chose que rédiger un testament ?",
-        "a": "Non. Everstead est une plateforme d'organisation et de préparation, pas un service juridique. Le testament est un document légal qui détermine la répartition de votre patrimoine — vous devriez en avoir un, rédigé par un notaire. Everstead est l'endroit où vous consignez tout ce qui rend ce testament plus simple à exécuter : références de comptes, emplacement des documents, contacts et instructions que votre famille pourra réellement suivre."
+        "a": "Non. Everstead est une plateforme d'organisation et de préparation, pas un service juridique. Le testament est un document légal qui détermine la répartition de votre patrimoine, vous devriez en avoir un, rédigé par un notaire. Everstead est l'endroit où vous consignez tout ce qui rend ce testament plus simple à exécuter : références de comptes, emplacement des documents, contacts et instructions que votre famille pourra réellement suivre."
       },
       {
         "q": "Qu'advient-il de mon plan si j'arrête de payer ?",

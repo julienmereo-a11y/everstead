@@ -28,10 +28,10 @@ const ANDROID_CAPTURE = isNative() && !isIOS()
 // behavior (navigate away without Save = photo discarded) must stay — an
 // unscoped stash let a rejected photo silently reattach for 10 minutes, even
 // across a sign-out on a shared browser.
-let pickedAvatar = null // { url, at, userId } — uploaded URL, wins over server row until Save
+let pickedAvatar = null // { url, at, userId }, uploaded URL, wins over server row until Save
 const freshPickedAvatar = (userId) =>
   (pickedAvatar && pickedAvatar.userId === userId && Date.now() - pickedAvatar.at < 10 * 60 * 1000 ? pickedAvatar.url : null)
-let avatarFileStash = null    // { file, at } — picked but not yet uploaded
+let avatarFileStash = null    // { file, at }, picked but not yet uploaded
 let deliverAvatarToLive = null // (file) => void, bound to the mounted screen
 
 export default function AboutMeScreen({ app }) {
@@ -86,7 +86,7 @@ export default function AboutMeScreen({ app }) {
       avatarFileStash = null
       if (ANDROID_CAPTURE) pickedAvatar = { url, at: Date.now(), userId: auth.user?.id || null }
       setAvatar(url)
-      app.say('Photo added — tap Save to keep it')
+      app.say('Photo added, tap Save to keep it')
     } catch { app.say('Could not upload that photo.', 'error') }
   }
   const pickAvatar = async (e) => {
@@ -120,7 +120,7 @@ export default function AboutMeScreen({ app }) {
     if (avatarFileStash && Date.now() - avatarFileStash.at >= 3 * 60 * 1000) avatarFileStash = null // purge, don't hold the File
     if (avatarFileStash) {
       const f = avatarFileStash.file
-      avatarFileStash = null // consumed by THIS live instance — upload starts now
+      avatarFileStash = null // consumed by THIS live instance, upload starts now
       console.log('[upload] restored avatar file after remount')
       applyPickedPhoto(f)
     } else {
@@ -139,7 +139,7 @@ export default function AboutMeScreen({ app }) {
       // avatar_url must ride along with the save — the picked photo lives in
       // separate state, and the website persists it the same way (with the form).
       await save({ ...form, avatar_url: avatar || null, life_events: events.filter(e => e.year || e.description) })
-      pickedAvatar = null // persisted — the server row is the truth again
+      pickedAvatar = null // persisted, the server row is the truth again
       app.say('About Me saved')
     } catch { app.say('Could not save. Please try again.', 'error') } finally { setBusy(false) }
   }

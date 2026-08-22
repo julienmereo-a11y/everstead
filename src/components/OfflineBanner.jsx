@@ -31,7 +31,7 @@ export default function OfflineBanner() {
       style={{ paddingTop: 'calc(0.5rem + env(safe-area-inset-top))' }}
     >
       <WifiOff size={15} className="text-amber-300 shrink-0" />
-      <span>You're offline — you can still browse, and changes will sync when you reconnect.</span>
+      <span>You're offline, you can still browse, and changes will sync when you reconnect.</span>
     </div>
   )
 }

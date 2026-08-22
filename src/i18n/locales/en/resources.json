@@ -1,8 +1,8 @@
 {
   "meta": {
-    "title": "Resources — Everstead Guides, Checklists & Estate Planning Insight",
+    "title": "Resources | Everstead Guides, Checklists & Estate Planning Insight",
     "description": "Free guides, checklists, and tools to help you understand estate planning, prepare your family, and get your affairs in order. Practical, UK-focused resources.",
-    "ogTitle": "Resources — Everstead",
+    "ogTitle": "Resources | Everstead",
     "ogDescription": "Guides, checklists, and insight. Everything you need to understand estate planning and get your family plan in order."
   },
   "eyebrow": "Resources",
@@ -47,7 +47,7 @@
     "ctaStart": "Start Your Everstead",
     "startFree": {
       "eyebrow": "Put this into practice",
-      "title": "Organise the essentials for your family — free.",
+      "title": "Organise the essentials for your family, free.",
       "body": "Everstead keeps your accounts, documents and trusted people in one secure place, so nobody is ever left guessing. Free forever, no card required.",
       "cta": "Start free"
     }
@@ -60,27 +60,27 @@
       "afterDeath": {
         "title": "What to do when someone dies",
         "tag": "AI guide",
-        "desc": "A free, compassionate AI guide through the practical steps after a death in the UK — from the first hours to closing the estate. No sign-up needed.",
+        "desc": "A free, compassionate AI guide through the practical steps after a death in the UK, from the first hours to closing the estate. No sign-up needed.",
         "cta": "Start the guide",
         "badge": "Free · No login"
       },
       "readiness": {
         "title": "Estate Readiness Score",
         "tag": "Quiz",
-        "desc": "Answer 5 questions and get a score out of 100 — plus a breakdown of exactly what you're missing and why it matters.",
+        "desc": "Answer 5 questions and get a score out of 100, plus a breakdown of exactly what you're missing and why it matters.",
         "cta": "Take the quiz"
       },
       "executor": {
         "title": "Executor Checklist",
         "tag": "Interactive",
-        "desc": "A complete, interactive checklist for executors in England & Wales — from the first 72 hours to closing the estate. Printable.",
+        "desc": "A complete, interactive checklist for executors in England & Wales, from the first 72 hours to closing the estate. Printable.",
         "cta": "Open checklist",
         "badge": "Most linked"
       },
       "calculator": {
         "title": "Digital Estate Calculator",
         "tag": "Calculator",
-        "desc": "Enter your accounts, pensions, property, and assets to get an estimated estate value — with an IHT threshold alert if you're over £325,000.",
+        "desc": "Enter your accounts, pensions, property, and assets to get an estimated estate value, with an IHT threshold alert if you're over £325,000.",
         "cta": "Calculate now"
       }
     }

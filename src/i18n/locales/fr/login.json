@@ -1,6 +1,6 @@
 {
   "meta": {
-    "title": "Connexion — Everstead"
+    "title": "Connexion | Everstead"
   },
   "leftPanel": {
     "quotes": [
@@ -32,9 +32,18 @@
     ],
     "quoteAriaLabel": "Citation {{number}}",
     "stats": [
-      { "value": "14 jours", "label": "Essai gratuit" },
-      { "value": "AES-256", "label": "Chiffrement" },
-      { "value": "Royaume-Uni", "label": "Enregistré auprès de l'ICO" }
+      {
+        "value": "14 jours",
+        "label": "Essai gratuit"
+      },
+      {
+        "value": "AES-256",
+        "label": "Chiffrement"
+      },
+      {
+        "value": "Royaume-Uni",
+        "label": "Enregistré auprès de l'ICO"
+      }
     ]
   },
   "step1": {

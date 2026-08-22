@@ -78,7 +78,7 @@ export function GiftRedeemedBanner({ userName }) {
           Welcome{userName ? `, ${userName.split(' ')[0]}` : ''}! Your gift plan is active.
         </p>
         <p className="text-amber-100 text-xs mt-0.5">
-          Start building your estate plan — your subscription is already paid for.
+          Start building your estate plan, your subscription is already paid for.
         </p>
       </div>
       <button
@@ -99,7 +99,7 @@ const ONBOARDING_STEPS = [
   {
     id: 'account',
     label: 'Add your first financial account',
-    desc: 'Bank, investment, or insurance — any account counts.',
+    desc: 'Bank, investment, or insurance, any account counts.',
     section: 'accounts',
   },
   {
@@ -123,7 +123,7 @@ const ONBOARDING_STEPS = [
   {
     id: 'birthday',
     label: 'Add your date of birth',
-    desc: "We'll send you a birthday message each year — and a nudge to review your plan.",
+    desc: "We'll send you a birthday message each year, and a nudge to review your plan.",
     section: 'settings',
   },
 ]
@@ -226,7 +226,7 @@ export function OnboardingChecklist({ profile, accounts, documents, people, inst
         <div className="mt-4 bg-sage-50 border border-sage-200 rounded-xl px-4 py-3 flex items-center gap-3">
           <Sparkles size={16} className="text-sage-600 shrink-0" />
           <p className="text-sm text-sage-800 font-medium">
-            Great work — your plan is off to a strong start. Keep adding to improve your readiness score.
+            Great work, your plan is off to a strong start. Keep adding to improve your readiness score.
           </p>
         </div>
       )}

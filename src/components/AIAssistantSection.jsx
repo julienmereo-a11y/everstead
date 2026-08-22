@@ -111,7 +111,7 @@ function parseReply(text) {
             return { id: `c${++cardSeq}`, type: p.type, fields, confidence, lifeEvents, approved: false, status: 'idle', error: null }
           })
       }
-    } catch { /* ignore malformed JSON — just show the prose */ }
+    } catch { /* ignore malformed JSON, just show the prose */ }
   }
   return { prose, proposals }
 }
@@ -158,7 +158,7 @@ export default function AIAssistantSection({
     try {
       if (remember && messages.length) localStorage.setItem(chatKey, JSON.stringify(messages.slice(-40)))
       else localStorage.removeItem(chatKey) // off (or empty) → keep nothing
-    } catch { /* storage unavailable — non-fatal */ }
+    } catch { /* storage unavailable, non-fatal */ }
   }, [messages, remember, chatKey])
   const [input, setInput] = useState('')
   const [pendingFile, setPendingFile] = useState(null) // { file, name, media_type, base64 }
@@ -357,7 +357,7 @@ export default function AIAssistantSection({
         <div>
           <h1 className="font-display text-2xl font-light text-navy-950 leading-tight">Your AI Assistant</h1>
           <p className="text-sm text-stone-500 mt-0.5 leading-relaxed">
-            Chat, or drop in a document — I'll suggest entries for you to review. Nothing is saved until you confirm it.
+            Chat, or drop in a document: I'll suggest entries for you to review. Nothing is saved until you confirm it.
           </p>
         </div>
       </div>
@@ -387,7 +387,7 @@ export default function AIAssistantSection({
               <Sparkles size={13} className="text-sage-300" />
             </div>
             <div className="bg-stone-50 rounded-2xl rounded-tl-sm px-4 py-3 text-sm text-navy-900 leading-relaxed max-w-[85%]">
-              Hello{profile?.full_name ? `, ${profile.full_name.split(' ')[0]}` : ''}. I'm here to help you set things up, one small step at a time — no rush. You can tell me about an account, a person you trust, or a wish, or drop in a document and I'll read it. What feels like a good first step?
+              Hello{profile?.full_name ? `, ${profile.full_name.split(' ')[0]}` : ''}. I'm here to help you set things up, one small step at a time, no rush. You can tell me about an account, a person you trust, or a wish, or drop in a document and I'll read it. What feels like a good first step?
             </div>
           </div>
 
@@ -536,11 +536,11 @@ export default function AIAssistantSection({
 
       {/* Reassurance copy (exact, required) */}
       <p className="text-xs text-stone-400 leading-relaxed mt-3 px-1">
-        Your AI Assistant works only inside your Everstead account and never shares your information elsewhere. Nothing is saved until you review and confirm it — it suggests, you decide. Your documents are protected with the same AES-256 encryption as the rest of Everstead, and are never used to train AI or for advertising. You can switch AI features off any time in Settings.
+        Your AI Assistant works only inside your Everstead account and never shares your information elsewhere. Nothing is saved until you review and confirm it, it suggests, you decide. Your documents are protected with the same AES-256 encryption as the rest of Everstead, and are never used to train AI or for advertising. You can switch AI features off any time in Settings.
       </p>
 
       {isDemo && (
-        <p className="text-xs text-amber-600 mt-2 px-1">Demo mode — the assistant is read-only here. Start your own plan to use it for real.</p>
+        <p className="text-xs text-amber-600 mt-2 px-1">Demo mode, the assistant is read-only here. Start your own plan to use it for real.</p>
       )}
     </div>
   )

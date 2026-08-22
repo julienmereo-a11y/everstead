@@ -12,7 +12,7 @@ export default function ActivityScreen({ app }) {
       {loading ? (
         <Busy />
       ) : data.length === 0 ? (
-        <div className="card-light" style={{ padding: 18 }}><p className="rdet" style={{ margin: 0 }}>Nothing yet — as you build your plan, changes will appear here.</p></div>
+        <div className="card-light" style={{ padding: 18 }}><p className="rdet" style={{ margin: 0 }}>Nothing yet, as you build your plan, changes will appear here.</p></div>
       ) : (
         <div className="card-light ohide">
           {data.map((r, i) => (

@@ -8,7 +8,7 @@ import { isNative } from '../../lib/platform'
 // website — a real risk under Apple App Review guideline 4.2. Signed-in
 // native users never see this; RootRoute sends them straight to /dashboard.
 
-const DESCRIPTION = 'One secure place for your accounts, documents, trusted contacts, and wishes — organised for life, not just for death.'
+const DESCRIPTION = 'One secure place for your accounts, documents, trusted contacts, and wishes, organised for life, not just for death.'
 
 export default function NativeWelcome() {
   const navigate = useNavigate()

@@ -1,6 +1,6 @@
 {
   "meta": {
-    "title": "Sign In — Everstead"
+    "title": "Sign In | Everstead"
   },
   "leftPanel": {
     "quotes": [
@@ -32,9 +32,18 @@
     ],
     "quoteAriaLabel": "Quote {{number}}",
     "stats": [
-      { "value": "14-day", "label": "Free trial" },
-      { "value": "AES-256", "label": "Encryption" },
-      { "value": "UK-based", "label": "ICO registered" }
+      {
+        "value": "14-day",
+        "label": "Free trial"
+      },
+      {
+        "value": "AES-256",
+        "label": "Encryption"
+      },
+      {
+        "value": "UK-based",
+        "label": "ICO registered"
+      }
     ]
   },
   "step1": {

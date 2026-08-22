@@ -1,6 +1,6 @@
 {
   "meta": {
-    "title": "Notre engagement sur les données — Everstead",
+    "title": "Notre engagement sur les données | Everstead",
     "description": "Vos données vous appartiennent. Exportez tout à tout moment, engagement de préavis de 90 jours, et nous ne vendrons jamais vos données. L'engagement complet d'Everstead sur les données.",
     "ogDescription": "Vos données vous appartiennent. Exportez tout à tout moment, engagement de préavis de 90 jours, et nous ne vendrons jamais vos données."
   },
@@ -12,7 +12,7 @@
   "promises": [
     {
       "title": "Exportez tout, à tout moment",
-      "body": "Vous pouvez télécharger à tout moment une copie complète de l'ensemble de votre plan Everstead — comptes, documents, instructions, dernières volontés et plus encore — dans des formats standard et lisibles. Sans obstacles, sans attente.",
+      "body": "Vous pouvez télécharger à tout moment une copie complète de l'ensemble de votre plan Everstead (comptes, documents, instructions, dernières volontés et plus encore) dans des formats standard et lisibles. Sans obstacles, sans attente.",
       "cta": "Exporter vos données →"
     },
     {
@@ -21,7 +21,7 @@
     },
     {
       "title": "Nous ne vendrons jamais vos données",
-      "body": "Everstead ne vend, ne partage ni ne monétise vos données personnelles. Jamais. Nos revenus proviennent des abonnements — pas de vos données. Tous les détails figurent dans notre Politique de confidentialité.",
+      "body": "Everstead ne vend, ne partage ni ne monétise vos données personnelles. Jamais. Nos revenus proviennent des abonnements, pas de vos données. Tous les détails figurent dans notre Politique de confidentialité.",
       "cta": "Lire notre Politique de confidentialité →"
     }
   ],

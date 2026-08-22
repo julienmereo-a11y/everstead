@@ -126,7 +126,7 @@ export default function HomeScreen({ app }) {
               </div>
               {[
                 'Unlimited accounts and documents, up to 10 trusted people',
-                'Sealed personal messages — letters, videos and photos',
+                'Sealed personal messages, letters, videos and photos',
                 'Reminders and alerts for the things that matter',
               ].map(line => (
                 <div key={line} className="fx ac" style={{ gap: 8, marginTop: 6 }}>

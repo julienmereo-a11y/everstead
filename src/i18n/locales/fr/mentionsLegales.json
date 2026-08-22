@@ -1,6 +1,6 @@
 {
   "meta": {
-    "title": "Mentions légales — Everstead",
+    "title": "Mentions légales | Everstead",
     "description": "Mentions légales du site Everstead : éditeur du site, directeur de la publication, hébergement, contact, propriété intellectuelle et médiation de la consommation."
   },
   "header": {
@@ -11,7 +11,7 @@
   "sections": [
     {
       "title": "Éditeur du site",
-      "content": "Le site everstead.care (ci-après « le Site ») est édité par EVERSTEAD DIGITAL LTD, société à responsabilité limitée de droit anglais (private limited company), immatriculée en Angleterre et au pays de Galles sous le numéro 17166825.\n\nSiège social : [Adresse du siège — à compléter], Londres, Angleterre, Royaume-Uni.\n\nTéléphone : [À compléter].\n\nNuméro d'enregistrement auprès de l'ICO (autorité britannique de protection des données) : 00013988672."
+      "content": "Le site everstead.care (ci-après « le Site ») est édité par EVERSTEAD DIGITAL LTD, société à responsabilité limitée de droit anglais (private limited company), immatriculée en Angleterre et au pays de Galles sous le numéro 17166825.\n\nSiège social : [Adresse du siège, à compléter], Londres, Angleterre, Royaume-Uni.\n\nTéléphone : [À compléter].\n\nNuméro d'enregistrement auprès de l'ICO (autorité britannique de protection des données) : 00013988672."
     },
     {
       "title": "Directeur de la publication",
@@ -19,7 +19,7 @@
     },
     {
       "title": "Hébergement",
-      "content": "Le Site est hébergé par Vercel Inc., qui assure l'hébergement web et les fonctions serverless (site Everstead et points de terminaison de l'API). Politique de confidentialité : vercel.com/legal/privacy-policy.\n\nLes données des membres sont hébergées par Supabase Inc. — base de données PostgreSQL managée, authentification et stockage chiffré des fichiers du coffre. Localisation des données : UE (Irlande) — données hébergées dans la région de Francfort. Politique de confidentialité : supabase.com/privacy.\n\nLa liste complète et à jour de nos sous-traitants est publiée à l'adresse everstead.care/subprocessors."
+      "content": "Le Site est hébergé par Vercel Inc., qui assure l'hébergement web et les fonctions serverless (site Everstead et points de terminaison de l'API). Politique de confidentialité : vercel.com/legal/privacy-policy.\n\nLes données des membres sont hébergées par Supabase Inc. base de données PostgreSQL managée, authentification et stockage chiffré des fichiers du coffre. Localisation des données : UE (Irlande), données hébergées dans la région de Francfort. Politique de confidentialité : supabase.com/privacy.\n\nLa liste complète et à jour de nos sous-traitants est publiée à l'adresse everstead.care/subprocessors."
     },
     {
       "title": "Contact",
@@ -27,11 +27,11 @@
     },
     {
       "title": "Propriété intellectuelle",
-      "content": "L'ensemble des éléments composant le Site — textes, graphismes, logos, marques, interface et logiciels — est la propriété d'EVERSTEAD DIGITAL LTD ou fait l'objet d'une autorisation d'utilisation. Toute reproduction, représentation, modification ou adaptation, totale ou partielle, du Site ou de l'un de ses éléments, sans autorisation écrite préalable, est interdite.\n\nLes contenus que vous ajoutez à votre espace Everstead demeurent votre propriété, dans les conditions prévues par nos Conditions d'utilisation."
+      "content": "L'ensemble des éléments composant le Site (textes, graphismes, logos, marques, interface et logiciels) est la propriété d'EVERSTEAD DIGITAL LTD ou fait l'objet d'une autorisation d'utilisation. Toute reproduction, représentation, modification ou adaptation, totale ou partielle, du Site ou de l'un de ses éléments, sans autorisation écrite préalable, est interdite.\n\nLes contenus que vous ajoutez à votre espace Everstead demeurent votre propriété, dans les conditions prévues par nos Conditions d'utilisation."
     },
     {
       "title": "Médiation de la consommation",
-      "content": "Conformément aux articles L.612-1 et suivants du Code de la consommation, tout consommateur résidant en France a le droit de recourir gratuitement à un médiateur de la consommation en vue de la résolution amiable d'un litige l'opposant à un professionnel.\n\nMédiateur compétent : [Médiateur de la consommation — désignation en cours]. Les coordonnées du médiateur seront publiées sur cette page dès sa désignation."
+      "content": "Conformément aux articles L.612-1 et suivants du Code de la consommation, tout consommateur résidant en France a le droit de recourir gratuitement à un médiateur de la consommation en vue de la résolution amiable d'un litige l'opposant à un professionnel.\n\nMédiateur compétent : [Médiateur de la consommation, désignation en cours]. Les coordonnées du médiateur seront publiées sur cette page dès sa désignation."
     }
   ]
 }

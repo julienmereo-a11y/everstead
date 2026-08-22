@@ -73,7 +73,7 @@ export default function BiometricGate({ children }) {
           // user to the passcode mid-attach.
           if (elapsed >= BACKGROUND_LOCK_THRESHOLD_MS && !isPickInProgress()) maybeLock()
         })
-      } catch { /* app-state listener unavailable — non-fatal */ }
+      } catch { /* app-state listener unavailable, non-fatal */ }
     })()
 
     return () => { done = true; clearTimeout(safety); appStateHandle?.remove?.() }
@@ -102,7 +102,7 @@ export default function BiometricGate({ children }) {
           onChange={e => {
             const v = e.target.value.replace(/\D/g, '')
             setPin(v); setError(null)
-            if (v.length === 6) submitPin(v) // max length — verify without needing the button
+            if (v.length === 6) submitPin(v) // max length, verify without needing the button
           }}
           onKeyDown={e => { if (e.key === 'Enter') submitPin() }}
           placeholder="••••••"
@@ -129,12 +129,12 @@ export default function BiometricGate({ children }) {
               await clearPasscode()
               const { supabase } = await import('../../lib/supabase')
               await supabase.auth.signOut()
-            } catch { /* even on failure, fall through to unlock the gate — no session = auth screen */ }
+            } catch { /* even on failure, fall through to unlock the gate, no session = auth screen */ }
             setLocked(false)
           }}
           className="text-white/50 text-xs font-medium mt-4"
         >
-          {confirmExit ? 'Tap again to sign out — your passcode will be reset' : 'Forgotten your passcode? Sign out'}
+          {confirmExit ? 'Tap again to sign out, your passcode will be reset' : 'Forgotten your passcode? Sign out'}
         </button>
       </div>
   ) : null

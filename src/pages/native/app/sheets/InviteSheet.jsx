@@ -75,7 +75,7 @@ export default function InviteSheet({ app }) {
         <div className="fx" style={{ alignItems: 'flex-start', gap: 8, background: 'var(--color-sage-50)', border: '1px solid var(--color-sage-200)', borderRadius: 12, padding: '11px 13px', marginTop: 14 }}>
           <span className="ck on" style={{ width: 18, height: 18, marginTop: 1 }}><CheckIcon on /></span>
           <p style={{ fontSize: 12.5, color: 'var(--color-sage-800)', lineHeight: 1.5, margin: 0 }}>
-            <strong>Full access role</strong> — Spouse / Partner can view all sections of your plan.
+            <strong>Full access role</strong>: Spouse / Partner can view all sections of your plan.
           </p>
         </div>
       ) : (

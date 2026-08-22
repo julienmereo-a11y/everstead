@@ -40,7 +40,7 @@ export default function TrialEnded() {
   const billingCycle = profile.billing_cycle || 'yearly'
   const planConfig   = PLANS[plan] ?? PLANS.essential
   const firstName    = profile.full_name?.split(' ')[0] ?? 'there'
-  const priceLabel   = `${planConfig.name} plan — £${planConfig.monthly}/mo or £${planConfig.yearly}/mo yearly`
+  const priceLabel   = `${planConfig.name} plan, £${planConfig.monthly}/mo or £${planConfig.yearly}/mo yearly`
 
   // Deletion imminence
   const scheduledDeletionAt = profile.scheduled_deletion_at
@@ -126,7 +126,7 @@ export default function TrialEnded() {
             <p className="text-stone-500 text-sm text-center mb-8 leading-relaxed">
               {deletionImminent
                 ? `Your account and all your data will be deleted on ${deletionDateStr}. Update your payment method now to keep everything.`
-                : "We couldn't charge the card on file when your trial ended. Update your payment method to keep your plan — all your data is safe."
+                : "We couldn't charge the card on file when your trial ended. Update your payment method to keep your plan, all your data is safe."
               }
             </p>
 

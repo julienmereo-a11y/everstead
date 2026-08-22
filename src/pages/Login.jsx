@@ -272,7 +272,7 @@ export default function Login() {
 
                 {/* Web + Android app (native flow via system browser + deep
                     link). Hidden ONLY on iOS: offering Google sign-in there
-                    obliges Sign in with Apple alongside it (guideline 4.8) —
+                    obliges Sign in with Apple alongside it (guideline 4.8), 
                     both ship together in a later iOS release. */}
                 {(!isNative() || !isIOS()) && (
                   <>

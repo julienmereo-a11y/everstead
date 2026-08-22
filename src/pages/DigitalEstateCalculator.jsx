@@ -77,7 +77,7 @@ function fmtGBP(n) {
 /** Contextual message based on total */
 function contextMessage(total) {
   if (total < 50_000)
-    return 'A modest estate — still worth organising carefully for your family.'
+    return 'A modest estate, still worth organising carefully for your family.'
   if (total < 325_000)
     return 'A meaningful estate. Clear records will make a real difference to your family.'
   if (total < 500_000)
@@ -268,7 +268,7 @@ function CurrencyInput({ id, label, placeholder, note, value, onChange }) {
           onChange={handleChange}
           placeholder={placeholder}
           className="w-full pl-8 pr-4 py-2.5 rounded-xl border border-stone-200 bg-white text-sm text-navy-950 placeholder:text-stone-300 focus:outline-none focus:ring-2 focus:ring-navy-700 focus:border-transparent transition"
-          aria-label={`${label} — enter value in pounds`}
+          aria-label={`${label}, enter value in pounds`}
         />
       </div>
     </div>
@@ -390,12 +390,12 @@ export default function DigitalEstateCalculator() {
         <title>What's Your Digital Estate Worth? Free Calculator | Everstead</title>
         <meta
           name="description"
-          content="Calculate the estimated value of your estate in under 2 minutes. Free tool for UK families — includes financial accounts, property, pensions, and digital assets."
+          content="Calculate the estimated value of your estate in under 2 minutes. Free tool for UK families, includes financial accounts, property, pensions, and digital assets."
         />
         <link rel="canonical" href="https://www.everstead.care/digital-estate-worth" />
         <meta property="og:type" content="website" />
         <meta property="og:title" content="What's Your Digital Estate Worth? Free Calculator | Everstead" />
-        <meta property="og:description" content="Calculate the estimated value of your estate in under 2 minutes. Free tool for UK families — includes financial accounts, property, pensions, and digital assets." />
+        <meta property="og:description" content="Calculate the estimated value of your estate in under 2 minutes. Free tool for UK families, includes financial accounts, property, pensions, and digital assets." />
         <meta property="og:url" content="https://www.everstead.care/digital-estate-worth" />
         <meta property="og:image" content="https://www.everstead.care/og-image.png" />
         <meta name="twitter:card" content="summary_large_image" />
@@ -407,14 +407,14 @@ export default function DigitalEstateCalculator() {
         <div className="absolute inset-0 aurora-bg" />
         <div className="relative max-w-3xl mx-auto px-6 pt-28 pb-16 lg:pt-32 lg:pb-20 text-center">
           <p className="text-xs font-semibold uppercase tracking-[0.22em] text-sage-300 mb-4">
-            Free tool — no sign-up needed
+            Free tool, no sign-up needed
           </p>
           <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-light text-white leading-tight text-balance">
             What's your digital estate worth?
           </h1>
           <p className="mt-4 text-base sm:text-lg leading-relaxed text-stone-300 max-w-xl mx-auto">
             Enter estimated values below for an instant breakdown of your estate.
-            Takes under 2 minutes — and could matter more than you think.
+            Takes under 2 minutes, and could matter more than you think.
           </p>
         </div>
       </section>
@@ -570,7 +570,7 @@ export default function DigitalEstateCalculator() {
               <EmailCaptureCard
                 source="digital-estate-calculator"
                 title="Email me my estimate"
-                subtitle="We'll send a clean summary of your digital estate value and where it sits — useful to share with a spouse, executor, or financial adviser."
+                subtitle="We'll send a clean summary of your digital estate value and where it sits, useful to share with a spouse, executor, or financial adviser."
                 buttonLabel="Send my estimate"
                 metadata={{
                   total: grandTotal,
@@ -587,13 +587,13 @@ export default function DigitalEstateCalculator() {
                 Now make it official
               </p>
               <p className="text-sm text-stone-400 leading-relaxed mb-5">
-                Everstead helps you document every account, nominate trusted people, and leave your family with complete clarity — all in one secure place.
+                Everstead helps you document every account, nominate trusted people, and leave your family with complete clarity, all in one secure place.
               </p>
               <Link
                 to="/get-started"
                 className="btn-aurora inline-flex items-center gap-2 rounded-full px-5 py-3 text-sm font-semibold transition-colors duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-navy-950"
               >
-                Start your estate plan — free
+                Start your estate plan, free
                 <ArrowRight size={15} />
               </Link>
               <p className="mt-3 text-[11px] text-stone-600">

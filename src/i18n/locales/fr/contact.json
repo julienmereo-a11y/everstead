@@ -1,20 +1,20 @@
 {
   "meta": {
-    "title": "Contact — Everstead",
-    "description": "Contactez l'équipe Everstead. Questions, demandes presse, partenariats ou assistance technique — nous lisons chaque message.",
-    "ogTitle": "Contact — Everstead",
+    "title": "Contact | Everstead",
+    "description": "Contactez l'équipe Everstead. Questions, demandes presse, partenariats ou assistance technique, nous lisons chaque message.",
+    "ogTitle": "Contact | Everstead",
     "ogDescription": "Contactez l'équipe Everstead. Nous lisons chaque message et répondons sous un jour ouvré."
   },
   "hero": {
     "eyebrow": "Contact",
     "title": "Nous serions ravis de vous lire.",
-    "subtitle": "Questions, propositions de partenariat, demandes presse — nous lisons chaque message."
+    "subtitle": "Questions, propositions de partenariat, demandes presse, nous lisons chaque message."
   },
   "info": {
     "title": "Nous contacter",
     "generalLabel": "Questions générales",
     "supportLabel": "Assistance",
-    "supportHours": "Lun–ven, 9h–17h (GMT)",
+    "supportHours": "Lun, ven, 9h, 17h (GMT)",
     "demoCard": {
       "title": "Vous souhaitez réserver une démo ?",
       "body": "Les conseillers patrimoniaux et les professionnels peuvent réserver une présentation guidée d'Everstead Pro.",
@@ -22,8 +22,14 @@
     }
   },
   "form": {
-    "name": { "label": "Nom", "placeholder": "Votre nom" },
-    "email": { "label": "Adresse e-mail", "placeholder": "vous@exemple.com" },
+    "name": {
+      "label": "Nom",
+      "placeholder": "Votre nom"
+    },
+    "email": {
+      "label": "Adresse e-mail",
+      "placeholder": "vous@exemple.com"
+    },
     "subject": {
       "label": "Sujet",
       "placeholder": "Choisissez un sujet",
@@ -35,7 +41,10 @@
         "other": "Autre"
       }
     },
-    "message": { "label": "Message", "placeholder": "Comment pouvons-nous vous aider ?" },
+    "message": {
+      "label": "Message",
+      "placeholder": "Comment pouvons-nous vous aider ?"
+    },
     "submit": "Envoyer le message",
     "sending": "Envoi…",
     "error": "Une erreur est survenue lors de l'envoi de votre message. Écrivez-nous directement à hello@everstead.care."

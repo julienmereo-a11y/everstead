@@ -55,7 +55,7 @@ export default function ReferralCard({ userId }) {
         <div>
           <h3 className="font-display text-lg text-navy-950 leading-snug">Invite a family member or friend</h3>
           <p className="mt-1 text-sm text-stone-600 leading-relaxed">
-            They get <strong>21 days free</strong> instead of the standard 14 — share your link with anyone who'd benefit from getting their estate organised.
+            They get <strong>21 days free</strong> instead of the standard 14, share your link with anyone who'd benefit from getting their estate organised.
           </p>
         </div>
       </div>

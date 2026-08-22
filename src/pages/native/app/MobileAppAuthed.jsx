@@ -200,7 +200,7 @@ export default function MobileAppAuthed() {
           accounts.refetch?.(); documents.refetch?.(); people.refetch?.(); instructions.refetch?.(); activityLog.refetch?.()
           refreshProfile?.()
         })
-      } catch { /* listener is a nicety — never block the app */ }
+      } catch { /* listener is a nicety, never block the app */ }
     })()
     return () => { handle?.remove?.() }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -356,7 +356,7 @@ export default function MobileAppAuthed() {
       if (crossed) {
         clearTimeout(milestoneTimer.current)
         milestoneTimer.current = setTimeout(
-          () => say(crossed === 100 ? 'Your plan is 100% ready — wonderful work' : `Milestone reached — ${crossed}% ready`, 'success'),
+          () => say(crossed === 100 ? 'Your plan is 100% ready (wonderful work' : `Milestone reached) ${crossed}% ready`, 'success'),
           1400,
         )
       }
@@ -382,13 +382,13 @@ export default function MobileAppAuthed() {
           // success before it's true, and poll long enough for slow webhooks
           // (the old 6s window routinely lost the race, so a paying user kept
           // seeing free-tier limit nudges until a restart).
-          go('home'); say('Payment received — finalising your upgrade…')
+          go('home'); say('Payment received, finalising your upgrade…')
           for (let i = 0; i < 15; i++) {
             const p = await refreshProfile?.()
             if (p?.plan && p.plan !== 'free') { say('Welcome to Everstead+', 'success'); return }
             await new Promise(r => setTimeout(r, 2000))
           }
-          say('Your upgrade is processing — it will appear in a moment.')
+          say('Your upgrade is processing, it will appear in a moment.')
         }}
         />
       </>

@@ -1,12 +1,12 @@
 {
   "meta": {
-    "title": "Pricing — Everstead",
-    "description": "Start free — no card required. Upgrade to Everstead+ for two private vaults, unlimited accounts and documents, and 25 GB of secure storage."
+    "title": "Pricing | Everstead",
+    "description": "Start free, no card required. Upgrade to Everstead+ for two private vaults, unlimited accounts and documents, and 25 GB of secure storage."
   },
   "header": {
     "eyebrow": "Pricing",
     "title": "Start free. Upgrade when you're ready.",
-    "subtitle": "Begin organising today at no cost — your family will thank you later."
+    "subtitle": "Begin organising today at no cost, your family will thank you later."
   },
   "toggle": {
     "monthly": "Monthly",
@@ -36,9 +36,9 @@
     "family": {
       "name": "Everstead+",
       "badge": "Most popular",
-      "description": "For couples and households — two private vaults, one subscription, shared protection.",
+      "description": "For couples and households, two private vaults, one subscription, shared protection.",
       "features": [
-        "Two private vaults — one subscription",
+        "Two private vaults, one subscription",
         "Unlimited accounts & documents",
         "Up to 10 trusted contacts",
         "Unlimited instructions & wishes",
@@ -74,7 +74,7 @@
         "Priority support"
       ],
       "cta": "Book a demo",
-      "priceNote": "Pricing on application — we're working personally with our first adviser cohort."
+      "priceNote": "Pricing on application, we're working personally with our first adviser cohort."
     }
   },
   "prices": {
@@ -103,24 +103,24 @@
     "title": "Less than the alternatives. More than any of them.",
     "solicitor": {
       "name": "Solicitor (probate)",
-      "price": "£3,000–5,000",
+      "price": "£3,000-5,000",
       "description": "One estate settled, after you're gone. No ongoing access, no instructions, no peace of mind while you're alive."
     },
     "willWriting": {
       "name": "Will writing service",
-      "price": "£150–500",
+      "price": "£150-500",
       "description": "A document. No instructions, no organised accounts, no access grants, no way for your family to find anything."
     },
     "everstead": {
       "name": "Everstead+",
       "price": "£{{total}} / yr",
-      "description": "Everything organised, updated, and shared — for as long as you need it. Two private vaults included."
+      "description": "Everything organised, updated, and shared, for as long as you need it. Two private vaults included."
     }
   },
   "security": {
     "eyebrow": "Security baseline",
     "title": "Every plan is built on the same protection model.",
-    "body": "Everstead does not reserve basic protection for premium tiers. Plan differences are about collaboration, rollout support, and service experience — not weaker privacy or weaker access control.",
+    "body": "Everstead does not reserve basic protection for premium tiers. Plan differences are about collaboration, rollout support, and service experience, not weaker privacy or weaker access control.",
     "items": [
       "Encryption in transit and at rest",
       "Granular trusted-person permissions",
@@ -155,7 +155,7 @@
     "items": [
       {
         "q": "How does the free trial work?",
-        "a": "Every plan includes a 14-day free trial. A card is required to start, but you won't be charged until the trial ends — cancel any time before and pay nothing. You have full access to all features on your chosen plan during the trial."
+        "a": "Every plan includes a 14-day free trial. A card is required to start, but you won't be charged until the trial ends, cancel any time before and pay nothing. You have full access to all features on your chosen plan during the trial."
       },
       {
         "q": "What happens if I cancel during the trial?",
@@ -167,11 +167,11 @@
       },
       {
         "q": "Is there a discount for annual billing?",
-        "a": "Yes — billing Everstead+ annually saves 20% compared to monthly (about £24/year). The discounted rate is applied immediately and locked in for the year."
+        "a": "Yes, billing Everstead+ annually saves 20% compared to monthly (about £24/year). The discounted rate is applied immediately and locked in for the year."
       },
       {
         "q": "What does Everstead+ include that the free plan does not?",
-        "a": "Everstead+ gives two people their own private vaults under one subscription — each keeps their own private data, but you can organise and plan together. It lifts the free plan's limits to unlimited accounts, documents and instructions, up to 10 trusted contacts, personal messages and final wishes, and 25 GB of secure storage."
+        "a": "Everstead+ gives two people their own private vaults under one subscription, each keeps their own private data, but you can organise and plan together. It lifts the free plan's limits to unlimited accounts, documents and instructions, up to 10 trusted contacts, personal messages and final wishes, and 25 GB of secure storage."
       },
       {
         "q": "What is Everstead Pro for?",
@@ -179,7 +179,7 @@
       },
       {
         "q": "Is Everstead a legal service?",
-        "a": "No. Everstead is an organisation and planning tool — it does not provide will drafting, legal advice, or any regulated professional service. It is designed to work alongside your solicitor, financial adviser, and other professionals. For legal estate planning, please use a qualified solicitor."
+        "a": "No. Everstead is an organisation and planning tool, it does not provide will drafting, legal advice, or any regulated professional service. It is designed to work alongside your solicitor, financial adviser, and other professionals. For legal estate planning, please use a qualified solicitor."
       },
       {
         "q": "How is my data protected?",
@@ -187,7 +187,7 @@
       },
       {
         "q": "Is Everstead worth it if I only use it once to set up my plan?",
-        "a": "Most members use Everstead regularly — as a single place to track accounts, store documents, and keep everything important in order. It's useful today, not just someday. That said, even if you only set it up once, the value is real: the people you love won't spend months piecing your life together if something unexpected happens. For less than a coffee a week, that's one of the better things you can do for yourself and for them."
+        "a": "Most members use Everstead regularly, as a single place to track accounts, store documents, and keep everything important in order. It's useful today, not just someday. That said, even if you only set it up once, the value is real: the people you love won't spend months piecing your life together if something unexpected happens. For less than a coffee a week, that's one of the better things you can do for yourself and for them."
       }
     ],
     "stillQuestion": "Still have a question?",

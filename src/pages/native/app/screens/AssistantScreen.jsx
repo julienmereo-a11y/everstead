@@ -15,7 +15,7 @@ function stripProposals(reply) {
 export default function AssistantScreen({ app }) {
   const auth = useAuth()
   const [messages, setMessages] = useState([
-    { role: 'assistant', content: "Hello — I'm here to help you organise your accounts, documents, people and wishes. What would you like to sort out first?" },
+    { role: 'assistant', content: "Hello: I'm here to help you organise your accounts, documents, people and wishes. What would you like to sort out first?" },
   ])
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
@@ -70,7 +70,7 @@ export default function AssistantScreen({ app }) {
               <strong>never used to train AI models</strong>.
             </p>
             <p className="rdet" style={{ margin: '10px 0 0', lineHeight: 1.6 }}>
-              The Assistant only sees what you write here — it cannot open your vault,
+              The Assistant only sees what you write here, it cannot open your vault,
               documents or messages on its own. Please avoid typing passwords or full
               account numbers.
             </p>
@@ -98,7 +98,7 @@ export default function AssistantScreen({ app }) {
     // Demo mode: no backend — reply with a canned, on-brand response.
     if (app.demo) {
       setTimeout(() => {
-        setMessages(h => [...h, { role: 'assistant', content: "In the live app I'd help you capture that — for example, adding an account or drafting a note to a loved one. This is a preview, so I'm not connected right now." }])
+        setMessages(h => [...h, { role: 'assistant', content: "In the live app I'd help you capture that, for example, adding an account or drafting a note to a loved one. This is a preview, so I'm not connected right now." }])
         setLoading(false)
       }, 500)
       return

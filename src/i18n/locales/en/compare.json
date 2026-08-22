@@ -1,14 +1,14 @@
 {
   "index": {
     "meta": {
-      "title": "How Everstead compares — Everstead vs the alternatives",
-      "description": "See how Everstead compares to will-writing services, document vaults, and the do-nothing status quo — and why families choose it. Side-by-side feature comparisons for UK families.",
+      "title": "How Everstead compares | Everstead vs the alternatives",
+      "description": "See how Everstead compares to will-writing services, document vaults, and the do-nothing status quo, and why families choose it. Side-by-side feature comparisons for UK families.",
       "ogTitle": "How Everstead compares",
-      "ogDescription": "Everstead vs the alternatives — side-by-side comparisons for UK families."
+      "ogDescription": "Everstead vs the alternatives, side-by-side comparisons for UK families."
     },
     "eyebrow": "How we compare",
     "title": "Why families choose Everstead.",
-    "subtitle": "Weighing up a will-writing service, a document vault, or just a spreadsheet? Here's an honest, side-by-side look at how Everstead compares — and why it comes out ahead.",
+    "subtitle": "Weighing up a will-writing service, a document vault, or just a spreadsheet? Here's an honest, side-by-side look at how Everstead compares, and why it comes out ahead.",
     "vs": "vs",
     "seeComparison": "See the comparison",
     "cta": {
@@ -18,16 +18,16 @@
     }
   },
   "detail": {
-    "metaTitle": "{{tagline}} — Everstead",
+    "metaTitle": "{{tagline}} | Everstead",
     "eyebrow": "Everstead vs {{name}}",
     "seePricing": "See pricing",
     "eversteadBadge": "Personal vault",
-    "verdictEyebrow": "Our verdict — Everstead wins",
+    "verdictEyebrow": "Our verdict: Everstead wins",
     "tableTitle": "Feature comparison",
     "tableFeature": "Feature",
     "tableFootnote": "Based on publicly available information. Features may change. Last reviewed May 2026.",
     "alsoTitle": "What {{name}} also offers",
-    "alsoIntro": "In fairness, {{name}} does some things Everstead doesn't — and that's by design. These are a separate service you can use <em>alongside</em> Everstead, not instead of it:",
+    "alsoIntro": "In fairness, {{name}} does some things Everstead doesn't, and that's by design. These are a separate service you can use <em>alongside</em> Everstead, not instead of it:",
     "alsoOutro": "None of these replace what Everstead does: keeping your whole estate organised, current, and ready for the people you trust.",
     "differenceTitle": "The real difference",
     "ctaTitle": "Try Everstead free for 14 days",
@@ -39,12 +39,12 @@
       "category": "Will writing & probate",
       "tagline": "Everstead vs Farewill",
       "headline": "Farewill writes your will. Everstead organises your whole life.",
-      "subhead": "Farewill is a will-writing service. Everstead is a secure personal vault — a living, updated record of your accounts, documents, and wishes that's useful today and ready for your family when it counts.",
-      "eversteadDesc": "A secure personal vault for organising everything that matters — accounts, documents, instructions, and final wishes — with controlled access for the people you trust.",
+      "subhead": "Farewill is a will-writing service. Everstead is a secure personal vault, a living, updated record of your accounts, documents, and wishes that's useful today and ready for your family when it counts.",
+      "eversteadDesc": "A secure personal vault for organising everything that matters (accounts, documents, instructions, and final wishes) with controlled access for the people you trust.",
       "competitorDesc": "An online legal services company offering will writing, probate assistance, and funeral planning. A one-time service focused on legal documents.",
       "rows": [
         "Secure document vault",
-        "Ongoing vault — update any time",
+        "Ongoing vault, update any time",
         "Trusted contact access control",
         "Step-by-step executor guide",
         "Readiness score",
@@ -52,11 +52,15 @@
         "Birthday & anniversary reminders",
         "Everstead+ (2 vaults)"
       ],
-      "competitorAlso": ["Online will drafting", "Probate assistance", "Funeral planning"],
-      "verdict": "For organising your whole estate — and making sure your family can actually act on it — Everstead is the clear winner. Use Farewill for the will document itself; rely on Everstead for everything around it.",
+      "competitorAlso": [
+        "Online will drafting",
+        "Probate assistance",
+        "Funeral planning"
+      ],
+      "verdict": "For organising your whole estate (and making sure your family can actually act on it) Everstead is the clear winner. Use Farewill for the will document itself; rely on Everstead for everything around it.",
       "positioning": [
-        "Farewill and Everstead solve different problems. Farewill helps you write a legal will — a one-time document. Everstead helps you keep everything else organised: where your accounts are, who should be contacted, what your wishes are, and what instructions your family should follow.",
-        "Most people need both. A will tells the court what happens to your assets. Everstead tells your family how to find everything else — and keeps it updated as your life changes.",
+        "Farewill and Everstead solve different problems. Farewill helps you write a legal will, a one-time document. Everstead helps you keep everything else organised: where your accounts are, who should be contacted, what your wishes are, and what instructions your family should follow.",
+        "Most people need both. A will tells the court what happens to your assets. Everstead tells your family how to find everything else, and keeps it updated as your life changes.",
         "If you already have a will, Everstead is the natural next step: a secure, living record that makes your estate genuinely manageable."
       ],
       "price": "From £3.99/month (14-day free trial)",
@@ -69,10 +73,10 @@
       "tagline": "Everstead vs Settld",
       "headline": "Settld helps after a death. Everstead helps before.",
       "subhead": "Settld is a free notification service that helps families cancel accounts and inform companies after someone has died. Everstead is a proactive personal vault that makes sure your family never has to scramble in the first place.",
-      "eversteadDesc": "A secure personal vault you build while you're alive — so the people you love have everything they need, organised and accessible, without having to search.",
+      "eversteadDesc": "A secure personal vault you build while you're alive, so the people you love have everything they need, organised and accessible, without having to search.",
       "competitorDesc": "A free service that helps the bereaved notify banks, utilities, and other companies after a death. Reactive, post-death focused, and built for executors already in the middle of grief.",
       "rows": [
-        "Proactive planning — build before anything happens",
+        "Proactive planning, build before anything happens",
         "Secure document vault",
         "Account & asset register",
         "Trusted contact access management",
@@ -81,12 +85,14 @@
         "Personal messages & final wishes",
         "Everstead+ (2 private vaults)"
       ],
-      "competitorAlso": ["Post-death company notifications — telling banks, utilities and providers after a death (Settld is free for this)"],
-      "verdict": "Everstead is the better choice for nearly everyone, because it works before anything happens — while you can still prepare. Settld only helps afterwards. The smart move is Everstead now, so your family never has to scramble in the first place.",
+      "competitorAlso": [
+        "Post-death company notifications, telling banks, utilities and providers after a death (Settld is free for this)"
+      ],
+      "verdict": "Everstead is the better choice for nearly everyone, because it works before anything happens, while you can still prepare. Settld only helps afterwards. The smart move is Everstead now, so your family never has to scramble in the first place.",
       "positioning": [
-        "Settld and Everstead are complementary rather than competing. Settld is used after someone has died — it helps families notify banks, utilities, pension providers, and other institutions. That's genuinely useful, but it's reactive: the family is already in the middle of grief, searching for information.",
-        "Everstead is proactive. It's where you record your accounts, upload your documents, write your instructions, and grant access to the people you trust — before anything happens.",
-        "When the worst does happen, a family with an Everstead vault already knows where everything is. They still might use Settld to notify institutions — but they won't spend weeks piecing together a life from scratch.",
+        "Settld and Everstead are complementary rather than competing. Settld is used after someone has died, it helps families notify banks, utilities, pension providers, and other institutions. That's genuinely useful, but it's reactive: the family is already in the middle of grief, searching for information.",
+        "Everstead is proactive. It's where you record your accounts, upload your documents, write your instructions, and grant access to the people you trust, before anything happens.",
+        "When the worst does happen, a family with an Everstead vault already knows where everything is. They still might use Settld to notify institutions, but they won't spend weeks piecing together a life from scratch.",
         "The difference is the difference between a map left at home and a map that was already in their hands."
       ],
       "price": "From £3.99/month (14-day free trial)",
@@ -98,14 +104,14 @@
       "category": "Digital estate planning",
       "tagline": "Everstead vs SafeKeep",
       "headline": "SafeKeep stores your information. Everstead organises your whole estate.",
-      "subhead": "Both platforms help you keep important information in one place. The difference is in the depth — Everstead adds a family vault, an adviser portal, an Estate Readiness Score, and tools that actually help executors act when the time comes.",
-      "eversteadDesc": "A secure personal vault for organising everything that matters — accounts, documents, instructions, and final wishes — with controlled access, an adviser portal, and a dual-vault Everstead+ plan for couples.",
+      "subhead": "Both platforms help you keep important information in one place. The difference is in the depth: Everstead adds a family vault, an adviser portal, an Estate Readiness Score, and tools that actually help executors act when the time comes.",
+      "eversteadDesc": "A secure personal vault for organising everything that matters (accounts, documents, instructions, and final wishes) with controlled access, an adviser portal, and a dual-vault Everstead+ plan for couples.",
       "competitorDesc": "A digital storage platform for important documents and account details. Focused on individuals storing personal data securely, with a clean interface and basic sharing features.",
       "rows": [
         "Secure document vault",
         "Account & asset register",
         "Trusted contact access control",
-        "Everstead+ — two private vaults",
+        "Everstead+, two private vaults",
         "Estate Readiness Score",
         "Step-by-step executor instructions",
         "Personal messages & final wishes",
@@ -114,12 +120,12 @@
         "Smart reminders & progress tracking",
         "Full data export (right to portability)"
       ],
-      "verdict": "Both store your information — only Everstead turns it into a plan your family can act on. On every dimension that matters after storage, Everstead is the stronger choice.",
+      "verdict": "Both store your information, only Everstead turns it into a plan your family can act on. On every dimension that matters after storage, Everstead is the stronger choice.",
       "positioning": [
         "Everstead and SafeKeep share a basic premise: put your important information somewhere secure and accessible. If that's all you need, both products work.",
-        "But Everstead was built around a bigger problem. Families don't just need storage — they need organisation, guidance, and the right people to have the right access at the right time. That's why we built the Estate Readiness Score (so you can see exactly what's missing), step-by-step executor instructions (so your family knows what to do, not just where things are), and role-based access control that goes far beyond a shared password.",
-        "Everstead+ is the sharpest difference. Two completely private vaults — one subscription. A couple can each organise their own estate, share only what they choose, and never have to combine their private information into a single account. SafeKeep has no equivalent.",
-        "The adviser portal is the other. Everstead works as a professional tool for financial planners, IFAs, and estate solicitors managing multiple clients — with a co-branded portal, client progress tracking, and collaboration features that SafeKeep doesn't offer.",
+        "But Everstead was built around a bigger problem. Families don't just need storage, they need organisation, guidance, and the right people to have the right access at the right time. That's why we built the Estate Readiness Score (so you can see exactly what's missing), step-by-step executor instructions (so your family knows what to do, not just where things are), and role-based access control that goes far beyond a shared password.",
+        "Everstead+ is the sharpest difference. Two completely private vaults, one subscription. A couple can each organise their own estate, share only what they choose, and never have to combine their private information into a single account. SafeKeep has no equivalent.",
+        "The adviser portal is the other. Everstead works as a professional tool for financial planners, IFAs, and estate solicitors managing multiple clients, with a co-branded portal, client progress tracking, and collaboration features that SafeKeep doesn't offer.",
         "If you're looking for a digital vault, both options are worth considering. If you want your family to actually know what to do when it counts, Everstead goes further."
       ],
       "price": "From £3.99/month (14-day free trial)",
@@ -131,26 +137,30 @@
       "category": "Wills & legacy planning",
       "tagline": "Everstead vs Octopus Legacy",
       "headline": "Octopus Legacy handles your will. Everstead organises everything else.",
-      "subhead": "Octopus Legacy is a will-writing and legacy planning service. Everstead is a living, updated vault — where everything that matters is organised, secured, and ready for the people you trust.",
-      "eversteadDesc": "A secure personal vault for organising accounts, documents, instructions, and final wishes — updated as your life changes, with controlled access for trusted contacts and an Everstead+ plan for couples.",
+      "subhead": "Octopus Legacy is a will-writing and legacy planning service. Everstead is a living, updated vault, where everything that matters is organised, secured, and ready for the people you trust.",
+      "eversteadDesc": "A secure personal vault for organising accounts, documents, instructions, and final wishes, updated as your life changes, with controlled access for trusted contacts and an Everstead+ plan for couples.",
       "competitorDesc": "A legal services company offering online wills, LPAs, and probate support. Mission-driven, with a focus on making estate planning accessible. Strong on legal documents; not a data storage or organisation platform.",
       "rows": [
         "Secure document vault",
         "Account & asset register",
         "Trusted contact access control",
-        "Ongoing vault — update any time",
-        "Everstead+ — two private vaults",
+        "Ongoing vault, update any time",
+        "Everstead+, two private vaults",
         "Estate Readiness Score",
         "Step-by-step executor instructions",
         "Personal messages & final wishes",
         "Adviser portal"
       ],
-      "competitorAlso": ["Online will drafting", "Lasting Power of Attorney setup", "Probate support"],
-      "verdict": "A will is essential — but it is one document. Everstead is the living record of everything else your family needs, kept current and ready. For genuine estate readiness, Everstead is the stronger foundation; add a will from Octopus Legacy alongside it.",
+      "competitorAlso": [
+        "Online will drafting",
+        "Lasting Power of Attorney setup",
+        "Probate support"
+      ],
+      "verdict": "A will is essential, but it is one document. Everstead is the living record of everything else your family needs, kept current and ready. For genuine estate readiness, Everstead is the stronger foundation; add a will from Octopus Legacy alongside it.",
       "positioning": [
         "Octopus Legacy and Everstead solve different problems, and most people who think about estate planning will benefit from both.",
-        "Octopus Legacy is a legal services company — they help you draft a will, set up a Lasting Power of Attorney, and navigate probate. That's important work. A legally valid will is essential, and Octopus Legacy does that well.",
-        "Everstead is everything around the will. It's where you keep your account details, upload your documents, write your instructions, and tell your family what to do when the time comes. It's updated as your life changes. Your executor doesn't just have a legal document — they have a roadmap.",
+        "Octopus Legacy is a legal services company, they help you draft a will, set up a Lasting Power of Attorney, and navigate probate. That's important work. A legally valid will is essential, and Octopus Legacy does that well.",
+        "Everstead is everything around the will. It's where you keep your account details, upload your documents, write your instructions, and tell your family what to do when the time comes. It's updated as your life changes. Your executor doesn't just have a legal document, they have a roadmap.",
         "Everstead+ is something Octopus Legacy doesn't offer: two completely private vaults under one subscription, for couples who want to organise their own estates separately without sharing sensitive personal information.",
         "Think of a will as a destination. Everstead is the map that gets your family there."
       ],
@@ -163,15 +173,15 @@
       "category": "Digital legacy vault",
       "tagline": "Everstead vs Lyfeguard",
       "headline": "Both vaults secure your legacy. Only one keeps your family a step ahead.",
-      "subhead": "Lyfeguard and Everstead both offer secure digital vaults for important information. The difference is what happens next — Everstead adds an Estate Readiness Score, step-by-step executor guidance, and Everstead+ with two private vaults.",
-      "eversteadDesc": "A proactive estate planning platform — not just storage, but an active system with readiness tracking, executor instructions, a dual-vault Everstead+ plan, and an adviser portal for professionals.",
-      "competitorDesc": "A digital legacy platform for securely storing personal documents, account details, and final wishes — with sharing controls for nominated contacts.",
+      "subhead": "Lyfeguard and Everstead both offer secure digital vaults for important information. The difference is what happens next: Everstead adds an Estate Readiness Score, step-by-step executor guidance, and Everstead+ with two private vaults.",
+      "eversteadDesc": "A proactive estate planning platform, not just storage, but an active system with readiness tracking, executor instructions, a dual-vault Everstead+ plan, and an adviser portal for professionals.",
+      "competitorDesc": "A digital legacy platform for securely storing personal documents, account details, and final wishes, with sharing controls for nominated contacts.",
       "rows": [
         "Secure document vault",
         "Account & asset register",
         "Trusted contact access control",
         "Personal messages & final wishes",
-        "Everstead+ — two private vaults",
+        "Everstead+, two private vaults",
         "Estate Readiness Score",
         "Step-by-step executor instructions",
         "Smart reminders & progress prompts",
@@ -179,13 +189,13 @@
         "UK data residency (UK GDPR compliant)",
         "Full data export (right to portability)"
       ],
-      "verdict": "Two secure vaults — but only Everstead tells your family what to do next, scores your readiness, and gives couples two private vaults in one plan. Everstead is the more complete solution.",
+      "verdict": "Two secure vaults, but only Everstead tells your family what to do next, scores your readiness, and gives couples two private vaults in one plan. Everstead is the more complete solution.",
       "positioning": [
         "Lyfeguard and Everstead both start from the same place: your information should be secure, organised, and accessible to the right people when it matters. Both are honest alternatives to a locked filing cabinet.",
-        "The gap opens when you ask: what happens after someone stores their information? Lyfeguard is primarily a vault. Everstead is a vault with direction — an Estate Readiness Score that shows you exactly what's incomplete, step-by-step instructions your executor can follow without guessing, and smart reminders that keep your plan current as your life changes.",
-        "Everstead+ is the most distinctive difference. Two completely separate, private vaults — one for each person — under a single subscription. A couple can each organise their own estate independently, with no obligation to combine or share their private data. Lyfeguard's sharing model assumes one account per household.",
+        "The gap opens when you ask: what happens after someone stores their information? Lyfeguard is primarily a vault. Everstead is a vault with direction, an Estate Readiness Score that shows you exactly what's incomplete, step-by-step instructions your executor can follow without guessing, and smart reminders that keep your plan current as your life changes.",
+        "Everstead+ is the most distinctive difference. Two completely separate, private vaults (one for each person) under a single subscription. A couple can each organise their own estate independently, with no obligation to combine or share their private data. Lyfeguard's sharing model assumes one account per household.",
         "And for advisers: Everstead includes a dedicated portal for financial planners, IFAs, and estate professionals who want to offer estate organisation as part of their client service. Lyfeguard has no equivalent.",
-        "If you want a secure place to store important files, both products do the job. If you want your family to know exactly what to do — and to feel genuinely prepared — Everstead is built for that."
+        "If you want a secure place to store important files, both products do the job. If you want your family to know exactly what to do (and to feel genuinely prepared) Everstead is built for that."
       ],
       "price": "From £3.99/month (14-day free trial)",
       "competitorPrice": "From £4.99/mo",
@@ -196,9 +206,9 @@
       "category": "The shoebox or the laptop folder",
       "tagline": "Everstead vs. doing nothing",
       "headline": "Most people leave their family a spreadsheet, a shoebox, or nothing at all.",
-      "subhead": "You're not really choosing between Everstead and a competitor. You're choosing between an organised plan and the version of this you're doing today — usually a half-finished spreadsheet, a stack of paperwork, and a mental note to 'sort it out one day'.",
-      "eversteadDesc": "A secure, encrypted, role-based plan your family can actually use. Updates as your life changes. Shareable section by section. AES-256 encrypted, UK-hosted, UK GDPR compliant — and built so the right people see the right things at the right time, and nothing more.",
-      "competitorDesc": "Sticky notes, a Word doc on the laptop, a printed list in a desk drawer, a spreadsheet that hasn't been updated in two years, account passwords in someone's head, or — most commonly — the assumption that 'it'll work itself out'.",
+      "subhead": "You're not really choosing between Everstead and a competitor. You're choosing between an organised plan and the version of this you're doing today, usually a half-finished spreadsheet, a stack of paperwork, and a mental note to 'sort it out one day'.",
+      "eversteadDesc": "A secure, encrypted, role-based plan your family can actually use. Updates as your life changes. Shareable section by section. AES-256 encrypted, UK-hosted, UK GDPR compliant, and built so the right people see the right things at the right time, and nothing more.",
+      "competitorDesc": "Sticky notes, a Word doc on the laptop, a printed list in a desk drawer, a spreadsheet that hasn't been updated in two years, account passwords in someone's head, or (most commonly) the assumption that 'it'll work itself out'.",
       "rows": [
         "Everything in one place",
         "Trusted contacts know where to look",
@@ -210,17 +220,17 @@
         "Personal letters and final wishes preserved",
         "Works when your laptop is locked or lost",
         "Recoverable when memory fails",
-        "Free — for the first 14 days"
+        "Free, for the first 14 days"
       ],
       "verdict": "There is no real contest here. A spreadsheet or a drawer of papers fails your family at the worst possible moment. Everstead is the organised, secure, shareable version of everything you would otherwise have meant to write down.",
       "positioning": [
         "Almost no one fails to plan because they think planning is unimportant. They fail because the alternatives are all bad.",
         "A spreadsheet is private but useless to anyone else when it matters. A printed folder gets out of date the moment a password changes. A pile of paperwork in a drawer assumes everyone will know which drawer. Telling your spouse \"it's all on my laptop\" assumes they'll remember the password, find the right folder, and recognise what they're looking at while grieving.",
         "Everstead exists because the status quo isn't actually working for most families. The cost when nothing is in place is measured in weeks of admin, lost accounts, missed deadlines, and family stress in the worst possible moment.",
-        "For less than the price of a coffee a week, Everstead becomes the structured version of what you would have written down anyway — secure, sharable, updated, and ready. The hardest part is starting; everything after that is just keeping it current."
+        "For less than the price of a coffee a week, Everstead becomes the structured version of what you would have written down anyway, secure, sharable, updated, and ready. The hardest part is starting; everything after that is just keeping it current."
       ],
       "price": "From £3.99/month (14-day free trial)",
-      "competitorPrice": "Free — and very expensive when it counts",
+      "competitorPrice": "Free, and very expensive when it counts",
       "cta": "Start organising your estate"
     }
   }

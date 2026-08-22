@@ -29,12 +29,12 @@ const sections = {
         title: 'What happens to your pension when you die in the UK?',
         date: 'July 2026',
         tag: 'Estate planning',
-        desc: 'For many people a pension is their single biggest asset — yet it works nothing like the rest of your estate. A plain-language guide to workplace vs personal pensions, the expression-of-wish form that decides who inherits, death benefits, and how pensions are taxed on death.',
+        desc: 'For many people a pension is their single biggest asset, yet it works nothing like the rest of your estate. A plain-language guide to workplace vs personal pensions, the expression-of-wish form that decides who inherits, death benefits, and how pensions are taxed on death.',
         readTime: '10 min read',
         body: [
           {
             type: 'intro',
-            text: "For many people, a pension is the single largest asset they own — often worth more than their home. Yet what happens to it when you die is one of the least understood parts of estate planning. Pensions don't work like the rest of your estate: in most cases they aren't covered by your will, they can pass to your family without the delays of probate, and — crucially — who receives them can come down to a single form you may have filled in years ago and forgotten. This guide explains what happens to UK pensions on death, the different rules for workplace and personal pensions, and the one step that matters more than any other.",
+            text: "For many people, a pension is the single largest asset they own, often worth more than their home. Yet what happens to it when you die is one of the least understood parts of estate planning. Pensions don't work like the rest of your estate: in most cases they aren't covered by your will, they can pass to your family without the delays of probate, and, crucially, who receives them can come down to a single form you may have filled in years ago and forgotten. This guide explains what happens to UK pensions on death, the different rules for workplace and personal pensions, and the one step that matters more than any other.",
           },
           {
             type: 'toc',
@@ -57,11 +57,11 @@ const sections = {
           },
           {
             type: 'text',
-            text: "Most pensions are held in a trust, kept separate from your personal estate. That has two big consequences. First, they usually pass outside your will — you can't simply 'leave your pension' to someone in your will the way you would a house or a bank account. Second, because they sit in trust, they normally fall outside the estate for probate, so the money can reach your beneficiaries faster and, historically, without inheritance tax. Instead of your will, it is the scheme's trustees or provider who decide who receives the money — guided by the nomination you have made.",
+            text: "Most pensions are held in a trust, kept separate from your personal estate. That has two big consequences. First, they usually pass outside your will, you can't simply 'leave your pension' to someone in your will the way you would a house or a bank account. Second, because they sit in trust, they normally fall outside the estate for probate, so the money can reach your beneficiaries faster and, historically, without inheritance tax. Instead of your will, it is the scheme's trustees or provider who decide who receives the money, guided by the nomination you have made.",
           },
           {
             type: 'note',
-            text: "This is why keeping your pension nomination up to date can matter more than almost anything in your will. If your circumstances have changed — a divorce, a new partner, a new child — but your nomination has not, the money could go to the wrong person.",
+            text: "This is why keeping your pension nomination up to date can matter more than almost anything in your will. If your circumstances have changed (a divorce, a new partner, a new child) but your nomination has not, the money could go to the wrong person.",
           },
           {
             type: 'heading',
@@ -73,15 +73,15 @@ const sections = {
           },
           {
             type: 'text',
-            text: "Every workplace and personal pension lets you name who you would like to receive the money if you die. It goes by different names — an 'expression of wish', a 'nomination', or a 'beneficiary nomination' — but it does the same job: it tells the scheme's trustees who you want the benefits to go to. Nest, the workplace scheme millions of UK employees are enrolled in, calls this an 'expression of wish', and you complete it in your online Nest account.",
+            text: "Every workplace and personal pension lets you name who you would like to receive the money if you die. It goes by different names (an 'expression of wish', a 'nomination', or a 'beneficiary nomination') but it does the same job: it tells the scheme's trustees who you want the benefits to go to. Nest, the workplace scheme millions of UK employees are enrolled in, calls this an 'expression of wish', and you complete it in your online Nest account.",
           },
           {
             type: 'text',
-            text: "An expression of wish is not legally binding — the trustees make the final decision, which is part of what keeps the pension outside your estate for tax. But in practice trustees follow a valid, up-to-date nomination in the great majority of cases. Without one, they have to investigate who your dependants are, which causes delay and can lead to an outcome you would not have chosen.",
+            text: "An expression of wish is not legally binding, the trustees make the final decision, which is part of what keeps the pension outside your estate for tax. But in practice trustees follow a valid, up-to-date nomination in the great majority of cases. Without one, they have to investigate who your dependants are, which causes delay and can lead to an outcome you would not have chosen.",
           },
           {
             type: 'note',
-            text: "Check and update your nomination whenever your life changes — marriage, divorce, a new partner, a new child, or a new job (a new employer usually means a new pension, with its own nomination to complete).",
+            text: "Check and update your nomination whenever your life changes, marriage, divorce, a new partner, a new child, or a new job (a new employer usually means a new pension, with its own nomination to complete).",
           },
           {
             type: 'heading',
@@ -89,7 +89,7 @@ const sections = {
           },
           {
             type: 'text',
-            text: "A defined contribution (DC) pension — the most common type today, including Nest, personal pensions, and SIPPs — is a pot of money built up from your and your employer's contributions. When you die, whatever is left in the pot can be passed on.",
+            text: "A defined contribution (DC) pension (the most common type today, including Nest, personal pensions, and SIPPs) is a pot of money built up from your and your employer's contributions. When you die, whatever is left in the pot can be passed on.",
           },
           {
             type: 'text',
@@ -97,7 +97,7 @@ const sections = {
           },
           {
             type: 'text',
-            text: "Because the money can be passed on and even kept within a pension, a DC pension can be one of the most tax-efficient ways to pass wealth to the next generation — one reason advisers often suggest drawing on other savings first.",
+            text: "Because the money can be passed on and even kept within a pension, a DC pension can be one of the most tax-efficient ways to pass wealth to the next generation, one reason advisers often suggest drawing on other savings first.",
           },
           {
             type: 'heading',
@@ -105,20 +105,20 @@ const sections = {
           },
           {
             type: 'text',
-            text: "A defined benefit (DB) pension — sometimes called 'final salary' or 'career average' — promises a set income for life rather than a pot of money. What happens on death depends on the scheme's rules, but typically includes some or all of the following.",
+            text: "A defined benefit (DB) pension (sometimes called 'final salary' or 'career average') promises a set income for life rather than a pot of money. What happens on death depends on the scheme's rules, but typically includes some or all of the following.",
           },
           {
             type: 'list',
             heading: 'Common defined benefit death benefits:',
             items: [
-              "A survivor's pension — an ongoing income for a spouse, civil partner, or sometimes a dependent child, usually a percentage (often around half) of your pension",
+              "A survivor's pension, an ongoing income for a spouse, civil partner, or sometimes a dependent child, usually a percentage (often around half) of your pension",
               'A lump sum if you die within a guarantee period after retiring (commonly five years)',
-              "A 'death in service' lump sum if you die while still employed and paying in — often two to four times your salary",
+              "A 'death in service' lump sum if you die while still employed and paying in, often two to four times your salary",
             ],
           },
           {
             type: 'text',
-            text: "DB benefits are set by the scheme rather than by how much is 'left', so there is less flexibility than a DC pot — but a spouse's pension can be valuable lifelong security. Contact the scheme administrator to confirm exactly what is payable.",
+            text: "DB benefits are set by the scheme rather than by how much is 'left', so there is less flexibility than a DC pot, but a spouse's pension can be valuable lifelong security. Contact the scheme administrator to confirm exactly what is payable.",
           },
           {
             type: 'heading',
@@ -126,7 +126,7 @@ const sections = {
           },
           {
             type: 'text',
-            text: "The State Pension stops when you die — it cannot be inherited as a pot. But there are a few things a surviving spouse or civil partner should know.",
+            text: "The State Pension stops when you die, it cannot be inherited as a pot. But there are a few things a surviving spouse or civil partner should know.",
           },
           {
             type: 'list',
@@ -134,7 +134,7 @@ const sections = {
             items: [
               'Depending on when you both reached State Pension age, a spouse or civil partner may be able to inherit part of an Additional State Pension or a protected payment',
               'If you are under State Pension age when your spouse or civil partner dies, you may qualify for Bereavement Support Payment (a lump sum plus monthly payments, subject to the conditions)',
-              "Report the death to the Pension Service — the government's Tell Us Once service can notify most departments, including DWP and HMRC, in one step",
+              "Report the death to the Pension Service, the government's Tell Us Once service can notify most departments, including DWP and HMRC, in one step",
             ],
           },
           {
@@ -157,17 +157,17 @@ const sections = {
             type: 'list',
             heading: 'The broad rule:',
             items: [
-              'Die before age 75 — benefits are usually paid free of income tax, whether taken as a lump sum or as income, provided they are within the available allowance and paid out within two years',
-              "Die at 75 or older — benefits are taxed as income at the beneficiary's marginal rate, so the tax depends on their other income in the year they take it",
+              'Die before age 75, benefits are usually paid free of income tax, whether taken as a lump sum or as income, provided they are within the available allowance and paid out within two years',
+              "Die at 75 or older, benefits are taxed as income at the beneficiary's marginal rate, so the tax depends on their other income in the year they take it",
             ],
           },
           {
             type: 'text',
-            text: "There is also an overall allowance on tax-free lump sum death benefits — the Lump Sum and Death Benefit Allowance, £1,073,100 for most people in 2026. Amounts above it can be taxed. Annuities and defined benefit pensions have their own rules.",
+            text: "There is also an overall allowance on tax-free lump sum death benefits, the Lump Sum and Death Benefit Allowance, £1,073,100 for most people in 2026. Amounts above it can be taxed. Annuities and defined benefit pensions have their own rules.",
           },
           {
             type: 'note',
-            text: "Tax rules change frequently and depend on personal circumstances. Treat the above as a general guide, not advice — confirm the current position on gov.uk or speak to a financial adviser or the pension scheme.",
+            text: "Tax rules change frequently and depend on personal circumstances. Treat the above as a general guide, not advice, confirm the current position on gov.uk or speak to a financial adviser or the pension scheme.",
           },
           {
             type: 'heading',
@@ -175,11 +175,11 @@ const sections = {
           },
           {
             type: 'text',
-            text: "Pensions have long sat outside your estate for inheritance tax (IHT) — one of the main reasons they are such a tax-efficient way to pass on money. That is changing. From 6 April 2027, the government plans to bring most unused pension funds and death benefits into the estate for IHT purposes.",
+            text: "Pensions have long sat outside your estate for inheritance tax (IHT), one of the main reasons they are such a tax-efficient way to pass on money. That is changing. From 6 April 2027, the government plans to bring most unused pension funds and death benefits into the estate for IHT purposes.",
           },
           {
             type: 'text',
-            text: "If that goes ahead as announced, larger pension pots could face IHT — currently 40% above the available threshold — in addition to any income tax. The detail is still being finalised, so if pensions form a large part of your estate, it is worth reviewing your plans and taking advice before the change takes effect.",
+            text: "If that goes ahead as announced, larger pension pots could face IHT (currently 40% above the available threshold) in addition to any income tax. The detail is still being finalised, so if pensions form a large part of your estate, it is worth reviewing your plans and taking advice before the change takes effect.",
           },
           {
             type: 'note',
@@ -191,13 +191,13 @@ const sections = {
           },
           {
             type: 'text',
-            text: "When someone dies, their pensions are not always obvious — especially old workplace pensions from jobs held decades ago. The practical steps are below.",
+            text: "When someone dies, their pensions are not always obvious, especially old workplace pensions from jobs held decades ago. The practical steps are below.",
           },
           {
             type: 'list',
             heading: 'Dealing with pensions after a death:',
             items: [
-              'Identify every pension — check payslips, old employers, bank statements for pension contributions, and any pension paperwork or online accounts',
+              'Identify every pension, check payslips, old employers, bank statements for pension contributions, and any pension paperwork or online accounts',
               "Contact each scheme or provider's bereavement team and tell them of the death",
               'Provide a certified copy of the death certificate and proof of your identity and relationship',
               'Ask each scheme what benefits are payable and whether a nomination is on file',
@@ -214,11 +214,11 @@ const sections = {
           },
           {
             type: 'text',
-            text: "Two simple actions make an enormous difference. The first is keeping your expression of wish or nomination up to date on every pension you hold — it is free, takes minutes online, and decides who inherits. The second is making sure your family actually knows the pensions exist.",
+            text: "Two simple actions make an enormous difference. The first is keeping your expression of wish or nomination up to date on every pension you hold, it is free, takes minutes online, and decides who inherits. The second is making sure your family actually knows the pensions exist.",
           },
           {
             type: 'text',
-            text: "Old workplace pensions are among the most commonly lost assets in the UK — billions of pounds sit unclaimed simply because families do not know where to look. A short, up-to-date list of every pension you hold — the provider, roughly what it is worth, and where the paperwork or login lives — stored somewhere your trusted people can reach removes that risk entirely. It does not require a solicitor or a formal document. It requires only that you write it down and share it with someone you trust.",
+            text: "Old workplace pensions are among the most commonly lost assets in the UK, billions of pounds sit unclaimed simply because families do not know where to look. A short, up-to-date list of every pension you hold, the provider, roughly what it is worth, and where the paperwork or login lives, stored somewhere your trusted people can reach removes that risk entirely. It does not require a solicitor or a formal document. It requires only that you write it down and share it with someone you trust.",
           },
           {
             type: 'related',
@@ -236,12 +236,12 @@ const sections = {
         title: 'What happens to bank accounts when you die in the UK?',
         date: 'May 2026',
         tag: 'Estate planning',
-        desc: 'A plain-language guide to what UK banks do when an account holder dies — how accounts are frozen, how money is released, and what families need to do.',
+        desc: 'A plain-language guide to what UK banks do when an account holder dies, how accounts are frozen, how money is released, and what families need to do.',
         readTime: '9 min read',
         body: [
           {
             type: 'intro',
-            text: "One of the most common questions families face after a bereavement is a simple but urgent one: what happens to the money in the bank? The answer depends on whether the account was held individually or jointly, the size of the estate, and whether probate is required. This guide explains what UK banks actually do when an account holder dies, step by step — so you know what to expect and what you need to do.",
+            text: "One of the most common questions families face after a bereavement is a simple but urgent one: what happens to the money in the bank? The answer depends on whether the account was held individually or jointly, the size of the estate, and whether probate is required. This guide explains what UK banks actually do when an account holder dies, step by step, so you know what to expect and what you need to do.",
           },
           {
             type: 'toc',
@@ -263,11 +263,11 @@ const sections = {
           },
           {
             type: 'text',
-            text: "When a bank is told that an account holder has died, it will freeze the individual accounts in that person's sole name. This is standard practice — not a penalty or complication — and it protects the estate from unauthorised transactions while the legal process of administering the estate unfolds.",
+            text: "When a bank is told that an account holder has died, it will freeze the individual accounts in that person's sole name. This is standard practice (not a penalty or complication) and it protects the estate from unauthorised transactions while the legal process of administering the estate unfolds.",
           },
           {
             type: 'text',
-            text: "Freezing the account means no money can be withdrawn from it. Direct debits and standing orders will be cancelled. Any incoming payments — such as a pension or benefits — should also stop, and notifying those providers early prevents overpayments that would need to be repaid later.",
+            text: "Freezing the account means no money can be withdrawn from it. Direct debits and standing orders will be cancelled. Any incoming payments (such as a pension or benefits) should also stop, and notifying those providers early prevents overpayments that would need to be repaid later.",
           },
           {
             type: 'note',
@@ -287,7 +287,7 @@ const sections = {
           },
           {
             type: 'text',
-            text: "Accounts held in the deceased's name only are frozen upon notification. Access to the funds depends on the size of the account balance and whether probate is required. The money forms part of the estate and is distributed according to the will — or the Rules of Intestacy if there is no will.",
+            text: "Accounts held in the deceased's name only are frozen upon notification. Access to the funds depends on the size of the account balance and whether probate is required. The money forms part of the estate and is distributed according to the will, or the Rules of Intestacy if there is no will.",
           },
           {
             type: 'subheading',
@@ -295,7 +295,7 @@ const sections = {
           },
           {
             type: 'text',
-            text: "Most joint bank accounts operate on a 'right of survivorship' basis — meaning the surviving account holder automatically inherits the full balance when one holder dies. The account is not frozen and the surviving holder can continue using it normally. The bank will usually update the account to the sole name of the survivor upon receiving a death certificate.",
+            text: "Most joint bank accounts operate on a 'right of survivorship' basis, meaning the surviving account holder automatically inherits the full balance when one holder dies. The account is not frozen and the surviving holder can continue using it normally. The bank will usually update the account to the sole name of the survivor upon receiving a death certificate.",
           },
           {
             type: 'text',
@@ -311,19 +311,19 @@ const sections = {
           },
           {
             type: 'list',
-            heading: 'Common bank thresholds (as of 2026 — confirm with each bank directly):',
+            heading: 'Common bank thresholds (as of 2026, confirm with each bank directly):',
             items: [
-              'Barclays — up to £50,000 without probate',
-              'Lloyds, Halifax, Bank of Scotland — up to £50,000 without probate',
-              'NatWest and Royal Bank of Scotland — up to £25,000 without probate',
-              'HSBC — up to £50,000 without probate',
-              'Nationwide — up to £50,000 without probate',
-              'Santander — up to £50,000 without probate',
+              'Barclays, up to £50,000 without probate',
+              'Lloyds, Halifax, Bank of Scotland, up to £50,000 without probate',
+              'NatWest and Royal Bank of Scotland, up to £25,000 without probate',
+              'HSBC, up to £50,000 without probate',
+              'Nationwide, up to £50,000 without probate',
+              'Santander, up to £50,000 without probate',
             ],
           },
           {
             type: 'text',
-            text: "If the balance exceeds the bank's threshold, they will require a grant of probate (or letters of administration if there is no will) before releasing funds. The grant is obtained through the Probate Registry — a process that typically takes several months and may involve legal fees if you use a solicitor.",
+            text: "If the balance exceeds the bank's threshold, they will require a grant of probate (or letters of administration if there is no will) before releasing funds. The grant is obtained through the Probate Registry, a process that typically takes several months and may involve legal fees if you use a solicitor.",
           },
           {
             type: 'note',
@@ -346,7 +346,7 @@ const sections = {
           },
           {
             type: 'text',
-            text: "Certified copies of the death certificate — not photocopies, but official certified duplicates — can be obtained from the Register Office when you register the death, or ordered later. Order at least ten at registration, as each institution will want one and they are cheaper to obtain in bulk at this stage.",
+            text: "Certified copies of the death certificate (not photocopies, but official certified duplicates) can be obtained from the Register Office when you register the death, or ordered later. Order at least ten at registration, as each institution will want one and they are cheaper to obtain in bulk at this stage.",
           },
           {
             type: 'heading',
@@ -354,7 +354,7 @@ const sections = {
           },
           {
             type: 'text',
-            text: "For small accounts within the bank's no-probate threshold, funds can sometimes be released within a few weeks of providing the required documentation. For larger estates requiring probate, the full process typically takes between six months and a year — sometimes longer if the estate is complex, if there are disputes, or if inheritance tax is owed.",
+            text: "For small accounts within the bank's no-probate threshold, funds can sometimes be released within a few weeks of providing the required documentation. For larger estates requiring probate, the full process typically takes between six months and a year, sometimes longer if the estate is complex, if there are disputes, or if inheritance tax is owed.",
           },
           {
             type: 'text',
@@ -370,11 +370,11 @@ const sections = {
           },
           {
             type: 'text',
-            text: "ISAs cannot be transferred on death in the way a joint account would be — the tax-free status of an ISA does not automatically pass to a beneficiary. However, spouses and civil partners may be eligible for an 'Additional Permitted Subscription' allowance, which lets them make an additional ISA contribution equal to the deceased's ISA balance, preserving the tax advantage. This must be claimed within three years.",
+            text: "ISAs cannot be transferred on death in the way a joint account would be, the tax-free status of an ISA does not automatically pass to a beneficiary. However, spouses and civil partners may be eligible for an 'Additional Permitted Subscription' allowance, which lets them make an additional ISA contribution equal to the deceased's ISA balance, preserving the tax advantage. This must be claimed within three years.",
           },
           {
             type: 'text',
-            text: "Investment accounts, stocks and shares ISAs, and pension-linked investment accounts each have their own processes. Contact each provider separately. Pension funds typically fall outside the estate entirely — they are paid directly to nominated beneficiaries and are not subject to probate.",
+            text: "Investment accounts, stocks and shares ISAs, and pension-linked investment accounts each have their own processes. Contact each provider separately. Pension funds typically fall outside the estate entirely, they are paid directly to nominated beneficiaries and are not subject to probate.",
           },
           {
             type: 'heading',
@@ -382,11 +382,11 @@ const sections = {
           },
           {
             type: 'text',
-            text: "App-based banks — Monzo, Starling, Revolut, and others — handle bereavement claims similarly to traditional banks, though the process is typically managed by email or through a dedicated online form rather than in branch. Most have bereavement pages on their websites with instructions.",
+            text: "App-based banks (Monzo, Starling, Revolut, and others) handle bereavement claims similarly to traditional banks, though the process is typically managed by email or through a dedicated online form rather than in branch. Most have bereavement pages on their websites with instructions.",
           },
           {
             type: 'text',
-            text: "The challenge with digital banks is that executors often do not know they exist. Unlike a statement that arrives by post, an app on a phone can go unnoticed. This is one of the most common ways money goes unclaimed after a death — and one of the strongest reasons to document all accounts, including digital ones, in a plan that trusted people can access.",
+            text: "The challenge with digital banks is that executors often do not know they exist. Unlike a statement that arrives by post, an app on a phone can go unnoticed. This is one of the most common ways money goes unclaimed after a death, and one of the strongest reasons to document all accounts, including digital ones, in a plan that trusted people can access.",
           },
           {
             type: 'heading',
@@ -397,13 +397,13 @@ const sections = {
             heading: 'When dealing with bank accounts after a death:',
             items: [
               'Order at least ten certified death certificates when registering the death',
-              'Notify each bank as soon as practically possible — ask for their bereavement team',
+              'Notify each bank as soon as practically possible, ask for their bereavement team',
               'Ask each bank for their specific documentation requirements before sending anything',
-              'Check whether accounts are sole or joint — joint accounts are usually unaffected',
+              'Check whether accounts are sole or joint, joint accounts are usually unaffected',
               'Ask the bank to release funds directly to the funeral director to cover funeral costs',
               "Use the government's Tell Us Once service to notify HMRC and DWP in one step",
-              "Check for online-only bank accounts — look through the deceased's phone and email for statements",
-              'Do not close accounts until the estate is fully administered — you may need them to receive refunds',
+              "Check for online-only bank accounts, look through the deceased's phone and email for statements",
+              'Do not close accounts until the estate is fully administered, you may need them to receive refunds',
             ],
           },
           {
@@ -416,7 +416,7 @@ const sections = {
           },
           {
             type: 'text',
-            text: "A complete account inventory — including sole accounts, joint accounts, savings, ISAs, and any online bank accounts — stored somewhere your trusted people can access is one of the most practical things you can leave behind. It does not require a solicitor or a formal document. It requires only that you sit down, list what you have, and share it with someone you trust.",
+            text: "A complete account inventory (including sole accounts, joint accounts, savings, ISAs, and any online bank accounts) stored somewhere your trusted people can access is one of the most practical things you can leave behind. It does not require a solicitor or a formal document. It requires only that you sit down, list what you have, and share it with someone you trust.",
           },
         ],
       },
@@ -425,12 +425,12 @@ const sections = {
         title: 'How to organise your estate in the UK: a complete guide',
         date: 'May 2026',
         tag: 'Getting started',
-        desc: 'A practical, step-by-step guide to getting your financial life organised so your family is never left guessing — accounts, documents, contacts, and wishes all in one place.',
+        desc: 'A practical, step-by-step guide to getting your financial life organised so your family is never left guessing, accounts, documents, contacts, and wishes all in one place.',
         readTime: '11 min read',
         body: [
           {
             type: 'intro',
-            text: "Organising your estate sounds like something only the very wealthy or very old need to do. In reality, it is something anyone with a bank account, a pension, a rented flat, or a family needs to think about. It is not about death — it is about making sure the people who love you are not left navigating a confusing mess of paperwork, passwords, and unanswered questions at the worst possible moment. This guide walks you through every step of organising your estate in the UK, in plain language, in the order that makes practical sense.",
+            text: "Organising your estate sounds like something only the very wealthy or very old need to do. In reality, it is something anyone with a bank account, a pension, a rented flat, or a family needs to think about. It is not about death, it is about making sure the people who love you are not left navigating a confusing mess of paperwork, passwords, and unanswered questions at the worst possible moment. This guide walks you through every step of organising your estate in the UK, in plain language, in the order that makes practical sense.",
           },
           {
             type: 'toc',
@@ -453,7 +453,7 @@ const sections = {
           },
           {
             type: 'text',
-            text: "Your estate is everything you own: your money, your property, your belongings, your digital accounts, and your debts. Organising it means making sure someone else could find, access, and deal with all of that if something happened to you — without needing to spend months investigating.",
+            text: "Your estate is everything you own: your money, your property, your belongings, your digital accounts, and your debts. Organising it means making sure someone else could find, access, and deal with all of that if something happened to you, without needing to spend months investigating.",
           },
           {
             type: 'text',
@@ -471,25 +471,25 @@ const sections = {
             type: 'list',
             heading: 'Work through these categories:',
             items: [
-              'Current accounts — every bank or building society where you hold a current account',
-              'Savings accounts — including easy-access, fixed-term, and regular saver accounts',
-              'ISAs — cash ISAs, stocks and shares ISAs, Lifetime ISAs',
-              "Workplace pension — your employer's pension scheme, including provider name and reference number",
-              'Personal pensions — SIPPs or other pensions you manage yourself',
-              "State Pension — check your forecast on GOV.UK if you haven't recently",
-              'Investments — trading accounts, funds, premium bonds',
-              'Property — your home (if owned), any buy-to-lets, shares in inherited property',
-              'Business interests — if you own or part-own a business',
-              'Debts — mortgage, loans, credit cards, hire purchase agreements',
+              'Current accounts, every bank or building society where you hold a current account',
+              'Savings accounts, including easy-access, fixed-term, and regular saver accounts',
+              'ISAs, cash ISAs, stocks and shares ISAs, Lifetime ISAs',
+              "Workplace pension, your employer's pension scheme, including provider name and reference number",
+              'Personal pensions: SIPPs or other pensions you manage yourself',
+              "State Pension, check your forecast on GOV.UK if you haven't recently",
+              'Investments, trading accounts, funds, premium bonds',
+              'Property, your home (if owned), any buy-to-lets, shares in inherited property',
+              'Business interests, if you own or part-own a business',
+              'Debts, mortgage, loans, credit cards, hire purchase agreements',
             ],
           },
           {
             type: 'text',
-            text: "For each account, record the provider name, sort code and account number (or policy number), and an approximate balance. You do not need to be precise — the point is that a family member could identify and contact each institution.",
+            text: "For each account, record the provider name, sort code and account number (or policy number), and an approximate balance. You do not need to be precise, the point is that a family member could identify and contact each institution.",
           },
           {
             type: 'note',
-            text: "Do not record passwords or PINs in the same document as your account list. Keep those separately, secured, and leave instructions for how to access them — not the credentials themselves.",
+            text: "Do not record passwords or PINs in the same document as your account list. Keep those separately, secured, and leave instructions for how to access them, not the credentials themselves.",
           },
           {
             type: 'heading',
@@ -497,28 +497,28 @@ const sections = {
           },
           {
             type: 'text',
-            text: "Documents are the evidence behind your estate. Without them, executors cannot prove ownership, claim insurance, or administer a pension. Knowing where they are — and making sure someone else knows — is as important as having them at all.",
+            text: "Documents are the evidence behind your estate. Without them, executors cannot prove ownership, claim insurance, or administer a pension. Knowing where they are (and making sure someone else knows) is as important as having them at all.",
           },
           {
             type: 'list',
             heading: 'Key documents to locate and record:',
             items: [
-              'Your will — where is the original stored? With a solicitor, at home, with a storage service?',
+              'Your will, where is the original stored? With a solicitor, at home, with a storage service?',
               'Passport and driving licence',
               'Birth certificate and marriage/civil partnership certificate',
               'Property deeds or lease agreement',
-              'Mortgage documents — lender, outstanding balance, monthly payment',
-              'Life insurance policies — insurer, policy number, sum assured, nominated beneficiary',
+              'Mortgage documents, lender, outstanding balance, monthly payment',
+              'Life insurance policies, insurer, policy number, sum assured, nominated beneficiary',
               'Critical illness and income protection policies',
-              'Pension paperwork — particularly any nomination of beneficiary forms',
+              'Pension paperwork, particularly any nomination of beneficiary forms',
               'Investment account statements',
-              'Tax documents — most recent P60, self-assessment returns if applicable',
+              'Tax documents, most recent P60, self-assessment returns if applicable',
               'Business agreements if you are self-employed or a company director',
             ],
           },
           {
             type: 'text',
-            text: "You do not need to physically gather all of these in one place. You need to know where each one is and record that location clearly. A digital vault — where you can upload scanned copies and note where originals are stored — is the most practical way to manage this.",
+            text: "You do not need to physically gather all of these in one place. You need to know where each one is and record that location clearly. A digital vault (where you can upload scanned copies and note where originals are stored) is the most practical way to manage this.",
           },
           {
             type: 'heading',
@@ -526,11 +526,11 @@ const sections = {
           },
           {
             type: 'text',
-            text: "If you do not have a will, making one is the single highest-impact thing you can do for your family. Without a will, your estate is distributed according to the Rules of Intestacy — a fixed legal formula that may not reflect your wishes at all. Unmarried partners, for example, receive nothing under intestacy, regardless of how long you have been together.",
+            text: "If you do not have a will, making one is the single highest-impact thing you can do for your family. Without a will, your estate is distributed according to the Rules of Intestacy, a fixed legal formula that may not reflect your wishes at all. Unmarried partners, for example, receive nothing under intestacy, regardless of how long you have been together.",
           },
           {
             type: 'text',
-            text: "If you already have a will, check when it was last updated. Major life events — marriage, divorce, having children, buying property, significant changes in wealth — should all trigger a review. A will that was written before your children were born or before you remarried may not reflect what you actually want.",
+            text: "If you already have a will, check when it was last updated. Major life events (marriage, divorce, having children, buying property, significant changes in wealth) should all trigger a review. A will that was written before your children were born or before you remarried may not reflect what you actually want.",
           },
           {
             type: 'list',
@@ -539,14 +539,14 @@ const sections = {
               'Who your executor is (the person responsible for carrying out your wishes)',
               'Who benefits from your estate, and in what proportions',
               'Guardianship arrangements for any dependent children',
-              'Any specific gifts — particular items to particular people',
+              'Any specific gifts, particular items to particular people',
               'What should happen if a beneficiary dies before you',
               'Funeral wishes, if you want to record them here',
             ],
           },
           {
             type: 'text',
-            text: "Wills should be written by a solicitor or a reputable will-writing service and signed in the presence of two independent witnesses. Online will services are now widely available in the UK from around £90 to £200, and are suitable for straightforward estates. Complex situations — blended families, significant assets, business interests, property abroad — generally warrant professional legal advice.",
+            text: "Wills should be written by a solicitor or a reputable will-writing service and signed in the presence of two independent witnesses. Online will services are now widely available in the UK from around £90 to £200, and are suitable for straightforward estates. Complex situations (blended families, significant assets, business interests, property abroad) generally warrant professional legal advice.",
           },
           {
             type: 'heading',
@@ -554,15 +554,15 @@ const sections = {
           },
           {
             type: 'text',
-            text: "Pensions are often the largest single asset people hold — and they sit outside your estate for inheritance purposes. They are not covered by your will. They are paid directly to whoever you have nominated as your beneficiary on the pension itself.",
+            text: "Pensions are often the largest single asset people hold, and they sit outside your estate for inheritance purposes. They are not covered by your will. They are paid directly to whoever you have nominated as your beneficiary on the pension itself.",
           },
           {
             type: 'text',
-            text: "This makes the nomination form on each pension one of the most important documents in your estate. If your nomination is out of date — naming an ex-partner, or not naming a new spouse — your pension may be paid to the wrong person, or the decision left entirely to the pension trustees.",
+            text: "This makes the nomination form on each pension one of the most important documents in your estate. If your nomination is out of date (naming an ex-partner, or not naming a new spouse) your pension may be paid to the wrong person, or the decision left entirely to the pension trustees.",
           },
           {
             type: 'text',
-            text: "Contact each pension provider and request your current nomination of beneficiary form. Update it if necessary. Do this for every pension — workplace and personal — as they each hold their own nomination separately.",
+            text: "Contact each pension provider and request your current nomination of beneficiary form. Update it if necessary. Do this for every pension (workplace and personal) as they each hold their own nomination separately.",
           },
           {
             type: 'heading',
@@ -576,13 +576,13 @@ const sections = {
             type: 'list',
             heading: 'For your digital estate, work through:',
             items: [
-              'Email accounts — which ones do you use, and what do they contain?',
-              'Cloud storage — Google Drive, iCloud, Dropbox, OneDrive',
-              'Social media — what would you like done with each profile?',
-              'Online banking and investment apps — are these recorded in your financial inventory?',
-              'Subscription services — streaming, news, software (to be cancelled to stop charges)',
-              'Cryptocurrency or NFTs — if you hold any, your executor needs to know where and how',
-              'Password manager — how will a trusted person access it?',
+              'Email accounts, which ones do you use, and what do they contain?',
+              'Cloud storage: Google Drive, iCloud, Dropbox, OneDrive',
+              'Social media, what would you like done with each profile?',
+              'Online banking and investment apps, are these recorded in your financial inventory?',
+              'Subscription services, streaming, news, software (to be cancelled to stop charges)',
+              'Cryptocurrency or NFTs, if you hold any, your executor needs to know where and how',
+              'Password manager, how will a trusted person access it?',
               'Domain names and websites if you own any',
             ],
           },
@@ -596,22 +596,22 @@ const sections = {
           },
           {
             type: 'text',
-            text: "Having everything organised is only useful if the right people can find it when they need it. This means deciding — intentionally — who should have access to which parts of your estate plan.",
+            text: "Having everything organised is only useful if the right people can find it when they need it. This means deciding (intentionally) who should have access to which parts of your estate plan.",
           },
           {
             type: 'list',
             heading: 'Think about these roles:',
             items: [
-              'Executor — the person legally responsible for administering your estate. They need to know about everything.',
-              'Spouse or partner — they may need day-to-day access to joint financial information even before any legal process.',
-              'Children — they may benefit from your estate but typically do not need access to all details in advance.',
-              'Solicitor or financial adviser — they may hold certain documents and should be informed that a plan exists.',
-              'A trusted friend — useful as a backup if family relationships are complicated.',
+              'Executor, the person legally responsible for administering your estate. They need to know about everything.',
+              'Spouse or partner, they may need day-to-day access to joint financial information even before any legal process.',
+              'Children, they may benefit from your estate but typically do not need access to all details in advance.',
+              'Solicitor or financial adviser, they may hold certain documents and should be informed that a plan exists.',
+              'A trusted friend, useful as a backup if family relationships are complicated.',
             ],
           },
           {
             type: 'text',
-            text: "The key is granting each person access to what they need — not everything. Your executor needs the full picture. Your children may only need to know where to find the key documents and who to call.",
+            text: "The key is granting each person access to what they need, not everything. Your executor needs the full picture. Your children may only need to know where to find the key documents and who to call.",
           },
           {
             type: 'heading',
@@ -623,7 +623,7 @@ const sections = {
           },
           {
             type: 'text',
-            text: "These can be recorded in a letter of wishes — an informal, non-legally-binding document that accompanies your will. It does not replace legal instructions, but it fills in the human detail that legal documents leave out. You can also use a platform like Everstead to record and share these wishes digitally, so they are accessible to the people who need them.",
+            text: "These can be recorded in a letter of wishes, an informal, non-legally-binding document that accompanies your will. It does not replace legal instructions, but it fills in the human detail that legal documents leave out. You can also use a platform like Everstead to record and share these wishes digitally, so they are accessible to the people who need them.",
           },
           {
             type: 'heading',
@@ -631,7 +631,7 @@ const sections = {
           },
           {
             type: 'text',
-            text: "An estate plan is not a one-off task. Life changes — you move house, change jobs, get married, have children, accumulate new accounts, and close old ones. The plan you put in place today will need to be revisited.",
+            text: "An estate plan is not a one-off task. Life changes, you move house, change jobs, get married, have children, accumulate new accounts, and close old ones. The plan you put in place today will need to be revisited.",
           },
           {
             type: 'list',
@@ -653,11 +653,11 @@ const sections = {
           },
           {
             type: 'text',
-            text: "Most people can complete a basic estate plan — account inventory, document locations, updated will, pension nominations reviewed — in a weekend if they commit to it. The first session typically takes two to three hours. Updating it once a year takes much less.",
+            text: "Most people can complete a basic estate plan (account inventory, document locations, updated will, pension nominations reviewed) in a weekend if they commit to it. The first session typically takes two to three hours. Updating it once a year takes much less.",
           },
           {
             type: 'text',
-            text: "The hardest part is usually starting. Once you sit down and begin the account inventory, the rest tends to follow naturally. The emotional resistance — the sense that thinking about this is morbid or premature — is almost always greater than the actual effort involved.",
+            text: "The hardest part is usually starting. Once you sit down and begin the account inventory, the rest tends to follow naturally. The emotional resistance (the sense that thinking about this is morbid or premature) is almost always greater than the actual effort involved.",
           },
           {
             type: 'text',
@@ -670,12 +670,12 @@ const sections = {
         title: 'What to do when someone dies: a complete step-by-step guide',
         date: 'May 2026',
         tag: 'Estate planning',
-        desc: 'A clear, compassionate guide to the practical steps after a death in England and Wales — from the first 24 hours through to closing the estate.',
+        desc: 'A clear, compassionate guide to the practical steps after a death in England and Wales, from the first 24 hours through to closing the estate.',
         readTime: '14 min read',
         body: [
           {
             type: 'intro',
-            text: "When someone close to you dies, everything changes at once. Grief and shock arrive together — and within hours, the world seems to expect you to make decisions, contact institutions, and navigate processes you have never encountered before. This guide is here to help. It walks through every practical step involved after a death in England and Wales, from the first 24 hours through to the final stages of estate administration, in plain language and in the order things actually happen. You do not need legal expertise to use it. And if anything feels too heavy to face alone, that is also the right response.",
+            text: "When someone close to you dies, everything changes at once. Grief and shock arrive together, and within hours, the world seems to expect you to make decisions, contact institutions, and navigate processes you have never encountered before. This guide is here to help. It walks through every practical step involved after a death in England and Wales, from the first 24 hours through to the final stages of estate administration, in plain language and in the order things actually happen. You do not need legal expertise to use it. And if anything feels too heavy to face alone, that is also the right response.",
           },
           {
             type: 'toc',
@@ -696,11 +696,11 @@ const sections = {
           },
           {
             type: 'text',
-            text: "There is a common misconception that the days after a death are a race. That every hour of delay creates problems. In reality, almost nothing requires you to act within hours. The death certificate, the will, the bank — all of these can wait a day. What cannot wait is you. If you need to sit quietly, to cry, to call someone who loves you, to do absolutely nothing for a morning: that is not neglect. It is a healthy response to loss.",
+            text: "There is a common misconception that the days after a death are a race. That every hour of delay creates problems. In reality, almost nothing requires you to act within hours. The death certificate, the will, the bank, all of these can wait a day. What cannot wait is you. If you need to sit quietly, to cry, to call someone who loves you, to do absolutely nothing for a morning: that is not neglect. It is a healthy response to loss.",
           },
           {
             type: 'text',
-            text: "This guide is structured chronologically — first 24 hours, first week, first month, and beyond — because that is how estate administration actually unfolds. Not everything will apply to your situation, and that is fine. Use what you need. Come back to the rest when you are ready.",
+            text: "This guide is structured chronologically (first 24 hours, first week, first month, and beyond) because that is how estate administration actually unfolds. Not everything will apply to your situation, and that is fine. Use what you need. Come back to the rest when you are ready.",
           },
           {
             type: 'heading',
@@ -716,7 +716,7 @@ const sections = {
           },
           {
             type: 'text',
-            text: "A doctor — usually the GP or a hospital doctor — will issue the Medical Certificate of Cause of Death (MCCD). This is a formal document stating the cause of death. You will need it before you can register the death. If the death was sudden, unexpected, or the cause is unclear, the coroner may need to be involved before the certificate is issued. This can add time to the process, but it is a routine part of the system and does not indicate anything has gone wrong. The coroner's office will guide you through what is needed.",
+            text: "A doctor (usually the GP or a hospital doctor) will issue the Medical Certificate of Cause of Death (MCCD). This is a formal document stating the cause of death. You will need it before you can register the death. If the death was sudden, unexpected, or the cause is unclear, the coroner may need to be involved before the certificate is issued. This can add time to the process, but it is a routine part of the system and does not indicate anything has gone wrong. The coroner's office will guide you through what is needed.",
           },
           {
             type: 'subheading',
@@ -724,11 +724,11 @@ const sections = {
           },
           {
             type: 'text',
-            text: "In England and Wales, deaths must be registered within five days (or eight days in Scotland). You register at the local Register Office — usually the one in the district where the death occurred, not necessarily where the deceased lived. You will need to bring the MCCD. The registrar will ask for basic details: the full name of the deceased, their date and place of birth, their occupation, and their last address. If you have a marriage certificate or birth certificate, bring those too, but they are not always required.",
+            text: "In England and Wales, deaths must be registered within five days (or eight days in Scotland). You register at the local Register Office, usually the one in the district where the death occurred, not necessarily where the deceased lived. You will need to bring the MCCD. The registrar will ask for basic details: the full name of the deceased, their date and place of birth, their occupation, and their last address. If you have a marriage certificate or birth certificate, bring those too, but they are not always required.",
           },
           {
             type: 'text',
-            text: "At registration, you will receive the death certificate. This is an official certified document, and you will need multiple copies — not photocopies, but certified originals. Most banks, pension providers, insurance companies, and government departments will each want one. Order at least ten copies at registration. They cost a small fee per copy, but are much cheaper to obtain at this stage than later.",
+            text: "At registration, you will receive the death certificate. This is an official certified document, and you will need multiple copies, not photocopies, but certified originals. Most banks, pension providers, insurance companies, and government departments will each want one. Order at least ten copies at registration. They cost a small fee per copy, but are much cheaper to obtain at this stage than later.",
           },
           {
             type: 'note',
@@ -740,7 +740,7 @@ const sections = {
           },
           {
             type: 'text',
-            text: "This is often done in parallel with the practical steps above — sometimes by different family members. There is no single right way to handle this. Some families prefer to call people individually; others find a group message or a single coordinating person easier to manage. Think about who needs to hear from you directly, and who can be informed through others. If the deceased was employed, their employer should be told early — this is usually handled with a brief phone call or email, and the HR department will guide you on next steps.",
+            text: "This is often done in parallel with the practical steps above, sometimes by different family members. There is no single right way to handle this. Some families prefer to call people individually; others find a group message or a single coordinating person easier to manage. Think about who needs to hear from you directly, and who can be informed through others. If the deceased was employed, their employer should be told early, this is usually handled with a brief phone call or email, and the HR department will guide you on next steps.",
           },
           {
             type: 'subheading',
@@ -748,7 +748,7 @@ const sections = {
           },
           {
             type: 'text',
-            text: "If the deceased lived alone, their home should be secured promptly. Ensure it is locked, that any pets are cared for, and that any perishable food is dealt with. If there are valuable items, it is wise to note them. Do not yet start clearing anything out — this should happen only after probate is granted and the executor has legal authority to deal with the estate.",
+            text: "If the deceased lived alone, their home should be secured promptly. Ensure it is locked, that any pets are cared for, and that any perishable food is dealt with. If there are valuable items, it is wise to note them. Do not yet start clearing anything out, this should happen only after probate is granted and the executor has legal authority to deal with the estate.",
           },
           {
             type: 'subheading',
@@ -756,11 +756,11 @@ const sections = {
           },
           {
             type: 'text',
-            text: "If you are the executor — or think you might be — finding the original will as early as possible is important. A will is often held by the deceased's solicitor, stored in a bank's safe custody service, or kept at home in a lockbox or filing cabinet. Some people register their will with a will storage service or the National Will Register. Check all of these possibilities. If the deceased used Everstead to record their documents, a trusted person they designated may have been granted access to that information.",
+            text: "If you are the executor (or think you might be) finding the original will as early as possible is important. A will is often held by the deceased's solicitor, stored in a bank's safe custody service, or kept at home in a lockbox or filing cabinet. Some people register their will with a will storage service or the National Will Register. Check all of these possibilities. If the deceased used Everstead to record their documents, a trusted person they designated may have been granted access to that information.",
           },
           {
             type: 'text',
-            text: "If no will can be found, the estate is treated as intestate — meaning it is distributed according to the Rules of Intestacy, not the deceased's wishes. This is a difficult situation, but not an insurmountable one. A solicitor will guide you through the intestacy process.",
+            text: "If no will can be found, the estate is treated as intestate, meaning it is distributed according to the Rules of Intestacy, not the deceased's wishes. This is a difficult situation, but not an insurmountable one. A solicitor will guide you through the intestacy process.",
           },
           {
             type: 'heading',
@@ -776,7 +776,7 @@ const sections = {
           },
           {
             type: 'text',
-            text: "Probate — the legal process of administering a deceased person's estate — is required in most cases where the deceased owned property or significant assets in their sole name. Not every estate requires formal probate, but most do. Engaging a solicitor who specialises in probate early means you have professional guidance from the start. They can assess whether probate is needed, apply on your behalf, and advise on inheritance tax obligations. If the estate is straightforward and you are comfortable with paperwork, it is also possible to handle probate yourself through the Probate Registry.",
+            text: "Probate (the legal process of administering a deceased person's estate) is required in most cases where the deceased owned property or significant assets in their sole name. Not every estate requires formal probate, but most do. Engaging a solicitor who specialises in probate early means you have professional guidance from the start. They can assess whether probate is needed, apply on your behalf, and advise on inheritance tax obligations. If the estate is straightforward and you are comfortable with paperwork, it is also possible to handle probate yourself through the Probate Registry.",
           },
           {
             type: 'subheading',
@@ -784,7 +784,7 @@ const sections = {
           },
           {
             type: 'text',
-            text: "Contact each bank or building society where the deceased held accounts. You will need to provide a certified death certificate. Banks will typically freeze the deceased's individual accounts upon notification — this is standard practice, not a punitive measure. Joint accounts are usually unaffected and can continue to be operated by the surviving holder. The bank will explain their process for releasing funds once probate is granted. This is also the moment to check whether the deceased had any direct debits or standing orders that need to be managed — some may need to be continued temporarily (rent, utilities for an occupied property), while others should be cancelled.",
+            text: "Contact each bank or building society where the deceased held accounts. You will need to provide a certified death certificate. Banks will typically freeze the deceased's individual accounts upon notification, this is standard practice, not a punitive measure. Joint accounts are usually unaffected and can continue to be operated by the surviving holder. The bank will explain their process for releasing funds once probate is granted. This is also the moment to check whether the deceased had any direct debits or standing orders that need to be managed, some may need to be continued temporarily (rent, utilities for an occupied property), while others should be cancelled.",
           },
           {
             type: 'subheading',
@@ -792,7 +792,7 @@ const sections = {
           },
           {
             type: 'text',
-            text: "Pension death benefits can be significant and should be claimed promptly. Contact each pension provider and inform them of the death. For defined contribution pensions, the provider will ask about nominated beneficiaries. It is worth noting that pension funds typically fall outside the estate for probate purposes — they are paid directly to nominated beneficiaries. This makes the nomination form on a pension one of the most important documents an individual can complete during their lifetime. If the deceased had a defined benefit (final salary) pension, there may be a dependant's pension payable to a surviving spouse or civil partner.",
+            text: "Pension death benefits can be significant and should be claimed promptly. Contact each pension provider and inform them of the death. For defined contribution pensions, the provider will ask about nominated beneficiaries. It is worth noting that pension funds typically fall outside the estate for probate purposes, they are paid directly to nominated beneficiaries. This makes the nomination form on a pension one of the most important documents an individual can complete during their lifetime. If the deceased had a defined benefit (final salary) pension, there may be a dependant's pension payable to a surviving spouse or civil partner.",
           },
           {
             type: 'subheading',
@@ -808,7 +808,7 @@ const sections = {
           },
           {
             type: 'text',
-            text: "Tell Us Once is a free government service that allows you to report a death to multiple government departments in a single step. The registrar will give you a unique reference code when you register the death. You can use this code to notify HMRC, the Department for Work and Pensions, the DVLA, the passport office, the local council, and others — all at once. This is one of the most useful services available and significantly reduces the administrative burden of contacting each department separately. Use it as early as possible.",
+            text: "Tell Us Once is a free government service that allows you to report a death to multiple government departments in a single step. The registrar will give you a unique reference code when you register the death. You can use this code to notify HMRC, the Department for Work and Pensions, the DVLA, the passport office, the local council, and others, all at once. This is one of the most useful services available and significantly reduces the administrative burden of contacting each department separately. Use it as early as possible.",
           },
           {
             type: 'subheading',
@@ -816,11 +816,11 @@ const sections = {
           },
           {
             type: 'text',
-            text: "The funeral can be arranged before probate is granted. It does not require legal authority to proceed — and most families want to hold the service as soon as is practically and emotionally appropriate. A funeral director will guide you through the options: burial or cremation, the service format, transportation, and the practical details. If the deceased left written wishes — whether in a will, in an Everstead plan, or in a letter — now is the time to refer to them. If no wishes were recorded, close family members will need to agree on what would best reflect the person who died.",
+            text: "The funeral can be arranged before probate is granted. It does not require legal authority to proceed, and most families want to hold the service as soon as is practically and emotionally appropriate. A funeral director will guide you through the options: burial or cremation, the service format, transportation, and the practical details. If the deceased left written wishes, whether in a will, in an Everstead plan, or in a letter, now is the time to refer to them. If no wishes were recorded, close family members will need to agree on what would best reflect the person who died.",
           },
           {
             type: 'text',
-            text: "Funeral costs are usually paid from the estate — even before probate is formally granted, most banks will release funds directly to a funeral director upon receiving a death certificate and the invoice. If funds are not immediately available, funeral directors are typically understanding and will discuss timing arrangements.",
+            text: "Funeral costs are usually paid from the estate, even before probate is formally granted, most banks will release funds directly to a funeral director upon receiving a death certificate and the invoice. If funds are not immediately available, funeral directors are typically understanding and will discuss timing arrangements.",
           },
           {
             type: 'heading',
@@ -828,7 +828,7 @@ const sections = {
           },
           {
             type: 'text',
-            text: "The first month is where the administrative work begins in earnest. The emotional weight of the preceding weeks does not disappear — it often intensifies once the immediate busyness of the funeral has passed. Be patient with yourself and with others involved in this process.",
+            text: "The first month is where the administrative work begins in earnest. The emotional weight of the preceding weeks does not disappear, it often intensifies once the immediate busyness of the funeral has passed. Be patient with yourself and with others involved in this process.",
           },
           {
             type: 'subheading',
@@ -836,11 +836,11 @@ const sections = {
           },
           {
             type: 'text',
-            text: "If a will exists and executors are named, the executors apply for a Grant of Probate from the Probate Registry. This is the legal document that confirms the executor's authority to deal with the estate. Without it, banks cannot release funds, property cannot be transferred or sold, and the estate cannot be formally distributed. The application requires a completed probate application form, the original will, a certified death certificate, and payment of the Probate Registry fee (based on the value of the estate). Processing times vary — it can take anywhere from a few weeks to several months. Engaging a solicitor often speeds things up, as they are familiar with the process and can respond quickly to any queries from the Registry.",
+            text: "If a will exists and executors are named, the executors apply for a Grant of Probate from the Probate Registry. This is the legal document that confirms the executor's authority to deal with the estate. Without it, banks cannot release funds, property cannot be transferred or sold, and the estate cannot be formally distributed. The application requires a completed probate application form, the original will, a certified death certificate, and payment of the Probate Registry fee (based on the value of the estate). Processing times vary, it can take anywhere from a few weeks to several months. Engaging a solicitor often speeds things up, as they are familiar with the process and can respond quickly to any queries from the Registry.",
           },
           {
             type: 'note',
-            text: "If there is no will, the process is called applying for Letters of Administration rather than a Grant of Probate. The administrator — usually the closest living relative — has similar authority to an executor once Letters of Administration are granted.",
+            text: "If there is no will, the process is called applying for Letters of Administration rather than a Grant of Probate. The administrator (usually the closest living relative) has similar authority to an executor once Letters of Administration are granted.",
           },
           {
             type: 'subheading',
@@ -848,11 +848,11 @@ const sections = {
           },
           {
             type: 'text',
-            text: "Before the estate can be distributed, you need to know exactly what it contains. This means identifying every asset and every liability. Assets include bank accounts, savings accounts, investments, ISAs, property, vehicles, business interests, personal valuables, and pension death benefits. Liabilities include mortgages, loans, credit card balances, unpaid bills, and any outstanding tax. This inventory forms the basis of the estate accounts — the formal record of what came in and went out during administration.",
+            text: "Before the estate can be distributed, you need to know exactly what it contains. This means identifying every asset and every liability. Assets include bank accounts, savings accounts, investments, ISAs, property, vehicles, business interests, personal valuables, and pension death benefits. Liabilities include mortgages, loans, credit card balances, unpaid bills, and any outstanding tax. This inventory forms the basis of the estate accounts, the formal record of what came in and went out during administration.",
           },
           {
             type: 'text',
-            text: "If the deceased used a platform like Everstead to maintain a record of their accounts and assets, this step becomes significantly easier. A well-maintained estate plan means the executor has a starting point — a list of what existed, where it was held, and who the relevant contacts were. Without one, discovery can take months and may never be complete. This is one of the most compelling arguments for keeping an organised plan during your lifetime.",
+            text: "If the deceased used a platform like Everstead to maintain a record of their accounts and assets, this step becomes significantly easier. A well-maintained estate plan means the executor has a starting point, a list of what existed, where it was held, and who the relevant contacts were. Without one, discovery can take months and may never be complete. This is one of the most compelling arguments for keeping an organised plan during your lifetime.",
           },
           {
             type: 'related',
@@ -869,7 +869,7 @@ const sections = {
           },
           {
             type: 'text',
-            text: "This step is easily forgotten but can be surprisingly costly. Streaming services, gym memberships, insurance renewals, software subscriptions, and other recurring charges continue until actively cancelled. In some cases, families discover that significant sums have been paid out over months of administration before anyone noticed. Go through the deceased's bank statements — both paper and online — to identify every recurring payment, and contact each provider with a death certificate. Most will cancel promptly. Some may require the death certificate by post.",
+            text: "This step is easily forgotten but can be surprisingly costly. Streaming services, gym memberships, insurance renewals, software subscriptions, and other recurring charges continue until actively cancelled. In some cases, families discover that significant sums have been paid out over months of administration before anyone noticed. Go through the deceased's bank statements (both paper and online) to identify every recurring payment, and contact each provider with a death certificate. Most will cancel promptly. Some may require the death certificate by post.",
           },
           {
             type: 'subheading',
@@ -877,7 +877,7 @@ const sections = {
           },
           {
             type: 'text',
-            text: "Digital accounts are a growing and often overlooked part of an estate. Email, cloud storage, social media, financial apps, streaming services, and potentially cryptocurrency all need to be addressed. Each platform has its own process — Google allows family members to use an Inactive Account Manager process; Apple has a Legacy Contact feature; Facebook offers memorialisation or deletion. For platforms that have no formal bereavement process, a death certificate and evidence of relationship is usually required.",
+            text: "Digital accounts are a growing and often overlooked part of an estate. Email, cloud storage, social media, financial apps, streaming services, and potentially cryptocurrency all need to be addressed. Each platform has its own process: Google allows family members to use an Inactive Account Manager process; Apple has a Legacy Contact feature; Facebook offers memorialisation or deletion. For platforms that have no formal bereavement process, a death certificate and evidence of relationship is usually required.",
           },
           {
             type: 'text',
@@ -896,7 +896,7 @@ const sections = {
           },
           {
             type: 'text',
-            text: "Estate administration is rarely quick. From application for probate to final distribution, six to twelve months is common. Complex estates — those involving property sales, business interests, overseas assets, or inheritance tax — can take considerably longer. This phase requires patience, organisation, and usually the continued involvement of a solicitor.",
+            text: "Estate administration is rarely quick. From application for probate to final distribution, six to twelve months is common. Complex estates (those involving property sales, business interests, overseas assets, or inheritance tax) can take considerably longer. This phase requires patience, organisation, and usually the continued involvement of a solicitor.",
           },
           {
             type: 'subheading',
@@ -904,7 +904,7 @@ const sections = {
           },
           {
             type: 'text',
-            text: "Once the Grant of Probate or Letters of Administration is received, the executor has legal authority to collect all assets into the estate. Banks will release funds; pension providers can be formally asked to pay death benefits; property can be marketed for sale or transferred. Each institution will have its own process and paperwork. Keep detailed records of everything received — amounts, dates, sources — as this forms part of the estate accounts.",
+            text: "Once the Grant of Probate or Letters of Administration is received, the executor has legal authority to collect all assets into the estate. Banks will release funds; pension providers can be formally asked to pay death benefits; property can be marketed for sale or transferred. Each institution will have its own process and paperwork. Keep detailed records of everything received (amounts, dates, sources) as this forms part of the estate accounts.",
           },
           {
             type: 'subheading',
@@ -912,7 +912,7 @@ const sections = {
           },
           {
             type: 'text',
-            text: "Before anything can be distributed to beneficiaries, all debts must be paid. This includes the mortgage, any personal loans, credit card balances, utility bills, and any outstanding tax owed to HMRC. Executors have a legal duty to pay debts before distributing the estate. Distributing assets to beneficiaries while debts remain outstanding can make the executor personally liable for those debts. If debts appear to exceed the estate's value, take legal advice immediately — the estate may be insolvent.",
+            text: "Before anything can be distributed to beneficiaries, all debts must be paid. This includes the mortgage, any personal loans, credit card balances, utility bills, and any outstanding tax owed to HMRC. Executors have a legal duty to pay debts before distributing the estate. Distributing assets to beneficiaries while debts remain outstanding can make the executor personally liable for those debts. If debts appear to exceed the estate's value, take legal advice immediately, the estate may be insolvent.",
           },
           {
             type: 'subheading',
@@ -920,11 +920,11 @@ const sections = {
           },
           {
             type: 'text',
-            text: "Inheritance tax (IHT) is payable on estates above the nil-rate band, currently £325,000. An additional residence nil-rate band of up to £175,000 applies when a main residence is passed to direct descendants. Above these thresholds, IHT is charged at 40% on the excess. Importantly, IHT must be paid before probate is granted — which can create a liquidity challenge if the estate is mainly property. Some banks will release funds specifically to pay an IHT bill before probate, but this requires specific forms. A solicitor or tax adviser can help calculate any liability and structure payment.",
+            text: "Inheritance tax (IHT) is payable on estates above the nil-rate band, currently £325,000. An additional residence nil-rate band of up to £175,000 applies when a main residence is passed to direct descendants. Above these thresholds, IHT is charged at 40% on the excess. Importantly, IHT must be paid before probate is granted, which can create a liquidity challenge if the estate is mainly property. Some banks will release funds specifically to pay an IHT bill before probate, but this requires specific forms. A solicitor or tax adviser can help calculate any liability and structure payment.",
           },
           {
             type: 'text',
-            text: "Spouses and civil partners are entirely exempt from inheritance tax — assets passed to a surviving spouse are not subject to IHT regardless of value. Gifts made to charity are also exempt. If the deceased gave significant gifts in the seven years before death, those may also be subject to IHT under the 'seven-year rule'. HMRC will want a full account of the estate including any gifts made in life.",
+            text: "Spouses and civil partners are entirely exempt from inheritance tax, assets passed to a surviving spouse are not subject to IHT regardless of value. Gifts made to charity are also exempt. If the deceased gave significant gifts in the seven years before death, those may also be subject to IHT under the 'seven-year rule'. HMRC will want a full account of the estate including any gifts made in life.",
           },
           {
             type: 'subheading',
@@ -932,7 +932,7 @@ const sections = {
           },
           {
             type: 'text',
-            text: "Once debts, tax, and administration costs are paid, the remaining estate is distributed in accordance with the will — or, if there is no will, the Rules of Intestacy. Each beneficiary should receive a formal distribution statement showing what they are entitled to and what they have received. Keep copies of all correspondence. If a beneficiary cannot be located, there are legal processes for dealing with missing beneficiaries — do not simply distribute their share to others.",
+            text: "Once debts, tax, and administration costs are paid, the remaining estate is distributed in accordance with the will, or, if there is no will, the Rules of Intestacy. Each beneficiary should receive a formal distribution statement showing what they are entitled to and what they have received. Keep copies of all correspondence. If a beneficiary cannot be located, there are legal processes for dealing with missing beneficiaries, do not simply distribute their share to others.",
           },
           {
             type: 'subheading',
@@ -940,7 +940,7 @@ const sections = {
           },
           {
             type: 'text',
-            text: "Estate accounts are a formal record of everything that came into the estate, everything that was paid out, and how the remainder was distributed. They should be prepared and approved by all residuary beneficiaries — those entitled to a share of the remainder of the estate. Once approved and signed, the estate is formally closed. Keep all records, correspondence, and accounts for at least twelve years. HMRC may enquire about the estate up to twenty years after death in certain circumstances.",
+            text: "Estate accounts are a formal record of everything that came into the estate, everything that was paid out, and how the remainder was distributed. They should be prepared and approved by all residuary beneficiaries, those entitled to a share of the remainder of the estate. Once approved and signed, the estate is formally closed. Keep all records, correspondence, and accounts for at least twelve years. HMRC may enquire about the estate up to twenty years after death in certain circumstances.",
           },
           {
             type: 'heading',
@@ -955,11 +955,11 @@ const sections = {
             heading: 'Always seek professional advice if:',
             items: [
               "The estate may be subject to inheritance tax (value above £325,000 for a single person)",
-              "The deceased owned property in their sole name — property transfers and sales require solicitor involvement",
+              "The deceased owned property in their sole name, property transfers and sales require solicitor involvement",
               "There is no will, or the will is disputed by a family member or claimant",
               "The estate includes business interests, partnerships, or company shares",
-              "The deceased had assets abroad — overseas estates involve multiple legal jurisdictions",
-              "There are complex family arrangements — previous marriages, stepchildren, dependants not mentioned in the will",
+              "The deceased had assets abroad, overseas estates involve multiple legal jurisdictions",
+              "There are complex family arrangements, previous marriages, stepchildren, dependants not mentioned in the will",
               "The estate appears to be insolvent (debts exceed assets)",
               "A creditor has made a formal claim against the estate",
               "You are unsure about any aspect of your legal duties as executor",
@@ -967,7 +967,7 @@ const sections = {
           },
           {
             type: 'text',
-            text: "Solicitor fees for probate are typically charged as a percentage of the estate value (usually 1–2%) or on a fixed-fee basis, depending on complexity. Get a clear quote before engaging. If cost is a concern, many solicitors offer unbundled services — where they handle specific parts of the process (the probate application, for example) while you handle the rest.",
+            text: "Solicitor fees for probate are typically charged as a percentage of the estate value (usually 1-2%) or on a fixed-fee basis, depending on complexity. Get a clear quote before engaging. If cost is a concern, many solicitors offer unbundled services, where they handle specific parts of the process (the probate application, for example) while you handle the rest.",
           },
           {
             type: 'heading',
@@ -979,7 +979,7 @@ const sections = {
           },
           {
             type: 'text',
-            text: "That means having a will in place and keeping it up to date. It means having Lasting Powers of Attorney in place before they are needed — because they can only be put in place while you still have mental capacity. It means keeping a clear, structured record of your accounts, documents, contacts, and wishes — a record that a trusted person can actually use on the day, without having to search through filing cabinets, browser histories, or old emails.",
+            text: "That means having a will in place and keeping it up to date. It means having Lasting Powers of Attorney in place before they are needed, because they can only be put in place while you still have mental capacity. It means keeping a clear, structured record of your accounts, documents, contacts, and wishes, a record that a trusted person can actually use on the day, without having to search through filing cabinets, browser histories, or old emails.",
           },
           {
             type: 'text',
@@ -1007,19 +1007,19 @@ const sections = {
               },
               {
                 q: 'Do I have to use a solicitor for probate?',
-                a: "No. You can apply for probate yourself through the Probate Registry — this is known as 'personal application'. It is most practical for straightforward estates where there is no inheritance tax, no property to sell, and no disputes. For anything more complex, a probate solicitor will usually save time and reduce the risk of errors that could delay the process or create personal liability for the executor.",
+                a: "No. You can apply for probate yourself through the Probate Registry, this is known as 'personal application'. It is most practical for straightforward estates where there is no inheritance tax, no property to sell, and no disputes. For anything more complex, a probate solicitor will usually save time and reduce the risk of errors that could delay the process or create personal liability for the executor.",
               },
               {
                 q: 'What happens if there is no will?',
-                a: "If there is no will, the estate is administered under the Rules of Intestacy. In England and Wales, these rules determine who inherits based on relationship to the deceased — typically starting with a spouse or civil partner, then children, then parents, then siblings, and so on. Unmarried partners are not automatically entitled to anything under intestacy, regardless of the length of the relationship. An administrator (usually the closest living relative) applies for Letters of Administration rather than a Grant of Probate.",
+                a: "If there is no will, the estate is administered under the Rules of Intestacy. In England and Wales, these rules determine who inherits based on relationship to the deceased, typically starting with a spouse or civil partner, then children, then parents, then siblings, and so on. Unmarried partners are not automatically entitled to anything under intestacy, regardless of the length of the relationship. An administrator (usually the closest living relative) applies for Letters of Administration rather than a Grant of Probate.",
               },
               {
                 q: 'Can the executor pay themselves?',
-                a: "Executors are entitled to be reimbursed for reasonable out-of-pocket expenses — postage, travel, document costs. They are not automatically entitled to charge for their time unless the will specifically provides for this or all beneficiaries agree. Professional executors (solicitors or trust companies named in the will) typically charge their standard professional rates.",
+                a: "Executors are entitled to be reimbursed for reasonable out-of-pocket expenses, postage, travel, document costs. They are not automatically entitled to charge for their time unless the will specifically provides for this or all beneficiaries agree. Professional executors (solicitors or trust companies named in the will) typically charge their standard professional rates.",
               },
               {
                 q: 'How many death certificates do I need?',
-                a: "Order at least ten to twelve certified copies at the time of registration. Each bank, pension provider, insurer, and government department will typically want an original certified copy — photocopies are not accepted. Copies obtained at registration cost a small fee each and are much cheaper and quicker to get at that point than retrospectively.",
+                a: "Order at least ten to twelve certified copies at the time of registration. Each bank, pension provider, insurer, and government department will typically want an original certified copy, photocopies are not accepted. Copies obtained at registration cost a small fee each and are much cheaper and quicker to get at that point than retrospectively.",
               },
               {
                 q: 'What happens to joint bank accounts when someone dies?',
@@ -1031,21 +1031,21 @@ const sections = {
               },
               {
                 q: 'What is the Tell Us Once service and how do I use it?',
-                a: "Tell Us Once is a free government service that lets you notify multiple government departments of a death in a single step. When you register the death, the registrar will give you a unique reference number. You can use this at gov.uk/tell-us-once to notify HMRC, the DWP, the DVLA, local council services, the passport office, and other departments simultaneously. It is strongly recommended — it saves considerable time and avoids the need for separate letters to each department.",
+                a: "Tell Us Once is a free government service that lets you notify multiple government departments of a death in a single step. When you register the death, the registrar will give you a unique reference number. You can use this at gov.uk/tell-us-once to notify HMRC, the DWP, the DVLA, local council services, the passport office, and other departments simultaneously. It is strongly recommended, it saves considerable time and avoids the need for separate letters to each department.",
               },
               {
                 q: 'What is an executor and what are their duties?',
-                a: "An executor is the person named in a will to administer the estate. Their duties include registering the death, locating the will, applying for probate, collecting all assets, paying all debts and liabilities, dealing with tax obligations, and distributing the estate to beneficiaries in accordance with the will. It is a legally significant role that comes with personal liability — executors can be held responsible if they distribute assets before paying debts, or if they act improperly. You are not legally obliged to accept the role: you can formally renounce it before taking any steps in the administration.",
+                a: "An executor is the person named in a will to administer the estate. Their duties include registering the death, locating the will, applying for probate, collecting all assets, paying all debts and liabilities, dealing with tax obligations, and distributing the estate to beneficiaries in accordance with the will. It is a legally significant role that comes with personal liability, executors can be held responsible if they distribute assets before paying debts, or if they act improperly. You are not legally obliged to accept the role: you can formally renounce it before taking any steps in the administration.",
               },
               {
                 q: 'How does inheritance tax work and will the estate owe it?',
-                a: "Inheritance tax (IHT) is charged at 40% on the value of an estate above the nil-rate band (currently £325,000). An additional residence nil-rate band of up to £175,000 may apply when a main home is passed to direct descendants. Assets passed to a spouse or civil partner are entirely exempt. IHT must be paid before probate is granted — which can create a cash flow challenge if the estate is largely illiquid. If you think the estate may be above the threshold, seek specialist advice early. Allowances and reliefs are complex, and professional guidance can sometimes identify significant savings.",
+                a: "Inheritance tax (IHT) is charged at 40% on the value of an estate above the nil-rate band (currently £325,000). An additional residence nil-rate band of up to £175,000 may apply when a main home is passed to direct descendants. Assets passed to a spouse or civil partner are entirely exempt. IHT must be paid before probate is granted, which can create a cash flow challenge if the estate is largely illiquid. If you think the estate may be above the threshold, seek specialist advice early. Allowances and reliefs are complex, and professional guidance can sometimes identify significant savings.",
               },
             ],
           },
           {
             type: 'cta',
-            text: "One of the most lasting things you can do for the people you love is to make sure they never have to piece together your affairs from scratch. Everstead gives you a private, structured place to record everything — your accounts, documents, trusted contacts, and final wishes — so your executor has what they need, when they need it.",
+            text: "One of the most lasting things you can do for the people you love is to make sure they never have to piece together your affairs from scratch. Everstead gives you a private, structured place to record everything (your accounts, documents, trusted contacts, and final wishes) so your executor has what they need, when they need it.",
           },
         ],
       },
@@ -1054,12 +1054,12 @@ const sections = {
         title: 'What executors wish they had known',
         date: 'March 2026',
         tag: 'Estate planning',
-        desc: 'A practical look at the most common challenges executors face — and how to make the role easier for the people you choose.',
+        desc: 'A practical look at the most common challenges executors face, and how to make the role easier for the people you choose.',
         readTime: '6 min read',
         body: [
           {
             type: 'intro',
-            text: 'Being named an executor is an honour — and an enormous responsibility. Most people who take on the role are unprepared for the sheer volume of practical work involved, especially when they are also grieving. Here is what the experience typically teaches, and how you can make it easier for the people you appoint.',
+            text: 'Being named an executor is an honour, and an enormous responsibility. Most people who take on the role are unprepared for the sheer volume of practical work involved, especially when they are also grieving. Here is what the experience typically teaches, and how you can make it easier for the people you appoint.',
           },
           {
             type: 'heading',
@@ -1067,7 +1067,7 @@ const sections = {
           },
           {
             type: 'text',
-            text: 'Within days of a death, executors must locate the original will, obtain the death certificate, notify relevant institutions, and begin cataloguing assets. Without a central record to work from, this can take weeks of phone calls, requests, and waiting. Banks, pension providers, and insurers each have their own processes — and they all want documentation.',
+            text: 'Within days of a death, executors must locate the original will, obtain the death certificate, notify relevant institutions, and begin cataloguing assets. Without a central record to work from, this can take weeks of phone calls, requests, and waiting. Banks, pension providers, and insurers each have their own processes, and they all want documentation.',
           },
           {
             type: 'heading',
@@ -1075,7 +1075,7 @@ const sections = {
           },
           {
             type: 'text',
-            text: 'In post-mortem surveys of executors, the single most cited frustration is not knowing where documents are stored, which accounts existed, or who the relevant contacts were. A solicitor might have the will, the bank might have original deeds, and an accountant might hold tax records — all in different places, none of them communicated.',
+            text: 'In post-mortem surveys of executors, the single most cited frustration is not knowing where documents are stored, which accounts existed, or who the relevant contacts were. A solicitor might have the will, the bank might have original deeds, and an accountant might hold tax records, all in different places, none of them communicated.',
           },
           {
             type: 'list',
@@ -1096,7 +1096,7 @@ const sections = {
           },
           {
             type: 'text',
-            text: 'Ten years ago, digital estate was a footnote. Today it is central. Email accounts, cloud storage, streaming subscriptions, social media profiles, investment apps, and sometimes cryptocurrency — all of these need to be found, evaluated, and actioned. Most platforms have no clear succession process. Without prior guidance, executors can be locked out entirely.',
+            text: 'Ten years ago, digital estate was a footnote. Today it is central. Email accounts, cloud storage, streaming subscriptions, social media profiles, investment apps, and sometimes cryptocurrency, all of these need to be found, evaluated, and actioned. Most platforms have no clear succession process. Without prior guidance, executors can be locked out entirely.',
           },
           {
             type: 'heading',
@@ -1104,15 +1104,15 @@ const sections = {
           },
           {
             type: 'text',
-            text: 'The most effective thing you can do for your executor is create a structured inventory — a single reference point covering your accounts, documents, contacts, and instructions. It does not need to contain passwords; it needs to contain enough information for someone to know what exists and who to contact.',
+            text: 'The most effective thing you can do for your executor is create a structured inventory, a single reference point covering your accounts, documents, contacts, and instructions. It does not need to contain passwords; it needs to contain enough information for someone to know what exists and who to contact.',
           },
           {
             type: 'text',
-            text: 'Review it annually, and after any major life event: a house purchase, a new pension, a divorce, a business change. The goal is not perfection — it is enough clarity that your executor can act without guessing.',
+            text: 'Review it annually, and after any major life event: a house purchase, a new pension, a divorce, a business change. The goal is not perfection, it is enough clarity that your executor can act without guessing.',
           },
           {
             type: 'cta',
-            text: 'Everstead is designed to be exactly that reference point — a structured, private, role-based record your executor can access when they need it most.',
+            text: 'Everstead is designed to be exactly that reference point, a structured, private, role-based record your executor can access when they need it most.',
           },
         ],
       },
@@ -1126,7 +1126,7 @@ const sections = {
         body: [
           {
             type: 'intro',
-            text: 'The average person now has over 100 digital accounts. When they die, most of those accounts enter a legal and practical grey zone — locked, inaccessible, sometimes charging subscriptions for months before anyone notices.',
+            text: 'The average person now has over 100 digital accounts. When they die, most of those accounts enter a legal and practical grey zone, locked, inaccessible, sometimes charging subscriptions for months before anyone notices.',
           },
           {
             type: 'heading',
@@ -1134,7 +1134,7 @@ const sections = {
           },
           {
             type: 'text',
-            text: 'Email accounts contain decades of correspondence and often act as the key to resetting every other account. Cloud storage — Google Drive, iCloud, Dropbox — may hold irreplaceable family photos, financial records, and personal documents. Streaming services, news subscriptions, and software licences continue billing until actively cancelled.',
+            text: 'Email accounts contain decades of correspondence and often act as the key to resetting every other account. Cloud storage (Google Drive, iCloud, Dropbox) may hold irreplaceable family photos, financial records, and personal documents. Streaming services, news subscriptions, and software licences continue billing until actively cancelled.',
           },
           {
             type: 'heading',
@@ -1142,7 +1142,7 @@ const sections = {
           },
           {
             type: 'text',
-            text: "Google allows you to designate an Inactive Account Manager — someone who gets notified and can download your data if your account goes dormant. Apple's Legacy Contact feature works similarly. Facebook offers a memorialisation option or account deletion. But most platforms have no formal process at all — and even where they exist, they require a death certificate, proof of relationship, and weeks of waiting.",
+            text: "Google allows you to designate an Inactive Account Manager, someone who gets notified and can download your data if your account goes dormant. Apple's Legacy Contact feature works similarly. Facebook offers a memorialisation option or account deletion. But most platforms have no formal process at all, and even where they exist, they require a death certificate, proof of relationship, and weeks of waiting.",
           },
           {
             type: 'list',
@@ -1150,7 +1150,7 @@ const sections = {
             items: [
               'Primary email (often the key to everything else)',
               'Cloud storage and shared photo albums',
-              'Social media — memorialise or delete?',
+              'Social media, memorialise or delete?',
               'Financial apps and investment platforms',
               'Cryptocurrency wallets (access is often irreversible to lose)',
               'Business accounts and domain registrations',
@@ -1163,7 +1163,7 @@ const sections = {
           },
           {
             type: 'text',
-            text: 'Unlike bank accounts, cryptocurrency is controlled entirely by private keys. If your executor does not have access to the wallet and recovery phrase, that value is gone permanently — no bank to call, no legal recourse. If you hold crypto, documenting where it is held and how to access it is not optional.',
+            text: 'Unlike bank accounts, cryptocurrency is controlled entirely by private keys. If your executor does not have access to the wallet and recovery phrase, that value is gone permanently, no bank to call, no legal recourse. If you hold crypto, documenting where it is held and how to access it is not optional.',
           },
           {
             type: 'heading',
@@ -1180,36 +1180,36 @@ const sections = {
         title: 'How to set up your digital legacy: Apple, Google, Facebook and more',
         date: 'June 2026',
         tag: 'Digital life',
-        desc: 'A 20-minute, platform-by-platform guide to appointing someone you trust on Apple, Google, Facebook and beyond — before it is ever needed.',
+        desc: 'A 20-minute, platform-by-platform guide to appointing someone you trust on Apple, Google, Facebook and beyond, before it is ever needed.',
         readTime: '7 min read',
         body: [
           {
             type: 'intro',
-            text: "Most of the big platforms now let you name someone to look after your account after you die — yet almost no one sets it up, because it is buried in settings you never visit. The catch is that nearly all of these tools only work if you switch them on while you are alive. Spend twenty minutes now and you spare the people you love weeks of locked screens, support tickets and guesswork later. Here is how, platform by platform.",
+            text: "Most of the big platforms now let you name someone to look after your account after you die, yet almost no one sets it up, because it is buried in settings you never visit. The catch is that nearly all of these tools only work if you switch them on while you are alive. Spend twenty minutes now and you spare the people you love weeks of locked screens, support tickets and guesswork later. Here is how, platform by platform.",
           },
           {
             type: 'heading',
-            text: 'Apple — Legacy Contact',
+            text: 'Apple: Legacy Contact',
           },
           {
             type: 'text',
-            text: "Apple lets you name up to five Legacy Contacts who can access your account data after you die — photos, messages, notes, files and contacts (though not the passwords saved in your Keychain, or films and music you only licensed). On your iPhone or iPad, open Settings, tap your name at the top, then Sign-In & Security, and choose Legacy Contact. Each person you add gets an access key — keep a copy with your important papers. When the time comes, they give Apple that key and a copy of your death certificate to unlock the account.",
+            text: "Apple lets you name up to five Legacy Contacts who can access your account data after you die, photos, messages, notes, files and contacts (though not the passwords saved in your Keychain, or films and music you only licensed). On your iPhone or iPad, open Settings, tap your name at the top, then Sign-In & Security, and choose Legacy Contact. Each person you add gets an access key, keep a copy with your important papers. When the time comes, they give Apple that key and a copy of your death certificate to unlock the account.",
           },
           {
             type: 'heading',
-            text: 'Google — Inactive Account Manager',
+            text: 'Google: Inactive Account Manager',
           },
           {
             type: 'text',
-            text: "Google's Inactive Account Manager is the most flexible of the lot. You decide how long Google should wait after your account goes quiet (three, six, twelve or eighteen months), then choose up to ten trusted people to notify — and exactly which data each of them can download, from Gmail to Drive to Photos. You can also tell Google to delete the account automatically afterwards. Find it at myaccount.google.com under Data & privacy, then 'Make a plan for your digital legacy.' Because email is usually the key that resets every other account, this is one of the most important to set up.",
+            text: "Google's Inactive Account Manager is the most flexible of the lot. You decide how long Google should wait after your account goes quiet (three, six, twelve or eighteen months), then choose up to ten trusted people to notify, and exactly which data each of them can download, from Gmail to Drive to Photos. You can also tell Google to delete the account automatically afterwards. Find it at myaccount.google.com under Data & privacy, then 'Make a plan for your digital legacy.' Because email is usually the key that resets every other account, this is one of the most important to set up.",
           },
           {
             type: 'heading',
-            text: 'Facebook and Instagram — a legacy contact or a memorial',
+            text: 'Facebook and Instagram, a legacy contact or a memorial',
           },
           {
             type: 'text',
-            text: "On Facebook you can either name a legacy contact — someone who can manage your memorialised profile (pin a post, respond to new friend requests, update your photo) but who can never read your messages — or ask for the account to be deleted when you die. Both options live in your settings under account ownership and control. Instagram does not offer a legacy contact, but a family member can ask for the account to be memorialised or removed with proof of death.",
+            text: "On Facebook you can either name a legacy contact, someone who can manage your memorialised profile (pin a post, respond to new friend requests, update your photo) but who can never read your messages, or ask for the account to be deleted when you die. Both options live in your settings under account ownership and control. Instagram does not offer a legacy contact, but a family member can ask for the account to be memorialised or removed with proof of death.",
           },
           {
             type: 'heading',
@@ -1217,7 +1217,7 @@ const sections = {
           },
           {
             type: 'text',
-            text: "Plenty of services still have no formal tool — Microsoft, LinkedIn, X (formerly Twitter) and most banks and retailers among them. For these, a family member usually has to contact support after a death with a death certificate and proof they are entitled to act, then wait. There is nothing to switch on in advance, so the most useful thing you can do is make sure someone knows the account exists and what you would want done with it.",
+            text: "Plenty of services still have no formal tool: Microsoft, LinkedIn, X (formerly Twitter) and most banks and retailers among them. For these, a family member usually has to contact support after a death with a death certificate and proof they are entitled to act, then wait. There is nothing to switch on in advance, so the most useful thing you can do is make sure someone knows the account exists and what you would want done with it.",
           },
           {
             type: 'heading',
@@ -1225,15 +1225,15 @@ const sections = {
           },
           {
             type: 'text',
-            text: "If you use a password manager — 1Password, Bitwarden, Dashlane or similar — it is the single most useful thing to plan for, because it unlocks almost everything else. Most offer an emergency-access or family-sharing feature: you nominate a trusted person who can request access, and after a waiting period that you set (and can cancel) they are let in. Doing this once is far more reliable than leaving a list of passwords that will be out of date within months.",
+            text: "If you use a password manager (1Password, Bitwarden, Dashlane or similar) it is the single most useful thing to plan for, because it unlocks almost everything else. Most offer an emergency-access or family-sharing feature: you nominate a trusted person who can request access, and after a waiting period that you set (and can cancel) they are let in. Doing this once is far more reliable than leaving a list of passwords that will be out of date within months.",
           },
           {
             type: 'heading',
-            text: 'Crypto — the one you cannot undo',
+            text: 'Crypto, the one you cannot undo',
           },
           {
             type: 'text',
-            text: "Cryptocurrency is the exception where getting it wrong is permanent. There is no legacy contact, no support line, and no way to recover a wallet without its recovery phrase. If you hold any crypto, the access details need to be written down and kept somewhere a trusted person can reach them when needed — without being exposed while you are alive. Treat it with the same care as the deeds to your house.",
+            text: "Cryptocurrency is the exception where getting it wrong is permanent. There is no legacy contact, no support line, and no way to recover a wallet without its recovery phrase. If you hold any crypto, the access details need to be written down and kept somewhere a trusted person can reach them when needed, without being exposed while you are alive. Treat it with the same care as the deeds to your house.",
           },
           {
             type: 'list',
@@ -1244,7 +1244,7 @@ const sections = {
               'Facebook: name a legacy contact (or choose deletion)',
               'Password manager: turn on emergency access for one trusted person',
               'Crypto: securely record how each wallet can be accessed',
-              'Write down which accounts exist and what you want done — and tell someone where to find it',
+              'Write down which accounts exist and what you want done, and tell someone where to find it',
             ],
           },
           {
@@ -1253,7 +1253,7 @@ const sections = {
           },
           {
             type: 'text',
-            text: "Setting up each platform is only half the job. The other half is making sure one trusted person knows the full picture — which accounts exist, where you have set up the legacy tools, and what you would like done with each. That inventory is exactly what Everstead is built to hold: a single, secure place for your accounts and instructions, shared only with the people you choose and only when you decide. You do not need to store a single password to make it work — knowing what is there, and what to do, is what spares your family the guesswork.",
+            text: "Setting up each platform is only half the job. The other half is making sure one trusted person knows the full picture, which accounts exist, where you have set up the legacy tools, and what you would like done with each. That inventory is exactly what Everstead is built to hold: a single, secure place for your accounts and instructions, shared only with the people you choose and only when you decide. You do not need to store a single password to make it work, knowing what is there, and what to do, is what spares your family the guesswork.",
           },
         ],
       },
@@ -1267,7 +1267,7 @@ const sections = {
         body: [
           {
             type: 'intro',
-            text: "It is one of the most important conversations a family can have — and one of the easiest to avoid. Talking to aging parents about their estate, their wishes, and their documents can feel uncomfortable, even intrusive. But avoiding it creates real problems when it matters most.",
+            text: "It is one of the most important conversations a family can have, and one of the easiest to avoid. Talking to aging parents about their estate, their wishes, and their documents can feel uncomfortable, even intrusive. But avoiding it creates real problems when it matters most.",
           },
           {
             type: 'heading',
@@ -1286,7 +1286,7 @@ const sections = {
             heading: 'Approaches that tend to work:',
             items: [
               "Frame it as helping them, not as anticipating loss. \"I want to make sure we can support you the way you'd want\" lands differently than \"I need to know your finances.\"",
-              'Use a personal trigger — a news story, a friend who went through an estate, your own planning. "It made me think about us too."',
+              'Use a personal trigger, a news story, a friend who went through an estate, your own planning. "It made me think about us too."',
               'Focus on practical organisation rather than death. Most people are comfortable talking about where documents are stored.',
               'Make it collaborative. Offer to set things up together, not just ask for information.',
               'Start small. You don\'t need to cover everything in one conversation. Ask about the will first, then return to the rest.',
@@ -1324,12 +1324,12 @@ const sections = {
         title: "Why a will alone isn't enough",
         date: 'January 2026',
         tag: 'Estate planning',
-        desc: "Wills handle legal distribution — but the practical chaos of an estate often has nothing to do with the will.",
+        desc: "Wills handle legal distribution, but the practical chaos of an estate often has nothing to do with the will.",
         readTime: '5 min read',
         body: [
           {
             type: 'intro',
-            text: "A will is essential. But it covers only one part of what a family actually needs when someone dies. The administrative and practical burden of an estate settlement is often enormous — and a will addresses almost none of it.",
+            text: "A will is essential. But it covers only one part of what a family actually needs when someone dies. The administrative and practical burden of an estate settlement is often enormous, and a will addresses almost none of it.",
           },
           {
             type: 'heading',
@@ -1362,7 +1362,7 @@ const sections = {
           },
           {
             type: 'text',
-            text: "Probate can take six months to over a year. During that time, your executor needs to manage accounts, close services, handle correspondence, and make practical decisions — without a complete picture of what exists. A will provides the legal authority to act; it does not provide the information needed to act well.",
+            text: "Probate can take six months to over a year. During that time, your executor needs to manage accounts, close services, handle correspondence, and make practical decisions, without a complete picture of what exists. A will provides the legal authority to act; it does not provide the information needed to act well.",
           },
           {
             type: 'heading',
@@ -1384,7 +1384,7 @@ const sections = {
         body: [
           {
             type: 'intro',
-            text: "A financial inventory is a structured record of every account, asset, and financial relationship you have. It is not a list of passwords — it is a map that tells a trusted person what exists and how to reach it.",
+            text: "A financial inventory is a structured record of every account, asset, and financial relationship you have. It is not a list of passwords, it is a map that tells a trusted person what exists and how to reach it.",
           },
           {
             type: 'heading',
@@ -1392,7 +1392,7 @@ const sections = {
           },
           {
             type: 'text',
-            text: "Executors and family members consistently report that the hardest part of estate settlement is not the legal or financial complexity — it is the discovery phase. Finding out what accounts existed, which ones still have balances, which ones have direct debits attached. An inventory eliminates that burden entirely.",
+            text: "Executors and family members consistently report that the hardest part of estate settlement is not the legal or financial complexity, it is the discovery phase. Finding out what accounts existed, which ones still have balances, which ones have direct debits attached. An inventory eliminates that burden entirely.",
           },
           {
             type: 'heading',
@@ -1402,9 +1402,9 @@ const sections = {
             type: 'list',
             heading: 'Category by category:',
             items: [
-              'Banking: current accounts, savings accounts, ISAs — provider, account reference, rough balance range',
-              'Investments: ISAs, pensions, SIPPs, shares, bonds — provider, account type, value range',
-              'Insurance: life, health, home, car, income protection — provider, policy number, beneficiaries',
+              'Banking: current accounts, savings accounts, ISAs, provider, account reference, rough balance range',
+              'Investments: ISAs, pensions, SIPPs, shares, bonds, provider, account type, value range',
+              'Insurance: life, health, home, car, income protection, provider, policy number, beneficiaries',
               'Property: address, mortgage lender, mortgage reference, solicitor who handled the purchase',
               'Business interests: any shares, partnerships, directorship roles',
               'Digital accounts: email, cloud storage, social media, streaming, software',
@@ -1427,7 +1427,7 @@ const sections = {
           },
           {
             type: 'text',
-            text: "Review your inventory at least once a year, or after any major change: opening a new account, moving a pension, remortgaging, starting a business. A stale inventory is still useful — but a current one is what actually protects your family.",
+            text: "Review your inventory at least once a year, or after any major change: opening a new account, moving a pension, remortgaging, starting a business. A stale inventory is still useful, but a current one is what actually protects your family.",
           },
         ],
       },
@@ -1441,7 +1441,7 @@ const sections = {
         body: [
           {
             type: 'intro',
-            text: "Financial planning has traditionally focused on accumulation: growing the portfolio, managing risk, planning for retirement. But the most pressing practical need many clients have is not investment management — it is organisation. Who knows where everything is? Who has the information they need?",
+            text: "Financial planning has traditionally focused on accumulation: growing the portfolio, managing risk, planning for retirement. But the most pressing practical need many clients have is not investment management, it is organisation. Who knows where everything is? Who has the information they need?",
           },
           {
             type: 'heading',
@@ -1449,7 +1449,7 @@ const sections = {
           },
           {
             type: 'text',
-            text: "Clients trust their financial adviser. That relationship — built over years — is precisely what makes estate organisation guidance so valuable coming from that source. When an adviser introduces the idea of structured estate organisation as part of a review, clients take it seriously in a way they might not when it comes from a general consumer tool.",
+            text: "Clients trust their financial adviser. That relationship (built over years) is precisely what makes estate organisation guidance so valuable coming from that source. When an adviser introduces the idea of structured estate organisation as part of a review, clients take it seriously in a way they might not when it comes from a general consumer tool.",
           },
           {
             type: 'heading',
@@ -1472,7 +1472,7 @@ const sections = {
           },
           {
             type: 'text',
-            text: "Estate organisation is low-effort for the adviser and extremely high-value for the client. It is the kind of service that gets mentioned to children, shared with siblings, and remembered at exactly the moment it matters most — when the client or a family member is dealing with a death. Practices that offer this tend to inherit client relationships across generations.",
+            text: "Estate organisation is low-effort for the adviser and extremely high-value for the client. It is the kind of service that gets mentioned to children, shared with siblings, and remembered at exactly the moment it matters most, when the client or a family member is dealing with a death. Practices that offer this tend to inherit client relationships across generations.",
           },
           {
             type: 'cta',
@@ -1485,41 +1485,41 @@ const sections = {
         title: 'How to write a letter of wishes (UK): what to include, with a template',
         date: 'June 2026',
         tag: 'Estate planning',
-        desc: 'What a letter of wishes is, how it differs from a will, what to put in it, and a simple template you can adapt — so your executors and family understand your intentions.',
+        desc: 'What a letter of wishes is, how it differs from a will, what to put in it, and a simple template you can adapt, so your executors and family understand your intentions.',
         readTime: '8 min read',
         body: [
-          { type: 'intro', text: "A will says who gets what. A letter of wishes explains the human detail behind it — your funeral preferences, who should have which personal belongings, the reasoning behind decisions, and the practical things your family will wish they had known. It sits alongside your will, it's quick to write, and you can update it whenever life changes. This guide explains what to include and gives you a template to adapt." },
+          { type: 'intro', text: "A will says who gets what. A letter of wishes explains the human detail behind it, your funeral preferences, who should have which personal belongings, the reasoning behind decisions, and the practical things your family will wish they had known. It sits alongside your will, it's quick to write, and you can update it whenever life changes. This guide explains what to include and gives you a template to adapt." },
           { type: 'toc', items: ['What a letter of wishes is', 'Letter of wishes vs a will', 'Is a letter of wishes legally binding?', 'What to include', 'A simple letter of wishes template', 'Where to keep it', 'Common mistakes to avoid'] },
           { type: 'heading', text: 'What a letter of wishes is' },
-          { type: 'text', text: "A letter of wishes is an informal, private document that accompanies your will. It gives guidance to your executors and loved ones about your wishes and the thinking behind your decisions. Unlike a will, it isn't a formal legal instrument — which is exactly what makes it useful: it can be personal, detailed, and easy to change." },
+          { type: 'text', text: "A letter of wishes is an informal, private document that accompanies your will. It gives guidance to your executors and loved ones about your wishes and the thinking behind your decisions. Unlike a will, it isn't a formal legal instrument, which is exactly what makes it useful: it can be personal, detailed, and easy to change." },
           { type: 'heading', text: 'Letter of wishes vs a will' },
-          { type: 'text', text: "Your will is the legally binding document that directs how your estate is distributed and names your executors and any guardians. A letter of wishes supports it — it can't override anything in the will, but it can explain, add context, and cover the many practical and personal matters a will doesn't." },
+          { type: 'text', text: "Your will is the legally binding document that directs how your estate is distributed and names your executors and any guardians. A letter of wishes supports it, it can't override anything in the will, but it can explain, add context, and cover the many practical and personal matters a will doesn't." },
           { type: 'list', heading: 'The difference in short', items: ['A will is legally binding; a letter of wishes is guidance', 'A will must be witnessed and follow strict formalities; a letter of wishes does not', 'A will becomes a public document once probate is granted; a letter of wishes stays private', 'Changing a will means a codicil or a new will; a letter of wishes can be rewritten any time'] },
           { type: 'heading', text: 'Is a letter of wishes legally binding?' },
-          { type: 'text', text: "No — and that's intentional. A letter of wishes is not legally binding, so your executors and trustees are not strictly obliged to follow it. In practice, however, a clear letter is usually respected and followed, because it tells the people you trust exactly what you wanted. If you need something to be guaranteed, it belongs in your will, not your letter of wishes." },
-          { type: 'note', text: "If you have a discretionary trust in your will, a letter of wishes is the usual way to guide your trustees on how you'd like them to use their discretion — for example, how to support a particular beneficiary." },
+          { type: 'text', text: "No, and that's intentional. A letter of wishes is not legally binding, so your executors and trustees are not strictly obliged to follow it. In practice, however, a clear letter is usually respected and followed, because it tells the people you trust exactly what you wanted. If you need something to be guaranteed, it belongs in your will, not your letter of wishes." },
+          { type: 'note', text: "If you have a discretionary trust in your will, a letter of wishes is the usual way to guide your trustees on how you'd like them to use their discretion, for example, how to support a particular beneficiary." },
           { type: 'heading', text: 'What to include' },
           { type: 'text', text: "There are no rules about what goes in, but the most useful letters tend to cover the following." },
           { type: 'subheading', text: 'Funeral and end-of-life wishes' },
           { type: 'text', text: "Burial or cremation, any religious or cultural preferences, music or readings, and whether you'd like donations instead of flowers. These wishes aren't legally binding either, but they spare your family from guessing at a painful time." },
           { type: 'subheading', text: 'Personal possessions' },
-          { type: 'text', text: "Specific items and who you'd like to have them — jewellery, books, tools, a watch, a piece of furniture. These are often the things that carry the most meaning and cause the most uncertainty, so being specific helps." },
+          { type: 'text', text: "Specific items and who you'd like to have them, jewellery, books, tools, a watch, a piece of furniture. These are often the things that carry the most meaning and cause the most uncertainty, so being specific helps." },
           { type: 'subheading', text: 'The reasoning behind your will' },
           { type: 'text', text: "If you've divided things unequally, left someone out, or made an unusual choice, a short explanation can prevent hurt and reduce the risk of a dispute later." },
           { type: 'subheading', text: 'Children and dependants' },
           { type: 'text', text: "If you've named guardians in your will, your letter can explain why, and share your hopes about how you'd like your children raised, schooled, or supported. You can also note care arrangements for a pet." },
           { type: 'subheading', text: 'Practical and digital details' },
-          { type: 'text', text: "Where your important documents are kept, who your professional advisers are, and how to handle your digital life — online accounts, subscriptions, photos, and social media. Never write actual passwords into a letter of wishes; instead point to where they're securely stored." },
+          { type: 'text', text: "Where your important documents are kept, who your professional advisers are, and how to handle your digital life, online accounts, subscriptions, photos, and social media. Never write actual passwords into a letter of wishes; instead point to where they're securely stored." },
           { type: 'heading', text: 'A simple letter of wishes template' },
           { type: 'text', text: "Adapt the following to your own circumstances. Keep it dated, and replace it with a fresh dated version whenever things change." },
-          { type: 'list', items: ['Heading: "Letter of wishes — [your full name], dated [date]"', 'Opening line: state that this letter accompanies your will dated [date] and is intended as guidance, not as a binding instruction', 'Funeral wishes: burial or cremation, service preferences, music, readings, donations', 'Personal possessions: item — intended recipient — any note', 'Reasons: a short explanation of any decisions you want understood', 'Children, dependants, pets: guardianship hopes and care arrangements', 'Practical: where documents and account details are kept, and who your advisers are', 'Closing: a personal message to your loved ones, if you wish', 'Sign and date it'] },
+          { type: 'list', items: ['Heading: "Letter of wishes, [your full name], dated [date]"', 'Opening line: state that this letter accompanies your will dated [date] and is intended as guidance, not as a binding instruction', 'Funeral wishes: burial or cremation, service preferences, music, readings, donations', 'Personal possessions: item, intended recipient, any note', 'Reasons: a short explanation of any decisions you want understood', 'Children, dependants, pets: guardianship hopes and care arrangements', 'Practical: where documents and account details are kept, and who your advisers are', 'Closing: a personal message to your loved ones, if you wish', 'Sign and date it'] },
           { type: 'note', text: "A letter of wishes doesn't need to be witnessed to be useful. But signing and dating it makes your intentions clear and shows which version is the most recent." },
           { type: 'heading', text: 'Where to keep it' },
-          { type: 'text', text: "Keep your letter of wishes with — but separate from — your will, and make sure your executors know it exists and where to find it. Storing it somewhere only you can access defeats the purpose. A secure place that your trusted people can reach at the right time is ideal." },
+          { type: 'text', text: "Keep your letter of wishes with (but separate from) your will, and make sure your executors know it exists and where to find it. Storing it somewhere only you can access defeats the purpose. A secure place that your trusted people can reach at the right time is ideal." },
           { type: 'heading', text: 'Common mistakes to avoid' },
-          { type: 'list', items: ['Putting binding instructions in it — anything that must happen belongs in your will', 'Writing passwords or full account numbers directly into the letter', 'Writing it once and never updating it as life changes', 'Contradicting your will — keep the two consistent', 'Hiding it so well that no one can find it'] },
+          { type: 'list', items: ['Putting binding instructions in it, anything that must happen belongs in your will', 'Writing passwords or full account numbers directly into the letter', 'Writing it once and never updating it as life changes', 'Contradicting your will, keep the two consistent', 'Hiding it so well that no one can find it'] },
           { type: 'related', heading: 'Related reading', links: [{ label: "Why a will alone isn't enough", href: '/resources/blog/why-a-will-is-not-enough' }, { label: 'How to set up your digital legacy', href: '/resources/blog/how-to-set-up-digital-legacy' }, { label: 'How to organise your estate in the UK', href: '/resources/blog/how-to-organise-your-estate-uk' }] },
-          { type: 'cta', text: 'Everstead gives you one secure place to record your wishes, list your accounts and documents, and share them only with the people you choose — so your letter of wishes is never lost or out of date.' },
+          { type: 'cta', text: 'Everstead gives you one secure place to record your wishes, list your accounts and documents, and share them only with the people you choose, so your letter of wishes is never lost or out of date.' },
         ],
       },
       {
@@ -1527,13 +1527,13 @@ const sections = {
         title: 'Where to keep important documents so your family can find them',
         date: 'June 2026',
         tag: 'Family organisation',
-        desc: 'A practical guide to storing wills, deeds, policies and account details safely — and making sure the right people can actually find them when it matters.',
+        desc: 'A practical guide to storing wills, deeds, policies and account details safely, and making sure the right people can actually find them when it matters.',
         readTime: '7 min read',
         body: [
-          { type: 'intro', text: "Most families don't struggle because the documents don't exist — they struggle because no one can find them. Important paperwork ends up spread across drawers, lofts, email inboxes, and a solicitor's office, with no single record of what's where. This guide covers what counts as important, the realistic storage options, and how to keep things both safe and findable." },
+          { type: 'intro', text: "Most families don't struggle because the documents don't exist, they struggle because no one can find them. Important paperwork ends up spread across drawers, lofts, email inboxes, and a solicitor's office, with no single record of what's where. This guide covers what counts as important, the realistic storage options, and how to keep things both safe and findable." },
           { type: 'toc', items: ['Why "findable" matters as much as "safe"', 'What counts as an important document', 'Your storage options, with pros and cons', 'The access problem', 'A simple approach that works', 'What not to do'] },
           { type: 'heading', text: 'Why "findable" matters as much as "safe"' },
-          { type: 'text', text: "There's a tension at the heart of document storage: the safer something is, the harder it usually is for anyone else to reach. A will locked in a safe whose combination died with you is no use to your executor. The goal isn't just to protect documents — it's to make sure the right person can find and access them at the right time." },
+          { type: 'text', text: "There's a tension at the heart of document storage: the safer something is, the harder it usually is for anyone else to reach. A will locked in a safe whose combination died with you is no use to your executor. The goal isn't just to protect documents, it's to make sure the right person can find and access them at the right time." },
           { type: 'heading', text: 'What counts as an important document' },
           { type: 'text', text: "It helps to know what you're actually organising. Most households have more than they think." },
           { type: 'checklist', heading: 'Legal and identity', items: ['Will and any letter of wishes', 'Lasting power of attorney documents', 'Birth, marriage, and (if relevant) divorce certificates', 'Passport and driving licence details'] },
@@ -1543,20 +1543,20 @@ const sections = {
           { type: 'subheading', text: 'At home' },
           { type: 'text', text: "Convenient and free, but vulnerable to fire, flood, loss, and the simple problem that no one else knows where to look. A fireproof, water-resistant document box is a sensible minimum if you keep originals at home." },
           { type: 'subheading', text: 'With a solicitor or will-storage service' },
-          { type: 'text', text: "Many solicitors store original wills, often free of charge. It's secure, but your family needs to know which firm holds it — wills are sometimes lost simply because no one knew where to ask." },
+          { type: 'text', text: "Many solicitors store original wills, often free of charge. It's secure, but your family needs to know which firm holds it, wills are sometimes lost simply because no one knew where to ask." },
           { type: 'subheading', text: 'At the bank' },
           { type: 'text', text: "Some people keep originals in a safe deposit arrangement. The catch is access: a bank may restrict access on death until probate, which can delay the very people who need the will to apply for probate in the first place." },
           { type: 'subheading', text: 'A secure digital vault' },
-          { type: 'text', text: "Storing copies and a clear index digitally means your trusted people can find what exists and where the originals are kept, from anywhere. The important thing is that it's encrypted and that access is controlled — shared only with the people you choose." },
+          { type: 'text', text: "Storing copies and a clear index digitally means your trusted people can find what exists and where the originals are kept, from anywhere. The important thing is that it's encrypted and that access is controlled, shared only with the people you choose." },
           { type: 'heading', text: 'The access problem' },
-          { type: 'text', text: "However you store things, two questions decide whether your system actually works: does the right person know it exists, and can they reach it when they need to — not before. Storing everything with a trusted person now may be more access than you want today; storing it where only you can reach it means no one can act if something happens to you. The answer is controlled access that opens at the right time." },
+          { type: 'text', text: "However you store things, two questions decide whether your system actually works: does the right person know it exists, and can they reach it when they need to, not before. Storing everything with a trusted person now may be more access than you want today; storing it where only you can reach it means no one can act if something happens to you. The answer is controlled access that opens at the right time." },
           { type: 'heading', text: 'A simple approach that works' },
-          { type: 'list', items: ['Keep originals of legal documents (will, LPA, deeds) in one safe, known place — and tell your executor where', 'Keep a single index that lists what you have and where each item is stored', 'Store account and document details securely, and never leave passwords on paper lying around', 'Name the people who should have access, and make sure they know how to get it', 'Review it once a year and after any major change'] },
-          { type: 'note', text: "The single most useful thing you can do is write down where everything is — one index that points to the rest. It's the difference between your family finding things in an afternoon and spending months piecing your life together." },
+          { type: 'list', items: ['Keep originals of legal documents (will, LPA, deeds) in one safe, known place, and tell your executor where', 'Keep a single index that lists what you have and where each item is stored', 'Store account and document details securely, and never leave passwords on paper lying around', 'Name the people who should have access, and make sure they know how to get it', 'Review it once a year and after any major change'] },
+          { type: 'note', text: "The single most useful thing you can do is write down where everything is, one index that points to the rest. It's the difference between your family finding things in an afternoon and spending months piecing your life together." },
           { type: 'heading', text: 'What not to do' },
           { type: 'list', items: ['Don\'t rely on memory or assume "they\'ll work it out"', 'Don\'t store the only copy somewhere no one else can access', 'Don\'t write full passwords or PINs on documents', 'Don\'t set it up once and never update it', 'Don\'t keep your will so secure that your executor can\'t reach it'] },
           { type: 'related', heading: 'Related reading', links: [{ label: 'How to organise your estate in the UK', href: '/resources/blog/how-to-organise-your-estate-uk' }, { label: "Building your family's financial inventory", href: '/resources/blog/building-financial-inventory' }, { label: 'How to write a letter of wishes (UK)', href: '/resources/blog/how-to-write-a-letter-of-wishes' }] },
-          { type: 'cta', text: 'Everstead is one secure place to keep your documents and account details, with a clear index your trusted people can reach when it matters — shared only with the people you choose.' },
+          { type: 'cta', text: 'Everstead is one secure place to keep your documents and account details, with a clear index your trusted people can reach when it matters, shared only with the people you choose.' },
         ],
       },
 
@@ -1573,37 +1573,37 @@ const sections = {
         date: 'August 2026',
         tag: 'Succession',
         lang: 'fr',
-        desc: "L'assurance-vie obéit à des règles propres, en marge de la succession : clause bénéficiaire, contrats oubliés, recherche AGIRA. Ce que vos proches doivent savoir — et comment leur simplifier la tâche dès aujourd'hui.",
+        desc: "L'assurance-vie obéit à des règles propres, en marge de la succession : clause bénéficiaire, contrats oubliés, recherche AGIRA. Ce que vos proches doivent savoir, et comment leur simplifier la tâche dès aujourd'hui.",
         readTime: '9 min de lecture',
         body: [
-          { type: 'intro', text: "L'assurance-vie est l'un des placements préférés des Français — et elle est souvent choisie précisément pour préparer une transmission. Pourtant, son fonctionnement au moment du décès reste mal compris : le capital ne suit pas le même chemin que le reste du patrimoine, tout repose sur une clause parfois rédigée des années plus tôt, et des contrats restent chaque année sans bénéficiaire simplement parce que personne ne savait qu'ils existaient. Cet article explique, en termes simples, ce que vos bénéficiaires doivent savoir — et ce que vous pouvez faire dès aujourd'hui pour leur simplifier la tâche." },
+          { type: 'intro', text: "L'assurance-vie est l'un des placements préférés des Français, et elle est souvent choisie précisément pour préparer une transmission. Pourtant, son fonctionnement au moment du décès reste mal compris : le capital ne suit pas le même chemin que le reste du patrimoine, tout repose sur une clause parfois rédigée des années plus tôt, et des contrats restent chaque année sans bénéficiaire simplement parce que personne ne savait qu'ils existaient. Cet article explique, en termes simples, ce que vos bénéficiaires doivent savoir, et ce que vous pouvez faire dès aujourd'hui pour leur simplifier la tâche." },
           { type: 'toc', items: ["Pourquoi l'assurance-vie est « hors succession »", 'La clause bénéficiaire, pièce maîtresse du contrat', "Ce qui se passe au décès de l'assuré", 'Pourquoi des contrats se perdent', 'La recherche AGIRA, pour retrouver un contrat', 'Comment simplifier la tâche de vos proches dès maintenant'] },
           { type: 'heading', text: "Pourquoi l'assurance-vie est « hors succession »" },
           { type: 'text', text: "Lorsqu'un contrat d'assurance-vie désigne un ou plusieurs bénéficiaires, le capital qui leur est versé au décès ne fait, en principe, pas partie de la succession. Il n'est pas réparti par le notaire avec le reste du patrimoine : c'est l'assureur qui le verse directement aux personnes désignées dans la clause bénéficiaire. C'est ce que résume l'expression « hors succession »." },
-          { type: 'text', text: "Cette mécanique a des conséquences très concrètes pour vos proches. Le capital peut leur être versé sans attendre la fin du règlement de la succession, selon des règles de taxation qui lui sont propres — souvent plus favorables que les droits de succession classiques, mais qui dépendent notamment de la date d'ouverture du contrat, de la date des versements et de l'âge auquel ils ont été effectués." },
-          { type: 'note', text: "Le principe « hors succession » connaît des limites — par exemple lorsque les primes versées apparaissent manifestement exagérées par rapport au patrimoine du souscripteur. Et la fiscalité exacte dépend de votre situation : pour des montants importants, faites le point avec votre assureur et votre notaire plutôt que de vous fier à des chiffres trouvés en ligne." },
+          { type: 'text', text: "Cette mécanique a des conséquences très concrètes pour vos proches. Le capital peut leur être versé sans attendre la fin du règlement de la succession, selon des règles de taxation qui lui sont propres, souvent plus favorables que les droits de succession classiques, mais qui dépendent notamment de la date d'ouverture du contrat, de la date des versements et de l'âge auquel ils ont été effectués." },
+          { type: 'note', text: "Le principe « hors succession » connaît des limites, par exemple lorsque les primes versées apparaissent manifestement exagérées par rapport au patrimoine du souscripteur. Et la fiscalité exacte dépend de votre situation : pour des montants importants, faites le point avec votre assureur et votre notaire plutôt que de vous fier à des chiffres trouvés en ligne." },
           { type: 'heading', text: 'La clause bénéficiaire, pièce maîtresse du contrat' },
-          { type: 'text', text: "Tout repose sur quelques lignes : la clause bénéficiaire, qui désigne la ou les personnes qui recevront le capital. Beaucoup de contrats utilisent une clause type — « mon conjoint, à défaut mes enfants nés ou à naître, à défaut mes héritiers » — qui convient à de nombreuses situations. Mais elle peut aussi être entièrement personnalisée : désigner une personne précise, répartir le capital entre plusieurs bénéficiaires, prévoir des bénéficiaires de second rang." },
-          { type: 'text', text: "Le vrai risque n'est pas d'avoir une clause imparfaite : c'est d'avoir une clause qui ne correspond plus à votre vie. Un divorce, un remariage, une naissance, un décès dans la famille — et la personne désignée il y a quinze ans n'est plus celle que vous choisiriez aujourd'hui. Une clause ambiguë ou obsolète peut retarder le versement, diriger le capital vers la mauvaise personne, ou créer des tensions durables entre vos proches." },
-          { type: 'list', heading: "Les réflexes d'une clause bénéficiaire bien tenue :", items: ['Désigner les bénéficiaires sans ambiguïté — de préférence avec leurs nom, prénom et date de naissance', "Prévoir des bénéficiaires de second rang (« à défaut… ») pour couvrir tous les cas", 'Relire la clause après chaque événement familial important', 'Vérifier la cohérence entre la clause, votre testament et vos autres contrats', "Demander conseil avant de faire accepter formellement le bénéfice à quelqu'un de votre vivant — une acceptation peut rendre la clause très difficile à modifier ensuite"] },
+          { type: 'text', text: "Tout repose sur quelques lignes : la clause bénéficiaire, qui désigne la ou les personnes qui recevront le capital. Beaucoup de contrats utilisent une clause type (« mon conjoint, à défaut mes enfants nés ou à naître, à défaut mes héritiers ») qui convient à de nombreuses situations. Mais elle peut aussi être entièrement personnalisée : désigner une personne précise, répartir le capital entre plusieurs bénéficiaires, prévoir des bénéficiaires de second rang." },
+          { type: 'text', text: "Le vrai risque n'est pas d'avoir une clause imparfaite : c'est d'avoir une clause qui ne correspond plus à votre vie. Un divorce, un remariage, une naissance, un décès dans la famille, et la personne désignée il y a quinze ans n'est plus celle que vous choisiriez aujourd'hui. Une clause ambiguë ou obsolète peut retarder le versement, diriger le capital vers la mauvaise personne, ou créer des tensions durables entre vos proches." },
+          { type: 'list', heading: "Les réflexes d'une clause bénéficiaire bien tenue :", items: ['Désigner les bénéficiaires sans ambiguïté, de préférence avec leurs nom, prénom et date de naissance', "Prévoir des bénéficiaires de second rang (« à défaut… ») pour couvrir tous les cas", 'Relire la clause après chaque événement familial important', 'Vérifier la cohérence entre la clause, votre testament et vos autres contrats', "Demander conseil avant de faire accepter formellement le bénéfice à quelqu'un de votre vivant, une acceptation peut rendre la clause très difficile à modifier ensuite"] },
           { type: 'heading', text: "Ce qui se passe au décès de l'assuré" },
-          { type: 'text', text: "Au décès, les bénéficiaires — ou le notaire chargé de la succession — informent l'assureur en lui adressant un acte de décès. L'assureur vérifie la clause, identifie les bénéficiaires, puis leur demande les pièces nécessaires au versement. Une fois le dossier complet, il doit verser le capital dans un délai encadré par la loi." },
+          { type: 'text', text: "Au décès, les bénéficiaires (ou le notaire chargé de la succession) informent l'assureur en lui adressant un acte de décès. L'assureur vérifie la clause, identifie les bénéficiaires, puis leur demande les pièces nécessaires au versement. Une fois le dossier complet, il doit verser le capital dans un délai encadré par la loi." },
           { type: 'list', heading: 'Les pièces généralement demandées :', items: ["Un acte de décès de l'assuré", "Une pièce d'identité du bénéficiaire", "Un relevé d'identité bancaire pour recevoir le versement", "Le formulaire de règlement propre à chaque assureur", "Selon les cas, des éléments d'état civil ou des attestations fiscales"] },
           { type: 'text', text: "Encore faut-il que l'assureur apprenne le décès, et que les bénéficiaires sachent que le contrat existe. C'est là que les choses se compliquent." },
           { type: 'heading', text: 'Pourquoi des contrats se perdent' },
-          { type: 'text', text: "Un contrat d'assurance-vie peut avoir été souscrit il y a des décennies, auprès d'un assureur qui n'est pas la banque habituelle de la famille, et n'avoir jamais été mentionné à personne. Le bénéficiaire n'est pas automatiquement informé de sa désignation — c'est même fréquent : on désigne un proche sans le lui dire. Au décès, personne ne pense à chercher, les relevés annuels finissent à la corbeille avec le reste du courrier, et le contrat reste dans un tiroir." },
-          { type: 'text', text: "La loi a progressivement renforcé les obligations des assureurs : ils doivent s'informer du décès de leurs assurés et rechercher les bénéficiaires des contrats non réclamés. Mais cette recherche n'est possible que si la clause permet d'identifier les personnes. Les capitaux qui ne trouvent pas leur bénéficiaire finissent par être transférés à la Caisse des Dépôts, où ils peuvent être recherchés en ligne (service Ciclade) — avant d'être, au terme d'un long délai, définitivement acquis à l'État." },
+          { type: 'text', text: "Un contrat d'assurance-vie peut avoir été souscrit il y a des décennies, auprès d'un assureur qui n'est pas la banque habituelle de la famille, et n'avoir jamais été mentionné à personne. Le bénéficiaire n'est pas automatiquement informé de sa désignation, c'est même fréquent : on désigne un proche sans le lui dire. Au décès, personne ne pense à chercher, les relevés annuels finissent à la corbeille avec le reste du courrier, et le contrat reste dans un tiroir." },
+          { type: 'text', text: "La loi a progressivement renforcé les obligations des assureurs : ils doivent s'informer du décès de leurs assurés et rechercher les bénéficiaires des contrats non réclamés. Mais cette recherche n'est possible que si la clause permet d'identifier les personnes. Les capitaux qui ne trouvent pas leur bénéficiaire finissent par être transférés à la Caisse des Dépôts, où ils peuvent être recherchés en ligne (service Ciclade), avant d'être, au terme d'un long délai, définitivement acquis à l'État." },
           { type: 'heading', text: 'La recherche AGIRA, pour retrouver un contrat' },
-          { type: 'text', text: "Si vous pensez être bénéficiaire d'un contrat souscrit par une personne décédée, il existe une démarche simple et gratuite : la recherche AGIRA (Association pour la gestion des informations sur le risque en assurance). Vous adressez une demande — en ligne ou par courrier — précisant l'identité de la personne décédée, accompagnée d'un justificatif de son décès. L'AGIRA transmet alors la demande à l'ensemble des assureurs." },
+          { type: 'text', text: "Si vous pensez être bénéficiaire d'un contrat souscrit par une personne décédée, il existe une démarche simple et gratuite : la recherche AGIRA (Association pour la gestion des informations sur le risque en assurance). Vous adressez une demande (en ligne ou par courrier) précisant l'identité de la personne décédée, accompagnée d'un justificatif de son décès. L'AGIRA transmet alors la demande à l'ensemble des assureurs." },
           { type: 'list', heading: 'La démarche, en pratique :', items: ["Rassemblez l'acte de décès et les éléments d'identité du défunt", "Adressez votre demande à l'AGIRA, en ligne ou par courrier", 'La demande est relayée auprès de tous les assureurs', "Si un contrat vous désigne, l'assureur vous contacte directement pour organiser le versement", "L'absence de réponse signifie qu'aucun contrat connu ne vous désigne comme bénéficiaire"] },
-          { type: 'note', text: "La recherche AGIRA ne fonctionne qu'après un décès : elle ne permet pas de savoir si un proche vivant a souscrit un contrat. Et elle repose sur la possibilité d'identifier le bénéficiaire — une raison de plus de soigner la rédaction de votre clause." },
+          { type: 'note', text: "La recherche AGIRA ne fonctionne qu'après un décès : elle ne permet pas de savoir si un proche vivant a souscrit un contrat. Et elle repose sur la possibilité d'identifier le bénéficiaire, une raison de plus de soigner la rédaction de votre clause." },
           { type: 'heading', text: 'Comment simplifier la tâche de vos proches dès maintenant' },
           { type: 'text', text: "Tout ce qui précède se résume à une idée simple : un contrat d'assurance-vie ne protège vraiment vos proches que s'ils savent qu'il existe. La recherche AGIRA est un filet de sécurité précieux, mais elle suppose que quelqu'un pense à chercher. Un inventaire tenu à jour évite le problème à la racine." },
           { type: 'list', heading: "Un quart d'heure qui change tout :", items: ["Listez chaque contrat : nom de l'assureur, numéro de contrat, date de souscription", 'Notez où se trouvent les documents de chaque contrat', 'Relisez chaque clause bénéficiaire après un événement familial', 'Dites à vos personnes de confiance que ces contrats existent', 'Conservez le tout dans un endroit sûr, accessible au bon moment'] },
-          { type: 'text', text: "C'est exactement le rôle d'un coffre numérique sécurisé comme Everstead : recenser vos comptes et vos contrats, conserver vos documents et vos instructions, et donner à vos personnes de confiance un accès au bon moment. Vos bénéficiaires n'auront pas à deviner — ils sauront." },
+          { type: 'text', text: "C'est exactement le rôle d'un coffre numérique sécurisé comme Everstead : recenser vos comptes et vos contrats, conserver vos documents et vos instructions, et donner à vos personnes de confiance un accès au bon moment. Vos bénéficiaires n'auront pas à deviner, ils sauront." },
           { type: 'note', text: "Ces informations sont générales et ne constituent pas un conseil juridique. Chaque situation est particulière : pour la rédaction de votre clause bénéficiaire ou le règlement d'une succession, consultez votre notaire ou votre conseiller." },
           { type: 'related', heading: 'À lire aussi', links: [{ label: 'Testament et réserve héréditaire : ce que vous pouvez (vraiment) transmettre', href: '/resources/blog/testament-reserve-hereditaire' }, { label: 'Le mandat de protection future, expliqué simplement', href: '/resources/blog/mandat-protection-future' }] },
-          { type: 'cta', text: "Everstead réunit vos contrats, vos documents et vos personnes de confiance dans un coffre sécurisé — pour qu'aucun contrat d'assurance-vie ne reste jamais dans un tiroir." },
+          { type: 'cta', text: "Everstead réunit vos contrats, vos documents et vos personnes de confiance dans un coffre sécurisé, pour qu'aucun contrat d'assurance-vie ne reste jamais dans un tiroir." },
         ],
       },
       {
@@ -1612,33 +1612,33 @@ const sections = {
         date: 'August 2026',
         tag: 'Succession',
         lang: 'fr',
-        desc: "Testament olographe ou authentique, réserve héréditaire, quotité disponible, rôle du notaire : ce que le droit français vous laisse décider — et pourquoi un inventaire à jour rend votre testament réellement utile.",
+        desc: "Testament olographe ou authentique, réserve héréditaire, quotité disponible, rôle du notaire : ce que le droit français vous laisse décider, et pourquoi un inventaire à jour rend votre testament réellement utile.",
         readTime: '10 min de lecture',
         body: [
-          { type: 'intro', text: "En France, on ne transmet pas son patrimoine en toute liberté : la loi réserve une part de votre succession à vos enfants, et un testament ne peut disposer que du reste. Bien compris, ce cadre n'est pas une contrainte : il dessine précisément l'espace dont vous disposez pour organiser les choses à votre façon. Cet article explique les deux grandes formes de testament, le principe de la réserve héréditaire et de la quotité disponible, le rôle du notaire — et pourquoi un inventaire à jour est ce qui rend un testament réellement utile le jour venu." },
-          { type: 'toc', items: ["Ce qu'un testament peut faire — et ne peut pas faire", 'La réserve héréditaire, en deux mots', 'La quotité disponible : votre marge de manœuvre', 'Testament olographe : simple, mais fragile', 'Testament authentique : le formalisme qui sécurise', 'Le rôle du notaire', 'Pourquoi un inventaire à jour change tout'] },
-          { type: 'heading', text: "Ce qu'un testament peut faire — et ne peut pas faire" },
-          { type: 'text', text: "Un testament sert à organiser ce qui vous appartient : désigner qui recevra quoi, faire des legs à des proches ou à des associations, désigner un exécuteur testamentaire, exprimer des volontés personnelles. Sans testament, c'est la loi qui répartit votre patrimoine entre vos héritiers, selon un ordre et des proportions fixés d'avance — un résultat qui ne correspond pas toujours à ce que vous auriez souhaité." },
+          { type: 'intro', text: "En France, on ne transmet pas son patrimoine en toute liberté : la loi réserve une part de votre succession à vos enfants, et un testament ne peut disposer que du reste. Bien compris, ce cadre n'est pas une contrainte : il dessine précisément l'espace dont vous disposez pour organiser les choses à votre façon. Cet article explique les deux grandes formes de testament, le principe de la réserve héréditaire et de la quotité disponible, le rôle du notaire, et pourquoi un inventaire à jour est ce qui rend un testament réellement utile le jour venu." },
+          { type: 'toc', items: ["Ce qu'un testament peut faire, et ne peut pas faire", 'La réserve héréditaire, en deux mots', 'La quotité disponible : votre marge de manœuvre', 'Testament olographe : simple, mais fragile', 'Testament authentique : le formalisme qui sécurise', 'Le rôle du notaire', 'Pourquoi un inventaire à jour change tout'] },
+          { type: 'heading', text: "Ce qu'un testament peut faire, et ne peut pas faire" },
+          { type: 'text', text: "Un testament sert à organiser ce qui vous appartient : désigner qui recevra quoi, faire des legs à des proches ou à des associations, désigner un exécuteur testamentaire, exprimer des volontés personnelles. Sans testament, c'est la loi qui répartit votre patrimoine entre vos héritiers, selon un ordre et des proportions fixés d'avance, un résultat qui ne correspond pas toujours à ce que vous auriez souhaité." },
           { type: 'text', text: "Mais un testament ne peut pas tout. La limite centrale du droit français s'appelle la réserve héréditaire : une part de votre succession est protégée au profit de certains héritiers, et un testament ne peut pas, en principe, la leur retirer." },
           { type: 'heading', text: 'La réserve héréditaire, en deux mots' },
-          { type: 'text', text: "Vos enfants sont ce que le droit appelle des héritiers réservataires : la loi leur garantit une part de votre succession, quelle que soit la rédaction de votre testament. Vous pouvez répartir, avantager, organiser — mais pas déshériter un enfant de cette part réservée. La taille de la réserve dépend notamment du nombre d'enfants ; le calcul précis, qui tient compte de votre situation familiale et des donations déjà consenties, relève de votre notaire." },
-          { type: 'text', text: "En l'absence de descendants, le conjoint survivant bénéficie à son tour d'une protection. Et même en présence d'enfants, le conjoint dispose de droits propres, qui peuvent être élargis — dans les limites prévues par la loi — par des outils comme la donation entre époux. Là encore, c'est un sujet à construire avec votre notaire." },
-          { type: 'note', text: "Les fractions exactes de réserve et de quotité disponible dépendent de la composition de votre famille et de votre situation matrimoniale. Plutôt que d'appliquer un tableau trouvé en ligne, faites établir le calcul par votre notaire — c'est rapide, et c'est fiable." },
+          { type: 'text', text: "Vos enfants sont ce que le droit appelle des héritiers réservataires : la loi leur garantit une part de votre succession, quelle que soit la rédaction de votre testament. Vous pouvez répartir, avantager, organiser, mais pas déshériter un enfant de cette part réservée. La taille de la réserve dépend notamment du nombre d'enfants ; le calcul précis, qui tient compte de votre situation familiale et des donations déjà consenties, relève de votre notaire." },
+          { type: 'text', text: "En l'absence de descendants, le conjoint survivant bénéficie à son tour d'une protection. Et même en présence d'enfants, le conjoint dispose de droits propres, qui peuvent être élargis (dans les limites prévues par la loi) par des outils comme la donation entre époux. Là encore, c'est un sujet à construire avec votre notaire." },
+          { type: 'note', text: "Les fractions exactes de réserve et de quotité disponible dépendent de la composition de votre famille et de votre situation matrimoniale. Plutôt que d'appliquer un tableau trouvé en ligne, faites établir le calcul par votre notaire, c'est rapide, et c'est fiable." },
           { type: 'heading', text: 'La quotité disponible : votre marge de manœuvre' },
-          { type: 'text', text: "Ce qui n'est pas réservé s'appelle la quotité disponible : c'est la part de votre patrimoine dont vous pouvez disposer librement, par testament ou par donation. Avantager un enfant qui s'est occupé de vous, protéger davantage votre conjoint, gratifier un beau-fils ou une belle-fille que la loi ignore, soutenir une association — tout cela se joue dans la quotité disponible." },
-          { type: 'text', text: "Un point mérite une attention particulière : les donations que vous avez déjà consenties de votre vivant entrent dans le calcul au moment de la succession. C'est une raison de plus d'avoir une vision d'ensemble de ce que vous possédez et de ce que vous avez déjà transmis — et d'en garder une trace écrite." },
+          { type: 'text', text: "Ce qui n'est pas réservé s'appelle la quotité disponible : c'est la part de votre patrimoine dont vous pouvez disposer librement, par testament ou par donation. Avantager un enfant qui s'est occupé de vous, protéger davantage votre conjoint, gratifier un beau-fils ou une belle-fille que la loi ignore, soutenir une association, tout cela se joue dans la quotité disponible." },
+          { type: 'text', text: "Un point mérite une attention particulière : les donations que vous avez déjà consenties de votre vivant entrent dans le calcul au moment de la succession. C'est une raison de plus d'avoir une vision d'ensemble de ce que vous possédez et de ce que vous avez déjà transmis, et d'en garder une trace écrite." },
           { type: 'heading', text: 'Testament olographe : simple, mais fragile' },
           { type: 'text', text: "Le testament olographe est la forme la plus simple : un document écrit entièrement de votre main, daté et signé. Pas de passage obligé chez le notaire, aucun coût, et vous pouvez le refaire autant de fois que nécessaire. Cette simplicité explique qu'il soit, de loin, le plus répandu." },
-          { type: 'list', heading: 'Ses fragilités classiques :', items: ['Il peut être perdu, détruit ou tout simplement jamais retrouvé', "Une formulation ambiguë peut créer des désaccords d'interprétation entre héritiers", 'Un formalisme non respecté — texte tapé à la machine, absence de date ou de signature — peut le rendre nul', "Rédigé sans conseil, il peut contredire la réserve héréditaire ou d'autres dispositions déjà prises", "Il est plus exposé à la contestation qu'un acte reçu par un notaire"] },
-          { type: 'text', text: "La parade est simple : faire relire votre testament olographe par un notaire, puis le lui confier. Il peut alors être inscrit au fichier central des dispositions de dernières volontés, que les notaires consultent au moment de régler une succession — la garantie qu'il sera retrouvé." },
+          { type: 'list', heading: 'Ses fragilités classiques :', items: ['Il peut être perdu, détruit ou tout simplement jamais retrouvé', "Une formulation ambiguë peut créer des désaccords d'interprétation entre héritiers", 'Un formalisme non respecté (texte tapé à la machine, absence de date ou de signature) peut le rendre nul', "Rédigé sans conseil, il peut contredire la réserve héréditaire ou d'autres dispositions déjà prises", "Il est plus exposé à la contestation qu'un acte reçu par un notaire"] },
+          { type: 'text', text: "La parade est simple : faire relire votre testament olographe par un notaire, puis le lui confier. Il peut alors être inscrit au fichier central des dispositions de dernières volontés, que les notaires consultent au moment de régler une succession, la garantie qu'il sera retrouvé." },
           { type: 'heading', text: 'Testament authentique : le formalisme qui sécurise' },
-          { type: 'text', text: "Le testament authentique est reçu par un notaire, selon un formalisme précis qui fait intervenir des témoins ou un second notaire. Vous dictez vos volontés, le notaire les met en forme, l'acte est conservé à l'étude et enregistré. Ce formalisme a un coût — des frais réglementés, à demander à votre notaire — mais il apporte trois garanties : le testament ne peut pas se perdre, il est très difficile à contester, et vous bénéficiez du conseil du notaire au moment même où vous rédigez." },
+          { type: 'text', text: "Le testament authentique est reçu par un notaire, selon un formalisme précis qui fait intervenir des témoins ou un second notaire. Vous dictez vos volontés, le notaire les met en forme, l'acte est conservé à l'étude et enregistré. Ce formalisme a un coût (des frais réglementés, à demander à votre notaire) mais il apporte trois garanties : le testament ne peut pas se perdre, il est très difficile à contester, et vous bénéficiez du conseil du notaire au moment même où vous rédigez." },
           { type: 'text', text: "C'est la forme recommandée dès que la situation sort de l'ordinaire : famille recomposée, patrimoine complexe, volonté d'avantager fortement une personne, risque de mésentente entre héritiers, ou simple besoin d'être certain que vos volontés seront comprises comme vous les avez pensées." },
           { type: 'heading', text: 'Le rôle du notaire' },
-          { type: 'list', heading: 'Ce que le notaire apporte, concrètement :', items: ["Vous dire ce qui est possible — et ce qui ne l'est pas — avant que vous ne rédigiez", 'Vérifier la cohérence entre testament, donations, régime matrimonial et clauses bénéficiaires', "Rédiger ou conserver le testament, et l'inscrire au fichier central des dispositions de dernières volontés", 'Régler la succession le moment venu, en appliquant vos volontés dans le cadre de la loi'] },
-          { type: 'text', text: "Le notaire n'est pas réservé aux grands patrimoines. Une consultation suffit souvent à éviter les erreurs les plus coûteuses — un testament nul pour un défaut de forme, une clause qui contredit la réserve, une donation oubliée qui déséquilibre tout le reste." },
+          { type: 'list', heading: 'Ce que le notaire apporte, concrètement :', items: ["Vous dire ce qui est possible (et ce qui ne l'est pas) avant que vous ne rédigiez", 'Vérifier la cohérence entre testament, donations, régime matrimonial et clauses bénéficiaires', "Rédiger ou conserver le testament, et l'inscrire au fichier central des dispositions de dernières volontés", 'Régler la succession le moment venu, en appliquant vos volontés dans le cadre de la loi'] },
+          { type: 'text', text: "Le notaire n'est pas réservé aux grands patrimoines. Une consultation suffit souvent à éviter les erreurs les plus coûteuses, un testament nul pour un défaut de forme, une clause qui contredit la réserve, une donation oubliée qui déséquilibre tout le reste." },
           { type: 'heading', text: 'Pourquoi un inventaire à jour change tout' },
-          { type: 'text', text: "Un testament s'applique à un patrimoine réel : des comptes, des contrats, des biens, des dettes — et, de plus en plus, une vie numérique. Si vos proches et votre notaire ignorent ce que vous possédez, même le meilleur testament s'applique mal : des actifs oubliés, des démarches qui s'éternisent, des décisions prises à l'aveugle." },
+          { type: 'text', text: "Un testament s'applique à un patrimoine réel : des comptes, des contrats, des biens, des dettes, et, de plus en plus, une vie numérique. Si vos proches et votre notaire ignorent ce que vous possédez, même le meilleur testament s'applique mal : des actifs oubliés, des démarches qui s'éternisent, des décisions prises à l'aveugle." },
           { type: 'list', heading: "Ce qu'un inventaire utile contient :", items: ["Vos comptes bancaires et vos produits d'épargne", "Vos contrats d'assurance-vie et l'esprit de leur clause bénéficiaire", "Vos biens immobiliers et l'endroit où se trouvent les titres", 'Vos crédits et vos dettes en cours', 'Vos comptes et abonnements en ligne', "L'endroit où se trouvent votre testament et vos documents importants", 'Les personnes à prévenir : votre notaire, vos personnes de confiance'] },
           { type: 'text', text: "C'est précisément ce que permet Everstead : un coffre sécurisé où recenser vos comptes, conserver vos documents et vos instructions, et désigner les personnes de confiance qui y auront accès au bon moment. Votre testament dit ce que vous voulez ; votre coffre permet à vos proches de le mettre en œuvre sans rien chercher." },
           { type: 'note', text: "Ces informations sont générales et ne constituent pas un conseil juridique. La rédaction d'un testament et le calcul de la réserve héréditaire dépendent de votre situation précise : consultez votre notaire." },
@@ -1655,31 +1655,31 @@ const sections = {
         desc: "Désigner à l'avance qui veillera sur vous et votre patrimoine si vous ne le pouvez plus : ce que permet le mandat de protection future, ses deux formes, et comment le mettre en place sereinement.",
         readTime: '8 min de lecture',
         body: [
-          { type: 'intro', text: "Personne n'aime imaginer le jour où il ne pourra plus gérer ses affaires. C'est pourtant l'un des rares sujets où anticiper change tout : le droit français permet de choisir vous-même, à l'avance, la personne qui veillera sur vos intérêts si un accident ou la maladie vous en empêchait. Cet outil s'appelle le mandat de protection future. Cet article explique ce qu'il permet, quand il s'applique, la différence entre ses deux formes — et ce qui se passe si vous n'avez rien prévu." },
+          { type: 'intro', text: "Personne n'aime imaginer le jour où il ne pourra plus gérer ses affaires. C'est pourtant l'un des rares sujets où anticiper change tout : le droit français permet de choisir vous-même, à l'avance, la personne qui veillera sur vos intérêts si un accident ou la maladie vous en empêchait. Cet outil s'appelle le mandat de protection future. Cet article explique ce qu'il permet, quand il s'applique, la différence entre ses deux formes, et ce qui se passe si vous n'avez rien prévu." },
           { type: 'toc', items: ["Qu'est-ce que le mandat de protection future ?", 'Quand le mandat prend-il effet ?', 'Mandat notarié ou sous seing privé : deux formes, deux portées', "Et si vous n'avez rien prévu ? Tutelle, curatelle, habilitation familiale", 'Bien choisir son ou ses mandataires', 'Mettre en place son mandat, pas à pas'] },
           { type: 'heading', text: "Qu'est-ce que le mandat de protection future ?" },
-          { type: 'text', text: "Le mandat de protection future est un contrat par lequel vous — le mandant — désignez à l'avance une ou plusieurs personnes — les mandataires — chargées de veiller sur vos intérêts le jour où vous ne pourriez plus le faire vous-même. Il peut couvrir la protection de votre personne (votre santé, votre lieu de vie, vos habitudes), la gestion de votre patrimoine, ou les deux : c'est vous qui en définissez l'étendue." },
+          { type: 'text', text: "Le mandat de protection future est un contrat par lequel vous, le mandant, désignez à l'avance une ou plusieurs personnes, les mandataires, chargées de veiller sur vos intérêts le jour où vous ne pourriez plus le faire vous-même. Il peut couvrir la protection de votre personne (votre santé, votre lieu de vie, vos habitudes), la gestion de votre patrimoine, ou les deux : c'est vous qui en définissez l'étendue." },
           { type: 'text', text: "Tant que vous êtes en pleine possession de vos moyens, le mandat reste dormant : il ne vous retire aucun droit, ne donne aucun pouvoir à personne, et vous pouvez le modifier ou le révoquer. C'est une assurance, pas un renoncement. Il existe aussi une variante dite « pour autrui », qui permet à des parents d'organiser à l'avance la protection d'un enfant qui ne peut pas veiller seul sur ses intérêts." },
           { type: 'heading', text: 'Quand le mandat prend-il effet ?' },
-          { type: 'text', text: "Le mandat ne s'active pas sur simple décision de la famille. Il prend effet lorsque l'altération de vos facultés est constatée médicalement, par un certificat établi selon une procédure encadrée — le médecin doit figurer sur une liste dédiée — puis après une formalité de mise en œuvre auprès du tribunal. Ce garde-fou protège tout le monde : le mandat ne peut être activé ni trop tôt, ni sans contrôle." },
-          { type: 'text', text: "Une fois le mandat activé, le mandataire agit dans le cadre que vous avez fixé, avec l'obligation de rendre compte de sa gestion. Vos volontés écrites — là où vous souhaitez vivre, ce qui compte pour vous — s'imposent comme référence, au lieu d'être reconstituées de mémoire par des proches sous pression." },
+          { type: 'text', text: "Le mandat ne s'active pas sur simple décision de la famille. Il prend effet lorsque l'altération de vos facultés est constatée médicalement, par un certificat établi selon une procédure encadrée (le médecin doit figurer sur une liste dédiée) puis après une formalité de mise en œuvre auprès du tribunal. Ce garde-fou protège tout le monde : le mandat ne peut être activé ni trop tôt, ni sans contrôle." },
+          { type: 'text', text: "Une fois le mandat activé, le mandataire agit dans le cadre que vous avez fixé, avec l'obligation de rendre compte de sa gestion. Vos volontés écrites (là où vous souhaitez vivre, ce qui compte pour vous) s'imposent comme référence, au lieu d'être reconstituées de mémoire par des proches sous pression." },
           { type: 'heading', text: 'Mandat notarié ou sous seing privé : deux formes, deux portées' },
           { type: 'subheading', text: 'Le mandat notarié' },
-          { type: 'text', text: "Reçu par un notaire, le mandat notarié permet de confier au mandataire des pouvoirs étendus sur votre patrimoine — y compris, sous conditions et avec des garde-fous, certains actes importants comme la vente d'un bien. Le notaire vous conseille au moment de la rédaction, conserve l'acte, et joue ensuite un rôle de contrôle : le mandataire lui rend des comptes. C'est la forme adaptée dès que le patrimoine à gérer est significatif." },
+          { type: 'text', text: "Reçu par un notaire, le mandat notarié permet de confier au mandataire des pouvoirs étendus sur votre patrimoine, y compris, sous conditions et avec des garde-fous, certains actes importants comme la vente d'un bien. Le notaire vous conseille au moment de la rédaction, conserve l'acte, et joue ensuite un rôle de contrôle : le mandataire lui rend des comptes. C'est la forme adaptée dès que le patrimoine à gérer est significatif." },
           { type: 'subheading', text: 'Le mandat sous seing privé' },
-          { type: 'text', text: "Rédigé sans notaire — sur un modèle officiel ou avec l'aide d'un avocat — le mandat sous seing privé est plus simple à mettre en place, mais sa portée est plus limitée : il permet pour l'essentiel les actes de gestion courante. Pour les décisions les plus lourdes, une autorisation du juge reste nécessaire. Des formalités d'enregistrement s'appliquent par ailleurs : renseignez-vous au moment de la signature." },
+          { type: 'text', text: "Rédigé sans notaire (sur un modèle officiel ou avec l'aide d'un avocat) le mandat sous seing privé est plus simple à mettre en place, mais sa portée est plus limitée : il permet pour l'essentiel les actes de gestion courante. Pour les décisions les plus lourdes, une autorisation du juge reste nécessaire. Des formalités d'enregistrement s'appliquent par ailleurs : renseignez-vous au moment de la signature." },
           { type: 'note', text: "Le choix entre les deux formes dépend de votre patrimoine, de votre situation familiale et de l'étendue des pouvoirs que vous souhaitez confier. C'est exactement le type d'arbitrage qu'un échange avec votre notaire permet de trancher sereinement." },
           { type: 'heading', text: "Et si vous n'avez rien prévu ? Tutelle, curatelle, habilitation familiale" },
-          { type: 'text', text: "Sans mandat, si vous perdez la capacité de gérer vos affaires, vos proches devront demander au juge une mesure de protection judiciaire — habilitation familiale, curatelle ou tutelle, selon les situations. Ces mesures protègent réellement, et elles existent précisément pour cela. Mais elles ont un coût humain que l'on mesure mal tant qu'on n'y a pas été confronté." },
-          { type: 'list', heading: "Ce que change le fait d'avoir anticipé :", items: ["Avec un mandat, c'est vous qui choisissez la personne ; sans mandat, c'est le juge qui décide", "Avec un mandat, l'étendue des pouvoirs est celle que vous avez définie ; sans mandat, c'est le cadre légal qui s'impose", 'Avec un mandat, vos volontés personnelles — lieu de vie, habitudes, priorités — sont écrites noir sur blanc', 'Sans mandat, la procédure judiciaire prend du temps, pendant lequel la situation reste bloquée', "Sans mandat, des proches en désaccord peuvent s'opposer devant le juge — au pire moment"] },
+          { type: 'text', text: "Sans mandat, si vous perdez la capacité de gérer vos affaires, vos proches devront demander au juge une mesure de protection judiciaire, habilitation familiale, curatelle ou tutelle, selon les situations. Ces mesures protègent réellement, et elles existent précisément pour cela. Mais elles ont un coût humain que l'on mesure mal tant qu'on n'y a pas été confronté." },
+          { type: 'list', heading: "Ce que change le fait d'avoir anticipé :", items: ["Avec un mandat, c'est vous qui choisissez la personne ; sans mandat, c'est le juge qui décide", "Avec un mandat, l'étendue des pouvoirs est celle que vous avez définie ; sans mandat, c'est le cadre légal qui s'impose", 'Avec un mandat, vos volontés personnelles, lieu de vie, habitudes, priorités, sont écrites noir sur blanc', 'Sans mandat, la procédure judiciaire prend du temps, pendant lequel la situation reste bloquée', "Sans mandat, des proches en désaccord peuvent s'opposer devant le juge, au pire moment"] },
           { type: 'heading', text: 'Bien choisir son ou ses mandataires' },
-          { type: 'text', text: "Le mandataire aura, le jour venu, un vrai pouvoir sur votre vie et vos biens. Choisissez une personne de confiance absolue, suffisamment disponible et à l'aise avec la gestion — et surtout, parlez-lui-en avant : un mandataire qui découvre sa mission le jour où elle commence part avec un lourd handicap. Vous pouvez désigner plusieurs mandataires, répartir les rôles (la personne d'un côté, le patrimoine de l'autre), et prévoir un remplaçant si le premier ne peut plus assurer la mission." },
+          { type: 'text', text: "Le mandataire aura, le jour venu, un vrai pouvoir sur votre vie et vos biens. Choisissez une personne de confiance absolue, suffisamment disponible et à l'aise avec la gestion, et surtout, parlez-lui-en avant : un mandataire qui découvre sa mission le jour où elle commence part avec un lourd handicap. Vous pouvez désigner plusieurs mandataires, répartir les rôles (la personne d'un côté, le patrimoine de l'autre), et prévoir un remplaçant si le premier ne peut plus assurer la mission." },
           { type: 'heading', text: 'Mettre en place son mandat, pas à pas' },
-          { type: 'list', heading: "Les étapes, dans l'ordre :", items: ['Réfléchissez à ce que vous voulez protéger : votre personne, votre patrimoine, ou les deux', "Parlez-en à la personne pressentie — et à vos proches, pour que personne ne découvre le mandat le jour où il s'applique", 'Choisissez la forme : notariée pour des pouvoirs étendus, sous seing privé pour la gestion courante', 'Rédigez et signez le mandat en respectant le formalisme de la forme choisie', 'Conservez le document dans un endroit sûr et connu de vos personnes de confiance', 'Relisez-le régulièrement, et après chaque changement de situation'] },
-          { type: 'text', text: "Un dernier point, trop souvent oublié : un mandat introuvable ne protège personne. Vos proches doivent savoir qu'il existe, où il se trouve, et qui est le notaire qui l'a reçu le cas échéant. C'est le genre d'information qui a toute sa place dans un coffre sécurisé comme Everstead, aux côtés de vos comptes, de vos documents et de vos instructions — accessible à vos personnes de confiance au bon moment." },
+          { type: 'list', heading: "Les étapes, dans l'ordre :", items: ['Réfléchissez à ce que vous voulez protéger : votre personne, votre patrimoine, ou les deux', "Parlez-en à la personne pressentie, et à vos proches, pour que personne ne découvre le mandat le jour où il s'applique", 'Choisissez la forme : notariée pour des pouvoirs étendus, sous seing privé pour la gestion courante', 'Rédigez et signez le mandat en respectant le formalisme de la forme choisie', 'Conservez le document dans un endroit sûr et connu de vos personnes de confiance', 'Relisez-le régulièrement, et après chaque changement de situation'] },
+          { type: 'text', text: "Un dernier point, trop souvent oublié : un mandat introuvable ne protège personne. Vos proches doivent savoir qu'il existe, où il se trouve, et qui est le notaire qui l'a reçu le cas échéant. C'est le genre d'information qui a toute sa place dans un coffre sécurisé comme Everstead, aux côtés de vos comptes, de vos documents et de vos instructions, accessible à vos personnes de confiance au bon moment." },
           { type: 'note', text: "Ces informations sont générales et ne constituent pas un conseil juridique. Le choix de la forme du mandat et l'étendue des pouvoirs confiés méritent un échange avec votre notaire." },
           { type: 'related', heading: 'À lire aussi', links: [{ label: 'Assurance-vie et succession : ce que vos bénéficiaires doivent savoir', href: '/resources/blog/assurance-vie-succession' }, { label: 'Testament et réserve héréditaire : ce que vous pouvez (vraiment) transmettre', href: '/resources/blog/testament-reserve-hereditaire' }] },
-          { type: 'cta', text: "Un mandat n'est utile que s'il est retrouvé. Everstead conserve vos documents, vos instructions et vos personnes de confiance dans un coffre sécurisé — accessible au bon moment, et jamais perdu." },
+          { type: 'cta', text: "Un mandat n'est utile que s'il est retrouvé. Everstead conserve vos documents, vos instructions et vos personnes de confiance dans un coffre sécurisé, accessible au bon moment, et jamais perdu." },
         ],
       },
     ],
@@ -1700,7 +1700,7 @@ const sections = {
         body: [
           {
             type: 'intro',
-            text: "Digital estate planning is the process of organising, documenting, and providing access instructions for your online accounts, digital assets, and electronic records — so that when you die or become incapacitated, a trusted person can act on your behalf without being locked out or left guessing.",
+            text: "Digital estate planning is the process of organising, documenting, and providing access instructions for your online accounts, digital assets, and electronic records, so that when you die or become incapacitated, a trusted person can act on your behalf without being locked out or left guessing.",
           },
           {
             type: 'heading',
@@ -1718,15 +1718,15 @@ const sections = {
             type: 'list',
             heading: 'The major categories to address:',
             items: [
-              'Email accounts — primary and secondary (often the key to resetting everything else)',
-              'Cloud storage — Google Drive, iCloud, Dropbox, OneDrive',
-              'Social media — Facebook, Instagram, LinkedIn, X',
-              'Financial apps — investment platforms, banking apps, budgeting tools',
-              'Cryptocurrency — wallets, exchanges, hardware devices',
-              'Domain names and websites — especially for business owners',
-              'Digital purchases — ebooks, music, software licences',
-              'Subscription services — streaming, news, SaaS tools',
-              'Password managers — the master access point',
+              'Email accounts, primary and secondary (often the key to resetting everything else)',
+              'Cloud storage: Google Drive, iCloud, Dropbox, OneDrive',
+              'Social media: Facebook, Instagram, LinkedIn, X',
+              'Financial apps, investment platforms, banking apps, budgeting tools',
+              'Cryptocurrency, wallets, exchanges, hardware devices',
+              'Domain names and websites, especially for business owners',
+              'Digital purchases, ebooks, music, software licences',
+              'Subscription services, streaming, news, SaaS tools',
+              'Password managers, the master access point',
             ],
           },
           {
@@ -1755,7 +1755,7 @@ const sections = {
           },
           {
             type: 'text',
-            text: "Cryptocurrency is controlled by private keys. If your executor cannot access your wallet or recovery phrase, the funds are permanently inaccessible — there is no bank or authority to petition. Document your wallet type, exchange accounts, and recovery phrase storage location, and ensure at least one trusted person knows how to access it.",
+            text: "Cryptocurrency is controlled by private keys. If your executor cannot access your wallet or recovery phrase, the funds are permanently inaccessible, there is no bank or authority to petition. Document your wallet type, exchange accounts, and recovery phrase storage location, and ensure at least one trusted person knows how to access it.",
           },
           {
             type: 'heading',
@@ -1810,11 +1810,11 @@ const sections = {
             items: [
               'Contact the solicitor named in the will or engage a probate solicitor',
               'Apply for the Grant of Probate (or Letters of Administration if there is no will)',
-              'Notify HMRC of the death — and of your role as executor',
+              'Notify HMRC of the death, and of your role as executor',
               'Open an executor bank account for estate funds',
               'Begin cataloguing all assets: bank accounts, investments, property, personal effects',
               'Begin cataloguing all liabilities: mortgages, loans, credit cards, tax owed',
-              "Notify relevant institutions with a copy of the death certificate — bank, pension, insurer",
+              "Notify relevant institutions with a copy of the death certificate, bank, pension, insurer",
               'Cancel unnecessary subscriptions and direct debits',
             ],
           },
@@ -1827,7 +1827,7 @@ const sections = {
             items: [
               'Complete the inheritance tax return (IHT400 if applicable)',
               'Pay any inheritance tax due before probate can proceed',
-              'Await Grant of Probate — typically 8–12 weeks from application',
+              'Await Grant of Probate, typically 8-12 weeks from application',
               'Collect in all assets once probate is granted',
               'Sell property and investments as directed or needed',
               'Pay all outstanding debts and liabilities from estate funds',
@@ -1855,10 +1855,10 @@ const sections = {
           {
             type: 'list',
             items: [
-              'Distributing assets before paying debts — executors can be personally liable',
+              'Distributing assets before paying debts, executors can be personally liable',
               'Missing the inheritance tax payment deadline (6 months from end of month of death)',
               'Not notifying HMRC, leading to unexpected tax demands later',
-              'Failing to check for all assets — digital accounts, pension death benefits, joint accounts',
+              'Failing to check for all assets, digital accounts, pension death benefits, joint accounts',
               'Not keeping adequate records of decisions and payments made',
             ],
           },
@@ -1874,7 +1874,7 @@ const sections = {
         body: [
           {
             type: 'intro',
-            text: "An emergency vault is a designated, access-controlled summary of critical information that a trusted person can reach in an urgent situation — illness, incapacity, or death. It is different from your full estate plan: it is curated for speed and practicality.",
+            text: "An emergency vault is a designated, access-controlled summary of critical information that a trusted person can reach in an urgent situation, illness, incapacity, or death. It is different from your full estate plan: it is curated for speed and practicality.",
           },
           {
             type: 'heading',
@@ -1884,7 +1884,7 @@ const sections = {
             type: 'list',
             items: [
               'Primary bank account details (enough to manage immediate bills)',
-              'Insurance policy numbers — especially health, life, and home',
+              'Insurance policy numbers, especially health, life, and home',
               'Contact details for GP and any specialist consultants',
               'Next of kin contacts and their relationship',
               'Location of the will and key documents (physical or digital)',
@@ -1899,7 +1899,7 @@ const sections = {
           },
           {
             type: 'text',
-            text: "Limit emergency vault access to one or two people you trust completely — a spouse, an adult child, or a sibling. The point is not comprehensive disclosure; it is ensuring that at least one person can act immediately when needed, without having to search for information.",
+            text: "Limit emergency vault access to one or two people you trust completely, a spouse, an adult child, or a sibling. The point is not comprehensive disclosure; it is ensuring that at least one person can act immediately when needed, without having to search for information.",
           },
           {
             type: 'heading',
@@ -1919,7 +1919,7 @@ const sections = {
           },
           {
             type: 'text',
-            text: "Review the vault annually, and whenever contact details, insurance policies, or key accounts change. An outdated emergency vault is better than nothing — but a current one is what actually works under pressure.",
+            text: "Review the vault annually, and whenever contact details, insurance policies, or key accounts change. An outdated emergency vault is better than nothing, but a current one is what actually works under pressure.",
           },
           {
             type: 'heading',
@@ -1927,7 +1927,7 @@ const sections = {
           },
           {
             type: 'text',
-            text: "Think of your full estate plan as the complete picture — every account, document, instruction, and wish. The emergency vault is a curated subset: only what someone needs in the first 24–72 hours. It is meant to be instantly actionable, not comprehensive.",
+            text: "Think of your full estate plan as the complete picture, every account, document, instruction, and wish. The emergency vault is a curated subset: only what someone needs in the first 24-72 hours. It is meant to be instantly actionable, not comprehensive.",
           },
         ],
       },
@@ -1936,12 +1936,12 @@ const sections = {
         title: 'Financial accounts inventory: a starter framework',
         date: 'Updated 2026',
         tag: 'Organisation',
-        desc: "A categorised approach to documenting banking, investments, insurance, and subscriptions — everything you'd want someone to find.",
+        desc: "A categorised approach to documenting banking, investments, insurance, and subscriptions, everything you'd want someone to find.",
         readTime: '7 min read',
         body: [
           {
             type: 'intro',
-            text: "A financial inventory is not a will. It is not a legal document. It is a practical reference — a structured record that tells a trusted person what accounts exist, who holds them, and how to contact the right people. It is what executors desperately need and rarely have.",
+            text: "A financial inventory is not a will. It is not a legal document. It is a practical reference, a structured record that tells a trusted person what accounts exist, who holds them, and how to contact the right people. It is what executors desperately need and rarely have.",
           },
           {
             type: 'heading',
@@ -2016,7 +2016,7 @@ const sections = {
           },
           {
             type: 'text',
-            text: "Review once a year and after any significant financial change. You do not need to keep it up to the day — just roughly current. Even a two-year-old inventory is dramatically more useful than nothing.",
+            text: "Review once a year and after any significant financial change. You do not need to keep it up to the day, just roughly current. Even a two-year-old inventory is dramatically more useful than nothing.",
           },
         ],
       },
@@ -2033,12 +2033,12 @@ const sections = {
         title: 'Estate readiness checklist',
         date: 'Updated 2026',
         tag: 'Starter',
-        desc: 'A 40-item checklist covering accounts, documents, contacts, wishes, and sharing — the core of a complete estate plan.',
+        desc: 'A 40-item checklist covering accounts, documents, contacts, wishes, and sharing, the core of a complete estate plan.',
         readTime: '5 min read',
         body: [
           {
             type: 'intro',
-            text: "Use this checklist to assess and build your estate plan. You do not need to complete everything at once — work through it section by section. Even a partially completed plan is far more valuable than none.",
+            text: "Use this checklist to assess and build your estate plan. You do not need to complete everything at once, work through it section by section. Even a partially completed plan is far more valuable than none.",
           },
           {
             type: 'checklist',
@@ -2138,9 +2138,9 @@ const sections = {
             items: [
               'Obtain the medical certificate of cause of death',
               'Register the death (within 5 days in England & Wales)',
-              'Obtain 10–15 certified copies of the death certificate',
+              'Obtain 10-15 certified copies of the death certificate',
               'Locate the original will',
-              'Identify all named executors — confirm who is acting',
+              'Identify all named executors, confirm who is acting',
               'Notify immediate family and close friends',
               'Secure the deceased\'s home and property',
               'Cancel or pause any immediate services that need attention',
@@ -2152,7 +2152,7 @@ const sections = {
             items: [
               'Contact the nominated solicitor or engage a probate solicitor',
               'Notify the deceased\'s bank of the death (account may be frozen)',
-              'Notify pension provider(s) — death benefits may need to be claimed',
+              'Notify pension provider(s), death benefits may need to be claimed',
               'Notify life insurance provider(s)',
               'Arrange the funeral (can proceed before probate)',
               'Notify HMRC via the "Tell Us Once" service',
@@ -2192,12 +2192,12 @@ const sections = {
         title: 'Annual plan review checklist',
         date: 'Updated 2026',
         tag: 'Maintenance',
-        desc: 'A short checklist to run once a year — or after a major life event — to keep your plan current and complete.',
+        desc: 'A short checklist to run once a year (or after a major life event) to keep your plan current and complete.',
         readTime: '3 min read',
         body: [
           {
             type: 'intro',
-            text: "Your estate plan is not a one-time exercise. Life changes — accounts open and close, relationships shift, wishes evolve. A brief annual review keeps everything current and ensures your plan actually reflects your life as it is today.",
+            text: "Your estate plan is not a one-time exercise. Life changes, accounts open and close, relationships shift, wishes evolve. A brief annual review keeps everything current and ensures your plan actually reflects your life as it is today.",
           },
           {
             type: 'text',
@@ -2264,7 +2264,7 @@ const sections = {
         body: [
           {
             type: 'intro',
-            text: "Use this template to document your digital accounts. For each account, you are recording enough for a trusted person to identify what exists and take the right action — not storing passwords directly.",
+            text: "Use this template to document your digital accounts. For each account, you are recording enough for a trusted person to identify what exists and take the right action, not storing passwords directly.",
           },
           {
             type: 'checklist',
@@ -2343,7 +2343,7 @@ const sections = {
             items: [
               {
                 q: 'What is Everstead?',
-                a: 'Everstead is a private estate organisation platform. It helps you document your financial accounts, important documents, trusted contacts, final wishes, and instructions — all in one structured, access-controlled place. It is designed to be the practical reference that families and executors actually need.',
+                a: 'Everstead is a private estate organisation platform. It helps you document your financial accounts, important documents, trusted contacts, final wishes, and instructions, all in one structured, access-controlled place. It is designed to be the practical reference that families and executors actually need.',
               },
               {
                 q: 'Who is Everstead for?',
@@ -2351,11 +2351,11 @@ const sections = {
               },
               {
                 q: 'How is this different from a will?',
-                a: "A will is a legal document that handles the distribution of your estate after death. Everstead is the practical companion to a will — it records what accounts exist, where documents are, who to contact, and what your wishes are. Most of the practical work of an estate settlement has nothing to do with the will. Everstead fills that gap.",
+                a: "A will is a legal document that handles the distribution of your estate after death. Everstead is the practical companion to a will, it records what accounts exist, where documents are, who to contact, and what your wishes are. Most of the practical work of an estate settlement has nothing to do with the will. Everstead fills that gap.",
               },
               {
                 q: 'How is this different from a password manager?',
-                a: "A password manager stores credentials securely for your own daily use. Everstead is designed for someone else to use when you cannot — it is organised around estate categories (accounts, documents, people, wishes) and built for handover, not daily login. You do not need to store passwords; you need to store enough for someone to contact the right institutions.",
+                a: "A password manager stores credentials securely for your own daily use. Everstead is designed for someone else to use when you cannot, it is organised around estate categories (accounts, documents, people, wishes) and built for handover, not daily login. You do not need to store passwords; you need to store enough for someone to contact the right institutions.",
               },
               {
                 q: 'Is Everstead a legal service?',
@@ -2363,11 +2363,11 @@ const sections = {
               },
               {
                 q: 'How long does it take to set up?',
-                a: "Most people have a useful, functional plan within a few hours. You do not need to complete everything at once — start with accounts and documents, then add contacts and wishes over time. The readiness score in your dashboard shows your progress and highlights what is still missing.",
+                a: "Most people have a useful, functional plan within a few hours. You do not need to complete everything at once, start with accounts and documents, then add contacts and wishes over time. The readiness score in your dashboard shows your progress and highlights what is still missing.",
               },
               {
                 q: 'Can I start for free?',
-                a: "Yes. Every plan includes a 14-day free trial. A card is required to start, but you won't be charged until the trial ends — cancel before then and pay nothing. You have full access to all features on your chosen plan during the trial.",
+                a: "Yes. Every plan includes a 14-day free trial. A card is required to start, but you won't be charged until the trial ends, cancel before then and pay nothing. You have full access to all features on your chosen plan during the trial.",
               },
             ],
           },
@@ -2387,11 +2387,11 @@ const sections = {
             items: [
               {
                 q: 'How is my data encrypted?',
-                a: 'All data stored in Everstead is encrypted at rest using AES-256 encryption. All data transmitted to and from the platform is encrypted in transit using TLS. Encryption is applied at the storage layer — not just the connection layer.',
+                a: 'All data stored in Everstead is encrypted at rest using AES-256 encryption. All data transmitted to and from the platform is encrypted in transit using TLS. Encryption is applied at the storage layer, not just the connection layer.',
               },
               {
                 q: 'Who can access my plan?',
-                a: 'Only you and the people you explicitly invite with specific roles. Every section of your plan has access controls — you decide who sees what. People you designate as trusted contacts can only see the sections you have granted them access to. Everstead staff do not have access to the content of your plan.',
+                a: 'Only you and the people you explicitly invite with specific roles. Every section of your plan has access controls, you decide who sees what. People you designate as trusted contacts can only see the sections you have granted them access to. Everstead staff do not have access to the content of your plan.',
               },
               {
                 q: 'Can Everstead read my documents or account details?',
@@ -2427,11 +2427,11 @@ const sections = {
             items: [
               {
                 q: 'How does the free trial work?',
-                a: 'Every plan comes with a 14-day free trial. A card is required at signup, but you are not charged for 14 days — cancel any time before and pay nothing. At the end of the trial, your card on file is charged automatically. If the payment fails, your account moves to a read-only state.',
+                a: 'Every plan comes with a 14-day free trial. A card is required at signup, but you are not charged for 14 days, cancel any time before and pay nothing. At the end of the trial, your card on file is charged automatically. If the payment fails, your account moves to a read-only state.',
               },
               {
                 q: 'What are the plans and prices?',
-                a: 'Everstead is free forever, with no card required. Everstead+ is £9.99/month, or £7.99/month billed annually (£95.88/year) — billing annually saves 20%. Everstead Pro pricing is on application. All prices are in pounds sterling and include VAT where applicable.',
+                a: 'Everstead is free forever, with no card required. Everstead+ is £9.99/month, or £7.99/month billed annually (£95.88/year), billing annually saves 20%. Everstead Pro pricing is on application. All prices are in pounds sterling and include VAT where applicable.',
               },
               {
                 q: 'Can I switch plans?',
@@ -2465,13 +2465,13 @@ const sections = {
         desc: 'Answers to common questions about wills, trusts, executors, POA, and how Everstead fits in.',
         readTime: '6 min read',
         body: [
-          { type: 'intro', text: "Common questions about the basics of estate planning in the UK — what terms mean, what you need, and where Everstead fits into the picture." },
+          { type: 'intro', text: "Common questions about the basics of estate planning in the UK, what terms mean, what you need, and where Everstead fits into the picture." },
           {
             type: 'faq',
             items: [
               {
                 q: 'What is a will and do I need one?',
-                a: "A will is a legal document that specifies how you want your estate distributed after your death, who you appoint as executor, and (if you have children) your guardianship preferences. Without a will, your estate is distributed according to the rules of intestacy — which may not reflect your wishes. Most adults should have one. You should use a qualified solicitor or will-writing service.",
+                a: "A will is a legal document that specifies how you want your estate distributed after your death, who you appoint as executor, and (if you have children) your guardianship preferences. Without a will, your estate is distributed according to the rules of intestacy, which may not reflect your wishes. Most adults should have one. You should use a qualified solicitor or will-writing service.",
               },
               {
                 q: 'What is an executor?',
@@ -2479,15 +2479,15 @@ const sections = {
               },
               {
                 q: 'What is a Lasting Power of Attorney (LPA)?',
-                a: "An LPA is a legal document that gives someone you trust — your attorney — the authority to make decisions on your behalf if you lose mental capacity. There are two types: Property & Financial Affairs (managing your money and property) and Health & Welfare (making decisions about your care and medical treatment). Both require registration with the Office of the Public Guardian.",
+                a: "An LPA is a legal document that gives someone you trust (your attorney) the authority to make decisions on your behalf if you lose mental capacity. There are two types: Property & Financial Affairs (managing your money and property) and Health & Welfare (making decisions about your care and medical treatment). Both require registration with the Office of the Public Guardian.",
               },
               {
                 q: 'What is probate?',
-                a: "Probate is the legal process of administering a deceased person's estate. In England and Wales, executors apply to the Probate Registry for a Grant of Probate, which gives them legal authority to collect in assets and distribute the estate. The process typically takes 3–12 months. Estates under a certain threshold, or with only jointly held assets, may not require probate.",
+                a: "Probate is the legal process of administering a deceased person's estate. In England and Wales, executors apply to the Probate Registry for a Grant of Probate, which gives them legal authority to collect in assets and distribute the estate. The process typically takes 3-12 months. Estates under a certain threshold, or with only jointly held assets, may not require probate.",
               },
               {
                 q: 'What is inheritance tax (IHT)?',
-                a: "Inheritance tax is a tax on the estate of someone who has died. The current nil-rate band is £325,000 — estates above this threshold are taxed at 40% on the excess (with some exceptions and reliefs, including a residence nil-rate band for passing property to direct descendants). IHT must be paid before probate is granted.",
+                a: "Inheritance tax is a tax on the estate of someone who has died. The current nil-rate band is £325,000, estates above this threshold are taxed at 40% on the excess (with some exceptions and reliefs, including a residence nil-rate band for passing property to direct descendants). IHT must be paid before probate is granted.",
               },
               {
                 q: 'What is the difference between a will and a trust?',
@@ -2495,7 +2495,7 @@ const sections = {
               },
               {
                 q: "Where does Everstead fit into all of this?",
-                a: "Everstead complements your legal estate planning — it doesn't replace it. Once you have a will, LPA, and the right professional advice in place, Everstead is where you store the practical record: what accounts exist, where documents are held, who the contacts are, what your wishes are. It is the information your executor and family will actually need on the day.",
+                a: "Everstead complements your legal estate planning, it doesn't replace it. Once you have a will, LPA, and the right professional advice in place, Everstead is where you store the practical record: what accounts exist, where documents are held, who the contacts are, what your wishes are. It is the information your executor and family will actually need on the day.",
               },
             ],
           },
@@ -2519,7 +2519,7 @@ const tools = [
     title: 'What to do when someone dies',
     tag: 'AI guide',
     tagColor: 'bg-stone-100 text-stone-700 border-stone-200',
-    desc: 'A free, compassionate AI guide through the practical steps after a death in the UK — from the first hours to closing the estate. No sign-up needed.',
+    desc: 'A free, compassionate AI guide through the practical steps after a death in the UK, from the first hours to closing the estate. No sign-up needed.',
     cta: 'Start the guide',
     badge: 'Free · No login',
   },
@@ -2529,7 +2529,7 @@ const tools = [
     title: 'Estate Readiness Score',
     tag: 'Quiz',
     tagColor: 'bg-sage-50 text-sage-700 border-sage-200',
-    desc: 'Answer 5 questions and get a score out of 100 — plus a breakdown of exactly what you\'re missing and why it matters.',
+    desc: 'Answer 5 questions and get a score out of 100, plus a breakdown of exactly what you\'re missing and why it matters.',
     cta: 'Take the quiz',
     badge: null,
   },
@@ -2539,7 +2539,7 @@ const tools = [
     title: 'Executor Checklist',
     tag: 'Interactive',
     tagColor: 'bg-navy-50 text-navy-700 border-navy-200',
-    desc: 'A complete, interactive checklist for executors in England & Wales — from the first 72 hours to closing the estate. Printable.',
+    desc: 'A complete, interactive checklist for executors in England & Wales, from the first 72 hours to closing the estate. Printable.',
     cta: 'Open checklist',
     badge: 'Most linked',
   },
@@ -2549,7 +2549,7 @@ const tools = [
     title: 'Digital Estate Calculator',
     tag: 'Calculator',
     tagColor: 'bg-amber-50 text-amber-700 border-amber-200',
-    desc: 'Enter your accounts, pensions, property, and assets to get an estimated estate value — with an IHT threshold alert if you\'re over £325,000.',
+    desc: 'Enter your accounts, pensions, property, and assets to get an estimated estate value, with an IHT threshold alert if you\'re over £325,000.',
     cta: 'Calculate now',
     badge: null,
   },
@@ -2652,11 +2652,11 @@ function ArticleDetail({ sectionSlug, postSlug }) {
   return (
     <div className="bg-stone-50 pt-24">
       <Helmet>
-        <title>{`${title} — Everstead`}</title>
+        <title>{`${title} | Everstead`}</title>
         <meta name="description" content={desc} />
         <link rel="canonical" href={url} />
         <meta property="og:type" content="article" />
-        <meta property="og:title" content={`${title} — Everstead`} />
+        <meta property="og:title" content={`${title} | Everstead`} />
         <meta property="og:description" content={desc} />
         <meta property="og:url" content={url} />
         <meta property="og:image" content={ogImage} />
@@ -2878,10 +2878,10 @@ function ResourceSection({ slug }) {
   return (
     <div className="bg-stone-50 pt-24">
       <Helmet>
-        <title>{label} — Everstead</title>
+        <title>{label} | Everstead</title>
         <meta name="description" content={desc} />
         <link rel="canonical" href={`https://www.everstead.care${localePrefix}/resources/${slug}`} />
-        <meta property="og:title" content={`${label} — Everstead`} />
+        <meta property="og:title" content={`${label} | Everstead`} />
         <meta property="og:description" content={desc} />
         <meta property="og:url" content={`https://www.everstead.care${localePrefix}/resources/${slug}`} />
       </Helmet>

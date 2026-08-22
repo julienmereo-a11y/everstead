@@ -57,7 +57,7 @@ export default function ChooseAccount() {
                     onClick={e => e.stopPropagation()}
                     className="inline-block mt-1.5 text-xs font-medium text-amber-700 bg-amber-50 border border-amber-200 rounded px-1.5 py-0.5 hover:bg-amber-100 transition-colors"
                   >
-                    Trial ended — reactivate
+                    Trial ended, reactivate
                   </Link>
                 )}
               </div>

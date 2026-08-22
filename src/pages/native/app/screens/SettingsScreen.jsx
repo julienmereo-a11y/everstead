@@ -124,7 +124,7 @@ export default function SettingsScreen({ app }) {
     // Not granted and no iOS dialog appeared = either previously declined (fix in
     // iOS Settings) or the notification plugin isn't in this binary (needs a full
     // Xcode package resolve + clean build). Either way, tell the user something.
-    else app.say('Not enabled — check iOS Settings → Everstead → Notifications', 'error')
+    else app.say('Not enabled, check iOS Settings → Everstead → Notifications', 'error')
   }
 
   const saveDetails = async () => {
@@ -158,10 +158,10 @@ export default function SettingsScreen({ app }) {
 
   const referralLink = `https://www.everstead.care/get-started?ref=${profile?.referral_code || profile?.id || ''}`
   const copyReferral = () => {
-    if (!navigator.clipboard) { app.say('Could not copy — long-press the link instead.', 'error'); return }
+    if (!navigator.clipboard) { app.say('Could not copy, long-press the link instead.', 'error'); return }
     navigator.clipboard.writeText(referralLink)
       .then(() => { setCopied(true); setTimeout(() => setCopied(false), 1600) })
-      .catch(() => app.say('Could not copy — long-press the link instead.', 'error'))
+      .catch(() => app.say('Could not copy, long-press the link instead.', 'error'))
   }
 
   return (
@@ -249,8 +249,8 @@ export default function SettingsScreen({ app }) {
                 {notifGranted === true
                   ? 'Notifications are enabled'
                   : notifStatus === 'denied'
-                    ? 'Previously declined — iOS won’t re-ask. Turn them on in iOS Settings → Apps → Everstead → Notifications, then reopen the app.'
-                    : 'Not enabled — reminders and alerts won’t reach this phone.'}
+                    ? 'Previously declined, iOS won’t re-ask. Turn them on in iOS Settings → Apps → Everstead → Notifications, then reopen the app.'
+                    : 'Not enabled, reminders and alerts won’t reach this phone.'}
                 {notifStatus && notifGranted !== true && <span style={{ opacity: 0.6 }}> [{notifStatus}]</span>}
               </div>
             </div>
@@ -299,7 +299,7 @@ export default function SettingsScreen({ app }) {
         <div className="card-light" style={{ padding: 16, marginTop: 14, border: '1px solid #fecaca' }}>
           <div className="eyebrow" style={{ marginBottom: 10, color: '#b91c1c' }}>Delete account</div>
           <p className="rdet" style={{ margin: '0 0 8px', lineHeight: 1.55 }}>
-            This permanently deletes your Everstead account — your vault, documents,
+            This permanently deletes your Everstead account, your vault, documents,
             personal messages and trusted contacts. Your data is removed within 30 days.
             You can export a copy first from the website (everstead.care → Settings).
           </p>

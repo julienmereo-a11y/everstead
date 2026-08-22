@@ -1,12 +1,12 @@
 {
   "meta": {
-    "title": "Features — Everstead",
-    "description": "Explore everything Everstead offers — document scanning, AI-assisted instructions, personal messages, trusted contacts, and a readiness score to keep your plan on track."
+    "title": "Features | Everstead",
+    "description": "Explore everything Everstead offers, document scanning, AI-assisted instructions, personal messages, trusted contacts, and a readiness score to keep your plan on track."
   },
   "hero": {
     "eyebrow": "Features",
-    "title": "Everything your family needs to find — all in one place.",
-    "subtitle": "Everstead gives you a structured, secure, and complete picture of your estate — accounts, documents, instructions, and final wishes — organised and accessible to the right people when it matters most.",
+    "title": "Everything your family needs to find, all in one place.",
+    "subtitle": "Everstead gives you a structured, secure, and complete picture of your estate (accounts, documents, instructions, and final wishes) organised and accessible to the right people when it matters most.",
     "ctaPrimary": "Start Your Everstead",
     "ctaSecondary": "See how it works"
   },
@@ -23,28 +23,28 @@
     "core": {
       "eyebrow": "What's inside",
       "title": "Ten features. One complete plan.",
-      "subtitle": "Each feature is designed around the questions families actually ask after a loss — and the answers they struggle to find.",
+      "subtitle": "Each feature is designed around the questions families actually ask after a loss, and the answers they struggle to find.",
       "features": {
         "aboutMe": {
           "tag": "About Me",
           "title": "About Me",
-          "headline": "The story only you can tell — kept for the people you love.",
-          "body": "More than accounts and admin. The music you'd want played, a letter to your children, the life events that shaped you, a playlist that's unmistakably yours. It's the warm, human heart of your plan — written on your own terms and shared only with the people you choose, either now or when your plan is one day activated.",
+          "headline": "The story only you can tell, kept for the people you love.",
+          "body": "More than accounts and admin. The music you'd want played, a letter to your children, the life events that shaped you, a playlist that's unmistakably yours. It's the warm, human heart of your plan, written on your own terms and shared only with the people you choose, either now or when your plan is one day activated.",
           "bullets": [
             "Life events, passions, and personal reflections",
             "Letters and messages for the people you love",
             "A profile photo and a playlist that capture who you are",
-            "Shared only with chosen people — never with solicitors or advisers"
+            "Shared only with chosen people, never with solicitors or advisers"
           ]
         },
         "aiAssistant": {
           "tag": "AI Assistant",
           "title": "Your AI Assistant",
           "headline": "A private helper, for when admin feels like too much.",
-          "body": "If getting this sorted has ever felt overwhelming, you don't have to do it alone. Your AI Assistant is a calm, private helper inside your account — chat in plain English, or simply drop in a document and it will read it and suggest entries for you. It works one small step at a time, and nothing is ever saved until you review and confirm it. It can also answer practical questions about how Everstead works.",
+          "body": "If getting this sorted has ever felt overwhelming, you don't have to do it alone. Your AI Assistant is a calm, private helper inside your account, chat in plain English, or simply drop in a document and it will read it and suggest entries for you. It works one small step at a time, and nothing is ever saved until you review and confirm it. It can also answer practical questions about how Everstead works.",
           "bullets": [
-            "Chat, or drop in a document — it suggests entries for you to review",
-            "Nothing is saved until you confirm — it suggests, you decide",
+            "Chat, or drop in a document, it suggests entries for you to review",
+            "Nothing is saved until you confirm, it suggests, you decide",
             "Helps you begin even when the words, or the energy, don't come easily",
             "Private to your account; switch AI off any time in Settings"
           ]
@@ -53,7 +53,7 @@
           "tag": "Accounts",
           "title": "Account Inventory",
           "headline": "Every account, documented once and found instantly.",
-          "body": "Bank accounts, investments, pensions, ISAs, crypto wallets, insurance policies, utility providers, subscriptions — all structured, labelled, and searchable. Add institution names, account numbers, login hints, and contacts so nothing is buried or forgotten.",
+          "body": "Bank accounts, investments, pensions, ISAs, crypto wallets, insurance policies, utility providers, subscriptions, all structured, labelled, and searchable. Add institution names, account numbers, login hints, and contacts so nothing is buried or forgotten.",
           "bullets": [
             "Banking, investment, pension & insurance accounts",
             "Digital assets, crypto, and online accounts",
@@ -69,16 +69,16 @@
           "bullets": [
             "Wills, LPAs, deeds, insurance policies",
             "Encrypted at rest with AES-256",
-            "Role-based access — share only what is needed",
+            "Role-based access, share only what is needed",
             "Version history and file audit log"
           ],
-          "ai": "Upload a document — we extract the key details automatically. ✨"
+          "ai": "Upload a document, we extract the key details automatically. ✨"
         },
         "instructions": {
           "tag": "Instructions",
           "title": "Step-by-Step Instructions",
           "headline": "Written guidance exactly when it is needed most.",
-          "body": "Tell your family what to do, in what order, and who to call — in plain language. Cover the first 48 hours, estate administration, account closure, and anything personal. Your words, preserved and delivered with clarity.",
+          "body": "Tell your family what to do, in what order, and who to call, in plain language. Cover the first 48 hours, estate administration, account closure, and anything personal. Your words, preserved and delivered with clarity.",
           "bullets": [
             "First-steps guidance for the days after death",
             "Account closure and estate admin checklists",
@@ -90,8 +90,8 @@
         "people": {
           "tag": "People",
           "title": "Trusted People & Roles",
-          "headline": "The right people see the right information — nothing more.",
-          "body": "Assign roles like executor, spouse, child, solicitor, or financial adviser. Each role gets access only to what you've explicitly shared. You can adjust, revoke, or expand access at any time — staying in full control.",
+          "headline": "The right people see the right information, nothing more.",
+          "body": "Assign roles like executor, spouse, child, solicitor, or financial adviser. Each role gets access only to what you've explicitly shared. You can adjust, revoke, or expand access at any time, staying in full control.",
           "bullets": [
             "Named roles: executor, spouse, adviser, caregiver",
             "Granular per-section access control",
@@ -103,7 +103,7 @@
           "tag": "Access",
           "title": "Emergency Vault & Sharing",
           "headline": "Instant access when there is no time to spare.",
-          "body": "Set up your Emergency Vault to unlock automatically under specific conditions — or grant a trusted person a one-tap access request. Every access event is logged in a full audit trail so nothing happens without a record.",
+          "body": "Set up your Emergency Vault to unlock automatically under specific conditions, or grant a trusted person a one-tap access request. Every access event is logged in a full audit trail so nothing happens without a record.",
           "bullets": [
             "Emergency vault with controlled unlock conditions",
             "One-tap access request for trusted people",
@@ -128,12 +128,12 @@
           "tag": "Messages",
           "title": "Personal Messages",
           "headline": "Your words, delivered when it matters most.",
-          "body": "Write a personal note or record a video message for anyone in your plan — your spouse, children, solicitor, or a close friend. Each message is sealed, encrypted, and released only to the named recipient when your delegates access the plan. Say what you need to say, on your own terms.",
+          "body": "Write a personal note or record a video message for anyone in your plan, your spouse, children, solicitor, or a close friend. Each message is sealed, encrypted, and released only to the named recipient when your delegates access the plan. Say what you need to say, on your own terms.",
           "bullets": [
-            "Written notes for named individuals — personal and private",
+            "Written notes for named individuals, personal and private",
             "Video messages recorded and stored securely in-platform",
             "Released only to the intended recipient after the plan is activated",
-            "Separate messages per person — different words for different relationships"
+            "Separate messages per person, different words for different relationships"
           ],
           "ai": "Write it yourself or let us help you get started. ✨"
         },
@@ -141,7 +141,7 @@
           "tag": "Subscriptions",
           "title": "Subscription Tracker",
           "headline": "Stop paying for things that outlive the person who signed up.",
-          "body": "List every recurring charge — streaming services, software, memberships, gym contracts, magazines. Add amounts, renewal dates, and cancellation instructions. Executors can action each line without guesswork or surprise charges.",
+          "body": "List every recurring charge, streaming services, software, memberships, gym contracts, magazines. Add amounts, renewal dates, and cancellation instructions. Executors can action each line without guesswork or surprise charges.",
           "bullets": [
             "All recurring charges in one view",
             "Renewal dates and billing amounts",
@@ -153,7 +153,7 @@
           "tag": "Progress",
           "title": "Readiness Score",
           "headline": "Know exactly how complete your plan is.",
-          "body": "The readiness score tracks completeness across all sections — accounts, documents, instructions, trusted people, and final wishes. Smart prompts surface what's missing, so your plan stays current and nothing falls through the gaps.",
+          "body": "The readiness score tracks completeness across all sections, accounts, documents, instructions, trusted people, and final wishes. Smart prompts surface what's missing, so your plan stays current and nothing falls through the gaps.",
           "bullets": [
             "Completeness score across all plan sections",
             "Smart prompts for missing or outdated items",
@@ -167,14 +167,32 @@
     "security": {
       "eyebrow": "Security",
       "title": "Built for privacy, trust, and control.",
-      "subtitle": "Your data is never sold, never shared without permission, and always encrypted. We built Everstead for families — not advertisers.",
+      "subtitle": "Your data is never sold, never shared without permission, and always encrypted. We built Everstead for families, not advertisers.",
       "points": [
-        { "label": "AES-256 encrypted storage", "desc": "Military-grade encryption for all data, at rest and in transit." },
-        { "label": "Role-based access controls", "desc": "Each trusted person sees only their assigned sections." },
-        { "label": "Full audit log", "desc": "Every view, share, and change is permanently recorded." },
-        { "label": "Privacy-first by design", "desc": "No data selling, no advertising, no third-party access without consent." },
-        { "label": "Access notifications", "desc": "You are notified whenever a trusted person accesses your plan." },
-        { "label": "Secure backups", "desc": "Encrypted, redundant backups ensure your plan is never lost." }
+        {
+          "label": "AES-256 encrypted storage",
+          "desc": "Military-grade encryption for all data, at rest and in transit."
+        },
+        {
+          "label": "Role-based access controls",
+          "desc": "Each trusted person sees only their assigned sections."
+        },
+        {
+          "label": "Full audit log",
+          "desc": "Every view, share, and change is permanently recorded."
+        },
+        {
+          "label": "Privacy-first by design",
+          "desc": "No data selling, no advertising, no third-party access without consent."
+        },
+        {
+          "label": "Access notifications",
+          "desc": "You are notified whenever a trusted person accesses your plan."
+        },
+        {
+          "label": "Secure backups",
+          "desc": "Encrypted, redundant backups ensure your plan is never lost."
+        }
       ],
       "link": "Read our full security practices"
     },
@@ -182,10 +200,22 @@
       "eyebrow": "Who it's for",
       "title": "Everstead works for everyone in a family plan.",
       "items": [
-        { "title": "Families", "desc": "One place where every household member knows accounts, documents, and wishes are recorded — so no one is left guessing." },
-        { "title": "Executors", "desc": "A complete, structured guide to the estate — accounts, contacts, documents, and instructions — without weeks of searching." },
-        { "title": "Aging Adults", "desc": "Build a plan at your own pace, assign trusted people, and know that your wishes and affairs are properly documented." },
-        { "title": "Estate Advisers", "desc": "Offer clients a secure, organised estate record they can maintain themselves — and that dramatically reduces your administration burden." }
+        {
+          "title": "Families",
+          "desc": "One place where every household member knows accounts, documents, and wishes are recorded, so no one is left guessing."
+        },
+        {
+          "title": "Executors",
+          "desc": "A complete, structured guide to the estate (accounts, contacts, documents, and instructions) without weeks of searching."
+        },
+        {
+          "title": "Aging Adults",
+          "desc": "Build a plan at your own pace, assign trusted people, and know that your wishes and affairs are properly documented."
+        },
+        {
+          "title": "Estate Advisers",
+          "desc": "Offer clients a secure, organised estate record they can maintain themselves, and that dramatically reduces your administration burden."
+        }
       ]
     },
     "comparison": {
@@ -224,7 +254,7 @@
       "attention": "2 items need attention →",
       "eyebrow": "Readiness score",
       "title": "A clear measure of how prepared your family is.",
-      "body": "The readiness score tracks your plan across every section. Smart prompts tell you what's missing, outdated, or needs a second look — so you can always answer \"yes, everything is in order.\"",
+      "body": "The readiness score tracks your plan across every section. Smart prompts tell you what's missing, outdated, or needs a second look, so you can always answer \"yes, everything is in order.\"",
       "bullets": [
         "Tracks completeness across all sections",
         "Highlights missing or outdated items",
@@ -246,9 +276,21 @@
     "eyebrow": "Stories",
     "title": "What families say.",
     "items": [
-      { "quote": "My father passed suddenly. Everstead made an incredibly painful time so much more manageable. Everything was right there.", "name": "Margaret T.", "role": "Daughter & executor" },
-      { "quote": "As an estate solicitor, I now recommend this to every client. It dramatically reduces the back-and-forth during settlement.", "name": "David R.", "role": "Estate solicitor" },
-      { "quote": "We finally have peace of mind. Our kids will know exactly what to do and where to find everything.", "name": "James & Carol B.", "role": "Parents, married 34 years" }
+      {
+        "quote": "My father passed suddenly. Everstead made an incredibly painful time so much more manageable. Everything was right there.",
+        "name": "Margaret T.",
+        "role": "Daughter & executor"
+      },
+      {
+        "quote": "As an estate solicitor, I now recommend this to every client. It dramatically reduces the back-and-forth during settlement.",
+        "name": "David R.",
+        "role": "Estate solicitor"
+      },
+      {
+        "quote": "We finally have peace of mind. Our kids will know exactly what to do and where to find everything.",
+        "name": "James & Carol B.",
+        "role": "Parents, married 34 years"
+      }
     ]
   },
   "cta": {

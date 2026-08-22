@@ -19,7 +19,7 @@ export default function CookieBanner() {
   const [visible, setVisible] = useState(false)
 
   useEffect(() => {
-    if (hasStoredConsent()) return // already answered on this device — never show again
+    if (hasStoredConsent()) return // already answered on this device, never show again
 
     const check = () => {
       if (hasStoredConsent() || window.Cookiebot?.hasResponse) { setVisible(false); return }

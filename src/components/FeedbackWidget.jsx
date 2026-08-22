@@ -99,14 +99,14 @@ export default function FeedbackWidget({ profile }) {
                 </div>
                 <h3 className="font-display text-xl text-navy-950 mb-2">Thank you.</h3>
                 <p className="text-sm text-stone-600 leading-relaxed mb-5">
-                  Genuinely — every note from an early member shapes what we build next. I read all of these personally.
+                  Genuinely, every note from an early member shapes what we build next. I read all of these personally.
                 </p>
                 <button onClick={close} className="text-sm font-medium text-navy-800 hover:text-navy-950">Close</button>
               </div>
             ) : (
               <form onSubmit={submit}>
                 <h3 className="font-display text-xl text-navy-950 mb-1">Share your feedback</h3>
-                <p className="text-sm text-stone-500 mb-5">You're one of our first members — tell me what's working and what isn't. It goes straight to me.</p>
+                <p className="text-sm text-stone-500 mb-5">You're one of our first members, tell me what's working and what isn't. It goes straight to me.</p>
 
                 {/* Rating */}
                 <div className="flex items-center gap-1 mb-4">

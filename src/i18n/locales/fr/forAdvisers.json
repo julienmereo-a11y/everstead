@@ -1,14 +1,14 @@
 {
   "meta": {
-    "title": "Everstead pour les conseillers — L'organisation successorale pour vos clients",
-    "description": "Offrez à vos clients un espace successoral co-brandé qu'ils utiliseront vraiment. Everstead pour les conseillers comprend un portail client, un suivi de préparation et l'accès aux documents — conçu pour les conseillers financiers indépendants, les notaires et les gestionnaires de patrimoine.",
-    "ogTitle": "Everstead pour les conseillers — L'organisation successorale pour vos clients",
+    "title": "Everstead pour les conseillers | L'organisation successorale pour vos clients",
+    "description": "Offrez à vos clients un espace successoral co-brandé qu'ils utiliseront vraiment. Everstead pour les conseillers comprend un portail client, un suivi de préparation et l'accès aux documents, conçu pour les conseillers financiers indépendants, les notaires et les gestionnaires de patrimoine.",
+    "ogTitle": "Everstead pour les conseillers | L'organisation successorale pour vos clients",
     "ogDescription": "Offrez à vos clients un espace successoral co-brandé qu'ils utiliseront vraiment. Everstead pour les conseillers comprend un portail client, un suivi de préparation et l'accès aux documents."
   },
   "hero": {
     "eyebrow": "Pour les conseillers",
     "title": "Vos clients ont besoin d'une succession organisée. Nous les aidons à la construire.",
-    "subtitle": "Everstead offre aux conseillers un espace client co-brandé — avec suivi de préparation, accès aux documents et un portail que vos clients ouvrent entre chaque rendez-vous.",
+    "subtitle": "Everstead offre aux conseillers un espace client co-brandé, avec suivi de préparation, accès aux documents et un portail que vos clients ouvrent entre chaque rendez-vous.",
     "bookDemo": "Réserver une démo",
     "seeHow": "Voir comment ça marche"
   },
@@ -21,7 +21,7 @@
   ],
   "problem": {
     "eyebrow": "Le problème",
-    "title": "La plupart des clients arrivent en rendez-vous mal préparés — et vous le savez tous les deux.",
+    "title": "La plupart des clients arrivent en rendez-vous mal préparés, et vous le savez tous les deux.",
     "p1": "Ils ne retrouvent pas le relevé de retraite de 2019. Ils n'ont pas mis à jour leur LPA depuis leur divorce. Leurs comptes numériques sont éparpillés entre six adresses e-mail différentes, et leur conjoint ne connaît aucun des mots de passe.",
     "p2": "Résultat : la première heure de chaque bilan est consacrée à l'administratif, pas au conseil. Et quand le pire arrive, l'exécuteur testamentaire passe des mois à courir après des informations qui auraient dû être organisées des années plus tôt.",
     "tabIfa": "Pour les conseillers financiers",
@@ -51,19 +51,19 @@
       },
       {
         "title": "Un portail client co-brandé",
-        "desc": "Le nom et l'identité visuelle de votre cabinet apparaissent dans l'espace du client. À chaque connexion, il voit votre relation — pas un outil tiers."
+        "desc": "Le nom et l'identité visuelle de votre cabinet apparaissent dans l'espace du client. À chaque connexion, il voit votre relation, pas un outil tiers."
       },
       {
         "title": "Suivez la préparation sur tout votre portefeuille",
-        "desc": "Voyez quels clients ont complété leur plan successoral, qui a encore des lacunes et où se situent les plus grands risques — pour tous vos clients, dans un seul espace de travail."
+        "desc": "Voyez quels clients ont complété leur plan successoral, qui a encore des lacunes et où se situent les plus grands risques, pour tous vos clients, dans un seul espace de travail."
       },
       {
         "title": "Votre responsabilité, protégée",
-        "desc": "Everstead est un outil d'organisation et d'accès — il ne donne aucun conseil financier, juridique ou fiscal. Son périmètre est clairement défini dans ses conditions d'utilisation. Le recommander à vos clients ne crée aucune responsabilité professionnelle pour votre cabinet."
+        "desc": "Everstead est un outil d'organisation et d'accès, il ne donne aucun conseil financier, juridique ou fiscal. Son périmètre est clairement défini dans ses conditions d'utilisation. Le recommander à vos clients ne crée aucune responsabilité professionnelle pour votre cabinet."
       },
       {
         "title": "Une visibilité sur les documents, clairement encadrée",
-        "desc": "Vos clients choisissent ce qu'ils partagent avec vous. Vous pouvez consulter les documents téléversés, les registres de comptes et les instructions — uniquement ce à quoi ils vous ont explicitement donné accès."
+        "desc": "Vos clients choisissent ce qu'ils partagent avec vous. Vous pouvez consulter les documents téléversés, les registres de comptes et les instructions, uniquement ce à quoi ils vous ont explicitement donné accès."
       },
       {
         "title": "Un traitement des données conforme",
@@ -72,7 +72,7 @@
     ],
     "ongoing": {
       "title": "Continu, pas ponctuel",
-      "desc": "L'organisation successorale ne tient pas en un seul rendez-vous — c'est un travail continu. Everstead garde vos clients engagés entre les bilans, avec des rappels intelligents qui signalent changements et lacunes."
+      "desc": "L'organisation successorale ne tient pas en un seul rendez-vous, c'est un travail continu. Everstead garde vos clients engagés entre les bilans, avec des rappels intelligents qui signalent changements et lacunes."
     }
   },
   "steps": {
@@ -93,7 +93,7 @@
       },
       {
         "title": "Gérez tout depuis un seul endroit",
-        "desc": "Consultez le score de préparation de chaque client, accédez aux documents partagés et suivez la progression — le tout depuis votre tableau de bord conseiller."
+        "desc": "Consultez le score de préparation de chaque client, accédez aux documents partagés et suivez la progression, le tout depuis votre tableau de bord conseiller."
       }
     ]
   },
@@ -111,7 +111,7 @@
       },
       {
         "title": "Experts-comptables et conseillers fiscaux",
-        "desc": "Aidez vos clients à suivre actifs, abonnements et comptes au même endroit. Une image plus nette en fin d'exercice — et bien moins de surprises."
+        "desc": "Aidez vos clients à suivre actifs, abonnements et comptes au même endroit. Une image plus nette en fin d'exercice, et bien moins de surprises."
       },
       {
         "title": "Gestionnaires de patrimoine",
@@ -122,14 +122,14 @@
   "resources": {
     "eyebrow": "Ressources conseillers",
     "title": "Du contenu concret, écrit pour les praticiens.",
-    "body": "Aucune inscription pour lire — donnez-nous simplement un e-mail et nous vous l'envoyons. Nous ne le transmettrons à personne, et vous pouvez vous désabonner à tout moment.",
+    "body": "Aucune inscription pour lire, donnez-nous simplement un e-mail et nous vous l'envoyons. Nous ne le transmettrons à personne, et vous pouvez vous désabonner à tout moment.",
     "emailTitle": "Où devons-nous l'envoyer ?",
     "emailSubtitle": "Un seul e-mail. Aucune inscription. Désabonnement à tout moment.",
     "items": [
       {
         "label": "Conversations",
         "title": "Le guide du conseiller pour les conversations sur l'héritage",
-        "summary": "Sept angles qu'utilisent conseillers financiers et notaires pour ouvrir la conversation successorale avec leurs clients — sans paraître morbide ni commercial. Tirés des cabinets pilotes.",
+        "summary": "Sept angles qu'utilisent conseillers financiers et notaires pour ouvrir la conversation successorale avec leurs clients, sans paraître morbide ni commercial. Tirés des cabinets pilotes.",
         "buttonLabel": "Recevoir le guide par e-mail"
       },
       {
@@ -141,7 +141,7 @@
       {
         "label": "Playbook",
         "title": "L'organisation successorale comme valeur ajoutée : guide de tarification et de positionnement",
-        "summary": "Comment les cabinets britanniques positionnent, tarifient (de 300 £ à 1 500 £) et délivrent l'organisation successorale comme un service structuré — y compris le calcul de fidélisation au moment de la transition générationnelle.",
+        "summary": "Comment les cabinets britanniques positionnent, tarifient (de 300 £ à 1 500 £) et délivrent l'organisation successorale comme un service structuré, y compris le calcul de fidélisation au moment de la transition générationnelle.",
         "buttonLabel": "Recevoir le playbook par e-mail"
       }
     ]
@@ -154,7 +154,7 @@
   "plan": {
     "eyebrow": "Accès anticipé",
     "title": "Rejoignez la première cohorte de conseillers partenaires.",
-    "body": "Nous accompagnons personnellement nos premiers cabinets partenaires — avec une ligne directe vers l'équipe fondatrice. Vous contribuez à façonner le produit. Nous nous occupons de tout le reste.",
+    "body": "Nous accompagnons personnellement nos premiers cabinets partenaires, avec une ligne directe vers l'équipe fondatrice. Vous contribuez à façonner le produit. Nous nous occupons de tout le reste.",
     "features": [
       "Espace de travail multi-clients",
       "Portail client co-brandé",
@@ -165,14 +165,14 @@
       "Aucun engagement pendant l'accès anticipé"
     ],
     "card": {
-      "title": "Les 50 premiers cabinets — intégrés personnellement",
+      "title": "Les 50 premiers cabinets, intégrés personnellement",
       "body": "Nous travaillons directement avec les 50 premiers cabinets de conseil. Vous bénéficiez d'une session d'intégration personnalisée, d'une ligne directe vers l'équipe fondatrice et de la possibilité de façonner le développement du portail conseiller.",
       "cta": "Réserver une démo de 20 minutes"
     }
   },
   "bottom": {
     "title": "Le canal conseiller construit autour de votre cabinet.",
-    "body": "Un logiciel de planification successorale pensé pour les conseillers, pas seulement pour les particuliers. Offrez à vos clients un espace où ils reviendront — et un outil qui rend votre cabinet plus efficace.",
+    "body": "Un logiciel de planification successorale pensé pour les conseillers, pas seulement pour les particuliers. Offrez à vos clients un espace où ils reviendront, et un outil qui rend votre cabinet plus efficace.",
     "bookDemo": "Réserver une démo",
     "contact": "Envoyez-nous un message"
   }

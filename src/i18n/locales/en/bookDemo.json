@@ -1,23 +1,23 @@
 {
   "meta": {
-    "title": "Book a 20-Minute Call — Everstead for Advisers",
-    "description": "We're onboarding our first adviser partners now. Book a 20-minute call with the founding team — no pitch, no contract, just a conversation about whether Everstead fits your practice.",
-    "ogTitle": "Book a Call — Everstead for Advisers",
+    "title": "Book a 20-Minute Call | Everstead for Advisers",
+    "description": "We're onboarding our first adviser partners now. Book a 20-minute call with the founding team, no pitch, no contract, just a conversation about whether Everstead fits your practice.",
+    "ogTitle": "Book a Call | Everstead for Advisers",
     "ogDescription": "We're working directly with our first cohort of IFAs, solicitors, and estate planners. Book a 20-minute call to see if Everstead fits your practice."
   },
   "hero": {
     "eyebrow": "Early access",
     "title": "We're onboarding our first adviser partners now.",
-    "subtitle": "Book a 20-minute call with the founding team. No pitch, no contract — just a conversation about whether Everstead fits your practice and your clients."
+    "subtitle": "Book a 20-minute call with the founding team. No pitch, no contract, just a conversation about whether Everstead fits your practice and your clients."
   },
   "coverage": {
     "title": "What we'll cover",
     "benefits": [
       "See the co-branded client vault and how clients experience it between meetings",
-      "Walk through the adviser dashboard — readiness scores, document access, and client progress at a glance",
+      "Walk through the adviser dashboard, readiness scores, document access, and client progress at a glance",
       "Review the trust and data-protection model used in client conversations",
       "Understand how Everstead fits alongside your existing tools without creating liability",
-      "Tell us what matters to your practice — we'll shape the session around you"
+      "Tell us what matters to your practice, we'll shape the session around you"
     ]
   },
   "infoCards": [
@@ -39,18 +39,33 @@
     }
   ],
   "form": {
-    "name": { "label": "Full name", "placeholder": "Your name" },
-    "email": { "label": "Work email", "placeholder": "you@firm.com" },
-    "firm": { "label": "Firm name", "placeholder": "Your firm" },
-    "role": { "label": "Role", "placeholder": "IFA, solicitor, financial planner…" },
-    "clients": { "label": "Approximate number of clients you advise", "placeholder": "e.g. 75" },
+    "name": {
+      "label": "Full name",
+      "placeholder": "Your name"
+    },
+    "email": {
+      "label": "Work email",
+      "placeholder": "you@firm.com"
+    },
+    "firm": {
+      "label": "Firm name",
+      "placeholder": "Your firm"
+    },
+    "role": {
+      "label": "Role",
+      "placeholder": "IFA, solicitor, financial planner…"
+    },
+    "clients": {
+      "label": "Approximate number of clients you advise",
+      "placeholder": "e.g. 75"
+    },
     "notes": {
       "label": "What matters most to you in this conversation?",
       "placeholder": "Data handling, probate workflows, client experience, liability…"
     },
     "submit": "Book a 20-minute call",
     "sending": "Sending…",
-    "disclaimer": "Everstead is an organisation and access tool — not a legal or financial service. No regulated advice is given on this call."
+    "disclaimer": "Everstead is an organisation and access tool, not a legal or financial service. No regulated advice is given on this call."
   },
   "sent": {
     "title": "We'll be in touch.",

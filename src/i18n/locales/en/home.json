@@ -1,10 +1,10 @@
 {
   "meta": {
-    "title": "Everstead — Your life, organised.",
-    "description": "Everstead helps UK families securely organise accounts, documents, instructions, and final wishes — with AI that helps you every step of the way. Start your free trial today.",
-    "ogTitle": "Everstead — Your life, organised.",
-    "ogDescription": "Everstead is the secure home for your accounts, documents, and important decisions — organised for you today, and ready for your family when it counts.",
-    "jsonLdDescription": "Secure personal vault for UK families. Organise accounts, documents, and important decisions — accessible today, and ready for your loved ones when it matters."
+    "title": "Everstead | Your life, organised.",
+    "description": "Everstead helps UK families securely organise accounts, documents, instructions, and final wishes, with AI that helps you every step of the way. Start your free trial today.",
+    "ogTitle": "Everstead | Your life, organised.",
+    "ogDescription": "Everstead is the secure home for your accounts, documents, and important decisions, organised for you today, and ready for your family when it counts.",
+    "jsonLdDescription": "Secure personal vault for UK families. Organise accounts, documents, and important decisions, accessible today, and ready for your loved ones when it matters."
   },
   "hero": {
     "eyebrow": "Organise your accounts, documents & final wishes",
@@ -16,7 +16,7 @@
     "ctaSecondary": "See how it works",
     "trustEncryption": "Bank-level AES-256 encryption",
     "trustUk": "🇬🇧 UK-based",
-    "trustpilotAria": "Rated Excellent on Trustpilot — read our reviews",
+    "trustpilotAria": "Rated Excellent on Trustpilot, read our reviews",
     "trustpilotPre": "Rated",
     "trustpilotExcellent": "Excellent",
     "trustpilotPost": "on Trustpilot",
@@ -24,10 +24,22 @@
     "mobilePhotoAlt": "A daughter and her father organising their family's plan together at home"
   },
   "trustBar": {
-    "setup": { "label": "15 minutes to set up", "sub": "Start with the essentials tonight" },
-    "onePlace": { "label": "Everything in one place", "sub": "Accounts, documents, final wishes" },
-    "share": { "label": "Share on your terms", "sub": "A partner, a child, a solicitor — you decide" },
-    "free": { "label": "Free to start", "sub": "No card, no commitment" }
+    "setup": {
+      "label": "15 minutes to set up",
+      "sub": "Start with the essentials tonight"
+    },
+    "onePlace": {
+      "label": "Everything in one place",
+      "sub": "Accounts, documents, final wishes"
+    },
+    "share": {
+      "label": "Share on your terms",
+      "sub": "A partner, a child, a solicitor, you decide"
+    },
+    "free": {
+      "label": "Free to start",
+      "sub": "No card, no commitment"
+    }
   },
   "why": {
     "eyebrow": "Why Everstead",
@@ -37,17 +49,17 @@
     "cards": {
       "accounts": {
         "title": "Accounts & assets",
-        "desc": "Every account, policy and subscription in one clear list — so nothing quietly slips through the cracks.",
+        "desc": "Every account, policy and subscription in one clear list, so nothing quietly slips through the cracks.",
         "cta": "See what you can add"
       },
       "documents": {
         "title": "Documents & wishes",
-        "desc": "Wills, deeds, letters and instructions — stored safely, easy to find, and impossible to misplace.",
+        "desc": "Wills, deeds, letters and instructions, stored safely, easy to find, and impossible to misplace.",
         "cta": "Keep documents safe"
       },
       "people": {
         "title": "People & access",
-        "desc": "Decide who sees what, and when. Your family is only ever a step away — never a guess.",
+        "desc": "Decide who sees what, and when. Your family is only ever a step away, never a guess.",
         "cta": "Choose who's trusted"
       }
     }
@@ -56,12 +68,12 @@
     "current": {
       "eyebrow": "Effortless to keep current",
       "title": "Up to date, without the chore.",
-      "desc": "Gentle reminders and one-tap updates mean your Everstead reflects your life as it is now — not as it was five years ago. The hard part stays done.",
+      "desc": "Gentle reminders and one-tap updates mean your Everstead reflects your life as it is now, not as it was five years ago. The hard part stays done.",
       "bullets": [
         "Quiet nudges only when something needs a look",
         "A clear sense of what's complete and what's left"
       ],
-      "imageAlt": "A quiet monthly summary in Everstead — home insurance renewed, a new ISA added, and a gentle nudge that a passport expires in six months"
+      "imageAlt": "A quiet monthly summary in Everstead, home insurance renewed, a new ISA added, and a gentle nudge that a passport expires in six months"
     },
     "share": {
       "eyebrow": "Yours to share, on your terms",
@@ -71,17 +83,17 @@
         "Per-item permissions, changeable any time",
         "Trusted contacts notified only when needed"
       ],
-      "imageAlt": "People & access in Everstead — a partner with full access, a daughter with a single document, and a solicitor sealed until needed"
+      "imageAlt": "People & access in Everstead, a partner with full access, a daughter with a single document, and a solicitor sealed until needed"
     }
   },
   "steps": {
     "eyebrow": "Getting started",
-    "title": "Easier than you'd think — and never for nothing.",
+    "title": "Easier than you'd think, and never for nothing.",
     "subtitle": "A few quiet minutes now means the people you love won't spend weeks piecing it together later.",
     "items": [
       {
         "title": "Bring it together",
-        "desc": "Add accounts, documents and wishes whenever it suits you — a few minutes at a time is plenty."
+        "desc": "Add accounts, documents and wishes whenever it suits you, a few minutes at a time is plenty."
       },
       {
         "title": "Keep it current",
@@ -96,13 +108,13 @@
   },
   "reassurance": {
     "title": "Planning ahead is an act of care.",
-    "desc": "Everstead turns confusion into clarity. It gives your loved ones practical direction when decisions are time-sensitive and emotions are running high — a gift they will genuinely appreciate.",
-    "imageAlt": "The Everstead app — your plan organised: accounts and assets, documents and wishes, and the people you trust"
+    "desc": "Everstead turns confusion into clarity. It gives your loved ones practical direction when decisions are time-sensitive and emotions are running high, a gift they will genuinely appreciate.",
+    "imageAlt": "The Everstead app, your plan organised: accounts and assets, documents and wishes, and the people you trust"
   },
   "security": {
     "eyebrow": "Security & privacy",
-    "title": "Built on the highest security standards — and controlled entirely by you.",
-    "desc": "Everstead runs on bank-grade AES-256 encryption and UK-hosted, UK GDPR-compliant infrastructure. Your information stays private by default — visible only to the people you choose, only the parts you choose, and only when you decide. It's your vault, and you decide who ever gets in.",
+    "title": "Built on the highest security standards, and controlled entirely by you.",
+    "desc": "Everstead runs on bank-grade AES-256 encryption and UK-hosted, UK GDPR-compliant infrastructure. Your information stays private by default, visible only to the people you choose, only the parts you choose, and only when you decide. It's your vault, and you decide who ever gets in.",
     "linkPractices": "Read our security practices",
     "linkPrivacy": "Our privacy policy",
     "features": [
@@ -132,7 +144,7 @@
         "name": "Everstead",
         "priceLabel": "Free",
         "priceSub": "forever · no card required",
-        "desc": "Get started and organise the essentials — at no cost, with no card.",
+        "desc": "Get started and organise the essentials, at no cost, with no card.",
         "features": [
           "Guided onboarding & About Me",
           "Your AI Assistant",
@@ -146,10 +158,10 @@
         "name": "Everstead+",
         "priceMonthly": "£{{price}}",
         "priceAnnual": "£{{price}}",
-        "desc": "For couples and families — two private vaults, one subscription. Organised together, private separately.",
+        "desc": "For couples and families, two private vaults, one subscription. Organised together, private separately.",
         "features": [
           "Everything in Free, uncapped",
-          "Two private vaults — one subscription",
+          "Two private vaults, one subscription",
           "Each person keeps their own private data",
           "Up to 10 trusted contacts",
           "25 GB storage",
@@ -160,7 +172,7 @@
       "advisor": {
         "name": "Everstead Pro",
         "desc": "For professionals managing client estate organisation. Pricing on application.",
-        "note": "Pricing on application — we're working personally with our first adviser cohort.",
+        "note": "Pricing on application, we're working personally with our first adviser cohort.",
         "features": [
           "Everything in Everstead+",
           "Multi-client workspace",
@@ -171,7 +183,7 @@
         "cta": "Book a demo"
       }
     },
-    "trialNote": "Free forever — no card required. Everstead+ includes a 14-day free trial; your card isn't charged until it ends.",
+    "trialNote": "Free forever, no card required. Everstead+ includes a 14-day free trial; your card isn't charged until it ends.",
     "fullDetails": "Full pricing details →"
   },
   "app": {
@@ -182,7 +194,7 @@
   "gift": {
     "eyebrow": "A gift that says: I've sorted it.",
     "title": "Give Everstead to a parent, partner, or someone you love.",
-    "desc": "The kind of present they'd never buy themselves — and the one that genuinely takes weight off their family one day. Sent as a digital gift, redeemable any time.",
+    "desc": "The kind of present they'd never buy themselves, and the one that genuinely takes weight off their family one day. Sent as a digital gift, redeemable any time.",
     "cta": "Give as a gift"
   }
 }

@@ -10,15 +10,15 @@ import Markdown from '../components/Markdown'
 // No login required. Full-screen chat interface.
 // ─────────────────────────────────────────────────────────────────────────────
 
-const OPENING_MESSAGE = `I'm so sorry for your loss. This is one of the hardest things to navigate, and I'm here to help with the practical steps — one at a time, at your own pace.
+const OPENING_MESSAGE = `I'm so sorry for your loss. This is one of the hardest things to navigate, and I'm here to help with the practical steps, one at a time, at your own pace.
 
 I can guide you through registering the death, arranging the funeral, notifying banks and the government, dealing with the estate, and much more.
 
 Where are you right now?`
 
 const QUICK_PROMPTS = [
-  { label: 'It just happened — what do I do first?', icon: '🕯️' },
-  { label: 'The funeral is arranged — what comes next?', icon: '📋' },
+  { label: 'It just happened, what do I do first?', icon: '🕯️' },
+  { label: 'The funeral is arranged, what comes next?', icon: '📋' },
   { label: 'I need to notify banks and institutions', icon: '🏦' },
   { label: "I'm dealing with the estate and probate", icon: '⚖️' },
 ]
@@ -61,7 +61,7 @@ export default function WhenSomeoneDies() {
     } catch {
       setMessages(prev => [...prev, {
         role: 'assistant',
-        content: "I'm sorry — something went wrong on my end. Please try again in a moment.",
+        content: "I'm sorry, something went wrong on my end. Please try again in a moment.",
       }])
     } finally {
       setLoading(false)
@@ -74,15 +74,15 @@ export default function WhenSomeoneDies() {
   return (
     <>
       <Helmet>
-        <title>What to do when someone dies — Free UK guide | Everstead</title>
+        <title>What to do when someone dies | Free UK guide | Everstead</title>
         <meta
           name="description"
-          content="A free, compassionate AI guide to help you navigate the practical steps after a death in the UK — from registering the death to sorting the estate."
+          content="A free, compassionate AI guide to help you navigate the practical steps after a death in the UK, from registering the death to sorting the estate."
         />
         <link rel="canonical" href="https://www.everstead.care/what-to-do-when-someone-dies" />
         <meta property="og:type" content="website" />
-        <meta property="og:title" content="What to do when someone dies — Free UK guide | Everstead" />
-        <meta property="og:description" content="A free, compassionate AI guide to help you navigate the practical steps after a death in the UK — from registering the death to sorting the estate." />
+        <meta property="og:title" content="What to do when someone dies | Free UK guide | Everstead" />
+        <meta property="og:description" content="A free, compassionate AI guide to help you navigate the practical steps after a death in the UK, from registering the death to sorting the estate." />
         <meta property="og:url" content="https://www.everstead.care/what-to-do-when-someone-dies" />
         <meta property="og:image" content="https://www.everstead.care/og-image.png" />
         <meta name="twitter:card" content="summary_large_image" />
@@ -104,7 +104,7 @@ export default function WhenSomeoneDies() {
               name: 'How do I register a death in the UK?',
               acceptedAnswer: {
                 '@type': 'Answer',
-                text: 'Register the death at the local register office in the district where the death occurred. You will need the Medical Certificate of Cause of Death. You will receive a Death Certificate — order at least 10 certified copies as most institutions require originals.',
+                text: 'Register the death at the local register office in the district where the death occurred. You will need the Medical Certificate of Cause of Death. You will receive a Death Certificate, order at least 10 certified copies as most institutions require originals.',
               },
             },
             {
@@ -120,7 +120,7 @@ export default function WhenSomeoneDies() {
               name: 'What is Tell Us Once?',
               acceptedAnswer: {
                 '@type': 'Answer',
-                text: 'Tell Us Once is a free government service (gov.uk) that notifies multiple government departments — including DWP, HMRC, DVLA, and the passport office — about a death in a single step. It saves dozens of individual calls.',
+                text: 'Tell Us Once is a free government service (gov.uk) that notifies multiple government departments (including DWP, HMRC, DVLA, and the passport office) about a death in a single step. It saves dozens of individual calls.',
               },
             },
           ],
@@ -159,7 +159,7 @@ export default function WhenSomeoneDies() {
             </h1>
             <p className="text-stone-500 text-sm max-w-md mx-auto leading-relaxed">
               A free, compassionate guide through the practical steps after a death in the UK.
-              No sign-up needed — just ask.
+              No sign-up needed, just ask.
             </p>
 
             {!showEmailCapture ? (
@@ -174,7 +174,7 @@ export default function WhenSomeoneDies() {
                 <EmailCaptureCard
                   source="when-someone-dies"
                   title="Get the full guide by email"
-                  subtitle="A clear, sequenced step-by-step you can save or forward. Save it for when you need it — or for someone who does."
+                  subtitle="A clear, sequenced step-by-step you can save or forward. Save it for when you need it, or for someone who does."
                   buttonLabel="Email me the guide"
                 />
               </div>
@@ -246,7 +246,7 @@ export default function WhenSomeoneDies() {
               value={input}
               onChange={e => setInput(e.target.value)}
               onKeyDown={e => e.key === 'Enter' && !e.shiftKey && send()}
-              placeholder="Ask anything — I'm here to help…"
+              placeholder="Ask anything: I'm here to help…"
               disabled={loading}
               aria-label="Your message"
             />

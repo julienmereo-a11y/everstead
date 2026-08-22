@@ -10,11 +10,11 @@ const SECTIONS = [
   {
     id: 'first-72-hours',
     title: 'First 72 hours',
-    subtitle: 'Immediate priorities — most of these cannot wait',
+    subtitle: 'Immediate priorities, most of these cannot wait',
     items: [
       { id: 'h01', text: 'Obtain the medical certificate of cause of death from the doctor or hospital' },
       { id: 'h02', text: 'Register the death at the local Register Office within 5 days (England & Wales)' },
-      { id: 'h03', text: 'Order at least 10–12 certified copies of the death certificate' },
+      { id: 'h03', text: 'Order at least 10-12 certified copies of the death certificate' },
       { id: 'h04', text: 'Locate the original will and identify all named executors' },
       { id: 'h05', text: 'Notify immediate family and close friends' },
       { id: 'h06', text: 'Secure the deceased\'s home and property' },
@@ -29,7 +29,7 @@ const SECTIONS = [
     items: [
       { id: 'w01', text: 'Contact a solicitor or probate specialist for initial advice' },
       { id: 'w02', text: 'Notify each bank and building society (accounts will be frozen)' },
-      { id: 'w03', text: 'Notify pension providers — death benefits may be claimable' },
+      { id: 'w03', text: 'Notify pension providers, death benefits may be claimable' },
       { id: 'w04', text: 'Notify life insurance providers and initiate claims' },
       { id: 'w05', text: 'Use the government\'s Tell Us Once service (gov.uk/tell-us-once)' },
       { id: 'w06', text: 'Notify HMRC via Tell Us Once or separately' },
@@ -253,7 +253,7 @@ export default function ExecutorChecklist() {
     '@context': 'https://schema.org',
     '@type': 'ItemList',
     name: 'Executor Checklist: What to Do After Someone Dies',
-    description: 'A complete, step-by-step executor checklist for England & Wales — from the first 72 hours through to closing the estate.',
+    description: 'A complete, step-by-step executor checklist for England & Wales, from the first 72 hours through to closing the estate.',
     url: 'https://www.everstead.care/executor-checklist',
     numberOfItems: SCHEMA_ITEMS.length,
     itemListElement: SCHEMA_ITEMS.map((item, idx) => ({
@@ -292,7 +292,7 @@ export default function ExecutorChecklist() {
 
       {/* Print-only header */}
       <div className="hidden print:block print-header mb-6 pb-4 border-b border-stone-200">
-        <p className="text-sm font-semibold text-navy-800">Everstead — everstead.care</p>
+        <p className="text-sm font-semibold text-navy-800">Everstead, everstead.care</p>
         <h1 className="text-2xl font-display font-bold text-navy-950 mt-1">Executor Checklist</h1>
         <p className="text-xs text-stone-500 mt-1">England &amp; Wales · Printed {new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}</p>
       </div>
@@ -306,7 +306,7 @@ export default function ExecutorChecklist() {
               Executor Checklist
             </h1>
             <p className="text-stone-300 text-lg leading-relaxed max-w-xl">
-              A complete, step-by-step guide to everything an executor needs to do after someone dies — from the first 72 hours through to distributing the estate.
+              A complete, step-by-step guide to everything an executor needs to do after someone dies, from the first 72 hours through to distributing the estate.
             </p>
           </div>
         </div>
@@ -368,10 +368,10 @@ export default function ExecutorChecklist() {
           <div className="print:hidden bg-white border border-stone-100 rounded-xl p-6 shadow-sm mb-10">
             <h2 className="font-display text-lg font-semibold text-navy-950 mb-3">What does an executor actually do?</h2>
             <p className="text-stone-700 text-[15px] leading-relaxed mb-3">
-              When someone dies, their executor is legally responsible for administering their estate: collecting assets, paying debts, handling tax, and distributing what remains to beneficiaries. It is a serious responsibility — and without a clear roadmap, it can feel overwhelming on top of grief.
+              When someone dies, their executor is legally responsible for administering their estate: collecting assets, paying debts, handling tax, and distributing what remains to beneficiaries. It is a serious responsibility, and without a clear roadmap, it can feel overwhelming on top of grief.
             </p>
             <p className="text-stone-700 text-[15px] leading-relaxed">
-              This checklist breaks the process into four phases: the first 72 hours, the first week, the first month, and the months ahead. Tick each item as you go — your progress is saved automatically in your browser so you can return at any time.
+              This checklist breaks the process into four phases: the first 72 hours, the first week, the first month, and the months ahead. Tick each item as you go, your progress is saved automatically in your browser so you can return at any time.
             </p>
           </div>
 
@@ -398,7 +398,7 @@ export default function ExecutorChecklist() {
           {/* ── Disclaimer ── */}
           <div className="bg-stone-100 rounded-xl p-5 mb-10 print:bg-transparent print:border print:border-stone-200 print:mb-4">
             <p className="text-xs text-stone-500 leading-relaxed">
-              <strong className="text-stone-600">Important:</strong> This checklist is for general guidance only and applies to England &amp; Wales. It is not legal or financial advice. Estate administration can be complex — particularly where inheritance tax, trusts, or disputes are involved. Always consult a qualified solicitor or probate specialist for advice specific to your circumstances.
+              <strong className="text-stone-600">Important:</strong> This checklist is for general guidance only and applies to England &amp; Wales. It is not legal or financial advice. Estate administration can be complex, particularly where inheritance tax, trusts, or disputes are involved. Always consult a qualified solicitor or probate specialist for advice specific to your circumstances.
             </p>
           </div>
 
@@ -407,7 +407,7 @@ export default function ExecutorChecklist() {
             <EmailCaptureCard
               source="executor-checklist"
               title="Want the full checklist by email?"
-              subtitle="We'll send it to your inbox so you have it when you need it — printable, foldable, shareable."
+              subtitle="We'll send it to your inbox so you have it when you need it, printable, foldable, shareable."
               buttonLabel="Email me the checklist"
             />
           </div>
@@ -419,7 +419,7 @@ export default function ExecutorChecklist() {
               Make it easier for the executor you leave behind
             </h3>
             <p className="text-stone-600 text-[15px] leading-relaxed mb-6">
-              The hardest part of estate administration is usually finding everything — accounts, documents, wishes, contacts. Everstead lets you organise it all in one place and share it with the people who will need it, so your executor can focus on the people, not the paperwork.
+              The hardest part of estate administration is usually finding everything, accounts, documents, wishes, contacts. Everstead lets you organise it all in one place and share it with the people who will need it, so your executor can focus on the people, not the paperwork.
             </p>
             <Link
               to="/get-started"
@@ -439,7 +439,7 @@ export default function ExecutorChecklist() {
                 onClick={() => {
                   if (navigator.share) {
                     navigator.share({
-                      title: 'Executor Checklist — Everstead',
+                      title: 'Executor Checklist | Everstead',
                       text: 'A free, complete checklist for executors in England & Wales.',
                       url: 'https://www.everstead.care/executor-checklist',
                     }).catch(() => {})

@@ -1,40 +1,61 @@
 {
   "meta": {
     "index": {
-      "title": "Use Cases — Everstead for Families, Executors & Advisers",
-      "description": "Whether you're organising your own affairs, stepping in as an executor, or advising clients — Everstead is built for the role you're in.",
-      "ogTitle": "Use Cases — Everstead",
+      "title": "Use Cases | Everstead for Families, Executors & Advisers",
+      "description": "Whether you're organising your own affairs, stepping in as an executor, or advising clients: Everstead is built for the role you're in.",
+      "ogTitle": "Use Cases | Everstead",
       "ogDescription": "One plan. Every role in a family. See how Everstead works for families, parents, executors, and advisers."
     },
-    "personaTitle": "{{title}} — Everstead"
+    "personaTitle": "{{title}} | Everstead"
   },
   "hero": {
     "eyebrow": "Who it's for",
     "title": "One plan. Every role in a family.",
-    "subtitle": "Whether you're organising your own affairs, stepping in as an executor, or advising clients — Everstead is built for the role you're in."
+    "subtitle": "Whether you're organising your own affairs, stepping in as an executor, or advising clients: Everstead is built for the role you're in."
   },
   "stats": [
-    { "value": "45 min", "label": "Average setup time" },
-    { "value": "5 roles", "label": "Supported use cases" },
-    { "value": "14 days", "label": "Free trial, no charge until it ends" }
+    {
+      "value": "45 min",
+      "label": "Average setup time"
+    },
+    {
+      "value": "5 roles",
+      "label": "Supported use cases"
+    },
+    {
+      "value": "14 days",
+      "label": "Free trial, no charge until it ends"
+    }
   ],
   "index": {
     "learnMore": "Learn more →",
     "card": {
       "eyebrow": "Not sure where to start?",
       "title": "Most people start as individuals and invite family later.",
-      "body": "You don't need to have everything figured out. Start with what you have — one account, one document. The plan grows with you."
+      "body": "You don't need to have everything figured out. Start with what you have, one account, one document. The plan grows with you."
     },
     "fit": {
       "eyebrow": "One plan, multiple people",
-      "title": "Every role works from the same plan — with access only to what they need.",
-      "body": "You build the plan. You decide what each trusted person can see. An executor might see the account inventory and step-by-step instructions. A family member might see personal letters and emergency contacts. An adviser might see the financial overview. Everyone gets exactly what they need — and nothing more.",
+      "title": "Every role works from the same plan, with access only to what they need.",
+      "body": "You build the plan. You decide what each trusted person can see. An executor might see the account inventory and step-by-step instructions. A family member might see personal letters and emergency contacts. An adviser might see the financial overview. Everyone gets exactly what they need, and nothing more.",
       "link": "See how access works",
       "roles": [
-        { "role": "You", "desc": "Full control. Build, edit, and manage everything." },
-        { "role": "Family members", "desc": "See accounts, documents, and instructions you share." },
-        { "role": "Executor", "desc": "Step-by-step instructions and account inventory." },
-        { "role": "Adviser", "desc": "Financial overview and readiness status." }
+        {
+          "role": "You",
+          "desc": "Full control. Build, edit, and manage everything."
+        },
+        {
+          "role": "Family members",
+          "desc": "See accounts, documents, and instructions you share."
+        },
+        {
+          "role": "Executor",
+          "desc": "Step-by-step instructions and account inventory."
+        },
+        {
+          "role": "Adviser",
+          "desc": "Financial overview and readiness status."
+        }
       ]
     }
   },
@@ -52,10 +73,10 @@
     "families": {
       "title": "For Families",
       "shortName": "families",
-      "hero": "Make sure loved ones know where everything is — and what to do first.",
+      "hero": "Make sure loved ones know where everything is, and what to do first.",
       "tagline": "When the worst happens, confusion costs more than money.",
-      "body": "When a family member passes or becomes incapacitated, the people left behind face a wave of urgent decisions with almost no information to guide them. Where are the bank accounts? Who is the solicitor? What was on direct debit? Everstead gives you one organised place to answer all of it — before it's needed.",
-      "scenario": "Imagine your partner dies suddenly on a Tuesday. By Thursday you're being asked for account numbers, insurance policies, and the name of their pension provider. You have no idea where to start. That disorientation — the paperwork chaos on top of grief — is what Everstead is built to prevent.",
+      "body": "When a family member passes or becomes incapacitated, the people left behind face a wave of urgent decisions with almost no information to guide them. Where are the bank accounts? Who is the solicitor? What was on direct debit? Everstead gives you one organised place to answer all of it, before it's needed.",
+      "scenario": "Imagine your partner dies suddenly on a Tuesday. By Thursday you're being asked for account numbers, insurance policies, and the name of their pension provider. You have no idea where to start. That disorientation (the paperwork chaos on top of grief) is what Everstead is built to prevent.",
       "painPoints": [
         "Accounts scattered across banks with no single record",
         "Documents in physical folders that no one can find",
@@ -74,7 +95,7 @@
       "features": [
         {
           "title": "Document vault",
-          "body": "Upload wills, insurance policies, and property deeds. Tagged and accessible — no searching through physical folders."
+          "body": "Upload wills, insurance policies, and property deeds. Tagged and accessible, no searching through physical folders."
         },
         {
           "title": "First-steps instructions",
@@ -82,7 +103,7 @@
         },
         {
           "title": "Trusted access",
-          "body": "Invite a family member with read-only access to specific sections. They can't edit anything — only view what you've shared."
+          "body": "Invite a family member with read-only access to specific sections. They can't edit anything, only view what you've shared."
         }
       ]
     },
@@ -91,7 +112,7 @@
       "shortName": "parents",
       "hero": "Leave guidance, not guesswork, for every practical and personal decision.",
       "tagline": "Your children will need to know. Make it easy for them.",
-      "body": "Parents carry both practical responsibilities and personal wishes they want their children to understand. The financial and logistical side is only half of it — the other half is the guidance only you can give. Everstead lets you record both, clearly and privately, so nothing important is left unsaid.",
+      "body": "Parents carry both practical responsibilities and personal wishes they want their children to understand. The financial and logistical side is only half of it, the other half is the guidance only you can give. Everstead lets you record both, clearly and privately, so nothing important is left unsaid.",
       "scenario": "Your children are adults. They know you love them. But if something happened tomorrow, would they know who your pension is with? Who your solicitor is? What your wishes are for your funeral? Would they know what you'd want for your grandchildren? Everstead is the place you put all of that down.",
       "painPoints": [
         "No single record of financial accounts and policies",
@@ -111,7 +132,7 @@
       "features": [
         {
           "title": "Personal messages",
-          "body": "Write letters to each of your children — or to your grandchildren for milestones you might not be there for. Private, stored, and delivered when it counts."
+          "body": "Write letters to each of your children, or to your grandchildren for milestones you might not be there for. Private, stored, and delivered when it counts."
         },
         {
           "title": "Granular access control",
@@ -119,30 +140,30 @@
         },
         {
           "title": "Guardianship and care notes",
-          "body": "Record your preferences for dependants, pets, and care situations — the kind of guidance a will often leaves out."
+          "body": "Record your preferences for dependants, pets, and care situations, the kind of guidance a will often leaves out."
         }
       ]
     },
     "aging-adults": {
       "title": "For Aging Adults",
       "shortName": "aging adults",
-      "hero": "Organise your affairs with dignity — on your own terms.",
+      "hero": "Organise your affairs with dignity, on your own terms.",
       "tagline": "It's not about the end. It's about being prepared.",
-      "body": "Organising your affairs doesn't have to feel final. It's one of the most considerate things you can do for the people you love. Everstead gives you complete control over what you share, who sees it, and how your wishes are expressed — without any technical knowledge required.",
-      "scenario": "You've thought about getting your affairs in order for a while. But it feels like a big job — and maybe a bit morbid. Everstead lets you go at your own pace. Add your current account this week. Upload your will next month. Invite your daughter when you're ready. There's no rush and nothing is ever final until you say so.",
+      "body": "Organising your affairs doesn't have to feel final. It's one of the most considerate things you can do for the people you love. Everstead gives you complete control over what you share, who sees it, and how your wishes are expressed, without any technical knowledge required.",
+      "scenario": "You've thought about getting your affairs in order for a while. But it feels like a big job, and maybe a bit morbid. Everstead lets you go at your own pace. Add your current account this week. Upload your will next month. Invite your daughter when you're ready. There's no rush and nothing is ever final until you say so.",
       "painPoints": [
-        "Feels overwhelming to start — no clear place to begin",
+        "Feels overwhelming to start, no clear place to begin",
         "Reluctant to involve family before you're ready",
         "Concerned about who can see sensitive financial information",
         "Worried that technology will be too complicated",
         "Not sure what actually needs to be documented"
       ],
       "benefits": [
-        "Gradual setup — add a little at a time, no pressure",
+        "Gradual setup, add a little at a time, no pressure",
         "Assign a trusted family member with limited, specific access",
         "Clearly record medical preferences and care wishes",
         "Emergency vault for immediate access when needed",
-        "Simple design — no technical expertise required",
+        "Simple design, no technical expertise required",
         "You stay in full control of who sees what, always"
       ],
       "features": [
@@ -152,7 +173,7 @@
         },
         {
           "title": "Emergency access",
-          "body": "Set a trusted person as an emergency contact. If something happens suddenly, they can access the vault immediately — with everything they need."
+          "body": "Set a trusted person as an emergency contact. If something happens suddenly, they can access the vault immediately, with everything they need."
         },
         {
           "title": "Simple, guided setup",
@@ -165,8 +186,8 @@
       "shortName": "executors",
       "hero": "A clear, organised starting point for a complex responsibility.",
       "tagline": "Being named executor is an honour. It can also be overwhelming.",
-      "body": "When someone names you as their executor, they're trusting you with an enormous responsibility — often at an already difficult time. The challenge isn't the intent; it's the information. Where are the accounts? What's outstanding? Who needs to be contacted and in what order? Everstead gives executors a structured, complete starting point.",
-      "scenario": "You've been named executor for a close friend. You're grieving, you're managing your own family, and you're now responsible for closing out a financial life — bank accounts, pensions, property, direct debits — with almost no guidance on where to start. Everstead is the organised handover that makes that possible.",
+      "body": "When someone names you as their executor, they're trusting you with an enormous responsibility, often at an already difficult time. The challenge isn't the intent; it's the information. Where are the accounts? What's outstanding? Who needs to be contacted and in what order? Everstead gives executors a structured, complete starting point.",
+      "scenario": "You've been named executor for a close friend. You're grieving, you're managing your own family, and you're now responsible for closing out a financial life (bank accounts, pensions, property, direct debits) with almost no guidance on where to start. Everstead is the organised handover that makes that possible.",
       "painPoints": [
         "No single record of accounts, assets, or policies",
         "Documents scattered across physical and digital locations",
@@ -189,7 +210,7 @@
         },
         {
           "title": "Everything in one place",
-          "body": "Accounts, documents, contacts, subscriptions — all organised in a single structured plan. No searching across filing cabinets and email inboxes."
+          "body": "Accounts, documents, contacts, subscriptions, all organised in a single structured plan. No searching across filing cabinets and email inboxes."
         },
         {
           "title": "Audit trail",
@@ -202,7 +223,7 @@
       "shortName": "advisers & professionals",
       "hero": "Offer estate organisation as a genuine client service.",
       "tagline": "The gap between legal planning and practical preparation is where clients need you most.",
-      "body": "Financial advisers, solicitors, and wealth managers help clients plan their futures — but practical estate organisation often falls through the gap. Everstead gives professionals the tools to bridge that gap: collaborative access, client progress visibility, and a structured framework that turns intentions into an organised plan.",
+      "body": "Financial advisers, solicitors, and wealth managers help clients plan their futures, but practical estate organisation often falls through the gap. Everstead gives professionals the tools to bridge that gap: collaborative access, client progress visibility, and a structured framework that turns intentions into an organised plan.",
       "scenario": "You've had the conversation. The client has a will, pension nominations are updated, and the IHT strategy is in place. But if something happened tomorrow, would their family know where anything is? Would your firm be called at 8pm by a bereaved spouse asking where to start? Everstead is the practical layer that makes your advice actionable.",
       "painPoints": [
         "Clients have plans but no organised record of where things actually are",
@@ -230,31 +251,31 @@
         },
         {
           "title": "Your brand, your service",
-          "body": "White-label options available for practices that want to offer Everstead under their own firm identity — as a genuine value-add service."
+          "body": "White-label options available for practices that want to offer Everstead under their own firm identity, as a genuine value-add service."
         }
       ]
     }
   },
   "quotes": {
     "families": {
-      "text": "\"We had no idea where my mother kept anything — her bank, her pension, even her will. We spent six months piecing it together. Everstead would have changed everything.\"",
-      "author": "— Adult child and estate executor"
+      "text": "\"We had no idea where my mother kept anything, her bank, her pension, even her will. We spent six months piecing it together. Everstead would have changed everything.\"",
+      "author": "Adult child and estate executor"
     },
     "parents": {
       "text": "\"The hardest part wasn't the grief. It was the dozen practical decisions we had to make without knowing what she would have wanted. That's the part I'm determined not to leave for my children.\"",
-      "author": "— Parent planning ahead"
+      "author": "Parent planning ahead"
     },
     "aging-adults": {
       "text": "\"I finally feel like I've taken care of something important. My children won't be left wondering. That's the peace of mind I was looking for.\"",
-      "author": "— Everstead user, age 71"
+      "author": "Everstead user, age 71"
     },
     "executors": {
       "text": "\"As executor for three estates in my career, I've learned that organisation is everything. The difference between a plan in Everstead and a folder of loose paperwork is enormous.\"",
-      "author": "— Estate solicitor"
+      "author": "Estate solicitor"
     },
     "advisors": {
       "text": "\"This has become a genuine value-add for my practice. Clients appreciate that I'm helping them prepare practically, not just on paper. The conversations are better, and the outcomes are too.\"",
-      "author": "— Certified Financial Planner"
+      "author": "Certified Financial Planner"
     }
   },
   "cta": {
@@ -276,7 +297,7 @@
     },
     "advisors": {
       "text": "Book a demo for your practice",
-      "note": "Early access — working personally with our first adviser partners"
+      "note": "Early access, working personally with our first adviser partners"
     },
     "shared": {
       "readyTitle": "Ready to get organised?",
@@ -286,7 +307,7 @@
     "start": "Start Your Everstead",
     "bookDemo": "Book a demo",
     "bottom": {
-      "title": "Whichever role you're in — start here.",
+      "title": "Whichever role you're in, start here.",
       "body": "14-day free trial. Set up in about 45 minutes. No charge until your trial ends."
     }
   }

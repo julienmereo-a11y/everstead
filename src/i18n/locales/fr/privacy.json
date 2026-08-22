@@ -1,6 +1,6 @@
 {
   "meta": {
-    "title": "Politique de confidentialité — Everstead",
+    "title": "Politique de confidentialité | Everstead",
     "description": "Comment Everstead collecte, utilise et protège vos informations personnelles. Vos données sont chiffrées, jamais vendues et toujours sous votre contrôle."
   },
   "header": {
@@ -11,7 +11,7 @@
   "sections": [
     {
       "title": "Les informations que nous collectons",
-      "content": "Nous collectons les informations que vous fournissez directement lors de la création de votre compte, notamment votre nom, votre adresse e-mail et votre mot de passe. Nous collectons également le contenu que vous ajoutez à votre plan — références de comptes, métadonnées de documents, instructions et dernières volontés — qui est stocké chiffré au repos.\n\nNous collectons des données d'utilisation limitées (pages visitées, fonctionnalités utilisées) afin d'améliorer la plateforme. Nous n'utilisons pas de traceurs publicitaires tiers. Nous ne vendons pas vos données à des tiers."
+      "content": "Nous collectons les informations que vous fournissez directement lors de la création de votre compte, notamment votre nom, votre adresse e-mail et votre mot de passe. Nous collectons également le contenu que vous ajoutez à votre plan (références de comptes, métadonnées de documents, instructions et dernières volontés) qui est stocké chiffré au repos.\n\nNous collectons des données d'utilisation limitées (pages visitées, fonctionnalités utilisées) afin d'améliorer la plateforme. Nous n'utilisons pas de traceurs publicitaires tiers. Nous ne vendons pas vos données à des tiers."
     },
     {
       "title": "Comment nous utilisons vos informations",
@@ -19,15 +19,15 @@
     },
     {
       "title": "Stockage et sécurité des données",
-      "content": "Toutes les données sont chiffrées au repos avec AES-256 et en transit avec TLS 1.3. Le contenu de votre plan — comptes, documents, instructions et dernières volontés — est traité comme hautement sensible et stocké selon des normes de sécurité équivalentes à celles des banques.\n\nNous opérons sur une infrastructure dotée de contrôles alignés sur le référentiel SOC 2, de sauvegardes automatisées et d'un stockage redondant réparti sur plusieurs sites sécurisés. Notre équipe n'accède à vos données que lorsque cela est strictement nécessaire à l'assistance, et ces accès sont consignés."
+      "content": "Toutes les données sont chiffrées au repos avec AES-256 et en transit avec TLS 1.3. Le contenu de votre plan (comptes, documents, instructions et dernières volontés) est traité comme hautement sensible et stocké selon des normes de sécurité équivalentes à celles des banques.\n\nNous opérons sur une infrastructure dotée de contrôles alignés sur le référentiel SOC 2, de sauvegardes automatisées et d'un stockage redondant réparti sur plusieurs sites sécurisés. Notre équipe n'accède à vos données que lorsque cela est strictement nécessaire à l'assistance, et ces accès sont consignés."
     },
     {
       "title": "Partage et divulgation",
-      "content": "Nous ne vendons, ne louons ni ne partageons vos informations personnelles avec des tiers à des fins de marketing ou de publicité.\n\nNous pouvons partager un minimum de données avec des prestataires de services (sous-traitants) qui nous aident à exploiter la plateforme — notamment pour l'hébergement, la base de données, l'envoi d'e-mails, les paiements, la surveillance des erreurs et l'assistance guidée par IA. Chaque sous-traitant est lié par un accord écrit de traitement des données (Data Processing Agreement) et fournit des garanties appropriées au titre du RGPD britannique (UK GDPR). La liste complète et à jour est publiée à l'adresse /subprocessors. Nous pouvons divulguer des informations si la loi l'exige ou pour protéger les droits, les biens ou la sécurité d'Everstead, de nos utilisateurs ou du public."
+      "content": "Nous ne vendons, ne louons ni ne partageons vos informations personnelles avec des tiers à des fins de marketing ou de publicité.\n\nNous pouvons partager un minimum de données avec des prestataires de services (sous-traitants) qui nous aident à exploiter la plateforme, notamment pour l'hébergement, la base de données, l'envoi d'e-mails, les paiements, la surveillance des erreurs et l'assistance guidée par IA. Chaque sous-traitant est lié par un accord écrit de traitement des données (Data Processing Agreement) et fournit des garanties appropriées au titre du RGPD britannique (UK GDPR). La liste complète et à jour est publiée à l'adresse /subprocessors. Nous pouvons divulguer des informations si la loi l'exige ou pour protéger les droits, les biens ou la sécurité d'Everstead, de nos utilisateurs ou du public."
     },
     {
       "title": "Fonctionnalités d'IA (l'Assistant Everstead)",
-      "content": "Certaines fonctionnalités d'Everstead reposent sur l'intelligence artificielle — le chat de l'Assistant Everstead, la numérisation de documents et les suggestions de rédaction assistées par IA. Ces fonctionnalités utilisent Claude, un service d'IA fourni par Anthropic PBC, agissant en qualité de sous-traitant pour notre compte.\n\nCe qui est transmis : lorsque vous utilisez une fonctionnalité d'IA, le texte que vous y saisissez (et, lorsqu'une fonctionnalité permet d'en joindre un, le fichier que vous choisissez de partager) est transmis de manière sécurisée à Anthropic afin de générer une réponse. Les fonctionnalités d'IA ne reçoivent que ce que vous leur soumettez activement — elles ne peuvent pas parcourir d'elles-mêmes votre coffre, vos documents, vos messages ou votre compte.\n\nComment ces données sont utilisées : uniquement pour générer la réponse que vous avez demandée. Vos données ne sont jamais utilisées pour entraîner les modèles d'IA d'Anthropic, ni à des fins de publicité ou de profilage. Anthropic est lié par un accord écrit de traitement des données (Data Processing Agreement) comportant des garanties au titre du RGPD britannique (UK GDPR) et offrant une protection équivalente à celle de la présente politique, et figure avec nos autres sous-traitants à l'adresse everstead.care/subprocessors.\n\nVotre choix : dans nos applications mobiles, les fonctionnalités d'IA demandent votre consentement explicite avant tout envoi. Vous pouvez désactiver entièrement les fonctionnalités d'IA à tout moment dans Réglages → Fonctionnalités d'IA — le reste d'Everstead fonctionne pleinement sans elles."
+      "content": "Certaines fonctionnalités d'Everstead reposent sur l'intelligence artificielle, le chat de l'Assistant Everstead, la numérisation de documents et les suggestions de rédaction assistées par IA. Ces fonctionnalités utilisent Claude, un service d'IA fourni par Anthropic PBC, agissant en qualité de sous-traitant pour notre compte.\n\nCe qui est transmis : lorsque vous utilisez une fonctionnalité d'IA, le texte que vous y saisissez (et, lorsqu'une fonctionnalité permet d'en joindre un, le fichier que vous choisissez de partager) est transmis de manière sécurisée à Anthropic afin de générer une réponse. Les fonctionnalités d'IA ne reçoivent que ce que vous leur soumettez activement, elles ne peuvent pas parcourir d'elles-mêmes votre coffre, vos documents, vos messages ou votre compte.\n\nComment ces données sont utilisées : uniquement pour générer la réponse que vous avez demandée. Vos données ne sont jamais utilisées pour entraîner les modèles d'IA d'Anthropic, ni à des fins de publicité ou de profilage. Anthropic est lié par un accord écrit de traitement des données (Data Processing Agreement) comportant des garanties au titre du RGPD britannique (UK GDPR) et offrant une protection équivalente à celle de la présente politique, et figure avec nos autres sous-traitants à l'adresse everstead.care/subprocessors.\n\nVotre choix : dans nos applications mobiles, les fonctionnalités d'IA demandent votre consentement explicite avant tout envoi. Vous pouvez désactiver entièrement les fonctionnalités d'IA à tout moment dans Réglages → Fonctionnalités d'IA, le reste d'Everstead fonctionne pleinement sans elles."
     },
     {
       "title": "Vos droits et contrôles",
@@ -35,7 +35,7 @@
     },
     {
       "title": "Portabilité des données",
-      "content": "Vous avez le droit de recevoir une copie de vos données personnelles dans un format structuré, couramment utilisé et lisible par machine. Vous pouvez exercer ce droit à tout moment en vous rendant dans les réglages de votre tableau de bord et en cliquant sur « Exporter mes données ». Votre export comprend les comptes, les documents, les instructions, les dernières volontés, les contacts de confiance et votre journal d'activité — au format JSON standard et dans des formats de fichiers standards.\n\nSi Everstead Digital Ltd cessait son activité, nous nous engageons à fournir un préavis d'au moins 90 jours et à maintenir un accès gratuit à l'export des données pour tous les utilisateurs. Tous les détails sont disponibles à l'adresse everstead.care/data-promise."
+      "content": "Vous avez le droit de recevoir une copie de vos données personnelles dans un format structuré, couramment utilisé et lisible par machine. Vous pouvez exercer ce droit à tout moment en vous rendant dans les réglages de votre tableau de bord et en cliquant sur « Exporter mes données ». Votre export comprend les comptes, les documents, les instructions, les dernières volontés, les contacts de confiance et votre journal d'activité, au format JSON standard et dans des formats de fichiers standards.\n\nSi Everstead Digital Ltd cessait son activité, nous nous engageons à fournir un préavis d'au moins 90 jours et à maintenir un accès gratuit à l'export des données pour tous les utilisateurs. Tous les détails sont disponibles à l'adresse everstead.care/data-promise."
     },
     {
       "title": "Cookies",
@@ -70,7 +70,7 @@
       },
       "analytics": {
         "title": "Cookies d'analyse (soumis à votre consentement)",
-        "body": "Nous utilisons Google Analytics pour comprendre comment les visiteurs utilisent notre site web — quelles pages sont consultées, combien de temps les visiteurs y passent et d'où ils viennent. Cela nous aide à améliorer Everstead. Ces cookies ne sont déposés sur votre appareil qu'après que vous avez donné votre consentement. Aucune information permettant de vous identifier personnellement n'est collectée via les cookies d'analyse.",
+        "body": "Nous utilisons Google Analytics pour comprendre comment les visiteurs utilisent notre site web, quelles pages sont consultées, combien de temps les visiteurs y passent et d'où ils viennent. Cela nous aide à améliorer Everstead. Ces cookies ne sont déposés sur votre appareil qu'après que vous avez donné votre consentement. Aucune information permettant de vous identifier personnellement n'est collectée via les cookies d'analyse.",
         "provider": "Fournisseur : Google Analytics (Google LLC). Les données peuvent être traitées aux États-Unis dans le cadre de clauses contractuelles types."
       }
     },
@@ -80,7 +80,7 @@
     },
     "managing": {
       "title": "Gérer vos préférences en matière de cookies",
-      "body": "Vous pouvez modifier ou retirer votre consentement aux cookies à tout moment en cliquant sur « Paramètres des cookies » dans le pied de page de notre site web. Vous pouvez également contrôler les cookies via les paramètres de votre navigateur — veuillez noter que la désactivation des cookies essentiels peut affecter le fonctionnement de la plateforme."
+      "body": "Vous pouvez modifier ou retirer votre consentement aux cookies à tout moment en cliquant sur « Paramètres des cookies » dans le pied de page de notre site web. Vous pouvez également contrôler les cookies via les paramètres de votre navigateur, veuillez noter que la désactivation des cookies essentiels peut affecter le fonctionnement de la plateforme."
     },
     "contact": {
       "title": "Contact",

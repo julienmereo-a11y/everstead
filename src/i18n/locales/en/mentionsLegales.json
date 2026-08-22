@@ -1,6 +1,6 @@
 {
   "meta": {
-    "title": "Legal Notice (Mentions légales) — Everstead",
+    "title": "Legal Notice (Mentions légales) | Everstead",
     "description": "Legal notice for the Everstead website: site publisher, publication director, hosting, contact, intellectual property, and consumer mediation."
   },
   "header": {
@@ -11,7 +11,7 @@
   "sections": [
     {
       "title": "Site publisher",
-      "content": "The everstead.care website (the \"Site\") is published by EVERSTEAD DIGITAL LTD, a private limited company registered in England and Wales under company number 17166825.\n\nRegistered office: [Adresse du siège — à compléter], London, England, United Kingdom.\n\nTelephone: [À compléter].\n\nICO (UK data protection authority) registration number: 00013988672."
+      "content": "The everstead.care website (the \"Site\") is published by EVERSTEAD DIGITAL LTD, a private limited company registered in England and Wales under company number 17166825.\n\nRegistered office: [Adresse du siège, à compléter], London, England, United Kingdom.\n\nTelephone: [À compléter].\n\nICO (UK data protection authority) registration number: 00013988672."
     },
     {
       "title": "Publication director",
@@ -19,7 +19,7 @@
     },
     {
       "title": "Hosting",
-      "content": "The Site is hosted by Vercel Inc., which provides web hosting and serverless functions (Everstead website and API endpoints). Privacy policy: vercel.com/legal/privacy-policy.\n\nMember data is hosted by Supabase Inc. — managed PostgreSQL database, authentication, and encrypted file storage for vault content. Data location: EU (Ireland) — data hosted in Frankfurt region. Privacy policy: supabase.com/privacy.\n\nThe complete, up-to-date list of our subprocessors is published at everstead.care/subprocessors."
+      "content": "The Site is hosted by Vercel Inc., which provides web hosting and serverless functions (Everstead website and API endpoints). Privacy policy: vercel.com/legal/privacy-policy.\n\nMember data is hosted by Supabase Inc. managed PostgreSQL database, authentication, and encrypted file storage for vault content. Data location: EU (Ireland), data hosted in Frankfurt region. Privacy policy: supabase.com/privacy.\n\nThe complete, up-to-date list of our subprocessors is published at everstead.care/subprocessors."
     },
     {
       "title": "Contact",
@@ -27,11 +27,11 @@
     },
     {
       "title": "Intellectual property",
-      "content": "All elements of the Site — text, graphics, logos, trademarks, interface, and software — are the property of EVERSTEAD DIGITAL LTD or are used under licence. Any reproduction, representation, modification, or adaptation of the Site or any of its elements, in whole or in part, without prior written authorisation is prohibited.\n\nContent you add to your Everstead space remains your property, under the conditions set out in our Terms of Service."
+      "content": "All elements of the Site (text, graphics, logos, trademarks, interface, and software) are the property of EVERSTEAD DIGITAL LTD or are used under licence. Any reproduction, representation, modification, or adaptation of the Site or any of its elements, in whole or in part, without prior written authorisation is prohibited.\n\nContent you add to your Everstead space remains your property, under the conditions set out in our Terms of Service."
     },
     {
       "title": "Consumer mediation",
-      "content": "In accordance with Articles L.612-1 et seq. of the French Consumer Code (Code de la consommation), any consumer residing in France has the right to have recourse, free of charge, to a consumer mediator with a view to the amicable resolution of a dispute with a professional.\n\nCompetent mediator: [Médiateur de la consommation — désignation en cours]. The mediator's details will be published on this page once appointed."
+      "content": "In accordance with Articles L.612-1 et seq. of the French Consumer Code (Code de la consommation), any consumer residing in France has the right to have recourse, free of charge, to a consumer mediator with a view to the amicable resolution of a dispute with a professional.\n\nCompetent mediator: [Médiateur de la consommation, désignation en cours]. The mediator's details will be published on this page once appointed."
     }
   ]
 }

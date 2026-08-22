@@ -1,31 +1,40 @@
 {
   "meta": {
-    "title": "How It Works — Everstead",
-    "description": "See how Everstead works — organise accounts, upload documents with automatic scanning, write instructions with AI assistance, and give your family everything they need. Under an hour to set up."
+    "title": "How It Works | Everstead",
+    "description": "See how Everstead works, organise accounts, upload documents with automatic scanning, write instructions with AI assistance, and give your family everything they need. Under an hour to set up."
   },
   "schema": {
     "howToName": "How to set up your estate plan with Everstead",
-    "howToDescription": "Create a complete digital estate plan — accounts, documents, trusted contacts, and final wishes — so your family is never left guessing."
+    "howToDescription": "Create a complete digital estate plan (accounts, documents, trusted contacts, and final wishes) so your family is never left guessing."
   },
   "hero": {
     "eyebrow": "How it works",
     "titleLine1": "Set up in an afternoon.",
     "titleLine2": "Peace of mind that lasts.",
-    "subtitle": "Four steps. Under an hour. Everything your family needs to know — organised, encrypted, and ready when they need it.",
+    "subtitle": "Four steps. Under an hour. Everything your family needs to know, organised, encrypted, and ready when they need it.",
     "stats": [
-      { "value": "45 min", "label": "Average setup time" },
-      { "value": "15 min", "label": "Annual review" },
-      { "value": "14 days", "label": "Free trial" }
+      {
+        "value": "45 min",
+        "label": "Average setup time"
+      },
+      {
+        "value": "15 min",
+        "label": "Annual review"
+      },
+      {
+        "value": "14 days",
+        "label": "Free trial"
+      }
     ]
   },
   "steps": [
     {
       "label": "Build your inventory",
       "title": "Start by mapping everything you own.",
-      "body": "Most people have more accounts than they realise — and most families can't find them when they need to. Everstead gives you a structured place to record every financial account, property, insurance policy, and digital asset. You're not uploading statements or linking bank feeds. You're creating a clear, human-readable map that a non-expert family member could follow. Prefer not to do it alone? Your AI Assistant can help — tell it about an account in plain English, or drop in a document, and it'll suggest the entry for you to review and confirm.",
+      "body": "Most people have more accounts than they realise, and most families can't find them when they need to. Everstead gives you a structured place to record every financial account, property, insurance policy, and digital asset. You're not uploading statements or linking bank feeds. You're creating a clear, human-readable map that a non-expert family member could follow. Prefer not to do it alone? Your AI Assistant can help, tell it about an account in plain English, or drop in a document, and it'll suggest the entry for you to review and confirm.",
       "bullets": [
         "Bank accounts, savings, and ISAs",
-        "Pensions — workplace, personal, and state",
+        "Pensions, workplace, personal, and state",
         "Investments and trading accounts",
         "Property and mortgages",
         "Life, critical illness, and income protection insurance",
@@ -34,10 +43,22 @@
       "preview": {
         "title": "Financial accounts",
         "items": [
-          { "label": "Barclays current account", "tag": "Banking" },
-          { "label": "Vanguard stocks & shares ISA", "tag": "Investment" },
-          { "label": "Nest workplace pension", "tag": "Pension" },
-          { "label": "Halifax savings account", "tag": "Savings" }
+          {
+            "label": "Barclays current account",
+            "tag": "Banking"
+          },
+          {
+            "label": "Vanguard stocks & shares ISA",
+            "tag": "Investment"
+          },
+          {
+            "label": "Nest workplace pension",
+            "tag": "Pension"
+          },
+          {
+            "label": "Halifax savings account",
+            "tag": "Savings"
+          }
         ],
         "cta": "+ Add account"
       }
@@ -45,7 +66,7 @@
     {
       "label": "Store your documents",
       "title": "Give every important document a permanent home.",
-      "body": "A will that can't be found is almost as useless as not having one. The same goes for insurance policies, pension paperwork, and property deeds. Everstead's encrypted vault lets you upload originals or scanned copies, tag them, and note where physical originals are stored — so your family can find everything in one place, not in three filing cabinets and a solicitor's office. Upload a document and we'll read it for you — extracting the name, type, and expiry automatically.",
+      "body": "A will that can't be found is almost as useless as not having one. The same goes for insurance policies, pension paperwork, and property deeds. Everstead's encrypted vault lets you upload originals or scanned copies, tag them, and note where physical originals are stored, so your family can find everything in one place, not in three filing cabinets and a solicitor's office. Upload a document and we'll read it for you, extracting the name, type, and expiry automatically.",
       "bullets": [
         "Upload and organise your will and LPAs",
         "Store passport, ID, and birth certificate details",
@@ -57,41 +78,64 @@
       "preview": {
         "title": "Document vault",
         "items": [
-          { "label": "Last will and testament", "tag": "Legal" },
-          { "label": "Life insurance — Aviva policy", "tag": "Insurance" },
-          { "label": "Property deeds — 14 Elm St", "tag": "Property" },
-          { "label": "Lasting Power of Attorney", "tag": "Legal" }
+          {
+            "label": "Last will and testament",
+            "tag": "Legal"
+          },
+          {
+            "label": "Life insurance: Aviva policy",
+            "tag": "Insurance"
+          },
+          {
+            "label": "Property deeds, 14 Elm St",
+            "tag": "Property"
+          },
+          {
+            "label": "Lasting Power of Attorney",
+            "tag": "Legal"
+          }
         ],
         "cta": "+ Upload document"
       }
     },
     {
       "label": "Invite trusted people",
-      "title": "Decide who sees what — and when.",
-      "body": "This is what makes Everstead different from a folder on your desktop. You invite specific people — your spouse, your executor, your solicitor — and choose exactly which sections they can see. They only get access to what you choose, and only when you grant it. Role-based permissions mean your children might see your wishes but not your financial details; your solicitor might see legal documents but nothing else.",
+      "title": "Decide who sees what, and when.",
+      "body": "This is what makes Everstead different from a folder on your desktop. You invite specific people (your spouse, your executor, your solicitor) and choose exactly which sections they can see. They only get access to what you choose, and only when you grant it. Role-based permissions mean your children might see your wishes but not your financial details; your solicitor might see legal documents but nothing else.",
       "bullets": [
         "Invite family members, advisers, or solicitors",
-        "Set access by category — not all-or-nothing",
+        "Set access by category, not all-or-nothing",
         "Grant emergency vault access for urgent situations",
         "Revoke or update access at any time",
-        "Delegates see a clean, guided view — not the full dashboard",
+        "Delegates see a clean, guided view, not the full dashboard",
         "Every access event is logged in your audit history"
       ],
       "preview": {
         "title": "Trusted people",
         "items": [
-          { "label": "Sarah Mitchell — Spouse", "tag": "Full access" },
-          { "label": "James Mitchell — Son", "tag": "Wishes only" },
-          { "label": "Thornton & Co Solicitors", "tag": "Legal docs" },
-          { "label": "Add a financial adviser" }
+          {
+            "label": "Sarah Mitchell: Spouse",
+            "tag": "Full access"
+          },
+          {
+            "label": "James Mitchell: Son",
+            "tag": "Wishes only"
+          },
+          {
+            "label": "Thornton & Co Solicitors",
+            "tag": "Legal docs"
+          },
+          {
+            "label": "Add a financial adviser"
+          }
         ],
         "cta": "+ Invite someone"
       }
     },
     {
       "label": "Write your instructions",
-      "title": "Tell them what to do — step by step.",
-      "body": "Documents and account lists answer 'where is it?'. Instructions answer 'what do I do next?'. This is the part most people skip, and the part families say they needed most. In Everstead you can write clear, ordered guidance: who to call first, which accounts to freeze, what your funeral preferences are, what to do with the dog. Not sure where to start? We'll help you write it — just tell us the basics and we'll find the words.",
+      "title": "Tell them what to do, step by step.",
+      "body": "Documents and account lists answer 'where is it?'. Instructions answer 'what do I do next?'. This is the part most people skip, and the part families say they needed most. In Everstead you can write clear, ordered guidance: who to call first, which accounts to freeze, what your funeral preferences are, what to do with the dog. Not sure where to start? We'll help you write it, just tell us the basics and we'll find the words.",
       "bullets": [
         "Write step-by-step instructions in plain language",
         "Record funeral and burial preferences",
@@ -103,10 +147,22 @@
       "preview": {
         "title": "Instructions",
         "items": [
-          { "label": "First 48 hours — who to call", "tag": "Urgent" },
-          { "label": "Funeral and burial wishes", "tag": "Personal" },
-          { "label": "Message to Sarah", "tag": "Private" },
-          { "label": "What to do with the house", "tag": "Property" }
+          {
+            "label": "First 48 hours, who to call",
+            "tag": "Urgent"
+          },
+          {
+            "label": "Funeral and burial wishes",
+            "tag": "Personal"
+          },
+          {
+            "label": "Message to Sarah",
+            "tag": "Private"
+          },
+          {
+            "label": "What to do with the house",
+            "tag": "Property"
+          }
         ],
         "cta": "+ Add instruction"
       }
@@ -115,22 +171,34 @@
   "familyView": {
     "eyebrow": "The other side",
     "title": "What your family sees when they need it.",
-    "body": "When a trusted person you've invited logs in, they don't see your full dashboard. They see a clean, guided view of exactly what you've shared with them — organised by category, with clear instructions at the top.",
+    "body": "When a trusted person you've invited logs in, they don't see your full dashboard. They see a clean, guided view of exactly what you've shared with them, organised by category, with clear instructions at the top.",
     "points": [
-      "They only see the sections you've explicitly shared — nothing else.",
+      "They only see the sections you've explicitly shared, nothing else.",
       "Your step-by-step instructions appear at the top, in the order you wrote them.",
       "Emergency vault access can be granted instantly if you choose to enable it.",
-      "Every access event is logged — you always know who viewed what and when."
+      "Every access event is logged, you always know who viewed what and when."
     ],
     "mockup": {
-      "header": "Trusted person view — Sarah Mitchell",
-      "calloutTitle": "Start here — James's instructions",
+      "header": "Trusted person view: Sarah Mitchell",
+      "calloutTitle": "Start here: James's instructions",
       "calloutBody": "Step 1: Call Thornton & Co Solicitors on 020 7123 4567…",
       "categories": [
-        { "label": "Financial accounts", "count": "12 accounts" },
-        { "label": "Important documents", "count": "8 documents" },
-        { "label": "Final wishes", "count": "3 items" },
-        { "label": "Personal messages", "count": "Private — for you" }
+        {
+          "label": "Financial accounts",
+          "count": "12 accounts"
+        },
+        {
+          "label": "Important documents",
+          "count": "8 documents"
+        },
+        {
+          "label": "Final wishes",
+          "count": "3 items"
+        },
+        {
+          "label": "Personal messages",
+          "count": "Private, for you"
+        }
       ]
     }
   },
@@ -146,7 +214,7 @@
       {
         "time": "15 min",
         "label": "Annual review",
-        "desc": "We send a reminder once a year. Update anything that's changed — new accounts, new addresses, updated wishes."
+        "desc": "We send a reminder once a year. Update anything that's changed, new accounts, new addresses, updated wishes."
       },
       {
         "time": "As needed",
@@ -161,19 +229,19 @@
     "items": [
       {
         "q": "Can I start before I have everything organised?",
-        "a": "Yes — and we'd encourage it. Most people start with two or three accounts and build from there. Your readiness score shows what's complete and what's missing, so you always know where you left off. An incomplete plan is still far better than none at all."
+        "a": "Yes, and we'd encourage it. Most people start with two or three accounts and build from there. Your readiness score shows what's complete and what's missing, so you always know where you left off. An incomplete plan is still far better than none at all."
       },
       {
         "q": "How long does it take to set up?",
-        "a": "Most people complete a solid first version in 45–90 minutes. That includes adding their main accounts, uploading or noting key documents, inviting a trusted person, and writing basic instructions. The annual review — updating anything that's changed — typically takes 15–20 minutes."
+        "a": "Most people complete a solid first version in 45-90 minutes. That includes adding their main accounts, uploading or noting key documents, inviting a trusted person, and writing basic instructions. The annual review (updating anything that's changed) typically takes 15-20 minutes."
       },
       {
         "q": "What does my family actually see when they need it?",
-        "a": "Trusted people you've invited see a clean, guided view of only the sections you've shared with them. They don't see your full dashboard or anything you haven't explicitly granted access to. If you've enabled emergency vault access, they can request it — and you'll be notified unless you've pre-approved it."
+        "a": "Trusted people you've invited see a clean, guided view of only the sections you've shared with them. They don't see your full dashboard or anything you haven't explicitly granted access to. If you've enabled emergency vault access, they can request it, and you'll be notified unless you've pre-approved it."
       },
       {
         "q": "Is this the same as writing a will?",
-        "a": "No. Everstead is an organisation and planning platform, not a legal service. A will is a legal document that determines how your estate is distributed — you should have one, prepared by a solicitor. Everstead is where you record everything that makes that will easier to execute: account details, document locations, contacts, and instructions your family can actually follow."
+        "a": "No. Everstead is an organisation and planning platform, not a legal service. A will is a legal document that determines how your estate is distributed, you should have one, prepared by a solicitor. Everstead is where you record everything that makes that will easier to execute: account details, document locations, contacts, and instructions your family can actually follow."
       },
       {
         "q": "What happens to my plan if I stop paying?",

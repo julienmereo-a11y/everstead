@@ -212,7 +212,7 @@ export default function Pricing() {
                 </Link>
                 {plan.isFree && (
                   <p className="mt-3 text-center text-xs text-stone-400 leading-relaxed">
-                    Upgrade to Everstead+ any time — your data comes with you.
+                    Upgrade to Everstead+ any time, your data comes with you.
                   </p>
                 )}
               </div>
@@ -226,7 +226,7 @@ export default function Pricing() {
             <div className="max-w-lg">
               <p className="text-sm font-semibold text-sage-300">{t('plans.adviser.name')}</p>
               <p className="mt-2 text-stone-300 text-sm leading-relaxed">
-                For solicitors, will-writers, and financial advisers — a co-branded, multi-client
+                For solicitors, will-writers, and financial advisers, a co-branded, multi-client
                 workspace. {t('plans.adviser.priceNote')}
               </p>
             </div>

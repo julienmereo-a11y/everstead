@@ -17,28 +17,28 @@ const STEPS = [
   {
     logo: true,
     title: <>Welcome to <span className="aurora">Everstead</span>.</>,
-    sub: "One calm, private place to get life's important things organised — for you today, and for the people you love tomorrow.",
+    sub: "One calm, private place to get life's important things organised, for you today, and for the people you love tomorrow.",
     points: [],
   },
   {
     title: 'Build your plan, step by step.',
     sub: "Home shows your estate readiness. Follow “Up next” and watch your score grow as your plan takes shape.",
     points: [
-      { Icon: AccountsIcon, label: 'Add your accounts', text: 'Banks, pensions and policies — one clear picture.' },
+      { Icon: AccountsIcon, label: 'Add your accounts', text: 'Banks, pensions and policies, one clear picture.' },
       { Icon: DocIcon,      label: 'Fill your vault',   text: 'Wills, deeds and documents, encrypted and safe.' },
     ],
   },
   {
     title: 'Choose who sees what.',
-    sub: 'Invite the people you trust from the Family tab — each person gets exactly the access you choose.',
+    sub: 'Invite the people you trust from the Family tab, each person gets exactly the access you choose.',
     points: [
-      { Icon: FamilyIcon, label: 'Trusted contacts', text: 'Spouse, executors, advisers — each with their own role.' },
+      { Icon: FamilyIcon, label: 'Trusted contacts', text: 'Spouse, executors, advisers, each with their own role.' },
       { Icon: HeartIcon,  label: 'On your terms',    text: "Share now, or only after you're gone. Nothing without your say-so." },
     ],
   },
   {
     title: 'And when you need more.',
-    sub: 'Everything else lives under More — private and locked behind your passcode.',
+    sub: 'Everything else lives under More, private and locked behind your passcode.',
     points: [
       { Icon: MessageIcon, label: 'Personal messages', text: 'Sealed letters for the people you love.' },
       { Icon: SparkIcon,   label: 'Your AI assistant', text: 'Gentle help organising it all, whenever you ask.' },

@@ -19,17 +19,17 @@ const QUESTIONS = [
   {
     id: 'accounts',
     text: 'Have you documented your financial accounts and assets?',
-    hint: 'Without a clear record, families can spend months locating accounts — or miss them entirely.',
+    hint: 'Without a clear record, families can spend months locating accounts, or miss them entirely.',
     options: [
       { label: 'Yes, fully documented',   points: 20 },
-      { label: 'Partially — some listed', points: 10 },
+      { label: 'Partially, some listed', points: 10 },
       { label: 'Not yet',                 points: 0  },
     ],
   },
   {
     id: 'lpa',
     text: 'Do you have a Lasting Power of Attorney in place?',
-    hint: 'An LPA lets trusted people manage your affairs if you lose capacity — without one, families face court applications.',
+    hint: 'An LPA lets trusted people manage your affairs if you lose capacity, without one, families face court applications.',
     options: [
       { label: 'Yes, both types (property & health)', points: 20 },
       { label: 'One of them',                         points: 10 },
@@ -39,7 +39,7 @@ const QUESTIONS = [
   {
     id: 'people',
     text: 'Have you designated trusted people with access to your plan?',
-    hint: 'Knowing who to contact — and what they\'re allowed to see — removes confusion in a crisis.',
+    hint: 'Knowing who to contact (and what they\'re allowed to see) removes confusion in a crisis.',
     options: [
       { label: 'Yes, they know and have access', points: 20 },
       { label: 'I\'ve thought about it',          points: 5  },
@@ -69,21 +69,21 @@ const BAND = (score) => {
     textCls: 'text-red-700',
   }
   if (score <= 60) return {
-    label:   'A good start — but critical gaps remain',
+    label:   'A good start, but critical gaps remain',
     color:   '#d97706',
     ringCls: 'text-amber-600',
     bgCls:   'bg-amber-50 border-amber-200',
     textCls: 'text-amber-700',
   }
   if (score <= 85) return {
-    label:   'You\'re ahead of most — a few things to complete',
+    label:   'You\'re ahead of most, a few things to complete',
     color:   '#4c7d47',
     ringCls: 'text-sage-500',
     bgCls:   'bg-sage-50 border-sage-200',
     textCls: 'text-sage-600',
   }
   return {
-    label:   'Excellent — your family will thank you',
+    label:   'Excellent, your family will thank you',
     color:   '#0d1628',
     ringCls: 'text-navy-950',
     bgCls:   'bg-navy-50 border-navy-200',
@@ -96,7 +96,7 @@ const BAND = (score) => {
 const MISSING_COPY = {
   will: {
     title:   'No up-to-date will',
-    message: 'Without a valid will, the law decides how your estate is distributed — not you. Updating a will after major life events (marriage, children, new property) is essential to ensure it reflects your actual wishes.',
+    message: 'Without a valid will, the law decides how your estate is distributed, not you. Updating a will after major life events (marriage, children, new property) is essential to ensure it reflects your actual wishes.',
   },
   accounts: {
     title:   'Undocumented accounts and assets',
@@ -104,7 +104,7 @@ const MISSING_COPY = {
   },
   lpa: {
     title:   'No Lasting Power of Attorney',
-    message: 'If you lost capacity tomorrow, your family could face lengthy and expensive Court of Protection proceedings to manage your affairs. An LPA avoids this entirely — and can only be set up while you still have capacity.',
+    message: 'If you lost capacity tomorrow, your family could face lengthy and expensive Court of Protection proceedings to manage your affairs. An LPA avoids this entirely, and can only be set up while you still have capacity.',
   },
   people: {
     title:   'No designated trusted contacts',
@@ -184,7 +184,7 @@ function useCountUp(target, duration = 1400, start = false) {
 // ─── Main component ───────────────────────────────────────────────────────────
 
 export default function EstateReadinessScore() {
-  const [step, setStep]       = useState(0)           // 0–4 = questions, 5 = results
+  const [step, setStep]       = useState(0)           // 0-4 = questions, 5 = results
   const [answers, setAnswers] = useState({})           // { [questionId]: points }
   const [animate, setAnimate] = useState(false)
 
@@ -261,14 +261,14 @@ export default function EstateReadinessScore() {
   return (
     <>
       <Helmet>
-        <title>Estate Readiness Score — Free Tool | Everstead</title>
+        <title>Estate Readiness Score | Free Tool | Everstead</title>
         <meta
           name="description"
           content="Take our free 5-question quiz and instantly see how ready your estate really is. No sign-up required. Get your personalised score out of 100."
         />
         <link rel="canonical" href="https://www.everstead.care/estate-readiness-score" />
         <meta property="og:type" content="website" />
-        <meta property="og:title" content="Estate Readiness Score — Free Tool | Everstead" />
+        <meta property="og:title" content="Estate Readiness Score | Free Tool | Everstead" />
         <meta property="og:description" content="Take our free 5-question quiz and instantly see how ready your estate really is. No sign-up required. Get your personalised score out of 100." />
         <meta property="og:url" content="https://www.everstead.care/estate-readiness-score" />
         <meta property="og:image" content="https://www.everstead.care/og-image.png" />
@@ -283,13 +283,13 @@ export default function EstateReadinessScore() {
           <div className="absolute inset-0 aurora-bg" />
           <div className="relative max-w-3xl mx-auto px-6 pt-28 pb-16 lg:pt-32 lg:pb-20 text-center">
             <p className="text-xs font-semibold uppercase tracking-[0.22em] text-sage-300 mb-4">
-              Free tool — no sign-up needed
+              Free tool, no sign-up needed
             </p>
             <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-light text-white leading-tight text-balance">
               Estate Readiness Score
             </h1>
             <p className="mt-4 text-base sm:text-lg leading-relaxed text-stone-300 max-w-xl mx-auto">
-              Five questions. Instant results. Find out exactly where you stand — and what your family actually needs from you.
+              Five questions. Instant results. Find out exactly where you stand, and what your family actually needs from you.
             </p>
           </div>
         </section>
@@ -398,7 +398,7 @@ export default function EstateReadinessScore() {
                       'You\'ve made a start, but there are still gaps that could cause real stress for those you leave behind. A little more preparation goes a long way.'
                     }
                     {totalScore > 60 && totalScore <= 85 &&
-                      'You\'re more prepared than most people. A few final steps would give your family complete clarity — and you complete peace of mind.'
+                      'You\'re more prepared than most people. A few final steps would give your family complete clarity, and you complete peace of mind.'
                     }
                     {totalScore > 85 &&
                       'You\'ve done the hard work. Your family will be well-supported. Consider keeping your plan updated annually as life changes.'
@@ -462,7 +462,7 @@ export default function EstateReadinessScore() {
                             Get your full personalised report
                           </p>
                           <p className="mt-1 text-xs leading-relaxed text-stone-500">
-                            We'll send a detailed breakdown of your score, what it means, and the exact steps to improve it — at your own pace.
+                            We'll send a detailed breakdown of your score, what it means, and the exact steps to improve it, at your own pace.
                           </p>
                         </div>
                       </div>
@@ -532,7 +532,7 @@ export default function EstateReadinessScore() {
                         Report on its way
                       </p>
                       <p className="text-sm leading-relaxed text-stone-500 mb-6 max-w-xs mx-auto">
-                        Check your inbox{form.name ? `, ${form.name}` : ''} — your personalised estate readiness report will arrive shortly.
+                        Check your inbox{form.name ? `, ${form.name}` : ''}, your personalised estate readiness report will arrive shortly.
                       </p>
                       <Link
                         to="/get-started"
@@ -558,7 +558,7 @@ export default function EstateReadinessScore() {
                       to="/get-started"
                       className="inline-flex items-center gap-2 text-sm font-medium text-navy-800 hover:text-navy-600 underline underline-offset-2 transition-colors"
                     >
-                      Start building your estate plan — free for 14 days
+                      Start building your estate plan, free for 14 days
                       <ArrowRight size={14} />
                     </Link>
                   </div>
@@ -588,7 +588,7 @@ export default function EstateReadinessScore() {
           {/* Trust footnote */}
           <p className="text-center text-xs text-stone-400 mt-6 leading-relaxed">
             Your answers are never stored without your consent.
-            Everstead is a UK digital estate planning service — not legal or financial advice.
+            Everstead is a UK digital estate planning service, not legal or financial advice.
           </p>
         </section>
 

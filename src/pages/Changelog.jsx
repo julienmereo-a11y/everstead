@@ -8,14 +8,14 @@ const entries = [
     date: 'August 2026',
     tag: 'New',
     tagColor: 'bg-sage-100 text-sage-700',
-    title: 'The Everstead app — now on iPhone and Android',
+    title: 'The Everstead app, now on iPhone and Android',
     items: [
       'Everstead is now a real app, available on the App Store and Google Play.',
-      'Everything you’ve organised — accounts, documents, trusted people and wishes — in your pocket, always in sync with the website.',
+      'Everything you’ve organised (accounts, documents, trusted people and wishes) in your pocket, always in sync with the website.',
       'Sign in with your usual email and password and pick up exactly where you left off.',
       'Keep your vault private on your phone with a PIN, plus Face ID on iPhone.',
       'Record video and photo messages for the people you love, straight from the app.',
-      'Add a document the moment it’s in your hand — snap, upload, done.',
+      'Add a document the moment it’s in your hand, snap, upload, done.',
     ],
   },
   {
@@ -26,7 +26,7 @@ const entries = [
     items: [
       'Previewing an uploaded document now opens reliably, with one-click download.',
       'When the AI scans a document for you, it now files it under the right type every time.',
-      'Gifting is simpler: Everstead+ is the gift — just choose how many years to give.',
+      'Gifting is simpler: Everstead+ is the gift, just choose how many years to give.',
       'The blog now shows the newest articles first, and there’s a new plain-language guide: “What happens to your pension when you die in the UK?”',
     ],
   },
@@ -36,10 +36,10 @@ const entries = [
     tagColor: 'bg-sage-100 text-sage-700',
     title: 'A free plan for everyone',
     items: [
-      'Everstead now starts free — organise the essentials at no cost, with no card required, forever.',
+      'Everstead now starts free, organise the essentials at no cost, with no card required, forever.',
       'The free plan includes the full guided setup with Your AI Assistant, your complete About Me, a readiness score, and a starter vault: one account, one document and one trusted person.',
-      'Our plans have new names: the Family plan is now Everstead+, and the Adviser plan is now Everstead Pro. Nothing else changes — existing members keep their exact plan, price and features.',
-      'When you reach a free-plan limit, a friendly note shows what Everstead+ adds — no interruptions, no pop-ups.',
+      'Our plans have new names: the Family plan is now Everstead+, and the Adviser plan is now Everstead Pro. Nothing else changes, existing members keep their exact plan, price and features.',
+      'When you reach a free-plan limit, a friendly note shows what Everstead+ adds, no interruptions, no pop-ups.',
       'A simpler sign-up: two clear choices, and upgrading later takes everything you’ve set up with you.',
     ],
   },
@@ -51,11 +51,11 @@ const entries = [
     items: [
       'A dedicated, private portal for financial advisers, solicitors and estate planners who support families on Everstead.',
       'See all your firm’s client families in one place, each with a clear readiness view.',
-      'Invite your whole team — everyone at the firm shares the same client list.',
-      'Add your firm’s logo — it appears in your portal and on your clients’ sign-up, so the experience feels like yours.',
-      'A private AI assistant that guides you around the portal and answers questions about your own client portfolio — never any other firm’s.',
+      'Invite your whole team, everyone at the firm shares the same client list.',
+      'Add your firm’s logo, it appears in your portal and on your clients’ sign-up, so the experience feels like yours.',
+      'A private AI assistant that guides you around the portal and answers questions about your own client portfolio, never any other firm’s.',
       'Your firm’s invoices, available right in the portal.',
-      'Clients keep full control of their plans at all times — advisers only ever see what a client chooses to share.',
+      'Clients keep full control of their plans at all times, advisers only ever see what a client chooses to share.',
     ],
   },
   {
@@ -64,7 +64,7 @@ const entries = [
     tagColor: 'bg-blue-50 text-blue-700',
     title: 'Smoother on mobile',
     items: [
-      'Fixed a display glitch on phones where action buttons (like “Send invite”) could sit behind the floating help buttons — dialogs now always appear cleanly on top.',
+      'Fixed a display glitch on phones where action buttons (like “Send invite”) could sit behind the floating help buttons, dialogs now always appear cleanly on top.',
     ],
   },
   {
@@ -73,9 +73,9 @@ const entries = [
     tagColor: 'bg-blue-50 text-blue-700',
     title: 'Stronger safeguards across your account',
     items: [
-      'Trusted people now see exactly — and only — the areas you’ve granted them, nothing more.',
-      'Access you’ve marked “after death or incapacity” stays sealed until that moment is independently confirmed by our team — it’s never released on an automatic or silent trigger.',
-      'A tamper-proof activity log records sensitive moments — including when a trusted person opens your plan and when access is released — and can never be edited or erased.',
+      'Trusted people now see exactly (and only) the areas you’ve granted them, nothing more.',
+      'Access you’ve marked “after death or incapacity” stays sealed until that moment is independently confirmed by our team, it’s never released on an automatic or silent trigger.',
+      'A tamper-proof activity log records sensitive moments (including when a trusted person opens your plan and when access is released) and can never be edited or erased.',
       'Your AI off-switch is now honoured everywhere: with AI turned off, nothing from your vault is ever sent to the assistant, on any screen.',
       'Exporting a full copy of your vault now asks you to re-enter your password first.',
       'We’ll email you a heads-up if your account is signed into from a device we haven’t seen before.',
@@ -88,9 +88,9 @@ const entries = [
     tagColor: 'bg-amber-100 text-amber-700',
     title: 'A more helpful AI Assistant and a smoother dashboard',
     items: [
-      'Choose whether the assistant remembers your conversation — pick up where you left off, or start fresh each time.',
+      'Choose whether the assistant remembers your conversation, pick up where you left off, or start fresh each time.',
       'Assistant replies are now clearly formatted and easier to read, with your chat history kept when you want it.',
-      'A new “How access is released” explainer makes it plain that access only ever opens after a real person verifies what has happened — there is no automatic, silent trigger.',
+      'A new “How access is released” explainer makes it plain that access only ever opens after a real person verifies what has happened, there is no automatic, silent trigger.',
       'Added reassurance in Trusted People about exactly how and when access is released.',
       'The browser back button now moves between dashboard sections the way you’d expect.',
       'A new guide on setting up your digital legacy, added to Resources.',
@@ -100,27 +100,27 @@ const entries = [
     date: 'June 2026',
     tag: 'New',
     tagColor: 'bg-sage-100 text-sage-700',
-    title: 'Your AI Assistant — a private helper for the admin',
+    title: 'Your AI Assistant, a private helper for the admin',
     items: [
-      'A calm, private assistant inside your account — for anyone who finds this kind of admin daunting. It helps you set things up one small step at a time, at your own pace.',
-      'Chat in plain English, or simply drop in a document — it reads it and suggests entries for you to review.',
-      'Nothing is saved until you confirm it — it suggests, you decide, and you can edit every suggestion first.',
+      'A calm, private assistant inside your account, for anyone who finds this kind of admin daunting. It helps you set things up one small step at a time, at your own pace.',
+      'Chat in plain English, or simply drop in a document, it reads it and suggests entries for you to review.',
+      'Nothing is saved until you confirm it, it suggests, you decide, and you can edit every suggestion first.',
       'It can also answer practical questions about how Everstead works.',
-      'Private to your account, never used to train AI or for advertising — and you can switch AI features off any time in Settings.',
+      'Private to your account, never used to train AI or for advertising, and you can switch AI features off any time in Settings.',
     ],
   },
   {
     date: 'June 2026',
     tag: 'New',
     tagColor: 'bg-sage-100 text-sage-700',
-    title: 'About Me — the story only you can tell',
+    title: 'About Me, the story only you can tell',
     items: [
-      'New "About Me" section in your vault — the warm, human heart of your plan, beyond accounts and admin.',
+      'New "About Me" section in your vault, the warm, human heart of your plan, beyond accounts and admin.',
       'Capture the life events that shaped you, your passions, and the reflections you want remembered.',
-      'Write letters and messages for the people you love — kept private until you choose to share them.',
+      'Write letters and messages for the people you love, kept private until you choose to share them.',
       'Add a profile photo and a playlist that\'s unmistakably yours.',
-      'Shared only with the people you choose — never with solicitors or advisers — now or when your plan is one day activated.',
-      'Install Everstead as an app — add it to your home screen and open your vault straight from your phone, even offline.',
+      'Shared only with the people you choose (never with solicitors or advisers) now or when your plan is one day activated.',
+      'Install Everstead as an app, add it to your home screen and open your vault straight from your phone, even offline.',
       'Redesigned dashboard navigation, grouped into clear sections (Your vault · People & wishes) so everything is easier to find.',
     ],
   },
@@ -130,8 +130,8 @@ const entries = [
     tagColor: 'bg-amber-100 text-amber-700',
     title: 'Save 20% with annual billing + a smoother sign-up',
     items: [
-      'New annual pricing — pay yearly and save 20%: Essential £3.19/month (£38.28/year), Family £7.99/month (£95.88/year). Monthly stays £3.99 and £9.99.',
-      'Already subscribed? Nothing changes — existing members keep their current price.',
+      'New annual pricing, pay yearly and save 20%: Essential £3.19/month (£38.28/year), Family £7.99/month (£95.88/year). Monthly stays £3.99 and £9.99.',
+      'Already subscribed? Nothing changes, existing members keep their current price.',
       'Change your plan or switch between monthly and annual right from the payment step, before you confirm.',
       'Refreshing during sign-up no longer loses your place or your saved card.',
       'A 6-month check-in email helps you keep your plan current as life changes.',
@@ -159,9 +159,9 @@ const entries = [
     tagColor: 'bg-blue-50 text-blue-700',
     title: 'Living vault reframe + plan limits',
     items: [
-      'Repositioned Everstead from death-planning to everyday vault — useful today, protected when it counts',
+      'Repositioned Everstead from death-planning to everyday vault, useful today, protected when it counts',
       'Essential plan limits enforced in-app: 1 trusted contact, 10 accounts/documents, 1 instruction set, 1 GB storage',
-      'Inline upgrade prompts throughout dashboard — never hidden, always calm',
+      'Inline upgrade prompts throughout dashboard, never hidden, always calm',
       'Personal messages locked with aspirational copy on Essential plan',
       'Referral nudge card surfaced in Overview section',
       'Progress celebration toasts for first account, first document, and 100% readiness',
@@ -173,7 +173,7 @@ const entries = [
     tagColor: 'bg-sage-100 text-sage-700',
     title: 'Post-cancellation winback + stale vault alerts',
     items: [
-      'Cancellation winback email fires on subscription.deleted — 30-day data retention reminder',
+      'Cancellation winback email fires on subscription.deleted, 30-day data retention reminder',
       'Stale vault banner appears in dashboard after 30 days of inactivity',
       'Dashboard overview subtitle updated for clarity',
       'Trial-expired modal updated with current launch pricing',
@@ -227,7 +227,7 @@ const entries = [
     items: [
       'Secure vault for accounts, documents, instructions, and wishes',
       'Trusted contact system with granular permission control',
-      'Readiness score: 0–100 across five estate categories',
+      'Readiness score: 0-100 across five estate categories',
       'MFA, audit log, role-based access control',
       '14-day free trial · Essential from £3.99/month · Family from £9.99/month',
       'UK GDPR compliant · AES-256 encryption · Supabase infrastructure · ICO registered',
@@ -240,12 +240,12 @@ export default function Changelog() {
   return (
     <>
       <Helmet>
-        <title>Changelog — Everstead</title>
-        <meta name="description" content="What's new and what's improved in Everstead — a running log of product updates, new features, and fixes." />
+        <title>Changelog | Everstead</title>
+        <meta name="description" content="What's new and what's improved in Everstead, a running log of product updates, new features, and fixes." />
         <link rel="canonical" href="https://www.everstead.care/changelog" />
         <meta property="og:type" content="website" />
-        <meta property="og:title" content="Changelog — Everstead" />
-        <meta property="og:description" content="What's new and what's improved in Everstead — a running log of product updates, new features, and fixes." />
+        <meta property="og:title" content="Changelog | Everstead" />
+        <meta property="og:description" content="What's new and what's improved in Everstead, a running log of product updates, new features, and fixes." />
         <meta property="og:url" content="https://www.everstead.care/changelog" />
         <meta property="og:image" content="https://www.everstead.care/og-image.png" />
         <meta name="twitter:card" content="summary_large_image" />

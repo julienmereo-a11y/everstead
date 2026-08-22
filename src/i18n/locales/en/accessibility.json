@@ -1,7 +1,7 @@
 {
   "meta": {
-    "title": "Accessibility — Everstead",
-    "description": "Everstead's accessibility statement — our commitment to WCAG 2.1 AA, what we've done, known limitations, and how to report issues."
+    "title": "Accessibility | Everstead",
+    "description": "Everstead's accessibility statement, our commitment to WCAG 2.1 AA, what we've done, known limitations, and how to report issues."
   },
   "header": {
     "eyebrow": "Legal",
@@ -11,28 +11,28 @@
   "sections": [
     {
       "title": "Our commitment",
-      "body": "Everstead is committed to making our platform and website accessible to everyone, including people with disabilities. We aim to meet the Web Content Accessibility Guidelines (WCAG) 2.1 at Level AA as a minimum standard.\n\nWe believe accessibility is not a feature — it is a baseline. Everyone should be able to organise their important information and protect the people they love, regardless of how they access the web."
+      "body": "Everstead is committed to making our platform and website accessible to everyone, including people with disabilities. We aim to meet the Web Content Accessibility Guidelines (WCAG) 2.1 at Level AA as a minimum standard.\n\nWe believe accessibility is not a feature, it is a baseline. Everyone should be able to organise their important information and protect the people they love, regardless of how they access the web."
     },
     {
       "title": "Current accessibility status",
-      "body": "We are working continuously to improve the accessibility of Everstead. Current measures include:\n\n— Semantic HTML throughout the application, with appropriate heading structure and landmark regions.\n— All interactive elements (buttons, links, form inputs) are keyboard-navigable and include visible focus indicators.\n— Colour contrast ratios meet or exceed WCAG 2.1 AA across all core screens.\n— Form fields include visible labels; error messages are descriptive and associated with the relevant field.\n— Images used for meaning include descriptive alternative text. Decorative images are marked appropriately.\n— The platform does not rely on colour alone to convey information.\n— Fonts are set in relative units (rem/em) and respect the user's browser text size preferences."
+      "body": "We are working continuously to improve the accessibility of Everstead. Current measures include: Semantic HTML throughout the application, with appropriate heading structure and landmark regions. All interactive elements (buttons, links, form inputs) are keyboard-navigable and include visible focus indicators. Colour contrast ratios meet or exceed WCAG 2.1 AA across all core screens. Form fields include visible labels; error messages are descriptive and associated with the relevant field. Images used for meaning include descriptive alternative text. Decorative images are marked appropriately. The platform does not rely on colour alone to convey information. Fonts are set in relative units (rem/em) and respect the user's browser text size preferences."
     },
     {
       "title": "Known limitations",
-      "body": "We are aware of the following areas where accessibility can be improved:\n\n— Some complex data visualisations (such as the readiness score chart) may not yet be fully interpretable by screen readers. We are working on text-based alternatives.\n— A small number of older document upload interactions may not be fully keyboard-accessible on all browsers. Improvements are in progress.\n— PDF documents stored in user vaults are user-generated and may not themselves be accessible.\n\nWe prioritise fixing accessibility issues as they are identified. If you encounter a barrier not listed here, please tell us."
+      "body": "We are aware of the following areas where accessibility can be improved: Some complex data visualisations (such as the readiness score chart) may not yet be fully interpretable by screen readers. We are working on text-based alternatives. A small number of older document upload interactions may not be fully keyboard-accessible on all browsers. Improvements are in progress. PDF documents stored in user vaults are user-generated and may not themselves be accessible.\n\nWe prioritise fixing accessibility issues as they are identified. If you encounter a barrier not listed here, please tell us."
     },
     {
       "title": "Assistive technology support",
-      "body": "Everstead is tested with the following combinations:\n\n— NVDA with Chrome on Windows\n— VoiceOver with Safari on macOS and iOS\n— TalkBack with Chrome on Android\n\nWe aim to support all major screen readers and assistive technologies. If you experience issues with a specific tool, please let us know and we will investigate."
+      "body": "Everstead is tested with the following combinations: NVDA with Chrome on Windows: VoiceOver with Safari on macOS and iOS: TalkBack with Chrome on Android\n\nWe aim to support all major screen readers and assistive technologies. If you experience issues with a specific tool, please let us know and we will investigate."
     },
     {
       "title": "Feedback and contact",
-      "body": "If you encounter an accessibility barrier on Everstead — or if you need content in an alternative format — please contact us:\n\nEmail: hello@everstead.care\nSubject: Accessibility\n\nWe aim to respond within 5 business days. We take all accessibility reports seriously and will work with you to find a solution."
+      "body": "If you encounter an accessibility barrier on Everstead (or if you need content in an alternative format) please contact us:\n\nEmail: hello@everstead.care\nSubject: Accessibility\n\nWe aim to respond within 5 business days. We take all accessibility reports seriously and will work with you to find a solution."
     },
     {
       "title": "Enforcement",
       "body": "If you are not satisfied with our response, you can contact the Equality Advisory and Support Service (EASS) in the UK: www.equalityadvisoryservice.com"
     }
   ],
-  "company": "Everstead Digital Ltd — registered in England & Wales, No. 17166825."
+  "company": "Everstead Digital Ltd, registered in England & Wales, No. 17166825."
 }

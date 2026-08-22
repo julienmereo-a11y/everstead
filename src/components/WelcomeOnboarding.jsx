@@ -17,9 +17,9 @@ const inputCls =
   'w-full border border-stone-300 rounded-xl px-3.5 py-2.5 text-sm text-navy-900 placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-navy-300 focus:border-navy-300 bg-white transition-colors'
 
 const BENEFITS = [
-  { icon: Sparkles, title: 'Everything in one place', body: 'Accounts, documents, instructions and final wishes — organised and easy to find.' },
+  { icon: Sparkles, title: 'Everything in one place', body: 'Accounts, documents, instructions and final wishes, organised and easy to find.' },
   { icon: Shield,   title: 'Only the people you choose', body: 'Share with trusted people on your terms. You stay in control of who sees what.' },
-  { icon: Heart,    title: 'Peace of mind now, clarity later', body: 'A quiet, caring thing to do for the people you love — so no one is left guessing.' },
+  { icon: Heart,    title: 'Peace of mind now, clarity later', body: 'A quiet, caring thing to do for the people you love, so no one is left guessing.' },
 ]
 
 export default function WelcomeOnboarding({ profile, updateProfile, onClose, onGoToAboutMe }) {
@@ -50,7 +50,7 @@ export default function WelcomeOnboarding({ profile, updateProfile, onClose, onG
 
   const saveDetails = async () => {
     setSaving(true)
-    try { await updateProfile(form) } catch { /* non-blocking — they can edit in Settings */ }
+    try { await updateProfile(form) } catch { /* non-blocking, they can edit in Settings */ }
     setSaving(false)
     setStep(3)
   }
@@ -84,7 +84,7 @@ export default function WelcomeOnboarding({ profile, updateProfile, onClose, onG
               Welcome to Everstead, {firstName}.
             </h2>
             <p className="text-stone-500 text-sm leading-relaxed max-w-sm mx-auto mb-7">
-              Taking a moment to get this in order is one of the most caring things you can do for the people you love. There's no rush, and nothing is ever shared without your say-so. We'll take it one gentle step at a time — starting now.
+              Taking a moment to get this in order is one of the most caring things you can do for the people you love. There's no rush, and nothing is ever shared without your say-so. We'll take it one gentle step at a time, starting now.
             </p>
 
             <div className="space-y-3 text-left mb-8">
@@ -163,7 +163,7 @@ export default function WelcomeOnboarding({ profile, updateProfile, onClose, onG
                 disabled={saving}
                 className="btn-aurora flex-1 inline-flex items-center justify-center gap-2 text-white font-semibold text-sm py-3.5 rounded-full transition-transform hover:-translate-y-0.5 disabled:opacity-60"
               >
-                {saving ? <><Loader2 size={15} className="animate-spin" /> Saving…</> : <>Looks right — continue <ArrowRight size={16} /></>}
+                {saving ? <><Loader2 size={15} className="animate-spin" /> Saving…</> : <>Looks right, continue <ArrowRight size={16} /></>}
               </button>
               <button onClick={() => setStep(3)} className="text-sm font-medium text-stone-500 hover:text-stone-800 px-3 py-2">
                 Skip
@@ -182,7 +182,7 @@ export default function WelcomeOnboarding({ profile, updateProfile, onClose, onG
               One lovely first step: your story
             </h2>
             <p className="text-stone-500 text-sm leading-relaxed max-w-sm mx-auto mb-7">
-              <span className="font-medium text-navy-800">About Me</span> is the warm, human heart of your plan — the life events that shaped you, a letter to the people you love, a photo, even a playlist that's unmistakably yours. It's shared only with the people you choose. It's a gentle, meaningful place to begin.
+              <span className="font-medium text-navy-800">About Me</span> is the warm, human heart of your plan, the life events that shaped you, a letter to the people you love, a photo, even a playlist that's unmistakably yours. It's shared only with the people you choose. It's a gentle, meaningful place to begin.
             </p>
 
             <button
@@ -192,7 +192,7 @@ export default function WelcomeOnboarding({ profile, updateProfile, onClose, onG
               Set up About Me <ArrowRight size={16} />
             </button>
             <button onClick={finish} className="mt-3 inline-flex items-center gap-1.5 text-xs text-stone-400 hover:text-stone-600 transition-colors">
-              <Check size={13} /> I'll do this later — take me to my dashboard
+              <Check size={13} /> I'll do this later, take me to my dashboard
             </button>
           </div>
         )}

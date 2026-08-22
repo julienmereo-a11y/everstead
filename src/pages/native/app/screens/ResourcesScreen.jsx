@@ -3,9 +3,9 @@ import { ChevronIcon } from '../icons'
 import SecScreen from '../components/SecScreen'
 
 const GUIDES = [
-  { t: 'Accounts', body: 'Add each bank, pension, investment and insurance policy. Include the provider and the last four digits — never full numbers or passwords.' },
+  { t: 'Accounts', body: 'Add each bank, pension, investment and insurance policy. Include the provider and the last four digits, never full numbers or passwords.' },
   { t: 'Documents', body: 'Upload your will, property deeds, insurance policies and passports. Everstead keeps them encrypted and shares them only with the people you choose.' },
-  { t: 'People', body: 'Invite the people you trust — a partner, executor or solicitor — and choose exactly what each can see, and when.' },
+  { t: 'People', body: 'Invite the people you trust (a partner, executor or solicitor) and choose exactly what each can see, and when.' },
   { t: 'Instructions', body: 'Write step-by-step notes for your family: what to do in the first 48 hours, who to contact, and where to find things.' },
   { t: 'Personal messages', body: 'Record sealed letters or videos for the people you love, delivered when the time is right.' },
 ]

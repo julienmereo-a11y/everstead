@@ -19,10 +19,10 @@
   },
   "footer": {
     "tagline": "Une plateforme sécurisée pour transmettre l'essentiel à vos proches, au moment où ça compte le plus.",
-    "legalNote": "Everstead est une plateforme d'organisation — pas un service juridique ni un cabinet d'avocats.",
+    "legalNote": "Everstead est une plateforme d'organisation, pas un service juridique ni un cabinet d'avocats.",
     "trustpilotRated": "Noté",
     "trustpilotOn": "sur Trustpilot",
-    "trustpilotAria": "Noté {{label}} sur Trustpilot — lisez nos avis",
+    "trustpilotAria": "Noté {{label}} sur Trustpilot, lisez nos avis",
     "cols": {
       "product": "Produit",
       "useCases": "Cas d'usage",

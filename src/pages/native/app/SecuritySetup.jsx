@@ -45,7 +45,7 @@ export default function SecuritySetup({ onDone }) {
       await setPasscode(pin)
       await markSetupDone()
       setChanged(true)
-      haptic.success() // passcode is set — a meaningful completion
+      haptic.success() // passcode is set, a meaningful completion
       if (bioAvail) { setStep('bio'); setBusy(false) }
       else { onDone(true) }
     } catch { setError('Could not save your passcode. Please try again.'); setBusy(false) }
@@ -93,7 +93,7 @@ export default function SecuritySetup({ onDone }) {
             <p style={{ fontSize: 14.5, color: 'rgba(255,255,255,0.6)', margin: '10px 0 0', lineHeight: 1.5 }}>
               Everstead will ask for this each time you open the app, so your plan stays private on this device.
             </p>
-            <label className="flabel flabel-dark" style={{ marginTop: 24 }}>Choose a 4–6 digit passcode</label>
+            <label className="flabel flabel-dark" style={{ marginTop: 24 }}>Choose a 4-6 digit passcode</label>
             {pinInput(pin, setPin, true, submitPin)}
             {error && <p style={{ color: '#fca5a5', fontSize: 12.5, marginTop: 12 }}>{error}</p>}
           </>
@@ -146,7 +146,7 @@ export default function SecuritySetup({ onDone }) {
         {step === 'bio' && (
           <>
             <button className={`btn btn-light w100 ${busy ? 'dis' : ''}`} onClick={() => finishBio(true)}>Enable Face ID</button>
-            <button className="linkbtn" onClick={() => finishBio(false)} disabled={busy}>Not now — use passcode only</button>
+            <button className="linkbtn" onClick={() => finishBio(false)} disabled={busy}>Not now, use passcode only</button>
           </>
         )}
       </div>

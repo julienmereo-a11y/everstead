@@ -37,7 +37,7 @@ export default function WishesScreen({ app }) {
       {loading ? (
         <Busy />
       ) : data.length === 0 ? (
-        <div className="card-light" style={{ padding: 18 }}><p className="rdet" style={{ margin: 0 }}>Nothing recorded yet. Start small — the music you love, a place that matters, or how you'd like things done.</p></div>
+        <div className="card-light" style={{ padding: 18 }}><p className="rdet" style={{ margin: 0 }}>Nothing recorded yet. Start small, the music you love, a place that matters, or how you'd like things done.</p></div>
       ) : (
         <div className="fx col gap12">
           {data.map(w => (

@@ -1,23 +1,23 @@
 {
   "meta": {
-    "title": "Réservez un appel de 20 minutes — Everstead pour les conseillers",
-    "description": "Nous accueillons actuellement nos premiers conseillers partenaires. Réservez un appel de 20 minutes avec l'équipe fondatrice — pas de discours commercial, pas de contrat, juste une conversation pour savoir si Everstead convient à votre cabinet.",
-    "ogTitle": "Réservez un appel — Everstead pour les conseillers",
+    "title": "Réservez un appel de 20 minutes | Everstead pour les conseillers",
+    "description": "Nous accueillons actuellement nos premiers conseillers partenaires. Réservez un appel de 20 minutes avec l'équipe fondatrice, pas de discours commercial, pas de contrat, juste une conversation pour savoir si Everstead convient à votre cabinet.",
+    "ogTitle": "Réservez un appel | Everstead pour les conseillers",
     "ogDescription": "Nous travaillons directement avec notre première cohorte de conseillers financiers, de notaires et de conseillers patrimoniaux. Réservez un appel de 20 minutes pour voir si Everstead convient à votre cabinet."
   },
   "hero": {
     "eyebrow": "Accès anticipé",
     "title": "Nous accueillons actuellement nos premiers conseillers partenaires.",
-    "subtitle": "Réservez un appel de 20 minutes avec l'équipe fondatrice. Pas de discours commercial, pas de contrat — juste une conversation pour savoir si Everstead convient à votre cabinet et à vos clients."
+    "subtitle": "Réservez un appel de 20 minutes avec l'équipe fondatrice. Pas de discours commercial, pas de contrat, juste une conversation pour savoir si Everstead convient à votre cabinet et à vos clients."
   },
   "coverage": {
     "title": "Ce que nous aborderons",
     "benefits": [
       "Découvrez l'espace client co-brandé et la façon dont vos clients l'utilisent entre deux rendez-vous",
-      "Parcourez le tableau de bord conseiller — indicateurs de préparation, accès aux documents et progression de chaque client en un coup d'œil",
+      "Parcourez le tableau de bord conseiller, indicateurs de préparation, accès aux documents et progression de chaque client en un coup d'œil",
       "Examinez le modèle de confiance et de protection des données utilisé dans les échanges avec vos clients",
       "Comprenez comment Everstead s'intègre à vos outils existants sans engager votre responsabilité",
-      "Dites-nous ce qui compte pour votre cabinet — nous adapterons la session à vos priorités"
+      "Dites-nous ce qui compte pour votre cabinet, nous adapterons la session à vos priorités"
     ]
   },
   "infoCards": [
@@ -39,18 +39,33 @@
     }
   ],
   "form": {
-    "name": { "label": "Nom complet", "placeholder": "Votre nom" },
-    "email": { "label": "E-mail professionnel", "placeholder": "vous@cabinet.com" },
-    "firm": { "label": "Nom du cabinet", "placeholder": "Votre cabinet" },
-    "role": { "label": "Fonction", "placeholder": "Conseiller financier, notaire, gestionnaire de patrimoine…" },
-    "clients": { "label": "Nombre approximatif de clients que vous accompagnez", "placeholder": "ex. 75" },
+    "name": {
+      "label": "Nom complet",
+      "placeholder": "Votre nom"
+    },
+    "email": {
+      "label": "E-mail professionnel",
+      "placeholder": "vous@cabinet.com"
+    },
+    "firm": {
+      "label": "Nom du cabinet",
+      "placeholder": "Votre cabinet"
+    },
+    "role": {
+      "label": "Fonction",
+      "placeholder": "Conseiller financier, notaire, gestionnaire de patrimoine…"
+    },
+    "clients": {
+      "label": "Nombre approximatif de clients que vous accompagnez",
+      "placeholder": "ex. 75"
+    },
     "notes": {
       "label": "Qu'est-ce qui compte le plus pour vous dans cette conversation ?",
       "placeholder": "Gestion des données, règlement des successions, expérience client, responsabilité…"
     },
     "submit": "Réserver un appel de 20 minutes",
     "sending": "Envoi…",
-    "disclaimer": "Everstead est un outil d'organisation et d'accès — pas un service juridique ou financier. Aucun conseil réglementé n'est donné lors de cet appel."
+    "disclaimer": "Everstead est un outil d'organisation et d'accès, pas un service juridique ou financier. Aucun conseil réglementé n'est donné lors de cet appel."
   },
   "sent": {
     "title": "Nous revenons vers vous.",

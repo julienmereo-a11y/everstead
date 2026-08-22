@@ -387,7 +387,7 @@ export function FamilySection({ profile, session }) {
           {!membership && (
             <div>
               <p className="text-sm text-stone-600 mb-4">
-                Invite a partner, spouse, or family member to set up their own private vault — included in your plan.
+                Invite a partner, spouse, or family member to set up their own private vault, included in your plan.
               </p>
 
               {inviteSent && (
@@ -431,7 +431,7 @@ export function FamilySection({ profile, session }) {
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium text-navy-900 truncate">{membership.secondary_email}</p>
-                  <p className="text-xs text-stone-500">Invitation sent — waiting for them to accept</p>
+                  <p className="text-xs text-stone-500">Invitation sent, waiting for them to accept</p>
                 </div>
               </div>
 
@@ -604,7 +604,7 @@ export default function Settings() {
               <SectionLabel>Family</SectionLabel>
               <div className="flex items-center gap-2 mb-5">
                 <Users size={16} className="text-navy-700" />
-                <h2 className="text-sm font-semibold text-navy-900">Two private vaults — one subscription</h2>
+                <h2 className="text-sm font-semibold text-navy-900">Two private vaults, one subscription</h2>
               </div>
               <FamilySection profile={profile} session={session} />
             </Card>

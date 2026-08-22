@@ -320,12 +320,12 @@ export default function DelegateDashboard() {
     const sections = []
     if (accessibleAccounts.length) {
       sections.push(`<h2>Accounts (${accessibleAccounts.length})</h2><ul>${
-        accessibleAccounts.map(a => `<li><strong>${esc(a.institution)}</strong> — ${esc(a.account_type)}${a.account_number_hint ? ` (••••${esc(a.account_number_hint)})` : ''}${a.notes ? `<br><em>${esc(a.notes)}</em>` : ''}</li>`).join('')
+        accessibleAccounts.map(a => `<li><strong>${esc(a.institution)}</strong>, ${esc(a.account_type)}${a.account_number_hint ? ` (••••${esc(a.account_number_hint)})` : ''}${a.notes ? `<br><em>${esc(a.notes)}</em>` : ''}</li>`).join('')
       }</ul>`)
     }
     if (accessibleDocuments.length) {
       sections.push(`<h2>Documents (${accessibleDocuments.length})</h2><ul>${
-        accessibleDocuments.map(d => `<li><strong>${esc(d.name)}</strong> — ${esc(d.doc_type || 'Document')}${d.expires_at ? ` (expires ${esc(formatDate(d.expires_at))})` : ''}${d.notes ? `<br><em>${esc(d.notes)}</em>` : ''}</li>`).join('')
+        accessibleDocuments.map(d => `<li><strong>${esc(d.name)}</strong>, ${esc(d.doc_type || 'Document')}${d.expires_at ? ` (expires ${esc(formatDate(d.expires_at))})` : ''}${d.notes ? `<br><em>${esc(d.notes)}</em>` : ''}</li>`).join('')
       }</ul>`)
     }
     if (accessibleInstructions.length) {
@@ -333,7 +333,7 @@ export default function DelegateDashboard() {
         accessibleInstructions.map(i => `<div style="margin-bottom:1.5rem"><strong>${esc(i.title)}</strong> (${esc(i.category)} · ${esc(i.audience)})<br>${esc(i.body || '')}<ol>${(i.instruction_steps || []).map(s => `<li>${esc(s.body)}</li>`).join('')}</ol></div>`).join('')
       }`)
     }
-    const html = `<!DOCTYPE html><html><head><title>${esc(owner?.full_name || 'Plan')} — Handoff Plan</title><style>body{font-family:Georgia,serif;max-width:800px;margin:2rem auto;color:#1a1a1a;line-height:1.6}h1{font-size:1.8rem;margin-bottom:0.5rem}h2{font-size:1.1rem;text-transform:uppercase;letter-spacing:.08em;color:#666;border-bottom:1px solid #ddd;padding-bottom:.5rem;margin-top:2rem}ul{padding-left:1.2rem}li{margin-bottom:.75rem}@media print{body{margin:1rem}}</style></head><body><h1>${esc(owner?.full_name || 'Plan owner')}'s handoff plan</h1><p style="color:#666;font-size:.9rem">Viewed by ${esc(invite?.name || 'delegate')} (${esc(invite?.role || 'trusted person')}) · Printed ${new Date().toLocaleDateString('en-GB', { dateStyle: 'long' })}</p>${sections.join('')}<hr style="margin-top:3rem"><p style="font-size:.8rem;color:#999">Exported from Everstead — secure estate planning platform · everstead.care</p></body></html>`
+    const html = `<!DOCTYPE html><html><head><title>${esc(owner?.full_name || 'Plan')} | Handoff Plan</title><style>body{font-family:Georgia,serif;max-width:800px;margin:2rem auto;color:#1a1a1a;line-height:1.6}h1{font-size:1.8rem;margin-bottom:0.5rem}h2{font-size:1.1rem;text-transform:uppercase;letter-spacing:.08em;color:#666;border-bottom:1px solid #ddd;padding-bottom:.5rem;margin-top:2rem}ul{padding-left:1.2rem}li{margin-bottom:.75rem}@media print{body{margin:1rem}}</style></head><body><h1>${esc(owner?.full_name || 'Plan owner')}'s handoff plan</h1><p style="color:#666;font-size:.9rem">Viewed by ${esc(invite?.name || 'delegate')} (${esc(invite?.role || 'trusted person')}) · Printed ${new Date().toLocaleDateString('en-GB', { dateStyle: 'long' })}</p>${sections.join('')}<hr style="margin-top:3rem"><p style="font-size:.8rem;color:#999">Exported from Everstead | secure estate planning platform · everstead.care</p></body></html>`
     const w = window.open('', '_blank')
     w.document.write(html)
     w.document.close()
@@ -412,7 +412,7 @@ export default function DelegateDashboard() {
     <div className="min-h-screen bg-stone-50 text-navy-950">
       {isDemo && (
         <div className="bg-amber-500 text-white text-xs font-semibold text-center py-2 px-4 flex items-center justify-center gap-3">
-          <span>Demo mode — showing Carol Thornton's executor view. Data is fictional.</span>
+          <span>Demo mode, showing Carol Thornton's executor view. Data is fictional.</span>
           <Link to="/get-started" className="underline hover:no-underline">Create your own plan →</Link>
         </div>
       )}
@@ -649,7 +649,7 @@ export default function DelegateDashboard() {
                 <Search size={16} className="text-stone-400" />
                 <p className="text-sm text-stone-600">
                   Results for <span className="font-semibold text-navy-900">"{searchQuery}"</span>
-                  {' '}— {searchResults.documents.length + searchResults.accounts.length + searchResults.instructions.length} found
+                  {' '}, {searchResults.documents.length + searchResults.accounts.length + searchResults.instructions.length} found
                 </p>
               </div>
               {searchResults.documents.length > 0 && (
@@ -941,7 +941,7 @@ export default function DelegateDashboard() {
                                 )}
                               </div>
                             ) : (
-                              <p className="text-xs text-stone-400 italic">No file attached — this is a reference record only.</p>
+                              <p className="text-xs text-stone-400 italic">No file attached, this is a reference record only.</p>
                             )}
                           </div>
                         )}
@@ -968,7 +968,7 @@ export default function DelegateDashboard() {
                       </div>
                       <div className="flex-1 min-w-0">
                         <p className="font-semibold text-stone-600 text-sm">{item.name}</p>
-                        <p className="text-xs text-stone-400 mt-0.5">{item.doc_type || 'Document'} · Sealed — released to you only when the time comes</p>
+                        <p className="text-xs text-stone-400 mt-0.5">{item.doc_type || 'Document'} · Sealed, released to you only when the time comes</p>
                       </div>
                       <span className="shrink-0 text-xs font-medium px-2 py-0.5 rounded-full border border-stone-200 bg-white text-stone-500">
                         Sealed
@@ -1309,7 +1309,7 @@ const DELEGATE_GUIDES = [
     color: 'bg-navy-50 text-navy-700',
     items: [
       { label: 'What is a trusted person?', detail: 'A trusted person on Everstead is someone the plan owner has chosen to share part or all of their estate plan with. Depending on your role, you may be an executor, next of kin, financial power of attorney holder, or simply a trusted family member.' },
-      { label: 'What does an executor do?', detail: 'An executor is legally responsible for administering the estate after death. This includes locating the will, applying for probate, notifying institutions, settling debts, and distributing assets. Everstead gives you the information you need to do this — it does not replace legal advice for complex estates.' },
+      { label: 'What does an executor do?', detail: 'An executor is legally responsible for administering the estate after death. This includes locating the will, applying for probate, notifying institutions, settling debts, and distributing assets. Everstead gives you the information you need to do this, it does not replace legal advice for complex estates.' },
       { label: 'What does a power of attorney holder do?', detail: 'If you hold a Lasting Power of Attorney (LPA) for property and financial affairs, you can act on behalf of the plan owner if they lose mental capacity. This is a serious legal responsibility. Only act within the scope of the LPA and keep records of all decisions.' },
       { label: 'Your access level', detail: 'You can only see what the plan owner has explicitly shared with you. Some people see the full plan; others see only specific sections. If you need access to something not shown here, contact the plan owner directly.' },
     ],
@@ -1319,9 +1319,9 @@ const DELEGATE_GUIDES = [
     title: 'Working with documents',
     color: 'bg-emerald-50 text-emerald-700',
     items: [
-      { label: 'Finding the will', detail: 'Look in the Documents section. If the original is held by a solicitor, the document record should include their contact details. You will need the original signed will — not a scan — to apply for probate in England and Wales.' },
+      { label: 'Finding the will', detail: 'Look in the Documents section. If the original is held by a solicitor, the document record should include their contact details. You will need the original signed will (not a scan) to apply for probate in England and Wales.' },
       { label: 'Locating the LPA', detail: 'The LPA must be registered with the Office of the Public Guardian (OPG) before it can be used. The registration certificate will show the OPG reference number. Financial institutions will ask to see a certified copy.' },
-      { label: 'Downloading documents', detail: 'Use the Download button next to any document to save a copy. Store these securely — you may need to send certified copies to banks, insurers, and HMRC.' },
+      { label: 'Downloading documents', detail: 'Use the Download button next to any document to save a copy. Store these securely, you may need to send certified copies to banks, insurers, and HMRC.' },
       { label: 'What to do if documents are missing', detail: 'If you cannot find a key document here, check with the plan owner\'s solicitor, bank, or family members. For a missing will, the Certainty National Will Register can run a search. For lost LPAs, contact the OPG directly.' },
     ],
   },
@@ -1332,7 +1332,7 @@ const DELEGATE_GUIDES = [
     items: [
       { label: 'Notifying financial institutions', detail: 'Each bank, insurer, and pension provider must be notified separately. Most accept a death certificate and grant of probate. Use the Tell Us Once service (gov.uk) to notify multiple government departments in a single step.' },
       { label: 'Freezing and closing accounts', detail: 'Accounts are typically frozen on notification of death. Joint accounts may transfer automatically to the surviving holder. Sole accounts require probate before funds can be released.' },
-      { label: 'Pensions and life insurance', detail: 'These are usually written in trust and paid outside of probate — check the nomination of beneficiary forms. Contact the provider directly with the policy number shown in the Accounts section.' },
+      { label: 'Pensions and life insurance', detail: 'These are usually written in trust and paid outside of probate, check the nomination of beneficiary forms. Contact the provider directly with the policy number shown in the Accounts section.' },
       { label: 'Subscriptions and direct debits', detail: 'Cancel ongoing subscriptions as quickly as possible to avoid charges. Check the Subscriptions section for a list. Contact each provider with proof of death.' },
       { label: 'Tax and final returns', detail: 'A final income tax return may be required for the year of death. If the estate exceeds the inheritance tax threshold (currently £325,000 + any allowances), an IHT400 form must be filed with HMRC before probate.' },
     ],
@@ -1343,7 +1343,7 @@ const DELEGATE_GUIDES = [
     color: 'bg-violet-50 text-violet-700',
     items: [
       { label: 'Co-executors', detail: 'If there are multiple executors, all must act together unless one formally steps aside. Decisions should be agreed in writing where possible. Disagreements between executors can delay probate significantly.' },
-      { label: 'Beneficiaries', detail: 'You are not obliged to share the details of the estate with beneficiaries during administration — only the final distribution. However, keeping them reasonably informed reduces disputes.' },
+      { label: 'Beneficiaries', detail: 'You are not obliged to share the details of the estate with beneficiaries during administration, only the final distribution. However, keeping them reasonably informed reduces disputes.' },
       { label: 'Solicitors and professionals', detail: 'For complex estates, instruct a probate solicitor early. Look in the People section for the plan owner\'s nominated solicitor. Most estate solicitors charge a percentage of the estate value or an hourly rate.' },
       { label: 'When to seek legal advice', detail: 'Always seek legal advice if: the estate includes a business, overseas assets, disputed property, estranged family members, or debts that exceed the estate\'s value.' },
     ],
@@ -1353,9 +1353,9 @@ const DELEGATE_GUIDES = [
     title: 'Practical steps when the time comes',
     color: 'bg-amber-50 text-amber-700',
     items: [
-      { label: 'Register the death', detail: 'In England and Wales, a death must be registered within 5 days at a local register office. You will receive a death certificate — request at least 10 certified copies, as institutions will ask for originals.' },
+      { label: 'Register the death', detail: 'In England and Wales, a death must be registered within 5 days at a local register office. You will receive a death certificate, request at least 10 certified copies, as institutions will ask for originals.' },
       { label: 'Locate the will and contact solicitors', detail: 'Do this before making any major financial decisions. The will may name specific funeral wishes, executors, and bequests that affect immediate next steps.' },
-      { label: 'Apply for probate', detail: 'If the estate requires it, apply to the Probate Registry for a Grant of Probate (or Letters of Administration if there is no will). This typically takes 4–8 weeks. Estates under £10,000 may not require probate.' },
+      { label: 'Apply for probate', detail: 'If the estate requires it, apply to the Probate Registry for a Grant of Probate (or Letters of Administration if there is no will). This typically takes 4-8 weeks. Estates under £10,000 may not require probate.' },
       { label: 'Notify Everstead via this dashboard', detail: 'Use the Report a Death button in the left panel to formally notify Everstead. This will trigger a verification process and, once confirmed, release any personal messages addressed to you.' },
     ],
   },
@@ -1803,7 +1803,7 @@ function DelegateMessageCard({ msg, ownerName, inviteToken, isDemo }) {
                   : <img src={mediaUrl} alt={msg.title} className="w-full max-h-96 object-contain bg-stone-50" />}
               </div>
             ) : mediaState === 'failed' ? (
-              <p className="text-xs text-stone-400 py-8 text-center">This {msg.type} couldn't be loaded right now — please try again later.</p>
+              <p className="text-xs text-stone-400 py-8 text-center">This {msg.type} couldn't be loaded right now, please try again later.</p>
             ) : (
               <div className="flex items-center justify-center py-10"><RefreshCw size={18} className="animate-spin text-stone-300" /></div>
             )
@@ -1904,7 +1904,7 @@ function ReportDeathPanel({ owner, invite, isDemo, onSubmit }) {
           </p>
           <ul className="space-y-2 text-sm text-stone-700">
             {[
-              'The subscription will enter a 30-day wind-down period — no further charges will be taken.',
+              'The subscription will enter a 30-day wind-down period, no further charges will be taken.',
               'Delegate access to this plan will remain active for 90 days to allow proper handoff.',
               'Data will be securely archived and then deleted in accordance with our retention policy.',
               'You will receive a confirmation email and reference number within 2 business days.',
@@ -1940,7 +1940,7 @@ function ReportDeathPanel({ owner, invite, isDemo, onSubmit }) {
       <div className="bg-red-600 px-8 py-6 flex items-center gap-4">
         <HeartCrack size={26} className="text-white shrink-0" />
         <div>
-          <h2 className="text-xl font-semibold text-white">Report a death — notification form</h2>
+          <h2 className="text-xl font-semibold text-white">Report a death, notification form</h2>
           <p className="text-sm text-red-100 mt-0.5">All fields marked * are required</p>
         </div>
       </div>
@@ -2053,7 +2053,7 @@ function ReportDeathPanel({ owner, invite, isDemo, onSubmit }) {
           <div className="border-2 border-dashed border-stone-200 rounded-xl p-5 text-center">
             <Upload size={22} className="mx-auto text-stone-300 mb-2" />
             <p className="text-sm text-stone-500">Upload a copy of the death certificate or coroner's letter</p>
-            <p className="text-xs text-stone-400 mt-1">PDF, JPG, PNG — max 10 MB. Document will be securely stored.</p>
+            <p className="text-xs text-stone-400 mt-1">PDF, JPG, PNG, max 10 MB. Document will be securely stored.</p>
             <label className="cursor-pointer mt-3 inline-flex items-center gap-2 border border-stone-300 text-stone-600 text-xs font-semibold px-4 py-2 rounded-lg hover:bg-stone-100 transition-colors">
               <Upload size={13} /> Choose file
               <input type="file" accept=".pdf,.jpg,.jpeg,.png" className="sr-only" />
@@ -2188,13 +2188,13 @@ function ReportIncidentPanel({ owner, invite, isDemo, onSubmit }) {
         </div>
         <div className="px-8 py-7 space-y-5">
           <p className="text-sm text-stone-700 leading-relaxed">
-            This form is for situations where <strong>{owner?.full_name || 'the plan owner'}</strong> is alive but temporarily or permanently incapacitated — such as a serious accident, medical emergency, or a loss of mental capacity — and direct family or trusted contacts need access to act on their behalf.
+            This form is for situations where <strong>{owner?.full_name || 'the plan owner'}</strong> is alive but temporarily or permanently incapacitated (such as a serious accident, medical emergency, or a loss of mental capacity) and direct family or trusted contacts need access to act on their behalf.
           </p>
           <ul className="space-y-2 text-sm text-stone-700">
             {[
               'Your report will be reviewed by the Everstead team within 2 business days.',
               'Access permissions configured for incapacity will be unlocked once verified.',
-              'The plan owner\'s account will not be closed — this is a temporary or situational access release.',
+              'The plan owner\'s account will not be closed, this is a temporary or situational access release.',
               'You will receive a confirmation email and reference number after submission.',
             ].map((item, i) => (
               <li key={i} className="flex items-start gap-2.5">
@@ -2228,7 +2228,7 @@ function ReportIncidentPanel({ owner, invite, isDemo, onSubmit }) {
       <div className="bg-amber-600 px-8 py-6 flex items-center gap-4">
         <ShieldAlert size={26} className="text-white shrink-0" />
         <div>
-          <h2 className="text-xl font-semibold text-white">Report an incident — notification form</h2>
+          <h2 className="text-xl font-semibold text-white">Report an incident, notification form</h2>
           <p className="text-sm text-amber-100 mt-0.5">All fields marked * are required</p>
         </div>
       </div>
@@ -2373,7 +2373,7 @@ function ReportIncidentPanel({ owner, invite, isDemo, onSubmit }) {
           <div className="border-2 border-dashed border-stone-200 rounded-xl p-5 text-center">
             <Upload size={22} className="mx-auto text-stone-300 mb-2" />
             <p className="text-sm text-stone-500">Upload a medical letter, LPA document, or other supporting evidence</p>
-            <p className="text-xs text-stone-400 mt-1">PDF, JPG, PNG — max 10 MB. Document will be securely stored.</p>
+            <p className="text-xs text-stone-400 mt-1">PDF, JPG, PNG, max 10 MB. Document will be securely stored.</p>
             <label className="cursor-pointer mt-3 inline-flex items-center gap-2 border border-stone-300 text-stone-600 text-xs font-semibold px-4 py-2 rounded-lg hover:bg-stone-100 transition-colors">
               <Upload size={13} /> Choose file
               <input type="file" accept=".pdf,.jpg,.jpeg,.png" className="sr-only" />
@@ -2465,10 +2465,10 @@ function ExternalLinksPanel() {
 // NOTIFICATION TRACKER
 // ─────────────────────────────────────────────────────────────
 const UK_INSTITUTIONS = [
-  { id: 'tell-us-once',    name: 'Tell Us Once (GOV.UK)',       category: 'Government',  how: 'Online at gov.uk/tell-us-once — notifies DWP, DVLA, HMRC, and others in one step', url: 'https://www.gov.uk/tell-us-once' },
+  { id: 'tell-us-once',    name: 'Tell Us Once (GOV.UK)',       category: 'Government',  how: 'Online at gov.uk/tell-us-once, notifies DWP, DVLA, HMRC, and others in one step', url: 'https://www.gov.uk/tell-us-once' },
   { id: 'hmrc',            name: 'HMRC',                        category: 'Government',  how: 'Call 0300 200 3300 or write. Final tax return may be needed for year of death.' },
   { id: 'dwp',             name: 'DWP / State pension',         category: 'Government',  how: 'Call 0800 731 0469. Stop pension payments and claim any arrears.' },
-  { id: 'probate',         name: 'Probate Registry',            category: 'Legal',       how: 'Apply online at gov.uk for Grant of Probate. Allow 4–8 weeks.', url: 'https://www.gov.uk/wills-probate-inheritance/applying-for-probate' },
+  { id: 'probate',         name: 'Probate Registry',            category: 'Legal',       how: 'Apply online at gov.uk for Grant of Probate. Allow 4-8 weeks.', url: 'https://www.gov.uk/wills-probate-inheritance/applying-for-probate' },
   { id: 'nhs-gp',          name: 'NHS / GP surgery',            category: 'Healthcare',  how: 'Contact the GP surgery directly to cancel NHS records and return unused medications.' },
   { id: 'council-tax',     name: 'Council tax',                 category: 'Local',       how: 'Contact the local council to update or cancel the council tax account.' },
   { id: 'electoral',       name: 'Electoral register',          category: 'Government',  how: 'Contact the local council to remove from the electoral register.' },
@@ -2505,7 +2505,7 @@ function NotificationTracker({ accounts, statuses, onSetStatus, ownerSuspended }
         id: `account-${acc.id}`,
         name: acc.institution,
         category: cat,
-        how: `${acc.account_type}${acc.account_number_hint ? ` — ref: ••••${acc.account_number_hint}` : ''}${acc.notes ? ` — ${acc.notes}` : ''}`,
+        how: `${acc.account_type}${acc.account_number_hint ? ` (ref: ••••${acc.account_number_hint}` : ''}${acc.notes ? `) ${acc.notes}` : ''}`,
       })
     })
     return cats
@@ -2526,7 +2526,7 @@ function NotificationTracker({ accounts, statuses, onSetStatus, ownerSuspended }
           </div>
           <div>
             <h2 className="text-lg font-semibold text-navy-950 leading-none">Institution notification tracker</h2>
-            <p className="text-xs text-stone-400 mt-0.5">Track which organisations you've contacted — saved to this device</p>
+            <p className="text-xs text-stone-400 mt-0.5">Track which organisations you've contacted, saved to this device</p>
           </div>
         </div>
         {!ownerSuspended && (
@@ -2593,7 +2593,7 @@ function DelegateAIGuide({ ownerName, ownerId, delegateName, role, ownerStatus, 
   const messagesEndRef = React.useRef(null)
 
   const openingMessage = ownerStatus === 'deceased'
-    ? `I'm here to help you through the next steps after ${ownerName || 'the plan owner'}'s passing. This is a difficult time — I'll keep things clear and practical.\n\nWhat would you like to start with? You might ask:\n• "What do I need to do this week?"\n• "How do I notify the bank?"\n• "What is probate and do I need it?"\n• "How do I find the will?"`
+    ? `I'm here to help you through the next steps after ${ownerName || 'the plan owner'}'s passing. This is a difficult time: I'll keep things clear and practical.\n\nWhat would you like to start with? You might ask:\n• "What do I need to do this week?"\n• "How do I notify the bank?"\n• "What is probate and do I need it?"\n• "How do I find the will?"`
     : ownerStatus === 'incapacitated'
       ? `I'm here to help you act as ${role || 'trusted person'} for ${ownerName || 'the plan owner'}. Their account is now suspended and your access permissions are active.\n\nWhat would you like help with? You might ask:\n• "What are my responsibilities as ${role || 'a trusted person'}?"\n• "How do I use a Lasting Power of Attorney?"\n• "Which accounts should I contact first?"`
       : `I'm here to help you understand this plan and your role as ${role || 'trusted person'} for ${ownerName || 'the plan owner'}.\n\nWhat would you like to know? For example:\n• "What does an executor do?"\n• "Where should I start?"\n• "How do I prepare for when the time comes?"`
@@ -2623,7 +2623,7 @@ function DelegateAIGuide({ ownerName, ownerId, delegateName, role, ownerStatus, 
       const { supabase: sb } = await import('../lib/supabase')
       const { data: { session } } = await sb.auth.getSession()
       if (!session?.access_token) {
-        setMessages(prev => [...prev, { role: 'assistant', content: 'This is just a preview — in a live account, I’d help you through the practical next steps here.' }])
+        setMessages(prev => [...prev, { role: 'assistant', content: 'This is just a preview, in a live account, I’d help you through the practical next steps here.' }])
         setLoading(false)
         return
       }
@@ -2680,7 +2680,7 @@ function DelegateAIGuide({ ownerName, ownerId, delegateName, role, ownerStatus, 
               </div>
               <div>
                 <p className="text-sm font-semibold text-white leading-none">Everstead guide</p>
-                <p className="text-xs text-white/60 mt-0.5">Here to help — ask anything</p>
+                <p className="text-xs text-white/60 mt-0.5">Here to help, ask anything</p>
               </div>
             </div>
             <button
@@ -2769,16 +2769,16 @@ function FirstStepsPanel({ ownerStatus, ownerName, onNavigate, onReportDeath }) 
 
   const isDeceased = ownerStatus === 'deceased'
   const steps = isDeceased ? [
-    { n: '1', label: 'Register the death', detail: 'Within 5 days at a local register office. Request at least 10 certified death certificates — banks and institutions each need an original.' },
+    { n: '1', label: 'Register the death', detail: 'Within 5 days at a local register office. Request at least 10 certified death certificates, banks and institutions each need an original.' },
     { n: '2', label: 'Locate the will', detail: 'Check the Documents tab. The original signed will (not a scan) is needed for probate. Check with their solicitor if it\'s not here.' },
     { n: '3', label: 'Notify close family', detail: 'Inform immediate family before making any formal notifications to institutions.' },
-    { n: '4', label: 'Apply for probate', detail: 'A Grant of Probate from the Probate Registry is usually needed to access accounts. Takes 4–8 weeks. Estates under ~£10,000 may not require it.' },
+    { n: '4', label: 'Apply for probate', detail: 'A Grant of Probate from the Probate Registry is usually needed to access accounts. Takes 4-8 weeks. Estates under ~£10,000 may not require it.' },
     { n: '5', label: 'Notify financial institutions', detail: 'Check the Accounts tab for a full list. Use Tell Us Once (gov.uk) for government departments. Settld.com can notify banks and utilities in bulk.' },
-    { n: '6', label: 'Cancel subscriptions', detail: 'Use the accounts list to find and cancel ongoing direct debits — they continue to charge until cancelled.' },
+    { n: '6', label: 'Cancel subscriptions', detail: 'Use the accounts list to find and cancel ongoing direct debits, they continue to charge until cancelled.' },
   ] : [
     { n: '1', label: 'Confirm your LPA is registered', detail: 'A Lasting Power of Attorney must be registered with the Office of the Public Guardian (OPG) before you can use it. Check you have the registration certificate.' },
     { n: '2', label: 'Review the documents', detail: 'Check the Documents tab for the LPA certificate, any medical directives, and care instructions.' },
-    { n: '3', label: 'Contact the plan owner\'s bank', detail: 'Present your registered LPA to gain access to their accounts. Each institution has its own process — call ahead to find out what they need.' },
+    { n: '3', label: 'Contact the plan owner\'s bank', detail: 'Present your registered LPA to gain access to their accounts. Each institution has its own process, call ahead to find out what they need.' },
     { n: '4', label: 'Review the instructions', detail: 'Check the Instructions tab for any guidance the plan owner left for this situation.' },
     { n: '5', label: 'Keep a record of all decisions', detail: 'As attorney, you must act in the donor\'s best interests and keep records. Note all decisions and reasons.' },
   ]
@@ -2791,7 +2791,7 @@ function FirstStepsPanel({ ownerStatus, ownerName, onNavigate, onReportDeath }) 
         </div>
         <div>
           <h2 className={`text-base font-semibold leading-none ${isDeceased ? 'text-white' : 'text-amber-950'}`}>
-            {isDeceased ? `What to do now — ${ownerName || 'next steps'}` : 'Your immediate priorities'}
+            {isDeceased ? `What to do now, ${ownerName || 'next steps'}` : 'Your immediate priorities'}
           </h2>
           <p className={`text-xs mt-1 ${isDeceased ? 'text-stone-400' : 'text-amber-700'}`}>
             {isDeceased ? 'A prioritised checklist for the days ahead' : 'As attorney, here\'s where to start'}

@@ -1,7 +1,7 @@
 {
   "meta": {
-    "title": "Cookie Policy — Everstead",
-    "description": "How Everstead uses cookies — what they are, which ones we set, and how to manage your preferences."
+    "title": "Cookie Policy | Everstead",
+    "description": "How Everstead uses cookies, what they are, which ones we set, and how to manage your preferences."
   },
   "header": {
     "eyebrow": "Legal",
@@ -20,14 +20,14 @@
   "categories": [
     {
       "name": "Essential cookies",
-      "description": "These cookies are strictly necessary for Everstead to function. They keep you securely logged in, protect your session against fraud, and ensure the platform works correctly. They cannot be disabled — the service cannot operate without them. No consent is required under UK PECR.",
+      "description": "These cookies are strictly necessary for Everstead to function. They keep you securely logged in, protect your session against fraud, and ensure the platform works correctly. They cannot be disabled, the service cannot operate without them. No consent is required under UK PECR.",
       "examples": "Authentication session tokens, security tokens, user preference cookies.",
       "provider": "Everstead Digital Ltd",
       "retention": "Session / up to 1 year"
     },
     {
       "name": "Analytics cookies",
-      "description": "We use Google Analytics to understand how visitors use our website — which pages are visited, how long people spend on them, and how they arrive. This helps us improve the product. These cookies are only placed after you give your consent. No personally identifiable information is collected.",
+      "description": "We use Google Analytics to understand how visitors use our website, which pages are visited, how long people spend on them, and how they arrive. This helps us improve the product. These cookies are only placed after you give your consent. No personally identifiable information is collected.",
       "examples": "_ga, _gid, _gat",
       "provider": "Google LLC (data may be processed in the USA under standard contractual clauses)",
       "retention": "Up to 2 years"
@@ -67,6 +67,6 @@
     "intro": "Questions about our use of cookies? Email us at",
     "orSee": "or see our full",
     "privacyPolicy": "Privacy Policy",
-    "company": "Everstead Digital Ltd — registered in England & Wales, No. 17166825. ICO registration no. 00013988672."
+    "company": "Everstead Digital Ltd, registered in England & Wales, No. 17166825. ICO registration no. 00013988672."
   }
 }

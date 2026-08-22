@@ -1,6 +1,6 @@
 {
   "meta": {
-    "title": "Our Data Promise — Everstead",
+    "title": "Our Data Promise | Everstead",
     "description": "Your data belongs to you. Export everything anytime, 90-day wind-down commitment, and we will never sell your data. Everstead's full data promise.",
     "ogDescription": "Your data belongs to you. Export everything anytime, 90-day wind-down commitment, and we will never sell your data."
   },
@@ -12,7 +12,7 @@
   "promises": [
     {
       "title": "Export everything, anytime",
-      "body": "You can download a complete copy of your entire Everstead plan at any time — accounts, documents, instructions, wishes, and more — in standard readable formats. No hoops, no waiting.",
+      "body": "You can download a complete copy of your entire Everstead plan at any time (accounts, documents, instructions, wishes, and more) in standard readable formats. No hoops, no waiting.",
       "cta": "Export your data →"
     },
     {
@@ -21,7 +21,7 @@
     },
     {
       "title": "We will never sell your data",
-      "body": "Everstead does not sell, share, or monetise your personal data. Ever. We make money from subscriptions — not from you. Full details are in our Privacy Policy.",
+      "body": "Everstead does not sell, share, or monetise your personal data. Ever. We make money from subscriptions, not from you. Full details are in our Privacy Policy.",
       "cta": "Read our Privacy Policy →"
     }
   ],

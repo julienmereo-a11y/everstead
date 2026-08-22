@@ -6,7 +6,7 @@
   "hero": {
     "eyebrow": "Offrez un abonnement Everstead",
     "title": "Offrez la sérénité en cadeau.",
-    "subtitle": "Aidez une personne qui vous est chère à protéger ce qui compte le plus — sa famille, ses volontés, son plan."
+    "subtitle": "Aidez une personne qui vous est chère à protéger ce qui compte le plus, sa famille, ses volontés, son plan."
   },
   "stepIndicator": {
     "length": "Durée du cadeau",
@@ -19,7 +19,7 @@
     "desc": "Deux espaces privés, un seul abonnement.",
     "features": [
       "Tout Everstead, sans limite",
-      "Deux espaces privés — un pour chacun",
+      "Deux espaces privés, un pour chacun",
       "Chacun garde ses données privées",
       "Jusqu'à 10 personnes de confiance",
       "25 Go de stockage sécurisé",
@@ -29,10 +29,10 @@
   },
   "years_one": "{{count}} an",
   "years_other": "{{count}} ans",
-  "planYears": "{{plan}} — {{years}}",
+  "planYears": "{{plan}}, {{years}}",
   "step1": {
     "title": "Quelle durée pour votre cadeau ?",
-    "subtitle": "Vous offrez {{plan}} — choisissez le nombre d'années à offrir.",
+    "subtitle": "Vous offrez {{plan}}, choisissez le nombre d'années à offrir.",
     "howManyYears": "Combien d'années ?",
     "mostThoughtful": "Le plus attentionné",
     "oneTimePayment": "Cadeau réglé en une seule fois",

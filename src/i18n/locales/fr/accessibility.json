@@ -1,7 +1,7 @@
 {
   "meta": {
-    "title": "Accessibilité — Everstead",
-    "description": "Déclaration d'accessibilité d'Everstead — notre engagement envers les WCAG 2.1 niveau AA, ce que nous avons mis en place, les limites connues et comment signaler un problème."
+    "title": "Accessibilité | Everstead",
+    "description": "Déclaration d'accessibilité d'Everstead, notre engagement envers les WCAG 2.1 niveau AA, ce que nous avons mis en place, les limites connues et comment signaler un problème."
   },
   "header": {
     "eyebrow": "Légal",
@@ -11,28 +11,28 @@
   "sections": [
     {
       "title": "Notre engagement",
-      "body": "Everstead s'engage à rendre sa plateforme et son site web accessibles à tous, y compris aux personnes en situation de handicap. Nous visons la conformité aux Règles pour l'accessibilité des contenus web (Web Content Accessibility Guidelines, WCAG) 2.1, niveau AA, comme norme minimale.\n\nNous sommes convaincus que l'accessibilité n'est pas une fonctionnalité — c'est un socle. Chacun doit pouvoir organiser ses informations importantes et protéger les personnes qu'il aime, quelle que soit sa manière d'accéder au web."
+      "body": "Everstead s'engage à rendre sa plateforme et son site web accessibles à tous, y compris aux personnes en situation de handicap. Nous visons la conformité aux Règles pour l'accessibilité des contenus web (Web Content Accessibility Guidelines, WCAG) 2.1, niveau AA, comme norme minimale.\n\nNous sommes convaincus que l'accessibilité n'est pas une fonctionnalité, c'est un socle. Chacun doit pouvoir organiser ses informations importantes et protéger les personnes qu'il aime, quelle que soit sa manière d'accéder au web."
     },
     {
       "title": "État actuel de l'accessibilité",
-      "body": "Nous travaillons en continu à améliorer l'accessibilité d'Everstead. Les mesures actuelles comprennent :\n\n— Du HTML sémantique dans toute l'application, avec une structure de titres appropriée et des régions de repère (landmarks).\n— Tous les éléments interactifs (boutons, liens, champs de formulaire) sont utilisables au clavier et comportent des indicateurs de focus visibles.\n— Les rapports de contraste des couleurs atteignent ou dépassent le niveau AA des WCAG 2.1 sur tous les écrans principaux.\n— Les champs de formulaire comportent des étiquettes visibles ; les messages d'erreur sont descriptifs et associés au champ concerné.\n— Les images porteuses de sens comportent un texte de remplacement descriptif. Les images décoratives sont balisées de manière appropriée.\n— La plateforme ne repose pas uniquement sur la couleur pour transmettre l'information.\n— Les polices sont définies en unités relatives (rem/em) et respectent les préférences de taille de texte du navigateur de l'utilisateur."
+      "body": "Nous travaillons en continu à améliorer l'accessibilité d'Everstead. Les mesures actuelles comprennent : Du HTML sémantique dans toute l'application, avec une structure de titres appropriée et des régions de repère (landmarks). Tous les éléments interactifs (boutons, liens, champs de formulaire) sont utilisables au clavier et comportent des indicateurs de focus visibles. Les rapports de contraste des couleurs atteignent ou dépassent le niveau AA des WCAG 2.1 sur tous les écrans principaux. Les champs de formulaire comportent des étiquettes visibles ; les messages d'erreur sont descriptifs et associés au champ concerné. Les images porteuses de sens comportent un texte de remplacement descriptif. Les images décoratives sont balisées de manière appropriée. La plateforme ne repose pas uniquement sur la couleur pour transmettre l'information. Les polices sont définies en unités relatives (rem/em) et respectent les préférences de taille de texte du navigateur de l'utilisateur."
     },
     {
       "title": "Limites connues",
-      "body": "Nous avons connaissance des points suivants où l'accessibilité peut être améliorée :\n\n— Certaines visualisations de données complexes (comme le graphique du score de préparation) peuvent ne pas encore être pleinement interprétables par les lecteurs d'écran. Nous travaillons à des alternatives textuelles.\n— Un petit nombre d'interactions plus anciennes de téléversement de documents peuvent ne pas être entièrement utilisables au clavier sur tous les navigateurs. Des améliorations sont en cours.\n— Les documents PDF stockés dans les coffres des utilisateurs sont générés par les utilisateurs et peuvent ne pas être eux-mêmes accessibles.\n\nNous traitons en priorité les problèmes d'accessibilité au fur et à mesure de leur identification. Si vous rencontrez un obstacle qui ne figure pas ici, merci de nous le signaler."
+      "body": "Nous avons connaissance des points suivants où l'accessibilité peut être améliorée : Certaines visualisations de données complexes (comme le graphique du score de préparation) peuvent ne pas encore être pleinement interprétables par les lecteurs d'écran. Nous travaillons à des alternatives textuelles. Un petit nombre d'interactions plus anciennes de téléversement de documents peuvent ne pas être entièrement utilisables au clavier sur tous les navigateurs. Des améliorations sont en cours. Les documents PDF stockés dans les coffres des utilisateurs sont générés par les utilisateurs et peuvent ne pas être eux-mêmes accessibles.\n\nNous traitons en priorité les problèmes d'accessibilité au fur et à mesure de leur identification. Si vous rencontrez un obstacle qui ne figure pas ici, merci de nous le signaler."
     },
     {
       "title": "Prise en charge des technologies d'assistance",
-      "body": "Everstead est testé avec les combinaisons suivantes :\n\n— NVDA avec Chrome sous Windows\n— VoiceOver avec Safari sous macOS et iOS\n— TalkBack avec Chrome sous Android\n\nNous visons la prise en charge de tous les principaux lecteurs d'écran et technologies d'assistance. Si vous rencontrez des difficultés avec un outil particulier, signalez-le-nous et nous étudierons le problème."
+      "body": "Everstead est testé avec les combinaisons suivantes : NVDA avec Chrome sous Windows: VoiceOver avec Safari sous macOS et iOS: TalkBack avec Chrome sous Android\n\nNous visons la prise en charge de tous les principaux lecteurs d'écran et technologies d'assistance. Si vous rencontrez des difficultés avec un outil particulier, signalez-le-nous et nous étudierons le problème."
     },
     {
       "title": "Retours et contact",
-      "body": "Si vous rencontrez un obstacle d'accessibilité sur Everstead — ou si vous avez besoin d'un contenu dans un format alternatif — veuillez nous contacter :\n\nE-mail : hello@everstead.care\nObjet : Accessibilité\n\nNous nous efforçons de répondre sous 5 jours ouvrés. Nous prenons tous les signalements d'accessibilité au sérieux et travaillerons avec vous pour trouver une solution."
+      "body": "Si vous rencontrez un obstacle d'accessibilité sur Everstead (ou si vous avez besoin d'un contenu dans un format alternatif) veuillez nous contacter :\n\nE-mail : hello@everstead.care\nObjet : Accessibilité\n\nNous nous efforçons de répondre sous 5 jours ouvrés. Nous prenons tous les signalements d'accessibilité au sérieux et travaillerons avec vous pour trouver une solution."
     },
     {
       "title": "Recours",
       "body": "Si notre réponse ne vous satisfait pas, vous pouvez contacter l'Equality Advisory and Support Service (EASS) au Royaume-Uni : www.equalityadvisoryservice.com"
     }
   ],
-  "company": "Everstead Digital Ltd — société immatriculée en Angleterre et au pays de Galles sous le n° 17166825."
+  "company": "Everstead Digital Ltd, société immatriculée en Angleterre et au pays de Galles sous le n° 17166825."
 }

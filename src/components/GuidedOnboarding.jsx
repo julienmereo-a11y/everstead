@@ -64,14 +64,14 @@ let cardSeq = 0
 // higher-stakes entries (accounts, trusted people you'd invite) get a review card.
 const AUTO_SAVE = new Set(['about_me', 'profile'])
 function savedLabel(type) {
-  if (type === 'about_me') return 'Added to your About Me — change it any time'
-  if (type === 'profile') return 'Saved — you can edit it any time'
+  if (type === 'about_me') return 'Added to your About Me, change it any time'
+  if (type === 'profile') return 'Saved, you can edit it any time'
   return 'Saved'
 }
 // A warmer, specific confirmation pill for the higher-stakes review cards.
 function savedPill(card) {
   if (card.type === 'account') return `${card.fields?.institution?.trim() || 'Account'} added to your vault`
-  if (card.type === 'trusted_person') return `${card.fields?.name?.trim() || 'Trusted person'} added — invite them whenever you're ready`
+  if (card.type === 'trusted_person') return `${card.fields?.name?.trim() || 'Trusted person'} added, invite them whenever you're ready`
   return savedLabel(card.type)
 }
 
@@ -104,7 +104,7 @@ function parseReply(text) {
             return { id: `c${++cardSeq}`, type: p.type, fields, confidence, lifeEvents, approved: true, status: 'idle', error: null }
           })
       }
-    } catch { /* ignore malformed JSON — just show the prose */ }
+    } catch { /* ignore malformed JSON, just show the prose */ }
   }
   return { prose, proposals }
 }
@@ -118,7 +118,7 @@ export default function GuidedOnboarding({
   // the system prompt knows the welcome + first question already happened.
   const opener = [
     { role: 'assistant', scripted: true, content: `Welcome, **${firstName}** 👋 I'm really glad you're here. There's no rush today, and nothing you add is ever shared unless you choose to.` },
-    { role: 'assistant', scripted: true, content: "Before any of the practical bits, I'd love to start with **you** — the part that's actually worth keeping. Tell me one thing you'd want remembered: **a song you love** 🎵, something you believe in 💭, or a moment that shaped you ✨. Whatever comes to mind first." },
+    { role: 'assistant', scripted: true, content: "Before any of the practical bits, I'd love to start with **you**, the part that's actually worth keeping. Tell me one thing you'd want remembered: **a song you love** 🎵, something you believe in 💭, or a moment that shaped you ✨. Whatever comes to mind first." },
   ]
 
   const [messages, setMessages] = useState([]) // opener is revealed below with a typing effect
@@ -155,7 +155,7 @@ export default function GuidedOnboarding({
       if (profile?.id && Object.keys(payload).length) {
         await supabase.from('profiles').update(payload).eq('id', profile.id)
       }
-    } catch { /* non-blocking — they can edit in Settings */ }
+    } catch { /* non-blocking, they can edit in Settings */ }
     setSavingDetails(false)
     setStage('celebrate')
   }
@@ -231,7 +231,7 @@ export default function GuidedOnboarding({
   const continueAfterSave = async () => {
     setError(null)
     setLoading(true)
-    const trigger = { role: 'user', hidden: true, content: "(That's been added to my Everstead now — please do NOT propose it again or create another card for it. If it feels natural, warmly suggest ONE different small thing I might add next (like an account or a document) by simply asking me — don't create a save card yet, wait for my answer. Or, if I've added a few things now, let me know I'm all set and that it all keeps.)" }
+    const trigger = { role: 'user', hidden: true, content: "(That's been added to my Everstead now, please do NOT propose it again or create another card for it. If it feels natural, warmly suggest ONE different small thing I might add next (like an account or a document) by simply asking me, don't create a save card yet, wait for my answer. Or, if I've added a few things now, let me know I'm all set and that it all keeps.)" }
     // Append via functional updater so we never clobber a message added just before
     // this (e.g. the 'saved' pill). Build the API history from the current turn + trigger.
     setMessages(h => [...h, trigger])
@@ -240,7 +240,7 @@ export default function GuidedOnboarding({
       .map(m => ({ role: m.role, content: m.content }))
     // A gentle next step to fall back on if the assistant call is slow or fails —
     // saving must never dead-end into silence.
-    const fallback = "Is there anything else you'd like to pop in — maybe an account, a document, or someone you trust? Or you're all set for now, and everything you added keeps safely."
+    const fallback = "Is there anything else you'd like to pop in, maybe an account, a document, or someone you trust? Or you're all set for now, and everything you added keeps safely."
     try {
       const { data, error: invokeErr } = await supabase.functions.invoke('onboarding-assistant', { body: { messages: apiHistory } })
       if (invokeErr) throw new Error('nudge failed')
@@ -347,7 +347,7 @@ export default function GuidedOnboarding({
             </div>
             <div>
               <p className="font-display text-lg text-navy-950 leading-tight">Let's set up your Everstead</p>
-              <p className="text-xs text-stone-500">No rush — you can stop any time.</p>
+              <p className="text-xs text-stone-500">No rush, you can stop any time.</p>
             </div>
           </div>
           <button onClick={finish} disabled={closing} title="Finish for now" className="text-stone-300 hover:text-stone-600 transition-colors shrink-0">
@@ -398,7 +398,7 @@ export default function GuidedOnboarding({
             <div className="border-t border-stone-100 pt-4 space-y-3">
               <div className="flex items-center gap-2 flex-wrap">
                 <span className="text-xs font-semibold uppercase tracking-wide text-sage-700 bg-sage-50 px-2 py-0.5 rounded-full">To save</span>
-                <span className="text-xs text-stone-400">Edit anything, untick to skip — nothing is saved until you add it.</span>
+                <span className="text-xs text-stone-400">Edit anything, untick to skip, nothing is saved until you add it.</span>
               </div>
               {cards.map(card => (
                 <ProposalCard key={card.id} card={card} onEdit={editField} onToggle={toggleApprove} onDismiss={dismissCard} />
@@ -582,7 +582,7 @@ function CelebrateStage({ firstName, onTour, onDashboard }) {
         <div className="text-5xl mb-4">🎉</div>
         <h2 className="font-display text-2xl text-navy-950 mb-2">Brilliant start, {firstName}.</h2>
         <p className="text-sm text-stone-500 leading-relaxed mb-7 max-w-xs mx-auto">
-          You've taken one of the most caring steps there is — and everything you added will keep, safe and private, for whenever it's needed.
+          You've taken one of the most caring steps there is, and everything you added will keep, safe and private, for whenever it's needed.
         </p>
         <div className="flex flex-col gap-2.5">
           <button onClick={onTour} className="btn-aurora inline-flex items-center justify-center gap-2 text-white text-sm font-semibold px-6 py-3 rounded-full">

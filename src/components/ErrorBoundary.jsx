@@ -26,7 +26,7 @@ export default class ErrorBoundary extends React.Component {
           </div>
           <h1 className="font-display text-3xl font-light text-navy-950 mb-3">Something went wrong</h1>
           <p className="text-stone-500 text-sm leading-relaxed mb-8">
-            An unexpected error occurred. Your data is safe — please refresh or return to the homepage.
+            An unexpected error occurred. Your data is safe, please refresh or return to the homepage.
             If the problem persists, contact{' '}
             <a href="mailto:support@everstead.care" className="text-navy-700 underline">support@everstead.care</a>.
           </p>

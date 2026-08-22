@@ -1,6 +1,6 @@
 {
   "meta": {
-    "title": "Security — Everstead",
+    "title": "Security | Everstead",
     "description": "Everstead is built on bank-equivalent security standards. AES-256 encryption at rest, TLS 1.3 in transit, granular access controls, and a full audit trail."
   },
   "hero": {
@@ -11,8 +11,8 @@
   },
   "infrastructure": {
     "kicker": "Infrastructure",
-    "title": "Built on SOC 2 certified infrastructure — top to bottom.",
-    "subtitle": "Everstead does not operate its own data centres. Every layer of our stack is handled by providers that hold independent security certifications — so your data is protected at every point in the chain.",
+    "title": "Built on SOC 2 certified infrastructure, top to bottom.",
+    "subtitle": "Everstead does not operate its own data centres. Every layer of our stack is handled by providers that hold independent security certifications, so your data is protected at every point in the chain.",
     "items": {
       "supabase": {
         "role": "Database, authentication & file storage",
@@ -30,7 +30,7 @@
         "role": "Payment processing",
         "cert": "PCI DSS Level 1",
         "region": "Global",
-        "detail": "All payment processing is handled by Stripe, the highest-certified payment processor in the world. Everstead never stores card details — they go directly to Stripe."
+        "detail": "All payment processing is handled by Stripe, the highest-certified payment processor in the world. Everstead never stores card details, they go directly to Stripe."
       },
       "resend": {
         "role": "Transactional email",
@@ -46,7 +46,7 @@
     "items": [
       {
         "title": "AES-256 encryption at rest",
-        "desc": "Every file, note, account record, and document you store is encrypted at rest using AES-256 — the standard used by banks and government agencies worldwide."
+        "desc": "Every file, note, account record, and document you store is encrypted at rest using AES-256, the standard used by banks and government agencies worldwide."
       },
       {
         "title": "TLS 1.3 in transit",
@@ -54,7 +54,7 @@
       },
       {
         "title": "Role-based access control",
-        "desc": "Permissions are granular and revocable. You assign exactly what each trusted person can see — financial accounts, legal documents, wishes — independently of one another."
+        "desc": "Permissions are granular and revocable. You assign exactly what each trusted person can see (financial accounts, legal documents, wishes) independently of one another."
       },
       {
         "title": "Complete audit log",
@@ -73,7 +73,7 @@
         "desc": "A defined security incident response process is in place. In the unlikely event of a security concern, we notify affected users promptly and transparently."
       },
       {
-        "title": "Privacy first — always",
+        "title": "Privacy first, always",
         "desc": "We do not sell, license, or share your personal information with third parties for advertising or any commercial purpose. Your data is yours. Export or delete it at any time."
       }
     ]
@@ -82,37 +82,79 @@
     "kicker": "UK GDPR & Data residency",
     "title": "Your data stays in the UK. Full stop.",
     "p1": "Everstead is operated by EVERSTEAD DIGITAL LTD (company number 17166825), a UK-registered company, and is compliant with UK GDPR. All personal data is stored and processed exclusively in London, United Kingdom. We never transfer your data outside the UK.",
-    "p2": "As a data controller, we are responsible for how your data is collected, stored, and used. You have the right to access, correct, export, and permanently delete your data at any time — directly from your dashboard or by contacting us.",
+    "p2": "As a data controller, we are responsible for how your data is collected, stored, and used. You have the right to access, correct, export, and permanently delete your data at any time, directly from your dashboard or by contacting us.",
     "points": [
-      ["UK GDPR compliant", "Data processing follows UK GDPR requirements"],
-      ["UK (London) data residency", "No data transferred outside the UK"],
-      ["Right to access & portability", "Export your full plan at any time"],
-      ["Right to erasure", "Permanent deletion within 30 days of request"],
-      ["No third-party data sales", "Your data is never sold or licensed"],
-      ["72-hour breach notification", "As required by UK GDPR Article 33"]
+      [
+        "UK GDPR compliant",
+        "Data processing follows UK GDPR requirements"
+      ],
+      [
+        "UK (London) data residency",
+        "No data transferred outside the UK"
+      ],
+      [
+        "Right to access & portability",
+        "Export your full plan at any time"
+      ],
+      [
+        "Right to erasure",
+        "Permanent deletion within 30 days of request"
+      ],
+      [
+        "No third-party data sales",
+        "Your data is never sold or licensed"
+      ],
+      [
+        "72-hour breach notification",
+        "As required by UK GDPR Article 33"
+      ]
     ]
   },
   "demo": {
     "kicker": "Role permissions",
     "title": "You control who sees what, always.",
-    "p1": "Permissions in Everstead are not binary. You don't have to give a trusted person full access to give them relevant access. Every person in your plan has a defined scope — and you can update or revoke it any time.",
-    "p2": "Share financial account references with your executor, funeral preferences with your children, and legal document access with your solicitor — all independently, all reversible.",
+    "p1": "Permissions in Everstead are not binary. You don't have to give a trusted person full access to give them relevant access. Every person in your plan has a defined scope, and you can update or revoke it any time.",
+    "p2": "Share financial account references with your executor, funeral preferences with your children, and legal document access with your solicitor, all independently, all reversible.",
     "matrixLabel": "Sample access matrix",
     "people": [
-      { "name": "Sarah (Executor)", "access": ["Accounts", "Documents", "Instructions"] },
-      { "name": "David (Solicitor)", "access": ["Legal documents"] },
-      { "name": "Emma (Daughter)", "access": ["Wishes", "Instructions"] },
-      { "name": "James (Adviser)", "access": ["Financial accounts", "Financial docs"] }
+      {
+        "name": "Sarah (Executor)",
+        "access": [
+          "Accounts",
+          "Documents",
+          "Instructions"
+        ]
+      },
+      {
+        "name": "David (Solicitor)",
+        "access": [
+          "Legal documents"
+        ]
+      },
+      {
+        "name": "Emma (Daughter)",
+        "access": [
+          "Wishes",
+          "Instructions"
+        ]
+      },
+      {
+        "name": "James (Adviser)",
+        "access": [
+          "Financial accounts",
+          "Financial docs"
+        ]
+      }
     ]
   },
   "release": {
     "kicker": "How access is released",
     "title": "Nothing unlocks on its own. A person decides, and a person verifies.",
-    "subtitle": "The most important question families ask is how — and when — their plan opens to the people they trust. Here is exactly how it works. There is no silent timer and no automatic “inactivity” trigger.",
+    "subtitle": "The most important question families ask is how (and when) their plan opens to the people they trust. Here is exactly how it works. There is no silent timer and no automatic “inactivity” trigger.",
     "steps": [
       {
         "title": "While you’re alive",
-        "body": "Your trusted people only ever see what you’ve granted them — and you can change or revoke it any time. Nothing is released without your say-so."
+        "body": "Your trusted people only ever see what you’ve granted them, and you can change or revoke it any time. Nothing is released without your say-so."
       },
       {
         "title": "A trusted person reports the passing",
@@ -120,10 +162,10 @@
       },
       {
         "title": "We verify, then release",
-        "body": "Our team reviews and confirms the report — usually within two business days. Only then does the access you arranged open, and any sealed personal messages are delivered."
+        "body": "Our team reviews and confirms the report, usually within two business days. Only then does the access you arranged open, and any sealed personal messages are delivered."
       }
     ],
-    "note": "Every report, verification, and access change is recorded in your audit trail. Access only ever reflects what you decided — never more."
+    "note": "Every report, verification, and access change is recorded in your audit trail. Access only ever reflects what you decided, never more."
   },
   "faq": {
     "kicker": "Security FAQ",
@@ -131,7 +173,7 @@
     "items": [
       {
         "q": "How is access released after I die?",
-        "a": "There is no silent timer or automatic “inactivity” trigger. A trusted person you have named reports the passing from their own access and provides the death-certificate details. Our team then reviews and verifies the report — usually within two business days — and only then does the access you arranged open to your trusted people, with any sealed personal messages delivered. While you are alive, nothing is released without your say-so, and every step is recorded in your audit trail."
+        "a": "There is no silent timer or automatic “inactivity” trigger. A trusted person you have named reports the passing from their own access and provides the death-certificate details. Our team then reviews and verifies the report (usually within two business days) and only then does the access you arranged open to your trusted people, with any sealed personal messages delivered. While you are alive, nothing is released without your say-so, and every step is recorded in your audit trail."
       },
       {
         "q": "Can Everstead employees read my documents?",
@@ -159,7 +201,7 @@
       },
       {
         "q": "Are you SOC 2 certified?",
-        "a": "Everstead is SOC 2 compliant. Every infrastructure provider we rely on — Supabase, Vercel, Stripe, and Resend — holds SOC 2 Type II certification, and our controls are built to the same standard. Certification documents are available on request."
+        "a": "Everstead is SOC 2 compliant. Every infrastructure provider we rely on (Supabase, Vercel, Stripe, and Resend) holds SOC 2 Type II certification, and our controls are built to the same standard. Certification documents are available on request."
       }
     ]
   },

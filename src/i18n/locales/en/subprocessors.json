@@ -1,7 +1,7 @@
 {
   "meta": {
-    "title": "Subprocessors — Everstead",
-    "description": "The third-party service providers Everstead uses to deliver the platform — what they do, where data is processed, and the transfer safeguards in place under UK GDPR."
+    "title": "Subprocessors | Everstead",
+    "description": "The third-party service providers Everstead uses to deliver the platform, what they do, where data is processed, and the transfer safeguards in place under UK GDPR."
   },
   "effectiveDate": "27 May 2026",
   "hero": {
@@ -22,7 +22,7 @@
   "list": [
     {
       "purpose": "Managed PostgreSQL database, authentication, and encrypted file storage for vault content.",
-      "location": "EU (Ireland) — data hosted in Frankfurt region",
+      "location": "EU (Ireland), data hosted in Frankfurt region",
       "transferMechanism": "UK IDTA / EU SCCs"
     },
     {
@@ -32,7 +32,7 @@
     },
     {
       "purpose": "Subscription billing and payment processing. Card details never touch Everstead servers.",
-      "location": "Ireland (EU) — Stripe acts as independent controller for fraud prevention",
+      "location": "Ireland (EU). Stripe acts as independent controller for fraud prevention",
       "transferMechanism": "EU SCCs (where applicable)"
     },
     {
@@ -41,20 +41,20 @@
       "transferMechanism": "UK IDTA / EU SCCs"
     },
     {
-      "purpose": "Error monitoring and crash reporting. Receives technical error context only — no vault content.",
+      "purpose": "Error monitoring and crash reporting. Receives technical error context only, no vault content.",
       "location": "USA",
       "transferMechanism": "UK IDTA / EU SCCs"
     },
     {
-      "purpose": "AI-powered assistant, document scanning, and in-product guidance. Processes the messages and any documents or images a member chooses to submit to an AI feature — it is not given blanket access to a member’s vault, and runs only while AI features are switched on.",
+      "purpose": "AI-powered assistant, document scanning, and in-product guidance. Processes the messages and any documents or images a member chooses to submit to an AI feature, it is not given blanket access to a member’s vault, and runs only while AI features are switched on.",
       "location": "USA",
       "transferMechanism": "UK IDTA / EU SCCs · processed under Anthropic’s commercial API terms; Anthropic does not train on Everstead traffic"
     }
   ],
   "changes": {
     "title": "Changes to this list",
-    "p1": "We will notify customers — by email and a notice on this page — at least <strong>30 days before</strong> adding or replacing a subprocessor. Adviser-plan customers may object to a change within that window; if we cannot resolve the objection, the customer may terminate their subscription for that reason without penalty.",
-    "p2": "Subscribe below to receive change notifications by email. We only use your address for subprocessor-change notices — never marketing."
+    "p1": "We will notify customers (by email and a notice on this page) at least <strong>30 days before</strong> adding or replacing a subprocessor. Adviser-plan customers may object to a change within that window; if we cannot resolve the objection, the customer may terminate their subscription for that reason without penalty.",
+    "p2": "Subscribe below to receive change notifications by email. We only use your address for subprocessor-change notices, never marketing."
   },
   "form": {
     "placeholder": "you@example.com",

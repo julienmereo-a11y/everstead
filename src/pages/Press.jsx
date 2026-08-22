@@ -13,15 +13,15 @@ const facts = [
   { label: 'Website', value: 'everstead.care' },
 ]
 
-const boilerplate = `Everstead is a secure personal vault for UK families — a single, organised place to store accounts, documents, instructions, and important decisions, with controlled access for the people you trust. Founded in 2025 by Julien Thuy, Everstead was built after watching families struggle to piece together a loved one's affairs under enormous stress. The platform helps members get organised today and ensures their loved ones are protected when it counts. Everstead Digital Ltd is registered in England and Wales (No. 17166825).`
+const boilerplate = `Everstead is a secure personal vault for UK families, a single, organised place to store accounts, documents, instructions, and important decisions, with controlled access for the people you trust. Founded in 2025 by Julien Thuy, Everstead was built after watching families struggle to piece together a loved one's affairs under enormous stress. The platform helps members get organised today and ensures their loved ones are protected when it counts. Everstead Digital Ltd is registered in England and Wales (No. 17166825).`
 
 const angles = [
-  'The "digital estate" problem — billions in unclaimed assets, millions of families unprepared',
+  'The "digital estate" problem, billions in unclaimed assets, millions of families unprepared',
   'Why most people still store important information in their heads (or a drawer)',
   'How to talk to your family about estate planning without it being morbid',
-  'The rise of personal vaults — organising your life, not just your death',
+  'The rise of personal vaults, organising your life, not just your death',
   'What executors actually wish they had access to',
-  'AI, privacy, and sensitive life data — where should it live?',
+  'AI, privacy, and sensitive life data, where should it live?',
 ]
 
 export default function Press() {
@@ -29,12 +29,12 @@ export default function Press() {
   return (
     <>
       <Helmet>
-        <title>Press & Media — Everstead</title>
-        <meta name="description" content="Press kit, company facts, and media enquiries for Everstead — the secure personal vault for UK families." />
+        <title>Press & Media | Everstead</title>
+        <meta name="description" content="Press kit, company facts, and media enquiries for Everstead, the secure personal vault for UK families." />
         <link rel="canonical" href="https://www.everstead.care/press" />
         <meta property="og:type" content="website" />
-        <meta property="og:title" content="Press & Media — Everstead" />
-        <meta property="og:description" content="Press kit, company facts, and media enquiries for Everstead — the secure personal vault for UK families." />
+        <meta property="og:title" content="Press & Media | Everstead" />
+        <meta property="og:description" content="Press kit, company facts, and media enquiries for Everstead, the secure personal vault for UK families." />
         <meta property="og:url" content="https://www.everstead.care/press" />
         <meta property="og:image" content="https://www.everstead.care/og-image.png" />
         <meta name="twitter:card" content="summary_large_image" />
@@ -127,10 +127,10 @@ export default function Press() {
               </p>
               <div className="grid sm:grid-cols-2 gap-4 max-w-lg">
                 <div className="rounded-2xl border border-stone-200 bg-navy-950 p-8 flex items-center justify-center">
-                  <img src="/logo-v2-white.png" alt="Everstead logo — white" className="h-8 w-auto" />
+                  <img src="/logo-v2-white.png" alt="Everstead logo, white" className="h-8 w-auto" />
                 </div>
                 <div className="rounded-2xl border border-stone-200 bg-white p-8 flex items-center justify-center">
-                  <img src="/logo-v2-dark.png" alt="Everstead logo — dark" className="h-8 w-auto" onError={e => { e.target.style.display='none' }} />
+                  <img src="/logo-v2-dark.png" alt="Everstead logo, dark" className="h-8 w-auto" onError={e => { e.target.style.display='none' }} />
                   <span className="text-stone-300 text-sm font-display">Everstead</span>
                 </div>
               </div>

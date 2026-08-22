@@ -68,7 +68,7 @@ export default function DelegateRegister() {
         ownerEmail:  owner?.email,
         inviteeName: invite?.name,
         role:        invite?.role,
-        inviteToken: token, // delegates may not have a session — the token is the proof
+        inviteToken: token, // delegates may not have a session, the token is the proof
       }),
     }).catch(console.error)
 
@@ -266,7 +266,7 @@ export default function DelegateRegister() {
           <div className="mt-5 flex items-start gap-2.5 bg-sage-50 border border-sage-200 rounded-xl px-3.5 py-3">
             <CheckCircle2 size={14} className="text-sage-600 mt-0.5 shrink-0" />
             <p className="text-xs text-sage-800 leading-relaxed">
-              Your account is <strong>free</strong> — delegates never pay. You're only getting access to {owner?.full_name}'s plan.
+              Your account is <strong>free</strong>, delegates never pay. You're only getting access to {owner?.full_name}'s plan.
             </p>
           </div>
         )}

@@ -52,7 +52,7 @@ export default function UploadSheet({ app }) {
           </>
         )}
       </div>
-      <label className="flabel">Expiry date <span style={{ textTransform: 'none', letterSpacing: 0, fontWeight: 400, color: 'var(--color-stone-400)' }}>— optional</span></label>
+      <label className="flabel">Expiry date <span style={{ textTransform: 'none', letterSpacing: 0, fontWeight: 400, color: 'var(--color-stone-400)' }}>, optional</span></label>
       <input className="inp" type="date" value={expiresAt} onChange={e => setExpiresAt(e.target.value)} />
       <p className="rdet" style={{ margin: '6px 0 0' }}>Add one and we’ll remind you a month and a week before it runs out.</p>
 

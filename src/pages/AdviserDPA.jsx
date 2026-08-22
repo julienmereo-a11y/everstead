@@ -38,7 +38,7 @@ Nature of processing: Storage, retrieval, display, and deletion of personal data
 
 Purpose: Enabling Client Families to organise accounts, documents, instructions, and wishes; enabling Advisers to support clients with estate readiness; facilitating trusted contact access.
 
-Categories of personal data: Full name, email address, date of birth, home address, financial account details (reference numbers only — no card or banking credentials), identity document references, will and probate information, pension and insurance policy details, personal instructions and wishes.
+Categories of personal data: Full name, email address, date of birth, home address, financial account details (reference numbers only, no card or banking credentials), identity document references, will and probate information, pension and insurance policy details, personal instructions and wishes.
 
 Categories of data subjects: Client Families and their designated trusted contacts.`,
   },
@@ -82,12 +82,12 @@ Categories of data subjects: Client Families and their designated trusted contac
 
 The authoritative, up-to-date list is maintained at https://www.everstead.care/subprocessors and is incorporated into this Agreement by reference as if set out in full. The current list as at the effective date of these terms is:
 
-— Supabase Inc. — managed database, authentication, and encrypted file storage (EU, Ireland)
-— Vercel Inc. — web hosting and serverless functions (USA / global edge)
-— Stripe Payments Europe Ltd. — subscription billing and payment processing (Ireland)
-— Resend Inc. — transactional email delivery (USA)
-— Functional Software, Inc. (Sentry) — error monitoring and crash reporting; technical context only, no vault content (USA)
-— Anthropic, PBC — AI-powered chat assistant and in-product guidance; processes only the messages members send to the assistant, never the contents of their vault (USA)
+Supabase Inc. managed database, authentication, and encrypted file storage (EU, Ireland)
+Vercel Inc. web hosting and serverless functions (USA / global edge)
+Stripe Payments Europe Ltd. subscription billing and payment processing (Ireland)
+Resend Inc. transactional email delivery (USA)
+Functional Software, Inc. (Sentry), error monitoring and crash reporting; technical context only, no vault content (USA)
+Anthropic, PBC: AI-powered chat assistant and in-product guidance; processes only the messages members send to the assistant, never the contents of their vault (USA)
 
 International transfers to sub-processors located outside the UK are made under the UK International Data Transfer Agreement (UK IDTA) or EU Standard Contractual Clauses with the UK Addendum, as applicable.
 
@@ -169,8 +169,8 @@ export default function AdviserDPA() {
   return (
     <>
       <Helmet>
-        <title>Data Processing Agreement — Everstead Advisers</title>
-        <meta name="description" content="Everstead's Data Processing Agreement for Adviser accounts — UK GDPR Article 28 compliant terms governing how Everstead processes client family data on behalf of advisers." />
+        <title>Data Processing Agreement | Everstead Advisers</title>
+        <meta name="description" content="Everstead's Data Processing Agreement for Adviser accounts: UK GDPR Article 28 compliant terms governing how Everstead processes client family data on behalf of advisers." />
         <link rel="canonical" href="https://www.everstead.care/adviser-dpa" />
       </Helmet>
 

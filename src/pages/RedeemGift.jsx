@@ -27,7 +27,7 @@ const inputClass = 'w-full border border-stone-300 rounded-lg px-4 py-2.5 text-s
 const PLAN_NAMES   = { essential: 'Essential', family: 'Everstead+' }
 const PLAN_DESCS   = {
   essential: 'For individuals getting their digital life in order.',
-  family:    'Two private vaults — one subscription. For couples and families.',
+  family:    'Two private vaults, one subscription. For couples and families.',
 }
 
 // ─────────────────────────────────────────────────────────────
@@ -210,7 +210,7 @@ export default function RedeemGift() {
                     <div>
                       <p className="text-xs text-stone-400 mb-0.5">Your gift</p>
                       <p className="font-semibold text-navy-900">
-                        Everstead {planName} — {yearsLabel}
+                        Everstead {planName}, {yearsLabel}
                       </p>
                       {giftInfo.gifterName && (
                         <p className="text-xs text-stone-500 mt-1">

@@ -35,7 +35,7 @@ export default function MobilePlanSelect({ onSubscribed, onBack, demo }) {
   // price on the screen. Yearly bills £95.88/year, so that figure leads at full
   // size; the per-month equivalent is strictly subordinate (small note below).
   const price = annual
-    ? { big: p.annual.perYearDisplay, unit: '/year', note: `that's ${p.annual.perMonthDisplay} a month — save 20%` }
+    ? { big: p.annual.perYearDisplay, unit: '/year', note: `that's ${p.annual.perMonthDisplay} a month, save 20%` }
     : { big: p.monthly.display, unit: '/month', note: 'billed monthly' }
 
   const subscribe = async () => {
@@ -54,7 +54,7 @@ export default function MobilePlanSelect({ onSubscribed, onBack, demo }) {
         String(x.product?.identifier || '').split(':')[0] === identifier)
       if (!pkg) { setError('That plan is not available right now. Please try again shortly.'); return }
       await Purchases.purchasePackage({ aPackage: pkg })
-      haptic.success() // subscription started — the biggest moment in the app
+      haptic.success() // subscription started, the biggest moment in the app
       onSubscribed?.(PLAN_KEY)
     } catch (err) {
       // The Capacitor bridge rejects with (message, code) — userCancelled never
@@ -86,7 +86,7 @@ export default function MobilePlanSelect({ onSubscribed, onBack, demo }) {
         <div className="eyebrow eyebrow-sage">{name}</div>
         <h1 className="obh" style={{ fontSize: 30 }}>Unlock everything.</h1>
         <p style={{ fontSize: 14.5, color: 'rgba(255,255,255,0.6)', margin: '10px 0 0', lineHeight: 1.5 }}>
-          You're on Everstead, free. Upgrade to {name} to lift the limits and open every part of your plan — with a 14-day free trial.
+          You're on Everstead, free. Upgrade to {name} to lift the limits and open every part of your plan, with a 14-day free trial.
         </p>
 
         <div className="fx" style={{ margin: '22px 0 4px', justifyContent: 'center' }}>

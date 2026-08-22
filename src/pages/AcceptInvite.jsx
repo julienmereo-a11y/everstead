@@ -114,14 +114,14 @@ export default function AcceptInvite() {
               </div>
               <div className="p-7">
                 <p className="text-stone-600 text-sm leading-relaxed mb-6">
-                  Everstead is a secure platform for organising digital life — accounts, documents, instructions, and final wishes.
+                  Everstead is a secure platform for organising digital life, accounts, documents, instructions, and final wishes.
                   As <strong>{invite.role}</strong>, you'll have access to the sections {owner?.full_name} has chosen to share with your role.
                 </p>
 
                 <div className="space-y-3 mb-7">
                   {[
                     'You only see what\'s been shared with your specific role',
-                    'You don\'t need to do anything now — only when needed',
+                    'You don\'t need to do anything now, only when needed',
                     'You can update your contact details after accepting',
                   ].map(item => (
                     <div key={item} className="flex items-start gap-2.5">
