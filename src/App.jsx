@@ -39,6 +39,7 @@ const Terms                 = lazy(() => import('./pages/Terms'))
 const MentionsLegales       = lazy(() => import('./pages/MentionsLegales'))
 const Resources             = lazy(() => import('./pages/Resources'))
 const ExecutorChecklist     = lazy(() => import('./pages/ExecutorChecklist'))
+const ApresUnDeces          = lazy(() => import('./pages/ApresUnDeces'))
 const DigitalEstateCalculator = lazy(() => import('./pages/DigitalEstateCalculator'))
 const EstateReadinessScore  = lazy(() => import('./pages/EstateReadinessScore'))
 const NotFound              = lazy(() => import('./pages/NotFound'))
@@ -295,6 +296,7 @@ export default function App() {
               <Route path="/resources/:section" element={<Layout><Resources /></Layout>} />
               <Route path="/resources/:section/:post" element={<Layout><Resources /></Layout>} />
               <Route path="/executor-checklist"     element={<Layout><ExecutorChecklist /></Layout>} />
+              <Route path="/apres-un-deces"        element={<Layout><ApresUnDeces /></Layout>} />
               <Route path="/estate-readiness-score" element={<Layout><EstateReadinessScore /></Layout>} />
               <Route path="/digital-estate-worth"   element={<Layout><DigitalEstateCalculator /></Layout>} />
               <Route path="/gift"         element={<Layout><Gift /></Layout>} />

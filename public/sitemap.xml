@@ -275,31 +275,6 @@
     <priority>0.5</priority>
   </url>
   <url>
-    <loc>https://www.everstead.care/fr/compare/farewill</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  <url>
-    <loc>https://www.everstead.care/fr/compare/settld</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  <url>
-    <loc>https://www.everstead.care/fr/compare/safekeep</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  <url>
-    <loc>https://www.everstead.care/fr/compare/lyfeguard</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  <url>
-    <loc>https://www.everstead.care/fr/compare/octopus-legacy</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  <url>
     <loc>https://www.everstead.care/fr/for-advisers</loc>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
@@ -361,6 +336,21 @@
   </url>
   <url>
     <loc>https://www.everstead.care/fr/resources/blog/mandat-protection-future</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.everstead.care/apres-un-deces</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.everstead.care/fr/apres-un-deces</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.everstead.care/fr/compare/doing-nothing</loc>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>

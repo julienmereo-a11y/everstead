@@ -1,0 +1,184 @@
+{
+  "meta": {
+    "title": "Après un décès : les démarches en France | Everstead",
+    "description": "Une liste gratuite et interactive des démarches après un décès en France : mairie, banque, CPAM, notaire, succession. Étape par étape, sans inscription."
+  },
+  "hero": {
+    "eyebrow": "Ressource gratuite · France",
+    "title": "Après un décès : les démarches en France",
+    "subtitle": "Un parcours pas à pas des démarches à accomplir après un décès en France, des premières heures au règlement de la succession."
+  },
+  "print": {
+    "brand": "Everstead, everstead.care",
+    "title": "Après un décès : les démarches en France",
+    "meta": "France · Imprimé le {{date}}",
+    "intro": "Cette liste couvre les principales démarches après un décès en France. Suivez chaque étape dans l'ordre en cochant les démarches accomplies. Faites appel à un notaire ou à un autre professionnel pour toute question juridique ou fiscale."
+  },
+  "toolbar": {
+    "progressLabel": "Progression globale",
+    "progressCount": "{{checked}} / {{total}} ({{pct}} %)",
+    "sectionCount": "{{checked}} / {{total}}",
+    "reset": "Réinitialiser",
+    "confirm": "Tout effacer ?",
+    "confirmYes": "Oui, effacer",
+    "confirmCancel": "Annuler",
+    "print": "Imprimer / Exporter",
+    "check": "Cocher : {{item}}",
+    "uncheck": "Décocher : {{item}}"
+  },
+  "intro": {
+    "title": "Par où commencer ?",
+    "p1": "Après un décès, les démarches s'enchaînent au moment où l'on s'y sent le moins prêt : état civil, banque, organismes sociaux, notaire. Chaque organisme a son rythme et ses justificatifs, et personne ne vous remet la liste complète.",
+    "p2": "Cette liste découpe le parcours en quatre étapes : les premières 24 heures, la première semaine, le premier mois et les six premiers mois. Cochez chaque démarche au fur et à mesure, votre progression est enregistrée automatiquement dans votre navigateur."
+  },
+  "sections": [
+    {
+      "id": "premieres-24-heures",
+      "title": "Les premières 24 heures",
+      "subtitle": "Les toutes premières démarches, la plupart ne peuvent pas attendre",
+      "items": [
+        {
+          "id": "a01",
+          "title": "Faire constater le décès par un médecin",
+          "desc": "Un médecin établit le certificat de décès. À domicile, appelez le médecin traitant ou le médecin de garde. À l'hôpital ou en maison de retraite, l'établissement s'en charge."
+        },
+        {
+          "id": "a02",
+          "title": "Déclarer le décès à la mairie",
+          "desc": "La déclaration se fait à la mairie de la commune où le décès a eu lieu, en principe dans les 24 heures ouvrées. Lorsque le décès survient dans un établissement de santé, celui-ci peut s'en charger."
+        },
+        {
+          "id": "a03",
+          "title": "Demander plusieurs copies de l'acte de décès",
+          "desc": "L'acte de décès vous sera demandé par la banque, les assurances et la plupart des organismes. Demandez-en plusieurs exemplaires dès la déclaration, chaque organisme voudra le sien."
+        },
+        {
+          "id": "a04",
+          "title": "Contacter une entreprise de pompes funèbres",
+          "desc": "Les obsèques ont lieu dans les jours qui suivent le décès. Vous pouvez comparer plusieurs établissements et demander un devis écrit avant de vous engager."
+        },
+        {
+          "id": "a05",
+          "title": "Rechercher les volontés funéraires du défunt",
+          "desc": "Vérifiez si le défunt avait exprimé des souhaits : contrat obsèques, testament, note écrite ou volontés confiées à un proche. Ses volontés priment sur les préférences de la famille."
+        }
+      ]
+    },
+    {
+      "id": "premiere-semaine",
+      "title": "La première semaine",
+      "subtitle": "Prévenir les organismes clés et sécuriser la situation financière",
+      "items": [
+        {
+          "id": "b01",
+          "title": "Prévenir l'employeur ou les caisses de retraite",
+          "desc": "Si le défunt travaillait, informez rapidement son employeur. S'il était retraité, prévenez ses caisses de retraite, régime de base et complémentaires, pour arrêter les versements et connaître les droits éventuels du conjoint."
+        },
+        {
+          "id": "b02",
+          "title": "Informer la banque",
+          "desc": "La banque bloque les comptes individuels du défunt dès qu'elle est informée du décès. Un compte joint continue en principe de fonctionner pour le cotitulaire survivant."
+        },
+        {
+          "id": "b03",
+          "title": "Déclarer le décès aux assurances",
+          "desc": "Prévenez les assureurs du défunt, notamment pour les contrats de prévoyance et d'assurance décès, afin que les dossiers de versement puissent être ouverts."
+        },
+        {
+          "id": "b04",
+          "title": "Prévenir la CPAM et la mutuelle",
+          "desc": "L'assurance maladie et la complémentaire santé doivent être informées. Certains droits peuvent exister pour les proches, comme le capital décès, sous conditions."
+        },
+        {
+          "id": "b05",
+          "title": "Signaler le décès à l'assurance habitation et auto",
+          "desc": "Les contrats qui couvrent le logement et le véhicule doivent être signalés à l'assureur, qui les transfère ou les résilie selon la situation."
+        },
+        {
+          "id": "b06",
+          "title": "Choisir un notaire si nécessaire",
+          "desc": "Le notaire est notamment incontournable en présence d'un bien immobilier, d'un testament ou d'un contrat de mariage. Un premier contact rapide permet d'organiser la suite."
+        }
+      ]
+    },
+    {
+      "id": "premier-mois",
+      "title": "Le premier mois",
+      "subtitle": "Ouvrir le dossier de succession et faire le point sur les contrats",
+      "items": [
+        {
+          "id": "c01",
+          "title": "Prendre rendez-vous chez le notaire",
+          "desc": "Le notaire établit notamment l'acte de notoriété, le document qui identifie officiellement les héritiers. La plupart des organismes le demandent avant de débloquer les fonds."
+        },
+        {
+          "id": "c02",
+          "title": "Faire rechercher un testament",
+          "desc": "Le notaire interroge le fichier central des dispositions de dernières volontés (FCDDV) pour vérifier si un testament a été déposé."
+        },
+        {
+          "id": "c03",
+          "title": "Rechercher les contrats d'assurance vie",
+          "desc": "Le dispositif AGIRA permet de savoir si vous êtes bénéficiaire d'un contrat d'assurance vie souscrit par le défunt."
+        },
+        {
+          "id": "c04",
+          "title": "Informer la CAF et l'administration fiscale",
+          "desc": "Signalez le décès à la CAF si le défunt ou le foyer percevait des prestations, ainsi qu'au service des impôts pour mettre à jour la situation du foyer."
+        },
+        {
+          "id": "c05",
+          "title": "Résilier les abonnements et contrats courants",
+          "desc": "Téléphone, internet, énergie, presse : passez en revue les prélèvements du défunt pour résilier ou transférer chaque contrat."
+        },
+        {
+          "id": "c06",
+          "title": "Faire suivre le courrier",
+          "desc": "Une réexpédition du courrier vers la personne qui gère la succession évite de manquer des documents importants et aide à repérer les organismes restant à prévenir."
+        }
+      ]
+    },
+    {
+      "id": "six-premiers-mois",
+      "title": "Les six premiers mois",
+      "subtitle": "Régler la succession et clôturer définitivement",
+      "items": [
+        {
+          "id": "d01",
+          "title": "Déposer la déclaration de succession",
+          "desc": "La déclaration de succession est adressée à l'administration fiscale, en principe dans les six mois qui suivent un décès survenu en France. Le notaire s'en charge le plus souvent."
+        },
+        {
+          "id": "d02",
+          "title": "Régler la succession avec le notaire",
+          "desc": "Le notaire établit les actes nécessaires : partage, attestation immobilière lorsqu'un bien doit être transmis, formalités auprès des différents organismes."
+        },
+        {
+          "id": "d03",
+          "title": "Effectuer les transferts et clôtures définitifs",
+          "desc": "Une fois la succession réglée, les comptes sont clôturés ou transférés, les véhicules et les contrats changent de titulaire et les dernières formalités sont soldées."
+        }
+      ]
+    }
+  ],
+  "disclaimer": {
+    "label": "Important :",
+    "text": "Cette liste fournit des informations générales sur les démarches après un décès en France. Elle ne constitue pas un conseil juridique. Chaque succession est particulière, notamment en présence d'un bien immobilier, d'un testament ou d'une situation familiale complexe. Consultez votre notaire pour un accompagnement adapté à votre situation."
+  },
+  "cta": {
+    "eyebrow": "De la part d'Everstead",
+    "title": "Épargnez ces recherches à vos proches",
+    "body": "Le plus difficile dans une succession est souvent de tout retrouver : comptes, contrats, documents, volontés, contacts. Un coffre préparé à l'avance évite l'essentiel de ces recherches. Everstead vous permet de tout organiser en un seul endroit et de le partager avec vos personnes de confiance.",
+    "button": "Commencer à organiser"
+  },
+  "share": {
+    "prompt": "Vous connaissez quelqu'un qui en aurait besoin ?",
+    "button": "Partager cette liste",
+    "title": "Après un décès : les démarches en France | Everstead",
+    "text": "Une liste gratuite et interactive des démarches après un décès en France."
+  },
+  "schema": {
+    "name": "Après un décès : les démarches en France",
+    "description": "La liste pas à pas des démarches après un décès en France, des premières 24 heures au règlement de la succession."
+  }
+}

@@ -7,7 +7,7 @@
     "kicker": "Sécurité et confidentialité",
     "title": "Vos informations les plus sensibles, protégées sans compromis.",
     "subtitle": "Everstead a été conçu dès l'origine autour de la confiance, de la confidentialité et du contrôle. Chaque décision technique et opérationnelle reflète la responsabilité qui est la nôtre.",
-    "trustLine": "🔒 Chiffrement AES-256  ·  🛡️ Conforme au RGPD  ·  Enregistré auprès de l'ICO  ·  N° 17166825"
+    "trustLine": "🔒 Chiffrement AES-256  ·  🛡️ Conforme au RGPD  ·  Enregistré auprès de l'ICO (autorité de protection des données)  ·  N° 17166825"
   },
   "infrastructure": {
     "kicker": "Infrastructure",
@@ -18,7 +18,7 @@
         "role": "Base de données, authentification et stockage de fichiers",
         "cert": "Certifié SOC 2 Type II",
         "region": "Londres, Royaume-Uni",
-        "detail": "Toutes les données utilisateur, les documents et les informations de compte sont stockés sur l'infrastructure de Supabase, qui détient la certification SOC 2 Type II. Les données sont hébergées exclusivement dans la région de Londres (Royaume-Uni)."
+        "detail": "Toutes les données utilisateur, les documents et les informations de compte sont stockés sur l'infrastructure de Supabase, qui détient la certification SOC 2 Type II. Les données sont hébergées exclusivement dans la région de Londres. Le Royaume-Uni bénéficie d'une décision d'adéquation de la Commission européenne, qui reconnaît un niveau de protection des données équivalent à celui de l'Union européenne."
       },
       "vercel": {
         "role": "Hébergement et diffusion de l'application",
@@ -79,18 +79,18 @@
     ]
   },
   "gdpr": {
-    "kicker": "RGPD britannique (UK GDPR) et résidence des données",
-    "title": "Vos données restent au Royaume-Uni. Point final.",
-    "p1": "Everstead est exploité par EVERSTEAD DIGITAL LTD (numéro de société 17166825), une société immatriculée au Royaume-Uni, et est conforme au RGPD britannique (UK GDPR). Toutes les données personnelles sont stockées et traitées exclusivement à Londres, au Royaume-Uni. Nous ne transférons jamais vos données hors du Royaume-Uni.",
+    "kicker": "RGPD et résidence des données",
+    "title": "Vos données sont hébergées en un lieu unique. Point final.",
+    "p1": "Everstead est édité par EVERSTEAD DIGITAL LTD (numéro de société 17166825), une société britannique enregistrée auprès de l'ICO (l'autorité britannique de protection des données), et opère en conformité avec le RGPD. Toutes les données personnelles sont stockées et traitées exclusivement à Londres, et ne sont jamais transférées ailleurs. Le Royaume-Uni bénéficie d'une décision d'adéquation de la Commission européenne, qui reconnaît un niveau de protection des données équivalent à celui de l'Union européenne.",
     "p2": "En tant que responsable du traitement, nous répondons de la manière dont vos données sont collectées, stockées et utilisées. Vous avez le droit d'accéder à vos données, de les corriger, de les exporter et de les supprimer définitivement à tout moment, directement depuis votre tableau de bord ou en nous contactant.",
     "points": [
       [
-        "Conforme au RGPD britannique (UK GDPR)",
-        "Le traitement des données respecte les exigences du RGPD britannique"
+        "Conforme au RGPD",
+        "Un traitement des données aligné sur les exigences du RGPD"
       ],
       [
-        "Données hébergées au Royaume-Uni (Londres)",
-        "Aucune donnée transférée hors du Royaume-Uni"
+        "Données hébergées à Londres",
+        "Le Royaume-Uni bénéficie d'une décision d'adéquation de l'UE"
       ],
       [
         "Droit d'accès et à la portabilité",
@@ -106,7 +106,7 @@
       ],
       [
         "Notification de violation sous 72 heures",
-        "Comme l'exige l'article 33 du RGPD britannique"
+        "Comme l'exige l'article 33 du RGPD"
       ]
     ]
   },
@@ -181,7 +181,7 @@
       },
       {
         "q": "Où mes données sont-elles stockées ?",
-        "a": "Toutes les données sont stockées à Londres, au Royaume-Uni, sur l'infrastructure de Supabase. Nous ne transférons pas vos données personnelles hors du Royaume-Uni. Ce fonctionnement est conforme au RGPD britannique (UK GDPR)."
+        "a": "Toutes les données sont stockées à Londres, sur l'infrastructure de Supabase, et nous ne les transférons jamais ailleurs. Ce fonctionnement est conforme au RGPD, et le Royaume-Uni bénéficie d'une décision d'adéquation de la Commission européenne, qui reconnaît un niveau de protection des données équivalent à celui de l'Union européenne."
       },
       {
         "q": "Qu'advient-il de mes données si je résilie ?",
@@ -189,11 +189,11 @@
       },
       {
         "q": "Que se passe-t-il si Everstead subit une violation de données ?",
-        "a": "Nous disposons d'un plan de réponse aux incidents défini. En cas de violation avérée touchant des données personnelles, nous informerons les utilisateurs concernés sous 72 heures, comme l'exige le RGPD britannique. Nous publierons un rapport d'incident complet précisant le périmètre, la chronologie et les mesures correctives."
+        "a": "Nous disposons d'un plan de réponse aux incidents défini. En cas de violation avérée touchant des données personnelles, nous informerons les utilisateurs concernés sous 72 heures, comme l'exige le RGPD. Nous publierons un rapport d'incident complet précisant le périmètre, la chronologie et les mesures correctives."
       },
       {
         "q": "Everstead est-il conforme au RGPD ?",
-        "a": "Oui. Everstead est exploité par EVERSTEAD DIGITAL LTD (numéro de société 17166825), une société immatriculée au Royaume-Uni, et est conforme au RGPD britannique (UK GDPR). Nous agissons en qualité de responsable du traitement de vos informations personnelles. Nos bases légales de traitement sont la nécessité contractuelle et l'intérêt légitime. Vous disposez pleinement des droits d'accès, de rectification, d'effacement et de portabilité de vos données."
+        "a": "Oui. Everstead est édité par EVERSTEAD DIGITAL LTD (numéro de société 17166825), une société britannique enregistrée auprès de l'ICO (l'autorité britannique de protection des données), et opère en conformité avec le RGPD. Nous agissons en qualité de responsable du traitement de vos informations personnelles. Nos bases légales de traitement sont la nécessité contractuelle et l'intérêt légitime. Vous disposez pleinement des droits d'accès, de rectification, d'effacement et de portabilité de vos données."
       },
       {
         "q": "Partagez-vous des données avec des tiers ?",

@@ -39,6 +39,13 @@ const COMPARE_ORDER = [
   'safekeep', 'lyfeguard', 'settld',
 ]
 
+// Slugs that make sense on the French tree (/fr). The named UK competitors are
+// meaningless for French visitors, so the French index only lists these, and
+// only these slug pages advertise a French hreflang alternate. Non-FR slug
+// pages still render if reached by direct URL (they keep their canonical link,
+// just no alternates). The English index is unaffected and lists everything.
+const FR_SLUGS = new Set(['doing-nothing'])
+
 // ─────────────────────────────────────────────────────────────────────────────
 // Component
 // ─────────────────────────────────────────────────────────────────────────────
@@ -88,7 +95,9 @@ export default function Compare() {
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:image" content="https://www.everstead.care/og-image.png" />
       </Helmet>
-      <HreflangLinks path={pathname} />
+      {/* Only country-neutral comparisons exist as a pair across both trees;
+          UK-competitor pages must not advertise a French alternate. */}
+      {FR_SLUGS.has(slug) && <HreflangLinks path={pathname} />}
 
       <div className="bg-stone-50 min-h-screen">
 
@@ -249,6 +258,7 @@ function CompareIndex() {
 
   const cards = COMPARE_ORDER
     .filter(slug => ROW_THEM_FLAGS[slug])
+    .filter(slug => i18nInstance.language !== 'fr' || FR_SLUGS.has(slug))
     .map(slug => ({
       slug,
       name: t(`competitors.${slug}.name`),

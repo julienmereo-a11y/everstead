@@ -89,7 +89,7 @@
     "suffixMonthly": "/mois",
     "suffixYearly": "/an",
     "billedAnnually": "Prix TTC · Économisez 20 %",
-    "gbpNote": "Prix TTC (toutes taxes comprises). Le paiement s'effectue actuellement en livres sterling (£)."
+    "gbpNote": "Prix TTC (toutes taxes comprises). Le paiement s'effectue actuellement en livres sterling (£), le montant débité en euros peut donc varier légèrement selon le taux de change appliqué par votre banque."
   },
   "dataPromise": {
     "text": "Vos données vous appartiennent. Exportez tout, à tout moment. Engagement de 90 jours en cas d'arrêt du service.",
@@ -103,12 +103,12 @@
     "title": "Moins cher que les alternatives. Plus complet que chacune d'elles.",
     "solicitor": {
       "name": "Notaire ou avocat (succession)",
-      "price": "3 000, 5 000 £",
+      "price": "Plusieurs milliers d'euros",
       "description": "Une succession réglée, après votre départ. Aucun accès continu, aucune instruction, aucune tranquillité d'esprit de votre vivant."
     },
     "willWriting": {
       "name": "Service de rédaction de testament",
-      "price": "150, 500 £",
+      "price": "Jusqu'à plusieurs centaines d'euros",
       "description": "Un document. Pas d'instructions, pas de comptes organisés, pas d'accès accordés, aucun moyen pour votre famille de retrouver quoi que ce soit."
     },
     "everstead": {
@@ -175,7 +175,7 @@
       },
       {
         "q": "À quoi sert le forfait Everstead Pro ?",
-        "a": "Le forfait Everstead Pro est conçu pour les conseillers financiers, les notaires et les autres professionnels qui souhaitent proposer l'organisation successorale comme un service à leurs clients. Il comprend un espace de travail multi-clients, un portail client co-brandé, des outils de collaboration et une assistance prioritaire. Contactez-nous pour discuter d'un déploiement pilote."
+        "a": "Le forfait Everstead Pro est conçu pour les conseillers en gestion de patrimoine, les notaires et les autres professionnels qui souhaitent proposer l'organisation successorale comme un service à leurs clients. Il comprend un espace de travail multi-clients, un portail client co-brandé, des outils de collaboration et une assistance prioritaire. Contactez-nous pour discuter d'un déploiement pilote."
       },
       {
         "q": "Everstead est-il un service juridique ?",
@@ -183,7 +183,7 @@
       },
       {
         "q": "Comment mes données sont-elles protégées ?",
-        "a": "Toutes les données bénéficient d'un chiffrement au repos et en transit (AES-256). Everstead opère dans le cadre du RGPD britannique (UK GDPR) et est enregistré auprès de l'ICO, avec un hébergement conforme au RGPD. Le personnel d'Everstead ne peut pas accéder au contenu de votre plan. Vous seul contrôlez l'accès à votre plan."
+        "a": "Toutes les données bénéficient d'un chiffrement au repos et en transit (AES-256). Everstead opère en conformité avec le RGPD et est édité par une société britannique enregistrée auprès de l'ICO (l'autorité britannique de protection des données). Le personnel d'Everstead ne peut pas accéder au contenu de votre plan. Vous seul contrôlez l'accès à votre plan."
       },
       {
         "q": "Everstead vaut-il le coup si je ne l'utilise qu'une seule fois pour mettre en place mon plan ?",

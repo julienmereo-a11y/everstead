@@ -53,9 +53,9 @@
           "tag": "Comptes",
           "title": "Comptes et actifs",
           "headline": "Chaque compte, documenté une seule fois et retrouvé instantanément.",
-          "body": "Comptes bancaires, investissements, épargne retraite, livrets d'épargne, portefeuilles crypto, contrats d'assurance, fournisseurs d'énergie, abonnements, tout est structuré, étiqueté et consultable. Ajoutez les noms des établissements, les numéros de compte, les indices de connexion et les contacts, pour que rien ne soit enfoui ni oublié.",
+          "body": "Comptes bancaires, investissements, épargne retraite, livrets d'épargne, portefeuilles crypto, contrats d'assurance-vie, fournisseurs d'énergie, abonnements, tout est structuré, étiqueté et consultable. Ajoutez les noms des établissements, les numéros de compte, les indices de connexion et les contacts, pour que rien ne soit enfoui ni oublié.",
           "bullets": [
-            "Comptes bancaires, d'investissement, d'épargne retraite et d'assurance",
+            "Comptes bancaires, livrets, investissements, retraite et assurance-vie",
             "Actifs numériques, crypto et comptes en ligne",
             "Suivi des abonnements avec dates de renouvellement et coûts",
             "Catégories et étiquettes personnalisées"
@@ -65,7 +65,7 @@
           "tag": "Documents",
           "title": "Coffre à documents",
           "headline": "Vos documents juridiques et personnels, conservés et partagés en toute sécurité.",
-          "body": "Téléversez votre testament, votre mandat de protection future, vos titres de propriété, passeport, acte de naissance, contrats d'assurance et bien plus. Classez par catégorie, attribuez les accès par rôle et conservez un historique des versions, pour qu'aucun document ne soit écrasé sans laisser de trace.",
+          "body": "Téléversez votre testament (ou indiquez chez quel notaire il est déposé), votre mandat de protection future, vos titres de propriété, passeport, acte de naissance, contrats d'assurance et bien plus. Classez par catégorie, attribuez les accès par rôle et conservez un historique des versions, pour qu'aucun document ne soit écrasé sans laisser de trace.",
           "bullets": [
             "Testaments, mandats de protection future, titres de propriété, contrats d'assurance",
             "Chiffrement au repos (AES-256)",
@@ -91,9 +91,9 @@
           "tag": "Personnes",
           "title": "Personnes de confiance",
           "headline": "Les bonnes personnes voient les bonnes informations, rien de plus.",
-          "body": "Attribuez des rôles : exécuteur testamentaire, conjoint, enfant, notaire ou conseiller financier. Chaque rôle n'accède qu'à ce que vous avez explicitement partagé. Vous pouvez ajuster, révoquer ou élargir les accès à tout moment, et garder ainsi le contrôle total.",
+          "body": "Attribuez des rôles : conjoint, enfant, personne en charge des démarches, notaire ou conseiller financier. Chaque rôle n'accède qu'à ce que vous avez explicitement partagé. Vous pouvez ajuster, révoquer ou élargir les accès à tout moment, et garder ainsi le contrôle total.",
           "bullets": [
-            "Rôles nommés : exécuteur testamentaire, conjoint, conseiller, aidant",
+            "Rôles nommés : conjoint, personne en charge des démarches, conseiller, aidant",
             "Contrôle d'accès précis, section par section",
             "Révoquez ou modifiez les accès à tout moment",
             "Notification dès qu'une personne de confiance consulte votre plan"
@@ -115,7 +115,7 @@
           "tag": "Volontés",
           "title": "Dernières volontés",
           "headline": "Vos préférences personnelles, recueillies avec dignité.",
-          "body": "Consignez vos préférences pour les obsèques et l'hommage, vos volontés en matière de don d'organes, vos lettres personnelles, vos instructions pour les objets à valeur sentimentale, et les détails d'inhumation ou de crémation. Everstead veille à ce qu'elles soient retrouvées, lues et respectées.",
+          "body": "Consignez vos préférences pour les obsèques et l'hommage, vos volontés en matière de don d'organes, l'existence de vos directives anticipées, vos lettres personnelles, vos instructions pour les objets à valeur sentimentale, et les détails d'inhumation ou de crémation. Everstead veille à ce qu'elles soient retrouvées, lues et respectées.",
           "bullets": [
             "Préférences pour les obsèques et la cérémonie d'hommage",
             "Volontés en matière de don d'organes et de tissus",
@@ -141,7 +141,7 @@
           "tag": "Abonnements",
           "title": "Suivi des abonnements",
           "headline": "Ne payez plus pour des services qui survivent à la personne qui les a souscrits.",
-          "body": "Répertoriez chaque prélèvement récurrent, services de streaming, logiciels, adhésions, salles de sport, magazines. Ajoutez les montants, les dates de renouvellement et les instructions de résiliation. Les exécuteurs testamentaires peuvent traiter chaque ligne sans deviner, ni subir de prélèvements surprises.",
+          "body": "Répertoriez chaque prélèvement récurrent, services de streaming, logiciels, adhésions, salles de sport, magazines. Ajoutez les montants, les dates de renouvellement et les instructions de résiliation. La personne qui s'occupera des démarches pourra traiter chaque ligne sans rien deviner, ni subir de prélèvements surprises.",
           "bullets": [
             "Tous les prélèvements récurrents en un seul coup d'œil",
             "Dates de renouvellement et montants facturés",
@@ -205,7 +205,7 @@
           "desc": "Un seul endroit où chaque membre du foyer sait que les comptes, les documents et les volontés sont consignés, pour que personne ne reste dans l'incertitude."
         },
         {
-          "title": "Exécuteurs testamentaires",
+          "title": "Proches en charge d'une succession",
           "desc": "Un guide complet et structuré de la succession (comptes, contacts, documents et instructions) sans des semaines de recherches."
         },
         {
@@ -279,7 +279,7 @@
       {
         "quote": "Mon père est parti brutalement. Everstead a rendu une période incroyablement douloureuse tellement plus gérable. Tout était là, au même endroit.",
         "name": "Margaret T.",
-        "role": "Fille et exécutrice testamentaire"
+        "role": "Fille, en charge de la succession"
       },
       {
         "quote": "En tant que notaire, je le recommande désormais à chacun de mes clients. Cela réduit considérablement les allers-retours pendant le règlement de la succession.",

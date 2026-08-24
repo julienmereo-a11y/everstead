@@ -55,8 +55,15 @@
   "tools": {
     "eyebrow": "Outils gratuits",
     "title": "Des outils pratiques, sans inscription.",
-    "subtitle": "Ces outils vous aident à savoir où vous en êtes, à suivre les démarches d'une succession ou à estimer votre patrimoine numérique. Ils sont en anglais et pensés pour le Royaume-Uni.",
+    "subtitle": "Ces outils vous aident à savoir où vous en êtes, à suivre les démarches d'une succession ou à estimer votre patrimoine numérique. Le premier est en français et pensé pour la France. Les autres sont en anglais et pensés pour le Royaume-Uni.",
     "items": {
+      "apresDeces": {
+        "title": "Après un décès : les démarches en France",
+        "tag": "Interactif",
+        "desc": "Une liste interactive des démarches après un décès en France, des premières 24 heures au règlement de la succession : mairie, banque, CPAM, notaire. Imprimable.",
+        "cta": "Ouvrir la liste",
+        "badge": "Gratuit · Sans compte"
+      },
       "afterDeath": {
         "title": "Que faire après un décès",
         "tag": "Guide IA",

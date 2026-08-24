@@ -33,30 +33,30 @@
       "title": "Commencez par cartographier tout ce que vous possédez.",
       "body": "La plupart des gens ont plus de comptes qu'ils ne l'imaginent, et la plupart des familles ne les retrouvent pas le moment venu. Everstead vous offre un espace structuré pour recenser chaque compte bancaire, bien immobilier, contrat d'assurance et actif numérique. Vous ne téléversez pas de relevés et ne connectez aucun flux bancaire : vous créez une carte claire et lisible, que n'importe quel proche pourrait suivre sans être expert. Vous préférez ne pas le faire seul ? Votre Assistant IA peut vous aider, décrivez-lui un compte avec vos propres mots, ou déposez un document, et il vous proposera une fiche à vérifier et à confirmer.",
       "bullets": [
-        "Comptes bancaires, épargne et ISA",
-        "Retraites, d'entreprise, personnelles et d'État",
-        "Investissements et comptes de courtage",
+        "Comptes courants, livrets et épargne",
+        "Retraites de base, complémentaires et PER",
+        "Investissements, PEA et comptes-titres",
         "Immobilier et prêts immobiliers",
-        "Assurance vie, maladies graves et prévoyance",
+        "Assurance-vie (clause bénéficiaire), prévoyance et assurance décès",
         "Actifs numériques et abonnements"
       ],
       "preview": {
         "title": "Comptes et actifs",
         "items": [
           {
-            "label": "Compte courant Barclays",
+            "label": "Compte courant Crédit Agricole",
             "tag": "Banque"
           },
           {
-            "label": "ISA actions Vanguard",
+            "label": "PEA Boursorama",
             "tag": "Investissement"
           },
           {
-            "label": "Retraite d'entreprise Nest",
+            "label": "Retraite complémentaire Agirc-Arrco",
             "tag": "Retraite"
           },
           {
-            "label": "Compte épargne Halifax",
+            "label": "Livret A Caisse d'Épargne",
             "tag": "Épargne"
           }
         ],
@@ -68,7 +68,7 @@
       "title": "Donnez à chaque document important une place permanente.",
       "body": "Un testament introuvable est presque aussi inutile qu'un testament inexistant. Il en va de même pour les contrats d'assurance, les papiers de retraite et les titres de propriété. Le coffre à documents chiffré d'Everstead vous permet de téléverser originaux ou copies numérisées, de les étiqueter et de noter où sont rangés les originaux papier, pour que votre famille trouve tout au même endroit, et non dans trois armoires et chez le notaire. Téléversez un document et nous le lisons pour vous, nom, type et date d'expiration sont extraits automatiquement.",
       "bullets": [
-        "Téléversez et organisez votre testament et vos LPA",
+        "Téléversez et organisez votre testament et votre mandat de protection future",
         "Conservez passeport, pièce d'identité et acte de naissance",
         "Notez les numéros de contrats d'assurance et les contacts",
         "Indiquez où sont rangés les originaux papier",
@@ -83,15 +83,15 @@
             "tag": "Juridique"
           },
           {
-            "label": "Assurance vie, contrat Aviva",
+            "label": "Assurance-vie, contrat Axa",
             "tag": "Assurance"
           },
           {
-            "label": "Titres de propriété, 14 Elm St",
+            "label": "Titres de propriété, 14 rue des Ormes",
             "tag": "Immobilier"
           },
           {
-            "label": "LPA (mandat de protection future)",
+            "label": "Mandat de protection future",
             "tag": "Juridique"
           }
         ],
@@ -101,7 +101,7 @@
     {
       "label": "Invitez vos personnes de confiance",
       "title": "Décidez qui voit quoi, et quand.",
-      "body": "C'est ce qui distingue Everstead d'un simple dossier sur votre ordinateur. Vous invitez des personnes précises (votre conjoint, votre exécuteur testamentaire, votre notaire) et choisissez exactement les sections qu'elles peuvent voir. Elles n'accèdent qu'à ce que vous décidez, et seulement quand vous l'accordez. Grâce aux permissions par rôle, vos enfants peuvent voir vos volontés sans vos informations financières ; votre notaire, les documents juridiques et rien d'autre.",
+      "body": "C'est ce qui distingue Everstead d'un simple dossier sur votre ordinateur. Vous invitez des personnes précises (votre conjoint, la personne qui s'occupera des démarches, votre notaire) et choisissez exactement les sections qu'elles peuvent voir. Elles n'accèdent qu'à ce que vous décidez, et seulement quand vous l'accordez. Grâce aux permissions par rôle, vos enfants peuvent voir vos volontés sans vos informations financières ; votre notaire, les documents juridiques et rien d'autre.",
       "bullets": [
         "Invitez proches, conseillers ou notaires",
         "Définissez l'accès par catégorie, pas de tout ou rien",
@@ -114,15 +114,15 @@
         "title": "Personnes de confiance",
         "items": [
           {
-            "label": "Sarah Mitchell: Conjointe",
+            "label": "Camille Moreau : Conjointe",
             "tag": "Accès complet"
           },
           {
-            "label": "James Mitchell: Fils",
+            "label": "Lucas Moreau : Fils",
             "tag": "Volontés uniquement"
           },
           {
-            "label": "Thornton & Co Solicitors",
+            "label": "Étude de Maître Bertrand, notaire",
             "tag": "Docs juridiques"
           },
           {
@@ -156,7 +156,7 @@
             "tag": "Personnel"
           },
           {
-            "label": "Message pour Sarah",
+            "label": "Message pour Camille",
             "tag": "Privé"
           },
           {
@@ -179,9 +179,9 @@
       "Chaque accès est consigné, vous savez toujours qui a consulté quoi, et quand."
     ],
     "mockup": {
-      "header": "Vue personne de confiance: Sarah Mitchell",
-      "calloutTitle": "Commencez ici, les instructions de James",
-      "calloutBody": "Étape 1 : appelez Thornton & Co Solicitors au 020 7123 4567…",
+      "header": "Vue personne de confiance : Camille Moreau",
+      "calloutTitle": "Commencez ici, les instructions de Laurent",
+      "calloutBody": "Étape 1 : appelez l'étude de Maître Bertrand au 01 99 00 45 67…",
       "categories": [
         {
           "label": "Comptes et actifs",
@@ -241,7 +241,7 @@
       },
       {
         "q": "Est-ce la même chose que rédiger un testament ?",
-        "a": "Non. Everstead est une plateforme d'organisation et de préparation, pas un service juridique. Le testament est un document légal qui détermine la répartition de votre patrimoine, vous devriez en avoir un, rédigé par un notaire. Everstead est l'endroit où vous consignez tout ce qui rend ce testament plus simple à exécuter : références de comptes, emplacement des documents, contacts et instructions que votre famille pourra réellement suivre."
+        "a": "Non. Everstead est une plateforme d'organisation et de préparation, pas un service juridique. Le testament est un document légal qui détermine la répartition de votre patrimoine, vous devriez en avoir un, idéalement déposé chez un notaire. Everstead est l'endroit où vous consignez tout ce qui simplifiera le règlement de la succession : références de comptes, emplacement des documents, contacts et instructions que votre famille pourra réellement suivre."
       },
       {
         "q": "Qu'advient-il de mon plan si j'arrête de payer ?",

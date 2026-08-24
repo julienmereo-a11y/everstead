@@ -2512,7 +2512,22 @@ const sections = {
 // Visible copy lives in the 'resources' i18n namespace under tools.items.<i18nKey>
 // (en strings verbatim there). The title/desc/cta/tag/badge fields here are kept
 // as the source-of-truth reference for the EN strings.
+// Tools may carry a lang field, mirroring postLang for articles: a tool with
+// lang shows ONLY on that tree, a tool without one is part of the UK set and
+// shows on both trees (the fr copy labels those honestly as UK tools). For a
+// lang: 'fr' tool the reference strings below are the FR strings.
 const tools = [
+  {
+    i18nKey: 'apresDeces',
+    href: '/apres-un-deces',
+    lang: 'fr',
+    title: 'Après un décès : les démarches en France',
+    tag: 'Interactif',
+    tagColor: 'bg-navy-50 text-navy-700 border-navy-200',
+    desc: 'Une liste interactive des démarches après un décès en France, des premières 24 heures au règlement de la succession : mairie, banque, CPAM, notaire. Imprimable.',
+    cta: 'Ouvrir la liste',
+    badge: 'Gratuit · Sans compte',
+  },
   {
     i18nKey: 'afterDeath',
     href: '/what-to-do-when-someone-dies',
@@ -2953,6 +2968,9 @@ function ResourcesIndex() {
   const localePrefix = uiLang === 'fr' ? '/fr' : ''
   // Only advertise sections that have at least one article in this language.
   const visibleSections = sectionList.filter(s => sections[s.slug].posts.some(p => postLang(p) === uiLang))
+  // Tools with a lang field show only on that tree (see the tools array above),
+  // the untagged UK tools show everywhere.
+  const visibleTools = tools.filter(tool => !tool.lang || tool.lang === uiLang)
   return (
     <>
     <Helmet>
@@ -3009,7 +3027,7 @@ function ResourcesIndex() {
             </p>
           </div>
           <div className="grid sm:grid-cols-3 gap-6">
-            {tools.map((tool, i) => (
+            {visibleTools.map((tool, i) => (
               <Link
                 key={tool.href}
                 to={tool.href}

@@ -57,6 +57,13 @@
     "title": "Practical tools, no sign-up required.",
     "subtitle": "Use these tools to understand where you stand, get a checklist for administering an estate, or calculate what your digital estate is worth.",
     "items": {
+      "apresDeces": {
+        "title": "After a Death in France",
+        "tag": "Interactive",
+        "desc": "An interactive checklist of the formalities after a death in France, from the first 24 hours to settling the estate: town hall, bank, CPAM, notaire. Printable.",
+        "cta": "Open the checklist",
+        "badge": "Free · No login"
+      },
       "afterDeath": {
         "title": "What to do when someone dies",
         "tag": "AI guide",

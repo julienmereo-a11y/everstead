@@ -1,7 +1,7 @@
 {
   "meta": {
     "title": "Everstead pour les conseillers | L'organisation successorale pour vos clients",
-    "description": "Offrez à vos clients un espace successoral co-brandé qu'ils utiliseront vraiment. Everstead pour les conseillers comprend un portail client, un suivi de préparation et l'accès aux documents, conçu pour les conseillers financiers indépendants, les notaires et les gestionnaires de patrimoine.",
+    "description": "Offrez à vos clients un espace successoral co-brandé qu'ils utiliseront vraiment. Everstead pour les conseillers comprend un portail client, un suivi de préparation et l'accès aux documents, conçu pour les conseillers en gestion de patrimoine, les notaires et les assureurs.",
     "ogTitle": "Everstead pour les conseillers | L'organisation successorale pour vos clients",
     "ogDescription": "Offrez à vos clients un espace successoral co-brandé qu'ils utiliseront vraiment. Everstead pour les conseillers comprend un portail client, un suivi de préparation et l'accès aux documents."
   },
@@ -13,7 +13,7 @@
     "seeHow": "Voir comment ça marche"
   },
   "trustSignals": [
-    "Données hébergées au Royaume-Uni",
+    "Données hébergées au Royaume-Uni (adéquation UE)",
     "Chiffrement AES-256",
     "Conforme au RGPD",
     "Aucun conseil financier",
@@ -22,22 +22,22 @@
   "problem": {
     "eyebrow": "Le problème",
     "title": "La plupart des clients arrivent en rendez-vous mal préparés, et vous le savez tous les deux.",
-    "p1": "Ils ne retrouvent pas le relevé de retraite de 2019. Ils n'ont pas mis à jour leur LPA depuis leur divorce. Leurs comptes numériques sont éparpillés entre six adresses e-mail différentes, et leur conjoint ne connaît aucun des mots de passe.",
-    "p2": "Résultat : la première heure de chaque bilan est consacrée à l'administratif, pas au conseil. Et quand le pire arrive, l'exécuteur testamentaire passe des mois à courir après des informations qui auraient dû être organisées des années plus tôt.",
-    "tabIfa": "Pour les conseillers financiers",
+    "p1": "Ils ne retrouvent pas le relevé de retraite de 2019. Ils n'ont pas mis à jour leur mandat de protection future depuis leur divorce. Leurs comptes numériques sont éparpillés entre six adresses e-mail différentes, et leur conjoint ne connaît aucun des mots de passe.",
+    "p2": "Résultat : la première heure de chaque bilan est consacrée à l'administratif, pas au conseil. Et quand le pire arrive, la famille et le notaire passent des mois à courir après des informations qui auraient dû être organisées des années plus tôt.",
+    "tabIfa": "Pour les CGP",
     "tabSolicitor": "Pour les notaires",
     "ifaBullets": [
       "Un premier rendez-vous passé à retrouver des informations de compte élémentaires",
       "Des clients sans aucun registre de leurs actifs numériques ou abonnements",
-      "Des exécuteurs testamentaires qui vous appellent après un décès avec des questions élémentaires",
-      "Des LPA et des testaments qui n'ont pas été revus depuis des années",
+      "Des proches qui vous appellent après un décès avec des questions élémentaires",
+      "Des mandats de protection future et des testaments qui n'ont pas été revus depuis des années",
       "Aucun moyen de suivre la préparation des clients sur l'ensemble de votre portefeuille"
     ],
     "solicitorBullets": [
       "Des semaines à courir après les documents avant de pouvoir ouvrir la succession",
       "Des clients qui décèdent sans registre clair de leurs actifs",
       "Des familles qui appellent en détresse sans savoir ce que possédait leur proche",
-      "Des testaments et des LPA introuvables au moment voulu",
+      "Des testaments et des mandats de protection future introuvables au moment voulu",
       "Aucune source unique de référence avant le début du règlement de la succession"
     ]
   },
@@ -47,7 +47,7 @@
     "items": [
       {
         "title": "Des clients qui arrivent mieux préparés",
-        "desc": "Quand un client dispose d'un espace Everstead, vos premiers rendez-vous vont plus loin. Fini la première heure passée à chercher des numéros de compte ou à découvrir un LPA manquant."
+        "desc": "Quand un client dispose d'un espace Everstead, vos premiers rendez-vous vont plus loin. Fini la première heure passée à chercher des numéros de compte ou à découvrir un mandat de protection future manquant."
       },
       {
         "title": "Un portail client co-brandé",
@@ -67,7 +67,7 @@
       },
       {
         "title": "Un traitement des données conforme",
-        "desc": "Données hébergées au Royaume-Uni, chiffrement AES-256 et conformité totale au RGPD. Les données de vos clients sont traitées selon le niveau d'exigence que vous attendez de tout outil professionnel."
+        "desc": "Chiffrement AES-256, conformité totale au RGPD et hébergement au Royaume-Uni, couvert par une décision d'adéquation de la Commission européenne. Les données de vos clients sont traitées selon le niveau d'exigence que vous attendez de tout outil professionnel."
       }
     ],
     "ongoing": {
@@ -102,7 +102,7 @@
     "title": "Conçu pour les professionnels de la succession.",
     "items": [
       {
-        "title": "Conseillers financiers indépendants",
+        "title": "Conseillers en gestion de patrimoine",
         "desc": "Ajoutez l'organisation successorale à votre offre sans la développer vous-même. Des clients aux successions organisées prennent de meilleures décisions et vous accordent davantage leur confiance."
       },
       {
@@ -114,8 +114,8 @@
         "desc": "Aidez vos clients à suivre actifs, abonnements et comptes au même endroit. Une image plus nette en fin d'exercice, et bien moins de surprises."
       },
       {
-        "title": "Gestionnaires de patrimoine",
-        "desc": "Différenciez votre offre en donnant à vos clients fortunés un outil que leur banque n'a pas. L'espace famille vous positionne comme véritablement complet."
+        "title": "Assureurs et courtiers",
+        "desc": "Différenciez votre accompagnement en donnant à vos clients un outil que leur banque ne propose pas. L'espace famille vous positionne comme un partenaire véritablement complet."
       }
     ]
   },
@@ -129,7 +129,7 @@
       {
         "label": "Conversations",
         "title": "Le guide du conseiller pour les conversations sur l'héritage",
-        "summary": "Sept angles qu'utilisent conseillers financiers et notaires pour ouvrir la conversation successorale avec leurs clients, sans paraître morbide ni commercial. Tirés des cabinets pilotes.",
+        "summary": "Sept angles qu'utilisent conseillers en gestion de patrimoine et notaires pour ouvrir la conversation successorale avec leurs clients, sans paraître morbide ni commercial. Tirés des cabinets pilotes.",
         "buttonLabel": "Recevoir le guide par e-mail"
       },
       {
@@ -141,14 +141,14 @@
       {
         "label": "Playbook",
         "title": "L'organisation successorale comme valeur ajoutée : guide de tarification et de positionnement",
-        "summary": "Comment les cabinets britanniques positionnent, tarifient (de 300 £ à 1 500 £) et délivrent l'organisation successorale comme un service structuré, y compris le calcul de fidélisation au moment de la transition générationnelle.",
+        "summary": "Comment des cabinets pionniers au Royaume-Uni positionnent, tarifient et délivrent l'organisation successorale comme un service structuré et rémunéré, y compris le calcul de fidélisation au moment de la transition générationnelle.",
         "buttonLabel": "Recevoir le playbook par e-mail"
       }
     ]
   },
   "earlyAccess": {
     "title": "Nous intégrons nos premiers conseillers partenaires en ce moment.",
-    "body": "Everstead est en accès anticipé. Nous travaillons directement avec une petite cohorte de conseillers financiers indépendants, de notaires et de planificateurs successoraux pour façonner le développement du portail conseiller. Si vous accompagnez des clients sur la planification successorale ou du grand âge, nous serions ravis d'échanger avec vous.",
+    "body": "Everstead est en accès anticipé. Nous travaillons directement avec une petite cohorte de conseillers en gestion de patrimoine, de notaires et d'assureurs pour façonner le développement du portail conseiller. Si vous accompagnez des clients sur la planification successorale ou du grand âge, nous serions ravis d'échanger avec vous.",
     "cta": "Réserver un appel de 20 minutes"
   },
   "plan": {

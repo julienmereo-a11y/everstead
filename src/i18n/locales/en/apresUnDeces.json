@@ -1,0 +1,184 @@
+{
+  "meta": {
+    "title": "After a Death in France: The Formalities Step by Step | Everstead",
+    "description": "A free, interactive checklist of the formalities after a death in France: town hall, bank, health insurance, notaire, succession. Step by step, no sign-up."
+  },
+  "hero": {
+    "eyebrow": "Free resource · France",
+    "title": "After a Death in France",
+    "subtitle": "A step-by-step guide to the formalities after a death in France, from the first hours through to settling the estate. The French process, explained in English."
+  },
+  "print": {
+    "brand": "Everstead, everstead.care",
+    "title": "After a Death in France",
+    "meta": "France · Printed {{date}}",
+    "intro": "This checklist covers the main formalities after a death in France. Work through each stage in order, ticking steps as they are completed. Seek advice from a notaire or another professional for anything legal or tax related."
+  },
+  "toolbar": {
+    "progressLabel": "Overall progress",
+    "progressCount": "{{checked}} / {{total}} ({{pct}}%)",
+    "sectionCount": "{{checked}} / {{total}}",
+    "reset": "Reset",
+    "confirm": "Clear all?",
+    "confirmYes": "Yes, clear",
+    "confirmCancel": "Cancel",
+    "print": "Print / Export",
+    "check": "Check: {{item}}",
+    "uncheck": "Uncheck: {{item}}"
+  },
+  "intro": {
+    "title": "Where do you start?",
+    "p1": "After a death in France, the formalities arrive at the very moment you feel least ready for them: civil status, bank, social bodies, notaire. Each organisation has its own pace and its own paperwork, and nobody hands you the complete list. This guide walks through the French process in English, for families and expats dealing with a death in France.",
+    "p2": "This checklist breaks the journey into four stages: the first 24 hours, the first week, the first month and the first six months. Tick each step as you go, your progress is saved automatically in your browser."
+  },
+  "sections": [
+    {
+      "id": "premieres-24-heures",
+      "title": "The first 24 hours",
+      "subtitle": "The very first steps, most of these cannot wait",
+      "items": [
+        {
+          "id": "a01",
+          "title": "Have the death certified by a doctor",
+          "desc": "A doctor completes the medical death certificate (certificat de décès). At home, call the family doctor or the on-call doctor. In a hospital or care home, the institution takes care of this."
+        },
+        {
+          "id": "a02",
+          "title": "Declare the death at the town hall",
+          "desc": "The death is declared at the mairie of the commune where it occurred, in principle within 24 working hours. When the death occurs in a hospital or care home, the institution can handle the declaration."
+        },
+        {
+          "id": "a03",
+          "title": "Request several copies of the death record",
+          "desc": "The acte de décès will be requested by the bank, the insurers and most organisations. Ask for several copies when you declare the death, each organisation will want its own."
+        },
+        {
+          "id": "a04",
+          "title": "Contact a funeral director",
+          "desc": "The funeral takes place in the days following the death. You can compare several funeral homes and ask for a written quote before committing."
+        },
+        {
+          "id": "a05",
+          "title": "Look for the deceased's funeral wishes",
+          "desc": "Check whether the deceased expressed any wishes: a funeral contract, a will, a written note or wishes shared with a relative. Their wishes take priority over the family's preferences."
+        }
+      ]
+    },
+    {
+      "id": "premiere-semaine",
+      "title": "The first week",
+      "subtitle": "Notify the key organisations and secure the financial situation",
+      "items": [
+        {
+          "id": "b01",
+          "title": "Notify the employer or the pension funds",
+          "desc": "If the deceased was working, inform their employer promptly. If they were retired, notify their pension funds, both the basic and the supplementary schemes, to stop payments and ask about any entitlements for the surviving spouse."
+        },
+        {
+          "id": "b02",
+          "title": "Inform the bank",
+          "desc": "The bank freezes the deceased's individual accounts as soon as it is told of the death. A joint account, in principle, remains available to the surviving co-holder."
+        },
+        {
+          "id": "b03",
+          "title": "Declare the death to the insurers",
+          "desc": "Notify the deceased's insurers, in particular for death cover and protection policies (prévoyance), so that any payout files can be opened."
+        },
+        {
+          "id": "b04",
+          "title": "Notify the CPAM and the mutuelle",
+          "desc": "The state health insurance (CPAM) and the complementary health insurer must be informed. Some entitlements may exist for relatives, such as the death grant, subject to conditions."
+        },
+        {
+          "id": "b05",
+          "title": "Report the death to home and car insurers",
+          "desc": "The policies covering the home and any vehicle must be reported to the insurer, who will transfer or cancel them depending on the situation."
+        },
+        {
+          "id": "b06",
+          "title": "Choose a notaire if needed",
+          "desc": "A notaire is essential in particular where there is real estate, a will or a marriage contract. Making early contact helps organise the next steps."
+        }
+      ]
+    },
+    {
+      "id": "premier-mois",
+      "title": "The first month",
+      "subtitle": "Open the succession file and review the contracts",
+      "items": [
+        {
+          "id": "c01",
+          "title": "Meet the notaire",
+          "desc": "The notaire draws up the acte de notoriété, the document that officially identifies the heirs. Most organisations ask for it before releasing funds."
+        },
+        {
+          "id": "c02",
+          "title": "Have a search made for a will",
+          "desc": "The notaire queries the central register of last wishes (FCDDV) to check whether a will has been registered."
+        },
+        {
+          "id": "c03",
+          "title": "Search for life insurance policies",
+          "desc": "The AGIRA service lets you find out whether you are the beneficiary of a life insurance policy (assurance vie) taken out by the deceased."
+        },
+        {
+          "id": "c04",
+          "title": "Inform the CAF and the tax office",
+          "desc": "Report the death to the CAF if the deceased or the household received benefits, and to the tax office to update the household's situation."
+        },
+        {
+          "id": "c05",
+          "title": "Cancel subscriptions and ongoing contracts",
+          "desc": "Phone, internet, energy, press: review the deceased's direct debits to cancel or transfer each contract."
+        },
+        {
+          "id": "c06",
+          "title": "Redirect the post",
+          "desc": "Forwarding the post to the person handling the estate avoids missing important documents and helps identify the organisations still to be notified."
+        }
+      ]
+    },
+    {
+      "id": "six-premiers-mois",
+      "title": "The first six months",
+      "subtitle": "Settle the estate and close everything down",
+      "items": [
+        {
+          "id": "d01",
+          "title": "File the succession declaration",
+          "desc": "The déclaration de succession is filed with the French tax administration, in principle within six months of a death that occurred in France. The notaire usually takes care of it."
+        },
+        {
+          "id": "d02",
+          "title": "Settle the estate with the notaire",
+          "desc": "The notaire draws up the necessary deeds: the division of the estate, the property attestation where real estate passes to the heirs, and the formalities with each organisation."
+        },
+        {
+          "id": "d03",
+          "title": "Complete the final transfers and closures",
+          "desc": "Once the estate is settled, accounts are closed or transferred, vehicles and contracts change hands, and the last formalities are completed."
+        }
+      ]
+    }
+  ],
+  "disclaimer": {
+    "label": "Important:",
+    "text": "This checklist provides general information about the formalities after a death in France. It is not legal advice. Every estate is different, particularly where real estate, a will or a complex family situation is involved. Consult a notaire for guidance specific to your circumstances."
+  },
+  "cta": {
+    "eyebrow": "From Everstead",
+    "title": "Spare your family this search",
+    "body": "The hardest part of settling an estate is usually finding everything: accounts, policies, documents, wishes, contacts. A vault prepared in advance removes most of that search. Everstead lets you organise it all in one place and share it with the people you trust.",
+    "button": "Start organising"
+  },
+  "share": {
+    "prompt": "Know someone who might need this?",
+    "button": "Share this checklist",
+    "title": "After a Death in France | Everstead",
+    "text": "A free, interactive checklist of the formalities after a death in France."
+  },
+  "schema": {
+    "name": "After a Death in France: The Formalities Step by Step",
+    "description": "The step-by-step checklist of formalities after a death in France, from the first 24 hours to settling the estate."
+  }
+}

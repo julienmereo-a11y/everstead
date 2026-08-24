@@ -12,7 +12,7 @@
       {
         "text": "Mon père est parti soudainement. Everstead a rendu une période incroyablement douloureuse tellement plus surmontable.",
         "author": "Margaret T.",
-        "role": "Fille et exécutrice testamentaire"
+        "role": "Fille, en charge de la succession"
       },
       {
         "text": "Planifier, ce n'est pas s'attendre au pire. C'est protéger ce que l'on aime le plus.",
@@ -22,7 +22,7 @@
       {
         "text": "J'ai créé mon Everstead pour que mes enfants ne vivent jamais ce que nous avons traversé au décès de maman. Cela m'a pris un après-midi.",
         "author": "David R.",
-        "role": "Père et exécuteur testamentaire"
+        "role": "Père, en charge de la succession de sa mère"
       },
       {
         "text": "La chose la plus attentionnée que l'on puisse laisser derrière soi, ce n'est pas de l'argent. C'est un plan.",
@@ -41,8 +41,8 @@
         "label": "Chiffrement"
       },
       {
-        "value": "Royaume-Uni",
-        "label": "Enregistré auprès de l'ICO"
+        "value": "RGPD",
+        "label": "Hébergement conforme"
       }
     ]
   },
@@ -73,7 +73,7 @@
   "errors": {
     "generic": "Une erreur est survenue. Veuillez réessayer."
   },
-  "trustBadge": "🔒 Chiffrement au repos et en transit · Hébergement conforme au RGPD · ICO n° 17166825",
+  "trustBadge": "🔒 Chiffrement AES-256 au repos et en transit · Hébergement conforme au RGPD · Vos données ne sont jamais vendues",
   "forgot": {
     "title": "Mot de passe oublié ?",
     "subtitle": "Saisissez votre adresse e-mail et nous vous enverrons un lien de réinitialisation.",

@@ -215,6 +215,7 @@ function DontSection({ section }) {
 export default function ExecutorChecklist() {
   const [checkedMap, setCheckedMap] = useState({})
   const [showResetConfirm, setShowResetConfirm] = useState(false)
+  const [loaded, setLoaded] = useState(false)
 
   // Load persisted state
   useEffect(() => {
@@ -224,16 +225,20 @@ export default function ExecutorChecklist() {
     } catch {
       // ignore
     }
+    setLoaded(true)
   }, [])
 
-  // Persist on change
+  // Persist on change. Gated behind `loaded` so the initial empty {} can never
+  // clobber saved progress before the load effect has run (same fix as
+  // ApresUnDeces; StrictMode's double mount made this a data-loss bug in dev).
   useEffect(() => {
+    if (!loaded) return
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(checkedMap))
     } catch {
       // ignore
     }
-  }, [checkedMap])
+  }, [checkedMap, loaded])
 
   const handleToggle = useCallback((id) => {
     setCheckedMap(prev => ({ ...prev, [id]: !prev[id] }))
