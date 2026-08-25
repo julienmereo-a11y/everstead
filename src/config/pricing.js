@@ -123,7 +123,11 @@ export function marketPricing(language) {
 export const FREE_LIMITS = {
   accounts:      1,
   documents:     1,
-  trustedPeople: 1,
+  // 3, not 1: inviting a trusted person emails someone about Everstead from a
+  // person they trust, which is the only built-in word-of-mouth loop the
+  // product has. Mirrored in free_tier_allows() in the database, which is the
+  // authority. Change both together.
+  trustedPeople: 3,
 }
 
 export const PRICING = {

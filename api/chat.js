@@ -16,7 +16,7 @@ About Everstead:
 - ICO registered, UK GDPR compliant, AES-256 encrypted
 
 Plans:
-- Everstead (Free): £0, no card required, for anyone getting started. Includes the guided onboarding, the About Me profile, and Your AI Assistant with no limits, plus a starter vault of 1 account, 1 document, and 1 trusted person. It is not a trial and is not time-limited.
+- Everstead (Free): £0, no card required, for anyone getting started. Includes the guided onboarding, the About Me profile, and Your AI Assistant with no limits, plus a starter vault of 1 account, 1 document, and 3 trusted people. It is not a trial and is not time-limited.
 - Everstead+: £9.99/month, or £7.99/month billed annually (£95.88/year, saving 20%), for couples and families: everything in Free but uncapped, two private vaults on one subscription, up to 10 trusted contacts, 25 GB storage, and Personal Messages. Includes a 14-day free trial, card details are taken at signup, but nothing is charged until the trial ends, and you can cancel any time before then and pay nothing.
 - Everstead Pro: pricing on application, for financial advisers and estate planners managing multiple clients. Sold via a demo, not self-serve checkout.
 

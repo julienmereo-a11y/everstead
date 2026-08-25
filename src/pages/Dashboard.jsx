@@ -851,7 +851,7 @@ export default function Dashboard() {
             onAddPayment={() => handleUpgrade()}
           />
         )}
-        {activeSection === 'overview'      && <OverviewSection  profile={activeProfile} accounts={accounts} documents={documents} people={people} instructions={instructions} messages={messages} alerts={alerts} markRead={markRead} onNavigate={setActiveSection} planLimits={planLimits} loading={loadingAccounts || loadingDocs} daysSinceLogin={daysSinceLogin} onCelebrate={celebrate} onExecutorPreview={() => setShowExecutorPreview(true)} aboutMe={aboutMe} onUpgrade={() => handleUpgrade('family', 'yearly')} />}
+        {activeSection === 'overview'      && <OverviewSection  profile={activeProfile} accounts={accounts} documents={documents} people={people} instructions={instructions} messages={messages} alerts={alerts} markRead={markRead} onNavigate={setActiveSection} planLimits={planLimits} loading={loadingAccounts || loadingDocs} daysSinceLogin={daysSinceLogin} onCelebrate={celebrate} onExecutorPreview={() => setShowExecutorPreview(true)} aboutMe={aboutMe} onUpgrade={() => handleUpgrade('family', 'yearly')} persistScore={isDemo ? undefined : updateProfile} scoreInputsLoaded={!loadingAccounts && !loadingDocs && !loadingPeople && !loadingInstructions} />}
         {activeSection === 'accounts'      && <AccountsSection  accounts={accounts} loading={loadingAccounts} add={addAccount} update={updateAccount} remove={removeAccount} profile={activeProfile} onUpgrade={() => handleUpgrade('family', 'yearly')} onLifeEvent={isDemo ? undefined : setLifeEventPrompt} />}
         {activeSection === 'documents'     && <DocumentsSection documents={documents} loading={loadingDocs} uploadFile={uploadFile} update={updateDocument} remove={removeDocument} planLimits={planLimits} profile={activeProfile} onUpgrade={() => handleUpgrade('family', 'yearly')} updateProfile={isDemo ? undefined : updateProfile} addAlert={isDemo ? undefined : realAlerts.add} onLifeEvent={isDemo ? undefined : setLifeEventPrompt} people={people} />}
         {activeSection === 'people'        && <PeopleSection    people={people} loading={loadingPeople} invite={invite} resendInvite={resendInvite} updatePerson={updatePerson} removePerson={removePerson} planLimits={planLimits} profile={activeProfile} onUpgrade={() => handleUpgrade('family', 'yearly')} />}
@@ -1123,7 +1123,7 @@ const PLAN_BADGE = {
   advisor:   { label: PLAN_LABELS.advisor,   cls: 'bg-sage-50  text-sage-700  border-sage-200'  },
 }
 
-function OverviewSection({ profile, accounts, documents, people, instructions, messages, alerts, markRead, onNavigate, planLimits, loading, daysSinceLogin, onCelebrate, onExecutorPreview, aboutMe, onUpgrade }) {
+function OverviewSection({ profile, accounts, documents, people, instructions, messages, alerts, markRead, onNavigate, planLimits, loading, daysSinceLogin, onCelebrate, onExecutorPreview, aboutMe, onUpgrade, persistScore, scoreInputsLoaded }) {
   const { t } = useTranslation('dashboard')
   const criticalAlerts = alerts.filter(a => a.severity === 'critical' && !a.is_read)
   const [staleBannerDismissed, setStaleBannerDismissed] = React.useState(false)
@@ -1166,6 +1166,22 @@ function OverviewSection({ profile, accounts, documents, people, instructions, m
   React.useEffect(() => {
     if (score === 100) onCelebrate?.('readiness_100', '⭐', t('overview.readiness100Title'), t('overview.readiness100Body'))
   }, [score])
+
+  // The score is derived here from live vault data, but profiles.readiness_score
+  // is what the ADMIN panel and the ADVISER portal read. It was never written
+  // back, so every member showed 0% to advisers and to us, including paying
+  // members with a well-filled vault.
+  //
+  // Gated on scoreInputsLoaded: accounts, documents, people and instructions
+  // all feed the score, and a half-loaded dashboard would otherwise persist a
+  // spurious 0 over a good value. Only writes when the number actually changes.
+  React.useEffect(() => {
+    if (!persistScore || !scoreInputsLoaded) return
+    if (profile?.readiness_score === score) return
+    Promise.resolve(persistScore({ readiness_score: score })).catch(() => {
+      /* non-fatal: the displayed score is still correct */
+    })
+  }, [score, scoreInputsLoaded, persistScore, profile?.readiness_score])
 
   const planBadge = PLAN_BADGE[profile.plan] ?? PLAN_BADGE.essential
   const scoreLabel = isFamilyPlus ? t('overview.familyReadiness') : t('overview.planReadiness')
