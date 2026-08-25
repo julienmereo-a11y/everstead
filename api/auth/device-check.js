@@ -2,6 +2,7 @@ import { createClient } from '@supabase/supabase-js'
 import { Resend } from 'resend'
 import crypto from 'crypto'
 import { withSentry } from '../lib/sentry.js'
+import { translator, languageForUser } from '../_lib/email-i18n.js'
 
 // Service-role client: verifies the caller's JWT and records the device.
 const supabase = createClient(
@@ -61,11 +62,13 @@ async function handler(req, res) {
   let alerted = false
   if (devices.length > 0 && user.email) {
     try {
+      const lang = await languageForUser(supabase, { userId: user.id })
+      const t    = translator(COPY, lang)
       await resend.emails.send({
         from:    'Everstead <hello@everstead.care>',
         to:      user.email,
-        subject: 'New sign-in to your Everstead account',
-        html:    newDeviceHtml(userAgent),
+        subject: t('subject'),
+        html:    newDeviceHtml(userAgent, lang),
       })
       alerted = true
     } catch { /* alert is best-effort */ }
@@ -74,15 +77,40 @@ async function handler(req, res) {
   return res.status(200).json({ known: false, alerted })
 }
 
-function newDeviceHtml(userAgent) {
-  const ua = (userAgent || 'an unrecognised device').replace(/[<>]/g, '')
+// Customer-facing copy, per recipient language (profiles.language).
+// French strings carry a real NBSP (U+00A0) before ? ! ; : and %, as French
+// typography requires. Do not "tidy" those into ordinary spaces.
+const COPY = {
+  en: {
+    subject:       'New sign-in to your Everstead account',
+    unknownDevice: 'an unrecognised device',
+    heading:       'New sign-in to your account',
+    intro:         "There was a new sign-in to your Everstead account from a device we hadn't seen before:",
+    wasYou:        'If this was you, you can ignore this email.',
+    wasNotYou:     "<strong>If this wasn't you</strong>, please reset your password right away and review who has access in your dashboard.",
+    footer:        'Everstead, your plan, kept safe.',
+  },
+  fr: {
+    subject:       'Nouvelle connexion à votre compte Everstead',
+    unknownDevice: 'un appareil non reconnu',
+    heading:       'Nouvelle connexion à votre compte',
+    intro:         "Une nouvelle connexion à votre compte Everstead a été effectuée depuis un appareil que nous n'avions encore jamais vu :",
+    wasYou:        "S'il s'agit bien de vous, vous pouvez ignorer cet e-mail.",
+    wasNotYou:     "<strong>Si ce n'était pas vous</strong>, réinitialisez votre mot de passe sans attendre et vérifiez qui a accès à votre compte depuis votre tableau de bord.",
+    footer:        'Everstead, votre plan, en sécurité.',
+  },
+}
+
+function newDeviceHtml(userAgent, lang) {
+  const t  = translator(COPY, lang)
+  const ua = (userAgent || t('unknownDevice')).replace(/[<>]/g, '')
   return `<!doctype html><html><body style="font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;color:#0d1628;line-height:1.6;max-width:520px;margin:0 auto;padding:24px">
-    <h2 style="margin:0 0 8px;font-weight:600">New sign-in to your account</h2>
-    <p style="margin:0 0 12px;color:#44506a">There was a new sign-in to your Everstead account from a device we hadn't seen before:</p>
+    <h2 style="margin:0 0 8px;font-weight:600">${t('heading')}</h2>
+    <p style="margin:0 0 12px;color:#44506a">${t('intro')}</p>
     <p style="margin:0 0 16px;padding:12px 14px;background:#f5f5f4;border-radius:10px;font-size:13px;color:#44506a">${ua}</p>
-    <p style="margin:0 0 12px;color:#44506a">If this was you, you can ignore this email.</p>
-    <p style="margin:0 0 12px;color:#44506a"><strong>If this wasn't you</strong>, please reset your password right away and review who has access in your dashboard.</p>
-    <p style="margin:20px 0 0;font-size:12px;color:#8a8a8a">Everstead, your plan, kept safe.</p>
+    <p style="margin:0 0 12px;color:#44506a">${t('wasYou')}</p>
+    <p style="margin:0 0 12px;color:#44506a">${t('wasNotYou')}</p>
+    <p style="margin:20px 0 0;font-size:12px;color:#8a8a8a">${t('footer')}</p>
   </body></html>`
 }
 

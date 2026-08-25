@@ -2,6 +2,7 @@ import { createClient } from '@supabase/supabase-js'
 import { Resend } from 'resend'
 import { withSentry, captureException } from '../lib/sentry.js'
 import { planLabel } from '../_lib/plan-label.js'
+import { translator, pickLang } from '../_lib/email-i18n.js'
 
 const supabase = createClient(
   process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL,
@@ -15,41 +16,43 @@ const APP_URL = process.env.VITE_APP_URL || 'https://www.everstead.care'
 // Each email fires once, N days after the user's stripe_subscription_id was set.
 // We use created_at as a close-enough proxy (checkout typically happens minutes
 // after account creation). The sent-at column prevents double-sends.
+//
+// Subjects live in COPY (below) so they follow profiles.language like the body.
 // ─────────────────────────────────────────────────────────────────────────────
 const SEQUENCE = [
   {
     n:          1,
     field:      'onboarding_email_1_sent_at',
     afterDays:  2,
-    subject:    'Start here: add your first financial account',
+    subjectKey: 'email1Subject',
     html:       email1Html,
   },
   {
     n:          2,
     field:      'onboarding_email_2_sent_at',
     afterDays:  4,
-    subject:    'Who would handle things if you couldn\'t?',
+    subjectKey: 'email2Subject',
     html:       email2Html,
   },
   {
     n:          3,
     field:      'onboarding_email_3_sent_at',
     afterDays:  7,
-    subject:    'Your will, passport, and pension, stored in one safe place',
+    subjectKey: 'email3Subject',
     html:       email3Html,
   },
   {
     n:          4,
     field:      'onboarding_email_4_sent_at',
     afterDays:  10,
-    subject:    'The one thing most people forget in their estate plan',
+    subjectKey: 'email4Subject',
     html:       email4Html,
   },
   {
     n:          5,
     field:      'onboarding_email_5_sent_at',
     afterDays:  13,
-    subject:    'A quick check-in from Julien',
+    subjectKey: 'email5Subject',
     html:       email5Html,
   },
 ]
@@ -76,7 +79,7 @@ async function handler(req, res) {
     // Eligible: paying/trialing, this email not yet sent
     const { data: users, error } = await supabase
       .from('profiles')
-      .select(`id, full_name, email, plan, created_at, trial_ends_at`)
+      .select(`id, full_name, email, plan, language, created_at, trial_ends_at`)
       .not('stripe_subscription_id', 'is', null)
       .neq('role', 'delegate')
       .not('email', 'is', null)
@@ -117,18 +120,20 @@ async function handler(req, res) {
         }
 
         // ── Choose template ──
+        // Subject and body both follow the recipient's own profiles.language.
+        const t = translator(COPY, user.language)
         let html, subject
         if (step.n === 3 && progress.total === 0) {
           // Recovery branch: D7 with zero progress → re-engagement
-          subject = "Is something getting in the way?"
-          html = recoveryHtml(user.full_name, user.id)
+          subject = t('recoverySubject')
+          html = recoveryHtml(user.full_name, user.id, user.language)
         } else if (step.n === 5) {
           // Personalised day-13 check-in
-          html = step.html(user.full_name, user.plan, progress.accounts, progress.documents, progress.contacts, user.id)
-          subject = step.subject
+          html = step.html(user.full_name, user.plan, progress.accounts, progress.documents, progress.contacts, user.id, user.language)
+          subject = t(step.subjectKey)
         } else {
-          html = step.html(user.full_name, user.plan, user.id)
-          subject = step.subject
+          html = step.html(user.full_name, user.plan, user.id, user.language)
+          subject = t(step.subjectKey)
         }
 
         await resend.emails.send({
@@ -157,13 +162,191 @@ async function handler(req, res) {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
+// COPY
+// Every customer-facing string in this cron, per language. The HTML chrome is
+// shared; only these strings change with the recipient's profiles.language.
+// Nothing here is ever addressed to the founder, so the whole file localises.
+// ─────────────────────────────────────────────────────────────────────────────
+const COPY = {
+  en: {
+    // Shared chrome
+    signature:        ': Julien, founder of Everstead',
+    footerQuestions:  'Questions? Reply to this email or write to',
+    footerUnsubscribe:'Unsubscribe',
+    fallbackName:     'there',
+    fallbackNameLead: 'there',
+
+    // Email 1, Day 2: add your first account
+    email1Subject: 'Start here: add your first financial account',
+    email1H1:      "{{name}}, let's start with what you own.",
+    email1P1:      "The foundation of any good estate plan is a clear picture of your finances, bank accounts, investments, pensions, property. It's what your family would need to find in an emergency.",
+    email1P2:      "In Everstead you can add all of them in a few minutes. Here's what to include:",
+    email1Tip1:    '<strong>Bank accounts</strong>, current accounts, savings, ISAs',
+    email1Tip2:    '<strong>Investments & pensions</strong>, workplace pensions, SIPPs, stocks & shares',
+    email1Tip3:    '<strong>Property</strong>, your home, buy-to-lets, land',
+    email1Tip4:    '<strong>Insurance policies</strong>, life, critical illness, income protection',
+    email1Cta:     'Add my first account →',
+
+    // Email 2, Day 4: trusted contacts
+    email2Subject: "Who would handle things if you couldn't?",
+    email2H1:      "Who would handle things if you couldn't?",
+    email2P1:      'Hi {{name}}. One of the most important things you can do in Everstead is name the people who should have access to your plan, your spouse, a sibling, a solicitor, or a close friend.',
+    email2P2:      "These are your <strong>trusted contacts</strong>. They only get access when you grant it, but when the time comes, they'll know exactly where everything is and what to do.",
+    email2P3:      'It takes 60 seconds and makes an enormous difference.',
+    email2Cta:     'Add a trusted contact →',
+
+    // Email 3, Day 7: document vault
+    email3Subject: 'Your will, passport, and pension, stored in one safe place',
+    email3H1:      'Your documents deserve a safer home.',
+    email3P1:      'Hi {{name}}. Think about where your will is right now. Your passport. Your pension statements. Your life insurance policy. Could your family find them quickly if they needed to?',
+    email3P2:      "Everstead's encrypted vault keeps them in one place, organised, accessible, and private. Here's what's worth uploading first:",
+    email3Tip1:    '<strong>Your will</strong>, or a note about where the original is stored',
+    email3Tip2:    '<strong>Passport & ID</strong>, the numbers matter as much as the documents',
+    email3Tip3:    '<strong>Pension & insurance</strong>, policy numbers, provider contacts',
+    email3Tip4:    '<strong>Property deeds</strong>, especially if you own without a mortgage',
+    email3Cta:     'Upload my first document →',
+
+    // Email 4, Day 10: instructions
+    email4Subject: 'The one thing most people forget in their estate plan',
+    email4H1:      'The one thing most people forget.',
+    email4P1:      "Hi {{name}}. Accounts and documents are essential, but there's something just as important that almost everyone overlooks: <strong>instructions</strong>.",
+    email4P2:      'What should your family do first? Who should they call? Where is the spare key? What are your funeral wishes? What happens to the dog?',
+    email4P3:      "In Everstead you can write step-by-step instructions your trusted contacts will see the moment they need them. It sounds morbid, but families who have it say it's one of the most generous things you can leave behind.",
+    email4P4:      "It doesn't need to be perfect. Just start.",
+    email4Cta:     'Write my first instruction →',
+
+    // Email 5, Day 13: personal check-in
+    email5Subject:      'A quick check-in from Julien',
+    email5H1:           'A quick note from me.',
+    email5P1:           "Hi {{name}}, it's Julien: I started Everstead after watching my own family struggle to piece together a loved one's affairs under enormous stress. I built it so no one else would have to go through that.",
+    email5P2:           "You've had two weeks with your <strong>{{plan}}</strong> plan. Here's where things stand:",
+    email5Summary:      "You've added {{accounts}}, {{documents}}, and named {{contacts}}.",
+    email5GapAccounts:  "You haven't added any financial accounts yet, it only takes 2 minutes.",
+    email5GapDocuments: 'Your document vault is empty, uploading your will or pension statement is a great first step.',
+    email5GapContacts:  "You haven't named a trusted contact yet, this is the person who'd act on your behalf if needed.",
+    email5NoGaps:       'Your plan is shaping up well, keep it up.',
+    email5P3:           "If you got stuck on anything, or there's something I can help you set up, just hit reply. I read every message.",
+    email5P4:           "And if your trial is ending soon, everything you've built is still here, ready to go.",
+    email5Cta:          'Go to my vault →',
+
+    // Counts used by email 5
+    countAccountsOne:  '{{n}} financial account',
+    countAccountsMany: '{{n}} financial accounts',
+    countDocumentsOne: '{{n}} document',
+    countDocumentsMany:'{{n}} documents',
+    countContactsOne:  '{{n}} trusted contact',
+    countContactsMany: '{{n}} trusted contacts',
+
+    // Recovery email, D7 with zero progress
+    recoverySubject: 'Is something getting in the way?',
+    recoveryH1:      'Is something getting in the way?',
+    recoveryP1:      "Hi {{name}}, it's Julien: I'm writing personally because I noticed you signed up a week ago and haven't added anything to your vault yet. That's pretty common, and usually for one of three reasons:",
+    recoveryP2:      "<strong>1. You're not sure where to start.</strong> Honestly, the easiest first step is adding one account, a current account, a savings account, your work pension. It takes about 90 seconds and the rest gets easier from there.",
+    recoveryP3:      "<strong>2. The timing isn't right.</strong> You meant to come back to it. Life got busy. That's OK, your account is here whenever you're ready, and your trial doesn't start counting against you until you actually use the platform.",
+    recoveryP4:      "<strong>3. Something's broken or confusing.</strong> If anything didn't work the way you expected (sign-in, navigation, finding where to add things) please just reply and tell me. I'll either fix it or walk you through it.",
+    recoveryP5:      'Hit reply if you want a hand. Otherwise, the simplest possible next step is below.',
+    recoveryCta:     'Add one account in 90 seconds →',
+  },
+  fr: {
+    // Shared chrome
+    signature:        "Julien, fondateur d'Everstead",
+    footerQuestions:  'Une question\u00A0? Répondez à ce message ou écrivez à',
+    footerUnsubscribe:'Se désabonner',
+    fallbackName:     'à vous',
+    fallbackNameLead: 'Bonjour',
+
+    // Email 1, Day 2: add your first account
+    email1Subject: 'Commencez ici\u00A0: ajoutez votre premier compte financier',
+    email1H1:      '{{name}}, commençons par ce que vous possédez.',
+    email1P1:      "La base d'un bon plan de succession, c'est une vision claire de vos finances\u00A0: comptes bancaires, placements, retraite, biens immobiliers. C'est ce que vos proches auraient besoin de retrouver en cas d'urgence.",
+    email1P2:      "Dans Everstead, vous pouvez tous les ajouter en quelques minutes. Voici ce qu'il vaut mieux inclure\u00A0:",
+    email1Tip1:    '<strong>Comptes bancaires</strong>, comptes courants, livret A, LDDS',
+    email1Tip2:    '<strong>Placements et retraite</strong>, PER, assurance vie, PEA, comptes-titres',
+    email1Tip3:    '<strong>Biens immobiliers</strong>, votre résidence principale, vos locations, vos terrains',
+    email1Tip4:    '<strong>Contrats de prévoyance</strong>, assurance décès, garantie invalidité, maintien de salaire',
+    email1Cta:     'Ajouter mon premier compte →',
+
+    // Email 2, Day 4: trusted contacts
+    email2Subject: 'Qui prendrait le relais si vous ne pouviez plus\u00A0?',
+    email2H1:      'Qui prendrait le relais si vous ne pouviez plus\u00A0?',
+    email2P1:      "Bonjour {{name}}. L'une des choses les plus importantes à faire dans Everstead, c'est de désigner les personnes qui doivent avoir accès à votre plan\u00A0: votre conjoint, un frère ou une sœur, votre notaire, ou un proche.",
+    email2P2:      "Ce sont vos <strong>personnes de confiance</strong>. Elles n'obtiennent l'accès que lorsque vous le leur donnez, mais le moment venu, elles sauront exactement où se trouve chaque chose et quoi faire.",
+    email2P3:      'Cela prend 60 secondes et change tout pour vos proches.',
+    email2Cta:     'Ajouter une personne de confiance →',
+
+    // Email 3, Day 7: document vault
+    email3Subject: 'Votre testament, votre passeport et vos contrats de retraite, réunis en lieu sûr',
+    email3H1:      'Vos documents méritent un endroit plus sûr.',
+    email3P1:      "Bonjour {{name}}. Pensez à l'endroit où se trouve votre testament en ce moment. Votre passeport. Vos relevés de retraite. Votre contrat d'assurance vie. Vos proches sauraient-ils les retrouver rapidement en cas de besoin\u00A0?",
+    email3P2:      "Le coffre chiffré d'Everstead les réunit au même endroit\u00A0: classés, accessibles et confidentiels. Voici ce qu'il vaut mieux ajouter en premier\u00A0:",
+    email3Tip1:    "<strong>Votre testament</strong>, ou une note indiquant où l'original est conservé",
+    email3Tip2:    "<strong>Passeport et pièce d'identité</strong>, les numéros comptent autant que les documents",
+    email3Tip3:    '<strong>Retraite et assurances</strong>, numéros de contrat, coordonnées des organismes',
+    email3Tip4:    '<strong>Actes de propriété</strong>, surtout si votre bien est déjà payé',
+    email3Cta:     'Ajouter mon premier document →',
+
+    // Email 4, Day 10: instructions
+    email4Subject: 'Ce que presque tout le monde oublie dans son plan de succession',
+    email4H1:      'Ce que presque tout le monde oublie.',
+    email4P1:      "Bonjour {{name}}. Les comptes et les documents sont essentiels, mais il y a tout aussi important, et presque personne n'y pense\u00A0: les <strong>consignes</strong>.",
+    email4P2:      "Que doivent faire vos proches en premier\u00A0? Qui doivent-ils appeler\u00A0? Où se trouve le double des clés\u00A0? Quelles sont vos volontés pour vos obsèques\u00A0? Qui s'occupe du chien\u00A0?",
+    email4P3:      "Dans Everstead, vous pouvez écrire des consignes étape par étape que vos personnes de confiance verront au moment où elles en auront besoin. Cela peut sembler morbide, mais les familles qui en disposent disent que c'est l'une des choses les plus généreuses que l'on puisse laisser derrière soi.",
+    email4P4:      "Elles n'ont pas besoin d'être parfaites. Commencez, simplement.",
+    email4Cta:     'Écrire ma première consigne →',
+
+    // Email 5, Day 13: personal check-in
+    email5Subject:      'Un petit mot de Julien',
+    email5H1:           'Un mot de ma part.',
+    email5P1:           "Bonjour {{name}}, c'est Julien\u00A0: j'ai créé Everstead après avoir vu ma propre famille tenter de reconstituer les affaires d'un proche dans un moment déjà très difficile. Je l'ai construit pour que personne d'autre n'ait à vivre cela.",
+    email5P2:           'Vous utilisez votre forfait <strong>{{plan}}</strong> depuis deux semaines. Voici où vous en êtes\u00A0:',
+    email5Summary:      'Vous avez ajouté {{accounts}}, {{documents}}, et nommé {{contacts}}.',
+    email5GapAccounts:  "Vous n'avez pas encore ajouté de compte financier, cela ne prend que 2 minutes.",
+    email5GapDocuments: 'Votre coffre à documents est vide, ajouter votre testament ou un relevé de retraite est un excellent premier pas.',
+    email5GapContacts:  "Vous n'avez pas encore nommé de personne de confiance, c'est elle qui agirait en votre nom si besoin.",
+    email5NoGaps:       'Votre plan prend forme, continuez comme cela.',
+    email5P3:           'Si quelque chose vous a bloqué, ou si je peux vous aider à mettre quoi que ce soit en place, répondez simplement à ce message. Je lis tout.',
+    email5P4:           "Et si votre essai touche à sa fin, tout ce que vous avez construit reste ici, prêt à l'emploi.",
+    email5Cta:          'Accéder à mon coffre →',
+
+    // Counts used by email 5
+    countAccountsOne:  '{{n}} compte financier',
+    countAccountsMany: '{{n}} comptes financiers',
+    countDocumentsOne: '{{n}} document',
+    countDocumentsMany:'{{n}} documents',
+    countContactsOne:  '{{n}} personne de confiance',
+    countContactsMany: '{{n}} personnes de confiance',
+
+    // Recovery email, D7 with zero progress
+    recoverySubject: 'Quelque chose vous bloque\u00A0?',
+    recoveryH1:      'Quelque chose vous bloque\u00A0?',
+    recoveryP1:      "Bonjour {{name}}, c'est Julien\u00A0: je vous écris personnellement parce que j'ai remarqué que votre coffre est encore vide, une semaine après votre inscription. C'est très courant, et en général pour l'une de ces trois raisons\u00A0:",
+    recoveryP2:      "<strong>1. Vous ne savez pas par où commencer.</strong> Le plus simple, honnêtement, c'est d'ajouter un seul compte\u00A0: un compte courant, un livret, votre retraite d'entreprise. Cela prend environ 90 secondes et tout le reste devient plus facile ensuite.",
+    recoveryP3:      "<strong>2. Ce n'est pas le bon moment.</strong> Vous comptiez y revenir. La vie a pris le dessus. Ce n'est pas grave, votre compte vous attend, et votre essai ne joue pas contre vous tant que vous n'utilisez pas vraiment la plateforme.",
+    recoveryP4:      "<strong>3. Quelque chose ne fonctionne pas ou prête à confusion.</strong> Si quoi que ce soit ne s'est pas passé comme prévu (connexion, navigation, trouver où ajouter les choses), répondez-moi simplement. Soit je le corrige, soit je vous guide.",
+    recoveryP5:      "Répondez à ce message si vous voulez un coup de main. Sinon, l'étape la plus simple est juste en dessous.",
+    recoveryCta:     'Ajouter un compte en 90 secondes →',
+  },
+}
+
+/**
+ * Count phrase for the recipient's language. French treats 0 as singular
+ * ("0 compte financier"), English does not ("0 financial accounts"), so the
+ * English branch keeps its exact original wording.
+ */
+function countPhrase(t, lang, n, oneKey, manyKey) {
+  const singular = pickLang(lang) === 'fr' ? n <= 1 : n === 1
+  return t(singular ? oneKey : manyKey, { n })
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
 // SHARED LAYOUT
 // ─────────────────────────────────────────────────────────────────────────────
 function unsubToken(userId) {
   return Buffer.from(userId).toString('base64url')
 }
 
-function layout(body, userId) {
+function layout(body, userId, lang) {
+  const t = translator(COPY, lang)
   const unsubUrl = userId
     ? `${APP_URL}/api/email/unsubscribe?token=${unsubToken(userId)}`
     : `mailto:hello@everstead.care?subject=Unsubscribe`
@@ -180,8 +363,8 @@ function layout(body, userId) {
         <tr><td style="padding:40px;">${body}</td></tr>
         <tr><td style="padding:24px 40px;border-top:1px solid #e8e5e0;">
           <p style="margin:0;color:#9ca3af;font-size:13px;line-height:1.5;">
-            Questions? Reply to this email or write to <a href="mailto:hello@everstead.care" style="color:#4c7d47;">hello@everstead.care</a>
-            · <a href="${unsubUrl}" style="color:#9ca3af;">Unsubscribe</a>
+            ${t('footerQuestions')} <a href="mailto:hello@everstead.care" style="color:#4c7d47;">hello@everstead.care</a>
+            · <a href="${unsubUrl}" style="color:#9ca3af;">${t('footerUnsubscribe')}</a>
           </p>
         </td></tr>
       </table>
@@ -205,151 +388,160 @@ function tip(icon, text) {
 // ─────────────────────────────────────────────────────────────────────────────
 // EMAIL 1 — Day 2: Add your first account
 // ─────────────────────────────────────────────────────────────────────────────
-function email1Html(name, _plan, userId) {
-  const first = name?.split(' ')[0] || 'there'
+function email1Html(name, _plan, userId, lang) {
+  const t     = translator(COPY, lang)
+  const first = name?.split(' ')[0] || t('fallbackNameLead')
   return layout(`
     <h1 style="margin:0 0 16px;color:#0d1628;font-size:24px;font-weight:normal;">
-      ${first}, let's start with what you own.
+      ${t('email1H1', { name: first })}
     </h1>
     <p style="margin:0 0 16px;color:#4a5568;font-size:16px;line-height:1.7;">
-      The foundation of any good estate plan is a clear picture of your finances, bank accounts, investments, pensions, property. It's what your family would need to find in an emergency.
+      ${t('email1P1')}
     </p>
     <p style="margin:0 0 24px;color:#4a5568;font-size:16px;line-height:1.7;">
-      In Everstead you can add all of them in a few minutes. Here's what to include:
+      ${t('email1P2')}
     </p>
     <table cellpadding="0" cellspacing="0" style="margin:0 0 32px;width:100%;">
-      ${tip('🏦', '<strong>Bank accounts</strong>, current accounts, savings, ISAs')}
-      ${tip('📈', '<strong>Investments & pensions</strong>, workplace pensions, SIPPs, stocks & shares')}
-      ${tip('🏠', '<strong>Property</strong>, your home, buy-to-lets, land')}
-      ${tip('🛡️', '<strong>Insurance policies</strong>, life, critical illness, income protection')}
+      ${tip('🏦', t('email1Tip1'))}
+      ${tip('📈', t('email1Tip2'))}
+      ${tip('🏠', t('email1Tip3'))}
+      ${tip('🛡️', t('email1Tip4'))}
     </table>
-    ${cta(`${APP_URL}/dashboard`, 'Add my first account →')}
-    <p style="margin:32px 0 0;color:#6b7280;font-size:14px;line-height:1.6;">: Julien, founder of Everstead</p>
-  `, userId)
+    ${cta(`${APP_URL}/dashboard`, t('email1Cta'))}
+    <p style="margin:32px 0 0;color:#6b7280;font-size:14px;line-height:1.6;">${t('signature')}</p>
+  `, userId, lang)
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
 // EMAIL 2 — Day 4: Trusted contacts
 // ─────────────────────────────────────────────────────────────────────────────
-function email2Html(name, _plan, userId) {
-  const first = name?.split(' ')[0] || 'there'
+function email2Html(name, _plan, userId, lang) {
+  const t     = translator(COPY, lang)
+  const first = name?.split(' ')[0] || t('fallbackName')
   return layout(`
     <h1 style="margin:0 0 16px;color:#0d1628;font-size:24px;font-weight:normal;">
-      Who would handle things if you couldn't?
+      ${t('email2H1')}
     </h1>
     <p style="margin:0 0 16px;color:#4a5568;font-size:16px;line-height:1.7;">
-      Hi ${first}. One of the most important things you can do in Everstead is name the people who should have access to your plan, your spouse, a sibling, a solicitor, or a close friend.
+      ${t('email2P1', { name: first })}
     </p>
     <p style="margin:0 0 16px;color:#4a5568;font-size:16px;line-height:1.7;">
-      These are your <strong>trusted contacts</strong>. They only get access when you grant it, but when the time comes, they'll know exactly where everything is and what to do.
+      ${t('email2P2')}
     </p>
     <p style="margin:0 0 32px;color:#4a5568;font-size:16px;line-height:1.7;">
-      It takes 60 seconds and makes an enormous difference.
+      ${t('email2P3')}
     </p>
-    ${cta(`${APP_URL}/dashboard`, 'Add a trusted contact →')}
-    <p style="margin:32px 0 0;color:#6b7280;font-size:14px;line-height:1.6;">: Julien, founder of Everstead</p>
-  `, userId)
+    ${cta(`${APP_URL}/dashboard`, t('email2Cta'))}
+    <p style="margin:32px 0 0;color:#6b7280;font-size:14px;line-height:1.6;">${t('signature')}</p>
+  `, userId, lang)
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
 // EMAIL 3 — Day 7: Document vault
 // ─────────────────────────────────────────────────────────────────────────────
-function email3Html(name, _plan, userId) {
-  const first = name?.split(' ')[0] || 'there'
+function email3Html(name, _plan, userId, lang) {
+  const t     = translator(COPY, lang)
+  const first = name?.split(' ')[0] || t('fallbackName')
   return layout(`
     <h1 style="margin:0 0 16px;color:#0d1628;font-size:24px;font-weight:normal;">
-      Your documents deserve a safer home.
+      ${t('email3H1')}
     </h1>
     <p style="margin:0 0 16px;color:#4a5568;font-size:16px;line-height:1.7;">
-      Hi ${first}. Think about where your will is right now. Your passport. Your pension statements. Your life insurance policy. Could your family find them quickly if they needed to?
+      ${t('email3P1', { name: first })}
     </p>
     <p style="margin:0 0 24px;color:#4a5568;font-size:16px;line-height:1.7;">
-      Everstead's encrypted vault keeps them in one place, organised, accessible, and private. Here's what's worth uploading first:
+      ${t('email3P2')}
     </p>
     <table cellpadding="0" cellspacing="0" style="margin:0 0 32px;width:100%;">
-      ${tip('📜', '<strong>Your will</strong>, or a note about where the original is stored')}
-      ${tip('🪪', '<strong>Passport & ID</strong>, the numbers matter as much as the documents')}
-      ${tip('📄', '<strong>Pension & insurance</strong>, policy numbers, provider contacts')}
-      ${tip('🏡', '<strong>Property deeds</strong>, especially if you own without a mortgage')}
+      ${tip('📜', t('email3Tip1'))}
+      ${tip('🪪', t('email3Tip2'))}
+      ${tip('📄', t('email3Tip3'))}
+      ${tip('🏡', t('email3Tip4'))}
     </table>
-    ${cta(`${APP_URL}/dashboard`, 'Upload my first document →')}
-    <p style="margin:32px 0 0;color:#6b7280;font-size:14px;line-height:1.6;">: Julien, founder of Everstead</p>
-  `, userId)
+    ${cta(`${APP_URL}/dashboard`, t('email3Cta'))}
+    <p style="margin:32px 0 0;color:#6b7280;font-size:14px;line-height:1.6;">${t('signature')}</p>
+  `, userId, lang)
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
 // EMAIL 4 — Day 10: Instructions feature
 // ─────────────────────────────────────────────────────────────────────────────
-function email4Html(name, _plan, userId) {
-  const first = name?.split(' ')[0] || 'there'
+function email4Html(name, _plan, userId, lang) {
+  const t     = translator(COPY, lang)
+  const first = name?.split(' ')[0] || t('fallbackName')
   return layout(`
     <h1 style="margin:0 0 16px;color:#0d1628;font-size:24px;font-weight:normal;">
-      The one thing most people forget.
+      ${t('email4H1')}
     </h1>
     <p style="margin:0 0 16px;color:#4a5568;font-size:16px;line-height:1.7;">
-      Hi ${first}. Accounts and documents are essential, but there's something just as important that almost everyone overlooks: <strong>instructions</strong>.
+      ${t('email4P1', { name: first })}
     </p>
     <p style="margin:0 0 16px;color:#4a5568;font-size:16px;line-height:1.7;">
-      What should your family do first? Who should they call? Where is the spare key? What are your funeral wishes? What happens to the dog?
+      ${t('email4P2')}
     </p>
     <p style="margin:0 0 16px;color:#4a5568;font-size:16px;line-height:1.7;">
-      In Everstead you can write step-by-step instructions your trusted contacts will see the moment they need them. It sounds morbid, but families who have it say it's one of the most generous things you can leave behind.
+      ${t('email4P3')}
     </p>
     <p style="margin:0 0 32px;color:#4a5568;font-size:16px;line-height:1.7;">
-      It doesn't need to be perfect. Just start.
+      ${t('email4P4')}
     </p>
-    ${cta(`${APP_URL}/dashboard`, 'Write my first instruction →')}
-    <p style="margin:32px 0 0;color:#6b7280;font-size:14px;line-height:1.6;">: Julien, founder of Everstead</p>
-  `, userId)
+    ${cta(`${APP_URL}/dashboard`, t('email4Cta'))}
+    <p style="margin:32px 0 0;color:#6b7280;font-size:14px;line-height:1.6;">${t('signature')}</p>
+  `, userId, lang)
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
 // EMAIL 5 — Day 13: Personal check-in from Julien (data-driven)
 // ─────────────────────────────────────────────────────────────────────────────
-function email5Html(name, plan, accountCount = 0, documentCount = 0, contactCount = 0, userId) {
-  const first    = name?.split(' ')[0] || 'there'
+function email5Html(name, plan, accountCount = 0, documentCount = 0, contactCount = 0, userId, lang) {
+  const t        = translator(COPY, lang)
+  const first    = name?.split(' ')[0] || t('fallbackName')
   const planName = planLabel(plan)
 
   // Build a personalised data summary
-  const dataSummary = `You've added ${accountCount} financial ${accountCount === 1 ? 'account' : 'accounts'}, ${documentCount} ${documentCount === 1 ? 'document' : 'documents'}, and named ${contactCount} trusted ${contactCount === 1 ? 'contact' : 'contacts'}.`
+  const dataSummary = t('email5Summary', {
+    accounts:  countPhrase(t, lang, accountCount,  'countAccountsOne',  'countAccountsMany'),
+    documents: countPhrase(t, lang, documentCount, 'countDocumentsOne', 'countDocumentsMany'),
+    contacts:  countPhrase(t, lang, contactCount,  'countContactsOne',  'countContactsMany'),
+  })
 
   // Identify gaps to surface
   const gaps = []
-  if (accountCount === 0) gaps.push("You haven't added any financial accounts yet, it only takes 2 minutes.")
-  if (documentCount === 0) gaps.push('Your document vault is empty, uploading your will or pension statement is a great first step.')
-  if (contactCount === 0) gaps.push("You haven't named a trusted contact yet, this is the person who'd act on your behalf if needed.")
+  if (accountCount === 0) gaps.push(t('email5GapAccounts'))
+  if (documentCount === 0) gaps.push(t('email5GapDocuments'))
+  if (contactCount === 0) gaps.push(t('email5GapContacts'))
 
   const gapsHtml = gaps.length > 0
     ? `<table cellpadding="0" cellspacing="0" style="margin:16px 0 24px;width:100%;background:#fdf8f0;border-radius:10px;padding:8px;">
         ${gaps.map(g => `<tr><td style="padding:10px 14px;vertical-align:top;font-size:18px;line-height:1;">💡</td><td style="padding:10px 0;color:#92400e;font-size:14px;line-height:1.6;">${g}</td></tr>`).join('')}
       </table>`
     : `<p style="margin:0 0 24px;color:#4a5568;font-size:16px;line-height:1.7;">
-        Your plan is shaping up well, keep it up.
+        ${t('email5NoGaps')}
       </p>`
 
   return layout(`
     <h1 style="margin:0 0 16px;color:#0d1628;font-size:24px;font-weight:normal;">
-      A quick note from me.
+      ${t('email5H1')}
     </h1>
     <p style="margin:0 0 16px;color:#4a5568;font-size:16px;line-height:1.7;">
-      Hi ${first}, it's Julien: I started Everstead after watching my own family struggle to piece together a loved one's affairs under enormous stress. I built it so no one else would have to go through that.
+      ${t('email5P1', { name: first })}
     </p>
     <p style="margin:0 0 16px;color:#4a5568;font-size:16px;line-height:1.7;">
-      You've had two weeks with your <strong>${planName}</strong> plan. Here's where things stand:
+      ${t('email5P2', { plan: planName })}
     </p>
     <p style="margin:0 0 8px;color:#0d1628;font-size:15px;line-height:1.7;background:#f9f8f6;border-radius:8px;padding:14px 18px;">
       ${dataSummary}
     </p>
     ${gapsHtml}
     <p style="margin:0 0 16px;color:#4a5568;font-size:16px;line-height:1.7;">
-      If you got stuck on anything, or there's something I can help you set up, just hit reply. I read every message.
+      ${t('email5P3')}
     </p>
     <p style="margin:0 0 32px;color:#4a5568;font-size:16px;line-height:1.7;">
-      And if your trial is ending soon, everything you've built is still here, ready to go.
+      ${t('email5P4')}
     </p>
-    ${cta(`${APP_URL}/dashboard`, 'Go to my vault →')}
-    <p style="margin:32px 0 0;color:#6b7280;font-size:14px;line-height:1.6;">: Julien, founder of Everstead</p>
-  `, userId)
+    ${cta(`${APP_URL}/dashboard`, t('email5Cta'))}
+    <p style="margin:32px 0 0;color:#6b7280;font-size:14px;line-height:1.6;">${t('signature')}</p>
+  `, userId, lang)
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -399,30 +591,31 @@ function shouldSkipForProgress(stepN, progress) {
 // ─────────────────────────────────────────────────────────────────────────────
 //  Recovery email — sent at D7 if the user has done literally nothing
 // ─────────────────────────────────────────────────────────────────────────────
-function recoveryHtml(name, userId) {
-  const first = name?.split(' ')[0] || 'there'
+function recoveryHtml(name, userId, lang) {
+  const t     = translator(COPY, lang)
+  const first = name?.split(' ')[0] || t('fallbackName')
   return layout(`
     <h1 style="margin:0 0 16px;color:#0d1628;font-size:24px;font-weight:normal;">
-      Is something getting in the way?
+      ${t('recoveryH1')}
     </h1>
     <p style="margin:0 0 16px;color:#4a5568;font-size:16px;line-height:1.7;">
-      Hi ${first}, it's Julien: I'm writing personally because I noticed you signed up a week ago and haven't added anything to your vault yet. That's pretty common, and usually for one of three reasons:
+      ${t('recoveryP1', { name: first })}
     </p>
     <p style="margin:0 0 14px;color:#4a5568;font-size:16px;line-height:1.7;">
-      <strong>1. You're not sure where to start.</strong> Honestly, the easiest first step is adding one account, a current account, a savings account, your work pension. It takes about 90 seconds and the rest gets easier from there.
+      ${t('recoveryP2')}
     </p>
     <p style="margin:0 0 14px;color:#4a5568;font-size:16px;line-height:1.7;">
-      <strong>2. The timing isn't right.</strong> You meant to come back to it. Life got busy. That's OK, your account is here whenever you're ready, and your trial doesn't start counting against you until you actually use the platform.
+      ${t('recoveryP3')}
     </p>
     <p style="margin:0 0 24px;color:#4a5568;font-size:16px;line-height:1.7;">
-      <strong>3. Something's broken or confusing.</strong> If anything didn't work the way you expected (sign-in, navigation, finding where to add things) please just reply and tell me. I'll either fix it or walk you through it.
+      ${t('recoveryP4')}
     </p>
     <p style="margin:0 0 28px;color:#4a5568;font-size:16px;line-height:1.7;">
-      Hit reply if you want a hand. Otherwise, the simplest possible next step is below.
+      ${t('recoveryP5')}
     </p>
-    ${cta(`${APP_URL}/dashboard`, 'Add one account in 90 seconds →')}
-    <p style="margin:32px 0 0;color:#6b7280;font-size:14px;line-height:1.6;">: Julien, founder of Everstead</p>
-  `, userId)
+    ${cta(`${APP_URL}/dashboard`, t('recoveryCta'))}
+    <p style="margin:32px 0 0;color:#6b7280;font-size:14px;line-height:1.6;">${t('signature')}</p>
+  `, userId, lang)
 }
 
 // Errors are reported to Sentry (no-op until SENTRY_DSN is set) and return a clean 500.

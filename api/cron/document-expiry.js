@@ -1,6 +1,7 @@
 import { createClient } from '@supabase/supabase-js'
 import { Resend } from 'resend'
 import { withSentry, captureException } from '../lib/sentry.js'
+import { translator, emailDate } from '../_lib/email-i18n.js'
 
 const supabase = createClient(
   process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL,
@@ -72,7 +73,7 @@ async function handler(req, res) {
   // Fetch profiles for affected users
   const { data: profiles } = await supabase
     .from('profiles')
-    .select('id, full_name, email, notify_document_expiry')
+    .select('id, full_name, email, language, notify_document_expiry')
     .in('id', userIds)
     .neq('role', 'delegate')
 
@@ -109,8 +110,17 @@ async function handler(req, res) {
         const existing = existingByDoc[doc.id]
         if (existing?.severity === severity) continue // already nudged at this threshold
 
-        const title  = `${doc.name} expires in ${doc.daysLeft} days`
-        const detail = `Your ${doc.doc_type} document "${doc.name}" is due to expire on ${new Date(doc.expires_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}. Please renew or update it.`
+        // The alerts table stores the display text shown to this one user, so
+        // it is written in THEIR language: a French member should not get a
+        // French email and an English in-app alert about the same document.
+        // severity/category/resource_type stay English: those are queried.
+        const tAlert = translator(COPY, profile.language)
+        const title  = tAlert('alertTitle',  { name: doc.name, days: doc.daysLeft })
+        const detail = tAlert('alertDetail', {
+          type: doc.doc_type,
+          name: doc.name,
+          date: emailDate(doc.expires_at, profile.language),
+        })
         const row = {
           user_id:        profile.id,
           severity,
@@ -137,13 +147,15 @@ async function handler(req, res) {
       // Send ONE email digest per new threshold crossing (if opted in)
       if (newDocs.length && profile.notify_document_expiry !== false && profile.email) {
         const docs      = newDocs
-        const first     = profile.full_name?.split(' ')[0] || 'there'
+        // Recipient is the document owner, so their own profiles.language decides.
+        const t         = translator(COPY, profile.language)
+        const first     = profile.full_name?.split(' ')[0]
         const docRows   = docs.map(d => `
           <tr>
             <td style="padding:10px 14px;font-size:14px;color:#1a202c;">${d.name}</td>
             <td style="padding:10px 14px;font-size:14px;color:#4a5568;">${d.doc_type}</td>
             <td style="padding:10px 14px;font-size:14px;color:${d.daysLeft <= 30 ? '#c53030' : d.daysLeft <= 60 ? '#c05621' : '#2d6a4f'};">
-              ${d.daysLeft} day${d.daysLeft === 1 ? '' : 's'}
+              ${d.daysLeft === 1 ? t('dayOne', { n: d.daysLeft }) : t('dayMany', { n: d.daysLeft })}
             </td>
           </tr>`).join('')
 
@@ -151,8 +163,8 @@ async function handler(req, res) {
           from:    'Everstead <hello@everstead.care>',
           to:      profile.email,
           subject: docs.length === 1
-            ? `Action needed: ${docs[0].name} expires in ${docs[0].daysLeft} days`
-            : `${docs.length} documents in your Everstead vault are expiring soon`,
+            ? t('subjectOne', { name: docs[0].name, days: docs[0].daysLeft })
+            : t('subjectMany', { count: docs.length }),
           html: `<!DOCTYPE html>
 <html>
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
@@ -165,30 +177,30 @@ async function handler(req, res) {
         </td></tr>
         <tr><td style="padding:40px;">
           <h1 style="margin:0 0 16px;color:#0d1628;font-size:24px;font-weight:normal;">
-            ${first}, a document in your vault is expiring soon.
+            ${first ? t('h1', { name: first }) : t('h1Anon')}
           </h1>
           <p style="margin:0 0 20px;color:#4a5568;font-size:16px;line-height:1.7;">
-            Please review and renew the following ${docs.length === 1 ? 'document' : 'documents'} to keep your estate plan up to date:
+            ${docs.length === 1 ? t('introOne') : t('introMany')}
           </p>
           <table cellpadding="0" cellspacing="0" style="width:100%;border-collapse:collapse;margin:0 0 28px;">
             <thead>
               <tr style="background:#f9f8f6;">
-                <th style="padding:10px 14px;text-align:left;font-size:12px;color:#718096;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;">Document</th>
-                <th style="padding:10px 14px;text-align:left;font-size:12px;color:#718096;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;">Type</th>
-                <th style="padding:10px 14px;text-align:left;font-size:12px;color:#718096;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;">Expires in</th>
+                <th style="padding:10px 14px;text-align:left;font-size:12px;color:#718096;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;">${t('thDocument')}</th>
+                <th style="padding:10px 14px;text-align:left;font-size:12px;color:#718096;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;">${t('thType')}</th>
+                <th style="padding:10px 14px;text-align:left;font-size:12px;color:#718096;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;">${t('thExpires')}</th>
               </tr>
             </thead>
             <tbody>${docRows}</tbody>
           </table>
           <a href="${APP_URL}/dashboard?tab=documents"
              style="display:inline-block;background:#2d5082;background:linear-gradient(100deg,#2d5082 0%,#6f6bc6 50%,#6e9b6a 100%);color:#ffffff;text-decoration:none;padding:14px 28px;border-radius:9999px;font-size:15px;">
-            View my documents →
+            ${t('cta')}
           </a>
         </td></tr>
         <tr><td style="padding:24px 40px;border-top:1px solid #e8e5e0;">
           <p style="margin:0;color:#9ca3af;font-size:13px;line-height:1.5;">
-            You're receiving this because document expiry alerts are enabled on your Everstead account.
-            <a href="${APP_URL}/dashboard?tab=settings" style="color:#9ca3af;">Manage preferences</a>
+            ${t('footer')}
+            <a href="${APP_URL}/dashboard?tab=settings" style="color:#9ca3af;">${t('managePreferences')}</a>
           </p>
         </td></tr>
       </table>
@@ -208,6 +220,49 @@ async function handler(req, res) {
 
   console.log('document-expiry:', { alertsCreated, emailsSent, errors })
   return res.status(200).json({ alerts: alertsCreated, emails: emailsSent, total: expiringDocs.length, errors })
+}
+
+// ── Email copy ────────────────────────────────────────────────
+// Customer-facing strings for the expiry digest, per language. Document names
+// and doc_type values are stored data and stay exactly as the owner saved them.
+// The nameless h1 keeps the English wording that shipped before ("there, …").
+const COPY = {
+  en: {
+    subjectOne:        'Action needed: {{name}} expires in {{days}} days',
+    subjectMany:       '{{count}} documents in your Everstead vault are expiring soon',
+    h1:                '{{name}}, a document in your vault is expiring soon.',
+    h1Anon:            'there, a document in your vault is expiring soon.',
+    introOne:          'Please review and renew the following document to keep your estate plan up to date:',
+    introMany:         'Please review and renew the following documents to keep your estate plan up to date:',
+    thDocument:        'Document',
+    thType:            'Type',
+    thExpires:         'Expires in',
+    dayOne:            '{{n}} day',
+    dayMany:           '{{n}} days',
+    cta:               'View my documents →',
+    footer:            "You're receiving this because document expiry alerts are enabled on your Everstead account.",
+    managePreferences: 'Manage preferences',
+    alertTitle:        '{{name}} expires in {{days}} days',
+    alertDetail:       'Your {{type}} document "{{name}}" is due to expire on {{date}}. Please renew or update it.',
+  },
+  fr: {
+    subjectOne:        'Action requise : {{name}} expire dans {{days}} jours',
+    subjectMany:       '{{count}} documents de votre coffre Everstead arrivent à expiration',
+    h1:                '{{name}}, un document de votre coffre arrive à expiration.',
+    h1Anon:            'Un document de votre coffre arrive à expiration.',
+    introOne:          'Merci de vérifier et de renouveler le document suivant pour garder votre plan de succession à jour :',
+    introMany:         'Merci de vérifier et de renouveler les documents suivants pour garder votre plan de succession à jour :',
+    thDocument:        'Document',
+    thType:            'Type',
+    thExpires:         'Expire dans',
+    dayOne:            '{{n}} jour',
+    dayMany:           '{{n}} jours',
+    cta:               'Voir mes documents →',
+    footer:            'Vous recevez cet e-mail parce que les alertes d\'expiration de documents sont activées sur votre compte Everstead.',
+    managePreferences: 'Gérer mes préférences',
+    alertTitle:        '{{name}} expire dans {{days}} jours',
+    alertDetail:       'Votre document {{type}} « {{name}} » arrive à expiration le {{date}}. Merci de le renouveler ou de le mettre à jour.',
+  },
 }
 
 // Errors are reported to Sentry (no-op until SENTRY_DSN is set) and return a clean 500.

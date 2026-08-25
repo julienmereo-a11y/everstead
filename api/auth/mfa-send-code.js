@@ -2,6 +2,7 @@ import { createClient } from '@supabase/supabase-js'
 import { Resend } from 'resend'
 import { withSentry } from '../lib/sentry.js'
 import { rateLimited } from '../_lib/rate-limit.js'
+import { translator, languageForUser } from '../_lib/email-i18n.js'
 
 const supabase = createClient(process.env.VITE_SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY)
 const resend   = new Resend(process.env.RESEND_API_KEY)
@@ -74,18 +75,43 @@ async function handler(req, res) {
   // Send branded email (skipped for the review account — its code is fixed and
   // supplied to Apple in the App Review notes).
   if (!isReviewAccount) {
+    // The password check above already proved this account exists, so reading
+    // its language reveals nothing new. Unknown addresses never reach here.
+    const lang = await languageForUser(supabase, { email })
+    const t    = translator(COPY, lang)
     await resend.emails.send({
       from:    'Everstead <hello@everstead.care>',
       to:      email,
-      subject: `${code}, your Everstead sign-in code`,
-      html:    mfaHtml(code),
+      subject: t('subject', { code }),
+      html:    mfaHtml(code, lang),
     }).catch(err => console.error('mfa email error:', err))
   }
 
   res.status(200).json({ sent: true })
 }
 
-function mfaHtml(code) {
+// Customer-facing copy, per recipient language (profiles.language).
+// French strings carry a real NBSP (U+00A0) before ? ! ; : and %, as French
+// typography requires. Do not "tidy" those into ordinary spaces.
+const COPY = {
+  en: {
+    subject:   '{{code}}, your Everstead sign-in code',
+    label:     'Your sign-in code',
+    expiry:    'This code expires in <strong>10 minutes</strong>.',
+    ignore:    "If you didn't try to sign in, you can safely ignore this email.",
+    questions: 'Questions?',
+  },
+  fr: {
+    subject:   '{{code}}, votre code de connexion Everstead',
+    label:     'Votre code de connexion',
+    expiry:    'Ce code expire dans <strong>10 minutes</strong>.',
+    ignore:    "Si vous n'avez pas tenté de vous connecter, vous pouvez ignorer cet e-mail en toute sécurité.",
+    questions: 'Une question ?',
+  },
+}
+
+function mfaHtml(code, lang) {
+  const t = translator(COPY, lang)
   return `<!DOCTYPE html>
 <html>
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
@@ -100,19 +126,19 @@ function mfaHtml(code) {
         </td></tr>
 
         <tr><td style="padding:44px 40px 36px;text-align:center;">
-          <p style="margin:0 0 8px;color:#5a6475;font-size:14px;font-family:Georgia,serif;">Your sign-in code</p>
+          <p style="margin:0 0 8px;color:#5a6475;font-size:14px;font-family:Georgia,serif;">${t('label')}</p>
           <p style="margin:0 0 32px;letter-spacing:12px;color:#0d1628;font-size:40px;font-weight:bold;font-family:Georgia,serif;">${code}</p>
           <p style="margin:0 0 8px;color:#9ca3af;font-size:13px;line-height:1.6;font-family:Georgia,serif;">
-            This code expires in <strong>10 minutes</strong>.
+            ${t('expiry')}
           </p>
           <p style="margin:0;color:#9ca3af;font-size:13px;line-height:1.6;font-family:Georgia,serif;">
-            If you didn't try to sign in, you can safely ignore this email.
+            ${t('ignore')}
           </p>
         </td></tr>
 
         <tr><td style="padding:24px 40px 32px;border-top:1px solid #ede9e3;">
           <p style="margin:0;color:#b0b8c1;font-size:12px;line-height:1.6;font-family:Georgia,serif;">
-            Questions? <a href="mailto:support@everstead.care" style="color:#4c7d47;text-decoration:none;">support@everstead.care</a>
+            ${t('questions')} <a href="mailto:support@everstead.care" style="color:#4c7d47;text-decoration:none;">support@everstead.care</a>
           </p>
         </td></tr>
 

@@ -2,6 +2,7 @@ import Stripe from 'stripe'
 import { createClient } from '@supabase/supabase-js'
 import { Resend } from 'resend'
 import { withSentry, captureException } from '../lib/sentry.js'
+import { translator, emailDate } from '../_lib/email-i18n.js'
 
 const stripe   = new Stripe(process.env.STRIPE_SECRET_KEY)
 const supabase = createClient(
@@ -104,15 +105,17 @@ async function handler(req, res) {
         subscription_status: 'trialing',
       }).eq('id', userId)
 
-      // Email the user
-      const { data: profile } = await supabase.from('profiles').select('full_name, email').eq('id', userId).single()
+      // Email the user. Admin triggers it, but the USER receives it, so it is
+      // written in the user's language.
+      const { data: profile } = await supabase.from('profiles').select('full_name, email, language').eq('id', userId).single()
       if (profile?.email) {
-        const endDate = new Date(finalTrialEnd * 1000).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
+        const endDate = emailDate(finalTrialEnd * 1000, profile.language)
+        const t = translator(COPY, profile.language)
         await resend.emails.send({
           from:    'Everstead <hello@everstead.care>',
           to:      profile.email,
-          subject: `Good news, your Everstead trial has been extended`,
-          html:    trialExtendedHtml(profile.full_name, extendDays, endDate),
+          subject: t('subjTrialExtended'),
+          html:    trialExtendedHtml(profile.full_name, extendDays, endDate, profile.language),
         }).catch(console.error)
       }
 
@@ -184,17 +187,23 @@ async function handler(req, res) {
     // Fetch profile for the email
     const { data: profiles } = await supabase
       .from('profiles')
-      .select('full_name, email')
+      .select('full_name, email, language')
       .eq('id', userId)
       .single()
 
     if (profiles?.email) {
-      const firstName = profiles.full_name?.split(' ')[0] || 'there'
+      const t = translator(COPY, profiles.language)
+      const firstName = profiles.full_name?.split(' ')[0]
+      // The JSON response above keeps its en-GB dates (unchanged API contract);
+      // the email gets the same instant formatted in the recipient's language.
+      const emailAccessEnd = cancelAt
+        ? emailDate(cancelAt, profiles.language)
+        : (periodEnd ? emailDate(periodEnd * 1000, profiles.language) : null)
       await resend.emails.send({
         from:    'Everstead <hello@everstead.care>',
         to:      profiles.email,
-        subject: `We're sorry to see you go, ${firstName}.`,
-        html:    cancellationHtml(firstName, cancelAtDate ?? periodEndDate),
+        subject: greet(t, 'subjCancelled', firstName),
+        html:    cancellationHtml(firstName, emailAccessEnd, profiles.language),
       }).catch(console.error)
     }
 
@@ -206,7 +215,77 @@ async function handler(req, res) {
   }
 }
 
-function cancellationHtml(firstName, accessEndDate) {
+// ─────────────────────────────────────────────────────────────
+// EMAIL TEMPLATES
+// ─────────────────────────────────────────────────────────────
+
+// Both emails in this file go to the SUBSCRIBER (the trial extension is
+// triggered by an admin but lands in the user's inbox), so both follow
+// profiles.language. No em/en dashes; French uses a real non-breaking space
+// (U+00A0) before : ; ! ? and %.
+const COPY = {
+  en: {
+    subjCancelled:       "We're sorry to see you go, {{name}}.",
+    subjCancelledNoName: "We're sorry to see you go, there.",
+    subjTrialExtended:   'Good news, your Everstead trial has been extended',
+    questions:           'Questions?',
+
+    // Cancellation confirmation
+    cxH1:                "We're sorry to see you go, {{name}}.",
+    cxH1NoName:          "We're sorry to see you go, there.",
+    cxLine1Dated:        "We've confirmed the cancellation of your Everstead plan. You'll keep full access until <strong>{{date}}</strong>, nothing changes until then.",
+    cxLine1Plain:        "We've confirmed the cancellation of your Everstead plan. You'll keep full access until the end of your current billing period.",
+    cxLine2:             "We built Everstead because we believe every family deserves clarity, not chaos. We're sorry we didn't get the chance to be part of yours.",
+    cxLine3:             "If you have a moment, we'd genuinely love to hear from you. What could we have done better? Was there something missing? Your feedback (even just a sentence) would mean a lot to us and help us build something better for the next family.",
+    cxLine4:             "If you ever change your mind, your account will be here. We'll keep your data safe for 30 days.",
+    cxExportTitle:       "Before you go, don't forget to export your data.",
+    cxExportBody:        "Everything you've added to your Everstead plan is yours to keep. You can download a complete copy of your accounts, documents, instructions, and wishes from your dashboard before your access ends.",
+    cxExportCta:         'Export my data →',
+    cxSignOff:           'With thanks for giving us a try.<br>The Everstead team',
+    cxFooterLead:        'Reply to this email or write to',
+    cxFooterTail:        ' with any feedback.',
+
+    // Trial extended (admin action)
+    teH1:                'Good news, {{name}}',
+    teH1NoName:          'Good news, there',
+    teLine1:             "We've extended your Everstead free trial by <strong>{{days}} days</strong>. Your trial now runs until <strong>{{date}}</strong>, no action needed on your end.",
+    teLine2:             'Use the extra time to get your estate plan in order. If you have any questions or need help getting started, just reply to this email.',
+    teCta:               'Go to your dashboard →',
+  },
+  fr: {
+    subjCancelled:       'Nous sommes désolés de vous voir partir, {{name}}.',
+    subjCancelledNoName: 'Nous sommes désolés de vous voir partir.',
+    subjTrialExtended:   'Bonne nouvelle, votre essai Everstead a été prolongé',
+    questions:           'Une question ?',
+
+    cxH1:                'Nous sommes désolés de vous voir partir, {{name}}.',
+    cxH1NoName:          'Nous sommes désolés de vous voir partir.',
+    cxLine1Dated:        'Nous avons bien enregistré la résiliation de votre forfait Everstead. Vous conservez un accès complet jusqu\'au <strong>{{date}}</strong>, rien ne change d\'ici là.',
+    cxLine1Plain:        'Nous avons bien enregistré la résiliation de votre forfait Everstead. Vous conservez un accès complet jusqu\'à la fin de votre période de facturation en cours.',
+    cxLine2:             'Nous avons créé Everstead parce que nous pensons que chaque famille mérite de la clarté, pas du chaos. Nous regrettons de ne pas avoir eu la chance de faire partie de la vôtre.',
+    cxLine3:             'Si vous avez un instant, nous aimerions beaucoup avoir votre avis. Qu\'aurions-nous pu faire mieux ? Qu\'est-ce qui vous a manqué ? Votre retour, même en une phrase, compterait beaucoup pour nous et nous aiderait à faire mieux pour la prochaine famille.',
+    cxLine4:             'Si vous changez d\'avis, votre compte vous attend. Nous conserverons vos données en sécurité pendant 30 jours.',
+    cxExportTitle:       'Avant de partir, pensez à exporter vos données.',
+    cxExportBody:        'Tout ce que vous avez ajouté à votre plan Everstead vous appartient. Vous pouvez télécharger une copie complète de vos comptes, documents, instructions et volontés depuis votre tableau de bord avant la fin de votre accès.',
+    cxExportCta:         'Exporter mes données →',
+    cxSignOff:           'Merci d\'avoir essayé Everstead.<br>L\'équipe Everstead',
+    cxFooterLead:        'Répondez à cet e-mail ou écrivez à',
+    cxFooterTail:        ' pour nous faire part de vos retours.',
+
+    teH1:                'Bonne nouvelle, {{name}}',
+    teH1NoName:          'Bonne nouvelle',
+    teLine1:             'Nous avons prolongé votre essai gratuit Everstead de <strong>{{days}} jours</strong>. Votre essai court désormais jusqu\'au <strong>{{date}}</strong>, vous n\'avez rien à faire.',
+    teLine2:             'Profitez de ce temps supplémentaire pour mettre votre plan en ordre. Si vous avez des questions ou besoin d\'aide pour démarrer, répondez simplement à cet e-mail.',
+    teCta:               'Accéder à votre tableau de bord →',
+  },
+}
+
+// English keeps its "there" fallback in greetings; French drops the vocative
+// rather than inventing one, so every greeting key has a nameless twin.
+const greet = (t, key, name) => (name ? t(key, { name }) : t(`${key}NoName`))
+
+function cancellationHtml(firstName, accessEndDate, lang) {
+  const t = translator(COPY, lang)
   return `<!DOCTYPE html>
 <html>
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
@@ -218,28 +297,28 @@ function cancellationHtml(firstName, accessEndDate) {
           <img src="https://www.everstead.care/logo-v2-white.png" alt="Everstead" width="160" style="display:block;margin:0 auto;height:auto;max-width:160px;" />
         </td></tr>
         <tr><td style="padding:40px;">
-          <h1 style="margin:0 0 20px;color:#0d1628;font-size:24px;font-weight:normal;">We're sorry to see you go, ${firstName}.</h1>
+          <h1 style="margin:0 0 20px;color:#0d1628;font-size:24px;font-weight:normal;">${greet(t, 'cxH1', firstName)}</h1>
           <p style="margin:0 0 16px;color:#4a5568;font-size:16px;line-height:1.7;">
-            We've confirmed the cancellation of your Everstead plan.${accessEndDate ? ` You'll keep full access until <strong>${accessEndDate}</strong>, nothing changes until then.` : " You'll keep full access until the end of your current billing period."}
+            ${accessEndDate ? t('cxLine1Dated', { date: accessEndDate }) : t('cxLine1Plain')}
           </p>
           <p style="margin:0 0 16px;color:#4a5568;font-size:16px;line-height:1.7;">
-            We built Everstead because we believe every family deserves clarity, not chaos. We're sorry we didn't get the chance to be part of yours.
+            ${t('cxLine2')}
           </p>
           <p style="margin:0 0 32px;color:#4a5568;font-size:16px;line-height:1.7;">
-            If you have a moment, we'd genuinely love to hear from you. What could we have done better? Was there something missing? Your feedback (even just a sentence) would mean a lot to us and help us build something better for the next family.
+            ${t('cxLine3')}
           </p>
           <p style="margin:0 0 20px;color:#4a5568;font-size:16px;line-height:1.7;">
-            If you ever change your mind, your account will be here. We'll keep your data safe for 30 days.
+            ${t('cxLine4')}
           </p>
-          <p style="margin:0 0 8px;color:#4a5568;font-size:15px;line-height:1.7;font-weight:600;">Before you go, don't forget to export your data.</p>
+          <p style="margin:0 0 8px;color:#4a5568;font-size:15px;line-height:1.7;font-weight:600;">${t('cxExportTitle')}</p>
           <p style="margin:0 0 24px;color:#4a5568;font-size:15px;line-height:1.7;">
-            Everything you've added to your Everstead plan is yours to keep. You can download a complete copy of your accounts, documents, instructions, and wishes from your dashboard before your access ends.
+            ${t('cxExportBody')}
           </p>
-          <a href="https://www.everstead.care/dashboard?tab=settings" style="display:inline-block;background:#2d5082;background:linear-gradient(100deg,#2d5082 0%,#6f6bc6 50%,#6e9b6a 100%);color:#ffffff;text-decoration:none;padding:12px 24px;border-radius:9999px;font-size:14px;margin-bottom:24px;">Export my data →</a>
-          <p style="margin:0 0 0;color:#6b7280;font-size:15px;line-height:1.6;font-style:italic;">With thanks for giving us a try.<br>The Everstead team</p>
+          <a href="https://www.everstead.care/dashboard?tab=settings" style="display:inline-block;background:#2d5082;background:linear-gradient(100deg,#2d5082 0%,#6f6bc6 50%,#6e9b6a 100%);color:#ffffff;text-decoration:none;padding:12px 24px;border-radius:9999px;font-size:14px;margin-bottom:24px;">${t('cxExportCta')}</a>
+          <p style="margin:0 0 0;color:#6b7280;font-size:15px;line-height:1.6;font-style:italic;">${t('cxSignOff')}</p>
         </td></tr>
         <tr><td style="padding:24px 40px;border-top:1px solid #e8e5e0;">
-          <p style="margin:0;color:#9ca3af;font-size:13px;line-height:1.5;">Reply to this email or write to <a href="mailto:support@everstead.care" style="color:#4c7d47;">support@everstead.care</a> with any feedback.</p>
+          <p style="margin:0;color:#9ca3af;font-size:13px;line-height:1.5;">${t('cxFooterLead')} <a href="mailto:support@everstead.care" style="color:#4c7d47;">support@everstead.care</a>${t('cxFooterTail')}</p>
         </td></tr>
       </table>
     </td></tr>
@@ -248,7 +327,8 @@ function cancellationHtml(firstName, accessEndDate) {
 </html>`
 }
 
-function trialExtendedHtml(name, days, endDate) {
+function trialExtendedHtml(name, days, endDate, lang) {
+  const t = translator(COPY, lang)
   return `<!DOCTYPE html>
 <html>
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
@@ -260,17 +340,17 @@ function trialExtendedHtml(name, days, endDate) {
           <img src="https://www.everstead.care/logo-v2-white.png" alt="Everstead" width="160" style="display:block;margin:0 auto;height:auto;max-width:160px;" />
         </td></tr>
         <tr><td style="padding:40px;">
-          <h1 style="margin:0 0 16px;color:#0d1628;font-size:24px;font-weight:normal;">Good news, ${name || 'there'}</h1>
+          <h1 style="margin:0 0 16px;color:#0d1628;font-size:24px;font-weight:normal;">${greet(t, 'teH1', name)}</h1>
           <p style="margin:0 0 16px;color:#4a5568;font-size:16px;line-height:1.7;">
-            We've extended your Everstead free trial by <strong>${days} days</strong>. Your trial now runs until <strong>${endDate}</strong>, no action needed on your end.
+            ${t('teLine1', { days, date: endDate })}
           </p>
           <p style="margin:0 0 32px;color:#4a5568;font-size:16px;line-height:1.7;">
-            Use the extra time to get your estate plan in order. If you have any questions or need help getting started, just reply to this email.
+            ${t('teLine2')}
           </p>
-          <a href="${process.env.VITE_APP_URL}/dashboard" style="display:inline-block;background:#2d5082;background:linear-gradient(100deg,#2d5082 0%,#6f6bc6 50%,#6e9b6a 100%);color:#ffffff;text-decoration:none;padding:14px 28px;border-radius:9999px;font-size:15px;">Go to your dashboard →</a>
+          <a href="${process.env.VITE_APP_URL}/dashboard" style="display:inline-block;background:#2d5082;background:linear-gradient(100deg,#2d5082 0%,#6f6bc6 50%,#6e9b6a 100%);color:#ffffff;text-decoration:none;padding:14px 28px;border-radius:9999px;font-size:15px;">${t('teCta')}</a>
         </td></tr>
         <tr><td style="padding:24px 40px;border-top:1px solid #e8e5e0;">
-          <p style="margin:0;color:#9ca3af;font-size:13px;">Questions? <a href="mailto:hello@everstead.care" style="color:#4c7d47;">hello@everstead.care</a></p>
+          <p style="margin:0;color:#9ca3af;font-size:13px;">${t('questions')} <a href="mailto:hello@everstead.care" style="color:#4c7d47;">hello@everstead.care</a></p>
         </td></tr>
       </table>
     </td></tr>

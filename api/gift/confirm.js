@@ -2,6 +2,7 @@ import Stripe from 'stripe'
 import { createClient } from '@supabase/supabase-js'
 import { Resend } from 'resend'
 import { withSentry } from '../lib/sentry.js'
+import { translator, languageForUser, emailDate } from '../_lib/email-i18n.js'
 
 const stripe   = new Stripe(process.env.STRIPE_SECRET_KEY)
 const supabase = createClient(process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY)
@@ -50,18 +51,23 @@ async function handler(req, res) {
 
   if (error) return res.status(500).json({ error: error.message })
 
-  // Send gifter confirmation email
+  // Send gifter confirmation email.
+  // This one goes to the BUYER, so it follows the buyer's own profiles.language.
+  // Buying a gift needs no account, and the request carries no locale, so an
+  // unknown buyer falls back to English (languageForUser's own default).
+  const lang = await languageForUser(supabase, { email: gifterEmail })
+  const t    = translator(COPY, lang)
   const planName   = PLAN_NAMES[plan] || plan
   const totalGBP   = (intent.amount / 100).toFixed(2)
   const deliveryStr = sendNow
-    ? 'We\'ve sent the gift to ' + (recipientName || recipientEmail) + ' right away.'
-    : `It's scheduled to arrive on ${new Date(scheduledSendAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}.`
+    ? t('deliveryNow', { recipient: recipientName || recipientEmail })
+    : t('deliveryScheduled', { date: emailDate(scheduledSendAt, lang) })
 
   await resend.emails.send({
     from:    'Everstead <hello@everstead.care>',
     to:      gifterEmail,
-    subject: `Your Everstead gift is confirmed 🎁`,
-    html:    gifterConfirmationHtml({ gifterName, recipientName, recipientEmail, planName, years: Number(years), totalGBP, deliveryStr }),
+    subject: t('subjGiftConfirmed'),
+    html:    gifterConfirmationHtml({ gifterName, recipientName, recipientEmail, planName, years: Number(years), totalGBP, deliveryStr, lang }),
   }).catch(console.error)
 
   // If send now, mark as sent immediately — cron will send recipient email
@@ -70,9 +76,56 @@ async function handler(req, res) {
   return res.status(200).json({ ok: true, code: gift.code })
 }
 
-function gifterConfirmationHtml({ gifterName, recipientName, recipientEmail, planName, years, totalGBP, deliveryStr }) {
-  const firstName = gifterName?.split(' ')[0] || 'there'
-  const yearsLabel = years === 1 ? '1 year' : `${years} years`
+// ─────────────────────────────────────────────────────────────
+// EMAIL TEMPLATE
+// ─────────────────────────────────────────────────────────────
+
+// The buyer's receipt. Plan names (Essential, Everstead+), the amount and the
+// support address never change. No em/en dashes; French carries a real
+// non-breaking space (U+00A0) before : ; ! ? and %.
+const COPY = {
+  en: {
+    subjGiftConfirmed: 'Your Everstead gift is confirmed 🎁',
+    deliveryNow:       "We've sent the gift to {{recipient}} right away.",
+    deliveryScheduled: "It's scheduled to arrive on {{date}}.",
+    year1:             '1 year',
+    yearsN:            '{{years}} years',
+    h1:                'Gift confirmed, {{name}}.',
+    h1NoName:          'Gift confirmed, there.',
+    line1:             "You've given {{recipient}} an Everstead <strong>{{plan}}</strong> plan for <strong>{{years}}</strong>, the gift of peace of mind, at our launch offer price, guaranteed for life.",
+    summaryTitle:      'Gift summary',
+    rowPlan:           'Plan:',
+    rowDuration:       'Duration:',
+    rowFor:            'For:',
+    rowTotal:          'Total paid:',
+    questions:         'Questions?',
+  },
+  fr: {
+    subjGiftConfirmed: 'Votre cadeau Everstead est confirmé 🎁',
+    deliveryNow:       'Nous avons envoyé le cadeau à {{recipient}} immédiatement.',
+    deliveryScheduled: 'Il arrivera le {{date}}.',
+    year1:             '1 an',
+    yearsN:            '{{years}} ans',
+    h1:                'Cadeau confirmé, {{name}}.',
+    h1NoName:          'Votre cadeau est confirmé.',
+    line1:             'Vous offrez à {{recipient}} un forfait Everstead <strong>{{plan}}</strong> pour <strong>{{years}}</strong>, le cadeau de la sérénité, au tarif de lancement, garanti à vie.',
+    summaryTitle:      'Récapitulatif du cadeau',
+    rowPlan:           'Forfait :',
+    rowDuration:       'Durée :',
+    rowFor:            'Pour :',
+    rowTotal:          'Total payé :',
+    questions:         'Une question ?',
+  },
+}
+
+// English keeps its "there" fallback in greetings; French drops the vocative
+// rather than inventing one, so the greeting has a nameless twin.
+const greet = (t, key, name) => (name ? t(key, { name }) : t(`${key}NoName`))
+
+function gifterConfirmationHtml({ gifterName, recipientName, recipientEmail, planName, years, totalGBP, deliveryStr, lang }) {
+  const t = translator(COPY, lang)
+  const firstName = gifterName?.split(' ')[0]
+  const yearsLabel = years === 1 ? t('year1') : t('yearsN', { years })
   return `<!DOCTYPE html>
 <html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
 <body style="margin:0;padding:0;background:#f5f4f0;font-family:Georgia,serif;">
@@ -83,21 +136,21 @@ function gifterConfirmationHtml({ gifterName, recipientName, recipientEmail, pla
           <img src="https://www.everstead.care/logo-v2-white.png" alt="Everstead" width="150" style="display:block;margin:0 auto;height:auto;max-width:150px;" />
         </td></tr>
         <tr><td style="padding:40px;">
-          <h1 style="margin:0 0 16px;color:#0d1628;font-size:24px;font-weight:normal;">Gift confirmed, ${firstName}.</h1>
-          <p style="margin:0 0 16px;color:#4a5568;font-size:16px;line-height:1.6;">You've given ${recipientName || recipientEmail} an Everstead <strong>${planName}</strong> plan for <strong>${yearsLabel}</strong>, the gift of peace of mind, at our launch offer price, guaranteed for life.</p>
+          <h1 style="margin:0 0 16px;color:#0d1628;font-size:24px;font-weight:normal;">${greet(t, 'h1', firstName)}</h1>
+          <p style="margin:0 0 16px;color:#4a5568;font-size:16px;line-height:1.6;">${t('line1', { recipient: recipientName || recipientEmail, plan: planName, years: yearsLabel })}</p>
           <p style="margin:0 0 32px;color:#4a5568;font-size:16px;line-height:1.6;">${deliveryStr}</p>
           <table cellpadding="0" cellspacing="0" style="width:100%;border:1px solid #e8e5e0;border-radius:8px;overflow:hidden;margin-bottom:32px;">
             <tr><td style="padding:16px 20px;background:#f9f8f6;">
-              <p style="margin:0;color:#6b7280;font-size:13px;">Gift summary</p>
+              <p style="margin:0;color:#6b7280;font-size:13px;">${t('summaryTitle')}</p>
             </td></tr>
             <tr><td style="padding:16px 20px;">
-              <p style="margin:0 0 8px;color:#0d1628;font-size:14px;"><strong>Plan:</strong> Everstead ${planName}</p>
-              <p style="margin:0 0 8px;color:#0d1628;font-size:14px;"><strong>Duration:</strong> ${yearsLabel}</p>
-              <p style="margin:0 0 8px;color:#0d1628;font-size:14px;"><strong>For:</strong> ${recipientName ? `${recipientName} (${recipientEmail})` : recipientEmail}</p>
-              <p style="margin:0;color:#0d1628;font-size:14px;"><strong>Total paid:</strong> £${totalGBP}</p>
+              <p style="margin:0 0 8px;color:#0d1628;font-size:14px;"><strong>${t('rowPlan')}</strong> Everstead ${planName}</p>
+              <p style="margin:0 0 8px;color:#0d1628;font-size:14px;"><strong>${t('rowDuration')}</strong> ${yearsLabel}</p>
+              <p style="margin:0 0 8px;color:#0d1628;font-size:14px;"><strong>${t('rowFor')}</strong> ${recipientName ? `${recipientName} (${recipientEmail})` : recipientEmail}</p>
+              <p style="margin:0;color:#0d1628;font-size:14px;"><strong>${t('rowTotal')}</strong> £${totalGBP}</p>
             </td></tr>
           </table>
-          <p style="margin:0;color:#9ca3af;font-size:13px;">Questions? <a href="mailto:support@everstead.care" style="color:#4c7d47;">support@everstead.care</a></p>
+          <p style="margin:0;color:#9ca3af;font-size:13px;">${t('questions')} <a href="mailto:support@everstead.care" style="color:#4c7d47;">support@everstead.care</a></p>
         </td></tr>
       </table>
     </td></tr>

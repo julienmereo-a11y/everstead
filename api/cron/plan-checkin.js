@@ -1,6 +1,7 @@
 import { createClient } from '@supabase/supabase-js'
 import { Resend } from 'resend'
 import { withSentry, captureException } from '../lib/sentry.js'
+import { translator, pickLang } from '../_lib/email-i18n.js'
 
 const supabase = createClient(
   process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL,
@@ -25,7 +26,8 @@ const APP_URL = process.env.VITE_APP_URL || 'https://www.everstead.care'
 //   - haven't opted out (notify_plan_checkin != false)
 //
 // Sends a calm, personalised "does your plan still reflect your life?" nudge
-// and stamps plan_checkin_sent_at.
+// in the recipient's own language (profiles.language) and stamps
+// plan_checkin_sent_at.
 // ─────────────────────────────────────────────────────────────────────────────
 
 const MONTH_MS = 30.44 * 86_400_000
@@ -47,7 +49,7 @@ async function handler(req, res) {
 
   const { data: candidates, error } = await supabase
     .from('profiles')
-    .select('id, full_name, email, plan')
+    .select('id, full_name, email, plan, language')
     .in('subscription_status', ['trialing', 'active'])
     .neq('role', 'delegate')
     .not('email', 'is', null)
@@ -81,11 +83,13 @@ async function handler(req, res) {
         supabase.from('trusted_people').select('id', { count: 'exact', head: true }).eq('user_id', user.id),
       ])
 
+      const t = translator(COPY, user.language)
+
       await resend.emails.send({
         from:    'Everstead <hello@everstead.care>',
         to:      user.email,
-        subject: 'Does your Everstead plan still reflect your life?',
-        html:    planCheckinHtml(user.full_name, accountCount ?? 0, documentCount ?? 0, contactCount ?? 0),
+        subject: t('subject'),
+        html:    planCheckinHtml(user.full_name, accountCount ?? 0, documentCount ?? 0, contactCount ?? 0, user.language),
       })
 
       await supabase
@@ -106,15 +110,89 @@ async function handler(req, res) {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
+// COPY
+// Every customer-facing string in this cron, per language. Only the customer
+// receives this email, so there is nothing here to keep in English.
+// ─────────────────────────────────────────────────────────────────────────────
+const COPY = {
+  en: {
+    subject:      'Does your Everstead plan still reflect your life?',
+    fallbackName: 'there',
+    h1:           '{{name}}, a quiet six-month check-in.',
+    intro:        "Life moves on between the big moments. A new account opened, a policy renewed, a house move, a change in who you'd trust to act for you, small things that quietly fall out of date.",
+    summaryFull:  'Right now your vault holds {{accounts}}, {{documents}}, and {{contacts}}.',
+    summaryEmpty: 'Your vault is still mostly empty, even ten minutes now makes a real difference to the people you love.',
+    summaryTail:  'It only takes a few minutes to make sure it still reflects where your life is today.',
+
+    countAccountsOne:  '{{n}} financial account',
+    countAccountsMany: '{{n}} financial accounts',
+    countDocumentsOne: '{{n}} document',
+    countDocumentsMany:'{{n}} documents',
+    countContactsOne:  '{{n}} trusted contact',
+    countContactsMany: '{{n}} trusted contacts',
+
+    checklistTitle: 'Worth a quick look:',
+    tipAccounts:    "<strong>Anything new to add?</strong>, a recent account, pension, policy, or subscription that isn't in your vault yet.",
+    tipContacts:    "<strong>Are your trusted people still right?</strong>, relationships change; make sure the people with access are still the ones you'd choose.",
+    tipDocuments:   '<strong>Any documents to refresh?</strong>, an updated will, a renewed insurance policy, or a new passport.',
+
+    cta:              'Review my plan →',
+    signature:        'Julien, founder of Everstead',
+    footerQuestions:  'Questions? Reply to this email or write to',
+    footerUnsubscribe:'Unsubscribe from these check-ins',
+  },
+  fr: {
+    subject:      'Votre plan Everstead reflète-t-il encore votre vie\u00A0?',
+    fallbackName: 'Bonjour',
+    h1:           '{{name}}, un point tranquille à six mois.',
+    intro:        'La vie continue entre les grands moments. Un nouveau compte ouvert, un contrat renouvelé, un déménagement, un changement dans la personne à qui vous confieriez vos affaires, autant de petites choses qui cessent discrètement d\'être à jour.',
+    summaryFull:  "Aujourd'hui, votre coffre contient {{accounts}}, {{documents}} et {{contacts}}.",
+    summaryEmpty: 'Votre coffre est encore presque vide, dix minutes aujourd\'hui feraient une vraie différence pour ceux que vous aimez.',
+    summaryTail:  "Quelques minutes suffisent pour vérifier qu'il correspond toujours à votre vie d'aujourd'hui.",
+
+    countAccountsOne:  '{{n}} compte financier',
+    countAccountsMany: '{{n}} comptes financiers',
+    countDocumentsOne: '{{n}} document',
+    countDocumentsMany:'{{n}} documents',
+    countContactsOne:  '{{n}} personne de confiance',
+    countContactsMany: '{{n}} personnes de confiance',
+
+    checklistTitle: 'À vérifier rapidement\u00A0:',
+    tipAccounts:    "<strong>Quelque chose de nouveau à ajouter\u00A0?</strong> Un compte, un contrat de retraite, une assurance ou un abonnement récent qui ne figure pas encore dans votre coffre.",
+    tipContacts:    "<strong>Vos personnes de confiance sont-elles toujours les bonnes\u00A0?</strong> Les relations évoluent, vérifiez que celles qui ont accès sont toujours celles que vous choisiriez.",
+    tipDocuments:   '<strong>Des documents à mettre à jour\u00A0?</strong> Un testament modifié, une assurance renouvelée ou un nouveau passeport.',
+
+    cta:              'Revoir mon plan →',
+    signature:        "Julien, fondateur d'Everstead",
+    footerQuestions:  'Une question\u00A0? Répondez à ce message ou écrivez à',
+    footerUnsubscribe:'Se désabonner de ces points réguliers',
+  },
+}
+
+/**
+ * Count phrase for the recipient's language. French treats 0 as singular,
+ * English does not, so the English branch keeps its original wording exactly.
+ */
+function countPhrase(t, lang, n, oneKey, manyKey) {
+  const singular = pickLang(lang) === 'fr' ? n <= 1 : n === 1
+  return t(singular ? oneKey : manyKey, { n })
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
 // Email HTML
 // ─────────────────────────────────────────────────────────────────────────────
-function planCheckinHtml(name, accountCount, documentCount, contactCount) {
-  const first = name?.split(' ')[0] || 'there'
+function planCheckinHtml(name, accountCount, documentCount, contactCount, lang) {
+  const t = translator(COPY, lang)
+  const first = name?.split(' ')[0] || t('fallbackName')
   const hasContent = (accountCount + documentCount + contactCount) > 0
 
   const summary = hasContent
-    ? `Right now your vault holds ${accountCount} financial ${accountCount === 1 ? 'account' : 'accounts'}, ${documentCount} ${documentCount === 1 ? 'document' : 'documents'}, and ${contactCount} trusted ${contactCount === 1 ? 'contact' : 'contacts'}.`
-    : `Your vault is still mostly empty, even ten minutes now makes a real difference to the people you love.`
+    ? t('summaryFull', {
+        accounts:  countPhrase(t, lang, accountCount,  'countAccountsOne',  'countAccountsMany'),
+        documents: countPhrase(t, lang, documentCount, 'countDocumentsOne', 'countDocumentsMany'),
+        contacts:  countPhrase(t, lang, contactCount,  'countContactsOne',  'countContactsMany'),
+      })
+    : t('summaryEmpty')
 
   return `<!DOCTYPE html>
 <html>
@@ -128,45 +206,45 @@ function planCheckinHtml(name, accountCount, documentCount, contactCount) {
         </td></tr>
         <tr><td style="padding:40px;">
           <h1 style="margin:0 0 16px;color:#0d1628;font-size:24px;font-weight:normal;">
-            ${first}, a quiet six-month check-in.
+            ${t('h1', { name: first })}
           </h1>
           <p style="margin:0 0 16px;color:#4a5568;font-size:16px;line-height:1.7;">
-            Life moves on between the big moments. A new account opened, a policy renewed, a house move, a change in who you'd trust to act for you, small things that quietly fall out of date.
+            ${t('intro')}
           </p>
           <p style="margin:0 0 16px;color:#4a5568;font-size:16px;line-height:1.7;">
-            ${summary} It only takes a few minutes to make sure it still reflects where your life is today.
+            ${summary} ${t('summaryTail')}
           </p>
 
-          <p style="margin:0 0 12px;color:#0d1628;font-size:15px;font-weight:bold;">Worth a quick look:</p>
+          <p style="margin:0 0 12px;color:#0d1628;font-size:15px;font-weight:bold;">${t('checklistTitle')}</p>
 
           <table cellpadding="0" cellspacing="0" style="margin:0 0 32px;width:100%;background:#f9f8f6;border-radius:10px;padding:8px;">
             <tr>
               <td style="padding:10px 14px;vertical-align:top;font-size:20px;line-height:1;">🏦</td>
-              <td style="padding:10px 0;color:#4a5568;font-size:14px;line-height:1.6;"><strong>Anything new to add?</strong>, a recent account, pension, policy, or subscription that isn't in your vault yet.</td>
+              <td style="padding:10px 0;color:#4a5568;font-size:14px;line-height:1.6;">${t('tipAccounts')}</td>
             </tr>
             <tr>
               <td style="padding:10px 14px;vertical-align:top;font-size:20px;line-height:1;">🤝</td>
-              <td style="padding:10px 0;color:#4a5568;font-size:14px;line-height:1.6;"><strong>Are your trusted people still right?</strong>, relationships change; make sure the people with access are still the ones you'd choose.</td>
+              <td style="padding:10px 0;color:#4a5568;font-size:14px;line-height:1.6;">${t('tipContacts')}</td>
             </tr>
             <tr>
               <td style="padding:10px 14px;vertical-align:top;font-size:20px;line-height:1;">📄</td>
-              <td style="padding:10px 0;color:#4a5568;font-size:14px;line-height:1.6;"><strong>Any documents to refresh?</strong>, an updated will, a renewed insurance policy, or a new passport.</td>
+              <td style="padding:10px 0;color:#4a5568;font-size:14px;line-height:1.6;">${t('tipDocuments')}</td>
             </tr>
           </table>
 
           <a href="${APP_URL}/dashboard"
              style="display:inline-block;background:#2d5082;background:linear-gradient(100deg,#2d5082 0%,#6f6bc6 50%,#6e9b6a 100%);color:#ffffff;text-decoration:none;padding:14px 28px;border-radius:9999px;font-size:15px;">
-            Review my plan →
+            ${t('cta')}
           </a>
 
           <p style="margin:32px 0 0;color:#6b7280;font-size:14px;line-height:1.6;">
-Julien, founder of Everstead
+${t('signature')}
           </p>
         </td></tr>
         <tr><td style="padding:24px 40px;border-top:1px solid #e8e5e0;">
           <p style="margin:0;color:#9ca3af;font-size:13px;line-height:1.5;">
-            Questions? Reply to this email or write to <a href="mailto:hello@everstead.care" style="color:#4c7d47;">hello@everstead.care</a>
-            · <a href="mailto:hello@everstead.care?subject=Unsubscribe%20plan%20check-in" style="color:#9ca3af;">Unsubscribe from these check-ins</a>
+            ${t('footerQuestions')} <a href="mailto:hello@everstead.care" style="color:#4c7d47;">hello@everstead.care</a>
+            · <a href="mailto:hello@everstead.care?subject=Unsubscribe%20plan%20check-in" style="color:#9ca3af;">${t('footerUnsubscribe')}</a>
           </p>
         </td></tr>
       </table>

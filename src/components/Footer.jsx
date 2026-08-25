@@ -103,6 +103,15 @@ const cols = [
   },
 ]
 
+// Persist an explicit language choice for the edge middleware (middleware.js):
+// once set, typing the bare domain stops bouncing a French visitor to /fr, and
+// a UK visitor who wants French keeps it. One year, no personal data.
+export function rememberLanguage(lang) {
+  try {
+    document.cookie = `everstead_lang=${lang}; path=/; max-age=31536000; SameSite=Lax`
+  } catch { /* cookies blocked: the link still works, it just will not stick */ }
+}
+
 // Discreet language link. Language is decided purely by the URL path; the
 // French footer links back to the root (English) tree, and the English footer
 // links to /fr — same page when it's translated, the French home otherwise.
@@ -113,7 +122,12 @@ function LanguageLink() {
   const { pathname } = useLocation()
   if (i18n.language === 'fr') {
     return (
-      <a href={pathname} hrefLang="en" className="hover:text-stone-400 transition-colors">
+      <a
+        href={pathname}
+        hrefLang="en"
+        onClick={() => rememberLanguage('en')}
+        className="hover:text-stone-400 transition-colors"
+      >
         English
       </a>
     )
@@ -122,7 +136,12 @@ function LanguageLink() {
     ? `/fr${pathname === '/' ? '' : pathname}`
     : '/fr'
   return (
-    <a href={target} hrefLang="fr" className="hover:text-stone-400 transition-colors">
+    <a
+      href={target}
+      hrefLang="fr"
+      onClick={() => rememberLanguage('fr')}
+      className="hover:text-stone-400 transition-colors"
+    >
       Français
     </a>
   )

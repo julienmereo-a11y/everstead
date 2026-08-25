@@ -2,6 +2,7 @@ import Stripe from 'stripe'
 import { createClient } from '@supabase/supabase-js'
 import { Resend } from 'resend'
 import { withSentry, captureException } from '../lib/sentry.js'
+import { translator } from '../_lib/email-i18n.js'
 
 const stripe   = new Stripe(process.env.STRIPE_SECRET_KEY)
 const supabase = createClient(
@@ -27,7 +28,7 @@ async function handler(req, res) {
   // Fetch profile for email + Stripe IDs
   const { data: profile } = await supabase
     .from('profiles')
-    .select('full_name, email, stripe_subscription_id, stripe_customer_id, subscription_status')
+    .select('full_name, email, language, stripe_subscription_id, stripe_customer_id, subscription_status')
     .eq('id', userId)
     .single()
 
@@ -68,19 +69,55 @@ async function handler(req, res) {
 
   // ── Send deletion confirmation email ──────────────────────
   if (profile?.email) {
+    const t = translator(COPY, profile.language)
     resend.emails.send({
       from:    'Everstead <hello@everstead.care>',
       to:      profile.email,
-      subject: 'Your Everstead account has been deleted',
-      html:    deletionHtml(profile.full_name),
+      subject: t('subject'),
+      html:    deletionHtml(profile.full_name, profile.language),
     }).catch(console.error)
   }
 
   res.status(200).json({ scheduled: true })
 }
 
-function deletionHtml(name) {
-  const firstName = name?.split(' ')[0] || 'there'
+// Customer-facing copy, per recipient language (profiles.language).
+// French strings carry a real NBSP (U+00A0) before ? ! ; : and %, as French
+// typography requires. Do not "tidy" those into ordinary spaces.
+const COPY = {
+  en: {
+    subject:       'Your Everstead account has been deleted',
+    h1Named:       'Account deleted, {{name}}.',
+    h1Anon:        'Account deleted, there.',
+    confirmed:     "We've confirmed the deletion of your Everstead account. Any active subscription has been cancelled immediately, you will not be charged again.",
+    scheduled:     "Your account is scheduled for deletion within <strong>30 days</strong>. If this was a mistake, contact us within that window and we'll do our best to help.",
+    exportHeading: 'Download a copy of your data before then.',
+    exportBody:    "Everything you've added to your Everstead plan is yours to keep. Visit your dashboard to export a complete copy of your accounts, documents, instructions, and wishes while your account is still active.",
+    exportCta:     'Export my data →',
+    sorry:         "We're sorry to see you go. If you have a moment, we'd genuinely love to know what we could have done better, just reply to this email.",
+    contactCta:    'Contact support',
+    questions:     'Questions?',
+  },
+  fr: {
+    subject:       'Votre compte Everstead a été supprimé',
+    h1Named:       'Compte supprimé, {{name}}.',
+    h1Anon:        'Votre compte Everstead est supprimé.',
+    confirmed:     'Nous confirmons la suppression de votre compte Everstead. Tout abonnement actif a été résilié immédiatement, vous ne serez plus débité.',
+    scheduled:     "Votre compte est programmé pour suppression sous <strong>30 jours</strong>. S'il s'agit d'une erreur, contactez-nous avant cette échéance et nous ferons notre possible pour vous aider.",
+    exportHeading: 'Téléchargez une copie de vos données avant cette date.',
+    exportBody:    'Tout ce que vous avez ajouté à votre plan Everstead vous appartient. Rendez-vous sur votre tableau de bord pour exporter une copie complète de vos comptes, documents, instructions et volontés tant que votre compte est encore actif.',
+    exportCta:     'Exporter mes données →',
+    sorry:         'Nous sommes navrés de vous voir partir. Si vous avez un instant, nous aimerions sincèrement savoir ce que nous aurions pu faire mieux, il vous suffit de répondre à cet e-mail.',
+    contactCta:    "Contacter l'assistance",
+    questions:     'Une question ?',
+  },
+}
+
+function deletionHtml(name, lang) {
+  const t         = translator(COPY, lang)
+  // null (not 'there') so the un-named case can pick its own sentence: French
+  // has no natural vocative filler, so it drops the name instead of inventing one.
+  const firstName = name?.split(' ')[0] || null
   const appUrl    = process.env.VITE_APP_URL || 'https://www.everstead.care'
 
   return `<!DOCTYPE html>
@@ -94,25 +131,25 @@ function deletionHtml(name) {
           <img src="https://www.everstead.care/logo-v2-white.png" alt="Everstead" width="160" style="display:block;margin:0 auto;height:auto;max-width:160px;" />
         </td></tr>
         <tr><td style="padding:40px;">
-          <h1 style="margin:0 0 16px;color:#0d1628;font-size:24px;font-weight:normal;">Account deleted, ${firstName}.</h1>
+          <h1 style="margin:0 0 16px;color:#0d1628;font-size:24px;font-weight:normal;">${firstName ? t('h1Named', { name: firstName }) : t('h1Anon')}</h1>
           <p style="margin:0 0 16px;color:#4a5568;font-size:16px;line-height:1.6;">
-            We've confirmed the deletion of your Everstead account. Any active subscription has been cancelled immediately, you will not be charged again.
+            ${t('confirmed')}
           </p>
           <p style="margin:0 0 16px;color:#4a5568;font-size:16px;line-height:1.6;">
-            Your account is scheduled for deletion within <strong>30 days</strong>. If this was a mistake, contact us within that window and we'll do our best to help.
+            ${t('scheduled')}
           </p>
-          <p style="margin:0 0 8px;color:#4a5568;font-size:16px;line-height:1.6;font-weight:600;">Download a copy of your data before then.</p>
+          <p style="margin:0 0 8px;color:#4a5568;font-size:16px;line-height:1.6;font-weight:600;">${t('exportHeading')}</p>
           <p style="margin:0 0 24px;color:#4a5568;font-size:16px;line-height:1.6;">
-            Everything you've added to your Everstead plan is yours to keep. Visit your dashboard to export a complete copy of your accounts, documents, instructions, and wishes while your account is still active.
+            ${t('exportBody')}
           </p>
-          <a href="https://www.everstead.care/dashboard?tab=settings" style="display:inline-block;background:#2d5082;background:linear-gradient(100deg,#2d5082 0%,#6f6bc6 50%,#6e9b6a 100%);color:#ffffff;text-decoration:none;padding:14px 28px;border-radius:9999px;font-size:15px;margin-bottom:24px;">Export my data →</a>
+          <a href="https://www.everstead.care/dashboard?tab=settings" style="display:inline-block;background:#2d5082;background:linear-gradient(100deg,#2d5082 0%,#6f6bc6 50%,#6e9b6a 100%);color:#ffffff;text-decoration:none;padding:14px 28px;border-radius:9999px;font-size:15px;margin-bottom:24px;">${t('exportCta')}</a>
           <p style="margin:0 0 32px;color:#4a5568;font-size:16px;line-height:1.6;">
-            We're sorry to see you go. If you have a moment, we'd genuinely love to know what we could have done better, just reply to this email.
+            ${t('sorry')}
           </p>
-          <a href="mailto:support@everstead.care" style="display:inline-block;background:#f5f4f0;color:#0d1628;text-decoration:none;padding:12px 24px;border-radius:8px;font-size:14px;border:1px solid #e8e5e0;">Contact support</a>
+          <a href="mailto:support@everstead.care" style="display:inline-block;background:#f5f4f0;color:#0d1628;text-decoration:none;padding:12px 24px;border-radius:8px;font-size:14px;border:1px solid #e8e5e0;">${t('contactCta')}</a>
         </td></tr>
         <tr><td style="padding:24px 40px;border-top:1px solid #e8e5e0;">
-          <p style="margin:0;color:#9ca3af;font-size:13px;line-height:1.5;">Questions? <a href="mailto:support@everstead.care" style="color:#4c7d47;">support@everstead.care</a></p>
+          <p style="margin:0;color:#9ca3af;font-size:13px;line-height:1.5;">${t('questions')} <a href="mailto:support@everstead.care" style="color:#4c7d47;">support@everstead.care</a></p>
         </td></tr>
       </table>
     </td></tr>

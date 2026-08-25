@@ -178,7 +178,11 @@ export default function GetStarted() {
 
   const [form, setForm] = useState({
     fullName: '', email: '', password: '',
-    country: 'United Kingdom',
+    // Someone signing up on the French tree is almost certainly in France, so
+    // start them there. The value stays the stored English country name (it
+    // feeds the sanctions check and profiles.country); only the label in the
+    // dropdown is localised.
+    country: i18n.language === 'fr' ? 'France' : 'United Kingdom',
   })
 
   // Referral code from ?ref= URL param — gives the new user a 21-day trial

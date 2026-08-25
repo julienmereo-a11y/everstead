@@ -2,6 +2,7 @@ import { createClient } from '@supabase/supabase-js'
 import { Resend } from 'resend'
 import { withSentry, captureException } from '../lib/sentry.js'
 import { planLabel } from '../_lib/plan-label.js'
+import { translator, emailDate } from '../_lib/email-i18n.js'
 
 const supabase = createClient(
   process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL,
@@ -36,7 +37,7 @@ async function handler(req, res) {
   // ── Step 2: Trial reminder emails (7 / 3 / 1 days before expiry) ──
   const { data: trialing } = await supabase
     .from('profiles')
-    .select('id, full_name, email, plan, trial_ends_at, reminder_7_sent, reminder_3_sent, reminder_1_sent, notify_trial_reminders')
+    .select('id, full_name, email, plan, language, trial_ends_at, reminder_7_sent, reminder_3_sent, reminder_1_sent, notify_trial_reminders')
     .eq('subscription_status', 'trialing')
     .not('trial_ends_at', 'is', null)
     .neq('notify_trial_reminders', false)
@@ -57,13 +58,14 @@ async function handler(req, res) {
 
       for (const task of tasks) {
         try {
+          const t = translator(COPY, p.language)
           await resend.emails.send({
             from:    'Everstead <hello@everstead.care>',
             to:      p.email,
             subject: task.daysLeft === 1
-              ? 'Your Everstead trial ends tomorrow'
-              : `Your Everstead trial ends in ${task.daysLeft} days`,
-            html: trialReminderHtml(p.full_name, p.plan, p.trial_ends_at, task.daysLeft),
+              ? t('reminderSubjectTomorrow')
+              : t('reminderSubjectDays', { days: task.daysLeft }),
+            html: trialReminderHtml(p.full_name, p.plan, p.trial_ends_at, task.daysLeft, p.language),
           })
           await supabase.from('profiles').update({ [task.flag]: true }).eq('id', p.id)
           results.reminded++
@@ -79,7 +81,7 @@ async function handler(req, res) {
   const warnBefore = new Date(now + 8 * 86400000).toISOString() // within next 8 days
   const { data: toWarn } = await supabase
     .from('profiles')
-    .select('id, full_name, email, scheduled_deletion_at')
+    .select('id, full_name, email, language, scheduled_deletion_at')
     .eq('subscription_status', 'trial_expired')
     .or('deletion_warning_sent.is.null,deletion_warning_sent.eq.false')
     .lte('scheduled_deletion_at', warnBefore)
@@ -87,14 +89,14 @@ async function handler(req, res) {
 
   await Promise.allSettled(
     (toWarn ?? []).map(async (p) => {
-      const deletionDate = new Date(p.scheduled_deletion_at)
-        .toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
+      const deletionDate = emailDate(p.scheduled_deletion_at, p.language)
+      const t = translator(COPY, p.language)
       try {
         await resend.emails.send({
           from:    'Everstead <hello@everstead.care>',
           to:      p.email,
-          subject: 'Your Everstead account will be deleted in 7 days',
-          html:    deletionWarningHtml(p.full_name, deletionDate),
+          subject: t('deletionSubject'),
+          html:    deletionWarningHtml(p.full_name, deletionDate, p.language),
         })
         await supabase
           .from('profiles')
@@ -196,10 +198,46 @@ async function deleteUserData(userId) {
 }
 
 // ── Email templates ───────────────────────────────────────────
-function trialReminderHtml(name, plan, trialEndsAt, daysLeft) {
-  const endDate = trialEndsAt
-    ? new Date(trialEndsAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
-    : null
+// Customer-facing copy for both emails in this cron, per language. The HTML
+// chrome stays shared below; only these strings change with profiles.language.
+const COPY = {
+  en: {
+    reminderSubjectTomorrow: 'Your Everstead trial ends tomorrow',
+    reminderSubjectDays:     'Your Everstead trial ends in {{days}} days',
+    reminderH1Tomorrow:      'Your trial ends tomorrow.',
+    reminderH1Days:          'Your trial ends in {{days}} days.',
+    reminderIntroDated:      'Hi {{name}}, your free trial on the <strong>{{plan}}</strong> plan ends on <strong>{{date}}</strong>.',
+    reminderIntroSoon:       'Hi {{name}}, your free trial on the <strong>{{plan}}</strong> plan ends soon.',
+    reminderBody:            'Add your payment details before then to keep access to your estate plan, documents, and trusted contacts.',
+    reminderCta:             'Go to my vault →',
+    reminderFallbackName:    'there',
+    deletionSubject:         'Your Everstead account will be deleted in 7 days',
+    deletionH1:              'Your account will be deleted in 7 days.',
+    deletionIntro:           'Hi {{name}}, your free trial ended 30 days ago and your account has been inactive since.',
+    questions:               'Questions?',
+    unsubscribe:             'Unsubscribe',
+  },
+  fr: {
+    reminderSubjectTomorrow: 'Votre essai Everstead se termine demain',
+    reminderSubjectDays:     'Votre essai Everstead se termine dans {{days}} jours',
+    reminderH1Tomorrow:      'Votre essai se termine demain.',
+    reminderH1Days:          'Votre essai se termine dans {{days}} jours.',
+    reminderIntroDated:      'Bonjour {{name}}, votre essai gratuit du forfait <strong>{{plan}}</strong> se termine le <strong>{{date}}</strong>.',
+    reminderIntroSoon:       'Bonjour {{name}}, votre essai gratuit du forfait <strong>{{plan}}</strong> se termine bientôt.',
+    reminderBody:            'Ajoutez votre moyen de paiement avant cette date pour conserver l\'accès à votre plan, à vos documents et à vos personnes de confiance.',
+    reminderCta:             'Accéder à mon coffre →',
+    reminderFallbackName:    'à vous',
+    deletionSubject:         'Votre compte Everstead sera supprimé dans 7 jours',
+    deletionH1:              'Votre compte sera supprimé dans 7 jours.',
+    deletionIntro:           'Bonjour {{name}}, votre essai gratuit s\'est terminé il y a 30 jours et votre compte est inactif depuis.',
+    questions:               'Une question ?',
+    unsubscribe:             'Se désabonner',
+  },
+}
+
+function trialReminderHtml(name, plan, trialEndsAt, daysLeft, lang) {
+  const t = translator(COPY, lang)
+  const endDate = trialEndsAt ? emailDate(trialEndsAt, lang) : null
   return `<!DOCTYPE html>
 <html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
 <body style="margin:0;padding:0;background:#f5f4f0;font-family:Georgia,serif;">
@@ -210,10 +248,12 @@ function trialReminderHtml(name, plan, trialEndsAt, daysLeft) {
           <img src="https://www.everstead.care/logo-v2-white.png" alt="Everstead" width="150" style="display:block;margin:0 auto;height:auto;max-width:150px;" />
         </td></tr>
         <tr><td style="padding:40px;">
-          <h1 style="margin:0 0 16px;color:#0d1628;font-size:24px;font-weight:normal;">${daysLeft === 1 ? 'Your trial ends tomorrow.' : `Your trial ends in ${daysLeft} days.`}</h1>
-          <p style="margin:0 0 16px;color:#4a5568;font-size:16px;line-height:1.6;">Hi ${name || 'there'}, your free trial on the <strong>${planLabel(plan)}</strong> plan ends${endDate ? ` on <strong>${endDate}</strong>` : ' soon'}.</p>
-          <p style="margin:0 0 32px;color:#4a5568;font-size:16px;line-height:1.6;">Add your payment details before then to keep access to your estate plan, documents, and trusted contacts.</p>
-          <a href="${APP_URL}/dashboard" style="display:inline-block;background:#2d5082;background:linear-gradient(100deg,#2d5082 0%,#6f6bc6 50%,#6e9b6a 100%);color:#ffffff;text-decoration:none;padding:14px 28px;border-radius:9999px;font-size:15px;">Go to my vault →</a>
+          <h1 style="margin:0 0 16px;color:#0d1628;font-size:24px;font-weight:normal;">${daysLeft === 1 ? t('reminderH1Tomorrow') : t('reminderH1Days', { days: daysLeft })}</h1>
+          <p style="margin:0 0 16px;color:#4a5568;font-size:16px;line-height:1.6;">${endDate
+            ? t('reminderIntroDated', { name: name || t('reminderFallbackName'), plan: planLabel(plan), date: endDate })
+            : t('reminderIntroSoon',  { name: name || t('reminderFallbackName'), plan: planLabel(plan) })}</p>
+          <p style="margin:0 0 32px;color:#4a5568;font-size:16px;line-height:1.6;">${t('reminderBody')}</p>
+          <a href="${APP_URL}/dashboard" style="display:inline-block;background:#2d5082;background:linear-gradient(100deg,#2d5082 0%,#6f6bc6 50%,#6e9b6a 100%);color:#ffffff;text-decoration:none;padding:14px 28px;border-radius:9999px;font-size:15px;">${t('reminderCta')}</a>
         </td></tr>
         <tr><td style="padding:24px 40px;border-top:1px solid #e8e5e0;">
           <p style="margin:0;color:#9ca3af;font-size:13px;">Questions? <a href="mailto:hello@everstead.care" style="color:#4c7d47;">hello@everstead.care</a> · <a href="mailto:hello@everstead.care?subject=Unsubscribe" style="color:#9ca3af;">Unsubscribe</a></p>
@@ -224,8 +264,9 @@ function trialReminderHtml(name, plan, trialEndsAt, daysLeft) {
 </body></html>`
 }
 
-function deletionWarningHtml(name, deletionDate) {
-  const firstName = name?.split(' ')[0] || 'there'
+function deletionWarningHtml(name, deletionDate, lang) {
+  const t = translator(COPY, lang)
+  const firstName = name?.split(' ')[0] || t('reminderFallbackName')
   return `<!DOCTYPE html>
 <html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
 <body style="margin:0;padding:0;background:#f5f4f0;font-family:Georgia,serif;">
@@ -236,8 +277,8 @@ function deletionWarningHtml(name, deletionDate) {
           <img src="https://www.everstead.care/logo-v2-white.png" alt="Everstead" width="150" style="display:block;margin:0 auto;height:auto;max-width:150px;" />
         </td></tr>
         <tr><td style="padding:40px;">
-          <h1 style="margin:0 0 16px;color:#0d1628;font-size:24px;font-weight:normal;">Your account will be deleted in 7 days.</h1>
-          <p style="margin:0 0 16px;color:#4a5568;font-size:16px;line-height:1.6;">Hi ${firstName}, your free trial ended 30 days ago and your account has been inactive since.</p>
+          <h1 style="margin:0 0 16px;color:#0d1628;font-size:24px;font-weight:normal;">${t('deletionH1')}</h1>
+          <p style="margin:0 0 16px;color:#4a5568;font-size:16px;line-height:1.6;">${t('deletionIntro', { name: firstName })}</p>
           <p style="margin:0 0 16px;color:#4a5568;font-size:16px;line-height:1.6;">On <strong>${deletionDate}</strong>, your Everstead plan will be permanently deleted, including all your accounts, documents, trusted people, and instructions.</p>
           <p style="margin:0 0 32px;color:#4a5568;font-size:16px;line-height:1.6;">If you'd like to keep your plan, it only takes a moment.</p>
           <a href="${APP_URL}/trial-ended" style="display:inline-block;background:#2d5082;background:linear-gradient(100deg,#2d5082 0%,#6f6bc6 50%,#6e9b6a 100%);color:#ffffff;text-decoration:none;padding:14px 28px;border-radius:9999px;font-size:15px;">Continue with Everstead →</a>

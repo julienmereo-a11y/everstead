@@ -73,7 +73,7 @@ const COUNTRY_OPTIONS = [
 export default function RedeemGift() {
   const [searchParams]    = useSearchParams()
   const navigate          = useNavigate()
-  const { t }             = useTranslation('redeemGift')
+  const { t, i18n }       = useTranslation('redeemGift')
   const code              = searchParams.get('code') || ''
 
   const [validating, setValidating]   = useState(true)
@@ -132,6 +132,10 @@ export default function RedeemGift() {
           email:      form.email,
           password:   form.password,
           name:       form.fullName,
+          // Someone redeeming on /fr is a French speaker: record it so their
+          // dashboard and every later email arrive in French (GetStarted does
+          // the same; without this the gift redeemer defaulted to English).
+          language:   i18n.language === 'fr' ? 'fr' : 'en',
         }),
       })
 

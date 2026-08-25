@@ -2,6 +2,7 @@ import Stripe from 'stripe'
 import { createClient } from '@supabase/supabase-js'
 import { Resend } from 'resend'
 import { withSentry, captureException } from '../lib/sentry.js'
+import { translator, languageForUser, emailDate, pickLang } from '../_lib/email-i18n.js'
 
 const stripe   = new Stripe(process.env.STRIPE_SECRET_KEY)
 const supabase = createClient(process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY)
@@ -76,14 +77,21 @@ async function handler(req, res) {
 
     // (Code was already claimed atomically above.)
 
-    // Send "vault is ready" email to recipient
+    // Send "vault is ready" email to recipient.
+    // Language: the redeemer's own preference first, then the BUYER's, then
+    // English. The redemption flow creates the account without ever asking for
+    // a language, so profiles.language is often still null here, and a French
+    // buyer's gift should not land in English.
+    const lang = (await storedLanguage({ userId }))
+      ?? await languageForUser(supabase, { email: gift.gifter_email })
+    const t = translator(COPY, lang)
     const planName    = gift.plan === 'family' ? 'Everstead+' : 'Essential'
-    const trialEndStr = new Date(trialEnd * 1000).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
+    const trialEndStr = emailDate(trialEnd * 1000, lang)
     await resend.emails.send({
       from:    'Everstead <hello@everstead.care>',
       to:      email,
-      subject: 'Your Everstead vault is ready 🎁',
-      html:    giftRedeemedHtml(name, planName, gift.gifter_name, trialEndStr),
+      subject: t('subjVaultReady'),
+      html:    giftRedeemedHtml(name, planName, gift.gifter_name, trialEndStr, lang),
     }).catch(console.error)
 
     return res.status(200).json({ ok: true, plan: gift.plan, trialEnds: new Date(trialEnd * 1000).toISOString() })
@@ -98,8 +106,67 @@ async function handler(req, res) {
   }
 }
 
-function giftRedeemedHtml(name, planName, gifterName, trialEndStr) {
-  const first = name?.split(' ')[0] || 'there'
+/**
+ * A recorded language preference, or null when there is none. languageForUser()
+ * cannot stand in for this: it answers 'en' both for "prefers English" and for
+ * "no row / no preference", which is exactly the distinction the gift fallback
+ * chain needs. Never throws.
+ */
+async function storedLanguage({ userId, email } = {}) {
+  try {
+    if (!userId && !email) return null
+    // No .catch() on a PostgREST builder: it is a thenable, not a promise.
+    const q = supabase.from('profiles').select('language').limit(1)
+    const { data } = userId
+      ? await q.eq('id', userId).maybeSingle()
+      : await q.ilike('email', email).maybeSingle()
+    return data?.language ? pickLang(data.language) : null
+  } catch {
+    return null
+  }
+}
+
+// ─────────────────────────────────────────────────────────────
+// EMAIL TEMPLATE
+// ─────────────────────────────────────────────────────────────
+
+// Plan names (Essential, Everstead+) and the support address stay as they are.
+// No em/en dashes; French carries a real non-breaking space (U+00A0) before
+// : ; ! ? and %.
+const COPY = {
+  en: {
+    subjVaultReady: 'Your Everstead vault is ready 🎁',
+    h1:             'Your vault is ready, {{name}}. 🎁',
+    h1NoName:       'Your vault is ready, there. 🎁',
+    line1Gifted:    "<strong>{{gifter}}</strong> gave you an Everstead <strong>{{plan}}</strong> plan, and it's now active. Your vault is set up and waiting for you.",
+    line1Anon:      "You've received an Everstead <strong>{{plan}}</strong> plan, and it's now active. Your vault is set up and waiting for you.",
+    line2:          "This is a gift, so there's no card required. You have access until <strong>{{date}}</strong>.",
+    line3:          'Start by adding your first account or uploading an important document, it only takes a few minutes to build something genuinely useful.',
+    cta:            'Go to my vault →',
+    signOff:        ': The Everstead team',
+    questions:      'Questions?',
+  },
+  fr: {
+    subjVaultReady: 'Votre coffre Everstead est prêt 🎁',
+    h1:             'Votre coffre est prêt, {{name}}. 🎁',
+    h1NoName:       'Votre coffre est prêt. 🎁',
+    line1Gifted:    '<strong>{{gifter}}</strong> vous a offert un forfait Everstead <strong>{{plan}}</strong>, et il est désormais actif. Votre coffre est prêt et vous attend.',
+    line1Anon:      'Vous avez reçu un forfait Everstead <strong>{{plan}}</strong>, et il est désormais actif. Votre coffre est prêt et vous attend.',
+    line2:          'C\'est un cadeau, aucune carte bancaire n\'est requise. Vous y avez accès jusqu\'au <strong>{{date}}</strong>.',
+    line3:          'Commencez par ajouter votre premier compte ou par déposer un document important, quelques minutes suffisent pour construire quelque chose de vraiment utile.',
+    cta:            'Accéder à mon coffre →',
+    signOff:        ': L\'équipe Everstead',
+    questions:      'Une question ?',
+  },
+}
+
+// English keeps its "there" fallback in greetings; French drops the vocative
+// rather than inventing one, so the greeting has a nameless twin.
+const greet = (t, key, name) => (name ? t(key, { name }) : t(`${key}NoName`))
+
+function giftRedeemedHtml(name, planName, gifterName, trialEndStr, lang) {
+  const t = translator(COPY, lang)
+  const first = name?.split(' ')[0]
   return `<!DOCTYPE html>
 <html>
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
@@ -112,23 +179,23 @@ function giftRedeemedHtml(name, planName, gifterName, trialEndStr) {
         </td></tr>
         <tr><td style="padding:40px;">
           <h1 style="margin:0 0 16px;color:#0d1628;font-size:24px;font-weight:normal;">
-            Your vault is ready, ${first}. 🎁
+            ${greet(t, 'h1', first)}
           </h1>
           <p style="margin:0 0 16px;color:#4a5568;font-size:16px;line-height:1.7;">
-            ${gifterName ? `<strong>${gifterName}</strong> gave you` : 'You\'ve received'} an Everstead <strong>${planName}</strong> plan, and it's now active. Your vault is set up and waiting for you.
+            ${gifterName ? t('line1Gifted', { gifter: gifterName, plan: planName }) : t('line1Anon', { plan: planName })}
           </p>
           <p style="margin:0 0 16px;color:#4a5568;font-size:16px;line-height:1.7;">
-            This is a gift, so there's no card required. You have access until <strong>${trialEndStr}</strong>.
+            ${t('line2', { date: trialEndStr })}
           </p>
           <p style="margin:0 0 32px;color:#4a5568;font-size:16px;line-height:1.7;">
-            Start by adding your first account or uploading an important document, it only takes a few minutes to build something genuinely useful.
+            ${t('line3')}
           </p>
-          <a href="${APP_URL}/dashboard" style="display:inline-block;background:#2d5082;background:linear-gradient(100deg,#2d5082 0%,#6f6bc6 50%,#6e9b6a 100%);color:#ffffff;text-decoration:none;padding:14px 28px;border-radius:9999px;font-size:15px;">Go to my vault →</a>
-          <p style="margin:32px 0 0;color:#6b7280;font-size:14px;line-height:1.6;">: The Everstead team</p>
+          <a href="${APP_URL}/dashboard" style="display:inline-block;background:#2d5082;background:linear-gradient(100deg,#2d5082 0%,#6f6bc6 50%,#6e9b6a 100%);color:#ffffff;text-decoration:none;padding:14px 28px;border-radius:9999px;font-size:15px;">${t('cta')}</a>
+          <p style="margin:32px 0 0;color:#6b7280;font-size:14px;line-height:1.6;">${t('signOff')}</p>
         </td></tr>
         <tr><td style="padding:24px 40px;border-top:1px solid #e8e5e0;">
           <p style="margin:0;color:#9ca3af;font-size:13px;line-height:1.5;">
-            Questions? <a href="mailto:hello@everstead.care" style="color:#4c7d47;">hello@everstead.care</a>
+            ${t('questions')} <a href="mailto:hello@everstead.care" style="color:#4c7d47;">hello@everstead.care</a>
           </p>
         </td></tr>
       </table>

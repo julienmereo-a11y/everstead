@@ -1,6 +1,5 @@
 import React, { useEffect, Suspense, lazy } from 'react'
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom'
-import { Helmet } from 'react-helmet-async'
 import i18n, { languageFromPath } from './i18n'
 import { AuthProvider, useAuth } from './contexts/AuthContext'
 import { isNative } from './lib/platform'
@@ -12,7 +11,7 @@ import ErrorBoundary from './components/ErrorBoundary'
 import BiometricGate from './components/native/BiometricGate'
 import Nav from './components/Nav'
 import AppBanner, { APP_BANNER_HEIGHT, isAppBannerDismissed } from './components/AppBanner'
-import Footer from './components/Footer'
+import Footer, { rememberLanguage } from './components/Footer'
 // Lazy: ChatWidget pulls in react-markdown — keeping it out of the eager bundle
 // saves ~50 kB+ of the entry chunk. A null fallback is invisible (floating widget).
 const ChatWidget = lazy(() => import('./components/ChatWidget'))
@@ -96,23 +95,12 @@ function ScrollToTop() {
   return null
 }
 
-// hreflang alternates for the current page — links the / and /fr trees for SEO.
-// useLocation() returns the basename-RELATIVE path, so the same code works in
-// both language trees.
-function HreflangTags() {
-  const { pathname } = useLocation()
-  const base = 'https://www.everstead.care'
-  const sub = pathname === '/' ? '' : pathname
-  return (
-    // key forces a fresh Helmet per path so the alternates swap on CLIENT-SIDE
-    // navigations too (crawlers hard-load, but keep the DOM honest regardless).
-    <Helmet key={pathname}>
-      <link rel="alternate" hrefLang="en" href={`${base}${sub || '/'}`} />
-      <link rel="alternate" hrefLang="fr" href={`${base}/fr${sub}`} />
-      <link rel="alternate" hrefLang="x-default" href={`${base}${sub || '/'}`} />
-    </Helmet>
-  )
-}
+// NOTE: hreflang alternates are NOT emitted here. A blanket Layout-level tag
+// claimed a French version for EVERY page, including the many that are English
+// only (/fr/press, /fr/dual-vault ...), which is a false signal to search
+// engines and conflicted with the per-page tags. They now come from
+// src/components/HreflangLinks.jsx, mounted only on pages listed in
+// TRANSLATED_PATHS.
 
 function Layout({ children }) {
   // "App coming soon" bar. Shown on the marketing site only — never inside the native
@@ -127,7 +115,6 @@ function Layout({ children }) {
 
   return (
     <>
-      <HreflangTags />
       {bannerVisible && <AppBanner onDismiss={() => setBannerVisible(false)} />}
       <Nav topOffset={topOffset} />
       <main style={topOffset ? { paddingTop: topOffset } : undefined}>{children}</main>
@@ -162,6 +149,13 @@ function ProfileLanguage() {
       : languageFromPath(window.location.pathname)
     if (i18n.language !== target) i18n.changeLanguage(target)
   }, [pathname, profile?.language])
+
+  // Mirror the account preference into the middleware cookie, so a signed-in
+  // member typing the bare domain lands on their own language wherever they
+  // happen to be (a French member in London still gets /fr).
+  useEffect(() => {
+    if (['en', 'fr'].includes(profile?.language)) rememberLanguage(profile.language)
+  }, [profile?.language])
   return null
 }
 

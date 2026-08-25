@@ -1,6 +1,7 @@
 import { createClient } from '@supabase/supabase-js'
 import { Resend } from 'resend'
 import { withSentry, captureException } from '../lib/sentry.js'
+import { translator, languageForUser } from '../_lib/email-i18n.js'
 
 const supabase = createClient(
   process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL,
@@ -77,11 +78,16 @@ async function handler(req, res) {
   // Confirmation email (best-effort — if Resend fails, still treat as success)
   try {
     const unsubLink = `${APP_URL}/api/subprocessors/unsubscribe?token=${token}`
+    // Subscribing needs no Everstead account, so a subscriber with no profile
+    // resolves to English. That is the only signal this endpoint receives: the
+    // form posts an email address and nothing else.
+    const lang = await languageForUser(supabase, { email: normalised })
+    const t    = translator(COPY, lang)
     await resend.emails.send({
       from: 'Everstead <hello@everstead.care>',
       to: normalised,
-      subject: "You're subscribed to Everstead subprocessor updates",
-      html: confirmationHtml(unsubLink),
+      subject: t('subject'),
+      html: confirmationHtml(unsubLink, lang),
     })
   } catch (err) {
     console.error('[subprocessor subscribe] confirmation email error:', err)
@@ -91,7 +97,33 @@ async function handler(req, res) {
   return res.status(200).json({ ok: true })
 }
 
-function confirmationHtml(unsubLink) {
+// Customer-facing copy, per recipient language (profiles.language). This is a
+// legal notice under UK GDPR Art. 28, so the French follows official RGPD
+// vocabulary ("sous-traitants ultérieurs"). French strings carry a real NBSP
+// (U+00A0) before ? ! ; : as French typography requires.
+const COPY = {
+  en: {
+    subject:     "You're subscribed to Everstead subprocessor updates",
+    eyebrow:     'Subprocessor updates',
+    confirmed:   "You're confirmed.",
+    body:        "We'll email you at least 30 days before we add or replace any third-party subprocessor, the providers that help us run the Everstead platform (hosting, database, payments, email, error monitoring, AI guidance). You can review the current list any time at",
+    notWhat:     'Not what you meant to sign up for?',
+    unsubscribe: 'Unsubscribe',
+    footer:      'Everstead Digital Ltd · UK GDPR Art. 28 sub-processor notice',
+  },
+  fr: {
+    subject:     'Votre abonnement aux avis Everstead sur les sous-traitants est confirmé',
+    eyebrow:     'Avis sur les sous-traitants',
+    confirmed:   'Votre abonnement est confirmé.',
+    body:        "Nous vous préviendrons par e-mail au moins 30 jours avant l'ajout ou le remplacement d'un sous-traitant ultérieur, les prestataires tiers qui nous aident à exploiter la plateforme Everstead (hébergement, base de données, paiements, e-mail, surveillance des erreurs, assistance IA). Vous pouvez consulter la liste à jour à tout moment sur",
+    notWhat:     "Ce n'est pas ce à quoi vous souhaitiez vous abonner ?",
+    unsubscribe: 'Se désabonner',
+    footer:      'Everstead Digital Ltd · Avis relatif aux sous-traitants ultérieurs, article 28 du RGPD britannique (UK GDPR)',
+  },
+}
+
+function confirmationHtml(unsubLink, lang) {
+  const t = translator(COPY, lang)
   return `
 <!DOCTYPE html>
 <html>
@@ -99,20 +131,20 @@ function confirmationHtml(unsubLink) {
 <body style="margin:0;padding:32px;background:#f9fafb;font-family:system-ui,-apple-system,'Segoe UI',sans-serif;color:#1f2937;">
   <table style="max-width:560px;margin:0 auto;background:#ffffff;border-radius:12px;border:1px solid #e5e7eb;overflow:hidden;">
     <tr><td style="background:#2d5082;background:linear-gradient(100deg,#2d5082 0%,#6f6bc6 50%,#6e9b6a 100%);padding:24px;">
-      <img src="https://www.everstead.care/logo-v2-white.png" alt="Everstead" width="140" style="display:block;height:auto;" /><p style="margin:10px 0 0;color:#ffffff;font-size:13px;opacity:.8;letter-spacing:.04em;">Subprocessor updates</p>
+      <img src="https://www.everstead.care/logo-v2-white.png" alt="Everstead" width="140" style="display:block;height:auto;" /><p style="margin:10px 0 0;color:#ffffff;font-size:13px;opacity:.8;letter-spacing:.04em;">${t('eyebrow')}</p>
     </td></tr>
     <tr><td style="padding:28px 24px;">
-      <p style="margin:0 0 16px;font-size:15px;line-height:1.6;">You're confirmed.</p>
+      <p style="margin:0 0 16px;font-size:15px;line-height:1.6;">${t('confirmed')}</p>
       <p style="margin:0 0 16px;font-size:14px;line-height:1.6;color:#4b5563;">
-        We'll email you at least 30 days before we add or replace any third-party subprocessor, the providers that help us run the Everstead platform (hosting, database, payments, email, error monitoring, AI guidance). You can review the current list any time at
+        ${t('body')}
         <a href="https://www.everstead.care/subprocessors" style="color:#4c7d47;">everstead.care/subprocessors</a>.
       </p>
       <p style="margin:0;font-size:13px;line-height:1.6;color:#6b7280;">
-        Not what you meant to sign up for? <a href="${unsubLink}" style="color:#4c7d47;">Unsubscribe</a>.
+        ${t('notWhat')} <a href="${unsubLink}" style="color:#4c7d47;">${t('unsubscribe')}</a>.
       </p>
     </td></tr>
     <tr><td style="padding:16px 24px;background:#f9fafb;border-top:1px solid #e5e7eb;">
-      <p style="margin:0;font-size:12px;color:#9ca3af;">Everstead Digital Ltd · UK GDPR Art. 28 sub-processor notice</p>
+      <p style="margin:0;font-size:12px;color:#9ca3af;">${t('footer')}</p>
     </td></tr>
   </table>
 </body>
