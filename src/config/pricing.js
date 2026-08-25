@@ -90,6 +90,36 @@ export const isPaidPlan = (key) => key === 'essential' || key === 'family' || ke
 //
 // Deliberately NOT capped: the chat-led onboarding, the About Me section, and Your
 // AI Assistant. Those are the activation engine and stay fully open on Free.
+// ─────────────────────────────────────────────────────────────────────────────
+// FRANCE: its own list price, not a conversion
+// ─────────────────────────────────────────────────────────────────────────────
+// Everstead+ is sold in France at 9,99 EUR TTC a month or 99,99 EUR TTC a year
+// (tax-inclusive: French consumer prices must be shown TTC). That annual figure
+// is two months free against the monthly rate, NOT the 20% the GBP catalogue
+// uses, so never derive the French saving from the pounds numbers.
+// The Stripe price IDs live in VITE_STRIPE_FAMILY_*_EUR.
+export const PRICING_FR = {
+  family: {
+    monthly: { perMonth: 9.99, display: '9,99 €' },
+    annual:  { perMonth: 8.33, perYear: 99.99, display: '99,99 €' },
+    monthsFree: 2,
+  },
+}
+
+/**
+ * Display prices for the visitor's market, plus a formatter that puts the
+ * currency where that language expects it ("£9.99" vs "9,99 €").
+ */
+export function marketPricing(language) {
+  const fr = language === 'fr'
+  return {
+    isFrance: fr,
+    currency: fr ? 'EUR' : 'GBP',
+    family:   fr ? PRICING_FR.family : PRICING.family,
+    money:    (n) => (fr ? `${Number(n).toFixed(2).replace('.', ',')} €` : `£${Number(n).toFixed(2)}`),
+  }
+}
+
 export const FREE_LIMITS = {
   accounts:      1,
   documents:     1,

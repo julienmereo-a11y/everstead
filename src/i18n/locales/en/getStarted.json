@@ -80,7 +80,7 @@
     "noCard": "No card required",
     "planWithName": "{{plan}} plan",
     "perMonth": "/ month",
-    "billedAnnuallyDetail": "billed annually (£{{price}}/year) · Save 20%",
+    "billedAnnuallyDetail": "billed annually ({{price}}/yr), saving 20%",
     "billedMonthly": "billed monthly"
   },
   "step1": {
@@ -158,7 +158,7 @@
     "billedMonthly": "billed monthly",
     "changePlan": "Change plan",
     "switchSave": "💡 Switch to annual and save",
-    "switchSaveAmount": "£{{amount}}/yr (20%)",
+    "switchSaveAmount": "{{amount}}/yr (20%)",
     "switchCta": "Switch to annual →",
     "stripeNote": "Your card details are handled directly by Stripe and never touch our servers. Secured with 256-bit encryption."
   },

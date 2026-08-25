@@ -14,7 +14,7 @@ import enGetStarted from '../i18n/locales/en/getStarted.json'
 import frGetStarted from '../i18n/locales/fr/getStarted.json'
 import { useAuth } from '../contexts/AuthContext'
 import { PLANS, getStripe } from '../lib/stripe'
-import { PRICING } from '../config/pricing'
+import { PRICING, marketPricing } from '../config/pricing'
 import { trackEvent } from '../lib/analytics'
 import { supabase } from '../lib/supabase'
 
@@ -153,8 +153,14 @@ export default function GetStarted() {
 
   // Display copy for the plan cards — PLAN_OPTIONS holds the non-text meta,
   // all visible strings come from the "getStarted" namespace (plans.<id>.*).
+  // France buys Everstead+ at its own euro list price, so the card figures and
+  // every money string below come from the market, not the GBP catalogue.
+  const market = marketPricing(i18n.language)
   const planOptions = PLAN_OPTIONS.map(p => ({
     ...p,
+    ...(p.id === 'family'
+      ? { monthly: market.family.monthly.perMonth, yearly: market.family.annual.perMonth }
+      : {}),
     name:     t(`plans.${p.id}.name`),
     desc:     t(`plans.${p.id}.desc`),
     features: t(`plans.${p.id}.features`, { returnObjects: true }),
@@ -845,12 +851,12 @@ export default function GetStarted() {
                       ) : (
                         <>
                           <div className="flex items-end gap-2">
-                            <span className="font-display text-4xl font-light">£{annualBilling ? plan.yearly : plan.monthly}</span>
+                            <span className="font-display text-4xl font-light">{market.money(annualBilling ? plan.yearly : plan.monthly)}</span>
                             <span className={`pb-1.5 text-sm ${plan.highlight ? 'text-stone-400' : 'text-stone-500'}`}>{t('plans.perMonth')}</span>
                           </div>
                           <p className="mt-1.5 text-[11px] text-stone-400">
                             {annualBilling
-                              ? t('plans.billedAnnuallyDetail', { price: PRICING.family.annual.perYear.toFixed(2) })
+                              ? t('plans.billedAnnuallyDetail', { price: market.money(market.family.annual.perYear) })
                               : t('plans.billedMonthly')}
                           </p>
                         </>
@@ -1161,7 +1167,13 @@ export default function GetStarted() {
 
               {!annualBilling && (() => {
                 const plan = PLAN_OPTIONS.find(p => p.id === selectedPlan)
-                const saving = plan ? Math.round((plan.monthly - plan.yearly) * 12) : 0
+                // France advertises two months free rather than a percentage, so the
+                // saving is the real euro gap, not the GBP-derived one.
+                const saving = plan
+                  ? market.money(market.isFrance
+                      ? market.family.monthly.perMonth * 12 - market.family.annual.perYear
+                      : Math.round((plan.monthly - plan.yearly) * 12))
+                  : market.money(0)
                 return (
                   <div className="mb-5 flex items-center justify-between bg-sage-50 border border-sage-200 rounded-xl px-4 py-3">
                     <p className="text-xs text-sage-700">

@@ -89,7 +89,7 @@
     "suffixMonthly": "/mois",
     "suffixYearly": "/an",
     "billedAnnually": "Prix TTC · 2 mois offerts",
-    "gbpNote": "Prix TTC, toutes taxes comprises. Le paiement s'effectue pour l'instant en livres sterling (£) : le montant débité en euros peut donc varier légèrement selon le taux de change appliqué par votre banque."
+    "gbpNote": "Tous les prix sont en euros, toutes taxes comprises (TTC)."
   },
   "dataPromise": {
     "text": "Vos données vous appartiennent : vous pouvez tout exporter quand vous le souhaitez. En cas d'arrêt du service, nous nous engageons sur un préavis de 90 jours.",

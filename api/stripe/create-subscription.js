@@ -14,6 +14,14 @@ const PRICE_IDS = {
   advisor:   { monthly: process.env.VITE_STRIPE_ADVISOR_MONTHLY,   yearly: process.env.VITE_STRIPE_ADVISOR_YEARLY   },
 }
 
+// France has its own EUR list price (9,99 / 99,99 TTC, tax-inclusive) for
+// Everstead+, the only paid plan a member can buy themselves. Essential is
+// retired and Everstead Pro is sold via demo, so neither needs a euro price:
+// anything without one falls back to the GBP catalogue above.
+const PRICE_IDS_EUR = {
+  family: { monthly: process.env.VITE_STRIPE_FAMILY_MONTHLY_EUR, yearly: process.env.VITE_STRIPE_FAMILY_YEARLY_EUR },
+}
+
 async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' })
 
@@ -34,19 +42,33 @@ async function handler(req, res) {
 
   // The Stripe customer must be the caller's own (setup-intent wrote it at the card step).
   const { data: callerProfile } = await supabase.from('profiles')
-    .select('stripe_customer_id').eq('id', userId).single()
+    .select('stripe_customer_id, country, language').eq('id', userId).single()
   if (!callerProfile?.stripe_customer_id || callerProfile.stripe_customer_id !== customerId) {
     return res.status(403).json({ error: 'Forbidden' })
   }
 
-  const priceId = PRICE_IDS[plan]?.[billingCycle]
-  if (!priceId) return res.status(400).json({ error: `No price ID for plan "${plan}" (${billingCycle})` })
-
   try {
-    // Attach the confirmed payment method to the customer and set as default
+    // Currency comes from the caller's OWN profile, never from the request body:
+    // euro pricing is cheaper than sterling, so a client-supplied flag would let
+    // anyone opt into it. Stripe also LOCKS a customer to one currency at their
+    // first invoice, so an existing currency always wins or the create fails.
+    let stripeCustomer = null
+    try { stripeCustomer = await stripe.customers.retrieve(customerId) } catch { /* fall through to profile */ }
+    const lockedCurrency = stripeCustomer && !stripeCustomer.deleted ? stripeCustomer.currency : null
+    const wantsEur = callerProfile.country === 'France' || callerProfile.language === 'fr'
+    const currency = lockedCurrency || (wantsEur ? 'eur' : 'gbp')
+
+    const priceId = (currency === 'eur' && PRICE_IDS_EUR[plan]?.[billingCycle])
+      || PRICE_IDS[plan]?.[billingCycle]
+    if (!priceId) return res.status(400).json({ error: `No price ID for plan "${plan}" (${billingCycle})` })
+
+    // Attach the confirmed payment method to the customer and set as default.
+    // preferred_locales also makes Stripe's OWN receipts, invoices and hosted
+    // pages render in French, which our templates cannot control.
     await stripe.paymentMethods.attach(paymentMethodId, { customer: customerId })
     await stripe.customers.update(customerId, {
       invoice_settings: { default_payment_method: paymentMethodId },
+      ...(callerProfile.language === 'fr' ? { preferred_locales: ['fr'] } : {}),
     })
 
     // Resolve an optional promotion code (e.g. FOUNDING50) to its ID.
