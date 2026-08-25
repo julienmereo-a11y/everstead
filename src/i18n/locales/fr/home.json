@@ -129,16 +129,16 @@
   "pricing": {
     "eyebrow": "Tarifs",
     "title": "Des tarifs simples et honnêtes.",
-    "subtitle": "20 % de moins en choisissant la facturation annuelle. Tous les prix sont en euros, TTC.",
+    "subtitle": "2 mois offerts en choisissant la facturation annuelle. Tous les prix sont en euros, TTC.",
     "monthly": "Mensuel",
     "yearly": "Annuel",
-    "save": "20 % de moins",
+    "save": "2 mois offerts",
     "badgePopular": "Le plus populaire",
     "badgePromo": "Offre de lancement",
     "suffixMonthly": "/mois",
     "suffixAnnual": "/an",
     "billedMonthly": "Facturation mensuelle · Prix TTC",
-    "billedAnnually": "Facturation annuelle · Prix TTC · 20 % de moins",
+    "billedAnnually": "Facturation annuelle · Prix TTC · 2 mois offerts",
     "plans": {
       "free": {
         "name": "Everstead",
@@ -156,8 +156,8 @@
       },
       "family": {
         "name": "Everstead+",
-        "priceMonthly": "11,99 €",
-        "priceAnnual": "114,88 €",
+        "priceMonthly": "9,99 €",
+        "priceAnnual": "99,99 €",
         "desc": "Pour les couples et les familles : deux espaces privés, un seul abonnement. Vous vous organisez ensemble, chacun reste chez soi.",
         "features": [
           "Tout ce que propose Everstead, sans aucune limite",

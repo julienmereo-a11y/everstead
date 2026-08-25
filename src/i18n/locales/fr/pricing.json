@@ -11,10 +11,10 @@
   "toggle": {
     "monthly": "Mensuel",
     "yearly": "Annuel",
-    "savingActive": "✓ {{percent}} % de moins",
-    "save": "{{percent}} % de moins",
-    "billingNoteAnnual": "Facturation annuelle : {{percent}} % de moins que le paiement mensuel. ✓",
-    "billingNoteMonthly": "Facturation mensuelle. Passez à l'année et payez {{percent}} % de moins."
+    "savingActive": "✓ 2 mois offerts",
+    "save": "2 mois offerts",
+    "billingNoteAnnual": "Facturation annuelle : 2 mois offerts par rapport au paiement mensuel, soit près de {{saving}} € d'économie. ✓",
+    "billingNoteMonthly": "Facturation mensuelle. Passez à l'année et profitez de 2 mois offerts."
   },
   "plans": {
     "free": {
@@ -83,12 +83,12 @@
       "yearly": "47,88 €"
     },
     "family": {
-      "monthly": "11,99 €",
-      "yearly": "114,88 €"
+      "monthly": "9,99 €",
+      "yearly": "99,99 €"
     },
     "suffixMonthly": "/mois",
     "suffixYearly": "/an",
-    "billedAnnually": "Prix TTC · 20 % de moins",
+    "billedAnnually": "Prix TTC · 2 mois offerts",
     "gbpNote": "Prix TTC, toutes taxes comprises. Le paiement s'effectue pour l'instant en livres sterling (£) : le montant débité en euros peut donc varier légèrement selon le taux de change appliqué par votre banque."
   },
   "dataPromise": {
@@ -113,7 +113,7 @@
     },
     "everstead": {
       "name": "Everstead+",
-      "price": "114,88 €/an",
+      "price": "99,99 €/an",
       "description": "Tout reste organisé, à jour et partagé, aussi longtemps que vous en avez besoin. Deux espaces privés compris."
     }
   },
@@ -167,7 +167,7 @@
       },
       {
         "q": "Y a-t-il une réduction pour la facturation annuelle ?",
-        "a": "Oui. La facturation annuelle revient 20 % moins cher que le paiement mensuel, sur les deux forfaits. Le tarif réduit s'applique dès le premier jour et reste garanti pendant toute l'année."
+        "a": "Oui. La facturation annuelle revient à 99,99 € au lieu de 119,88 € : 2 mois vous sont offerts par rapport au paiement mensuel. Le tarif s'applique dès le premier jour et reste garanti pendant toute l'année."
       },
       {
         "q": "Qu'apporte le forfait Everstead+ que l'offre gratuite n'a pas ?",

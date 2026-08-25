@@ -93,10 +93,19 @@ export default function Pricing() {
   ]
 
   const familyPlan     = plans.find(p => p.id === 'family')
-  const yearlyDiscount = Math.round((1 - familyPlan.yearly / familyPlan.monthly) * 100)
+  // The GBP plan is priced at 20% off for the year. The French market has its
+  // own euro list price (9,99 / 99,99 TTC), which works out at two months free
+  // rather than 20%, so the saving must NOT be derived from the GBP figures
+  // here or the French page overstates its own discount.
+  const isFrenchPricing = i18n.language === 'fr'
+  const yearlyDiscount = isFrenchPricing
+    ? 17                                                          // 99,99 vs 12 x 9,99
+    : Math.round((1 - familyPlan.yearly / familyPlan.monthly) * 100)
 
   const billingNote = useMemo(() => {
-    const saving = Math.round((familyPlan.monthly - familyPlan.yearly) * 12)
+    const saving = isFrenchPricing
+      ? 20                                                        // 119,88 - 99,99 = 19,89 EUR
+      : Math.round((familyPlan.monthly - familyPlan.yearly) * 12)
     return annual
       ? t('toggle.billingNoteAnnual', { saving, percent: yearlyDiscount })
       : t('toggle.billingNoteMonthly', { saving, percent: yearlyDiscount })
