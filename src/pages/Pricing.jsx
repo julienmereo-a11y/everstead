@@ -187,9 +187,17 @@ export default function Pricing() {
                   <div className="mt-8">
                     <div className="flex items-end gap-2">
                       <span className="font-display text-5xl font-light">{plan.priceLabel}</span>
-                      <span className={`pb-2 text-sm ${plan.highlight ? 'text-stone-400' : 'text-stone-500'}`}>{plan.priceSub}</span>
+                      {!isFrenchPricing && (
+                        <span className={`pb-2 text-sm ${plan.highlight ? 'text-stone-400' : 'text-stone-500'}`}>{plan.priceSub}</span>
+                      )}
                     </div>
-                    <p className="mt-1.5 text-[11px] text-stone-400">No card required</p>
+                    {/* English-only footnotes: the French card already says
+                        "sans carte bancaire" in its description, so repeating it
+                        under the price is noise (and these were hardcoded, so
+                        they used to render in English on /fr). */}
+                    {!isFrenchPricing && (
+                      <p className="mt-1.5 text-[11px] text-stone-400">No card required</p>
+                    )}
                   </div>
                 ) : (
                   <div className="mt-8">
@@ -219,7 +227,7 @@ export default function Pricing() {
                 <Link to={href} className={`inline-flex items-center justify-center gap-2 mt-8 w-full rounded-full px-5 py-3.5 text-sm font-semibold ${plan.isFree && !plan.highlight ? 'border border-navy-200 text-navy-800 hover:bg-navy-50 transition-colors' : 'btn-aurora'}`}>
                   {plan.cta} <ArrowRight size={15} />
                 </Link>
-                {plan.isFree && (
+                {plan.isFree && !isFrenchPricing && (
                   <p className="mt-3 text-center text-xs text-stone-400 leading-relaxed">
                     Upgrade to Everstead+ any time, your data comes with you.
                   </p>

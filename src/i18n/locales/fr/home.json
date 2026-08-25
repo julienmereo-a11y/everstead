@@ -7,10 +7,10 @@
     "jsonLdDescription": "Coffre numérique sécurisé pour organiser sa succession : comptes, contrats d'assurance-vie, documents et dernières volontés, consultables dès aujourd'hui et transmis aux personnes de confiance le moment venu."
   },
   "hero": {
-    "eyebrow": "Vos comptes, documents et dernières volontés, enfin à leur place.",
-    "title1": "Rassemblez tout ce qui compte ",
-    "titleEm": "en lieu sûr",
-    "title2": ", là où vos proches sauront le trouver.",
+    "eyebrow": "Comptes, documents, dernières volontés : enfin à leur place.",
+    "title1": "Un seul endroit sûr pour ",
+    "titleEm": "tout ce qui compte",
+    "title2": ", que vos proches sauront trouver.",
     "subtitle": "Everstead conserve en sécurité tout ce dont vos proches auront besoin. Quelques minutes suffisent pour tout mettre en place, et vous seul décidez qui y a accès.",
     "ctaPrimary": "Créer mon compte gratuit",
     "ctaSecondary": "Comment ça marche",
@@ -143,7 +143,7 @@
       "free": {
         "name": "Everstead",
         "priceLabel": "Gratuit",
-        "priceSub": "à vie · sans carte bancaire",
+        "priceSub": "sans carte bancaire",
         "desc": "De quoi organiser l'essentiel sans dépenser un centime, et sans jamais donner de carte bancaire.",
         "features": [
           "Parcours guidé et profil « À propos de moi »",
