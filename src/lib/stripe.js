@@ -1,6 +1,6 @@
 import { loadStripe } from '@stripe/stripe-js'
 import { createClient } from '@supabase/supabase-js'
-import { PRICING } from '../config/pricing'
+import { PRICING, FREE_LIMITS } from '../config/pricing'
 
 const supabase = createClient(
   import.meta.env.VITE_SUPABASE_URL,
@@ -31,12 +31,17 @@ export const PLANS = {
   // authority, this is only so the UI can gate before the insert is rejected.
   free: {
     name: 'Everstead',
+    // The caps come from FREE_LIMITS so there is ONE client-side number per
+    // resource. These are what isAtLimit() reads, and therefore what the web
+    // dashboard AND the native apps gate on; they previously drifted from
+    // FREE_LIMITS, which left the database allowing more than any client would.
+    // The database (free_tier_allows) remains the real authority.
     limits: {
-      trustedPeople: 1,
+      trustedPeople: FREE_LIMITS.trustedPeople,
       storageGb: 1,
       householdMembers: 1,
-      maxAccounts: 1,
-      maxDocuments: 1,
+      maxAccounts: FREE_LIMITS.accounts,
+      maxDocuments: FREE_LIMITS.documents,
       instructionSets: null, // uncapped — onboarding/About Me/AI stay fully open on Free
       personalMessages: false,
     },

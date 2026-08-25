@@ -302,7 +302,7 @@ export default function MobileAppAuthed() {
       membersV: [ownerRow, ...memberRows],
       famSub: `${ppl.length + 1} people in your household`,
       activity: (activityLog.data || []).map(r => ({ id: r.id, text: activityText(r), when: relativeTime(r.created_at) })),
-      // sheet actions — the free tier is capped at 1 account / 1 document / 1 trusted
+      // sheet actions — the free tier is capped at 5 accounts / 5 documents / 3 trusted
       // contact (DB-enforced). Intercept a capped FREE user with an upgrade nudge
       // instead of an add sheet that RLS would reject. Limit keys are the ones in
       // PLANS[plan].limits (maxAccounts / maxDocuments / trustedPeople). Only nudge on

@@ -15,8 +15,8 @@ import { CheckIcon } from './icons'
 // Adviser / "Everstead Pro" is sold B2B on the web and never appears here.
 const PLAN_KEY = 'family'
 
-// What Everstead+ adds over the free tier (free is capped at 1 account / 1
-// document / 1 trusted contact — see FREE_LIMITS).
+// What Everstead+ adds over the free tier (free is capped at 5 accounts / 5
+// documents / 3 trusted contacts — see FREE_LIMITS, the single client-side source).
 const FEATURES = [
   'Unlimited accounts & documents',
   'Up to 10 trusted contacts',

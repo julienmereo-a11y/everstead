@@ -1,7 +1,7 @@
 import React from 'react'
 import { planLabel } from '../../../../config/pricing'
 
-// Shown when a free-tier user hits a cap (1 account / 1 document / 1 trusted
+// Shown when a free-tier user hits a cap (5 accounts / 5 documents / 3 trusted
 // contact — the DB enforces these) and tries to add another. Rather than letting
 // the add fail against RLS, we intercept and nudge to Everstead+. `nudge.noun` is
 // the singular resource name, e.g. 'document'.
