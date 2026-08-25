@@ -160,9 +160,6 @@ export default function Nav({ topOffset = 0 }) {
 
           {/* CTA */}
           <div className="hidden lg:flex items-center gap-3">
-            {/* Language picker sits with the CTAs for signed-out AND signed-in
-                visitors: the geo redirect can be overridden from any page. */}
-            <LanguageSwitcher dark={useDarkStyle} />
             {user ? (
               <>
                 {isDualRole ? (
@@ -234,6 +231,9 @@ export default function Nav({ topOffset = 0 }) {
                 </Link>
               </>
             )}
+            {/* Last in the cluster, so it sits to the RIGHT of Get Started
+                (and of Log Out when signed in). */}
+            <LanguageSwitcher dark={useDarkStyle} />
           </div>
 
           {/* Mobile toggle */}
