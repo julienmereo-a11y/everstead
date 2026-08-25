@@ -620,6 +620,8 @@ const DEMO_USERS = [
   { id: 'u7', full_name: 'David Osei',       email: 'david@example.com',   phone: '+44 7700 900777', country: 'United Kingdom', nationality: 'Ghanaian', plan: 'essential', subscription_status: 'trial_expired', billing_cycle: 'monthly', readiness_score: 20, created_at: '2026-04-20T12:00:00Z', trial_ends_at: '2026-05-04T12:00:00Z', stripe_customer_id: 'cus_demo7', stripe_subscription_id: 'sub_demo7', accounts_count: 1, documents_count: 0, people_count: 0, instructions_count: 0, wishes_count: 0 },
   { id: 'u8',  full_name: 'Amara Diallo',    email: 'amara@example.com',   phone: null,              country: 'United Kingdom', nationality: 'French',   plan: 'free',      subscription_status: null,        billing_cycle: 'monthly', readiness_score: 18, created_at: '2026-07-28T11:00:00Z', trial_ends_at: null, stripe_customer_id: null, stripe_subscription_id: null, entitlement_source: 'stripe',    accounts_count: 1, documents_count: 0, people_count: 1, instructions_count: 0, wishes_count: 0 },
   { id: 'u9',  full_name: 'Peter Hollis',    email: 'peterh@example.com',  phone: '+44 7700 900999', country: 'United Kingdom', nationality: 'British',  plan: 'free',      subscription_status: 'cancelled', billing_cycle: 'monthly', readiness_score: 40, created_at: '2026-05-12T09:30:00Z', trial_ends_at: null, stripe_customer_id: null, stripe_subscription_id: null, entitlement_source: 'apple_iap', accounts_count: 3, documents_count: 2, people_count: 1, instructions_count: 1, wishes_count: 0 },
+  { id: 'u11', full_name: 'Camille Moreau',   email: 'camille@example.fr', phone: '+33 6 12 34 56 78', country: 'France', nationality: 'French', plan: 'family', subscription_status: 'active',   billing_cycle: 'monthly', language: 'fr', readiness_score: 61, created_at: '2026-08-18T10:00:00Z', trial_ends_at: null, stripe_customer_id: 'cus_demo11', stripe_subscription_id: 'sub_demo11', entitlement_source: 'stripe', accounts_count: 3, documents_count: 2, people_count: 2, instructions_count: 1, wishes_count: 1 },
+  { id: 'u12', full_name: 'Laurent Bertrand', email: 'laurent@example.fr', phone: null,                country: 'France', nationality: 'French', plan: 'free',   subscription_status: null,       billing_cycle: 'monthly', language: 'fr', readiness_score: 12, created_at: '2026-08-22T09:00:00Z', trial_ends_at: null, stripe_customer_id: null, stripe_subscription_id: null, entitlement_source: 'stripe', accounts_count: 1, documents_count: 0, people_count: 1, instructions_count: 0, wishes_count: 0 },
   { id: 'u10', full_name: 'Grace Adeyemi',   email: 'grace@example.com',   phone: '+44 7700 901010', country: 'United Kingdom', nationality: 'Nigerian', plan: 'family',    subscription_status: 'active',    billing_cycle: 'yearly',  readiness_score: 52, created_at: '2026-08-01T09:00:00Z', trial_ends_at: null, stripe_customer_id: null, stripe_subscription_id: null, entitlement_source: 'apple_iap', accounts_count: 4, documents_count: 2, people_count: 2, instructions_count: 2, wishes_count: 1 },
 ]
 
@@ -1046,6 +1048,14 @@ function UserRow({ u }) {
           <div className="flex items-center gap-2 flex-wrap">
             <p className="text-sm font-semibold text-navy-900 truncate">{u.full_name ?? '—'}</p>
             <span className={`text-xs font-medium px-2 py-0.5 rounded-full border ${planCls}`}>{planLabel(u.plan)}</span>
+            {currencyOf(u) === 'eur' && (
+              <span
+                className="text-xs font-medium px-2 py-0.5 rounded-full border bg-blue-50 text-blue-700 border-blue-200"
+                title={u.stripe_price_id ? 'Billed in euros (French price list)' : 'French member, would be billed in euros'}
+              >
+                🇫🇷 EUR
+              </span>
+            )}
             {u.is_founding_member && (
               <span
                 className="inline-flex items-center gap-1 text-xs font-semibold px-2 py-0.5 rounded-full text-white"
@@ -1205,13 +1215,41 @@ function UserRow({ u }) {
 // ─────────────────────────────────────────────────────────────
 // New-signup rates (20% annual structure). Existing subscribers may be on older
 // prices, so MRR is an estimate. `yearly` = per-month-when-billed-annually.
+// Monthly-equivalent list rates per currency. France has its own euro price
+// (9,99 TTC a month, 99,99 TTC a year = 8,33 a month), so a French member is
+// NOT worth the sterling figure and must never be added into a GBP total.
 const MRR_RATES = {
-  free:      { monthly: 0, yearly: 0 },
-  essential: { monthly: 3.99, yearly: 3.19 },
-  family:    { monthly: 9.99, yearly: 7.99 },
-  advisor:   { monthly: 60, yearly: 48 },
+  gbp: {
+    free:      { monthly: 0, yearly: 0 },
+    essential: { monthly: 3.99, yearly: 3.19 },
+    family:    { monthly: 9.99, yearly: 7.99 },
+    advisor:   { monthly: 60, yearly: 48 },
+  },
+  eur: {
+    free:   { monthly: 0, yearly: 0 },
+    family: { monthly: 9.99, yearly: 8.33 },   // 99,99 EUR a year
+  },
 }
-const mrrOf = (u) => (MRR_RATES[u.plan] ?? { monthly: 0, yearly: 0 })[u.billing_cycle ?? 'monthly'] ?? 0
+
+// Euro price IDs are the authoritative signal: they say what Stripe actually
+// charges. Country/language is only a fallback for members who have not
+// subscribed yet (and for demo mode, which has no price ids).
+const EUR_PRICE_IDS = new Set([
+  import.meta.env.VITE_STRIPE_FAMILY_MONTHLY_EUR,
+  import.meta.env.VITE_STRIPE_FAMILY_YEARLY_EUR,
+].filter(Boolean))
+
+const currencyOf = (u) => {
+  if (u.stripe_price_id) return EUR_PRICE_IDS.has(u.stripe_price_id) ? 'eur' : 'gbp'
+  return (u.country === 'France' || u.language === 'fr') ? 'eur' : 'gbp'
+}
+
+const mrrOf = (u) => {
+  const table = MRR_RATES[currencyOf(u)] ?? MRR_RATES.gbp
+  return (table[u.plan] ?? { monthly: 0, yearly: 0 })[u.billing_cycle ?? 'monthly'] ?? 0
+}
+
+const fmtEur = (n) => Math.round(n).toLocaleString('fr-FR') + ' €'
 
 // Display order + a one-line reminder of what each plan is.
 const PLAN_ORDER = [
@@ -1279,7 +1317,16 @@ function OverviewSection({ isDemo }) {
   const pastDue     = users.filter(u => ['past_due', 'trial_expired'].includes(u.subscription_status))
   const pendingDel  = users.filter(u => u.subscription_status === 'pending_deletion')
 
-  const mrr = paying.reduce((s, u) => s + mrrOf(u), 0)
+  // Split by currency: adding euros into a pounds total would be a made-up
+  // number, and inventing an exchange rate to merge them would be worse.
+  const payingGbp = paying.filter(u => currencyOf(u) === 'gbp')
+  const payingEur = paying.filter(u => currencyOf(u) === 'eur')
+  const mrr    = payingGbp.reduce((s, u) => s + mrrOf(u), 0)
+  const mrrEur = payingEur.reduce((s, u) => s + mrrOf(u), 0)
+
+  // Market split across ALL members, not just payers: the free tier is the
+  // French pipeline, so it matters how many French members exist at all.
+  const frenchMembers = users.filter(u => currencyOf(u) === 'eur' || u.language === 'fr')
 
   const sourceCounts = ['stripe', 'apple_iap', 'google_play']
     .map(k => ({ k, n: paying.filter(u => (u.entitlement_source ?? 'stripe') === k).length }))
@@ -1347,10 +1394,11 @@ function OverviewSection({ isDemo }) {
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <KpiCard
           label="Est. MRR"
-          value={fmtGbp(mrr)}
-          title={`£${mrr.toFixed(2)} — estimate; grandfathered prices may differ`}
+          value={mrrEur > 0 ? `${fmtGbp(mrr)} + ${fmtEur(mrrEur)}` : fmtGbp(mrr)}
+          title={`£${mrr.toFixed(2)}${mrrEur > 0 ? ` + ${mrrEur.toFixed(2)} EUR` : ''} — estimate; grandfathered prices may differ. Currencies are shown separately, never converted.`}
           lines={[
             `${paying.length} paying subscriber${paying.length === 1 ? '' : 's'}`,
+            mrrEur > 0 && `${payingGbp.length} in £ · ${payingEur.length} in €`,
             founding.length > 0 && `${founding.length} founding — Everstead+ for life, £0`,
           ]}
         />
@@ -1375,6 +1423,35 @@ function OverviewSection({ isDemo }) {
             downgraded.length > 0 && `${downgraded.length} downgraded after cancelling`,
           ]}
         />
+      </div>
+
+      {/* Market split. France is a separate price list and a separate body of
+          content, so it is worth watching on its own rather than buried in the
+          totals above. */}
+      <div className="bg-white border border-stone-200 rounded-2xl p-6">
+        <div className="flex items-baseline justify-between mb-1">
+          <h3 className="font-semibold text-navy-950">Markets</h3>
+          <span className="text-xs text-stone-400">{users.length} members total</span>
+        </div>
+        <p className="text-xs text-stone-400 mb-5">
+          French members are billed in euros (9,99 € / 99,99 € TTC); everyone else in pounds
+        </p>
+        <div className="grid sm:grid-cols-2 gap-4">
+          {[
+            { flag: '🇬🇧', name: 'United Kingdom and rest of world', members: users.length - frenchMembers.length, payers: payingGbp.length, mrrLabel: fmtGbp(mrr) },
+            { flag: '🇫🇷', name: 'France', members: frenchMembers.length, payers: payingEur.length, mrrLabel: fmtEur(mrrEur) },
+          ].map(m => (
+            <div key={m.name} className="rounded-xl border border-stone-200 px-5 py-4">
+              <p className="text-sm font-medium text-navy-900">
+                <span aria-hidden="true">{m.flag}</span> {m.name}
+              </p>
+              <p className="text-2xl font-semibold text-navy-950 mt-1.5">{m.members}</p>
+              <p className="text-xs text-stone-400 mt-0.5">
+                {m.payers} paying · {m.mrrLabel} MRR
+              </p>
+            </div>
+          ))}
+        </div>
       </div>
 
       {/* Members by plan */}
