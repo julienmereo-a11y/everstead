@@ -1,6 +1,7 @@
 import React from 'react'
 import { Smartphone, X } from 'lucide-react'
 import { trackEvent } from '../lib/analytics'
+import { useTranslation } from 'react-i18next'
 
 // Slim site-wide announcement bar for the upcoming mobile apps.
 //
@@ -22,6 +23,7 @@ export function isAppBannerDismissed() {
 }
 
 export default function AppBanner({ onDismiss }) {
+  const { t } = useTranslation()
   const dismiss = () => {
     try { localStorage.setItem(DISMISS_KEY, '1') } catch { /* private mode, dismiss for this session only */ }
     onDismiss?.()
@@ -41,7 +43,7 @@ export default function AppBanner({ onDismiss }) {
         <p className="flex items-center gap-2 text-xs sm:text-sm font-medium leading-none text-center">
           <Smartphone size={14} className="shrink-0" aria-hidden="true" />
           <span>
-            The Everstead app is here, on the{' '}
+            {t('appBanner.lead')}{' '}
             <a
               href="https://apps.apple.com/gb/app/id6791210842"
               target="_blank"
@@ -51,7 +53,7 @@ export default function AppBanner({ onDismiss }) {
             >
               App Store
             </a>{' '}
-            and{' '}
+            {t('appBanner.and')}{' '}
             <a
               href="https://play.google.com/store/apps/details?id=care.everstead.app"
               target="_blank"
@@ -67,7 +69,7 @@ export default function AppBanner({ onDismiss }) {
         <button
           type="button"
           onClick={dismiss}
-          aria-label="Dismiss announcement"
+          aria-label={t('appBanner.dismiss')}
           className="absolute right-3 sm:right-4 lg:right-8 p-1.5 rounded-md text-white/75 hover:text-white hover:bg-white/15 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60"
         >
           <X size={14} />

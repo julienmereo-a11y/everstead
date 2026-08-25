@@ -1971,6 +1971,14 @@ function DocumentAccessEditor({ people, form, setForm }) {
   )
 }
 
+// Official guidance for the two priority documents. gov.uk is correct for a UK
+// member and useless to a French one, so the French tree points at our own
+// French-law guides instead (both exist under /fr/resources/blog).
+const PRIORITY_GUIDANCE = {
+  en: { will: 'https://www.gov.uk/make-will',              lpa: 'https://www.gov.uk/power-of-attorney' },
+  fr: { will: '/fr/resources/blog/testament-reserve-hereditaire', lpa: '/fr/resources/blog/mandat-protection-future' },
+}
+
 function DocumentsSection({ documents, loading, uploadFile, update, remove, planLimits, profile, onUpgrade, updateProfile, addAlert, onLifeEvent, people }) {
   const { t, i18n } = useTranslation('dashboard')
   const dateLocale = i18n.language?.startsWith('fr') ? 'fr-FR' : 'en-GB'
@@ -2254,7 +2262,7 @@ function DocumentsSection({ documents, loading, uploadFile, update, remove, plan
                   <p className="text-xs text-stone-500 mb-3 leading-relaxed">{t('documents.priority.willBody')}</p>
                   <div className="flex items-center gap-3 flex-wrap">
                     <button onClick={openUpload} className="text-xs font-semibold text-navy-700 bg-navy-50 border border-navy-200 px-3 py-1.5 rounded-full hover:bg-navy-100 transition-colors">{t('documents.priority.uploadYours')}</button>
-                    <a href="https://www.gov.uk/make-will" target="_blank" rel="noopener noreferrer" className="text-xs text-stone-400 hover:text-navy-600 transition-colors">{t('documents.priority.govGuidance')}</a>
+                    <a href={PRIORITY_GUIDANCE[i18n.language === 'fr' ? 'fr' : 'en'].will} target="_blank" rel="noopener noreferrer" className="text-xs text-stone-400 hover:text-navy-600 transition-colors">{t('documents.priority.govGuidance')}</a>
                   </div>
                 </div>
               )}
@@ -2264,7 +2272,7 @@ function DocumentsSection({ documents, loading, uploadFile, update, remove, plan
                   <p className="text-xs text-stone-500 mb-3 leading-relaxed">{t('documents.priority.lpaBody')}</p>
                   <div className="flex items-center gap-3 flex-wrap">
                     <button onClick={openUpload} className="text-xs font-semibold text-navy-700 bg-navy-50 border border-navy-200 px-3 py-1.5 rounded-full hover:bg-navy-100 transition-colors">{t('documents.priority.uploadYours')}</button>
-                    <a href="https://www.gov.uk/power-of-attorney" target="_blank" rel="noopener noreferrer" className="text-xs text-stone-400 hover:text-navy-600 transition-colors">{t('documents.priority.govGuidance')}</a>
+                    <a href={PRIORITY_GUIDANCE[i18n.language === 'fr' ? 'fr' : 'en'].lpa} target="_blank" rel="noopener noreferrer" className="text-xs text-stone-400 hover:text-navy-600 transition-colors">{t('documents.priority.govGuidance')}</a>
                   </div>
                 </div>
               )}

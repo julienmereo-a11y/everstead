@@ -7,7 +7,7 @@
     "bullet1": "Vous ne voyez que ce qui a été partagé avec votre rôle",
     "bullet2": "Vous n'avez rien à faire maintenant, seulement le moment venu",
     "bullet3": "Vous pourrez mettre à jour vos coordonnées après avoir accepté",
-    "wrongAccount": "<bold>Attention :</bold> cette invitation est destinée à <bold>{{invited}}</bold>. Vous êtes connecté en tant que <bold>{{current}}</bold>. Déconnectez-vous d'abord si vous souhaitez accepter avec un autre compte.",
+    "wrongAccount": "<bold>Attention :</bold> cette invitation est destinée à <bold>{{invited}}</bold>. Vous êtes connecté en tant que <bold>{{current}}</bold>. Déconnectez-vous d'abord si vous souhaitez accepter avec un autre compte.",
     "accept": "Accepter l'invitation",
     "decline": "Refuser"
   },

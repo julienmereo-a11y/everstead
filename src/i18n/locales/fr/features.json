@@ -1,63 +1,63 @@
 {
   "meta": {
     "title": "Fonctionnalités | Everstead",
-    "description": "Découvrez tout ce qu'Everstead vous offre, numérisation de documents, instructions rédigées avec votre assistant IA, messages personnels, personnes de confiance et un score de préparation pour garder votre plan sur la bonne voie."
+    "description": "Tout ce qu'Everstead met à votre disposition : lecture automatique de vos documents, instructions rédigées avec votre assistant IA, messages personnels, personnes de confiance et un score de préparation pour garder votre plan à jour."
   },
   "hero": {
     "eyebrow": "Fonctionnalités",
-    "title": "Tout ce que votre famille devra retrouver, réuni au même endroit.",
-    "subtitle": "Everstead vous offre une vision structurée, sécurisée et complète de votre patrimoine (comptes, documents, instructions et dernières volontés) organisée et accessible aux bonnes personnes, au moment où cela compte le plus.",
-    "ctaPrimary": "Commencer gratuitement",
-    "ctaSecondary": "Voir comment ça marche"
+    "title": "Tout ce que votre famille devra retrouver, au même endroit.",
+    "subtitle": "Everstead réunit tout votre patrimoine (comptes, documents, instructions et dernières volontés) dans un espace structuré et sécurisé, accessible aux bonnes personnes le jour venu.",
+    "ctaPrimary": "Créer mon compte gratuit",
+    "ctaSecondary": "Comment ça marche"
   },
   "sections": {
     "problem": {
       "eyebrow": "Ce que vivent les familles sans plan",
       "items": [
-        "Des documents introuvables",
-        "Des mots de passe et des comptes perdus",
-        "Des semaines perdues à courir après les informations",
-        "Des volontés jamais consignées"
+        "Des documents que personne ne retrouve",
+        "Des comptes dont personne n'a les accès",
+        "Des semaines passées à courir après l'information",
+        "Des dernières volontés qui n'ont jamais été écrites"
       ]
     },
     "core": {
       "eyebrow": "Ce que vous y trouverez",
       "title": "Dix fonctionnalités. Un plan complet.",
-      "subtitle": "Chaque fonctionnalité est pensée autour des questions que les familles se posent réellement après un décès, et des réponses qu'elles peinent à trouver.",
+      "subtitle": "Chaque fonctionnalité est née des questions que les familles se posent vraiment après un décès, et des réponses qu'elles ont tant de mal à trouver.",
       "features": {
         "aboutMe": {
           "tag": "À propos de moi",
           "title": "À propos de moi",
           "headline": "L'histoire que vous seul pouvez raconter, préservée pour ceux que vous aimez.",
-          "body": "Bien plus que des comptes et de l'administratif. La musique que vous aimeriez faire jouer, une lettre à vos enfants, les événements qui ont marqué votre vie, une playlist qui vous ressemble. C'est le cœur chaleureux et humain de votre plan, écrit selon vos propres termes et partagé uniquement avec les personnes de votre choix, dès maintenant ou le jour où votre plan sera activé.",
+          "body": "Bien plus que des comptes et de l'administratif. La musique que vous aimeriez qu'on passe, une lettre à vos enfants, les événements qui ont façonné votre vie, une playlist qui ne ressemble qu'à vous. C'est le cœur humain de votre plan, écrit avec vos mots à vous et partagé uniquement avec les personnes de votre choix, dès aujourd'hui ou le jour venu.",
           "bullets": [
             "Événements de vie, passions et réflexions personnelles",
             "Lettres et messages pour ceux que vous aimez",
-            "Une photo de profil et une playlist qui disent qui vous êtes",
-            "Partagé uniquement avec les personnes choisies, jamais avec les notaires ou les conseillers"
+            "Une photo de profil et une playlist qui vous ressemblent",
+            "Partagé uniquement avec les personnes que vous choisissez, jamais avec un notaire ni un conseiller"
           ]
         },
         "aiAssistant": {
           "tag": "Assistant IA",
           "title": "Votre assistant IA",
           "headline": "Une aide privée, pour les jours où l'administratif pèse trop lourd.",
-          "body": "Si mettre de l'ordre dans tout cela vous a déjà paru insurmontable, vous n'avez pas à y arriver seul. Votre assistant IA est une aide calme et privée au sein de votre compte, discutez avec des mots simples, ou déposez un document et il le lira pour vous suggérer des entrées. Il avance une petite étape à la fois, et rien n'est jamais enregistré avant que vous ne l'ayez relu et confirmé. Il peut aussi répondre à vos questions pratiques sur le fonctionnement d'Everstead.",
+          "body": "Si mettre de l'ordre dans tout cela vous a déjà semblé insurmontable, sachez que vous n'êtes pas obligé d'y arriver seul. Votre assistant IA est une aide calme et privée, à l'intérieur de votre compte : posez vos questions avec vos mots, ou déposez un document, il le lit et vous propose des entrées à valider. Il avance une petite étape à la fois et rien n'est enregistré tant que vous ne l'avez pas relu et confirmé. Il répond aussi à vos questions pratiques sur le fonctionnement d'Everstead.",
           "bullets": [
-            "Discutez, ou déposez un document, il vous suggère des entrées à relire",
-            "Rien n'est enregistré sans votre confirmation, il suggère, vous décidez",
-            "Vous aide à commencer, même quand les mots ou l'énergie manquent",
-            "Privé et limité à votre compte ; désactivez l'IA à tout moment dans les Paramètres"
+            "Discutez avec lui, ou déposez un document : il vous propose des entrées à relire",
+            "Rien n'est enregistré sans votre accord : il propose, vous décidez",
+            "Vous aide à commencer, même les jours où les mots ou l'énergie manquent",
+            "Privé, limité à votre compte, et désactivable à tout moment dans les Paramètres"
           ]
         },
         "accounts": {
           "tag": "Comptes",
           "title": "Comptes et actifs",
-          "headline": "Chaque compte, documenté une seule fois et retrouvé instantanément.",
-          "body": "Comptes bancaires, investissements, épargne retraite, livrets d'épargne, portefeuilles crypto, contrats d'assurance-vie, fournisseurs d'énergie, abonnements, tout est structuré, étiqueté et consultable. Ajoutez les noms des établissements, les numéros de compte, les indices de connexion et les contacts, pour que rien ne soit enfoui ni oublié.",
+          "headline": "Chaque compte documenté une fois, retrouvé en un instant.",
+          "body": "Comptes bancaires, livrets, placements, épargne retraite, contrats d'assurance-vie, portefeuilles crypto, fournisseurs d'énergie, abonnements : tout est structuré, étiqueté et consultable. Ajoutez les noms des établissements, les numéros de compte, les indices de connexion et les contacts utiles, pour que rien ne reste enfoui ni oublié.",
           "bullets": [
-            "Comptes bancaires, livrets, investissements, retraite et assurance-vie",
+            "Comptes bancaires, livrets, placements, retraite et assurance-vie",
             "Actifs numériques, crypto et comptes en ligne",
-            "Suivi des abonnements avec dates de renouvellement et coûts",
+            "Suivi des abonnements, avec dates de renouvellement et montants",
             "Catégories et étiquettes personnalisées"
           ]
         },
@@ -65,45 +65,45 @@
           "tag": "Documents",
           "title": "Coffre à documents",
           "headline": "Vos documents juridiques et personnels, conservés et partagés en toute sécurité.",
-          "body": "Téléversez votre testament (ou indiquez chez quel notaire il est déposé), votre mandat de protection future, vos titres de propriété, passeport, acte de naissance, contrats d'assurance et bien plus. Classez par catégorie, attribuez les accès par rôle et conservez un historique des versions, pour qu'aucun document ne soit écrasé sans laisser de trace.",
+          "body": "Téléversez votre testament (ou indiquez chez quel notaire il est déposé), votre mandat de protection future, vos titres de propriété, passeport, acte de naissance, contrats d'assurance et tout le reste. Classez par catégorie, attribuez les accès rôle par rôle et gardez un historique des versions : aucun document n'est écrasé sans laisser de trace.",
           "bullets": [
             "Testaments, mandats de protection future, titres de propriété, contrats d'assurance",
             "Chiffrement au repos (AES-256)",
-            "Accès par rôle, ne partagez que ce qui est nécessaire",
+            "Accès par rôle : ne partagez que le nécessaire",
             "Historique des versions et journal d'audit des fichiers"
           ],
-          "ai": "Déposez un document, nous en extrayons automatiquement les informations clés. ✨"
+          "ai": "Déposez un document, nous en extrayons les informations clés pour vous. ✨"
         },
         "instructions": {
           "tag": "Instructions",
           "title": "Instructions",
-          "headline": "Des consignes écrites, exactement au moment où l'on en a le plus besoin.",
-          "body": "Dites à votre famille quoi faire, dans quel ordre, et qui appeler, avec des mots simples. Couvrez les premières 48 heures, le règlement de la succession, la clôture des comptes et tout ce qui vous tient à cœur. Vos mots, préservés et transmis avec clarté.",
+          "headline": "Des consignes écrites, prêtes pour le jour où l'on en aura besoin.",
+          "body": "Dites à votre famille quoi faire, dans quel ordre et qui appeler, avec des mots simples. Les premières 48 heures, le règlement de la succession, la clôture des comptes, et tout ce qui vous tient à cœur. Vos mots, conservés et transmis sans la moindre ambiguïté.",
           "bullets": [
-            "Les premiers gestes pour les jours qui suivent un décès",
+            "Les premiers gestes, pour les jours qui suivent le décès",
             "Listes de contrôle pour la clôture des comptes et la succession",
-            "Listes de contacts avec noms, rôles et numéros",
-            "Notes personnelles et consignes adaptées à chaque situation"
+            "Listes de contacts, avec noms, rôles et numéros",
+            "Notes personnelles et consignes propres à votre situation"
           ],
-          "ai": "Vous ne savez pas quoi écrire ? Nous vous aiderons à trouver les mots. ✨"
+          "ai": "Vous ne savez pas par où commencer ? Nous vous aidons à trouver les mots. ✨"
         },
         "people": {
           "tag": "Personnes",
           "title": "Personnes de confiance",
           "headline": "Les bonnes personnes voient les bonnes informations, rien de plus.",
-          "body": "Attribuez des rôles : conjoint, enfant, personne en charge des démarches, notaire ou conseiller financier. Chaque rôle n'accède qu'à ce que vous avez explicitement partagé. Vous pouvez ajuster, révoquer ou élargir les accès à tout moment, et garder ainsi le contrôle total.",
+          "body": "Attribuez un rôle à chacun : conjoint, enfant, personne en charge des démarches, notaire ou conseiller financier. Chaque rôle n'accède qu'à ce que vous avez explicitement partagé. Vous pouvez élargir, modifier ou retirer un accès quand vous le voulez : le contrôle reste entre vos mains.",
           "bullets": [
-            "Rôles nommés : conjoint, personne en charge des démarches, conseiller, aidant",
-            "Contrôle d'accès précis, section par section",
-            "Révoquez ou modifiez les accès à tout moment",
-            "Notification dès qu'une personne de confiance consulte votre plan"
+            "Des rôles nommés : conjoint, personne en charge des démarches, conseiller, aidant",
+            "Un contrôle d'accès précis, section par section",
+            "Retirez ou modifiez un accès à tout moment",
+            "Une notification dès qu'une personne de confiance consulte votre plan"
           ]
         },
         "access": {
           "tag": "Accès",
           "title": "Accès d'urgence et partage",
           "headline": "Un accès immédiat quand chaque minute compte.",
-          "body": "Configurez votre accès d'urgence pour qu'il se déverrouille automatiquement sous des conditions précises, ou permettez à une personne de confiance d'envoyer une demande d'accès en un seul geste. Chaque accès est consigné dans un journal d'audit complet : rien ne se passe sans laisser de trace.",
+          "body": "Configurez votre accès d'urgence pour qu'il se déverrouille automatiquement sous des conditions précises, ou laissez une personne de confiance en faire la demande en un seul geste. Chaque accès est consigné dans un journal d'audit complet : rien ne se passe sans laisser de trace.",
           "bullets": [
             "Accès d'urgence avec conditions de déverrouillage contrôlées",
             "Demande d'accès en un geste pour vos personnes de confiance",
@@ -115,113 +115,113 @@
           "tag": "Volontés",
           "title": "Dernières volontés",
           "headline": "Vos préférences personnelles, recueillies avec dignité.",
-          "body": "Consignez vos préférences pour les obsèques et l'hommage, vos volontés en matière de don d'organes, l'existence de vos directives anticipées, vos lettres personnelles, vos instructions pour les objets à valeur sentimentale, et les détails d'inhumation ou de crémation. Everstead veille à ce qu'elles soient retrouvées, lues et respectées.",
+          "body": "Consignez vos préférences pour les obsèques et l'hommage, vos volontés en matière de don d'organes, l'existence de vos directives anticipées, vos lettres personnelles, le sort des objets qui ont une valeur sentimentale et le choix entre inhumation et crémation. Everstead veille à ce que tout cela soit retrouvé, lu et respecté.",
           "bullets": [
             "Préférences pour les obsèques et la cérémonie d'hommage",
             "Volontés en matière de don d'organes et de tissus",
             "Lettres et messages personnels pour vos proches",
             "Attribution des objets personnels ou à valeur sentimentale"
           ],
-          "ai": "Nous pouvons vous aider à commencer, quand les mots ne viennent pas facilement. ✨"
+          "ai": "Quand les mots ne viennent pas, nous pouvons vous aider à commencer. ✨"
         },
         "messages": {
           "tag": "Messages",
           "title": "Messages personnels",
-          "headline": "Vos mots, transmis au moment où ils comptent le plus.",
-          "body": "Écrivez un mot personnel ou enregistrez un message vidéo pour chaque personne de votre plan, votre conjoint, vos enfants, votre notaire ou un ami proche. Chaque message est scellé, chiffré et remis uniquement à son destinataire lorsque vos délégués accèdent au plan. Dites ce que vous avez à dire, selon vos propres termes.",
+          "headline": "Vos mots, remis au moment où ils comptent le plus.",
+          "body": "Écrivez un mot ou enregistrez un message vidéo pour chacune des personnes de votre plan : votre conjoint, vos enfants, votre notaire ou un ami proche. Chaque message est scellé, chiffré et remis à son seul destinataire lorsque vos délégués accèdent au plan. Dites ce que vous avez à dire, avec vos mots à vous.",
           "bullets": [
             "Des mots écrits pour des personnes nommées, personnels et privés",
-            "Messages vidéo enregistrés et conservés en toute sécurité sur la plateforme",
-            "Remis uniquement au destinataire prévu, une fois le plan activé",
-            "Un message distinct par personne, des mots différents pour des liens différents"
+            "Des messages vidéo enregistrés et conservés en sécurité sur la plateforme",
+            "Remis au seul destinataire prévu, une fois le plan activé",
+            "Un message par personne : à chaque lien, ses mots"
           ],
-          "ai": "Écrivez-le vous-même ou laissez-nous vous aider à démarrer. ✨"
+          "ai": "Écrivez-le vous-même, ou laissez-nous vous donner le premier élan. ✨"
         },
         "subscriptions": {
           "tag": "Abonnements",
           "title": "Suivi des abonnements",
-          "headline": "Ne payez plus pour des services qui survivent à la personne qui les a souscrits.",
-          "body": "Répertoriez chaque prélèvement récurrent, services de streaming, logiciels, adhésions, salles de sport, magazines. Ajoutez les montants, les dates de renouvellement et les instructions de résiliation. La personne qui s'occupera des démarches pourra traiter chaque ligne sans rien deviner, ni subir de prélèvements surprises.",
+          "headline": "Plus un seul abonnement qui survit à celui qui l'a souscrit.",
+          "body": "Répertoriez chaque prélèvement récurrent : streaming, logiciels, adhésions, salle de sport, magazines. Ajoutez les montants, les dates de renouvellement et la marche à suivre pour résilier. La personne qui s'occupera des démarches pourra traiter chaque ligne sans rien deviner et sans mauvaise surprise.",
           "bullets": [
-            "Tous les prélèvements récurrents en un seul coup d'œil",
-            "Dates de renouvellement et montants facturés",
-            "Instructions de résiliation pour chaque service",
-            "Évite que des abonnements actifs passent inaperçus"
+            "Tous les prélèvements récurrents en un coup d'œil",
+            "Dates de renouvellement et montants prélevés",
+            "La marche à suivre pour résilier, service par service",
+            "Aucun abonnement actif ne passe plus inaperçu"
           ]
         },
         "progress": {
           "tag": "Progression",
           "title": "Score de préparation",
           "headline": "Sachez exactement où en est votre plan.",
-          "body": "Le score de préparation mesure la complétude de toutes les sections, comptes, documents, instructions, personnes de confiance et dernières volontés. Des suggestions intelligentes font remonter ce qui manque, pour que votre plan reste à jour et que rien ne passe entre les mailles du filet.",
+          "body": "Le score de préparation mesure l'avancement de chaque section : comptes, documents, instructions, personnes de confiance et dernières volontés. Des suggestions font remonter ce qui manque, pour que votre plan reste à jour et que rien ne passe entre les mailles du filet.",
           "bullets": [
-            "Score de complétude sur toutes les sections du plan",
-            "Suggestions intelligentes pour les éléments manquants ou obsolètes",
-            "Rappels de révision réguliers",
-            "Un signal clair pour votre famille : tout est préparé"
+            "Un score d'avancement sur toutes les sections du plan",
+            "Des suggestions pour les éléments manquants ou périmés",
+            "Des rappels de relecture réguliers",
+            "Un signal clair pour votre famille : tout est prêt"
           ],
-          "ai": "Votre assistant IA vous indique exactement sur quoi vous concentrer ensuite. ✨"
+          "ai": "Votre assistant IA vous dit exactement par quoi continuer. ✨"
         }
       }
     },
     "security": {
       "eyebrow": "Sécurité",
-      "title": "Conçu pour la confidentialité, la confiance et le contrôle.",
-      "subtitle": "Vos données ne sont jamais vendues, jamais partagées sans votre autorisation, et toujours chiffrées. Nous avons conçu Everstead pour les familles, pas pour les annonceurs.",
+      "title": "Pensé pour la confidentialité, la confiance et le contrôle.",
+      "subtitle": "Vos données ne sont jamais vendues, jamais partagées sans votre accord, et toujours chiffrées. Nous avons construit Everstead pour les familles, pas pour les annonceurs.",
       "points": [
         {
           "label": "Stockage chiffré (AES-256)",
-          "desc": "Chiffrement au repos et en transit pour l'ensemble de vos données."
+          "desc": "Un chiffrement au repos et en transit, sur l'ensemble de vos données."
         },
         {
           "label": "Contrôle d'accès par rôle",
-          "desc": "Chaque personne de confiance ne voit que les sections qui lui sont attribuées."
+          "desc": "Chaque personne de confiance ne voit que les sections qui lui reviennent."
         },
         {
           "label": "Journal d'audit complet",
-          "desc": "Chaque consultation, chaque partage et chaque modification sont enregistrés de façon permanente."
+          "desc": "Chaque consultation, chaque partage et chaque modification laissent une trace définitive."
         },
         {
-          "label": "La confidentialité avant tout",
+          "label": "La confidentialité d'abord",
           "desc": "Aucune vente de données, aucune publicité, aucun accès de tiers sans votre consentement."
         },
         {
           "label": "Notifications d'accès",
-          "desc": "Vous êtes averti chaque fois qu'une personne de confiance accède à votre plan."
+          "desc": "Vous êtes prévenu dès qu'une personne de confiance ouvre votre plan."
         },
         {
           "label": "Sauvegardes sécurisées",
-          "desc": "Des sauvegardes chiffrées et redondantes garantissent que votre plan ne sera jamais perdu."
+          "desc": "Des sauvegardes chiffrées et redondantes : votre plan ne peut pas se perdre."
         }
       ],
       "link": "Découvrir toutes nos pratiques de sécurité"
     },
     "who": {
       "eyebrow": "Pour qui ?",
-      "title": "Everstead accompagne chaque membre du plan familial.",
+      "title": "Everstead est utile à chacun, autour d'un même plan familial.",
       "items": [
         {
           "title": "Familles",
-          "desc": "Un seul endroit où chaque membre du foyer sait que les comptes, les documents et les volontés sont consignés, pour que personne ne reste dans l'incertitude."
+          "desc": "Un même endroit où chacun, dans le foyer, sait que les comptes, les documents et les volontés sont consignés. Personne n'est laissé dans le flou."
         },
         {
           "title": "Proches en charge d'une succession",
-          "desc": "Un guide complet et structuré de la succession (comptes, contacts, documents et instructions) sans des semaines de recherches."
+          "desc": "Un dossier complet et structuré de la succession (comptes, contacts, documents, instructions), sans des semaines de recherche."
         },
         {
           "title": "Seniors",
-          "desc": "Construisez votre plan à votre rythme, désignez vos personnes de confiance et sachez que vos volontés et vos affaires sont correctement documentées."
+          "desc": "Construisez votre plan à votre rythme, désignez vos personnes de confiance et sachez que vos affaires et vos volontés sont noir sur blanc."
         },
         {
           "title": "Conseillers patrimoniaux",
-          "desc": "Offrez à vos clients un dossier successoral sécurisé et organisé qu'ils peuvent tenir à jour eux-mêmes, et qui allège considérablement votre charge administrative."
+          "desc": "Proposez à vos clients un dossier successoral sécurisé et organisé qu'ils tiennent à jour eux-mêmes, et allégez d'autant votre charge administrative."
         }
       ]
     },
     "comparison": {
       "eyebrow": "Ce qui nous distingue",
       "title": "Mieux qu'un tableur. Plus accessible qu'un notaire.",
-      "subtitle": "Les tableurs se perdent. Les notaires conservent des documents auxquels vous n'avez pas accès vous-même. Everstead offre aux familles un plan vivant, sécurisé et accessible.",
+      "subtitle": "Un tableur finit toujours par se perdre. Un notaire conserve des documents auxquels vous n'avez pas accès vous-même. Everstead donne aux familles un plan vivant, sécurisé et consultable.",
       "columns": {
         "everstead": "Everstead",
         "spreadsheet": "Tableur",
@@ -235,7 +235,7 @@
         "Instructions pas à pas pour la famille",
         "Dernières volontés consignées",
         "Suivi des abonnements",
-        "Score de préparation et suggestions intelligentes",
+        "Score de préparation et suggestions",
         "Toujours à jour, modifiable à tout moment"
       ]
     },
@@ -253,12 +253,12 @@
       "lastUpdated": "Mis à jour aujourd'hui",
       "attention": "2 éléments à revoir →",
       "eyebrow": "Score de préparation",
-      "title": "Une mesure claire de la préparation de votre famille.",
-      "body": "Le score de préparation suit votre plan dans chacune de ses sections. Des suggestions intelligentes vous indiquent ce qui manque, ce qui n'est plus à jour ou ce qui mérite un second regard, pour que vous puissiez toujours répondre : « oui, tout est en ordre ».",
+      "title": "Une mesure claire de ce qui est prêt, et de ce qui ne l'est pas encore.",
+      "body": "Le score de préparation suit votre plan section par section. Des suggestions vous signalent ce qui manque, ce qui n'est plus à jour ou ce qui mérite un second regard, pour que vous puissiez toujours répondre : « oui, tout est en ordre ».",
       "bullets": [
-        "Suit la complétude de toutes les sections",
-        "Met en évidence les éléments manquants ou obsolètes",
-        "Rappels de révision réguliers",
+        "Suit l'avancement de toutes les sections",
+        "Signale les éléments manquants ou périmés",
+        "Rappels de relecture réguliers",
         "La tranquillité d'esprit, enfin mesurable"
       ]
     },
@@ -277,7 +277,7 @@
     "title": "Ce que disent les familles.",
     "items": [
       {
-        "quote": "Mon père est parti brutalement. Everstead a rendu une période incroyablement douloureuse tellement plus gérable. Tout était là, au même endroit.",
+        "quote": "Mon père est parti du jour au lendemain. Everstead a rendu cette période terriblement douloureuse beaucoup plus supportable. Tout était là, au même endroit.",
         "name": "Margaret T.",
         "role": "Fille, en charge de la succession"
       },
@@ -294,10 +294,10 @@
     ]
   },
   "cta": {
-    "title": "Offrez à votre famille la clarté, pas le chaos.",
+    "title": "Laissez à votre famille de la clarté, pas du chaos.",
     "subtitle": "Quelques minutes suffisent pour commencer. Une seule épreuve suffit pour regretter de ne pas l'avoir fait.",
-    "ctaPrimary": "Commencer gratuitement",
+    "ctaPrimary": "Créer mon compte gratuit",
     "ctaSecondary": "Voir les tarifs",
-    "footnote": "Essai gratuit de 14 jours · Carte bancaire requise · Aucun débit avant la fin de l'essai · Annulable à tout moment"
+    "footnote": "Essai gratuit de 14 jours · Carte bancaire demandée · Aucun débit avant la fin de l'essai · Sans engagement"
   }
 }

@@ -1,42 +1,42 @@
 {
   "meta": {
     "title": "Sécurité | Everstead",
-    "description": "Everstead repose sur le chiffrement AES-256 au repos, TLS 1.3 en transit, des contrôles d'accès granulaires et un journal d'audit complet."
+    "description": "Chiffrement AES-256 au repos, TLS 1.3 en transit, des droits d'accès réglables au détail près et un journal d'audit complet : Everstead est construit sur ces bases."
   },
   "hero": {
     "kicker": "Sécurité et confidentialité",
     "title": "Vos informations les plus sensibles, protégées sans compromis.",
-    "subtitle": "Everstead a été conçu dès l'origine autour de la confiance, de la confidentialité et du contrôle. Chaque décision technique et opérationnelle reflète la responsabilité qui est la nôtre.",
-    "trustLine": "🔒 Chiffrement AES-256  ·  🛡️ Conforme au RGPD  ·  Enregistré auprès de l'ICO (autorité de protection des données)  ·  N° 17166825"
+    "subtitle": "Everstead a été pensé dès le premier jour pour la confiance, la confidentialité et le contrôle. Chaque choix technique, chaque choix d'organisation découle de la responsabilité que nous assumons.",
+    "trustLine": "🔒 Chiffrement AES-256  ·  🛡️ Conforme au RGPD  ·  Enregistré auprès de l'ICO (autorité britannique de protection des données)  ·  N° 17166825"
   },
   "infrastructure": {
     "kicker": "Infrastructure",
     "title": "Une infrastructure certifiée SOC 2, de bout en bout.",
-    "subtitle": "Everstead n'exploite pas ses propres centres de données. Chaque couche de notre infrastructure est opérée par des prestataires détenant des certifications de sécurité indépendantes, vos données sont ainsi protégées à chaque maillon de la chaîne.",
+    "subtitle": "Everstead n'exploite aucun centre de données en propre. Chaque couche de notre infrastructure est confiée à des prestataires qui détiennent des certifications de sécurité indépendantes : vos données sont donc protégées à chaque maillon de la chaîne.",
     "items": {
       "supabase": {
         "role": "Base de données, authentification et stockage de fichiers",
         "cert": "Certifié SOC 2 Type II",
         "region": "Londres, Royaume-Uni",
-        "detail": "Toutes les données utilisateur, les documents et les informations de compte sont stockés sur l'infrastructure de Supabase, qui détient la certification SOC 2 Type II. Les données sont hébergées exclusivement dans la région de Londres. Le Royaume-Uni bénéficie d'une décision d'adéquation de la Commission européenne, qui reconnaît un niveau de protection des données équivalent à celui de l'Union européenne."
+        "detail": "Les données des utilisateurs, les documents et les informations de compte sont stockés sur l'infrastructure de Supabase, certifiée SOC 2 Type II, et hébergés exclusivement dans la région de Londres. Le Royaume-Uni bénéficie d'une décision d'adéquation de la Commission européenne, qui reconnaît un niveau de protection des données équivalent à celui de l'Union européenne."
       },
       "vercel": {
         "role": "Hébergement et diffusion de l'application",
         "cert": "Certifié SOC 2 Type II",
         "region": "CDN mondial, priorité UE",
-        "detail": "L'application Everstead est hébergée sur Vercel, qui détient la certification SOC 2 Type II. Les ressources statiques sont servies via un CDN mondial avec un routage privilégiant l'Europe."
+        "detail": "L'application Everstead est hébergée par Vercel, qui détient la certification SOC 2 Type II. Les ressources statiques sont diffusées par un CDN mondial dont le routage privilégie l'Europe."
       },
       "stripe": {
         "role": "Traitement des paiements",
         "cert": "PCI DSS niveau 1",
         "region": "Mondial",
-        "detail": "Tous les paiements sont traités par Stripe, certifié au plus haut niveau du secteur (PCI DSS niveau 1). Everstead ne stocke jamais vos données de carte, elles sont transmises directement à Stripe."
+        "detail": "Tous les paiements sont traités par Stripe, certifié au plus haut niveau du secteur (PCI DSS niveau 1). Everstead ne stocke jamais vos données de carte : elles sont transmises directement à Stripe."
       },
       "resend": {
         "role": "E-mails transactionnels",
         "cert": "Certifié SOC 2 Type II",
         "region": "UE",
-        "detail": "Les e-mails transactionnels (invitations, alertes, confirmations) sont envoyés via Resend. Le contenu des e-mails comportant des informations sensibles n'est jamais conservé au-delà de la remise."
+        "detail": "Les e-mails transactionnels (invitations, alertes, confirmations) partent via Resend. Le contenu d'un e-mail comportant des informations sensibles n'est jamais conservé au-delà de sa remise."
       }
     }
   },
@@ -46,59 +46,59 @@
     "items": [
       {
         "title": "Chiffrement AES-256 au repos",
-        "desc": "Chaque fichier, note, information de compte et document que vous stockez est chiffré au repos selon la norme AES-256, une norme de chiffrement éprouvée et largement adoptée dans le monde entier."
+        "desc": "Chaque fichier, chaque note, chaque fiche de compte et chaque document que vous stockez est chiffré au repos en AES-256, une norme de chiffrement éprouvée et largement adoptée dans le monde entier."
       },
       {
         "title": "TLS 1.3 en transit",
-        "desc": "Toutes les données qui circulent entre votre appareil et nos serveurs sont chiffrées via TLS 1.3. Vos informations ne transitent jamais sans protection, y compris sur les réseaux publics."
+        "desc": "Tout ce qui circule entre votre appareil et nos serveurs est chiffré en TLS 1.3. Rien ne transite en clair, y compris depuis un réseau public."
       },
       {
         "title": "Contrôle d'accès par rôles",
-        "desc": "Les autorisations sont granulaires et révocables. Vous définissez précisément ce que chaque personne de confiance peut voir (comptes financiers, documents juridiques, dernières volontés) indépendamment les unes des autres."
+        "desc": "Les autorisations se règlent au détail près et se retirent à tout moment. Vous décidez, section par section, de ce que chaque personne de confiance peut voir (comptes financiers, documents juridiques, dernières volontés)."
       },
       {
         "title": "Journal d'audit complet",
-        "desc": "Chaque connexion, accès à un fichier, modification d'autorisation et mise à jour est enregistrée. Vous savez à tout moment qui a accédé à votre plan, et quand."
+        "desc": "Connexions, ouvertures de fichiers, changements d'autorisation, mises à jour : tout est enregistré. Vous savez à tout moment qui a consulté votre plan, et quand."
       },
       {
         "title": "Accès d'urgence au coffre à documents",
-        "desc": "Vous désignez une seule personne de confiance disposant d'un accès d'urgence. Vous contrôlez exactement ce qu'elle peut voir et les conditions dans lesquelles cet accès devient actif."
+        "desc": "Vous désignez une seule personne de confiance pour l'accès d'urgence, et vous fixez vous-même ce qu'elle peut voir et dans quelles conditions cet accès s'active."
       },
       {
         "title": "Sauvegardes automatiques",
-        "desc": "Votre plan est sauvegardé automatiquement vers plusieurs emplacements sécurisés, avec restauration à un instant donné. Aucun point de défaillance unique. Vos données ne sont jamais menacées par un incident isolé."
+        "desc": "Votre plan est sauvegardé automatiquement sur plusieurs emplacements sécurisés, avec restauration à un instant donné. Aucun point de défaillance unique : un incident isolé ne peut pas mettre vos données en danger."
       },
       {
         "title": "Réponse aux incidents",
-        "desc": "Un processus défini de réponse aux incidents de sécurité est en place. Dans le cas improbable d'un problème de sécurité, nous informons les utilisateurs concernés rapidement et en toute transparence."
+        "desc": "Une procédure de réponse aux incidents de sécurité est définie et en place. Si un problème survenait, les utilisateurs concernés seraient prévenus rapidement et sans détour."
       },
       {
         "title": "La confidentialité d'abord, toujours",
-        "desc": "Nous ne vendons, ne cédons sous licence ni ne partageons vos informations personnelles avec des tiers à des fins publicitaires ou commerciales. Vos données vous appartiennent. Exportez-les ou supprimez-les à tout moment."
+        "desc": "Vos informations personnelles ne sont ni vendues, ni cédées sous licence, ni partagées avec des tiers à des fins publicitaires ou commerciales. Elles vous appartiennent : exportez-les ou supprimez-les quand vous le souhaitez."
       }
     ]
   },
   "gdpr": {
     "kicker": "RGPD et résidence des données",
-    "title": "Vos données sont hébergées en un lieu unique. Point final.",
-    "p1": "Everstead est édité par EVERSTEAD DIGITAL LTD (numéro de société 17166825), une société britannique enregistrée auprès de l'ICO (l'autorité britannique de protection des données), et opère en conformité avec le RGPD. Toutes les données personnelles sont stockées et traitées exclusivement à Londres, et ne sont jamais transférées ailleurs. Le Royaume-Uni bénéficie d'une décision d'adéquation de la Commission européenne, qui reconnaît un niveau de protection des données équivalent à celui de l'Union européenne.",
-    "p2": "En tant que responsable du traitement, nous répondons de la manière dont vos données sont collectées, stockées et utilisées. Vous avez le droit d'accéder à vos données, de les corriger, de les exporter et de les supprimer définitivement à tout moment, directement depuis votre tableau de bord ou en nous contactant.",
+    "title": "Vos données restent à Londres, et nulle part ailleurs.",
+    "p1": "Everstead est édité par EVERSTEAD DIGITAL LTD (numéro de société 17166825), une société britannique enregistrée auprès de l'ICO, l'autorité britannique de protection des données, et le service est exploité en conformité avec le RGPD. Vos données personnelles sont stockées et traitées exclusivement à Londres : elles ne partent jamais ailleurs. Le Royaume-Uni bénéficie par ailleurs d'une décision d'adéquation de la Commission européenne, qui reconnaît un niveau de protection des données équivalent à celui de l'Union européenne.",
+    "p2": "En qualité de responsable du traitement, nous répondons de la façon dont vos données sont collectées, conservées et utilisées. Vous pouvez y accéder, les corriger, les exporter et les effacer définitivement quand vous le voulez, depuis votre tableau de bord ou sur simple demande.",
     "points": [
       [
         "Conforme au RGPD",
-        "Un traitement des données aligné sur les exigences du RGPD"
+        "Un traitement des données conduit selon les exigences du RGPD"
       ],
       [
         "Données hébergées à Londres",
         "Le Royaume-Uni bénéficie d'une décision d'adéquation de l'UE"
       ],
       [
-        "Droit d'accès et à la portabilité",
+        "Droit d'accès et de portabilité",
         "Exportez l'intégralité de votre plan à tout moment"
       ],
       [
         "Droit à l'effacement",
-        "Suppression définitive sous 30 jours après la demande"
+        "Suppression définitive dans les 30 jours suivant votre demande"
       ],
       [
         "Aucune vente de données à des tiers",
@@ -113,8 +113,8 @@
   "demo": {
     "kicker": "Autorisations par rôle",
     "title": "Vous décidez qui voit quoi, à tout moment.",
-    "p1": "Les autorisations dans Everstead ne sont pas binaires. Vous n'avez pas besoin de donner à une personne de confiance un accès complet pour lui donner un accès pertinent. Chaque personne de votre plan dispose d'un périmètre défini, que vous pouvez modifier ou révoquer à tout moment.",
-    "p2": "Partagez les références de vos comptes financiers avec votre exécuteur testamentaire, vos souhaits d'obsèques avec vos enfants et l'accès aux documents juridiques avec votre notaire, le tout de façon indépendante et réversible.",
+    "p1": "Dans Everstead, les autorisations ne se résument pas à un oui ou un non. Donner un accès utile à une personne de confiance n'oblige jamais à tout lui ouvrir. Chacun dispose d'un périmètre précis, que vous pouvez élargir, restreindre ou retirer quand vous le souhaitez.",
+    "p2": "Les références de vos comptes financiers à votre exécuteur testamentaire, vos souhaits d'obsèques à vos enfants, les documents juridiques à votre notaire : chaque partage est indépendant et réversible.",
     "matrixLabel": "Exemple de matrice d'accès",
     "people": [
       {
@@ -148,9 +148,9 @@
     ]
   },
   "release": {
-    "kicker": "Comment l'accès est débloqué",
+    "kicker": "Comment l'accès s'ouvre",
     "title": "Rien ne se déverrouille tout seul. Une personne décide, et une personne vérifie.",
-    "subtitle": "La question la plus importante que se posent les familles est de savoir comment (et quand) leur plan s'ouvre aux personnes de confiance. Voici exactement comment cela fonctionne. Il n'y a ni minuterie silencieuse ni déclenchement automatique pour « inactivité ».",
+    "subtitle": "La question qui revient le plus souvent : quand, et comment, le plan s'ouvre-t-il aux personnes de confiance ? Voici précisément ce qui se passe. Aucun compte à rebours silencieux, aucun déclenchement automatique pour « inactivité ».",
     "steps": [
       {
         "title": "De votre vivant",
@@ -158,14 +158,14 @@
       },
       {
         "title": "Une personne de confiance signale le décès",
-        "body": "Une personne que vous avez désignée en informe Everstead depuis son propre accès, avec les informations de l'acte de décès. Le signalement ne déverrouille jamais rien à lui seul."
+        "body": "Celle ou celui que vous avez désigné prévient Everstead depuis son propre accès et transmet les informations de l'acte de décès. À lui seul, ce signalement n'ouvre rien."
       },
       {
         "title": "Nous vérifions, puis nous ouvrons l'accès",
-        "body": "Notre équipe examine et confirme le signalement, généralement sous deux jours ouvrés. Ce n'est qu'alors que l'accès que vous avez prévu s'ouvre, et que les éventuels messages personnels scellés sont remis."
+        "body": "Notre équipe examine et confirme le signalement, généralement sous deux jours ouvrés. Ce n'est qu'ensuite que l'accès que vous aviez prévu s'ouvre, et que les éventuels messages personnels scellés sont remis."
       }
     ],
-    "note": "Chaque signalement, vérification et modification d'accès est consigné dans votre journal d'audit. L'accès correspond toujours exactement à ce que vous avez décidé, jamais davantage."
+    "note": "Signalements, vérifications, modifications d'accès : tout est consigné dans votre journal d'audit. L'accès accordé correspond toujours à ce que vous avez décidé, jamais à davantage."
   },
   "faq": {
     "kicker": "FAQ sécurité",
@@ -173,44 +173,44 @@
     "items": [
       {
         "q": "Comment l'accès est-il débloqué après mon décès ?",
-        "a": "Il n'y a ni minuterie silencieuse ni déclenchement automatique pour « inactivité ». Une personne de confiance que vous avez désignée signale le décès depuis son propre accès et fournit les informations de l'acte de décès. Notre équipe examine puis vérifie le signalement (généralement sous deux jours ouvrés) et ce n'est qu'alors que l'accès que vous avez prévu s'ouvre à vos personnes de confiance, avec la remise des éventuels messages personnels scellés. De votre vivant, rien n'est communiqué sans votre accord, et chaque étape est consignée dans votre journal d'audit."
+        "a": "Aucun compte à rebours silencieux, aucun déclenchement automatique pour « inactivité ». Une personne de confiance que vous avez désignée signale le décès depuis son propre accès et transmet les informations de l'acte de décès. Notre équipe examine puis vérifie ce signalement, généralement sous deux jours ouvrés. Ce n'est qu'ensuite que l'accès que vous aviez prévu s'ouvre à vos personnes de confiance, et que les éventuels messages personnels scellés leur sont remis. De votre vivant, rien n'est communiqué sans votre accord, et chaque étape figure dans votre journal d'audit."
       },
       {
         "q": "Les employés d'Everstead peuvent-ils lire mes documents ?",
-        "a": "Non. Les documents sont chiffrés au repos avec AES-256. L'accès à la couche de stockage requiert des identifiants de service réservés aux seuls systèmes automatisés. Aucun employé d'Everstead n'a d'accès courant à vos documents ni à vos données personnelles."
+        "a": "Non. Les documents sont chiffrés au repos en AES-256, et l'accès à la couche de stockage exige des identifiants de service réservés aux seuls systèmes automatisés. Aucun salarié d'Everstead n'a d'accès courant à vos documents ni à vos données personnelles."
       },
       {
         "q": "Où mes données sont-elles stockées ?",
-        "a": "Toutes les données sont stockées à Londres, sur l'infrastructure de Supabase, et nous ne les transférons jamais ailleurs. Ce fonctionnement est conforme au RGPD, et le Royaume-Uni bénéficie d'une décision d'adéquation de la Commission européenne, qui reconnaît un niveau de protection des données équivalent à celui de l'Union européenne."
+        "a": "Toutes les données sont stockées à Londres, sur l'infrastructure de Supabase, et ne sont jamais transférées ailleurs. Ce fonctionnement est conforme au RGPD, et le Royaume-Uni bénéficie d'une décision d'adéquation de la Commission européenne, qui reconnaît un niveau de protection des données équivalent à celui de l'Union européenne."
       },
       {
         "q": "Qu'advient-il de mes données si je résilie ?",
-        "a": "Vous pouvez exporter l'intégralité de votre plan à tout moment depuis votre tableau de bord. En cas de résiliation, vos données sont conservées 30 jours pour permettre une réactivation, puis supprimées définitivement de tous nos systèmes. Nous ne conservons pas de sauvegardes des comptes supprimés au-delà de 90 jours."
+        "a": "Vous pouvez exporter l'intégralité de votre plan à tout moment depuis votre tableau de bord. En cas de résiliation, vos données sont conservées 30 jours, le temps d'une éventuelle réactivation, puis supprimées définitivement de tous nos systèmes. Aucune sauvegarde d'un compte supprimé n'est conservée au-delà de 90 jours."
       },
       {
         "q": "Que se passe-t-il si Everstead subit une violation de données ?",
-        "a": "Nous disposons d'un plan de réponse aux incidents défini. En cas de violation avérée touchant des données personnelles, nous informerons les utilisateurs concernés sous 72 heures, comme l'exige le RGPD. Nous publierons un rapport d'incident complet précisant le périmètre, la chronologie et les mesures correctives."
+        "a": "Nous disposons d'un plan de réponse aux incidents défini. En cas de violation avérée portant sur des données personnelles, les utilisateurs concernés seraient informés sous 72 heures, comme l'exige le RGPD, et nous publierions un rapport d'incident complet : périmètre, chronologie et mesures correctives."
       },
       {
         "q": "Everstead est-il conforme au RGPD ?",
-        "a": "Oui. Everstead est édité par EVERSTEAD DIGITAL LTD (numéro de société 17166825), une société britannique enregistrée auprès de l'ICO (l'autorité britannique de protection des données), et opère en conformité avec le RGPD. Nous agissons en qualité de responsable du traitement de vos informations personnelles. Nos bases légales de traitement sont la nécessité contractuelle et l'intérêt légitime. Vous disposez pleinement des droits d'accès, de rectification, d'effacement et de portabilité de vos données."
+        "a": "Oui. Everstead est édité par EVERSTEAD DIGITAL LTD (numéro de société 17166825), une société britannique enregistrée auprès de l'ICO, l'autorité britannique de protection des données, et le service est exploité en conformité avec le RGPD. Nous agissons en qualité de responsable du traitement de vos informations personnelles ; nos bases légales de traitement sont la nécessité contractuelle et l'intérêt légitime. Vos droits d'accès, de rectification, d'effacement et de portabilité s'exercent pleinement."
       },
       {
         "q": "Partagez-vous des données avec des tiers ?",
-        "a": "Nous ne partageons de données qu'avec les prestataires d'infrastructure listés sur cette page (Supabase, Vercel, Stripe, Resend), et uniquement pour faire fonctionner le service. Nous ne vendons, ne cédons sous licence ni ne partageons jamais de données personnelles à des fins publicitaires ou marketing."
+        "a": "Nous ne partageons de données qu'avec les prestataires d'infrastructure listés sur cette page (Supabase, Vercel, Stripe, Resend), et uniquement dans ce qu'exige le fonctionnement du service. Aucune donnée personnelle n'est vendue, cédée sous licence ou partagée à des fins publicitaires ou marketing."
       },
       {
         "q": "Êtes-vous certifiés SOC 2 ?",
-        "a": "Everstead applique les exigences du référentiel SOC 2. Chaque prestataire d'infrastructure sur lequel nous nous appuyons (Supabase, Vercel, Stripe et Resend) détient la certification SOC 2 Type II, et nos propres contrôles sont conçus selon la même norme. Les documents de certification sont disponibles sur demande."
+        "a": "Everstead applique les exigences du référentiel SOC 2. Chacun des prestataires d'infrastructure sur lesquels nous nous appuyons (Supabase, Vercel, Stripe et Resend) détient la certification SOC 2 Type II, et nos propres contrôles sont bâtis sur la même norme. Les documents de certification sont disponibles sur demande."
       }
     ]
   },
   "cta": {
     "kicker": "Contact sécurité",
-    "title": "Une question ou une préoccupation de sécurité ?",
-    "body": "Si vous pensez avoir découvert une faille de sécurité ou si vous vous interrogez sur la manière dont nous traitons vos données, contactez-nous directement. Nous prenons chaque signalement au sérieux et répondons sous 48 heures.",
+    "title": "Une question ou un doute sur la sécurité ?",
+    "body": "Vous pensez avoir découvert une faille, ou vous vous interrogez sur la façon dont nous traitons vos données ? Écrivez-nous directement. Chaque signalement est pris au sérieux et reçoit une réponse sous 48 heures.",
     "generalSupport": "Pour le support général :",
-    "dataPromiseQuestion": "Vous voulez en savoir plus sur la portabilité de vos données et vos droits d'exportation ?",
+    "dataPromiseQuestion": "Envie d'en savoir plus sur la portabilité de vos données et vos droits d'exportation ?",
     "dataPromiseLink": "Notre promesse sur les données →"
   }
 }

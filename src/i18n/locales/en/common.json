@@ -70,5 +70,10 @@
       "accessibility": "Accessibility",
       "trust": "Trust"
     }
+  },
+  "appBanner": {
+    "lead": "The Everstead app is here, on the",
+    "and": "and",
+    "dismiss": "Dismiss announcement"
   }
 }

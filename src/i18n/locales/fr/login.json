@@ -5,27 +5,27 @@
   "leftPanel": {
     "quotes": [
       {
-        "text": "Le plus grand acte d'amour, c'est de faciliter les choses pour ceux qui vous pleureront.",
+        "text": "Le plus bel acte d'amour, c'est d'alléger la tâche de ceux qui vous pleureront.",
         "author": null,
         "role": null
       },
       {
-        "text": "Mon père est parti soudainement. Everstead a rendu une période incroyablement douloureuse tellement plus surmontable.",
+        "text": "Mon père est parti du jour au lendemain. Everstead a rendu cette période terriblement douloureuse beaucoup plus supportable.",
         "author": "Margaret T.",
         "role": "Fille, en charge de la succession"
       },
       {
-        "text": "Planifier, ce n'est pas s'attendre au pire. C'est protéger ce que l'on aime le plus.",
+        "text": "Anticiper, ce n'est pas craindre le pire. C'est protéger ceux qui comptent le plus.",
         "author": null,
         "role": null
       },
       {
-        "text": "J'ai créé mon Everstead pour que mes enfants ne vivent jamais ce que nous avons traversé au décès de maman. Cela m'a pris un après-midi.",
+        "text": "J'ai ouvert mon Everstead pour éviter à mes enfants ce que nous avons vécu à la mort de maman. Un après-midi a suffi.",
         "author": "David R.",
         "role": "Père, en charge de la succession de sa mère"
       },
       {
-        "text": "La chose la plus attentionnée que l'on puisse laisser derrière soi, ce n'est pas de l'argent. C'est un plan.",
+        "text": "Ce que vous laisserez de plus précieux, ce n'est pas de l'argent. C'est un plan.",
         "author": null,
         "role": null
       }
@@ -47,7 +47,7 @@
     ]
   },
   "step1": {
-    "title": "Bon retour parmi nous",
+    "title": "Ravi de vous revoir",
     "subtitle": "Connectez-vous à votre compte Everstead",
     "googleButton": "Continuer avec Google",
     "divider": "ou connectez-vous par e-mail",
@@ -60,42 +60,42 @@
     "submit": "Continuer",
     "submitLoading": "Vérification…",
     "noAccount": "Pas encore de compte ?",
-    "getStarted": "Commencer votre Everstead"
+    "getStarted": "Créer mon Everstead"
   },
   "step2": {
     "title": "Vérifiez votre boîte de réception",
-    "sentCode": "Nous avons envoyé un code à 6 chiffres à",
+    "sentCode": "Nous venons d'envoyer un code à 6 chiffres à",
     "submit": "Se connecter",
     "submitLoading": "Vérification…",
-    "wrongEmail": "Mauvaise adresse e-mail ?",
+    "wrongEmail": "Ce n'est pas la bonne adresse ?",
     "goBack": "Retour"
   },
   "errors": {
-    "generic": "Une erreur est survenue. Veuillez réessayer."
+    "generic": "Quelque chose n'a pas fonctionné de notre côté. Merci de réessayer dans un instant."
   },
   "trustBadge": "🔒 Chiffrement AES-256 au repos et en transit · Hébergement conforme au RGPD · Vos données ne sont jamais vendues",
   "forgot": {
     "title": "Mot de passe oublié ?",
-    "subtitle": "Saisissez votre adresse e-mail et nous vous enverrons un lien de réinitialisation.",
+    "subtitle": "Indiquez votre adresse e-mail : nous vous enverrons un lien pour en choisir un nouveau.",
     "emailLabel": "Adresse e-mail",
     "emailPlaceholder": "vous@exemple.com",
-    "submit": "Envoyer le lien de réinitialisation",
+    "submit": "Recevoir le lien",
     "submitLoading": "Envoi en cours…",
     "backToLogin": "Retour à la connexion",
     "sentTitle": "Vérifiez votre boîte de réception",
-    "sentBody1": "Nous vous avons envoyé un lien de réinitialisation à",
-    "sentBody2": ". Il expire dans une heure.",
+    "sentBody1": "Un lien de réinitialisation vient de partir vers",
+    "sentBody2": ". Il reste valable une heure.",
     "errors": {
-      "generic": "Une erreur est survenue. Veuillez réessayer."
+      "generic": "Nous n'avons pas pu envoyer le lien. Merci de réessayer dans un instant."
     }
   },
   "reset": {
-    "title": "Définissez un nouveau mot de passe",
-    "subtitle": "Choisissez un mot de passe solide pour votre compte Everstead.",
+    "title": "Choisissez un nouveau mot de passe",
+    "subtitle": "Prenez un mot de passe solide : c'est lui qui protège tout votre Everstead.",
     "newPasswordLabel": "Nouveau mot de passe",
-    "newPasswordPlaceholder": "Au moins 8 caractères",
+    "newPasswordPlaceholder": "8 caractères minimum",
     "confirmPasswordLabel": "Confirmez le mot de passe",
-    "confirmPasswordPlaceholder": "Saisissez à nouveau votre mot de passe",
+    "confirmPasswordPlaceholder": "Saisissez-le à nouveau",
     "showPassword": "Afficher le mot de passe",
     "hidePassword": "Masquer le mot de passe",
     "strength": {
@@ -103,17 +103,17 @@
       "fair": "Moyen",
       "strong": "Fort"
     },
-    "submit": "Définir le nouveau mot de passe",
-    "submitLoading": "Mise à jour…",
+    "submit": "Enregistrer mon nouveau mot de passe",
+    "submitLoading": "Enregistrement…",
     "doneTitle": "Mot de passe mis à jour",
-    "doneBody": "Votre nouveau mot de passe a bien été enregistré. Nous vous redirigeons vers votre tableau de bord…",
-    "checking": "Vérification de votre lien de réinitialisation…",
+    "doneBody": "Votre nouveau mot de passe est enregistré. Nous vous emmenons vers votre tableau de bord…",
+    "checking": "Vérification de votre lien…",
     "checkingHint": "Si rien ne se passe,",
     "requestNewLink": "demandez un nouveau lien",
     "errors": {
-      "mismatch": "Les mots de passe ne correspondent pas.",
+      "mismatch": "Les deux mots de passe ne sont pas identiques.",
       "tooShort": "Le mot de passe doit contenir au moins 8 caractères.",
-      "generic": "Une erreur est survenue. Veuillez réessayer."
+      "generic": "Nous n'avons pas pu enregistrer votre mot de passe. Merci de réessayer dans un instant."
     }
   }
 }

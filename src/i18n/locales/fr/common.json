@@ -6,7 +6,7 @@
     "pricing": "Tarifs",
     "about": "À propos",
     "login": "Connexion",
-    "getStarted": "Commencer",
+    "getStarted": "Créer un compte",
     "dashboard": "Tableau de bord",
     "openMenu": "Ouvrir le menu",
     "closeMenu": "Fermer le menu"
@@ -18,17 +18,17 @@
     "acceptAll": "Tout accepter"
   },
   "footer": {
-    "tagline": "Une plateforme sécurisée pour transmettre l'essentiel à vos proches, au moment où ça compte le plus.",
-    "legalNote": "Everstead est une plateforme d'organisation, pas un service juridique ni un cabinet d'avocats.",
+    "tagline": "Une plateforme sécurisée pour transmettre l'essentiel à vos proches, au moment où cela compte le plus.",
+    "legalNote": "Everstead est une plateforme d'organisation. Ce n'est ni un service juridique ni un cabinet d'avocats.",
     "trustpilotRated": "Noté",
     "trustpilotOn": "sur Trustpilot",
-    "trustpilotAria": "Noté {{label}} sur Trustpilot, lisez nos avis",
+    "trustpilotAria": "Noté {{label}} sur Trustpilot, lire les avis",
     "cols": {
       "product": "Produit",
       "useCases": "Cas d'usage",
       "resources": "Ressources",
       "company": "Entreprise",
-      "legal": "Légal"
+      "legal": "Informations légales"
     },
     "links": {
       "features": "Fonctionnalités",
@@ -38,7 +38,7 @@
       "changelog": "Nouveautés",
       "forFamilies": "Pour les familles",
       "forParents": "Pour les parents",
-      "forExecutors": "Pour les exécuteurs",
+      "forExecutors": "Pour les exécuteurs testamentaires",
       "forAdvisers": "Pour les conseillers",
       "familyVault": "Espace famille",
       "blog": "Blog",
@@ -54,10 +54,10 @@
       "gift": "🎁 Offrir Everstead",
       "privacyPolicy": "Politique de confidentialité",
       "terms": "Conditions d'utilisation",
-      "dataPromise": "Engagement données",
-      "adviserDpa": "DPA conseillers",
+      "dataPromise": "Engagement sur vos données",
+      "adviserDpa": "DPA pour les conseillers",
       "subprocessors": "Sous-traitants",
-      "cookiePolicy": "Politique de cookies",
+      "cookiePolicy": "Politique relative aux cookies",
       "accessibility": "Accessibilité",
       "mentionsLegales": "Mentions légales"
     },
@@ -65,10 +65,15 @@
     "bottom": {
       "privacy": "Confidentialité",
       "terms": "Conditions",
-      "dataPromise": "Engagement données",
+      "dataPromise": "Vos données",
       "cookies": "Cookies",
       "accessibility": "Accessibilité",
       "trust": "Confiance"
     }
+  },
+  "appBanner": {
+    "lead": "L'application Everstead est disponible sur l'",
+    "and": "et",
+    "dismiss": "Fermer cette annonce"
   }
 }
