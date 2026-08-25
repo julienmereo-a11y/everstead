@@ -40,6 +40,28 @@ export const TRANSLATED_PATHS = new Set([
   '/terms', '/mentions-legales', '/resources', '/apres-un-deces',
 ])
 
+/**
+ * Remember an explicit language choice for the edge middleware (middleware.js).
+ * Once set, typing the bare domain stops bouncing a French visitor to /fr, and a
+ * visitor outside France who wants French keeps it. One year, no personal data.
+ */
+export function rememberLanguage(lang) {
+  try {
+    document.cookie = `everstead_lang=${lang}; path=/; max-age=31536000; SameSite=Lax`
+  } catch { /* cookies blocked: navigation still works, the choice just will not stick */ }
+}
+
+/**
+ * URL for the same page in the other language tree. useLocation().pathname is
+ * basename-relative, so it IS the root-equivalent path in both trees.
+ */
+export function pathInLanguage(pathname, lang) {
+  if (lang === 'fr') {
+    return TRANSLATED_PATHS.has(pathname) ? `/fr${pathname === '/' ? '' : pathname}` : '/fr'
+  }
+  return pathname || '/'
+}
+
 export function languageFromPath(pathname) {
   return pathname === '/fr' || pathname.startsWith('/fr/') ? 'fr' : 'en'
 }

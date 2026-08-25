@@ -4,6 +4,7 @@ import { trackEvent } from '../lib/analytics'
 import { Menu, X, ChevronDown, Users } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { useAuth } from '../contexts/AuthContext'
+import LanguageSwitcher from './LanguageSwitcher'
 
 // Labels are i18n keys under nav.* — resolved with t() at render time.
 const navLinks = [
@@ -14,9 +15,9 @@ const navLinks = [
   { key: 'about', href: '/about' },
 ]
 
-// NOTE: no language switcher in the UI by design — the URL path is the ONLY
-// language signal (/fr/* → French, root → English). The /fr footer carries a
-// single discreet "English" link back to the root tree.
+// The URL path is the language signal (/fr/* → French, root → English). The nav
+// carries a flag picker next to the CTA so a visitor can override the geo
+// redirect, and the footer keeps its discreet text link.
 
 // Pages that have a light background at the top — nav should always use dark style on these
 const lightBgPages = ['/pricing', '/security', '/features', '/how-it-works', '/use-cases', '/login', '/get-started', '/resources', '/about', '/contact', '/book-demo', '/privacy', '/terms', '/forgot-password', '/reset-password']
@@ -159,6 +160,9 @@ export default function Nav({ topOffset = 0 }) {
 
           {/* CTA */}
           <div className="hidden lg:flex items-center gap-3">
+            {/* Language picker sits with the CTAs for signed-out AND signed-in
+                visitors: the geo redirect can be overridden from any page. */}
+            <LanguageSwitcher dark={useDarkStyle} />
             {user ? (
               <>
                 {isDualRole ? (
@@ -269,6 +273,10 @@ export default function Nav({ topOffset = 0 }) {
               </Link>
             ))}
             <div className="pt-4 mt-2 border-t border-stone-100 flex flex-col gap-2.5">
+              {/* Same language picker on phones, where the nav CTAs stack. */}
+              <div className="flex justify-center pb-1">
+                <LanguageSwitcher dark full />
+              </div>
               {user ? (
                 <>
                   <Link

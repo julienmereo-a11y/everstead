@@ -1,7 +1,7 @@
 import React from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { TRANSLATED_PATHS } from '../i18n'
+import { TRANSLATED_PATHS, rememberLanguage } from '../i18n'
 import StoreBadges from './StoreBadges'
 
 // ── Trustpilot rating (manual) ───────────────────────────────────────────────
@@ -102,15 +102,6 @@ const cols = [
     ],
   },
 ]
-
-// Persist an explicit language choice for the edge middleware (middleware.js):
-// once set, typing the bare domain stops bouncing a French visitor to /fr, and
-// a UK visitor who wants French keeps it. One year, no personal data.
-export function rememberLanguage(lang) {
-  try {
-    document.cookie = `everstead_lang=${lang}; path=/; max-age=31536000; SameSite=Lax`
-  } catch { /* cookies blocked: the link still works, it just will not stick */ }
-}
 
 // Discreet language link. Language is decided purely by the URL path; the
 // French footer links back to the root (English) tree, and the English footer

@@ -9,7 +9,9 @@
     "getStarted": "Créer un compte",
     "dashboard": "Tableau de bord",
     "openMenu": "Ouvrir le menu",
-    "closeMenu": "Fermer le menu"
+    "closeMenu": "Fermer le menu",
+    "languageAria": "Changer de langue, langue actuelle {{language}}",
+    "languageLabel": "Langue"
   },
   "cookie": {
     "message": "Nous utilisons des cookies pour sécuriser la plateforme et, avec votre consentement, comprendre comment Everstead est utilisé.",

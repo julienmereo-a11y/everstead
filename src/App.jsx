@@ -1,6 +1,6 @@
 import React, { useEffect, Suspense, lazy } from 'react'
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom'
-import i18n, { languageFromPath } from './i18n'
+import i18n, { languageFromPath, rememberLanguage } from './i18n'
 import { AuthProvider, useAuth } from './contexts/AuthContext'
 import { isNative } from './lib/platform'
 import ProtectedRoute from './components/ProtectedRoute'
@@ -11,7 +11,7 @@ import ErrorBoundary from './components/ErrorBoundary'
 import BiometricGate from './components/native/BiometricGate'
 import Nav from './components/Nav'
 import AppBanner, { APP_BANNER_HEIGHT, isAppBannerDismissed } from './components/AppBanner'
-import Footer, { rememberLanguage } from './components/Footer'
+import Footer from './components/Footer'
 // Lazy: ChatWidget pulls in react-markdown — keeping it out of the eager bundle
 // saves ~50 kB+ of the entry chunk. A null fallback is invisible (floating widget).
 const ChatWidget = lazy(() => import('./components/ChatWidget'))

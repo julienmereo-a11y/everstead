@@ -9,7 +9,9 @@
     "getStarted": "Get Started",
     "dashboard": "Dashboard",
     "openMenu": "Open menu",
-    "closeMenu": "Close menu"
+    "closeMenu": "Close menu",
+    "languageAria": "Change language, current language {{language}}",
+    "languageLabel": "Language"
   },
   "cookie": {
     "message": "We use cookies to keep the platform secure and, with your consent, to understand how people use Everstead.",
