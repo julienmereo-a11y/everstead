@@ -120,13 +120,15 @@ export function marketPricing(language) {
   }
 }
 
+// Free tier hard limits. The DATABASE is the authority: free_tier_allows() plus
+// three restrictive INSERT policies enforce these regardless of client, and
+// these values exist only so the UI can show the right numbers and copy.
+// Change both together or the UI will offer what the database refuses.
 export const FREE_LIMITS = {
-  accounts:      1,
-  documents:     1,
-  // 3, not 1: inviting a trusted person emails someone about Everstead from a
-  // person they trust, which is the only built-in word-of-mouth loop the
-  // product has. Mirrored in free_tier_allows() in the database, which is the
-  // authority. Change both together.
+  accounts:      5,
+  documents:     5,
+  // Trusted people are the word-of-mouth loop: each invite emails someone about
+  // Everstead from a person they trust.
   trustedPeople: 3,
 }
 
