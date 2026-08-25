@@ -1,0 +1,16 @@
+{
+  "fallbackName": "Bonjour",
+  "heading": "{{name}}, ravis de vous revoir.",
+  "subtitle": "À quel plan souhaitez-vous accéder ?",
+  "myPlan": {
+    "title": "Mon plan",
+    "subtitle": "Votre propre plan Everstead",
+    "trialEnded": "Essai terminé, réactiver"
+  },
+  "delegate": {
+    "planTitle": "Plan de {{name}}",
+    "sharedFallback": "votre proche",
+    "role": "Votre rôle : {{role}}"
+  },
+  "footer": "Vous pouvez passer d'un plan à l'autre à tout moment depuis le menu de navigation."
+}

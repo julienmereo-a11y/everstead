@@ -1,0 +1,37 @@
+{
+  "loading": "Loading your invitation…",
+  "found": {
+    "title": "{{name}} has invited you to their Everstead plan.",
+    "roleLine": "They'd like you to be their <bold>{{role}}</bold>.",
+    "body": "Everstead is a secure platform for organising digital life, accounts, documents, instructions, and final wishes. As <bold>{{role}}</bold>, you'll have access to the sections {{name}} has chosen to share with your role.",
+    "bullet1": "You only see what's been shared with your specific role",
+    "bullet2": "You don't need to do anything now, only when needed",
+    "bullet3": "You can update your contact details after accepting",
+    "wrongAccount": "<bold>Heads up:</bold> This invite is for <bold>{{invited}}</bold>. You're signed in as <bold>{{current}}</bold>. Sign out first if you want to accept with a different account.",
+    "accept": "Accept invitation",
+    "decline": "Decline"
+  },
+  "accepting": "Confirming your role…",
+  "accepted": {
+    "title": "You're confirmed.",
+    "bodyNamed": "You're now part of {{name}}'s Everstead plan as <bold>{{role}}</bold>.",
+    "bodyGeneric": "You're now part of the Everstead plan as <bold>{{role}}</bold>.",
+    "cta": "Open delegate dashboard"
+  },
+  "declined": {
+    "title": "Invitation declined.",
+    "body": "We've notified the plan owner. If this was a mistake, ask them to re-send the invitation."
+  },
+  "expired": {
+    "title": "Invitation expired.",
+    "body": "This invite link is no longer valid. Ask the plan owner to re-send your invitation."
+  },
+  "error": {
+    "title": "Something went wrong.",
+    "fallback": "Please try again or contact support."
+  },
+  "errors": {
+    "noToken": "No invite token found in the link.",
+    "wrongEmail": "This invitation was sent to {{invited}}. You're logged in as {{current}}. Please sign in with the correct account."
+  }
+}

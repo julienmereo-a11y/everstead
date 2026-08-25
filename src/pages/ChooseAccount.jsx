@@ -1,10 +1,20 @@
 import React, { useEffect } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { Home, UserRound, ArrowRight, Loader2 } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import { useAuth } from '../contexts/AuthContext'
+import i18n from '../i18n'
+import enChooseAccount from '../i18n/locales/en/chooseAccount.json'
+import frChooseAccount from '../i18n/locales/fr/chooseAccount.json'
+
+// Self-registered namespace (keeps src/i18n/index.js untouched). Safe to move
+// into the central resources map later, re-adding the same bundle is a no-op.
+i18n.addResourceBundle('en', 'chooseAccount', enChooseAccount)
+i18n.addResourceBundle('fr', 'chooseAccount', frChooseAccount)
 
 export default function ChooseAccount() {
   const navigate = useNavigate()
+  const { t } = useTranslation('chooseAccount')
   const { user, profile, delegateInvites, loading } = useAuth()
 
   useEffect(() => {
@@ -19,7 +29,7 @@ export default function ChooseAccount() {
     )
   }
 
-  const firstName       = profile.full_name?.split(' ')[0] ?? 'there'
+  const firstName       = profile.full_name?.split(' ')[0] ?? t('fallbackName')
   const isOwner         = profile.role !== 'delegate'
   const trialEnded      = isOwner && profile.subscription_status === 'canceled'
 
@@ -32,10 +42,10 @@ export default function ChooseAccount() {
         </div>
 
         <h1 className="font-display text-2xl font-light text-navy-950 text-center mb-2">
-          Welcome back, {firstName}.
+          {t('heading', { name: firstName })}
         </h1>
         <p className="text-stone-500 text-sm text-center mb-8">
-          Which plan would you like to access?
+          {t('subtitle')}
         </p>
 
         <div className="space-y-3">
@@ -49,15 +59,15 @@ export default function ChooseAccount() {
                 <Home size={20} className="text-navy-700" />
               </div>
               <div className="flex-1 min-w-0">
-                <p className="font-semibold text-navy-900 text-sm">My plan</p>
-                <p className="text-stone-500 text-xs mt-0.5">Your own Everstead plan</p>
+                <p className="font-semibold text-navy-900 text-sm">{t('myPlan.title')}</p>
+                <p className="text-stone-500 text-xs mt-0.5">{t('myPlan.subtitle')}</p>
                 {trialEnded && (
                   <Link
                     to="/pricing"
                     onClick={e => e.stopPropagation()}
                     className="inline-block mt-1.5 text-xs font-medium text-amber-700 bg-amber-50 border border-amber-200 rounded px-1.5 py-0.5 hover:bg-amber-100 transition-colors"
                   >
-                    Trial ended, reactivate
+                    {t('myPlan.trialEnded')}
                   </Link>
                 )}
               </div>
@@ -76,9 +86,9 @@ export default function ChooseAccount() {
               </div>
               <div className="flex-1 min-w-0">
                 <p className="font-semibold text-navy-900 text-sm">
-                  {inv.ownerName ?? 'Shared plan'}'s plan
+                  {t('delegate.planTitle', { name: inv.ownerName ?? t('delegate.sharedFallback') })}
                 </p>
-                <p className="text-stone-500 text-xs mt-0.5">Your role: {inv.role}</p>
+                <p className="text-stone-500 text-xs mt-0.5">{t('delegate.role', { role: inv.role })}</p>
               </div>
               <ArrowRight size={16} className="text-stone-400 group-hover:text-navy-600 transition-colors shrink-0" />
             </button>
@@ -87,7 +97,7 @@ export default function ChooseAccount() {
         </div>
 
         <p className="text-center text-xs text-stone-400 mt-8 leading-relaxed">
-          You can switch between plans at any time from the navigation menu.
+          {t('footer')}
         </p>
 
       </div>

@@ -1,0 +1,29 @@
+{
+  "fallbackName": "Bonjour",
+  "heading": "{{name}}, votre paiement a échoué.",
+  "deletionBanner": {
+    "strong": "Votre compte sera définitivement supprimé le {{date}}.",
+    "rest": "C'est votre dernière chance de conserver votre plan."
+  },
+  "subtitleImminent": "Votre compte et toutes vos données seront supprimés le {{date}}. Mettez à jour votre moyen de paiement dès maintenant pour tout conserver.",
+  "subtitle": "Nous n'avons pas pu débiter la carte enregistrée à la fin de votre essai. Mettez à jour votre moyen de paiement pour conserver votre forfait, toutes vos données sont en sécurité.",
+  "priceLabel": "Forfait {{name}}, {{monthly}} £/mois ou {{yearly}} £/mois en facturation annuelle",
+  "updateCard": {
+    "title": "Mettez à jour votre moyen de paiement",
+    "opening": "Ouverture du portail de facturation…",
+    "cta": "Mettre à jour le moyen de paiement"
+  },
+  "deleteLink": "Supprimer mon compte",
+  "confirm": {
+    "heading": "Êtes-vous sûr(e) ?",
+    "body": "Cela supprimera définitivement votre plan, vos documents et vos personnes de confiance. Vos données seront effacées sous 30 jours. Cette action est irréversible.",
+    "scheduling": "Programmation de la suppression…",
+    "cta": "Oui, supprimer mon compte",
+    "back": "Retour"
+  },
+  "errors": {
+    "checkoutFailed": "Impossible de démarrer le paiement",
+    "priceNotFound": "Tarif introuvable. Veuillez contacter l'assistance.",
+    "deleteFailed": "Impossible de programmer la suppression. Veuillez contacter l'assistance."
+  }
+}

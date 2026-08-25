@@ -53,24 +53,35 @@ import {
   ClipboardCheck,
 } from 'lucide-react'
 import { getDocumentUrl, supabase } from '../lib/supabase'
+import { useTranslation, Trans } from 'react-i18next'
+import i18n from '../i18n'
+import enDelegate from '../i18n/locales/en/delegate.json'
+import frDelegate from '../i18n/locales/fr/delegate.json'
+
+// Self-registered namespace (keeps src/i18n/index.js untouched). Safe to move
+// into the central resources map later: re-adding the same bundle is a no-op.
+if (!i18n.hasResourceBundle('en', 'delegate')) i18n.addResourceBundle('en', 'delegate', enDelegate)
+if (!i18n.hasResourceBundle('fr', 'delegate')) i18n.addResourceBundle('fr', 'delegate', frDelegate)
 
 const tabs = [
-  { id: 'overview',      label: 'Overview',            icon: ShieldCheck },
-  { id: 'documents',     label: 'Documents',            icon: FileText },
-  { id: 'accounts',      label: 'Accounts',             icon: Wallet },
-  { id: 'instructions',  label: 'Instructions',         icon: BookOpen },
-  { id: 'notify',        label: 'Notification tracker', icon: ClipboardCheck },
-  { id: 'messages',      label: 'Messages',             icon: MessageSquare },
-  { id: 'alerts',        label: 'Alerts',               icon: Bell },
-  { id: 'activity',      label: 'Activity',             icon: Clock3 },
-  { id: 'resources',     label: 'Help & Guides',        icon: HelpCircle },
-  { id: 'settings',      label: 'My settings',          icon: Settings },
+  { id: 'overview',      labelKey: 'tabs.overview',     icon: ShieldCheck },
+  { id: 'documents',     labelKey: 'tabs.documents',    icon: FileText },
+  { id: 'accounts',      labelKey: 'tabs.accounts',     icon: Wallet },
+  { id: 'instructions',  labelKey: 'tabs.instructions', icon: BookOpen },
+  { id: 'notify',        labelKey: 'tabs.notify',       icon: ClipboardCheck },
+  { id: 'messages',      labelKey: 'tabs.messages',     icon: MessageSquare },
+  { id: 'alerts',        labelKey: 'tabs.alerts',       icon: Bell },
+  { id: 'activity',      labelKey: 'tabs.activity',     icon: Clock3 },
+  { id: 'resources',     labelKey: 'tabs.resources',    icon: HelpCircle },
+  { id: 'settings',      labelKey: 'tabs.settings',     icon: Settings },
 ]
+
+const dateLocale = () => ((i18n.language || 'en').startsWith('fr') ? 'fr-FR' : 'en-GB')
 
 const formatDate = (value) => {
   if (!value) return '—'
   try {
-    return new Intl.DateTimeFormat('en-GB', { dateStyle: 'medium' }).format(new Date(value))
+    return new Intl.DateTimeFormat(dateLocale(), { dateStyle: 'medium' }).format(new Date(value))
   } catch {
     return value
   }
@@ -79,6 +90,7 @@ const formatDate = (value) => {
 const normalise = (value) => (value || '').toString().trim().toLowerCase()
 
 export default function DelegateDashboard() {
+  const { t } = useTranslation('delegate')
   const [searchParams] = useSearchParams()
   const token = searchParams.get('token')
   const isDemo = searchParams.get('demo') === 'true'
@@ -92,7 +104,7 @@ export default function DelegateDashboard() {
     })
     if (!res.ok) {
       const e = await res.json().catch(() => ({}))
-      throw new Error(e.error || 'Report could not be submitted')
+      throw new Error(e.error || t('errors.reportSubmit'))
     }
     return res.json()
   }
@@ -142,7 +154,7 @@ export default function DelegateDashboard() {
     }
 
     if (!token) {
-      setError('This delegate dashboard needs a valid invite token.')
+      setError(t('errors.needToken'))
       setLoading(false)
       return
     }
@@ -165,7 +177,7 @@ export default function DelegateDashboard() {
       ])
 
       if (inviteError || !trustedPerson) {
-        setError('We could not find a valid delegate invitation for this link.')
+        setError(t('errors.invalidInvite'))
         setLoading(false)
         return
       }
@@ -319,21 +331,21 @@ export default function DelegateDashboard() {
     ))
     const sections = []
     if (accessibleAccounts.length) {
-      sections.push(`<h2>Accounts (${accessibleAccounts.length})</h2><ul>${
+      sections.push(`<h2>${esc(t('print.accountsHeading', { count: accessibleAccounts.length }))}</h2><ul>${
         accessibleAccounts.map(a => `<li><strong>${esc(a.institution)}</strong>, ${esc(a.account_type)}${a.account_number_hint ? ` (••••${esc(a.account_number_hint)})` : ''}${a.notes ? `<br><em>${esc(a.notes)}</em>` : ''}</li>`).join('')
       }</ul>`)
     }
     if (accessibleDocuments.length) {
-      sections.push(`<h2>Documents (${accessibleDocuments.length})</h2><ul>${
-        accessibleDocuments.map(d => `<li><strong>${esc(d.name)}</strong>, ${esc(d.doc_type || 'Document')}${d.expires_at ? ` (expires ${esc(formatDate(d.expires_at))})` : ''}${d.notes ? `<br><em>${esc(d.notes)}</em>` : ''}</li>`).join('')
+      sections.push(`<h2>${esc(t('print.documentsHeading', { count: accessibleDocuments.length }))}</h2><ul>${
+        accessibleDocuments.map(d => `<li><strong>${esc(d.name)}</strong>, ${esc(d.doc_type || t('common.document'))}${d.expires_at ? ` (${esc(t('print.expires'))} ${esc(formatDate(d.expires_at))})` : ''}${d.notes ? `<br><em>${esc(d.notes)}</em>` : ''}</li>`).join('')
       }</ul>`)
     }
     if (accessibleInstructions.length) {
-      sections.push(`<h2>Instructions (${accessibleInstructions.length})</h2>${
+      sections.push(`<h2>${esc(t('print.instructionsHeading', { count: accessibleInstructions.length }))}</h2>${
         accessibleInstructions.map(i => `<div style="margin-bottom:1.5rem"><strong>${esc(i.title)}</strong> (${esc(i.category)} · ${esc(i.audience)})<br>${esc(i.body || '')}<ol>${(i.instruction_steps || []).map(s => `<li>${esc(s.body)}</li>`).join('')}</ol></div>`).join('')
       }`)
     }
-    const html = `<!DOCTYPE html><html><head><title>${esc(owner?.full_name || 'Plan')} | Handoff Plan</title><style>body{font-family:Georgia,serif;max-width:800px;margin:2rem auto;color:#1a1a1a;line-height:1.6}h1{font-size:1.8rem;margin-bottom:0.5rem}h2{font-size:1.1rem;text-transform:uppercase;letter-spacing:.08em;color:#666;border-bottom:1px solid #ddd;padding-bottom:.5rem;margin-top:2rem}ul{padding-left:1.2rem}li{margin-bottom:.75rem}@media print{body{margin:1rem}}</style></head><body><h1>${esc(owner?.full_name || 'Plan owner')}'s handoff plan</h1><p style="color:#666;font-size:.9rem">Viewed by ${esc(invite?.name || 'delegate')} (${esc(invite?.role || 'trusted person')}) · Printed ${new Date().toLocaleDateString('en-GB', { dateStyle: 'long' })}</p>${sections.join('')}<hr style="margin-top:3rem"><p style="font-size:.8rem;color:#999">Exported from Everstead | secure estate planning platform · everstead.care</p></body></html>`
+    const html = `<!DOCTYPE html><html><head><title>${t('print.docTitle', { name: esc(owner?.full_name || t('print.planFallback')) })}</title><style>body{font-family:Georgia,serif;max-width:800px;margin:2rem auto;color:#1a1a1a;line-height:1.6}h1{font-size:1.8rem;margin-bottom:0.5rem}h2{font-size:1.1rem;text-transform:uppercase;letter-spacing:.08em;color:#666;border-bottom:1px solid #ddd;padding-bottom:.5rem;margin-top:2rem}ul{padding-left:1.2rem}li{margin-bottom:.75rem}@media print{body{margin:1rem}}</style></head><body><h1>${t('print.heading', { name: esc(owner?.full_name || t('common.planOwner')) })}</h1><p style="color:#666;font-size:.9rem">${t('print.viewedBy', { name: esc(invite?.name || t('print.delegateFallback')), role: esc(invite?.role || t('print.roleFallback')), date: new Date().toLocaleDateString(dateLocale(), { dateStyle: 'long' }) })}</p>${sections.join('')}<hr style="margin-top:3rem"><p style="font-size:.8rem;color:#999">${esc(t('print.footer'))}</p></body></html>`
     const w = window.open('', '_blank')
     w.document.write(html)
     w.document.close()
@@ -373,7 +385,7 @@ export default function DelegateDashboard() {
       const signedUrl = await getDocumentUrl(documentRecord.storage_path)
       window.open(signedUrl, '_blank', 'noopener,noreferrer')
     } catch {
-      setError('We could not open that document right now.')
+      setError(t('errors.openDoc'))
     } finally {
       setDownloadingId(null)
     }
@@ -384,26 +396,26 @@ export default function DelegateDashboard() {
       <div className="min-h-screen bg-stone-50 flex items-center justify-center px-6">
         <div className="text-center">
           <div className="w-12 h-12 rounded-full border-4 border-stone-200 border-t-navy-700 animate-spin mx-auto" />
-          <p className="mt-4 text-sm text-stone-500">Loading delegate access…</p>
+          <p className="mt-4 text-sm text-stone-500">{t('loading')}</p>
         </div>
       </div>
     )
   }
 
   if (!isDemo && (!token || error)) {
-    return <EmptyState title="Delegate access unavailable" body={error || 'This link is missing the required invite token.'} />
+    return <EmptyState title={t('empty.unavailableTitle')} body={error || t('empty.missingToken')} />
   }
 
   if (!invite) {
-    return <EmptyState title="Invite not found" body="This delegate invitation could not be loaded." />
+    return <EmptyState title={t('empty.notFoundTitle')} body={t('empty.notFoundBody')} />
   }
 
   if (invite.invite_status !== 'accepted') {
     return (
       <EmptyState
-        title="Accept the invitation first"
-        body="This workspace becomes available after the invite is accepted. Return to the invitation link to confirm your role."
-        action={<Link to={`/accept-invite?token=${token}`} className="inline-flex items-center gap-2 rounded-full btn-aurora px-5 py-3 text-sm font-semibold text-white hover:bg-navy-700 transition-colors">Review invitation <ArrowRight size={15} /></Link>}
+        title={t('empty.acceptTitle')}
+        body={t('empty.acceptBody')}
+        action={<Link to={`/accept-invite?token=${token}`} className="inline-flex items-center gap-2 rounded-full btn-aurora px-5 py-3 text-sm font-semibold text-white hover:bg-navy-700 transition-colors">{t('empty.reviewInvite')} <ArrowRight size={15} /></Link>}
       />
     )
   }
@@ -412,20 +424,20 @@ export default function DelegateDashboard() {
     <div className="min-h-screen bg-stone-50 text-navy-950">
       {isDemo && (
         <div className="bg-amber-500 text-white text-xs font-semibold text-center py-2 px-4 flex items-center justify-center gap-3">
-          <span>Demo mode, showing Carol Thornton's executor view. Data is fictional.</span>
-          <Link to="/get-started" className="underline hover:no-underline">Create your own plan →</Link>
+          <span>{t('banners.demo')}</span>
+          <Link to="/get-started" className="underline hover:no-underline">{t('banners.demoCta')}</Link>
         </div>
       )}
       {!isDemo && myRole === 'delegate' && (
         <div className="border-b border-navy-900 px-6 py-3 flex flex-wrap items-center justify-between gap-3" style={{ background: 'linear-gradient(100deg, #0d1628 0%, #1d3052 38%, #2a2a55 70%, #18301f 100%)' }}>
           <p className="text-xs text-stone-400">
-            Want to protect your own family the same way {owner?.full_name} is protecting theirs?
+            {t('banners.upsell', { name: owner?.full_name })}
           </p>
           <Link
             to="/get-started"
             className="text-xs font-semibold text-sage-400 hover:text-sage-300 transition-colors whitespace-nowrap flex items-center gap-1"
           >
-            Start a free 14-day trial <ArrowRight size={12} />
+            {t('banners.upsellCta')} <ArrowRight size={12} />
           </Link>
         </div>
       )}
@@ -435,10 +447,10 @@ export default function DelegateDashboard() {
             <HeartCrack size={18} className="text-red-400 shrink-0" />
             <div>
               <p className="text-sm font-semibold">
-                The passing of {owner?.full_name || 'the plan owner'} has been verified by Everstead
+                {t('banners.deceasedTitle', { name: owner?.full_name || t('common.thePlanOwner') })}
               </p>
               <p className="text-xs text-stone-400 mt-0.5">
-                All sealed messages addressed to you and all after-death access permissions are now active. The plan owner's account has been suspended and is read-only.
+                {t('banners.deceasedBody')}
               </p>
             </div>
           </div>
@@ -446,7 +458,7 @@ export default function DelegateDashboard() {
             onClick={() => setActiveTab('messages')}
             className="inline-flex items-center gap-2 bg-white text-navy-900 text-xs font-semibold px-4 py-2 rounded-xl hover:bg-stone-100 transition-colors shrink-0"
           >
-            <MessageSquare size={13} /> Open messages
+            <MessageSquare size={13} /> {t('banners.openMessages')}
           </button>
         </div>
       )}
@@ -456,10 +468,10 @@ export default function DelegateDashboard() {
             <ShieldAlert size={18} className="text-amber-200 shrink-0" />
             <div>
               <p className="text-sm font-semibold">
-                An incapacity report for {owner?.full_name || 'the plan owner'} has been verified by Everstead
+                {t('banners.incapTitle', { name: owner?.full_name || t('common.thePlanOwner') })}
               </p>
               <p className="text-xs text-amber-200 mt-0.5">
-                Your after-death / incapacity access permissions are now active. The plan owner's account has been suspended and is read-only pending further review.
+                {t('banners.incapBody')}
               </p>
             </div>
           </div>
@@ -467,7 +479,7 @@ export default function DelegateDashboard() {
             onClick={() => setActiveTab('documents')}
             className="inline-flex items-center gap-2 bg-white text-amber-900 text-xs font-semibold px-4 py-2 rounded-xl hover:bg-amber-50 transition-colors shrink-0"
           >
-            <FileText size={13} /> View documents
+            <FileText size={13} /> {t('banners.viewDocuments')}
           </button>
         </div>
       )}
@@ -479,17 +491,17 @@ export default function DelegateDashboard() {
               <button
                 onClick={() => setMobileSidebarOpen(v => !v)}
                 className="xl:hidden mt-1 p-2 rounded-xl border border-stone-200 text-stone-600 hover:bg-stone-50 transition-colors shrink-0"
-                aria-label="Toggle navigation"
+                aria-label={t('header.toggleNav')}
               >
                 <Menu size={18} />
               </button>
               <div>
-                <p className="text-xs font-semibold uppercase tracking-[0.22em] text-navy-600">Delegate dashboard</p>
+                <p className="text-xs font-semibold uppercase tracking-[0.22em] text-navy-600">{t('header.eyebrow')}</p>
                 <h1 className="font-display text-3xl font-light text-navy-950 mt-2">
-                  {(owner?.full_name || 'Plan owner') + "'s handoff workspace"}
+                  {t('header.workspaceTitle', { name: owner?.full_name || t('common.planOwner') })}
                 </h1>
                 <p className="mt-2 text-sm text-stone-500">
-                  You are viewing this plan as <span className="font-semibold text-navy-800">{invite.role}</span>. Access is read-only.
+                  <Trans t={t} i18nKey="header.viewingAs" values={{ role: invite.role }} components={{ role: <span className="font-semibold text-navy-800" /> }} />
                 </p>
               </div>
             </div>
@@ -497,15 +509,15 @@ export default function DelegateDashboard() {
               <button
                 onClick={handlePrint}
                 className="inline-flex items-center gap-2 rounded-xl border border-stone-300 px-3.5 py-2.5 text-sm font-semibold text-navy-800 hover:bg-stone-100 transition-colors"
-                title="Export plan to PDF"
+                title={t('header.exportTitle')}
               >
-                <Printer size={15} /> Export
+                <Printer size={15} /> {t('header.export')}
               </button>
               <Link to="/security" className="hidden sm:inline-flex items-center gap-2 rounded-xl border border-stone-300 px-3.5 py-2.5 text-sm font-semibold text-navy-800 hover:bg-stone-100 transition-colors">
-                Why protected
+                {t('header.whyProtected')}
               </Link>
               <Link to="/" className="inline-flex items-center gap-2 rounded-full btn-aurora px-4 py-2.5 text-sm font-semibold text-white hover:bg-navy-700 transition-colors">
-                <LogOut size={15} /> Exit
+                <LogOut size={15} /> {t('header.exit')}
               </Link>
             </div>
           </div>
@@ -516,7 +528,7 @@ export default function DelegateDashboard() {
               type="search"
               value={searchQuery}
               onChange={e => setSearchQuery(e.target.value)}
-              placeholder="Search documents, accounts, instructions…"
+              placeholder={t('header.searchPlaceholder')}
               className="w-full pl-9 pr-4 py-2.5 text-sm border border-stone-200 rounded-xl bg-stone-50 focus:outline-none focus:ring-2 focus:ring-navy-300 focus:border-navy-300 placeholder:text-stone-400"
             />
             {searchQuery && (
@@ -539,11 +551,11 @@ export default function DelegateDashboard() {
       <div className="max-w-7xl mx-auto px-6 lg:px-8 py-8 grid xl:grid-cols-[280px_1fr] gap-8 items-start">
         <aside
           className={`xl:sticky xl:top-24 space-y-5 xl:block fixed xl:relative inset-y-0 left-0 z-50 xl:z-auto w-72 xl:w-auto bg-stone-50 xl:bg-transparent overflow-y-auto xl:overflow-visible p-4 xl:p-0 transition-transform xl:transition-none ${mobileSidebarOpen ? 'translate-x-0' : '-translate-x-full xl:translate-x-0'}`}
-          aria-label="Delegate sidebar"
+          aria-label={t('sidebar.ariaSidebar')}
         >
           {/* Close button — mobile only */}
           <div className="flex items-center justify-between xl:hidden mb-2">
-            <p className="text-xs font-semibold text-stone-500 uppercase tracking-widest">Navigation</p>
+            <p className="text-xs font-semibold text-stone-500 uppercase tracking-widest">{t('sidebar.navigation')}</p>
             <button onClick={() => setMobileSidebarOpen(false)} className="p-1.5 rounded-lg text-stone-500 hover:bg-stone-200 transition-colors">
               <X size={16} />
             </button>
@@ -559,22 +571,22 @@ export default function DelegateDashboard() {
               </div>
             </div>
             <div className="mt-6 space-y-3 text-sm text-stone-600">
-              <Detail label="Plan owner" value={owner?.full_name || '—'} />
-              <Detail label="Accepted" value={formatDate(invite.accepted_at)} />
-              <Detail label="Last updated" value={formatDate(lastUpdated)} />
-              <Detail label="Readiness" value={`${readinessScore}%`} />
+              <Detail label={t('sidebar.planOwner')} value={owner?.full_name || '—'} />
+              <Detail label={t('sidebar.accepted')} value={formatDate(invite.accepted_at)} />
+              <Detail label={t('sidebar.lastUpdated')} value={formatDate(lastUpdated)} />
+              <Detail label={t('sidebar.readiness')} value={t('sidebar.readinessValue', { score: readinessScore })} />
             </div>
             <button
               onClick={() => setActiveTab('settings')}
               className="mt-5 w-full flex items-center gap-2 text-xs font-semibold text-navy-700 border border-navy-100 bg-navy-50 rounded-xl px-3.5 py-2.5 hover:bg-navy-100 transition-colors"
             >
-              <Settings size={13} /> My settings
+              <Settings size={13} /> {t('sidebar.mySettings')}
             </button>
           </div>
 
           <div className="rounded-[2rem] border border-stone-200 bg-white p-4">
-            <nav className="space-y-1" aria-label="Delegate dashboard navigation">
-              {tabs.map(({ id, label, icon: Icon }) => {
+            <nav className="space-y-1" aria-label={t('sidebar.ariaNav')}>
+              {tabs.map(({ id, labelKey, icon: Icon }) => {
                 const tabCount =
                   id === 'documents'    ? accessibleDocuments.length    :
                   id === 'accounts'     ? accessibleAccounts.length      :
@@ -592,7 +604,7 @@ export default function DelegateDashboard() {
                     className={`w-full flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy-400 ${activeTab === id ? 'bg-navy-50 text-navy-900' : 'text-stone-600 hover:bg-stone-100 hover:text-navy-900'}`}
                   >
                     <Icon size={16} className="shrink-0" />
-                    <span className="flex-1 text-left">{label}</span>
+                    <span className="flex-1 text-left">{t(labelKey)}</span>
                     {alertBadge && <span className="rounded-full bg-red-500 px-2 py-0.5 text-[11px] font-bold text-white">{unreadAlerts.length - readAlertIds.size}</span>}
                     {msgBadge   && <span className="rounded-full bg-navy-700 px-2 py-0.5 text-[11px] font-bold text-white">{myMessages.length}</span>}
                     {!alertBadge && !msgBadge && tabCount > 0 && (
@@ -608,7 +620,7 @@ export default function DelegateDashboard() {
             <div className="flex items-start gap-3">
               <Lock size={18} className="text-amber-700 mt-0.5 shrink-0" />
               <p className="text-sm leading-relaxed text-amber-900">
-                Everstead is an organisation platform, not a legal service. Use the information here alongside professional legal or financial advice where needed.
+                {t('sidebar.disclaimer')}
               </p>
             </div>
           </div>
@@ -623,7 +635,7 @@ export default function DelegateDashboard() {
             }`}
           >
             <HeartCrack size={16} className="shrink-0" />
-            <span>Report a death</span>
+            <span>{t('sidebar.reportDeath')}</span>
           </button>
 
           {/* Report an Incident */}
@@ -636,11 +648,11 @@ export default function DelegateDashboard() {
             }`}
           >
             <ShieldAlert size={16} className="shrink-0" />
-            <span>Report an incident</span>
+            <span>{t('sidebar.reportIncident')}</span>
           </button>
         </aside>
 
-        <main className="space-y-6" aria-label="Plan content">
+        <main className="space-y-6" aria-label={t('sidebar.ariaMain')}>
 
           {/* ── Search results ── */}
           {searchResults && (
@@ -648,27 +660,27 @@ export default function DelegateDashboard() {
               <div className="flex items-center gap-3">
                 <Search size={16} className="text-stone-400" />
                 <p className="text-sm text-stone-600">
-                  Results for <span className="font-semibold text-navy-900">"{searchQuery}"</span>
-                  {' '}, {searchResults.documents.length + searchResults.accounts.length + searchResults.instructions.length} found
+                  {t('search.resultsFor')} <span className="font-semibold text-navy-900">{t('search.queryQuoted', { query: searchQuery })}</span>
+                  {' '}, {t('search.found', { count: searchResults.documents.length + searchResults.accounts.length + searchResults.instructions.length })}
                 </p>
               </div>
               {searchResults.documents.length > 0 && (
-                <Panel title="Documents" icon={FileText} count={searchResults.documents.length}>
+                <Panel title={t('tabs.documents')} icon={FileText} count={searchResults.documents.length}>
                   <div className="space-y-2">
                     {searchResults.documents.map(item => (
                       <div key={item.id} className="rounded-2xl border border-stone-200 bg-stone-50 p-4 flex items-center justify-between gap-3">
                         <div>
                           <p className="text-sm font-semibold text-navy-950">{item.name}</p>
-                          <p className="text-xs text-stone-500 mt-0.5">{item.doc_type || 'Document'}</p>
+                          <p className="text-xs text-stone-500 mt-0.5">{item.doc_type || t('common.document')}</p>
                         </div>
-                        <button onClick={() => { setActiveTab('documents'); setSearchQuery('') }} className="text-xs text-navy-600 hover:text-navy-900 font-semibold whitespace-nowrap">View →</button>
+                        <button onClick={() => { setActiveTab('documents'); setSearchQuery('') }} className="text-xs text-navy-600 hover:text-navy-900 font-semibold whitespace-nowrap">{t('search.view')}</button>
                       </div>
                     ))}
                   </div>
                 </Panel>
               )}
               {searchResults.accounts.length > 0 && (
-                <Panel title="Accounts" icon={Wallet} count={searchResults.accounts.length}>
+                <Panel title={t('tabs.accounts')} icon={Wallet} count={searchResults.accounts.length}>
                   <div className="space-y-2">
                     {searchResults.accounts.map(item => (
                       <div key={item.id} className="rounded-2xl border border-stone-200 bg-stone-50 p-4 flex items-center justify-between gap-3">
@@ -676,14 +688,14 @@ export default function DelegateDashboard() {
                           <p className="text-sm font-semibold text-navy-950">{item.institution}</p>
                           <p className="text-xs text-stone-500 mt-0.5">{item.account_type} · {item.category}</p>
                         </div>
-                        <button onClick={() => { setActiveTab('accounts'); setSearchQuery('') }} className="text-xs text-navy-600 hover:text-navy-900 font-semibold whitespace-nowrap">View →</button>
+                        <button onClick={() => { setActiveTab('accounts'); setSearchQuery('') }} className="text-xs text-navy-600 hover:text-navy-900 font-semibold whitespace-nowrap">{t('search.view')}</button>
                       </div>
                     ))}
                   </div>
                 </Panel>
               )}
               {searchResults.instructions.length > 0 && (
-                <Panel title="Instructions" icon={BookOpen} count={searchResults.instructions.length}>
+                <Panel title={t('tabs.instructions')} icon={BookOpen} count={searchResults.instructions.length}>
                   <div className="space-y-2">
                     {searchResults.instructions.map(item => (
                       <div key={item.id} className="rounded-2xl border border-stone-200 bg-stone-50 p-4 flex items-center justify-between gap-3">
@@ -691,7 +703,7 @@ export default function DelegateDashboard() {
                           <p className="text-sm font-semibold text-navy-950">{item.title}</p>
                           <p className="text-xs text-stone-500 mt-0.5">{item.category} · {item.audience}</p>
                         </div>
-                        <button onClick={() => { setActiveTab('instructions'); setSearchQuery('') }} className="text-xs text-navy-600 hover:text-navy-900 font-semibold whitespace-nowrap">View →</button>
+                        <button onClick={() => { setActiveTab('instructions'); setSearchQuery('') }} className="text-xs text-navy-600 hover:text-navy-900 font-semibold whitespace-nowrap">{t('search.view')}</button>
                       </div>
                     ))}
                   </div>
@@ -700,7 +712,7 @@ export default function DelegateDashboard() {
               {(searchResults.documents.length + searchResults.accounts.length + searchResults.instructions.length) === 0 && (
                 <div className="text-center py-16 text-stone-400">
                   <Search size={32} className="mx-auto mb-3 opacity-30" />
-                  <p className="text-sm">No results for "{searchQuery}"</p>
+                  <p className="text-sm">{t('search.noResults', { query: searchQuery })}</p>
                 </div>
               )}
             </div>
@@ -723,23 +735,22 @@ export default function DelegateDashboard() {
                     <Lock size={24} />
                   </div>
                   <div>
-                    <h3 className="text-lg font-semibold text-amber-900">No sections shared yet</h3>
+                    <h3 className="text-lg font-semibold text-amber-900">{t('overview.noAccessTitle')}</h3>
                     <p className="text-sm text-amber-800 leading-relaxed mt-2 max-w-sm mx-auto">
-                      <strong>{owner?.full_name || 'The plan owner'}</strong> has accepted your invitation but has not yet granted you access to any sections of their plan.
-                      Once they update their sharing settings, the relevant accounts, documents, and instructions will appear here.
+                      <Trans t={t} i18nKey="overview.noAccessBody" values={{ name: owner?.full_name || t('common.thePlanOwnerCap') }} />
                     </p>
                   </div>
                   <p className="text-xs text-amber-700">
-                    They can manage what you see from the <strong>People</strong> section of their Everstead dashboard at any time.
+                    <Trans t={t} i18nKey="overview.noAccessFootnote" />
                   </p>
                 </div>
               )}
               <div className="grid md:grid-cols-2 xl:grid-cols-4 gap-4">
                 {[
-                  { label: 'Shared documents', value: accessibleDocuments.length, icon: FileText, tab: 'documents' },
-                  { label: 'Shared accounts', value: accessibleAccounts.length, icon: Wallet, tab: 'accounts' },
-                  { label: 'Shared instructions', value: accessibleInstructions.length, icon: BookOpen, tab: 'instructions' },
-                  { label: 'Unread alerts', value: unreadAlerts.length - readAlertIds.size, icon: Bell, tab: 'alerts' },
+                  { label: t('overview.sharedDocuments'), value: accessibleDocuments.length, icon: FileText, tab: 'documents' },
+                  { label: t('overview.sharedAccounts'), value: accessibleAccounts.length, icon: Wallet, tab: 'accounts' },
+                  { label: t('overview.sharedInstructions'), value: accessibleInstructions.length, icon: BookOpen, tab: 'instructions' },
+                  { label: t('overview.unreadAlerts'), value: unreadAlerts.length - readAlertIds.size, icon: Bell, tab: 'alerts' },
                 ].map(({ label, value, icon: Icon, tab }) => (
                   <button
                     key={label}
@@ -752,14 +763,14 @@ export default function DelegateDashboard() {
                     <p className="text-3xl font-light font-display text-navy-950">{Math.max(0, value)}</p>
                     <p className="mt-1 text-sm text-stone-500">{label}</p>
                     <p className="mt-2 text-xs text-navy-600 font-medium opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1">
-                      View <ChevronRight size={11} />
+                      {t('overview.statView')} <ChevronRight size={11} />
                     </p>
                   </button>
                 ))}
               </div>
 
               <div className="grid lg:grid-cols-[1.05fr_0.95fr] gap-6">
-                <Panel title="What you can access" icon={FolderOpen}>
+                <Panel title={t('overview.accessTitle')} icon={FolderOpen}>
                   {accessibleCategories.length > 0 ? (
                     <div className="flex flex-wrap gap-2">
                       {accessibleCategories.map(category => (
@@ -769,11 +780,11 @@ export default function DelegateDashboard() {
                       ))}
                     </div>
                   ) : (
-                    <p className="text-sm text-stone-500">No explicit access grants were found on this invite yet.</p>
+                    <p className="text-sm text-stone-500">{t('overview.accessEmpty')}</p>
                   )}
                 </Panel>
 
-                <Panel title="Critical attention items" icon={AlertCircle}>
+                <Panel title={t('overview.criticalTitle')} icon={AlertCircle}>
                   {criticalAlerts.length > 0 ? (
                     <div className="space-y-3">
                       {criticalAlerts.map(item => (
@@ -784,31 +795,31 @@ export default function DelegateDashboard() {
                       ))}
                     </div>
                   ) : (
-                    <p className="text-sm text-stone-500">No unread critical alerts are currently visible in the shared plan.</p>
+                    <p className="text-sm text-stone-500">{t('overview.criticalEmpty')}</p>
                   )}
                 </Panel>
               </div>
 
               <div className="grid lg:grid-cols-[1fr_1fr] gap-6">
-                <Panel title="Recent instructions" icon={BookOpen}>
+                <Panel title={t('overview.recentInstructionsTitle')} icon={BookOpen}>
                   {accessibleInstructions.length > 0 ? (
                     <div className="space-y-3">
                       {accessibleInstructions.slice(0, 3).map(item => (
                         <div key={item.id} className="rounded-2xl border border-stone-200 bg-stone-50 px-4 py-4">
                           <div className="flex items-center justify-between gap-3">
                             <p className="text-sm font-semibold text-navy-950">{item.title}</p>
-                            <span className="text-xs font-medium text-stone-500">{item.category || item.audience || 'Instruction'}</span>
+                            <span className="text-xs font-medium text-stone-500">{item.category || item.audience || t('overview.instructionFallback')}</span>
                           </div>
                           <p className="mt-2 text-sm text-stone-600 leading-relaxed">{item.body}</p>
                         </div>
                       ))}
                     </div>
                   ) : (
-                    <p className="text-sm text-stone-500">No instructions are currently shared with this role.</p>
+                    <p className="text-sm text-stone-500">{t('instructions.empty')}</p>
                   )}
                 </Panel>
 
-                <Panel title="Recent activity" icon={Clock3}>
+                <Panel title={t('overview.recentActivityTitle')} icon={Clock3}>
                   {activity.length > 0 ? (
                     <div className="space-y-3">
                       {activity.slice(0, 4).map(item => (
@@ -824,7 +835,7 @@ export default function DelegateDashboard() {
                       ))}
                     </div>
                   ) : (
-                    <p className="text-sm text-stone-500">No recent activity is visible yet.</p>
+                    <p className="text-sm text-stone-500">{t('activity.empty')}</p>
                   )}
                 </Panel>
               </div>
@@ -837,8 +848,8 @@ export default function DelegateDashboard() {
                       <Clock3 size={16} className="text-amber-700" />
                     </div>
                     <div>
-                      <p className="text-sm font-semibold text-amber-900">Documents expiring soon</p>
-                      <p className="text-xs text-amber-700 mt-0.5">{expiringDocs.length} document{expiringDocs.length > 1 ? 's' : ''} expire within the next 90 days</p>
+                      <p className="text-sm font-semibold text-amber-900">{t('overview.expiringTitle')}</p>
+                      <p className="text-xs text-amber-700 mt-0.5">{t('overview.expiringCount', { count: expiringDocs.length })}</p>
                     </div>
                   </div>
                   <div className="space-y-2">
@@ -848,12 +859,12 @@ export default function DelegateDashboard() {
                           <p className="text-sm font-semibold text-navy-950">{doc.name}</p>
                           <p className="text-xs text-stone-500 mt-0.5">{doc.doc_type}</p>
                         </div>
-                        <span className="text-xs font-semibold text-amber-700 shrink-0">Expires {formatDate(doc.expires_at)}</span>
+                        <span className="text-xs font-semibold text-amber-700 shrink-0">{t('documents.expires', { date: formatDate(doc.expires_at) })}</span>
                       </div>
                     ))}
                   </div>
                   <button onClick={() => setActiveTab('documents')} className="mt-3 text-xs font-semibold text-amber-800 hover:text-amber-900 transition-colors">
-                    View all documents →
+                    {t('overview.viewAllDocs')}
                   </button>
                 </div>
               )}
@@ -864,7 +875,7 @@ export default function DelegateDashboard() {
           )}
 
           {!searchResults && activeTab === 'documents' && (
-            <Panel title="Shared documents" icon={FileText} count={accessibleDocuments.length}>
+            <Panel title={t('documents.title')} icon={FileText} count={accessibleDocuments.length}>
               {accessibleDocuments.length > 0 ? (
                 <div className="space-y-2">
                   {accessibleDocuments.map(item => {
@@ -880,19 +891,19 @@ export default function DelegateDashboard() {
                           </div>
                           <div className="flex-1 min-w-0">
                             <p className="font-semibold text-navy-950 text-sm">{item.name}</p>
-                            <p className="text-xs text-stone-500 mt-0.5">{item.doc_type || 'Document'} · Updated {formatDate(item.updated_at || item.created_at)}</p>
+                            <p className="text-xs text-stone-500 mt-0.5">{item.doc_type || t('common.document')} · {t('documents.updated', { date: formatDate(item.updated_at || item.created_at) })}</p>
                           </div>
                           <div className="flex items-center gap-2 shrink-0">
                             {item.expires_at && (
                               <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-amber-50 border border-amber-200 text-amber-700">
-                                Expires {formatDate(item.expires_at)}
+                                {t('documents.expires', { date: formatDate(item.expires_at) })}
                               </span>
                             )}
                             <span className={`text-xs font-medium px-2 py-0.5 rounded-full border ${
                               item.status === 'expiring' ? 'bg-amber-50 border-amber-200 text-amber-700' :
                               item.status === 'missing'  ? 'bg-red-50 border-red-200 text-red-700' :
                               'bg-emerald-50 border-emerald-200 text-emerald-700'
-                            }`}>{item.status || 'current'}</span>
+                            }`}>{t(`documents.status.${item.status || 'current'}`, { defaultValue: item.status || 'current' })}</span>
                             <ChevronDown size={15} className={`text-stone-400 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
                           </div>
                         </button>
@@ -901,22 +912,22 @@ export default function DelegateDashboard() {
                           <div className="px-5 pb-5 border-t border-navy-100 pt-4 space-y-4">
                             {item.notes && (
                               <div>
-                                <p className="text-xs font-semibold uppercase tracking-wider text-stone-400 mb-1">Notes</p>
+                                <p className="text-xs font-semibold uppercase tracking-wider text-stone-400 mb-1">{t('documents.notes')}</p>
                                 <p className="text-sm text-stone-700 leading-relaxed">{item.notes}</p>
                               </div>
                             )}
                             <div className="grid grid-cols-2 gap-4">
                               <div>
-                                <p className="text-xs font-semibold uppercase tracking-wider text-stone-400 mb-1">Type</p>
+                                <p className="text-xs font-semibold uppercase tracking-wider text-stone-400 mb-1">{t('documents.type')}</p>
                                 <p className="text-sm text-navy-900">{item.doc_type || '—'}</p>
                               </div>
                               <div>
-                                <p className="text-xs font-semibold uppercase tracking-wider text-stone-400 mb-1">Last updated</p>
+                                <p className="text-xs font-semibold uppercase tracking-wider text-stone-400 mb-1">{t('documents.lastUpdated')}</p>
                                 <p className="text-sm text-navy-900">{formatDate(item.updated_at || item.created_at)}</p>
                               </div>
                               {item.expires_at && (
                                 <div>
-                                  <p className="text-xs font-semibold uppercase tracking-wider text-stone-400 mb-1">Expiry date</p>
+                                  <p className="text-xs font-semibold uppercase tracking-wider text-stone-400 mb-1">{t('documents.expiryDate')}</p>
                                   <p className="text-sm text-amber-700 font-medium">{formatDate(item.expires_at)}</p>
                                 </div>
                               )}
@@ -928,7 +939,7 @@ export default function DelegateDashboard() {
                                   disabled={downloadingId === item.id}
                                   className="inline-flex items-center gap-2 rounded-full btn-aurora px-4 py-2.5 text-sm font-semibold text-white hover:bg-navy-700 transition-colors disabled:opacity-50"
                                 >
-                                  <ExternalLink size={15} /> {downloadingId === item.id ? 'Opening…' : 'Open / preview'}
+                                  <ExternalLink size={15} /> {downloadingId === item.id ? t('documents.opening') : t('documents.open')}
                                 </button>
                                 {item.file_url && (
                                   <a
@@ -936,12 +947,12 @@ export default function DelegateDashboard() {
                                     download={item.name}
                                     className="inline-flex items-center gap-2 rounded-xl border border-stone-300 bg-white px-4 py-2.5 text-sm font-semibold text-stone-700 hover:bg-stone-50 transition-colors"
                                   >
-                                    <Download size={15} /> Download
+                                    <Download size={15} /> {t('documents.download')}
                                   </a>
                                 )}
                               </div>
                             ) : (
-                              <p className="text-xs text-stone-400 italic">No file attached, this is a reference record only.</p>
+                              <p className="text-xs text-stone-400 italic">{t('documents.noFile')}</p>
                             )}
                           </div>
                         )}
@@ -950,7 +961,7 @@ export default function DelegateDashboard() {
                   })}
                 </div>
               ) : (
-                <p className="text-sm text-stone-500">No documents are currently shared with this role.</p>
+                <p className="text-sm text-stone-500">{t('documents.empty')}</p>
               )}
 
               {/* Sealed documents — this person will receive these, but they only
@@ -959,7 +970,7 @@ export default function DelegateDashboard() {
               {sealedDocuments.length > 0 && (
                 <div className="mt-6 pt-5 border-t border-stone-100 space-y-2">
                   <p className="text-xs font-semibold uppercase tracking-wider text-stone-400 mb-2">
-                    Sealed until needed
+                    {t('documents.sealedHeading')}
                   </p>
                   {sealedDocuments.map(item => (
                     <div key={item.id} className="rounded-2xl border border-stone-200 bg-stone-50/60 flex items-center gap-4 p-5">
@@ -968,10 +979,10 @@ export default function DelegateDashboard() {
                       </div>
                       <div className="flex-1 min-w-0">
                         <p className="font-semibold text-stone-600 text-sm">{item.name}</p>
-                        <p className="text-xs text-stone-400 mt-0.5">{item.doc_type || 'Document'} · Sealed, released to you only when the time comes</p>
+                        <p className="text-xs text-stone-400 mt-0.5">{item.doc_type || t('common.document')} · {t('documents.sealedMeta')}</p>
                       </div>
                       <span className="shrink-0 text-xs font-medium px-2 py-0.5 rounded-full border border-stone-200 bg-white text-stone-500">
-                        Sealed
+                        {t('documents.sealedBadge')}
                       </span>
                     </div>
                   ))}
@@ -981,7 +992,7 @@ export default function DelegateDashboard() {
           )}
 
           {!searchResults && activeTab === 'accounts' && (
-            <Panel title="Shared accounts" icon={Wallet} count={accessibleAccounts.length}>
+            <Panel title={t('accounts.title')} icon={Wallet} count={accessibleAccounts.length}>
               {accessibleAccounts.length > 0 ? (
                 <div className="space-y-2">
                   {accessibleAccounts.map(item => {
@@ -997,7 +1008,7 @@ export default function DelegateDashboard() {
                           </div>
                           <div className="flex-1 min-w-0">
                             <p className="font-semibold text-navy-950 text-sm">{item.institution}</p>
-                            <p className="text-xs text-stone-500 mt-0.5">{item.account_type} · {item.category || 'Account'}</p>
+                            <p className="text-xs text-stone-500 mt-0.5">{item.account_type} · {item.category || t('accounts.accountFallback')}</p>
                           </div>
                           <div className="flex items-center gap-2 shrink-0">
                             {item.balance_display && (
@@ -1013,18 +1024,18 @@ export default function DelegateDashboard() {
                           <div className="px-5 pb-5 border-t border-navy-100 pt-4 space-y-4">
                             <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                               <div>
-                                <p className="text-xs font-semibold uppercase tracking-wider text-stone-400 mb-1">Category</p>
+                                <p className="text-xs font-semibold uppercase tracking-wider text-stone-400 mb-1">{t('accounts.category')}</p>
                                 <p className="text-sm text-navy-900">{item.category || '—'}</p>
                               </div>
                               <div>
-                                <p className="text-xs font-semibold uppercase tracking-wider text-stone-400 mb-1">Reference</p>
+                                <p className="text-xs font-semibold uppercase tracking-wider text-stone-400 mb-1">{t('accounts.reference')}</p>
                                 <div className="flex items-center gap-2">
-                                  <p className="text-sm text-navy-900 font-mono">{item.account_number_hint ? `•••• ${item.account_number_hint}` : 'Not provided'}</p>
+                                  <p className="text-sm text-navy-900 font-mono">{item.account_number_hint ? `•••• ${item.account_number_hint}` : t('accounts.notProvided')}</p>
                                   {item.account_number_hint && (
                                     <button
                                       onClick={() => copyToClipboard(item.account_number_hint, `ref-${item.id}`)}
                                       className="p-1 rounded-md text-stone-400 hover:text-navy-700 hover:bg-navy-50 transition-colors"
-                                      title="Copy reference"
+                                      title={t('accounts.copyReference')}
                                     >
                                       {copiedId === `ref-${item.id}` ? <Check size={12} className="text-sage-600" /> : <Copy size={12} />}
                                     </button>
@@ -1032,19 +1043,19 @@ export default function DelegateDashboard() {
                                 </div>
                               </div>
                               <div>
-                                <p className="text-xs font-semibold uppercase tracking-wider text-stone-400 mb-1">Last updated</p>
+                                <p className="text-xs font-semibold uppercase tracking-wider text-stone-400 mb-1">{t('accounts.lastUpdated')}</p>
                                 <p className="text-sm text-navy-900">{formatDate(item.updated_at || item.created_at)}</p>
                               </div>
                               {item.balance_display && (
                                 <div>
-                                  <p className="text-xs font-semibold uppercase tracking-wider text-stone-400 mb-1">Balance / status</p>
+                                  <p className="text-xs font-semibold uppercase tracking-wider text-stone-400 mb-1">{t('accounts.balance')}</p>
                                   <p className="text-sm font-semibold text-emerald-700">{item.balance_display}</p>
                                 </div>
                               )}
                             </div>
                             {item.notes && (
                               <div>
-                                <p className="text-xs font-semibold uppercase tracking-wider text-stone-400 mb-1">Notes & instructions</p>
+                                <p className="text-xs font-semibold uppercase tracking-wider text-stone-400 mb-1">{t('accounts.notes')}</p>
                                 <p className="text-sm text-stone-700 leading-relaxed">{item.notes}</p>
                               </div>
                             )}
@@ -1053,13 +1064,13 @@ export default function DelegateDashboard() {
                                 onClick={() => copyToClipboard(item.institution, `inst-${item.id}`)}
                                 className="inline-flex items-center gap-1.5 text-xs font-semibold text-stone-600 bg-stone-100 hover:bg-stone-200 px-3 py-1.5 rounded-lg transition-colors"
                               >
-                                {copiedId === `inst-${item.id}` ? <><Check size={11} className="text-sage-600" /> Copied!</> : <><Copy size={11} /> Copy institution name</>}
+                                {copiedId === `inst-${item.id}` ? <><Check size={11} className="text-sage-600" /> {t('accounts.copied')}</> : <><Copy size={11} /> {t('accounts.copyInstitution')}</>}
                               </button>
                               <button
                                 onClick={() => setActiveTab('notify')}
                                 className="inline-flex items-center gap-1.5 text-xs font-semibold text-navy-700 bg-navy-50 hover:bg-navy-100 px-3 py-1.5 rounded-lg transition-colors"
                               >
-                                <ClipboardCheck size={11} /> Track notification
+                                <ClipboardCheck size={11} /> {t('accounts.trackNotification')}
                               </button>
                             </div>
                           </div>
@@ -1069,13 +1080,13 @@ export default function DelegateDashboard() {
                   })}
                 </div>
               ) : (
-                <p className="text-sm text-stone-500">No accounts are currently shared with this role.</p>
+                <p className="text-sm text-stone-500">{t('accounts.empty')}</p>
               )}
             </Panel>
           )}
 
           {!searchResults && activeTab === 'instructions' && (
-            <Panel title="Shared instructions" icon={BookOpen} count={accessibleInstructions.length}>
+            <Panel title={t('instructions.title')} icon={BookOpen} count={accessibleInstructions.length}>
               {accessibleInstructions.length > 0 ? (
                 <div className="space-y-4">
                   {accessibleInstructions.map(item => (
@@ -1083,10 +1094,10 @@ export default function DelegateDashboard() {
                       <div className="flex flex-wrap items-start justify-between gap-3">
                         <div>
                           <p className="text-base font-semibold text-navy-950">{item.title}</p>
-                          <p className="mt-1 text-sm text-stone-500">{item.category || 'Instruction'} · {item.audience || 'Shared guidance'}</p>
+                          <p className="mt-1 text-sm text-stone-500">{item.category || t('instructions.categoryFallback')} · {item.audience || t('instructions.audienceFallback')}</p>
                         </div>
                         <span className="rounded-full border border-navy-200 bg-navy-50 px-3 py-1 text-xs font-semibold text-navy-700">
-                          {item.instruction_steps?.length || 0} steps
+                          {t('instructions.steps', { count: item.instruction_steps?.length || 0 })}
                         </span>
                       </div>
                       <p className="mt-4 text-sm leading-relaxed text-stone-600">{item.body}</p>
@@ -1104,24 +1115,24 @@ export default function DelegateDashboard() {
                   ))}
                 </div>
               ) : (
-                <p className="text-sm text-stone-500">No instructions are currently shared with this role.</p>
+                <p className="text-sm text-stone-500">{t('instructions.empty')}</p>
               )}
             </Panel>
           )}
 
           {!searchResults && activeTab === 'alerts' && (
             <Panel
-              title="Plan alerts"
+              title={t('alerts.title')}
               icon={Bell}
               count={alerts.filter(a => !a.is_read && !readAlertIds.has(a.id)).length || null}
-              countLabel="unread"
+              countLabel={t('alerts.unreadLabel')}
               action={
                 alerts.some(a => !a.is_read && !readAlertIds.has(a.id)) ? (
                   <button
                     onClick={() => setReadAlertIds(new Set(alerts.map(a => a.id)))}
                     className="text-xs font-medium text-navy-600 hover:text-navy-900 transition-colors flex items-center gap-1"
                   >
-                    <CheckCircle2 size={13} /> Mark all read
+                    <CheckCircle2 size={13} /> {t('alerts.markAllRead')}
                   </button>
                 ) : null
               }
@@ -1161,7 +1172,7 @@ export default function DelegateDashboard() {
                           <div className="flex items-center gap-2 shrink-0">
                             {!isRead && (
                               <span className={`text-xs font-semibold px-2 py-0.5 rounded-full border ${severityStyle.badge}`}>
-                                {item.severity}
+                                {t(`alerts.severity.${sev}`, { defaultValue: item.severity })}
                               </span>
                             )}
                             <ChevronDown size={15} className={`text-stone-400 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
@@ -1174,8 +1185,8 @@ export default function DelegateDashboard() {
                               <p className="text-sm leading-relaxed text-stone-700">{item.detail || item.message}</p>
                             )}
                             <div className="flex items-center justify-between gap-3 text-xs text-stone-400 pt-1">
-                              <span>Received {formatDate(item.created_at)}</span>
-                              <span className={`font-semibold capitalize px-2 py-0.5 rounded-full border ${severityStyle.badge}`}>{item.severity}</span>
+                              <span>{t('alerts.received', { date: formatDate(item.created_at) })}</span>
+                              <span className={`font-semibold capitalize px-2 py-0.5 rounded-full border ${severityStyle.badge}`}>{t(`alerts.severity.${sev}`, { defaultValue: item.severity })}</span>
                             </div>
                           </div>
                         )}
@@ -1184,13 +1195,13 @@ export default function DelegateDashboard() {
                   })}
                 </div>
               ) : (
-                <p className="text-sm text-stone-500">No alerts are visible right now.</p>
+                <p className="text-sm text-stone-500">{t('alerts.empty')}</p>
               )}
             </Panel>
           )}
 
           {!searchResults && activeTab === 'activity' && (
-            <Panel title="Recent plan activity" icon={Clock3}>
+            <Panel title={t('activity.title')} icon={Clock3}>
               {activity.length > 0 ? (
                 <div className="space-y-4">
                   {activity.map(item => (
@@ -1211,23 +1222,23 @@ export default function DelegateDashboard() {
                   ))}
                 </div>
               ) : (
-                <p className="text-sm text-stone-500">No recent activity is visible yet.</p>
+                <p className="text-sm text-stone-500">{t('activity.empty')}</p>
               )}
             </Panel>
           )}
 
           {!searchResults && activeTab === 'messages' && (
             <Panel
-              title="Personal messages"
+              title={t('messages.title')}
               icon={MessageSquare}
               count={myMessages.length}
-              countLabel={ownerDeceased ? 'auto-released on death' : 'released to you'}
+              countLabel={ownerDeceased ? t('messages.autoReleased') : t('messages.releasedToYou')}
             >
               {ownerDeceased && (
                 <div className="flex items-start gap-3 bg-stone-900 text-white rounded-xl px-4 py-3.5 mb-5">
                   <HeartCrack size={15} className="text-red-400 mt-0.5 shrink-0" />
                   <p className="text-xs text-stone-300 leading-relaxed">
-                    Following the verified passing of <strong className="text-white">{owner?.full_name}</strong>, all personal messages addressed to you have been automatically released. These messages were written and sealed by {owner?.full_name} for you to read when the time came.
+                    <Trans t={t} i18nKey="messages.deceasedNotice" values={{ name: owner?.full_name }} components={{ strong: <strong className="text-white" /> }} />
                   </p>
                 </div>
               )}
@@ -1237,9 +1248,9 @@ export default function DelegateDashboard() {
                   <div className="w-12 h-12 rounded-full bg-navy-50 text-navy-400 flex items-center justify-center mx-auto mb-3">
                     <MessageSquare size={20} />
                   </div>
-                  <p className="text-sm font-semibold text-navy-900">No messages released yet</p>
+                  <p className="text-sm font-semibold text-navy-900">{t('messages.emptyTitle')}</p>
                   <p className="text-xs text-stone-500 max-w-xs mx-auto leading-relaxed">
-                    {owner?.full_name || 'The plan owner'} has not yet released any personal messages to you. Messages are released manually or automatically when Everstead verifies the passing.
+                    {t('messages.emptyBody', { name: owner?.full_name || t('common.thePlanOwnerCap') })}
                   </p>
                 </div>
               )}
@@ -1303,73 +1314,24 @@ export default function DelegateDashboard() {
 // DELEGATE / EXECUTOR RESOURCES PANEL
 // ─────────────────────────────────────────────────────────────
 const DELEGATE_GUIDES = [
-  {
-    icon: ShieldCheck,
-    title: 'Understanding your role',
-    color: 'bg-navy-50 text-navy-700',
-    items: [
-      { label: 'What is a trusted person?', detail: 'A trusted person on Everstead is someone the plan owner has chosen to share part or all of their estate plan with. Depending on your role, you may be an executor, next of kin, financial power of attorney holder, or simply a trusted family member.' },
-      { label: 'What does an executor do?', detail: 'An executor is legally responsible for administering the estate after death. This includes locating the will, applying for probate, notifying institutions, settling debts, and distributing assets. Everstead gives you the information you need to do this, it does not replace legal advice for complex estates.' },
-      { label: 'What does a power of attorney holder do?', detail: 'If you hold a Lasting Power of Attorney (LPA) for property and financial affairs, you can act on behalf of the plan owner if they lose mental capacity. This is a serious legal responsibility. Only act within the scope of the LPA and keep records of all decisions.' },
-      { label: 'Your access level', detail: 'You can only see what the plan owner has explicitly shared with you. Some people see the full plan; others see only specific sections. If you need access to something not shown here, contact the plan owner directly.' },
-    ],
-  },
-  {
-    icon: FileText,
-    title: 'Working with documents',
-    color: 'bg-emerald-50 text-emerald-700',
-    items: [
-      { label: 'Finding the will', detail: 'Look in the Documents section. If the original is held by a solicitor, the document record should include their contact details. You will need the original signed will (not a scan) to apply for probate in England and Wales.' },
-      { label: 'Locating the LPA', detail: 'The LPA must be registered with the Office of the Public Guardian (OPG) before it can be used. The registration certificate will show the OPG reference number. Financial institutions will ask to see a certified copy.' },
-      { label: 'Downloading documents', detail: 'Use the Download button next to any document to save a copy. Store these securely, you may need to send certified copies to banks, insurers, and HMRC.' },
-      { label: 'What to do if documents are missing', detail: 'If you cannot find a key document here, check with the plan owner\'s solicitor, bank, or family members. For a missing will, the Certainty National Will Register can run a search. For lost LPAs, contact the OPG directly.' },
-    ],
-  },
-  {
-    icon: Wallet,
-    title: 'Handling accounts and finances',
-    color: 'bg-blue-50 text-blue-700',
-    items: [
-      { label: 'Notifying financial institutions', detail: 'Each bank, insurer, and pension provider must be notified separately. Most accept a death certificate and grant of probate. Use the Tell Us Once service (gov.uk) to notify multiple government departments in a single step.' },
-      { label: 'Freezing and closing accounts', detail: 'Accounts are typically frozen on notification of death. Joint accounts may transfer automatically to the surviving holder. Sole accounts require probate before funds can be released.' },
-      { label: 'Pensions and life insurance', detail: 'These are usually written in trust and paid outside of probate, check the nomination of beneficiary forms. Contact the provider directly with the policy number shown in the Accounts section.' },
-      { label: 'Subscriptions and direct debits', detail: 'Cancel ongoing subscriptions as quickly as possible to avoid charges. Check the Subscriptions section for a list. Contact each provider with proof of death.' },
-      { label: 'Tax and final returns', detail: 'A final income tax return may be required for the year of death. If the estate exceeds the inheritance tax threshold (currently £325,000 + any allowances), an IHT400 form must be filed with HMRC before probate.' },
-    ],
-  },
-  {
-    icon: Users,
-    title: 'Working with other people',
-    color: 'bg-violet-50 text-violet-700',
-    items: [
-      { label: 'Co-executors', detail: 'If there are multiple executors, all must act together unless one formally steps aside. Decisions should be agreed in writing where possible. Disagreements between executors can delay probate significantly.' },
-      { label: 'Beneficiaries', detail: 'You are not obliged to share the details of the estate with beneficiaries during administration, only the final distribution. However, keeping them reasonably informed reduces disputes.' },
-      { label: 'Solicitors and professionals', detail: 'For complex estates, instruct a probate solicitor early. Look in the People section for the plan owner\'s nominated solicitor. Most estate solicitors charge a percentage of the estate value or an hourly rate.' },
-      { label: 'When to seek legal advice', detail: 'Always seek legal advice if: the estate includes a business, overseas assets, disputed property, estranged family members, or debts that exceed the estate\'s value.' },
-    ],
-  },
-  {
-    icon: AlertTriangle,
-    title: 'Practical steps when the time comes',
-    color: 'bg-amber-50 text-amber-700',
-    items: [
-      { label: 'Register the death', detail: 'In England and Wales, a death must be registered within 5 days at a local register office. You will receive a death certificate, request at least 10 certified copies, as institutions will ask for originals.' },
-      { label: 'Locate the will and contact solicitors', detail: 'Do this before making any major financial decisions. The will may name specific funeral wishes, executors, and bequests that affect immediate next steps.' },
-      { label: 'Apply for probate', detail: 'If the estate requires it, apply to the Probate Registry for a Grant of Probate (or Letters of Administration if there is no will). This typically takes 4-8 weeks. Estates under £10,000 may not require probate.' },
-      { label: 'Notify Everstead via this dashboard', detail: 'Use the Report a Death button in the left panel to formally notify Everstead. This will trigger a verification process and, once confirmed, release any personal messages addressed to you.' },
-    ],
-  },
+  { icon: ShieldCheck,   key: 'role',      color: 'bg-navy-50 text-navy-700' },
+  { icon: FileText,      key: 'documents', color: 'bg-emerald-50 text-emerald-700' },
+  { icon: Wallet,        key: 'finances',  color: 'bg-blue-50 text-blue-700' },
+  { icon: Users,         key: 'people',    color: 'bg-violet-50 text-violet-700' },
+  { icon: AlertTriangle, key: 'practical', color: 'bg-amber-50 text-amber-700' },
 ]
 
 function DelegateResourcesPanel() {
+  const { t } = useTranslation('delegate')
   const [expanded, setExpanded] = useState(null)
   const toggle = i => setExpanded(v => v === i ? null : i)
 
   return (
-    <Panel title="Help & Guides" icon={HelpCircle}>
+    <Panel title={t('resources.title')} icon={HelpCircle}>
       <div className="space-y-3">
         {DELEGATE_GUIDES.map((guide, i) => {
           const Icon = guide.icon
+          const items = t(`resources.guides.${guide.key}.items`, { returnObjects: true })
           return (
             <div key={i} className="rounded-2xl border border-stone-200 overflow-hidden bg-white">
               <button
@@ -1380,14 +1342,14 @@ function DelegateResourcesPanel() {
                   <Icon size={16} />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="font-semibold text-navy-900 text-sm">{guide.title}</p>
-                  <p className="text-xs text-stone-400 mt-0.5">{guide.items.length} topics</p>
+                  <p className="font-semibold text-navy-900 text-sm">{t(`resources.guides.${guide.key}.title`)}</p>
+                  <p className="text-xs text-stone-400 mt-0.5">{t('resources.topics', { count: items.length })}</p>
                 </div>
                 <ChevronRight size={15} className={`text-stone-400 transition-transform shrink-0 ${expanded === i ? 'rotate-90' : ''}`} />
               </button>
               {expanded === i && (
                 <div className="border-t border-stone-100 divide-y divide-stone-50">
-                  {guide.items.map((item, j) => (
+                  {items.map((item, j) => (
                     <div key={j} className="px-5 py-4">
                       <p className="text-sm font-semibold text-navy-800 mb-1">{item.label}</p>
                       <p className="text-sm text-stone-500 leading-relaxed">{item.detail}</p>
@@ -1402,14 +1364,14 @@ function DelegateResourcesPanel() {
 
       <div className="mt-5 bg-stone-50 border border-stone-200 rounded-2xl px-5 py-4 flex flex-col sm:flex-row sm:items-center gap-4">
         <div className="flex-1">
-          <p className="font-semibold text-navy-900 text-sm">Need further help?</p>
-          <p className="text-xs text-stone-500 mt-1 leading-relaxed">Our support team can assist with questions about accessing this plan. For legal and probate matters, we always recommend consulting a qualified solicitor.</p>
+          <p className="font-semibold text-navy-900 text-sm">{t('resources.supportTitle')}</p>
+          <p className="text-xs text-stone-500 mt-1 leading-relaxed">{t('resources.supportBody')}</p>
         </div>
         <a
           href="mailto:support@everstead.care"
           className="inline-flex items-center gap-2 text-xs font-semibold text-navy-700 border border-stone-300 rounded-lg px-3 py-2 hover:bg-stone-100 transition-colors shrink-0"
         >
-          <Mail size={13} /> Contact support
+          <Mail size={13} /> {t('resources.contactSupport')}
         </a>
       </div>
     </Panel>
@@ -1420,6 +1382,7 @@ function DelegateResourcesPanel() {
 // DELEGATE SETTINGS PANEL
 // ─────────────────────────────────────────────────────────────
 function DelegateSettingsPanel({ invite, isDemo }) {
+  const { t } = useTranslation('delegate')
   const inputCls = 'w-full border border-stone-200 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-navy-300 bg-white'
 
   // Profile state — pre-filled from invite
@@ -1483,8 +1446,8 @@ function DelegateSettingsPanel({ invite, isDemo }) {
   const handlePasswordSave = async (e) => {
     e.preventDefault()
     setPwError('')
-    if (pwForm.next !== pwForm.confirm) { setPwError('New passwords do not match.'); return }
-    if (pwForm.next.length < 8) { setPwError('Password must be at least 8 characters.'); return }
+    if (pwForm.next !== pwForm.confirm) { setPwError(t('settings.pwMismatch')); return }
+    if (pwForm.next.length < 8) { setPwError(t('settings.pwTooShort')); return }
     setPwSaving(true)
     try {
       if (!isDemo) {
@@ -1497,7 +1460,7 @@ function DelegateSettingsPanel({ invite, isDemo }) {
       setPwForm({ current: '', next: '', confirm: '' })
       setTimeout(() => setPwSaved(false), 3000)
     } catch (err) {
-      setPwError(err.message || 'Could not update password.')
+      setPwError(err.message || t('settings.pwUpdateFailed'))
     } finally {
       setPwSaving(false)
     }
@@ -1534,7 +1497,7 @@ function DelegateSettingsPanel({ invite, isDemo }) {
         <button
           type="button"
           onClick={() => setShowPw(p => ({ ...p, [field]: !p[field] }))}
-          aria-label={showPw[field] ? 'Hide password' : 'Show password'}
+          aria-label={showPw[field] ? t('settings.hidePassword') : t('settings.showPassword')}
           className="absolute right-3 top-1/2 -translate-y-1/2 text-stone-400 hover:text-stone-700 transition-colors"
         >
           {showPw[field] ? <EyeOff size={15} /> : <Eye size={15} />}
@@ -1545,7 +1508,7 @@ function DelegateSettingsPanel({ invite, isDemo }) {
 
   const SavedBadge = () => (
     <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-full px-3 py-1">
-      <CheckCircle2 size={12} /> Saved
+      <CheckCircle2 size={12} /> {t('settings.saved')}
     </span>
   )
 
@@ -1560,8 +1523,8 @@ function DelegateSettingsPanel({ invite, isDemo }) {
               <UserRound size={18} />
             </div>
             <div>
-              <h2 className="text-base font-semibold text-navy-950 leading-none">Personal details</h2>
-              <p className="text-xs text-stone-400 mt-0.5">How Everstead contacts you</p>
+              <h2 className="text-base font-semibold text-navy-950 leading-none">{t('settings.personalTitle')}</h2>
+              <p className="text-xs text-stone-400 mt-0.5">{t('settings.personalSubtitle')}</p>
             </div>
           </div>
           {profileSaved && <SavedBadge />}
@@ -1570,49 +1533,50 @@ function DelegateSettingsPanel({ invite, isDemo }) {
         <form onSubmit={handleProfileSave} className="space-y-4">
           <div className="grid sm:grid-cols-2 gap-4">
             <div className="space-y-1">
-              <label className="block text-xs font-semibold text-stone-600">Full name</label>
+              <label className="block text-xs font-semibold text-stone-600">{t('settings.fullName')}</label>
               <input className={inputCls} value={profile.full_name} onChange={e => setProfile(p => ({ ...p, full_name: e.target.value }))} required />
             </div>
             <div className="space-y-1">
-              <label className="block text-xs font-semibold text-stone-600">Email address</label>
+              <label className="block text-xs font-semibold text-stone-600">{t('settings.email')}</label>
               <input type="email" className={`${inputCls} bg-stone-50 text-stone-500 cursor-not-allowed`} value={profile.email} readOnly />
-              <p className="text-xs text-stone-400">To change your email, contact support@everstead.care</p>
+              <p className="text-xs text-stone-400">{t('settings.emailNote')}</p>
             </div>
             <div className="space-y-1">
-              <label className="block text-xs font-semibold text-stone-600">Phone number</label>
-              <input type="tel" className={inputCls} value={profile.phone} onChange={e => setProfile(p => ({ ...p, phone: e.target.value }))} placeholder="+44 7700 000000" />
+              <label className="block text-xs font-semibold text-stone-600">{t('settings.phone')}</label>
+              <input type="tel" className={inputCls} value={profile.phone} onChange={e => setProfile(p => ({ ...p, phone: e.target.value }))} placeholder={t('settings.phonePlaceholder')} />
             </div>
           </div>
 
           <div className="pt-1">
-            <p className="text-xs font-semibold text-stone-500 mb-3 uppercase tracking-wide">Address</p>
+            <p className="text-xs font-semibold text-stone-500 mb-3 uppercase tracking-wide">{t('settings.addressHeading')}</p>
             <div className="grid sm:grid-cols-2 gap-4">
               <div className="space-y-1 sm:col-span-2">
-                <label className="block text-xs font-semibold text-stone-600">Address line 1</label>
-                <input className={inputCls} value={profile.address_line1} onChange={e => setProfile(p => ({ ...p, address_line1: e.target.value }))} placeholder="House name or number, street" />
+                <label className="block text-xs font-semibold text-stone-600">{t('settings.address1')}</label>
+                <input className={inputCls} value={profile.address_line1} onChange={e => setProfile(p => ({ ...p, address_line1: e.target.value }))} placeholder={t('settings.address1Placeholder')} />
               </div>
               <div className="space-y-1 sm:col-span-2">
-                <label className="block text-xs font-semibold text-stone-600">Address line 2</label>
-                <input className={inputCls} value={profile.address_line2} onChange={e => setProfile(p => ({ ...p, address_line2: e.target.value }))} placeholder="Apartment, suite, etc. (optional)" />
+                <label className="block text-xs font-semibold text-stone-600">{t('settings.address2')}</label>
+                <input className={inputCls} value={profile.address_line2} onChange={e => setProfile(p => ({ ...p, address_line2: e.target.value }))} placeholder={t('settings.address2Placeholder')} />
               </div>
               <div className="space-y-1">
-                <label className="block text-xs font-semibold text-stone-600">City</label>
-                <input className={inputCls} value={profile.city} onChange={e => setProfile(p => ({ ...p, city: e.target.value }))} placeholder="London" />
+                <label className="block text-xs font-semibold text-stone-600">{t('settings.city')}</label>
+                <input className={inputCls} value={profile.city} onChange={e => setProfile(p => ({ ...p, city: e.target.value }))} placeholder={t('settings.cityPlaceholder')} />
               </div>
               <div className="space-y-1">
-                <label className="block text-xs font-semibold text-stone-600">Postcode</label>
-                <input className={inputCls} value={profile.postcode} onChange={e => setProfile(p => ({ ...p, postcode: e.target.value }))} placeholder="SW1A 1AA" />
+                <label className="block text-xs font-semibold text-stone-600">{t('settings.postcode')}</label>
+                <input className={inputCls} value={profile.postcode} onChange={e => setProfile(p => ({ ...p, postcode: e.target.value }))} placeholder={t('settings.postcodePlaceholder')} />
               </div>
               <div className="space-y-1 sm:col-span-2">
-                <label className="block text-xs font-semibold text-stone-600">Country</label>
+                <label className="block text-xs font-semibold text-stone-600">{t('settings.country')}</label>
+                {/* Stored values stay in English in every locale — only the visible labels are translated. */}
                 <select className={inputCls} value={profile.country} onChange={e => setProfile(p => ({ ...p, country: e.target.value }))}>
-                  <option>United Kingdom</option>
-                  <option>Ireland</option>
-                  <option>United States</option>
-                  <option>Canada</option>
-                  <option>Australia</option>
-                  <option>New Zealand</option>
-                  <option>Other</option>
+                  <option value="United Kingdom">{t('settings.countries.uk')}</option>
+                  <option value="Ireland">{t('settings.countries.ireland')}</option>
+                  <option value="United States">{t('settings.countries.us')}</option>
+                  <option value="Canada">{t('settings.countries.canada')}</option>
+                  <option value="Australia">{t('settings.countries.australia')}</option>
+                  <option value="New Zealand">{t('settings.countries.nz')}</option>
+                  <option value="Other">{t('settings.countries.other')}</option>
                 </select>
               </div>
             </div>
@@ -1624,7 +1588,7 @@ function DelegateSettingsPanel({ invite, isDemo }) {
               disabled={profileSaving}
               className="inline-flex items-center gap-2 btn-aurora text-white text-sm font-semibold px-5 py-2.5 rounded-full hover:bg-navy-700 transition-colors disabled:opacity-50"
             >
-              {profileSaving ? 'Saving…' : 'Save changes'}
+              {profileSaving ? t('settings.saving') : t('settings.saveChanges')}
             </button>
           </div>
         </form>
@@ -1638,8 +1602,8 @@ function DelegateSettingsPanel({ invite, isDemo }) {
               <Lock size={18} />
             </div>
             <div>
-              <h2 className="text-base font-semibold text-navy-950 leading-none">Change password</h2>
-              <p className="text-xs text-stone-400 mt-0.5">Minimum 8 characters</p>
+              <h2 className="text-base font-semibold text-navy-950 leading-none">{t('settings.passwordTitle')}</h2>
+              <p className="text-xs text-stone-400 mt-0.5">{t('settings.passwordSubtitle')}</p>
             </div>
           </div>
           {pwSaved && <SavedBadge />}
@@ -1647,10 +1611,10 @@ function DelegateSettingsPanel({ invite, isDemo }) {
 
         <form onSubmit={handlePasswordSave} className="space-y-4">
           <div className="grid sm:grid-cols-2 gap-4">
-            <PwInput id="current" label="Current password" field="current" />
+            <PwInput id="current" label={t('settings.currentPassword')} field="current" />
             <div /> {/* spacer */}
-            <PwInput id="next" label="New password" field="next" />
-            <PwInput id="confirm" label="Confirm new password" field="confirm" />
+            <PwInput id="next" label={t('settings.newPassword')} field="next" />
+            <PwInput id="confirm" label={t('settings.confirmPassword')} field="confirm" />
           </div>
 
           {pwError && (
@@ -1664,7 +1628,7 @@ function DelegateSettingsPanel({ invite, isDemo }) {
             disabled={pwSaving}
             className="inline-flex items-center gap-2 btn-aurora text-white text-sm font-semibold px-5 py-2.5 rounded-full hover:bg-navy-700 transition-colors disabled:opacity-50"
           >
-            {pwSaving ? 'Updating…' : 'Update password'}
+            {pwSaving ? t('settings.updating') : t('settings.updatePassword')}
           </button>
         </form>
       </section>
@@ -1677,25 +1641,19 @@ function DelegateSettingsPanel({ invite, isDemo }) {
               <Bell size={18} />
             </div>
             <div>
-              <h2 className="text-base font-semibold text-navy-950 leading-none">Notification preferences</h2>
-              <p className="text-xs text-stone-400 mt-0.5">Choose what Everstead sends you</p>
+              <h2 className="text-base font-semibold text-navy-950 leading-none">{t('settings.notifsTitle')}</h2>
+              <p className="text-xs text-stone-400 mt-0.5">{t('settings.notifsSubtitle')}</p>
             </div>
           </div>
           {notifSaved && <SavedBadge />}
         </div>
 
         <div className="space-y-3">
-          {[
-            { key: 'plan_updates',    label: 'Plan updates',          desc: 'When the plan owner adds or changes something' },
-            { key: 'new_messages',    label: 'New personal messages', desc: 'When a message is released to you' },
-            { key: 'alerts_critical', label: 'Critical alerts',       desc: 'Urgent items that need your attention' },
-            { key: 'alerts_info',     label: 'Informational alerts',  desc: 'Non-urgent updates and reminders' },
-            { key: 'digest_weekly',   label: 'Weekly digest',         desc: 'A summary of plan activity every Monday' },
-          ].map(({ key, label, desc }) => (
+          {['plan_updates', 'new_messages', 'alerts_critical', 'alerts_info', 'digest_weekly'].map(key => (
             <label key={key} className="flex items-center justify-between gap-4 py-3 border-b border-stone-100 last:border-0 cursor-pointer group">
               <div>
-                <p className="text-sm font-medium text-navy-900">{label}</p>
-                <p className="text-xs text-stone-400">{desc}</p>
+                <p className="text-sm font-medium text-navy-900">{t(`settings.notifs.${key}.label`)}</p>
+                <p className="text-xs text-stone-400">{t(`settings.notifs.${key}.desc`)}</p>
               </div>
               {/* Toggle */}
               <button
@@ -1716,7 +1674,7 @@ function DelegateSettingsPanel({ invite, isDemo }) {
           onClick={handleNotifSave}
           className="mt-5 inline-flex items-center gap-2 btn-aurora text-white text-sm font-semibold px-5 py-2.5 rounded-full hover:bg-navy-700 transition-colors"
         >
-          Save preferences
+          {t('settings.savePrefs')}
         </button>
       </section>
 
@@ -1728,6 +1686,7 @@ function DelegateSettingsPanel({ invite, isDemo }) {
 // DELEGATE MESSAGE CARD
 // ─────────────────────────────────────────────────────────────
 function DelegateMessageCard({ msg, ownerName, inviteToken, isDemo }) {
+  const { t } = useTranslation('delegate')
   const [open, setOpen] = useState(false)
   const isMedia = msg.type === 'video' || msg.type === 'photo'
   const hasMedia = !!(msg.media_url || msg.video_url)
@@ -1758,7 +1717,7 @@ function DelegateMessageCard({ msg, ownerName, inviteToken, isDemo }) {
   }, [open, isMedia, hasMedia, isDemo, mediaState, inviteToken, msg.id])
 
   const fmtDate = (iso) => {
-    try { return new Intl.DateTimeFormat('en-GB', { dateStyle: 'long' }).format(new Date(iso)) } catch { return '—' }
+    try { return new Intl.DateTimeFormat(dateLocale(), { dateStyle: 'long' }).format(new Date(iso)) } catch { return '—' }
   }
 
   return (
@@ -1773,13 +1732,13 @@ function DelegateMessageCard({ msg, ownerName, inviteToken, isDemo }) {
         <div className="flex-1 min-w-0">
           <p className="font-semibold text-navy-900 text-sm truncate">{msg.title}</p>
           <p className="text-xs text-stone-500 mt-0.5">
-            From <span className="font-medium text-navy-700">{ownerName || 'plan owner'}</span>
-            {msg.released_at ? ` · Released ${fmtDate(msg.released_at)}` : ''}
+            {t('messages.card.from')} <span className="font-medium text-navy-700">{ownerName || t('messages.card.planOwnerFallback')}</span>
+            {msg.released_at ? ` · ${t('messages.card.released', { date: fmtDate(msg.released_at) })}` : ''}
           </p>
         </div>
         <div className="flex items-center gap-2 shrink-0">
           <span className={`text-xs font-medium px-2.5 py-1 rounded-full border ${msg.type === 'video' ? 'bg-purple-50 text-purple-700 border-purple-200' : 'bg-navy-50 text-navy-700 border-navy-200'}`}>
-            {msg.type === 'video' ? 'Video' : msg.type === 'photo' ? 'Photo' : 'Note'}
+            {msg.type === 'video' ? t('messages.card.typeVideo') : msg.type === 'photo' ? t('messages.card.typePhoto') : t('messages.card.typeNote')}
           </span>
           <ChevronDown size={15} className={`text-stone-400 transition-transform ${open ? 'rotate-180' : ''}`} />
         </div>
@@ -1794,7 +1753,7 @@ function DelegateMessageCard({ msg, ownerName, inviteToken, isDemo }) {
                   {msg.type === 'video' ? <Play size={26} className="text-white ml-1" /> : <ImageIcon size={26} className="text-white" />}
                 </div>
                 <p className="text-sm text-stone-300 font-medium">{msg.title}</p>
-                <p className="text-xs text-stone-500">{isDemo ? 'Playback available in your live plan' : `This ${msg.type} is stored securely.`}</p>
+                <p className="text-xs text-stone-500">{isDemo ? t('messages.card.demoPlayback') : t('messages.card.storedSecurely', { type: t(`messages.card.typeNoun.${msg.type}`, { defaultValue: msg.type }) })}</p>
               </div>
             ) : mediaState === 'ready' && mediaUrl ? (
               <div className="rounded-xl overflow-hidden border border-stone-200 bg-white">
@@ -1803,14 +1762,14 @@ function DelegateMessageCard({ msg, ownerName, inviteToken, isDemo }) {
                   : <img src={mediaUrl} alt={msg.title} className="w-full max-h-96 object-contain bg-stone-50" />}
               </div>
             ) : mediaState === 'failed' ? (
-              <p className="text-xs text-stone-400 py-8 text-center">This {msg.type} couldn't be loaded right now, please try again later.</p>
+              <p className="text-xs text-stone-400 py-8 text-center">{t('messages.card.loadFailed', { type: t(`messages.card.typeNoun.${msg.type}`, { defaultValue: msg.type }) })}</p>
             ) : (
               <div className="flex items-center justify-center py-10"><RefreshCw size={18} className="animate-spin text-stone-300" /></div>
             )
           ) : (
             <div>
               <p className="text-xs font-semibold text-stone-500 mb-3 uppercase tracking-wide">
-                A personal message from {ownerName || 'the plan owner'}
+                {t('messages.card.personalFrom', { name: ownerName || t('common.thePlanOwner') })}
               </p>
               <blockquote className="border-l-4 border-navy-300 pl-4 text-sm text-navy-900 leading-relaxed italic whitespace-pre-wrap">
                 {msg.content}
@@ -1818,8 +1777,8 @@ function DelegateMessageCard({ msg, ownerName, inviteToken, isDemo }) {
             </div>
           )}
           <p className="text-xs text-stone-400 pt-1">
-            This message was written by {ownerName || 'the plan owner'} and addressed specifically to you.
-            {msg.released_at ? ` It was released on ${fmtDate(msg.released_at)}.` : ''}
+            {t('messages.card.footer', { name: ownerName || t('common.thePlanOwner') })}
+            {msg.released_at ? ` ${t('messages.card.footerReleased', { date: fmtDate(msg.released_at) })}` : ''}
           </p>
         </div>
       )}
@@ -1831,6 +1790,7 @@ function DelegateMessageCard({ msg, ownerName, inviteToken, isDemo }) {
 // REPORT A DEATH PANEL
 // ─────────────────────────────────────────────────────────────
 function ReportDeathPanel({ owner, invite, isDemo, onSubmit }) {
+  const { t } = useTranslation('delegate')
   const [step, setStep] = useState('intro') // intro | form | submitted
   const emptyForm = {
     reporter_name: invite?.name || '',
@@ -1850,7 +1810,7 @@ function ReportDeathPanel({ owner, invite, isDemo, onSubmit }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    if (!form.consent) { setError('Please confirm the declaration before submitting.'); return }
+    if (!form.consent) { setError(t('report.consentError')); return }
     setError('')
     setSaving(true)
     try {
@@ -1864,7 +1824,7 @@ function ReportDeathPanel({ owner, invite, isDemo, onSubmit }) {
       })
       setStep('submitted')
     } catch (err) {
-      setError('Something went wrong. Please try again or contact support@everstead.care.')
+      setError(t('report.submitFailed'))
     } finally {
       setSaving(false)
     }
@@ -1876,13 +1836,12 @@ function ReportDeathPanel({ owner, invite, isDemo, onSubmit }) {
         <div className="w-16 h-16 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center mx-auto">
           <CheckCircle2 size={30} />
         </div>
-        <h2 className="text-xl font-semibold text-emerald-900">Report received</h2>
+        <h2 className="text-xl font-semibold text-emerald-900">{t('reportDeath.submittedTitle')}</h2>
         <p className="text-sm text-emerald-800 leading-relaxed max-w-lg mx-auto">
-          We have received your notification. The Everstead team will review and verify the information within <strong>2 business days</strong>. The plan owner's subscription will be placed in a 30-day wind-down period, after which the account will be closed and data securely handled in accordance with our retention policy.
+          <Trans t={t} i18nKey="reportDeath.submittedBody" />
         </p>
         <p className="text-xs text-emerald-700">
-          A confirmation has been sent to <strong>{form.reporter_email}</strong>. If you have any questions, contact{' '}
-          <a href="mailto:support@everstead.care" className="underline">support@everstead.care</a>.
+          <Trans t={t} i18nKey="report.confirmationSent" values={{ email: form.reporter_email }} components={{ a: <a href="mailto:support@everstead.care" className="underline" /> }} />
         </p>
       </section>
     )
@@ -1894,21 +1853,16 @@ function ReportDeathPanel({ owner, invite, isDemo, onSubmit }) {
         <div className="bg-red-600 px-8 py-6 flex items-center gap-4">
           <HeartCrack size={26} className="text-white shrink-0" />
           <div>
-            <h2 className="text-xl font-semibold text-white">Report a death</h2>
-            <p className="text-sm text-red-100 mt-0.5">Notify Everstead that {owner?.full_name || 'the plan owner'} has passed away</p>
+            <h2 className="text-xl font-semibold text-white">{t('reportDeath.title')}</h2>
+            <p className="text-sm text-red-100 mt-0.5">{t('reportDeath.subtitle', { name: owner?.full_name || t('common.thePlanOwner') })}</p>
           </div>
         </div>
         <div className="px-8 py-7 space-y-5">
           <p className="text-sm text-stone-700 leading-relaxed">
-            We are deeply sorry for your loss. This process allows you to formally notify Everstead of the passing of <strong>{owner?.full_name || 'the plan owner'}</strong>. Once verified by our team:
+            <Trans t={t} i18nKey="reportDeath.intro" values={{ name: owner?.full_name || t('common.thePlanOwner') }} />
           </p>
           <ul className="space-y-2 text-sm text-stone-700">
-            {[
-              'The subscription will enter a 30-day wind-down period, no further charges will be taken.',
-              'Delegate access to this plan will remain active for 90 days to allow proper handoff.',
-              'Data will be securely archived and then deleted in accordance with our retention policy.',
-              'You will receive a confirmation email and reference number within 2 business days.',
-            ].map((item, i) => (
+            {t('reportDeath.bullets', { returnObjects: true }).map((item, i) => (
               <li key={i} className="flex items-start gap-2.5">
                 <CheckCircle2 size={14} className="text-emerald-500 mt-0.5 shrink-0" />
                 <span>{item}</span>
@@ -1918,7 +1872,7 @@ function ReportDeathPanel({ owner, invite, isDemo, onSubmit }) {
           <div className="flex items-start gap-3 bg-amber-50 border border-amber-200 rounded-xl px-4 py-3.5">
             <AlertCircle size={15} className="text-amber-700 mt-0.5 shrink-0" />
             <p className="text-xs text-amber-800 leading-relaxed">
-              This form is for notifications only. Everstead is not a legal service. Please also contact relevant authorities, financial institutions, and legal professionals as required.
+              {t('reportDeath.notice')}
             </p>
           </div>
           <div className="flex gap-3 pt-2">
@@ -1926,7 +1880,7 @@ function ReportDeathPanel({ owner, invite, isDemo, onSubmit }) {
               onClick={() => setStep('form')}
               className="inline-flex items-center gap-2 bg-red-600 text-white text-sm font-semibold px-5 py-3 rounded-xl hover:bg-red-700 transition-colors"
             >
-              Continue to form <ArrowRight size={15} />
+              {t('report.continueToForm')} <ArrowRight size={15} />
             </button>
           </div>
         </div>
@@ -1940,18 +1894,18 @@ function ReportDeathPanel({ owner, invite, isDemo, onSubmit }) {
       <div className="bg-red-600 px-8 py-6 flex items-center gap-4">
         <HeartCrack size={26} className="text-white shrink-0" />
         <div>
-          <h2 className="text-xl font-semibold text-white">Report a death, notification form</h2>
-          <p className="text-sm text-red-100 mt-0.5">All fields marked * are required</p>
+          <h2 className="text-xl font-semibold text-white">{t('reportDeath.formTitle')}</h2>
+          <p className="text-sm text-red-100 mt-0.5">{t('report.requiredNote')}</p>
         </div>
       </div>
 
       <form onSubmit={handleSubmit} className="px-8 py-7 space-y-6">
         {/* Reporter details */}
         <div>
-          <h3 className="text-sm font-semibold text-navy-900 mb-4 pb-2 border-b border-stone-100">Your details (reporter)</h3>
+          <h3 className="text-sm font-semibold text-navy-900 mb-4 pb-2 border-b border-stone-100">{t('report.reporterHeading')}</h3>
           <div className="grid sm:grid-cols-2 gap-4">
             <div className="space-y-1">
-              <label className="block text-xs font-semibold text-stone-600">Full name *</label>
+              <label className="block text-xs font-semibold text-stone-600">{t('report.fullName')}</label>
               <input
                 className="w-full border border-stone-200 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-navy-300"
                 value={form.reporter_name}
@@ -1960,7 +1914,7 @@ function ReportDeathPanel({ owner, invite, isDemo, onSubmit }) {
               />
             </div>
             <div className="space-y-1">
-              <label className="block text-xs font-semibold text-stone-600">Email address *</label>
+              <label className="block text-xs font-semibold text-stone-600">{t('report.email')}</label>
               <input
                 type="email"
                 className="w-full border border-stone-200 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-navy-300"
@@ -1970,42 +1924,43 @@ function ReportDeathPanel({ owner, invite, isDemo, onSubmit }) {
               />
             </div>
             <div className="space-y-1">
-              <label className="block text-xs font-semibold text-stone-600">Phone number *</label>
+              <label className="block text-xs font-semibold text-stone-600">{t('report.phone')}</label>
               <input
                 type="tel"
                 className="w-full border border-stone-200 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-navy-300"
                 value={form.reporter_phone}
                 onChange={e => setForm(p => ({ ...p, reporter_phone: e.target.value }))}
-                placeholder="+44 7700 000000"
+                placeholder={t('report.phonePlaceholder')}
                 required
               />
             </div>
             <div className="space-y-1">
-              <label className="block text-xs font-semibold text-stone-600">Your role in this plan *</label>
+              <label className="block text-xs font-semibold text-stone-600">{t('report.role')}</label>
               <input
                 className="w-full border border-stone-200 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-navy-300"
                 value={form.reporter_role}
                 onChange={e => setForm(p => ({ ...p, reporter_role: e.target.value }))}
-                placeholder="e.g. Primary Executor"
+                placeholder={t('reportDeath.rolePlaceholder')}
                 required
               />
             </div>
             <div className="space-y-1">
-              <label className="block text-xs font-semibold text-stone-600">Relationship to the deceased *</label>
+              <label className="block text-xs font-semibold text-stone-600">{t('reportDeath.relationshipLabel')}</label>
+              {/* Submitted relationship values stay in English in every locale — only the visible labels are translated. */}
               <select
                 className="w-full border border-stone-200 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-navy-300"
                 value={form.relationship}
                 onChange={e => setForm(p => ({ ...p, relationship: e.target.value }))}
                 required
               >
-                <option value="" disabled>Select…</option>
-                <option>Spouse / Partner</option>
-                <option>Child</option>
-                <option>Sibling</option>
-                <option>Parent</option>
-                <option>Named Executor</option>
-                <option>Solicitor / Attorney</option>
-                <option>Other</option>
+                <option value="" disabled>{t('report.select')}</option>
+                <option value="Spouse / Partner">{t('report.relationship.spouse')}</option>
+                <option value="Child">{t('report.relationship.child')}</option>
+                <option value="Sibling">{t('report.relationship.sibling')}</option>
+                <option value="Parent">{t('report.relationship.parent')}</option>
+                <option value="Named Executor">{t('report.relationship.executor')}</option>
+                <option value="Solicitor / Attorney">{t('report.relationship.solicitor')}</option>
+                <option value="Other">{t('report.relationship.other')}</option>
               </select>
             </div>
           </div>
@@ -2013,10 +1968,10 @@ function ReportDeathPanel({ owner, invite, isDemo, onSubmit }) {
 
         {/* Death details */}
         <div>
-          <h3 className="text-sm font-semibold text-navy-900 mb-4 pb-2 border-b border-stone-100">Details of passing</h3>
+          <h3 className="text-sm font-semibold text-navy-900 mb-4 pb-2 border-b border-stone-100">{t('reportDeath.detailsHeading')}</h3>
           <div className="grid sm:grid-cols-2 gap-4">
             <div className="space-y-1">
-              <label className="block text-xs font-semibold text-stone-600">Date of death *</label>
+              <label className="block text-xs font-semibold text-stone-600">{t('reportDeath.dateLabel')}</label>
               <input
                 type="date"
                 className="w-full border border-stone-200 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-navy-300"
@@ -2027,21 +1982,21 @@ function ReportDeathPanel({ owner, invite, isDemo, onSubmit }) {
               />
             </div>
             <div className="space-y-1">
-              <label className="block text-xs font-semibold text-stone-600">Place of death</label>
+              <label className="block text-xs font-semibold text-stone-600">{t('reportDeath.placeLabel')}</label>
               <input
                 className="w-full border border-stone-200 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-navy-300"
                 value={form.place_of_death}
                 onChange={e => setForm(p => ({ ...p, place_of_death: e.target.value }))}
-                placeholder="e.g. London, United Kingdom"
+                placeholder={t('reportDeath.placePlaceholder')}
               />
             </div>
             <div className="space-y-1 sm:col-span-2">
-              <label className="block text-xs font-semibold text-stone-600">Death certificate number (if available)</label>
+              <label className="block text-xs font-semibold text-stone-600">{t('reportDeath.certLabel')}</label>
               <input
                 className="w-full border border-stone-200 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-navy-300"
                 value={form.death_cert_number}
                 onChange={e => setForm(p => ({ ...p, death_cert_number: e.target.value }))}
-                placeholder="Leave blank if not yet obtained"
+                placeholder={t('reportDeath.certPlaceholder')}
               />
             </div>
           </div>
@@ -2049,13 +2004,13 @@ function ReportDeathPanel({ owner, invite, isDemo, onSubmit }) {
 
         {/* Supporting document upload */}
         <div>
-          <h3 className="text-sm font-semibold text-navy-900 mb-4 pb-2 border-b border-stone-100">Supporting document (optional)</h3>
+          <h3 className="text-sm font-semibold text-navy-900 mb-4 pb-2 border-b border-stone-100">{t('report.uploadHeading')}</h3>
           <div className="border-2 border-dashed border-stone-200 rounded-xl p-5 text-center">
             <Upload size={22} className="mx-auto text-stone-300 mb-2" />
-            <p className="text-sm text-stone-500">Upload a copy of the death certificate or coroner's letter</p>
-            <p className="text-xs text-stone-400 mt-1">PDF, JPG, PNG, max 10 MB. Document will be securely stored.</p>
+            <p className="text-sm text-stone-500">{t('reportDeath.uploadLead')}</p>
+            <p className="text-xs text-stone-400 mt-1">{t('report.uploadMeta')}</p>
             <label className="cursor-pointer mt-3 inline-flex items-center gap-2 border border-stone-300 text-stone-600 text-xs font-semibold px-4 py-2 rounded-lg hover:bg-stone-100 transition-colors">
-              <Upload size={13} /> Choose file
+              <Upload size={13} /> {t('report.chooseFile')}
               <input type="file" accept=".pdf,.jpg,.jpeg,.png" className="sr-only" />
             </label>
           </div>
@@ -2063,12 +2018,12 @@ function ReportDeathPanel({ owner, invite, isDemo, onSubmit }) {
 
         {/* Additional notes */}
         <div className="space-y-1">
-          <label className="block text-xs font-semibold text-stone-600">Additional notes</label>
+          <label className="block text-xs font-semibold text-stone-600">{t('reportDeath.notesLabel')}</label>
           <textarea
             className="w-full border border-stone-200 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-navy-300 min-h-[90px] resize-y"
             value={form.additional_notes}
             onChange={e => setForm(p => ({ ...p, additional_notes: e.target.value }))}
-            placeholder="Any additional context for the Everstead team…"
+            placeholder={t('reportDeath.notesPlaceholder')}
           />
         </div>
 
@@ -2082,7 +2037,7 @@ function ReportDeathPanel({ owner, invite, isDemo, onSubmit }) {
               onChange={e => setForm(p => ({ ...p, consent: e.target.checked }))}
             />
             <p className="text-xs text-stone-600 leading-relaxed">
-              I confirm that I am an authorised delegate on this Everstead plan, that the information provided is accurate to the best of my knowledge, and that I have the right to notify Everstead of the death of the plan owner. I understand that Everstead will verify this report before taking any action on the account.
+              {t('reportDeath.consent')}
             </p>
           </label>
         </div>
@@ -2099,14 +2054,14 @@ function ReportDeathPanel({ owner, invite, isDemo, onSubmit }) {
             disabled={saving}
             className="inline-flex items-center gap-2 bg-red-600 text-white text-sm font-semibold px-6 py-3 rounded-xl hover:bg-red-700 transition-colors disabled:opacity-50"
           >
-            {saving ? 'Submitting…' : <><Send size={15} /> Submit report</>}
+            {saving ? t('report.submitting') : <><Send size={15} /> {t('report.submit')}</>}
           </button>
           <button
             type="button"
             onClick={() => setStep('intro')}
             className="inline-flex items-center gap-2 border border-stone-300 text-stone-600 text-sm font-semibold px-5 py-3 rounded-xl hover:bg-stone-100 transition-colors"
           >
-            Back
+            {t('report.back')}
           </button>
         </div>
       </form>
@@ -2118,6 +2073,7 @@ function ReportDeathPanel({ owner, invite, isDemo, onSubmit }) {
 // REPORT AN INCIDENT PANEL
 // ─────────────────────────────────────────────────────────────
 function ReportIncidentPanel({ owner, invite, isDemo, onSubmit }) {
+  const { t } = useTranslation('delegate')
   const [step, setStep] = useState('intro') // intro | form | submitted
   const emptyForm = {
     reporter_name: invite?.name || '',
@@ -2138,7 +2094,7 @@ function ReportIncidentPanel({ owner, invite, isDemo, onSubmit }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    if (!form.consent) { setError('Please confirm the declaration before submitting.'); return }
+    if (!form.consent) { setError(t('report.consentError')); return }
     setError('')
     setSaving(true)
     try {
@@ -2152,7 +2108,7 @@ function ReportIncidentPanel({ owner, invite, isDemo, onSubmit }) {
       })
       setStep('submitted')
     } catch (err) {
-      setError('Something went wrong. Please try again or contact support@everstead.care.')
+      setError(t('report.submitFailed'))
     } finally {
       setSaving(false)
     }
@@ -2164,13 +2120,12 @@ function ReportIncidentPanel({ owner, invite, isDemo, onSubmit }) {
         <div className="w-16 h-16 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center mx-auto">
           <CheckCircle2 size={30} />
         </div>
-        <h2 className="text-xl font-semibold text-emerald-900">Incident report received</h2>
+        <h2 className="text-xl font-semibold text-emerald-900">{t('reportIncident.submittedTitle')}</h2>
         <p className="text-sm text-emerald-800 leading-relaxed max-w-lg mx-auto">
-          We have received your notification. The Everstead team will review the report within <strong>2 business days</strong> and may contact you for further verification. Relevant access permissions will be unlocked once the report is confirmed.
+          <Trans t={t} i18nKey="reportIncident.submittedBody" />
         </p>
         <p className="text-xs text-emerald-700">
-          A confirmation has been sent to <strong>{form.reporter_email}</strong>. If you have any questions, contact{' '}
-          <a href="mailto:support@everstead.care" className="underline">support@everstead.care</a>.
+          <Trans t={t} i18nKey="report.confirmationSent" values={{ email: form.reporter_email }} components={{ a: <a href="mailto:support@everstead.care" className="underline" /> }} />
         </p>
       </section>
     )
@@ -2182,21 +2137,16 @@ function ReportIncidentPanel({ owner, invite, isDemo, onSubmit }) {
         <div className="bg-amber-600 px-8 py-6 flex items-center gap-4">
           <ShieldAlert size={26} className="text-white shrink-0" />
           <div>
-            <h2 className="text-xl font-semibold text-white">Report an incident</h2>
-            <p className="text-sm text-amber-100 mt-0.5">Notify Everstead that {owner?.full_name || 'the plan owner'} is incapacitated or unable to act</p>
+            <h2 className="text-xl font-semibold text-white">{t('reportIncident.title')}</h2>
+            <p className="text-sm text-amber-100 mt-0.5">{t('reportIncident.subtitle', { name: owner?.full_name || t('common.thePlanOwner') })}</p>
           </div>
         </div>
         <div className="px-8 py-7 space-y-5">
           <p className="text-sm text-stone-700 leading-relaxed">
-            This form is for situations where <strong>{owner?.full_name || 'the plan owner'}</strong> is alive but temporarily or permanently incapacitated (such as a serious accident, medical emergency, or a loss of mental capacity) and direct family or trusted contacts need access to act on their behalf.
+            <Trans t={t} i18nKey="reportIncident.intro" values={{ name: owner?.full_name || t('common.thePlanOwner') }} />
           </p>
           <ul className="space-y-2 text-sm text-stone-700">
-            {[
-              'Your report will be reviewed by the Everstead team within 2 business days.',
-              'Access permissions configured for incapacity will be unlocked once verified.',
-              'The plan owner\'s account will not be closed, this is a temporary or situational access release.',
-              'You will receive a confirmation email and reference number after submission.',
-            ].map((item, i) => (
+            {t('reportIncident.bullets', { returnObjects: true }).map((item, i) => (
               <li key={i} className="flex items-start gap-2.5">
                 <CheckCircle2 size={14} className="text-emerald-500 mt-0.5 shrink-0" />
                 <span>{item}</span>
@@ -2206,7 +2156,7 @@ function ReportIncidentPanel({ owner, invite, isDemo, onSubmit }) {
           <div className="flex items-start gap-3 bg-amber-50 border border-amber-200 rounded-xl px-4 py-3.5">
             <AlertCircle size={15} className="text-amber-700 mt-0.5 shrink-0" />
             <p className="text-xs text-amber-800 leading-relaxed">
-              This form is for notifications only. Everstead is not a legal or medical service. Please also consult relevant authorities, medical professionals, and legal advisers as appropriate.
+              {t('reportIncident.notice')}
             </p>
           </div>
           <div className="flex gap-3 pt-2">
@@ -2214,7 +2164,7 @@ function ReportIncidentPanel({ owner, invite, isDemo, onSubmit }) {
               onClick={() => setStep('form')}
               className="inline-flex items-center gap-2 bg-amber-600 text-white text-sm font-semibold px-5 py-3 rounded-xl hover:bg-amber-700 transition-colors"
             >
-              Continue to form <ArrowRight size={15} />
+              {t('report.continueToForm')} <ArrowRight size={15} />
             </button>
           </div>
         </div>
@@ -2228,8 +2178,8 @@ function ReportIncidentPanel({ owner, invite, isDemo, onSubmit }) {
       <div className="bg-amber-600 px-8 py-6 flex items-center gap-4">
         <ShieldAlert size={26} className="text-white shrink-0" />
         <div>
-          <h2 className="text-xl font-semibold text-white">Report an incident, notification form</h2>
-          <p className="text-sm text-amber-100 mt-0.5">All fields marked * are required</p>
+          <h2 className="text-xl font-semibold text-white">{t('reportIncident.formTitle')}</h2>
+          <p className="text-sm text-amber-100 mt-0.5">{t('report.requiredNote')}</p>
         </div>
       </div>
 
@@ -2237,10 +2187,10 @@ function ReportIncidentPanel({ owner, invite, isDemo, onSubmit }) {
 
         {/* Reporter details */}
         <div>
-          <h3 className="text-sm font-semibold text-navy-900 mb-4 pb-2 border-b border-stone-100">Your details (reporter)</h3>
+          <h3 className="text-sm font-semibold text-navy-900 mb-4 pb-2 border-b border-stone-100">{t('report.reporterHeading')}</h3>
           <div className="grid sm:grid-cols-2 gap-4">
             <div className="space-y-1">
-              <label className="block text-xs font-semibold text-stone-600">Full name *</label>
+              <label className="block text-xs font-semibold text-stone-600">{t('report.fullName')}</label>
               <input
                 className="w-full border border-stone-200 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-amber-300"
                 value={form.reporter_name}
@@ -2249,7 +2199,7 @@ function ReportIncidentPanel({ owner, invite, isDemo, onSubmit }) {
               />
             </div>
             <div className="space-y-1">
-              <label className="block text-xs font-semibold text-stone-600">Email address *</label>
+              <label className="block text-xs font-semibold text-stone-600">{t('report.email')}</label>
               <input
                 type="email"
                 className="w-full border border-stone-200 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-amber-300"
@@ -2259,43 +2209,44 @@ function ReportIncidentPanel({ owner, invite, isDemo, onSubmit }) {
               />
             </div>
             <div className="space-y-1">
-              <label className="block text-xs font-semibold text-stone-600">Phone number *</label>
+              <label className="block text-xs font-semibold text-stone-600">{t('report.phone')}</label>
               <input
                 type="tel"
                 className="w-full border border-stone-200 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-amber-300"
                 value={form.reporter_phone}
                 onChange={e => setForm(p => ({ ...p, reporter_phone: e.target.value }))}
-                placeholder="+44 7700 000000"
+                placeholder={t('report.phonePlaceholder')}
                 required
               />
             </div>
             <div className="space-y-1">
-              <label className="block text-xs font-semibold text-stone-600">Your role in this plan *</label>
+              <label className="block text-xs font-semibold text-stone-600">{t('report.role')}</label>
               <input
                 className="w-full border border-stone-200 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-amber-300"
                 value={form.reporter_role}
                 onChange={e => setForm(p => ({ ...p, reporter_role: e.target.value }))}
-                placeholder="e.g. Primary Executor, Family Member"
+                placeholder={t('reportIncident.rolePlaceholder')}
                 required
               />
             </div>
             <div className="space-y-1">
-              <label className="block text-xs font-semibold text-stone-600">Relationship to the plan owner *</label>
+              <label className="block text-xs font-semibold text-stone-600">{t('reportIncident.relationshipLabel')}</label>
+              {/* Submitted relationship values stay in English in every locale — only the visible labels are translated. */}
               <select
                 className="w-full border border-stone-200 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-amber-300"
                 value={form.relationship}
                 onChange={e => setForm(p => ({ ...p, relationship: e.target.value }))}
                 required
               >
-                <option value="" disabled>Select…</option>
-                <option>Spouse / Partner</option>
-                <option>Child</option>
-                <option>Sibling</option>
-                <option>Parent</option>
-                <option>Named Executor</option>
-                <option>Healthcare Proxy</option>
-                <option>Solicitor / Attorney</option>
-                <option>Other</option>
+                <option value="" disabled>{t('report.select')}</option>
+                <option value="Spouse / Partner">{t('report.relationship.spouse')}</option>
+                <option value="Child">{t('report.relationship.child')}</option>
+                <option value="Sibling">{t('report.relationship.sibling')}</option>
+                <option value="Parent">{t('report.relationship.parent')}</option>
+                <option value="Named Executor">{t('report.relationship.executor')}</option>
+                <option value="Healthcare Proxy">{t('report.relationship.healthcareProxy')}</option>
+                <option value="Solicitor / Attorney">{t('report.relationship.solicitor')}</option>
+                <option value="Other">{t('report.relationship.other')}</option>
               </select>
             </div>
           </div>
@@ -2303,27 +2254,28 @@ function ReportIncidentPanel({ owner, invite, isDemo, onSubmit }) {
 
         {/* Incident details */}
         <div>
-          <h3 className="text-sm font-semibold text-navy-900 mb-4 pb-2 border-b border-stone-100">Details of the incident</h3>
+          <h3 className="text-sm font-semibold text-navy-900 mb-4 pb-2 border-b border-stone-100">{t('reportIncident.detailsHeading')}</h3>
           <div className="grid sm:grid-cols-2 gap-4">
             <div className="space-y-1">
-              <label className="block text-xs font-semibold text-stone-600">Type of incident *</label>
+              <label className="block text-xs font-semibold text-stone-600">{t('reportIncident.typeLabel')}</label>
+              {/* Submitted incident_type values stay in English in every locale — only the visible labels are translated. */}
               <select
                 className="w-full border border-stone-200 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-amber-300"
                 value={form.incident_type}
                 onChange={e => setForm(p => ({ ...p, incident_type: e.target.value }))}
                 required
               >
-                <option value="" disabled>Select…</option>
-                <option>Medical emergency (hospitalisation)</option>
-                <option>Serious accident or injury</option>
-                <option>Diagnosed loss of mental capacity</option>
-                <option>Degenerative condition (e.g. dementia)</option>
-                <option>Prolonged unresponsiveness / coma</option>
-                <option>Other incapacity</option>
+                <option value="" disabled>{t('report.select')}</option>
+                <option value="Medical emergency (hospitalisation)">{t('reportIncident.types.medical')}</option>
+                <option value="Serious accident or injury">{t('reportIncident.types.accident')}</option>
+                <option value="Diagnosed loss of mental capacity">{t('reportIncident.types.capacity')}</option>
+                <option value="Degenerative condition (e.g. dementia)">{t('reportIncident.types.degenerative')}</option>
+                <option value="Prolonged unresponsiveness / coma">{t('reportIncident.types.coma')}</option>
+                <option value="Other incapacity">{t('reportIncident.types.other')}</option>
               </select>
             </div>
             <div className="space-y-1">
-              <label className="block text-xs font-semibold text-stone-600">Date of incident *</label>
+              <label className="block text-xs font-semibold text-stone-600">{t('reportIncident.dateLabel')}</label>
               <input
                 type="date"
                 className="w-full border border-stone-200 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-amber-300"
@@ -2334,21 +2286,21 @@ function ReportIncidentPanel({ owner, invite, isDemo, onSubmit }) {
               />
             </div>
             <div className="space-y-1 sm:col-span-2">
-              <label className="block text-xs font-semibold text-stone-600">Location / hospital (if applicable)</label>
+              <label className="block text-xs font-semibold text-stone-600">{t('reportIncident.locationLabel')}</label>
               <input
                 className="w-full border border-stone-200 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-amber-300"
                 value={form.location}
                 onChange={e => setForm(p => ({ ...p, location: e.target.value }))}
-                placeholder="e.g. St Thomas' Hospital, London"
+                placeholder={t('reportIncident.locationPlaceholder')}
               />
             </div>
             <div className="space-y-1 sm:col-span-2">
-              <label className="block text-xs font-semibold text-stone-600">Brief description of the situation *</label>
+              <label className="block text-xs font-semibold text-stone-600">{t('reportIncident.descLabel')}</label>
               <textarea
                 className="w-full border border-stone-200 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-amber-300 min-h-[90px] resize-y"
                 value={form.description}
                 onChange={e => setForm(p => ({ ...p, description: e.target.value }))}
-                placeholder="Describe what happened and the current condition of the plan owner…"
+                placeholder={t('reportIncident.descPlaceholder')}
                 required
               />
             </div>
@@ -2357,25 +2309,25 @@ function ReportIncidentPanel({ owner, invite, isDemo, onSubmit }) {
 
         {/* Access reason */}
         <div className="space-y-1">
-          <label className="block text-xs font-semibold text-stone-600">Why is access needed now? *</label>
+          <label className="block text-xs font-semibold text-stone-600">{t('reportIncident.accessLabel')}</label>
           <textarea
             className="w-full border border-stone-200 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-amber-300 min-h-[80px] resize-y"
             value={form.access_reason}
             onChange={e => setForm(p => ({ ...p, access_reason: e.target.value }))}
-            placeholder="Explain which information needs to be accessed and why it is needed urgently…"
+            placeholder={t('reportIncident.accessPlaceholder')}
             required
           />
         </div>
 
         {/* Supporting document upload */}
         <div>
-          <h3 className="text-sm font-semibold text-navy-900 mb-4 pb-2 border-b border-stone-100">Supporting document (optional)</h3>
+          <h3 className="text-sm font-semibold text-navy-900 mb-4 pb-2 border-b border-stone-100">{t('report.uploadHeading')}</h3>
           <div className="border-2 border-dashed border-stone-200 rounded-xl p-5 text-center">
             <Upload size={22} className="mx-auto text-stone-300 mb-2" />
-            <p className="text-sm text-stone-500">Upload a medical letter, LPA document, or other supporting evidence</p>
-            <p className="text-xs text-stone-400 mt-1">PDF, JPG, PNG, max 10 MB. Document will be securely stored.</p>
+            <p className="text-sm text-stone-500">{t('reportIncident.uploadLead')}</p>
+            <p className="text-xs text-stone-400 mt-1">{t('report.uploadMeta')}</p>
             <label className="cursor-pointer mt-3 inline-flex items-center gap-2 border border-stone-300 text-stone-600 text-xs font-semibold px-4 py-2 rounded-lg hover:bg-stone-100 transition-colors">
-              <Upload size={13} /> Choose file
+              <Upload size={13} /> {t('report.chooseFile')}
               <input type="file" accept=".pdf,.jpg,.jpeg,.png" className="sr-only" />
             </label>
           </div>
@@ -2391,7 +2343,7 @@ function ReportIncidentPanel({ owner, invite, isDemo, onSubmit }) {
               onChange={e => setForm(p => ({ ...p, consent: e.target.checked }))}
             />
             <p className="text-xs text-stone-600 leading-relaxed">
-              I confirm that I am an authorised delegate on this Everstead plan, that the information provided is accurate to the best of my knowledge, and that I have reasonable grounds to believe the plan owner is incapacitated and unable to act. I understand that Everstead will verify this report before releasing any additional access.
+              {t('reportIncident.consent')}
             </p>
           </label>
         </div>
@@ -2408,14 +2360,14 @@ function ReportIncidentPanel({ owner, invite, isDemo, onSubmit }) {
             disabled={saving}
             className="inline-flex items-center gap-2 bg-amber-600 text-white text-sm font-semibold px-6 py-3 rounded-xl hover:bg-amber-700 transition-colors disabled:opacity-50"
           >
-            {saving ? 'Submitting…' : <><Send size={15} /> Submit report</>}
+            {saving ? t('report.submitting') : <><Send size={15} /> {t('report.submit')}</>}
           </button>
           <button
             type="button"
             onClick={() => setStep('intro')}
             className="inline-flex items-center gap-2 border border-stone-300 text-stone-600 text-sm font-semibold px-5 py-3 rounded-xl hover:bg-stone-100 transition-colors"
           >
-            Back
+            {t('report.back')}
           </button>
         </div>
       </form>
@@ -2427,22 +2379,23 @@ function ReportIncidentPanel({ owner, invite, isDemo, onSubmit }) {
 // EXTERNAL LINKS PANEL
 // ─────────────────────────────────────────────────────────────
 const EXTERNAL_LINKS = [
-  { label: 'Tell Us Once', desc: 'Notify multiple UK government departments about a death in one step', url: 'https://www.gov.uk/tell-us-once', color: 'bg-blue-50 text-blue-700 border-blue-200' },
-  { label: 'Settld', desc: 'Free service to notify banks, utilities and companies about a bereavement', url: 'https://settld.care', color: 'bg-emerald-50 text-emerald-700 border-emerald-200' },
-  { label: 'Apply for probate', desc: 'GOV.UK guide to applying for a Grant of Probate or Letters of Administration', url: 'https://www.gov.uk/wills-probate-inheritance/applying-for-probate', color: 'bg-navy-50 text-navy-700 border-navy-200' },
-  { label: 'National Will Register', desc: 'Search the Certainty register to locate a missing will', url: 'https://www.nationalwillregister.co.uk', color: 'bg-violet-50 text-violet-700 border-violet-200' },
-  { label: 'Office of the Public Guardian', desc: 'Check or register a Lasting Power of Attorney with the OPG', url: 'https://www.gov.uk/government/organisations/office-of-the-public-guardian', color: 'bg-amber-50 text-amber-700 border-amber-200' },
-  { label: 'HMRC bereavement', desc: 'Tell HMRC about a death and deal with tax affairs and final returns', url: 'https://www.gov.uk/government/organisations/hm-revenue-customs/contact/bereavement', color: 'bg-stone-50 text-stone-700 border-stone-200' },
+  { key: 'tellUsOnce',   url: 'https://www.gov.uk/tell-us-once', color: 'bg-blue-50 text-blue-700 border-blue-200' },
+  { key: 'settld',       url: 'https://settld.care', color: 'bg-emerald-50 text-emerald-700 border-emerald-200' },
+  { key: 'probate',      url: 'https://www.gov.uk/wills-probate-inheritance/applying-for-probate', color: 'bg-navy-50 text-navy-700 border-navy-200' },
+  { key: 'willRegister', url: 'https://www.nationalwillregister.co.uk', color: 'bg-violet-50 text-violet-700 border-violet-200' },
+  { key: 'opg',          url: 'https://www.gov.uk/government/organisations/office-of-the-public-guardian', color: 'bg-amber-50 text-amber-700 border-amber-200' },
+  { key: 'hmrc',         url: 'https://www.gov.uk/government/organisations/hm-revenue-customs/contact/bereavement', color: 'bg-stone-50 text-stone-700 border-stone-200' },
 ]
 
 function ExternalLinksPanel() {
+  const { t } = useTranslation('delegate')
   return (
-    <Panel title="Useful services" icon={Globe}>
-      <p className="text-xs text-stone-500 mb-4 -mt-1">External UK services that are commonly needed during estate administration.</p>
+    <Panel title={t('externalLinks.title')} icon={Globe}>
+      <p className="text-xs text-stone-500 mb-4 -mt-1">{t('externalLinks.intro')}</p>
       <div className="grid sm:grid-cols-2 gap-3">
         {EXTERNAL_LINKS.map(link => (
           <a
-            key={link.label}
+            key={link.key}
             href={link.url}
             target="_blank"
             rel="noopener noreferrer"
@@ -2450,13 +2403,13 @@ function ExternalLinksPanel() {
           >
             <ExternalLink size={14} className="shrink-0 mt-0.5 opacity-70" />
             <div>
-              <p className="text-sm font-semibold leading-snug">{link.label}</p>
-              <p className="text-xs leading-relaxed mt-0.5 opacity-80">{link.desc}</p>
+              <p className="text-sm font-semibold leading-snug">{t(`externalLinks.items.${link.key}.label`)}</p>
+              <p className="text-xs leading-relaxed mt-0.5 opacity-80">{t(`externalLinks.items.${link.key}.desc`)}</p>
             </div>
           </a>
         ))}
       </div>
-      <p className="mt-3 text-xs text-stone-400">Everstead is not affiliated with these services. Always verify information on official websites.</p>
+      <p className="mt-3 text-xs text-stone-400">{t('externalLinks.disclaimer')}</p>
     </Panel>
   )
 }
@@ -2464,38 +2417,46 @@ function ExternalLinksPanel() {
 // ─────────────────────────────────────────────────────────────
 // NOTIFICATION TRACKER
 // ─────────────────────────────────────────────────────────────
+// Names and "how" details live in the delegate namespace under
+// notify.institutions.<id>; category values are stable grouping keys
+// translated at render via notify.categories.
 const UK_INSTITUTIONS = [
-  { id: 'tell-us-once',    name: 'Tell Us Once (GOV.UK)',       category: 'Government',  how: 'Online at gov.uk/tell-us-once, notifies DWP, DVLA, HMRC, and others in one step', url: 'https://www.gov.uk/tell-us-once' },
-  { id: 'hmrc',            name: 'HMRC',                        category: 'Government',  how: 'Call 0300 200 3300 or write. Final tax return may be needed for year of death.' },
-  { id: 'dwp',             name: 'DWP / State pension',         category: 'Government',  how: 'Call 0800 731 0469. Stop pension payments and claim any arrears.' },
-  { id: 'probate',         name: 'Probate Registry',            category: 'Legal',       how: 'Apply online at gov.uk for Grant of Probate. Allow 4-8 weeks.', url: 'https://www.gov.uk/wills-probate-inheritance/applying-for-probate' },
-  { id: 'nhs-gp',          name: 'NHS / GP surgery',            category: 'Healthcare',  how: 'Contact the GP surgery directly to cancel NHS records and return unused medications.' },
-  { id: 'council-tax',     name: 'Council tax',                 category: 'Local',       how: 'Contact the local council to update or cancel the council tax account.' },
-  { id: 'electoral',       name: 'Electoral register',          category: 'Government',  how: 'Contact the local council to remove from the electoral register.' },
-  { id: 'dvla',            name: 'DVLA',                        category: 'Government',  how: 'Return driving licence and notify about any vehicles. gov.uk/tell-dvla-about-bereavement' },
-  { id: 'passport',        name: 'HM Passport Office',          category: 'Government',  how: 'Cancel and return the passport by post to HM Passport Office, Newport, NP20 9AR.' },
-  { id: 'energy',          name: 'Energy supplier',             category: 'Utilities',   how: 'Contact provider to take final meter readings and close or transfer the account.' },
-  { id: 'broadband',       name: 'Broadband / phone',           category: 'Utilities',   how: 'Contact provider to cancel or transfer contract. Early exit fees may be waived on death.' },
-  { id: 'water',           name: 'Water company',               category: 'Utilities',   how: 'Contact local water company to update account name or close if property is empty.' },
-  { id: 'royal-mail',      name: 'Royal Mail redirect',         category: 'Postal',      how: 'Set up mail redirection at royalmail.com to avoid missing important correspondence.', url: 'https://www.royalmail.com/track-my-mail/redirection' },
-  { id: 'subscriptions',   name: 'Subscriptions & direct debits', category: 'Financial', how: 'Cancel all standing orders via the bank. Check accounts list for known subscriptions.' },
-  { id: 'life-insurance',  name: 'Life insurance',              category: 'Insurance',   how: 'Contact insurer with policy number. Life policies are usually paid outside probate.' },
-  { id: 'pension-private', name: 'Private pension provider',    category: 'Financial',   how: 'Contact each provider. Pensions written in trust are paid to nominated beneficiaries.' },
+  { id: 'tell-us-once',    category: 'Government', url: 'https://www.gov.uk/tell-us-once' },
+  { id: 'hmrc',            category: 'Government' },
+  { id: 'dwp',             category: 'Government' },
+  { id: 'probate',         category: 'Legal',      url: 'https://www.gov.uk/wills-probate-inheritance/applying-for-probate' },
+  { id: 'nhs-gp',          category: 'Healthcare' },
+  { id: 'council-tax',     category: 'Local' },
+  { id: 'electoral',       category: 'Government' },
+  { id: 'dvla',            category: 'Government' },
+  { id: 'passport',        category: 'Government' },
+  { id: 'energy',          category: 'Utilities' },
+  { id: 'broadband',       category: 'Utilities' },
+  { id: 'water',           category: 'Utilities' },
+  { id: 'royal-mail',      category: 'Postal',     url: 'https://www.royalmail.com/track-my-mail/redirection' },
+  { id: 'subscriptions',   category: 'Financial' },
+  { id: 'life-insurance',  category: 'Insurance' },
+  { id: 'pension-private', category: 'Financial' },
 ]
 
 const STATUS_OPTIONS = [
-  { value: 'todo',       label: 'To do',     cls: 'bg-stone-100 text-stone-600 border-stone-200' },
-  { value: 'notified',   label: 'Notified',  cls: 'bg-amber-100 text-amber-700 border-amber-200' },
-  { value: 'done',       label: 'Done',      cls: 'bg-sage-100 text-sage-700 border-sage-200' },
+  { value: 'todo',       labelKey: 'notify.status.todo',     cls: 'bg-stone-100 text-stone-600 border-stone-200' },
+  { value: 'notified',   labelKey: 'notify.status.notified', cls: 'bg-amber-100 text-amber-700 border-amber-200' },
+  { value: 'done',       labelKey: 'notify.status.done',     cls: 'bg-sage-100 text-sage-700 border-sage-200' },
 ]
 
 function NotificationTracker({ accounts, statuses, onSetStatus, ownerSuspended }) {
+  const { t } = useTranslation('delegate')
   const categories = useMemo(() => {
     const cats = {}
     // Standard institutions
     UK_INSTITUTIONS.forEach(inst => {
       if (!cats[inst.category]) cats[inst.category] = []
-      cats[inst.category].push(inst)
+      cats[inst.category].push({
+        ...inst,
+        name: t(`notify.institutions.${inst.id}.name`),
+        how: t(`notify.institutions.${inst.id}.how`),
+      })
     })
     // Accounts from the plan as extra rows
     accounts.forEach(acc => {
@@ -2505,11 +2466,11 @@ function NotificationTracker({ accounts, statuses, onSetStatus, ownerSuspended }
         id: `account-${acc.id}`,
         name: acc.institution,
         category: cat,
-        how: `${acc.account_type}${acc.account_number_hint ? ` (ref: ••••${acc.account_number_hint}` : ''}${acc.notes ? `) ${acc.notes}` : ''}`,
+        how: `${acc.account_type}${acc.account_number_hint ? ` (${t('notify.refPrefix')}••••${acc.account_number_hint}` : ''}${acc.notes ? `) ${acc.notes}` : ''}`,
       })
     })
     return cats
-  }, [accounts])
+  }, [accounts, t])
 
   const allItems = [...UK_INSTITUTIONS, ...accounts.map(a => ({ id: `account-${a.id}` }))]
   const doneCount = allItems.filter(item => statuses[item.id] === 'done').length
@@ -2525,29 +2486,29 @@ function NotificationTracker({ accounts, statuses, onSetStatus, ownerSuspended }
             <ClipboardCheck size={18} />
           </div>
           <div>
-            <h2 className="text-lg font-semibold text-navy-950 leading-none">Institution notification tracker</h2>
-            <p className="text-xs text-stone-400 mt-0.5">Track which organisations you've contacted, saved to this device</p>
+            <h2 className="text-lg font-semibold text-navy-950 leading-none">{t('notify.title')}</h2>
+            <p className="text-xs text-stone-400 mt-0.5">{t('notify.subtitle')}</p>
           </div>
         </div>
         {!ownerSuspended && (
           <div className="bg-amber-50 border border-amber-200 rounded-xl px-4 py-3 mb-4 flex items-start gap-2.5">
             <Info size={14} className="text-amber-600 mt-0.5 shrink-0" />
-            <p className="text-xs text-amber-800 leading-relaxed">This tracker is designed for use after a death or incapacity event has been verified. You can prepare now by reviewing the list.</p>
+            <p className="text-xs text-amber-800 leading-relaxed">{t('notify.preNote')}</p>
           </div>
         )}
         <div className="flex items-center gap-4">
           <div className="flex-1 h-2 bg-stone-100 rounded-full overflow-hidden">
             <div className="h-full bg-sage-500 rounded-full transition-all" style={{ width: `${pct}%` }} />
           </div>
-          <p className="text-xs font-semibold text-stone-600 shrink-0">{doneCount} of {allItems.length} done</p>
+          <p className="text-xs font-semibold text-stone-600 shrink-0">{t('notify.progress', { done: doneCount, total: allItems.length })}</p>
         </div>
-        {notifiedCount > 0 && <p className="text-xs text-amber-700 mt-1.5">{notifiedCount} awaiting response</p>}
+        {notifiedCount > 0 && <p className="text-xs text-amber-700 mt-1.5">{t('notify.awaiting', { count: notifiedCount })}</p>}
       </div>
 
       {/* Institution groups */}
       {Object.entries(categories).map(([cat, items]) => (
         <div key={cat} className="rounded-[2rem] border border-stone-200 bg-white p-5">
-          <p className="text-xs font-semibold uppercase tracking-widest text-stone-400 mb-3">{cat}</p>
+          <p className="text-xs font-semibold uppercase tracking-widest text-stone-400 mb-3">{t(`notify.categories.${cat}`, { defaultValue: cat })}</p>
           <div className="space-y-2">
             {items.map(inst => {
               const status = statuses[inst.id] || 'todo'
@@ -2558,9 +2519,9 @@ function NotificationTracker({ accounts, statuses, onSetStatus, ownerSuspended }
                   <button
                     onClick={() => onSetStatus(inst.id, next)}
                     className={`shrink-0 mt-0.5 text-xs font-semibold px-2.5 py-1 rounded-full border transition-colors hover:opacity-80 ${statusInfo.cls}`}
-                    title={`Mark as ${next}`}
+                    title={t(`notify.markAs.${next}`)}
                   >
-                    {status === 'done' ? <Check size={11} className="inline" /> : statusInfo.label}
+                    {status === 'done' ? <Check size={11} className="inline" /> : t(statusInfo.labelKey)}
                   </button>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 flex-wrap">
@@ -2579,7 +2540,7 @@ function NotificationTracker({ accounts, statuses, onSetStatus, ownerSuspended }
           </div>
         </div>
       ))}
-      <p className="text-xs text-stone-400 text-center pb-2">Progress is saved to this browser only. Screenshot or print to share with co-executors.</p>
+      <p className="text-xs text-stone-400 text-center pb-2">{t('notify.footer')}</p>
     </div>
   )
 }
@@ -2588,15 +2549,16 @@ function NotificationTracker({ accounts, statuses, onSetStatus, ownerSuspended }
 // DELEGATE AI GUIDE — floating chat widget
 // ─────────────────────────────────────────────────────────────
 function DelegateAIGuide({ ownerName, ownerId, delegateName, role, ownerStatus, docCount, accountCount, instructionCount }) {
+  const { t } = useTranslation('delegate')
   const [open, setOpen] = useState(false)
   const [loading, setLoading] = useState(false)
   const messagesEndRef = React.useRef(null)
 
   const openingMessage = ownerStatus === 'deceased'
-    ? `I'm here to help you through the next steps after ${ownerName || 'the plan owner'}'s passing. This is a difficult time: I'll keep things clear and practical.\n\nWhat would you like to start with? You might ask:\n• "What do I need to do this week?"\n• "How do I notify the bank?"\n• "What is probate and do I need it?"\n• "How do I find the will?"`
+    ? t('aiGuide.opening.deceased', { name: ownerName || t('common.thePlanOwner') })
     : ownerStatus === 'incapacitated'
-      ? `I'm here to help you act as ${role || 'trusted person'} for ${ownerName || 'the plan owner'}. Their account is now suspended and your access permissions are active.\n\nWhat would you like help with? You might ask:\n• "What are my responsibilities as ${role || 'a trusted person'}?"\n• "How do I use a Lasting Power of Attorney?"\n• "Which accounts should I contact first?"`
-      : `I'm here to help you understand this plan and your role as ${role || 'trusted person'} for ${ownerName || 'the plan owner'}.\n\nWhat would you like to know? For example:\n• "What does an executor do?"\n• "Where should I start?"\n• "How do I prepare for when the time comes?"`
+      ? t('aiGuide.opening.incapacitated', { role: role || t('aiGuide.trustedPerson'), name: ownerName || t('common.thePlanOwner'), roleA: role || t('aiGuide.aTrustedPerson') })
+      : t('aiGuide.opening.default', { role: role || t('aiGuide.trustedPerson'), name: ownerName || t('common.thePlanOwner') })
 
   const [messages, setMessages] = useState([
     { role: 'assistant', content: openingMessage },
@@ -2623,7 +2585,7 @@ function DelegateAIGuide({ ownerName, ownerId, delegateName, role, ownerStatus, 
       const { supabase: sb } = await import('../lib/supabase')
       const { data: { session } } = await sb.auth.getSession()
       if (!session?.access_token) {
-        setMessages(prev => [...prev, { role: 'assistant', content: 'This is just a preview, in a live account, I’d help you through the practical next steps here.' }])
+        setMessages(prev => [...prev, { role: 'assistant', content: t('aiGuide.previewReply') }])
         setLoading(false)
         return
       }
@@ -2643,7 +2605,7 @@ function DelegateAIGuide({ ownerName, ownerId, delegateName, role, ownerStatus, 
       if (data.error) throw new Error(data.error)
       setMessages(prev => [...prev, { role: 'assistant', content: data.response }])
     } catch {
-      setMessages(prev => [...prev, { role: 'assistant', content: 'Sorry, I couldn\'t connect right now. Please try again in a moment.' }])
+      setMessages(prev => [...prev, { role: 'assistant', content: t('aiGuide.errorReply') }])
     } finally {
       setLoading(false)
     }
@@ -2661,10 +2623,10 @@ function DelegateAIGuide({ ownerName, ownerId, delegateName, role, ownerStatus, 
       <button
         onClick={() => setOpen(v => !v)}
         className={`fixed bottom-6 right-6 z-50 inline-flex items-center gap-2.5 px-4 py-3 rounded-2xl text-white text-sm font-semibold shadow-lg transition-all ${urgencyColor} ${open ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}
-        aria-label="Open guide"
+        aria-label={t('aiGuide.openAria')}
       >
         <Sparkles size={16} />
-        {ownerStatus === 'deceased' || ownerStatus === 'incapacitated' ? 'What do I do now?' : 'Ask for guidance'}
+        {ownerStatus === 'deceased' || ownerStatus === 'incapacitated' ? t('aiGuide.triggerUrgent') : t('aiGuide.triggerDefault')}
       </button>
 
       {/* Chat panel */}
@@ -2679,14 +2641,14 @@ function DelegateAIGuide({ ownerName, ownerId, delegateName, role, ownerStatus, 
                 <Sparkles size={15} className="text-white" />
               </div>
               <div>
-                <p className="text-sm font-semibold text-white leading-none">Everstead guide</p>
-                <p className="text-xs text-white/60 mt-0.5">Here to help, ask anything</p>
+                <p className="text-sm font-semibold text-white leading-none">{t('aiGuide.headerTitle')}</p>
+                <p className="text-xs text-white/60 mt-0.5">{t('aiGuide.headerSubtitle')}</p>
               </div>
             </div>
             <button
               onClick={() => setOpen(false)}
               className="text-white/60 hover:text-white transition-colors p-1 rounded-lg hover:bg-white/10"
-              aria-label="Close guide"
+              aria-label={t('aiGuide.closeAria')}
             >
               <ChevronUp size={16} />
             </button>
@@ -2709,7 +2671,7 @@ function DelegateAIGuide({ ownerName, ownerId, delegateName, role, ownerStatus, 
               <div className="flex justify-start">
                 <div className="bg-stone-100 rounded-2xl rounded-bl-sm px-3.5 py-2.5 flex items-center gap-1.5">
                   <Loader2 size={13} className="animate-spin text-stone-400" />
-                  <span className="text-xs text-stone-400">Thinking…</span>
+                  <span className="text-xs text-stone-400">{t('aiGuide.thinking')}</span>
                 </div>
               </div>
             )}
@@ -2720,10 +2682,10 @@ function DelegateAIGuide({ ownerName, ownerId, delegateName, role, ownerStatus, 
           {messages.length === 1 && (
             <div className="px-4 pb-2 flex flex-wrap gap-1.5">
               {(ownerStatus === 'deceased'
-                ? ['What do I do this week?', 'How do I notify banks?', 'Do I need probate?']
+                ? t('aiGuide.prompts.deceased', { returnObjects: true })
                 : ownerStatus === 'incapacitated'
-                  ? ['What are my responsibilities?', 'How do I use an LPA?', 'Who should I contact?']
-                  : ['What does an executor do?', 'How do I prepare?', 'What is probate?']
+                  ? t('aiGuide.prompts.incapacitated', { returnObjects: true })
+                  : t('aiGuide.prompts.default', { returnObjects: true })
               ).map(prompt => (
                 <button
                   key={prompt}
@@ -2743,14 +2705,14 @@ function DelegateAIGuide({ ownerName, ownerId, delegateName, role, ownerStatus, 
               value={input}
               onChange={e => setInput(e.target.value)}
               onKeyDown={e => e.key === 'Enter' && !e.shiftKey && send()}
-              placeholder="Ask anything…"
+              placeholder={t('aiGuide.inputPlaceholder')}
               disabled={loading}
             />
             <button
               onClick={send}
               disabled={!input.trim() || loading}
               className="shrink-0 btn-aurora text-white p-2.5 rounded-full hover:bg-navy-700 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
-              aria-label="Send"
+              aria-label={t('aiGuide.sendAria')}
             >
               <Send size={15} />
             </button>
@@ -2765,23 +2727,14 @@ function DelegateAIGuide({ ownerName, ownerId, delegateName, role, ownerStatus, 
 // FIRST STEPS PANEL — shown in Overview when owner is suspended
 // ─────────────────────────────────────────────────────────────
 function FirstStepsPanel({ ownerStatus, ownerName, onNavigate, onReportDeath }) {
+  const { t } = useTranslation('delegate')
   if (ownerStatus !== 'deceased' && ownerStatus !== 'incapacitated') return null
 
   const isDeceased = ownerStatus === 'deceased'
-  const steps = isDeceased ? [
-    { n: '1', label: 'Register the death', detail: 'Within 5 days at a local register office. Request at least 10 certified death certificates, banks and institutions each need an original.' },
-    { n: '2', label: 'Locate the will', detail: 'Check the Documents tab. The original signed will (not a scan) is needed for probate. Check with their solicitor if it\'s not here.' },
-    { n: '3', label: 'Notify close family', detail: 'Inform immediate family before making any formal notifications to institutions.' },
-    { n: '4', label: 'Apply for probate', detail: 'A Grant of Probate from the Probate Registry is usually needed to access accounts. Takes 4-8 weeks. Estates under ~£10,000 may not require it.' },
-    { n: '5', label: 'Notify financial institutions', detail: 'Check the Accounts tab for a full list. Use Tell Us Once (gov.uk) for government departments. Settld.com can notify banks and utilities in bulk.' },
-    { n: '6', label: 'Cancel subscriptions', detail: 'Use the accounts list to find and cancel ongoing direct debits, they continue to charge until cancelled.' },
-  ] : [
-    { n: '1', label: 'Confirm your LPA is registered', detail: 'A Lasting Power of Attorney must be registered with the Office of the Public Guardian (OPG) before you can use it. Check you have the registration certificate.' },
-    { n: '2', label: 'Review the documents', detail: 'Check the Documents tab for the LPA certificate, any medical directives, and care instructions.' },
-    { n: '3', label: 'Contact the plan owner\'s bank', detail: 'Present your registered LPA to gain access to their accounts. Each institution has its own process, call ahead to find out what they need.' },
-    { n: '4', label: 'Review the instructions', detail: 'Check the Instructions tab for any guidance the plan owner left for this situation.' },
-    { n: '5', label: 'Keep a record of all decisions', detail: 'As attorney, you must act in the donor\'s best interests and keep records. Note all decisions and reasons.' },
-  ]
+  const steps = (isDeceased
+    ? t('firstSteps.deceasedSteps', { returnObjects: true })
+    : t('firstSteps.incapSteps', { returnObjects: true })
+  ).map((step, i) => ({ n: String(i + 1), ...step }))
 
   return (
     <div className={`rounded-[2rem] border p-6 ${isDeceased ? 'border-stone-300 bg-stone-900' : 'border-amber-200 bg-amber-50'}`}>
@@ -2791,10 +2744,10 @@ function FirstStepsPanel({ ownerStatus, ownerName, onNavigate, onReportDeath }) 
         </div>
         <div>
           <h2 className={`text-base font-semibold leading-none ${isDeceased ? 'text-white' : 'text-amber-950'}`}>
-            {isDeceased ? `What to do now, ${ownerName || 'next steps'}` : 'Your immediate priorities'}
+            {isDeceased ? t('firstSteps.deceasedTitle', { name: ownerName || t('firstSteps.nextStepsFallback') }) : t('firstSteps.incapTitle')}
           </h2>
           <p className={`text-xs mt-1 ${isDeceased ? 'text-stone-400' : 'text-amber-700'}`}>
-            {isDeceased ? 'A prioritised checklist for the days ahead' : 'As attorney, here\'s where to start'}
+            {isDeceased ? t('firstSteps.deceasedSubtitle') : t('firstSteps.incapSubtitle')}
           </p>
         </div>
       </div>
@@ -2816,20 +2769,20 @@ function FirstStepsPanel({ ownerStatus, ownerName, onNavigate, onReportDeath }) 
           onClick={() => onNavigate('documents')}
           className={`inline-flex items-center gap-1.5 text-xs font-semibold px-3.5 py-2 rounded-xl transition-colors ${isDeceased ? 'bg-white/10 text-white hover:bg-white/20' : 'bg-amber-200 text-amber-900 hover:bg-amber-300'}`}
         >
-          <FileText size={12} /> View documents
+          <FileText size={12} /> {t('firstSteps.viewDocuments')}
         </button>
         <button
           onClick={() => onNavigate('accounts')}
           className={`inline-flex items-center gap-1.5 text-xs font-semibold px-3.5 py-2 rounded-xl transition-colors ${isDeceased ? 'bg-white/10 text-white hover:bg-white/20' : 'bg-amber-200 text-amber-900 hover:bg-amber-300'}`}
         >
-          <Wallet size={12} /> View accounts
+          <Wallet size={12} /> {t('firstSteps.viewAccounts')}
         </button>
         {isDeceased && (
           <button
             onClick={onReportDeath}
             className="inline-flex items-center gap-1.5 text-xs font-semibold px-3.5 py-2 rounded-xl bg-red-700 text-white hover:bg-red-600 transition-colors"
           >
-            <HeartCrack size={12} /> Report the death to Everstead
+            <HeartCrack size={12} /> {t('firstSteps.reportDeathCta')}
           </button>
         )}
       </div>
@@ -2846,7 +2799,8 @@ function Detail({ label, value }) {
   )
 }
 
-function Panel({ title, icon: Icon, children, count, countLabel = 'total', action }) {
+function Panel({ title, icon: Icon, children, count, countLabel, action }) {
+  const { t } = useTranslation('delegate')
   return (
     <section className="rounded-[2rem] border border-stone-200 bg-white p-6">
       <div className="flex items-center justify-between gap-3 mb-5">
@@ -2857,7 +2811,7 @@ function Panel({ title, icon: Icon, children, count, countLabel = 'total', actio
           <div>
             <h2 className="text-lg font-semibold text-navy-950 leading-none">{title}</h2>
             {count != null && (
-              <p className="text-xs text-stone-400 mt-0.5">{count} {countLabel}</p>
+              <p className="text-xs text-stone-400 mt-0.5">{count} {countLabel ?? t('panel.total')}</p>
             )}
           </div>
         </div>
@@ -2869,6 +2823,7 @@ function Panel({ title, icon: Icon, children, count, countLabel = 'total', actio
 }
 
 function EmptyState({ title, body, action = null }) {
+  const { t } = useTranslation('delegate')
   return (
     <div className="min-h-screen bg-stone-50 flex items-center justify-center px-6">
       <div className="max-w-lg rounded-[2rem] border border-stone-200 bg-white p-10 text-center shadow-sm">
@@ -2880,7 +2835,7 @@ function EmptyState({ title, body, action = null }) {
         <div className="mt-7 flex justify-center gap-3 flex-wrap">
           {action}
           <Link to="/" className="inline-flex items-center gap-2 rounded-xl border border-stone-300 px-5 py-3 text-sm font-semibold text-navy-800 hover:bg-stone-100 transition-colors">
-            Back to Everstead
+            {t('empty.backHome')}
           </Link>
         </div>
       </div>

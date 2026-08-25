@@ -2,11 +2,21 @@ import React, { useEffect, useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { Helmet } from 'react-helmet-async'
 import { Loader2, Heart } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
+import i18n from '../i18n'
+import enMessageView from '../i18n/locales/en/messageView.json'
+import frMessageView from '../i18n/locales/fr/messageView.json'
+
+// Self-registered namespace (keeps src/i18n/index.js untouched). Safe to move
+// into the central resources map later: re-adding the same bundle is a no-op.
+i18n.addResourceBundle('en', 'messageView', enMessageView)
+i18n.addResourceBundle('fr', 'messageView', frMessageView)
 
 // Public page for an unregistered recipient to read a released personal message
 // via its secure token link (/m/:token). No login required.
 export default function MessageView() {
   const { token } = useParams()
+  const { t } = useTranslation('messageView')
   const [state, setState] = useState({ status: 'loading', msg: null })
 
   useEffect(() => {
@@ -24,12 +34,13 @@ export default function MessageView() {
     return () => { cancelled = true }
   }, [token])
 
-  const fmt = (iso) => { try { return new Intl.DateTimeFormat('en-GB', { dateStyle: 'long' }).format(new Date(iso)) } catch { return '' } }
+  const dateLocale = i18n.language === 'fr' ? 'fr-FR' : 'en-GB'
+  const fmt = (iso) => { try { return new Intl.DateTimeFormat(dateLocale, { dateStyle: 'long' }).format(new Date(iso)) } catch { return '' } }
 
   return (
     <div className="min-h-screen aurora-field aurora-dim flex flex-col">
       <Helmet>
-        <title>A message for you | Everstead</title>
+        <title>{t('meta.title')}</title>
         <meta name="robots" content="noindex" />
       </Helmet>
 
@@ -39,22 +50,22 @@ export default function MessageView() {
 
       <main className="flex-1 flex items-center justify-center px-6 pb-16">
         {state.status === 'loading' && (
-          <div className="text-white/70 flex items-center gap-2"><Loader2 size={18} className="animate-spin" /> Loading your message…</div>
+          <div className="text-white/70 flex items-center gap-2"><Loader2 size={18} className="animate-spin" /> {t('loading')}</div>
         )}
 
         {state.status === 'notfound' && (
           <div className="text-center max-w-md">
-            <h1 className="font-display text-3xl font-light text-white mb-3">This message isn't available.</h1>
-            <p className="text-navy-200 text-sm leading-relaxed">The link may be incorrect, or the message hasn't been shared yet. If you believe this is a mistake, please contact the person who sent it.</p>
+            <h1 className="font-display text-3xl font-light text-white mb-3">{t('notFound.title')}</h1>
+            <p className="text-navy-200 text-sm leading-relaxed">{t('notFound.body')}</p>
           </div>
         )}
 
         {state.status === 'ok' && state.msg && (
           <div className="w-full max-w-xl">
             <div className="text-center mb-6">
-              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-sage-300 mb-3">A message for {state.msg.recipientName || 'you'}</p>
+              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-sage-300 mb-3">{state.msg.recipientName ? t('forName', { name: state.msg.recipientName }) : t('forYou')}</p>
               <h1 className="font-display text-3xl lg:text-4xl font-light text-white">{state.msg.title}</h1>
-              <p className="text-navy-200 text-sm mt-3">From {state.msg.senderName}{state.msg.releasedAt ? ` · ${fmt(state.msg.releasedAt)}` : ''}</p>
+              <p className="text-navy-200 text-sm mt-3">{t('from', { name: state.msg.senderName })}{state.msg.releasedAt ? ` · ${fmt(state.msg.releasedAt)}` : ''}</p>
             </div>
             <div className="bg-white rounded-2xl shadow-2xl overflow-hidden">
               {state.msg.type === 'video' && state.msg.mediaUrl && (
@@ -70,7 +81,7 @@ export default function MessageView() {
               )}
             </div>
             <p className="text-center text-navy-300 text-xs mt-6 flex items-center justify-center gap-1.5">
-              <Heart size={11} /> Shared privately with you via Everstead.
+              <Heart size={11} /> {t('footer')}
             </p>
           </div>
         )}

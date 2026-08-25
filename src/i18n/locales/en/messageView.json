@@ -1,0 +1,14 @@
+{
+  "meta": {
+    "title": "A message for you | Everstead"
+  },
+  "loading": "Loading your message…",
+  "notFound": {
+    "title": "This message isn't available.",
+    "body": "The link may be incorrect, or the message hasn't been shared yet. If you believe this is a mistake, please contact the person who sent it."
+  },
+  "forName": "A message for {{name}}",
+  "forYou": "A message for you",
+  "from": "From {{name}}",
+  "footer": "Shared privately with you via Everstead."
+}

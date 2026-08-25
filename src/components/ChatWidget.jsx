@@ -1,14 +1,24 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { MessageCircle, X, Send, Loader2 } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import { useAuth } from '../contexts/AuthContext'
 import { planLabel } from '../config/pricing'
 import Markdown from './Markdown'
+import i18n from '../i18n'
+import enChatWidget from '../i18n/locales/en/chatWidget.json'
+import frChatWidget from '../i18n/locales/fr/chatWidget.json'
+
+// Self-registered namespace (keeps src/i18n/index.js untouched). Safe to move
+// into the central resources map later; re-adding the same bundle is a no-op.
+if (!i18n.hasResourceBundle('en', 'chatWidget')) i18n.addResourceBundle('en', 'chatWidget', enChatWidget)
+if (!i18n.hasResourceBundle('fr', 'chatWidget')) i18n.addResourceBundle('fr', 'chatWidget', frChatWidget)
 
 export default function ChatWidget() {
+  const { t } = useTranslation('chatWidget')
   const { user, profile } = useAuth()
   const [open, setOpen] = useState(false)
   const [messages, setMessages] = useState([
-    { role: 'assistant', content: 'Hi! I\'m the Everstead assistant. I can help you understand how Everstead works, answer questions about pricing or features, or help you get more out of your plan. What would you like to know?' }
+    { role: 'assistant', content: t('greeting') }
   ])
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
@@ -42,9 +52,9 @@ export default function ChatWidget() {
         body:    JSON.stringify({ messages: next, userContext }),
       })
       const data = await res.json()
-      setMessages(prev => [...prev, { role: 'assistant', content: data.reply || data.error || 'Sorry, something went wrong.' }])
+      setMessages(prev => [...prev, { role: 'assistant', content: data.reply || data.error || t('errors.generic') }])
     } catch {
-      setMessages(prev => [...prev, { role: 'assistant', content: 'Sorry, I\'m having trouble connecting. Please try again.' }])
+      setMessages(prev => [...prev, { role: 'assistant', content: t('errors.connection') }])
     } finally {
       setLoading(false)
     }
@@ -57,7 +67,7 @@ export default function ChatWidget() {
       {/* Floating button */}
       <button
         onClick={() => setOpen(o => !o)}
-        aria-label="Open chat"
+        aria-label={t('launcherLabel')}
         style={{
           position:        'fixed',
           bottom:          '24px',
@@ -107,7 +117,7 @@ export default function ChatWidget() {
             <img src="/favicon.png" alt="" width="24" height="24" style={{ borderRadius: '4px' }} />
             <div>
               <div style={{ color: '#fff', fontSize: '14px', fontWeight: '500' }}>Everstead</div>
-              <div style={{ color: '#4c7d47', fontSize: '11px', letterSpacing: '0.05em' }}>AI Assistant</div>
+              <div style={{ color: '#4c7d47', fontSize: '11px', letterSpacing: '0.05em' }}>{t('assistantTag')}</div>
             </div>
           </div>
 
@@ -146,7 +156,7 @@ export default function ChatWidget() {
               value={input}
               onChange={e => setInput(e.target.value)}
               onKeyDown={onKey}
-              placeholder="Ask a question…"
+              placeholder={t('inputPlaceholder')}
               rows={1}
               style={{
                 flex:        1,

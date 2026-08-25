@@ -1,0 +1,78 @@
+{
+  "meta": {
+    "title": "Activez votre cadeau Everstead | Everstead",
+    "description": "Vous avez reçu un plan Everstead en cadeau. Créez votre compte pour l'activer."
+  },
+  "hero": {
+    "eyebrow": "Vous avez reçu un cadeau",
+    "title": "Activez votre plan Everstead.",
+    "subtitle": "Créez votre compte pour activer votre cadeau. Aucune carte bancaire requise."
+  },
+  "validating": "Validation de votre cadeau…",
+  "invalid": {
+    "title": "Ce lien cadeau n'est pas valide.",
+    "needHelp": "Besoin d'aide ?",
+    "contactSupport": "Contacter l'assistance"
+  },
+  "card": {
+    "label": "Votre cadeau",
+    "planLine": "Everstead {{plan}}, {{years}}",
+    "years_one": "{{count}} an",
+    "years_other": "{{count}} ans",
+    "from": "De la part de <highlight>{{name}}</highlight>",
+    "noCard": "Aucune carte bancaire requise pour commencer"
+  },
+  "plans": {
+    "essential": "Pour les particuliers qui souhaitent mettre de l'ordre dans leur vie numérique.",
+    "family": "Deux coffres privés, un seul abonnement. Pour les couples et les familles."
+  },
+  "form": {
+    "title": "Créez votre compte",
+    "subtitle": "Cela ne prend qu'une minute. Votre cadeau sera activé immédiatement.",
+    "fullName": "Nom complet",
+    "fullNamePlaceholder": "Marie Dupont",
+    "email": "Adresse e-mail",
+    "emailPlaceholder": "marie@exemple.com",
+    "password": "Mot de passe",
+    "passwordPlaceholder": "8 caractères minimum",
+    "hidePassword": "Masquer le mot de passe",
+    "showPassword": "Afficher le mot de passe",
+    "country": "Pays",
+    "terms": "En créant un compte, vous acceptez nos <terms>Conditions d'utilisation</terms> et notre <privacy>Politique de confidentialité</privacy>.",
+    "activating": "Activation de votre cadeau…",
+    "submit": "Activer mon cadeau",
+    "haveAccount": "Vous avez déjà un compte ?",
+    "signIn": "Se connecter"
+  },
+  "countries": {
+    "unitedKingdom": "Royaume-Uni",
+    "unitedStates": "États-Unis",
+    "france": "France",
+    "germany": "Allemagne",
+    "spain": "Espagne",
+    "italy": "Italie",
+    "portugal": "Portugal",
+    "netherlands": "Pays-Bas",
+    "belgium": "Belgique",
+    "switzerland": "Suisse",
+    "sweden": "Suède",
+    "norway": "Norvège",
+    "denmark": "Danemark",
+    "ireland": "Irlande",
+    "australia": "Australie",
+    "canada": "Canada",
+    "newZealand": "Nouvelle-Zélande",
+    "southAfrica": "Afrique du Sud",
+    "india": "Inde",
+    "singapore": "Singapour",
+    "uae": "Émirats arabes unis",
+    "brazil": "Brésil"
+  },
+  "errors": {
+    "noCode": "Aucun code cadeau trouvé dans l'URL. Vérifiez le lien dans votre e-mail cadeau.",
+    "validateFailed": "Impossible de valider le code cadeau. Veuillez réessayer.",
+    "accountFailed": "Impossible de créer le compte. Veuillez réessayer.",
+    "sessionError": "Erreur de session. Veuillez réessayer.",
+    "redeemFailed": "Impossible d'activer le cadeau. Veuillez contacter support@everstead.care."
+  }
+}

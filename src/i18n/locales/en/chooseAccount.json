@@ -1,0 +1,16 @@
+{
+  "fallbackName": "there",
+  "heading": "Welcome back, {{name}}.",
+  "subtitle": "Which plan would you like to access?",
+  "myPlan": {
+    "title": "My plan",
+    "subtitle": "Your own Everstead plan",
+    "trialEnded": "Trial ended, reactivate"
+  },
+  "delegate": {
+    "planTitle": "{{name}}'s plan",
+    "sharedFallback": "Shared plan",
+    "role": "Your role: {{role}}"
+  },
+  "footer": "You can switch between plans at any time from the navigation menu."
+}

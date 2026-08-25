@@ -1,0 +1,710 @@
+{
+  "loading": "Chargement de l'espace délégué…",
+  "tabs": {
+    "overview": "Vue d'ensemble",
+    "documents": "Documents",
+    "accounts": "Comptes",
+    "instructions": "Instructions",
+    "notify": "Suivi des démarches",
+    "messages": "Messages",
+    "alerts": "Alertes",
+    "activity": "Activité",
+    "resources": "Aide et guides",
+    "settings": "Mes paramètres"
+  },
+  "errors": {
+    "needToken": "Cet espace délégué nécessite un jeton d'invitation valide.",
+    "invalidInvite": "Nous n'avons pas trouvé d'invitation de délégué valide pour ce lien.",
+    "openDoc": "Impossible d'ouvrir ce document pour le moment.",
+    "reportSubmit": "Le signalement n'a pas pu être envoyé"
+  },
+  "empty": {
+    "unavailableTitle": "Accès délégué indisponible",
+    "missingToken": "Le jeton d'invitation requis est absent de ce lien.",
+    "notFoundTitle": "Invitation introuvable",
+    "notFoundBody": "Cette invitation de délégué n'a pas pu être chargée.",
+    "acceptTitle": "Acceptez d'abord l'invitation",
+    "acceptBody": "Cet espace devient accessible une fois l'invitation acceptée. Revenez au lien d'invitation pour confirmer votre rôle.",
+    "reviewInvite": "Voir l'invitation",
+    "backHome": "Retour à Everstead"
+  },
+  "common": {
+    "planOwner": "Titulaire du plan",
+    "thePlanOwner": "le titulaire du plan",
+    "thePlanOwnerCap": "Le titulaire du plan",
+    "document": "Document"
+  },
+  "banners": {
+    "demo": "Mode démonstration, vue de l'exécuteur testamentaire du plan de Carol Thornton. Les données sont fictives.",
+    "demoCta": "Créez votre propre plan →",
+    "upsell": "Vous souhaitez protéger votre propre famille comme {{name}} protège la sienne ?",
+    "upsellCta": "Commencer un essai gratuit de 14 jours",
+    "deceasedTitle": "Le décès de {{name}} a été vérifié par Everstead",
+    "deceasedBody": "Tous les messages scellés qui vous sont adressés et toutes les autorisations d'accès après décès sont désormais actifs. Le compte du titulaire du plan a été suspendu et reste en lecture seule.",
+    "openMessages": "Ouvrir les messages",
+    "incapTitle": "Un signalement d'incapacité concernant {{name}} a été vérifié par Everstead",
+    "incapBody": "Vos autorisations d'accès en cas de décès ou d'incapacité sont désormais actives. Le compte du titulaire du plan a été suspendu et reste en lecture seule dans l'attente d'un examen complémentaire.",
+    "viewDocuments": "Voir les documents"
+  },
+  "header": {
+    "eyebrow": "Espace délégué",
+    "workspaceTitle": "Espace de transmission de {{name}}",
+    "viewingAs": "Vous consultez ce plan en tant que <role>{{role}}</role>. L'accès est en lecture seule.",
+    "export": "Exporter",
+    "exportTitle": "Exporter le plan en PDF",
+    "whyProtected": "Notre sécurité",
+    "exit": "Quitter",
+    "searchPlaceholder": "Rechercher des documents, comptes, instructions…",
+    "toggleNav": "Afficher ou masquer la navigation"
+  },
+  "sidebar": {
+    "navigation": "Navigation",
+    "ariaSidebar": "Barre latérale du délégué",
+    "ariaNav": "Navigation de l'espace délégué",
+    "planOwner": "Titulaire du plan",
+    "accepted": "Invitation acceptée",
+    "lastUpdated": "Dernière mise à jour",
+    "readiness": "Niveau de préparation",
+    "readinessValue": "{{score}} %",
+    "mySettings": "Mes paramètres",
+    "disclaimer": "Everstead est une plateforme d'organisation, pas un service juridique. Utilisez les informations présentées ici en complément des conseils d'un professionnel du droit ou de la finance si nécessaire.",
+    "reportDeath": "Signaler un décès",
+    "reportIncident": "Signaler un incident",
+    "ariaMain": "Contenu du plan"
+  },
+  "search": {
+    "resultsFor": "Résultats pour",
+    "queryQuoted": "« {{query}} »",
+    "found_one": "{{count}} résultat trouvé",
+    "found_other": "{{count}} résultats trouvés",
+    "view": "Voir →",
+    "noResults": "Aucun résultat pour « {{query}} »"
+  },
+  "panel": {
+    "total": "au total"
+  },
+  "overview": {
+    "noAccessTitle": "Aucune section partagée pour le moment",
+    "noAccessBody": "<strong>{{name}}</strong> a accepté votre invitation mais ne vous a pas encore donné accès à des sections de son plan. Dès que ses réglages de partage seront mis à jour, les comptes, documents et instructions concernés apparaîtront ici.",
+    "noAccessFootnote": "Le titulaire du plan peut gérer à tout moment ce que vous voyez depuis la section <strong>Personnes</strong> de son tableau de bord Everstead.",
+    "sharedDocuments": "Documents partagés",
+    "sharedAccounts": "Comptes partagés",
+    "sharedInstructions": "Instructions partagées",
+    "unreadAlerts": "Alertes non lues",
+    "statView": "Voir",
+    "accessTitle": "Ce à quoi vous avez accès",
+    "accessEmpty": "Aucune autorisation d'accès explicite n'a encore été trouvée pour cette invitation.",
+    "criticalTitle": "Points nécessitant votre attention",
+    "criticalEmpty": "Aucune alerte critique non lue n'est actuellement visible dans le plan partagé.",
+    "recentInstructionsTitle": "Instructions récentes",
+    "instructionFallback": "Instruction",
+    "recentActivityTitle": "Activité récente",
+    "expiringTitle": "Documents arrivant bientôt à expiration",
+    "expiringCount_one": "{{count}} document expire dans les 90 prochains jours",
+    "expiringCount_other": "{{count}} documents expirent dans les 90 prochains jours",
+    "viewAllDocs": "Voir tous les documents →"
+  },
+  "documents": {
+    "title": "Documents partagés",
+    "updated": "Mis à jour le {{date}}",
+    "expires": "Expire le {{date}}",
+    "status": {
+      "current": "à jour",
+      "expiring": "expire bientôt",
+      "missing": "manquant"
+    },
+    "notes": "Notes",
+    "type": "Type",
+    "lastUpdated": "Dernière mise à jour",
+    "expiryDate": "Date d'expiration",
+    "opening": "Ouverture…",
+    "open": "Ouvrir / prévisualiser",
+    "download": "Télécharger",
+    "noFile": "Aucun fichier joint, il s'agit d'une fiche de référence uniquement.",
+    "empty": "Aucun document n'est actuellement partagé avec ce rôle.",
+    "sealedHeading": "Scellés jusqu'au moment venu",
+    "sealedMeta": "Scellé, il ne vous sera remis que le moment venu",
+    "sealedBadge": "Scellé"
+  },
+  "accounts": {
+    "title": "Comptes partagés",
+    "accountFallback": "Compte",
+    "category": "Catégorie",
+    "reference": "Référence",
+    "notProvided": "Non renseignée",
+    "copyReference": "Copier la référence",
+    "lastUpdated": "Dernière mise à jour",
+    "balance": "Solde / statut",
+    "notes": "Notes et instructions",
+    "copied": "Copié !",
+    "copyInstitution": "Copier le nom de l'établissement",
+    "trackNotification": "Suivre la démarche",
+    "empty": "Aucun compte n'est actuellement partagé avec ce rôle."
+  },
+  "instructions": {
+    "title": "Instructions partagées",
+    "categoryFallback": "Instruction",
+    "audienceFallback": "Conseils partagés",
+    "steps_one": "{{count}} étape",
+    "steps_other": "{{count}} étapes",
+    "empty": "Aucune instruction n'est actuellement partagée avec ce rôle."
+  },
+  "alerts": {
+    "title": "Alertes du plan",
+    "unreadLabel": "non lues",
+    "markAllRead": "Tout marquer comme lu",
+    "severity": {
+      "critical": "critique",
+      "warning": "avertissement",
+      "info": "info"
+    },
+    "received": "Reçue le {{date}}",
+    "empty": "Aucune alerte visible pour le moment."
+  },
+  "activity": {
+    "title": "Activité récente du plan",
+    "empty": "Aucune activité récente visible pour l'instant."
+  },
+  "messages": {
+    "title": "Messages personnels",
+    "autoReleased": "transmis automatiquement au décès",
+    "releasedToYou": "vous ont été transmis",
+    "deceasedNotice": "À la suite du décès vérifié de <strong>{{name}}</strong>, tous les messages personnels qui vous étaient adressés ont été automatiquement transmis. Ces messages ont été écrits et scellés par {{name}} pour que vous puissiez les lire le moment venu.",
+    "emptyTitle": "Aucun message transmis pour le moment",
+    "emptyBody": "{{name}} ne vous a pas encore transmis de message personnel. Les messages sont transmis manuellement, ou automatiquement lorsque Everstead vérifie le décès.",
+    "card": {
+      "from": "De",
+      "planOwnerFallback": "titulaire du plan",
+      "released": "Transmis le {{date}}",
+      "typeVideo": "Vidéo",
+      "typePhoto": "Photo",
+      "typeNote": "Note",
+      "demoPlayback": "Lecture disponible dans votre plan réel",
+      "storedSecurely": "Cette {{type}} est conservée en toute sécurité.",
+      "typeNoun": {
+        "video": "vidéo",
+        "photo": "photo"
+      },
+      "loadFailed": "Cette {{type}} n'a pas pu être chargée pour le moment, veuillez réessayer plus tard.",
+      "personalFrom": "Un message personnel de {{name}}",
+      "footer": "Ce message a été écrit par {{name}} et vous est adressé personnellement.",
+      "footerReleased": "Il vous a été transmis le {{date}}."
+    }
+  },
+  "notify": {
+    "title": "Suivi des démarches auprès des organismes",
+    "subtitle": "Suivez les organismes que vous avez déjà contactés, la progression est enregistrée sur cet appareil",
+    "preNote": "Ce suivi est conçu pour être utilisé après la vérification d'un décès ou d'une incapacité. Vous pouvez dès maintenant vous préparer en parcourant la liste.",
+    "progress": "{{done}} sur {{total}} effectuées",
+    "awaiting_one": "{{count}} en attente de réponse",
+    "awaiting_other": "{{count}} en attente de réponse",
+    "footer": "La progression est enregistrée uniquement dans ce navigateur. Faites une capture d'écran ou imprimez pour la partager avec les co-exécuteurs.",
+    "refPrefix": "réf. : ",
+    "status": {
+      "todo": "À faire",
+      "notified": "Contacté",
+      "done": "Fait"
+    },
+    "markAs": {
+      "todo": "Marquer comme à faire",
+      "notified": "Marquer comme contacté",
+      "done": "Marquer comme fait"
+    },
+    "categories": {
+      "Government": "Administration",
+      "Legal": "Juridique",
+      "Healthcare": "Santé",
+      "Local": "Collectivités",
+      "Utilities": "Services essentiels",
+      "Postal": "Courrier",
+      "Financial": "Finances",
+      "Insurance": "Assurance",
+      "From this plan": "Issus de ce plan"
+    },
+    "institutions": {
+      "tell-us-once": {
+        "name": "Tell Us Once (GOV.UK)",
+        "how": "En ligne sur gov.uk/tell-us-once, prévient le DWP, la DVLA, le HMRC et d'autres organismes en une seule démarche"
+      },
+      "hmrc": {
+        "name": "HMRC",
+        "how": "Appelez le 0300 200 3300 ou écrivez. Une dernière déclaration de revenus peut être nécessaire pour l'année du décès."
+      },
+      "dwp": {
+        "name": "DWP / pension d'État",
+        "how": "Appelez le 0800 731 0469. Faites arrêter le versement de la pension et réclamez les éventuels arriérés."
+      },
+      "probate": {
+        "name": "Probate Registry",
+        "how": "Faites la demande de Grant of Probate en ligne sur gov.uk. Comptez 4 à 8 semaines."
+      },
+      "nhs-gp": {
+        "name": "NHS / cabinet du médecin traitant",
+        "how": "Contactez directement le cabinet du médecin traitant pour clore le dossier NHS et rapporter les médicaments non utilisés."
+      },
+      "council-tax": {
+        "name": "Council tax",
+        "how": "Contactez la municipalité pour mettre à jour ou clôturer le compte de council tax."
+      },
+      "electoral": {
+        "name": "Registre électoral",
+        "how": "Contactez la municipalité pour demander la radiation du registre électoral."
+      },
+      "dvla": {
+        "name": "DVLA",
+        "how": "Restituez le permis de conduire et signalez les éventuels véhicules. gov.uk/tell-dvla-about-bereavement"
+      },
+      "passport": {
+        "name": "HM Passport Office",
+        "how": "Annulez le passeport et renvoyez-le par courrier à HM Passport Office, Newport, NP20 9AR."
+      },
+      "energy": {
+        "name": "Fournisseur d'énergie",
+        "how": "Contactez le fournisseur pour un dernier relevé des compteurs et la clôture ou le transfert du compte."
+      },
+      "broadband": {
+        "name": "Internet / téléphone",
+        "how": "Contactez le fournisseur pour résilier ou transférer le contrat. Les frais de résiliation anticipée sont souvent annulés en cas de décès."
+      },
+      "water": {
+        "name": "Compagnie des eaux",
+        "how": "Contactez la compagnie des eaux locale pour mettre le compte à jour ou le clôturer si le logement est vide."
+      },
+      "royal-mail": {
+        "name": "Réexpédition Royal Mail",
+        "how": "Mettez en place une réexpédition du courrier sur royalmail.com pour ne manquer aucune correspondance importante."
+      },
+      "subscriptions": {
+        "name": "Abonnements et prélèvements",
+        "how": "Annulez tous les virements permanents auprès de la banque. Consultez la liste des comptes pour repérer les abonnements connus."
+      },
+      "life-insurance": {
+        "name": "Assurance vie",
+        "how": "Contactez l'assureur avec le numéro de police. Les contrats d'assurance vie sont généralement réglés hors succession."
+      },
+      "pension-private": {
+        "name": "Caisse de retraite privée",
+        "how": "Contactez chaque organisme. Les pensions placées en trust sont versées aux bénéficiaires désignés."
+      }
+    }
+  },
+  "resources": {
+    "title": "Aide et guides",
+    "topics_one": "{{count}} sujet",
+    "topics_other": "{{count}} sujets",
+    "guides": {
+      "role": {
+        "title": "Comprendre votre rôle",
+        "items": [
+          {
+            "label": "Qu'est-ce qu'une personne de confiance ?",
+            "detail": "Sur Everstead, une personne de confiance est une personne avec qui le titulaire du plan a choisi de partager tout ou partie de son plan de transmission. Selon votre rôle, vous pouvez être exécuteur testamentaire, proche parent, mandataire pour les affaires financières, ou simplement un membre de la famille en qui il a confiance."
+          },
+          {
+            "label": "Que fait un exécuteur testamentaire ?",
+            "detail": "L'exécuteur testamentaire est légalement responsable de l'administration de la succession après le décès. Cela comprend la recherche du testament, la demande d'homologation (probate), la notification des organismes, le règlement des dettes et la répartition des biens. Everstead vous donne les informations nécessaires pour le faire, mais ne remplace pas un conseil juridique pour les successions complexes."
+          },
+          {
+            "label": "Que fait un mandataire ?",
+            "detail": "Si vous détenez une Lasting Power of Attorney (LPA) pour les biens et les affaires financières, vous pouvez agir au nom du titulaire du plan s'il perd sa capacité mentale. C'est une responsabilité juridique sérieuse. N'agissez que dans le cadre de la LPA et conservez une trace de toutes les décisions."
+          },
+          {
+            "label": "Votre niveau d'accès",
+            "detail": "Vous ne voyez que ce que le titulaire du plan a explicitement partagé avec vous. Certaines personnes voient le plan complet, d'autres seulement certaines sections. Si vous avez besoin d'accéder à un élément qui n'apparaît pas ici, contactez directement le titulaire du plan."
+          }
+        ]
+      },
+      "documents": {
+        "title": "Travailler avec les documents",
+        "items": [
+          {
+            "label": "Retrouver le testament",
+            "detail": "Consultez la section Documents. Si l'original est conservé chez un notaire, la fiche du document devrait indiquer ses coordonnées. L'original signé du testament (et non une copie numérisée) est nécessaire pour demander l'homologation en Angleterre et au pays de Galles."
+          },
+          {
+            "label": "Localiser la LPA",
+            "detail": "La LPA doit être enregistrée auprès de l'Office of the Public Guardian (OPG) avant de pouvoir être utilisée. Le certificat d'enregistrement indique le numéro de référence OPG. Les établissements financiers demanderont une copie certifiée conforme."
+          },
+          {
+            "label": "Télécharger les documents",
+            "detail": "Utilisez le bouton Télécharger à côté de chaque document pour en enregistrer une copie. Conservez ces copies en lieu sûr, vous devrez peut-être envoyer des exemplaires certifiés aux banques, aux assureurs et au HMRC."
+          },
+          {
+            "label": "Que faire si des documents manquent",
+            "detail": "Si vous ne trouvez pas un document important ici, renseignez-vous auprès du notaire du titulaire du plan, de sa banque ou de ses proches. Pour un testament introuvable, le Certainty National Will Register peut effectuer une recherche. Pour une LPA perdue, contactez directement l'OPG."
+          }
+        ]
+      },
+      "finances": {
+        "title": "Gérer les comptes et les finances",
+        "items": [
+          {
+            "label": "Prévenir les établissements financiers",
+            "detail": "Chaque banque, assureur et caisse de retraite doit être prévenu séparément. La plupart acceptent un acte de décès et le grant of probate. Utilisez le service Tell Us Once (gov.uk) pour prévenir plusieurs administrations en une seule démarche."
+          },
+          {
+            "label": "Geler et clôturer les comptes",
+            "detail": "Les comptes sont généralement gelés dès la notification du décès. Les comptes joints peuvent être transférés automatiquement au cotitulaire survivant. Les comptes individuels nécessitent l'homologation avant que les fonds puissent être débloqués."
+          },
+          {
+            "label": "Retraites et assurance vie",
+            "detail": "Ces contrats sont généralement placés en trust et réglés hors succession, vérifiez les formulaires de désignation des bénéficiaires. Contactez directement l'organisme avec le numéro de police indiqué dans la section Comptes."
+          },
+          {
+            "label": "Abonnements et prélèvements",
+            "detail": "Résiliez les abonnements en cours le plus rapidement possible pour éviter des frais. Consultez la section Abonnements pour en obtenir la liste. Contactez chaque prestataire avec un justificatif de décès."
+          },
+          {
+            "label": "Impôts et déclarations finales",
+            "detail": "Une dernière déclaration de revenus peut être exigée pour l'année du décès. Si la succession dépasse le seuil des droits de succession (actuellement 325 000 £ plus les abattements éventuels), un formulaire IHT400 doit être déposé auprès du HMRC avant l'homologation."
+          }
+        ]
+      },
+      "people": {
+        "title": "Travailler avec les autres",
+        "items": [
+          {
+            "label": "Co-exécuteurs",
+            "detail": "S'il y a plusieurs exécuteurs testamentaires, tous doivent agir ensemble, sauf si l'un d'eux se retire formellement. Les décisions devraient être actées par écrit dans la mesure du possible. Les désaccords entre exécuteurs peuvent retarder considérablement l'homologation."
+          },
+          {
+            "label": "Bénéficiaires",
+            "detail": "Vous n'êtes pas tenu de communiquer le détail de la succession aux bénéficiaires pendant l'administration, seulement la répartition finale. Les tenir raisonnablement informés réduit toutefois les risques de litige."
+          },
+          {
+            "label": "Notaires et professionnels",
+            "detail": "Pour les successions complexes, faites appel sans attendre à un notaire spécialisé en successions. Consultez la section Personnes pour trouver le notaire désigné par le titulaire du plan. La plupart facturent un pourcentage de la valeur de la succession ou un taux horaire."
+          },
+          {
+            "label": "Quand demander un conseil juridique",
+            "detail": "Demandez toujours un conseil juridique si la succession comprend une entreprise, des biens à l'étranger, des biens contestés, des membres de la famille en rupture, ou des dettes supérieures à la valeur de la succession."
+          }
+        ]
+      },
+      "practical": {
+        "title": "Les démarches concrètes le moment venu",
+        "items": [
+          {
+            "label": "Déclarer le décès",
+            "detail": "En Angleterre et au pays de Galles, un décès doit être déclaré dans les 5 jours auprès du bureau d'état civil local. Vous recevrez un acte de décès, demandez-en au moins 10 copies certifiées, car les organismes exigent des originaux."
+          },
+          {
+            "label": "Retrouver le testament et contacter le notaire",
+            "detail": "Faites-le avant toute décision financière importante. Le testament peut préciser des volontés funéraires, des exécuteurs et des legs qui influencent les toutes premières démarches."
+          },
+          {
+            "label": "Demander l'homologation",
+            "detail": "Si la succession l'exige, adressez-vous au Probate Registry pour obtenir un Grant of Probate (ou des Letters of Administration en l'absence de testament). Comptez généralement 4 à 8 semaines. Les successions de moins de 10 000 £ peuvent en être dispensées."
+          },
+          {
+            "label": "Prévenir Everstead depuis cet espace",
+            "detail": "Utilisez le bouton Signaler un décès dans le panneau de gauche pour prévenir officiellement Everstead. Cela déclenchera un processus de vérification et, une fois le décès confirmé, transmettra les messages personnels qui vous sont adressés."
+          }
+        ]
+      }
+    },
+    "supportTitle": "Besoin d'aide supplémentaire ?",
+    "supportBody": "Notre équipe d'assistance peut répondre à vos questions sur l'accès à ce plan. Pour les questions juridiques et successorales, nous recommandons toujours de consulter un notaire qualifié.",
+    "contactSupport": "Contacter l'assistance"
+  },
+  "externalLinks": {
+    "title": "Services utiles",
+    "intro": "Services externes britanniques fréquemment nécessaires pendant l'administration d'une succession.",
+    "disclaimer": "Everstead n'est pas affilié à ces services. Vérifiez toujours les informations sur les sites officiels.",
+    "items": {
+      "tellUsOnce": {
+        "label": "Tell Us Once",
+        "desc": "Prévenir plusieurs administrations britanniques d'un décès en une seule démarche"
+      },
+      "settld": {
+        "label": "Settld",
+        "desc": "Service gratuit pour prévenir banques, fournisseurs et entreprises après un décès"
+      },
+      "probate": {
+        "label": "Demander l'homologation",
+        "desc": "Guide GOV.UK pour demander un Grant of Probate ou des Letters of Administration"
+      },
+      "willRegister": {
+        "label": "National Will Register",
+        "desc": "Rechercher un testament introuvable dans le registre Certainty"
+      },
+      "opg": {
+        "label": "Office of the Public Guardian",
+        "desc": "Vérifier ou enregistrer une Lasting Power of Attorney auprès de l'OPG"
+      },
+      "hmrc": {
+        "label": "HMRC après un décès",
+        "desc": "Informer le HMRC d'un décès et régler les questions fiscales et les dernières déclarations"
+      }
+    }
+  },
+  "settings": {
+    "personalTitle": "Coordonnées personnelles",
+    "personalSubtitle": "Comment Everstead vous contacte",
+    "fullName": "Nom complet",
+    "email": "Adresse e-mail",
+    "emailNote": "Pour changer d'adresse e-mail, contactez support@everstead.care",
+    "phone": "Numéro de téléphone",
+    "phonePlaceholder": "+33 6 12 34 56 78",
+    "addressHeading": "Adresse",
+    "address1": "Adresse (ligne 1)",
+    "address1Placeholder": "Numéro et nom de la rue",
+    "address2": "Adresse (ligne 2)",
+    "address2Placeholder": "Appartement, étage, etc. (facultatif)",
+    "city": "Ville",
+    "cityPlaceholder": "Paris",
+    "postcode": "Code postal",
+    "postcodePlaceholder": "75001",
+    "country": "Pays",
+    "countries": {
+      "uk": "Royaume-Uni",
+      "ireland": "Irlande",
+      "us": "États-Unis",
+      "canada": "Canada",
+      "australia": "Australie",
+      "nz": "Nouvelle-Zélande",
+      "other": "Autre"
+    },
+    "saving": "Enregistrement…",
+    "saveChanges": "Enregistrer les modifications",
+    "passwordTitle": "Changer de mot de passe",
+    "passwordSubtitle": "8 caractères minimum",
+    "currentPassword": "Mot de passe actuel",
+    "newPassword": "Nouveau mot de passe",
+    "confirmPassword": "Confirmer le nouveau mot de passe",
+    "updating": "Mise à jour…",
+    "updatePassword": "Mettre à jour le mot de passe",
+    "pwMismatch": "Les nouveaux mots de passe ne correspondent pas.",
+    "pwTooShort": "Le mot de passe doit contenir au moins 8 caractères.",
+    "pwUpdateFailed": "Impossible de mettre à jour le mot de passe.",
+    "showPassword": "Afficher le mot de passe",
+    "hidePassword": "Masquer le mot de passe",
+    "notifsTitle": "Préférences de notification",
+    "notifsSubtitle": "Choisissez ce qu'Everstead vous envoie",
+    "notifs": {
+      "plan_updates": {
+        "label": "Mises à jour du plan",
+        "desc": "Lorsque le titulaire du plan ajoute ou modifie un élément"
+      },
+      "new_messages": {
+        "label": "Nouveaux messages personnels",
+        "desc": "Lorsqu'un message vous est transmis"
+      },
+      "alerts_critical": {
+        "label": "Alertes critiques",
+        "desc": "Éléments urgents qui requièrent votre attention"
+      },
+      "alerts_info": {
+        "label": "Alertes d'information",
+        "desc": "Mises à jour et rappels non urgents"
+      },
+      "digest_weekly": {
+        "label": "Résumé hebdomadaire",
+        "desc": "Un résumé de l'activité du plan chaque lundi"
+      }
+    },
+    "savePrefs": "Enregistrer les préférences",
+    "saved": "Enregistré"
+  },
+  "report": {
+    "reporterHeading": "Vos coordonnées (déclarant)",
+    "fullName": "Nom complet *",
+    "email": "Adresse e-mail *",
+    "phone": "Numéro de téléphone *",
+    "phonePlaceholder": "+33 6 12 34 56 78",
+    "role": "Votre rôle dans ce plan *",
+    "select": "Sélectionner…",
+    "requiredNote": "Tous les champs marqués * sont obligatoires",
+    "uploadHeading": "Document justificatif (facultatif)",
+    "uploadMeta": "PDF, JPG, PNG, 10 Mo maximum. Le document sera conservé en toute sécurité.",
+    "chooseFile": "Choisir un fichier",
+    "consentError": "Veuillez confirmer la déclaration avant d'envoyer.",
+    "submitFailed": "Une erreur est survenue. Veuillez réessayer ou contacter support@everstead.care.",
+    "submitting": "Envoi en cours…",
+    "submit": "Envoyer le signalement",
+    "back": "Retour",
+    "continueToForm": "Continuer vers le formulaire",
+    "confirmationSent": "Une confirmation a été envoyée à <strong>{{email}}</strong>. Pour toute question, contactez <a>support@everstead.care</a>.",
+    "relationship": {
+      "spouse": "Conjoint ou partenaire",
+      "child": "Enfant",
+      "sibling": "Frère ou sœur",
+      "parent": "Parent",
+      "executor": "Exécuteur testamentaire désigné",
+      "healthcareProxy": "Mandataire médical",
+      "solicitor": "Notaire ou avocat",
+      "other": "Autre"
+    }
+  },
+  "reportDeath": {
+    "title": "Signaler un décès",
+    "subtitle": "Informer Everstead du décès de {{name}}",
+    "formTitle": "Signaler un décès, formulaire de notification",
+    "intro": "Nous vous adressons nos sincères condoléances. Cette procédure vous permet d'informer officiellement Everstead du décès de <strong>{{name}}</strong>. Une fois la vérification effectuée par notre équipe :",
+    "bullets": [
+      "L'abonnement entrera dans une période de clôture de 30 jours, aucun prélèvement supplémentaire ne sera effectué.",
+      "L'accès délégué à ce plan restera actif pendant 90 jours afin de permettre une transmission sereine.",
+      "Les données seront archivées en toute sécurité, puis supprimées conformément à notre politique de conservation.",
+      "Vous recevrez un e-mail de confirmation et un numéro de référence sous 2 jours ouvrés."
+    ],
+    "notice": "Ce formulaire sert uniquement à nous informer. Everstead n'est pas un service juridique. Pensez également à contacter les autorités, les établissements financiers et les professionnels du droit concernés.",
+    "rolePlaceholder": "par ex. Exécuteur testamentaire principal",
+    "relationshipLabel": "Lien avec la personne décédée *",
+    "detailsHeading": "Informations sur le décès",
+    "dateLabel": "Date du décès *",
+    "placeLabel": "Lieu du décès",
+    "placePlaceholder": "par ex. Paris, France",
+    "certLabel": "Numéro de l'acte de décès (si disponible)",
+    "certPlaceholder": "Laissez vide si vous ne l'avez pas encore",
+    "uploadLead": "Téléversez une copie de l'acte de décès ou de la lettre du médecin légiste",
+    "notesLabel": "Remarques complémentaires",
+    "notesPlaceholder": "Tout élément de contexte utile pour l'équipe Everstead…",
+    "consent": "Je confirme que je suis un délégué autorisé sur ce plan Everstead, que les informations fournies sont exactes à ma connaissance, et que je suis en droit d'informer Everstead du décès du titulaire du plan. Je comprends qu'Everstead vérifiera ce signalement avant toute action sur le compte.",
+    "submittedTitle": "Signalement reçu",
+    "submittedBody": "Nous avons bien reçu votre notification. L'équipe Everstead examinera et vérifiera les informations sous <strong>2 jours ouvrés</strong>. L'abonnement du titulaire du plan sera placé en période de clôture de 30 jours, à l'issue de laquelle le compte sera fermé et les données traitées en toute sécurité, conformément à notre politique de conservation."
+  },
+  "reportIncident": {
+    "title": "Signaler un incident",
+    "subtitle": "Informer Everstead que {{name}} est en incapacité d'agir",
+    "formTitle": "Signaler un incident, formulaire de notification",
+    "intro": "Ce formulaire concerne les situations où <strong>{{name}}</strong> est en vie mais temporairement ou durablement hors d'état d'agir (accident grave, urgence médicale ou perte de capacité mentale) et où la famille proche ou les personnes de confiance ont besoin d'un accès pour agir en son nom.",
+    "bullets": [
+      "Votre signalement sera examiné par l'équipe Everstead sous 2 jours ouvrés.",
+      "Les autorisations d'accès prévues en cas d'incapacité seront débloquées après vérification.",
+      "Le compte du titulaire du plan ne sera pas fermé, il s'agit d'un déblocage d'accès temporaire ou lié à la situation.",
+      "Vous recevrez un e-mail de confirmation et un numéro de référence après l'envoi."
+    ],
+    "notice": "Ce formulaire sert uniquement à nous informer. Everstead n'est pas un service juridique ou médical. Pensez également à consulter les autorités, les professionnels de santé et les conseillers juridiques concernés.",
+    "rolePlaceholder": "par ex. Exécuteur principal, membre de la famille",
+    "relationshipLabel": "Lien avec le titulaire du plan *",
+    "detailsHeading": "Informations sur l'incident",
+    "typeLabel": "Type d'incident *",
+    "types": {
+      "medical": "Urgence médicale (hospitalisation)",
+      "accident": "Accident ou blessure grave",
+      "capacity": "Perte de capacité mentale diagnostiquée",
+      "degenerative": "Maladie dégénérative (par ex. démence)",
+      "coma": "Inconscience prolongée / coma",
+      "other": "Autre incapacité"
+    },
+    "dateLabel": "Date de l'incident *",
+    "locationLabel": "Lieu / hôpital (le cas échéant)",
+    "locationPlaceholder": "par ex. Hôpital Saint-Louis, Paris",
+    "descLabel": "Brève description de la situation *",
+    "descPlaceholder": "Décrivez ce qui s'est passé et l'état actuel du titulaire du plan…",
+    "accessLabel": "Pourquoi cet accès est-il nécessaire maintenant ? *",
+    "accessPlaceholder": "Expliquez quelles informations doivent être consultées et pourquoi c'est urgent…",
+    "uploadLead": "Téléversez un certificat médical, une LPA ou toute autre pièce justificative",
+    "consent": "Je confirme que je suis un délégué autorisé sur ce plan Everstead, que les informations fournies sont exactes à ma connaissance, et que j'ai des motifs raisonnables de penser que le titulaire du plan est hors d'état d'agir. Je comprends qu'Everstead vérifiera ce signalement avant de débloquer tout accès supplémentaire.",
+    "submittedTitle": "Signalement d'incident reçu",
+    "submittedBody": "Nous avons bien reçu votre notification. L'équipe Everstead examinera le signalement sous <strong>2 jours ouvrés</strong> et pourra vous contacter pour une vérification complémentaire. Les autorisations d'accès concernées seront débloquées une fois le signalement confirmé."
+  },
+  "aiGuide": {
+    "trustedPerson": "personne de confiance",
+    "aTrustedPerson": "une personne de confiance",
+    "opening": {
+      "deceased": "Je suis là pour vous accompagner dans les prochaines étapes après le décès de {{name}}. C'est une période difficile : je resterai clair et concret.\n\nPar quoi souhaitez-vous commencer ? Vous pouvez demander :\n• « Que dois-je faire cette semaine ? »\n• « Comment prévenir la banque ? »\n• « Qu'est-ce que l'homologation et en ai-je besoin ? »\n• « Comment retrouver le testament ? »",
+      "incapacitated": "Je suis là pour vous aider à agir en tant que {{role}} pour {{name}}. Son compte est désormais suspendu et vos autorisations d'accès sont actives.\n\nEn quoi puis-je vous aider ? Vous pouvez demander :\n• « Quelles sont mes responsabilités en tant que {{roleA}} ? »\n• « Comment utiliser une Lasting Power of Attorney ? »\n• « Quels comptes contacter en premier ? »",
+      "default": "Je suis là pour vous aider à comprendre ce plan et votre rôle de {{role}} pour {{name}}.\n\nQue souhaitez-vous savoir ? Par exemple :\n• « Que fait un exécuteur testamentaire ? »\n• « Par où commencer ? »\n• « Comment me préparer pour le moment venu ? »"
+    },
+    "prompts": {
+      "deceased": [
+        "Que faire cette semaine ?",
+        "Comment prévenir les banques ?",
+        "Ai-je besoin de l'homologation ?"
+      ],
+      "incapacitated": [
+        "Quelles sont mes responsabilités ?",
+        "Comment utiliser une LPA ?",
+        "Qui dois-je contacter ?"
+      ],
+      "default": [
+        "Que fait un exécuteur testamentaire ?",
+        "Comment me préparer ?",
+        "Qu'est-ce que l'homologation ?"
+      ]
+    },
+    "triggerUrgent": "Que faire maintenant ?",
+    "triggerDefault": "Demander conseil",
+    "openAria": "Ouvrir le guide",
+    "closeAria": "Fermer le guide",
+    "headerTitle": "Guide Everstead",
+    "headerSubtitle": "À votre écoute, posez toutes vos questions",
+    "thinking": "Réflexion en cours…",
+    "inputPlaceholder": "Posez votre question…",
+    "sendAria": "Envoyer",
+    "previewReply": "Ceci est un simple aperçu. Dans un compte réel, je vous accompagnerais ici dans les prochaines démarches concrètes.",
+    "errorReply": "Désolé, je n'ai pas pu me connecter. Veuillez réessayer dans un instant."
+  },
+  "firstSteps": {
+    "deceasedTitle": "Que faire maintenant, {{name}}",
+    "nextStepsFallback": "prochaines étapes",
+    "deceasedSubtitle": "Une liste de priorités pour les jours à venir",
+    "incapTitle": "Vos priorités immédiates",
+    "incapSubtitle": "En tant que mandataire, voici par où commencer",
+    "deceasedSteps": [
+      {
+        "label": "Déclarer le décès",
+        "detail": "Dans les 5 jours, auprès du bureau d'état civil local. Demandez au moins 10 copies certifiées de l'acte de décès, chaque banque et organisme exige un original."
+      },
+      {
+        "label": "Retrouver le testament",
+        "detail": "Consultez l'onglet Documents. L'original signé du testament (et non une copie numérisée) est nécessaire pour l'homologation. Renseignez-vous auprès du notaire s'il n'y figure pas."
+      },
+      {
+        "label": "Prévenir la famille proche",
+        "detail": "Informez la famille proche avant toute notification officielle aux organismes."
+      },
+      {
+        "label": "Demander l'homologation",
+        "detail": "Un Grant of Probate délivré par le Probate Registry est généralement nécessaire pour accéder aux comptes. Comptez 4 à 8 semaines. Les successions de moins d'environ 10 000 £ peuvent en être dispensées."
+      },
+      {
+        "label": "Prévenir les établissements financiers",
+        "detail": "Consultez l'onglet Comptes pour la liste complète. Utilisez Tell Us Once (gov.uk) pour les administrations. Settld.com peut prévenir banques et fournisseurs en une seule fois."
+      },
+      {
+        "label": "Résilier les abonnements",
+        "detail": "Utilisez la liste des comptes pour repérer et annuler les prélèvements en cours, ils continuent d'être débités tant qu'ils ne sont pas résiliés."
+      }
+    ],
+    "incapSteps": [
+      {
+        "label": "Vérifiez que votre LPA est enregistrée",
+        "detail": "Une Lasting Power of Attorney doit être enregistrée auprès de l'Office of the Public Guardian (OPG) avant de pouvoir être utilisée. Vérifiez que vous disposez du certificat d'enregistrement."
+      },
+      {
+        "label": "Passez en revue les documents",
+        "detail": "Consultez l'onglet Documents pour le certificat LPA, les éventuelles directives médicales et les instructions de soins."
+      },
+      {
+        "label": "Contactez la banque du titulaire du plan",
+        "detail": "Présentez votre LPA enregistrée pour accéder à ses comptes. Chaque établissement a sa propre procédure, appelez au préalable pour connaître les pièces demandées."
+      },
+      {
+        "label": "Passez en revue les instructions",
+        "detail": "Consultez l'onglet Instructions pour retrouver les consignes laissées par le titulaire du plan pour cette situation."
+      },
+      {
+        "label": "Consignez toutes les décisions",
+        "detail": "En tant que mandataire, vous devez agir dans l'intérêt du mandant et conserver des traces écrites. Notez chaque décision et ses raisons."
+      }
+    ],
+    "viewDocuments": "Voir les documents",
+    "viewAccounts": "Voir les comptes",
+    "reportDeathCta": "Signaler le décès à Everstead"
+  },
+  "print": {
+    "docTitle": "{{name}} | Plan de transmission",
+    "planFallback": "Plan",
+    "heading": "Plan de transmission de {{name}}",
+    "viewedBy": "Consulté par {{name}} ({{role}}) · Imprimé le {{date}}",
+    "delegateFallback": "délégué",
+    "roleFallback": "personne de confiance",
+    "accountsHeading": "Comptes ({{count}})",
+    "documentsHeading": "Documents ({{count}})",
+    "instructionsHeading": "Instructions ({{count}})",
+    "expires": "expire le",
+    "footer": "Exporté depuis Everstead | plateforme sécurisée de planification successorale · everstead.care"
+  }
+}

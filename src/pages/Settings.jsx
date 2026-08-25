@@ -4,9 +4,17 @@ import {
   CheckCircle2, XCircle, Loader2, Users, Mail, Send, AlertCircle,
   UserCircle, RefreshCw, Trash2,
 } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../contexts/AuthContext'
 import i18n from '../i18n'
+import enSettings from '../i18n/locales/en/settings.json'
+import frSettings from '../i18n/locales/fr/settings.json'
+
+// Self-registered namespace (keeps src/i18n/index.js untouched). Safe to move
+// into the central resources map later, re-adding the same bundle is a no-op.
+i18n.addResourceBundle('en', 'settings', enSettings)
+i18n.addResourceBundle('fr', 'settings', frSettings)
 
 // ─────────────────────────────────────────────────────────────
 // HELPERS
@@ -31,6 +39,7 @@ const inputClass = 'w-full border border-stone-300 rounded-lg px-4 py-2.5 text-s
 // FAMILY SECTION
 // ─────────────────────────────────────────────────────────────
 export function FamilySection({ profile, session }) {
+  const { t } = useTranslation('settings')
   const [membership, setMembership]     = useState(null)
   const [partnerProfile, setPartnerProfile] = useState(null)
   const [loadingMembership, setLoadingMembership] = useState(true)
@@ -106,7 +115,7 @@ export function FamilySection({ profile, session }) {
 
     try {
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(inviteEmail)) {
-        throw new Error('Please enter a valid email address.')
+        throw new Error(t('family.errors.invalidEmail'))
       }
 
       // Insert membership row
@@ -148,7 +157,7 @@ export function FamilySection({ profile, session }) {
       setInviteEmail('')
       await loadMembership()
     } catch (err) {
-      setInviteError(err.message || 'Could not send invitation. Please try again.')
+      setInviteError(err.message || t('family.errors.sendFailed'))
     } finally {
       setInviteLoading(false)
     }
@@ -189,7 +198,7 @@ export function FamilySection({ profile, session }) {
 
       await loadMembership()
     } catch (err) {
-      setActionError(err.message || 'Could not resend. Please try again.')
+      setActionError(err.message || t('family.errors.resendFailed'))
     } finally {
       setResendLoading(false)
     }
@@ -209,7 +218,7 @@ export function FamilySection({ profile, session }) {
       setMembership(null)
       setInviteSent(false)
     } catch (err) {
-      setActionError(err.message || 'Could not cancel. Please try again.')
+      setActionError(err.message || t('family.errors.cancelFailed'))
     } finally {
       setCancelLoading(false)
     }
@@ -262,7 +271,7 @@ export function FamilySection({ profile, session }) {
       setPartnerProfile(null)
       setShowRemoveConfirm(false)
     } catch (err) {
-      setActionError(err.message || 'Could not remove partner. Please try again.')
+      setActionError(err.message || t('family.errors.removeFailed'))
     } finally {
       setRemoveLoading(false)
     }
@@ -292,7 +301,7 @@ export function FamilySection({ profile, session }) {
       // Reload page to reflect new status
       window.location.reload()
     } catch (err) {
-      setActionError(err.message || 'Could not leave. Please try again.')
+      setActionError(err.message || t('family.errors.leaveFailed'))
     } finally {
       setRemoveLoading(false)
     }
@@ -301,7 +310,7 @@ export function FamilySection({ profile, session }) {
   if (loadingMembership) {
     return (
       <div className="flex items-center gap-2 text-stone-400 text-sm py-4">
-        <Loader2 size={14} className="animate-spin" /> Loading…
+        <Loader2 size={14} className="animate-spin" /> {t('family.loading')}
       </div>
     )
   }
@@ -320,7 +329,7 @@ export function FamilySection({ profile, session }) {
       {isSecondary && (
         <div>
           <p className="text-sm text-stone-600 mb-4">
-            You joined <strong>{partnerProfile?.full_name || 'a partner'}</strong>'s Everstead+ plan. Your vault is completely private to you.
+            {t('family.secondary.joinedBefore')}<strong>{partnerProfile?.full_name || t('family.secondary.partnerFallback')}</strong>{t('family.secondary.joinedAfter')}
           </p>
 
           <div className="flex items-center gap-3 p-4 bg-stone-50 border border-stone-200 rounded-xl mb-5">
@@ -329,7 +338,7 @@ export function FamilySection({ profile, session }) {
             </div>
             <div>
               <p className="text-sm font-medium text-navy-900">{partnerProfile?.full_name || '—'}</p>
-              <p className="text-xs text-stone-500">{partnerProfile?.email || '—'} · Primary</p>
+              <p className="text-xs text-stone-500">{partnerProfile?.email || '—'}{t('family.secondary.primarySuffix')}</p>
             </div>
           </div>
 
@@ -338,14 +347,14 @@ export function FamilySection({ profile, session }) {
               onClick={() => setShowRemoveConfirm(true)}
               className="text-xs text-red-500 hover:text-red-700 font-medium transition-colors"
             >
-              Leave family plan
+              {t('family.secondary.leave')}
             </button>
           )}
 
           {showRemoveConfirm && (
             <div className="bg-red-50 border border-red-200 rounded-xl p-4">
               <p className="text-sm text-red-800 mb-3">
-                Are you sure? You'll lose access to Everstead+ and your account will be deactivated until you start your own plan.
+                {t('family.secondary.confirmBody')}
               </p>
               <div className="flex gap-3">
                 <button
@@ -354,13 +363,13 @@ export function FamilySection({ profile, session }) {
                   className="flex items-center gap-1.5 bg-red-600 text-white text-xs font-semibold px-4 py-2 rounded-lg hover:bg-red-700 transition-colors disabled:opacity-50"
                 >
                   {removeLoading ? <Loader2 size={12} className="animate-spin" /> : null}
-                  Yes, leave
+                  {t('family.secondary.confirmYes')}
                 </button>
                 <button
                   onClick={() => setShowRemoveConfirm(false)}
                   className="text-xs text-stone-500 hover:text-stone-700 px-4 py-2"
                 >
-                  Cancel
+                  {t('family.cancel')}
                 </button>
               </div>
             </div>
@@ -377,8 +386,8 @@ export function FamilySection({ profile, session }) {
               <UserCircle size={20} className="text-white" />
             </div>
             <div className="flex-1">
-              <p className="text-sm font-medium text-navy-900">{profile?.full_name || 'You'}</p>
-              <p className="text-xs text-stone-500">{profile?.email} · Your vault (primary)</p>
+              <p className="text-sm font-medium text-navy-900">{profile?.full_name || t('family.primary.youFallback')}</p>
+              <p className="text-xs text-stone-500">{profile?.email}{t('family.primary.vaultSuffix')}</p>
             </div>
             <CheckCircle2 size={16} className="text-sage-500" />
           </div>
@@ -387,13 +396,13 @@ export function FamilySection({ profile, session }) {
           {!membership && (
             <div>
               <p className="text-sm text-stone-600 mb-4">
-                Invite a partner, spouse, or family member to set up their own private vault, included in your plan.
+                {t('family.primary.invitePrompt')}
               </p>
 
               {inviteSent && (
                 <div className="flex items-center gap-2 bg-sage-50 border border-sage-200 rounded-xl px-4 py-3 text-xs text-sage-800 mb-4">
                   <CheckCircle2 size={13} className="shrink-0" />
-                  Invitation sent. They'll receive an email with a link to set up their vault.
+                  {t('family.primary.inviteSent')}
                 </div>
               )}
 
@@ -402,7 +411,7 @@ export function FamilySection({ profile, session }) {
                   type="email"
                   value={inviteEmail}
                   onChange={e => setInviteEmail(e.target.value)}
-                  placeholder="partner@example.com"
+                  placeholder={t('family.primary.emailPlaceholder')}
                   required
                   className={`${inputClass} flex-1`}
                 />
@@ -412,7 +421,7 @@ export function FamilySection({ profile, session }) {
                   className="flex items-center gap-1.5 bg-navy-800 text-white text-sm font-semibold px-4 py-2.5 rounded-lg hover:bg-navy-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
                 >
                   {inviteLoading ? <Loader2 size={13} className="animate-spin" /> : <Send size={13} />}
-                  Send invitation
+                  {t('family.primary.sendInvite')}
                 </button>
               </form>
 
@@ -431,7 +440,7 @@ export function FamilySection({ profile, session }) {
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium text-navy-900 truncate">{membership.secondary_email}</p>
-                  <p className="text-xs text-stone-500">Invitation sent, waiting for them to accept</p>
+                  <p className="text-xs text-stone-500">{t('family.primary.pendingStatus')}</p>
                 </div>
               </div>
 
@@ -442,7 +451,7 @@ export function FamilySection({ profile, session }) {
                   className="flex items-center gap-1.5 text-xs font-semibold text-navy-700 hover:text-navy-900 transition-colors disabled:opacity-50"
                 >
                   {resendLoading ? <Loader2 size={12} className="animate-spin" /> : <RefreshCw size={12} />}
-                  Resend
+                  {t('family.primary.resend')}
                 </button>
                 <span className="text-stone-300">·</span>
                 <button
@@ -451,7 +460,7 @@ export function FamilySection({ profile, session }) {
                   className="flex items-center gap-1.5 text-xs font-semibold text-red-500 hover:text-red-700 transition-colors disabled:opacity-50"
                 >
                   {cancelLoading ? <Loader2 size={12} className="animate-spin" /> : <XCircle size={12} />}
-                  Cancel invitation
+                  {t('family.primary.cancelInvite')}
                 </button>
               </div>
             </div>
@@ -466,10 +475,10 @@ export function FamilySection({ profile, session }) {
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium text-navy-900">{partnerProfile?.full_name || membership.secondary_email}</p>
-                  <p className="text-xs text-stone-500">{partnerProfile?.email || membership.secondary_email} · Their vault (private)</p>
+                  <p className="text-xs text-stone-500">{partnerProfile?.email || membership.secondary_email}{t('family.primary.theirVaultSuffix')}</p>
                 </div>
                 <div className="flex items-center gap-1.5 text-sage-600 text-xs font-semibold">
-                  <CheckCircle2 size={14} /> Connected
+                  <CheckCircle2 size={14} /> {t('family.primary.connected')}
                 </div>
               </div>
 
@@ -478,14 +487,14 @@ export function FamilySection({ profile, session }) {
                   onClick={() => setShowRemoveConfirm(true)}
                   className="flex items-center gap-1.5 text-xs text-red-500 hover:text-red-700 font-medium transition-colors"
                 >
-                  <Trash2 size={12} /> Remove partner
+                  <Trash2 size={12} /> {t('family.primary.removePartner')}
                 </button>
               )}
 
               {showRemoveConfirm && (
                 <div className="bg-red-50 border border-red-200 rounded-xl p-4">
                   <p className="text-sm text-red-800 mb-3">
-                    Are you sure? <strong>{partnerProfile?.full_name || 'Your partner'}</strong> will lose access to Everstead+ and will need their own subscription to continue using Everstead.
+                    {t('family.primary.removeConfirmBefore')}<strong>{partnerProfile?.full_name || t('family.primary.partnerFallback')}</strong>{t('family.primary.removeConfirmAfter')}
                   </p>
                   <div className="flex gap-3">
                     <button
@@ -494,13 +503,13 @@ export function FamilySection({ profile, session }) {
                       className="flex items-center gap-1.5 bg-red-600 text-white text-xs font-semibold px-4 py-2 rounded-lg hover:bg-red-700 transition-colors disabled:opacity-50"
                     >
                       {removeLoading ? <Loader2 size={12} className="animate-spin" /> : null}
-                      Yes, remove
+                      {t('family.primary.removeYes')}
                     </button>
                     <button
                       onClick={() => setShowRemoveConfirm(false)}
                       className="text-xs text-stone-500 hover:text-stone-700 px-4 py-2"
                     >
-                      Cancel
+                      {t('family.cancel')}
                     </button>
                   </div>
                 </div>
@@ -517,6 +526,7 @@ export function FamilySection({ profile, session }) {
 // MAIN SETTINGS PAGE
 // ─────────────────────────────────────────────────────────────
 export default function Settings() {
+  const { t }                  = useTranslation('settings')
   const { user }               = useAuth()
   const navigate               = useNavigate()
   const [profile, setProfile]  = useState(null)
@@ -556,22 +566,22 @@ export default function Settings() {
       <div className="max-w-2xl mx-auto px-6">
 
         <div className="mb-10">
-          <h1 className="font-display text-3xl font-light text-navy-950">Account settings</h1>
-          <p className="text-stone-500 text-sm mt-2">Manage your account preferences and plan details.</p>
+          <h1 className="font-display text-3xl font-light text-navy-950">{t('title')}</h1>
+          <p className="text-stone-500 text-sm mt-2">{t('subtitle')}</p>
         </div>
 
         <div className="space-y-8">
 
           {/* ── Profile ── */}
           <Card>
-            <SectionLabel>Your account</SectionLabel>
+            <SectionLabel>{t('account.label')}</SectionLabel>
             <div className="space-y-1">
               <p className="text-sm font-medium text-navy-900">{profile?.full_name || '—'}</p>
               <p className="text-sm text-stone-500">{profile?.email || user?.email}</p>
               <p className="text-xs text-stone-400 mt-2 capitalize">
-                Plan: <strong className="text-navy-700">{profile?.plan || 'Essential'}</strong>
+                {t('account.plan')} <strong className="text-navy-700">{profile?.plan || 'Essential'}</strong>
                 {profile?.family_role && (
-                  <span className="ml-2 text-stone-400">· {profile.family_role === 'secondary' ? 'Partner vault' : 'Primary vault'}</span>
+                  <span className="ml-2 text-stone-400">· {profile.family_role === 'secondary' ? t('account.rolePartner') : t('account.rolePrimary')}</span>
                 )}
               </p>
             </div>
@@ -581,8 +591,8 @@ export default function Settings() {
           {/* Drives profiles.language — the app and emails follow this preference
               (the marketing site's language stays URL-based: / vs /fr). */}
           <Card>
-            <SectionLabel>Language / Langue</SectionLabel>
-            <p className="text-sm text-stone-500 mb-3">Choose the language for your Everstead account and emails.</p>
+            <SectionLabel>{t('language.label')}</SectionLabel>
+            <p className="text-sm text-stone-500 mb-3">{t('language.description')}</p>
             <select
               value={profile?.language || 'en'}
               onChange={async (e) => {
@@ -601,10 +611,10 @@ export default function Settings() {
           {/* ── Household section — managing the second vault on Everstead+ ── */}
           {isFamily && (
             <Card>
-              <SectionLabel>Family</SectionLabel>
+              <SectionLabel>{t('family.sectionLabel')}</SectionLabel>
               <div className="flex items-center gap-2 mb-5">
                 <Users size={16} className="text-navy-700" />
-                <h2 className="text-sm font-semibold text-navy-900">Two private vaults, one subscription</h2>
+                <h2 className="text-sm font-semibold text-navy-900">{t('family.heading')}</h2>
               </div>
               <FamilySection profile={profile} session={session} />
             </Card>

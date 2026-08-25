@@ -1,0 +1,136 @@
+{
+  "fallbackName": "there",
+  "opener": {
+    "welcome": "Welcome, **{{name}}** 👋 I'm really glad you're here. There's no rush today, and nothing you add is ever shared unless you choose to.",
+    "firstQuestion": "Before any of the practical bits, I'd love to start with **you**, the part that's actually worth keeping. Tell me one thing you'd want remembered: **a song you love** 🎵, something you believe in 💭, or a moment that shaped you ✨. Whatever comes to mind first."
+  },
+  "header": {
+    "title": "Let's set up your Everstead",
+    "subtitle": "No rush, you can stop any time.",
+    "closeTitle": "Finish for now"
+  },
+  "saved": {
+    "aboutMe": "Added to your About Me, change it any time",
+    "profile": "Saved, you can edit it any time",
+    "generic": "Saved",
+    "accountPill": "{{name}} added to your vault",
+    "accountFallback": "Account",
+    "trustedPersonPill": "{{name}} added, invite them whenever you're ready",
+    "trustedPersonFallback": "Trusted person"
+  },
+  "errors": {
+    "assistantBusy": "The assistant is taking a moment. Please try again.",
+    "generic": "Something went wrong. Please try again.",
+    "saveFailed": "Could not save this."
+  },
+  "nudgeFallback": "Is there anything else you'd like to pop in, maybe an account, a document, or someone you trust? Or you're all set for now, and everything you added keeps safely.",
+  "cards": {
+    "toSave": "To save",
+    "hint": "Edit anything, untick to skip, nothing is saved until you add it.",
+    "saveZero": "Save items",
+    "saveItem": "Save 1 item",
+    "saveItems": "Save {{count}} items",
+    "requiredError": "{{label}} is needed before this can be saved.",
+    "saved": "Saved",
+    "skip": "Skip",
+    "dismiss": "Dismiss",
+    "pleaseCheck": "Please check",
+    "selectPlaceholder": "Select…",
+    "lifeEvents": "Life events"
+  },
+  "input": {
+    "placeholder": "Type your answer…",
+    "sendLabel": "Send message",
+    "skipForNow": "Skip for now",
+    "finishReview": "Finish & review my details"
+  },
+  "types": {
+    "about_me": {
+      "label": "About you",
+      "saveThis": "Save this about you",
+      "fields": {
+        "passions": { "label": "Passions" },
+        "reflections": { "label": "Reflections" },
+        "spotify_url": { "label": "Playlist / song link" }
+      }
+    },
+    "profile": {
+      "label": "Your details",
+      "saveThis": "Save this your details",
+      "fields": {
+        "city": { "label": "City / Town", "placeholder": "e.g. London" }
+      }
+    },
+    "account": {
+      "label": "Account",
+      "saveThis": "Save this account",
+      "fields": {
+        "institution": { "label": "Institution" },
+        "category": {
+          "label": "Category",
+          "options": {
+            "banking": "Banking",
+            "retirement": "Retirement",
+            "investment": "Investment",
+            "insurance": "Insurance",
+            "digital": "Digital",
+            "property": "Property",
+            "other": "Other"
+          }
+        },
+        "account_type": { "label": "Type", "placeholder": "e.g. Current account" },
+        "account_number_hint": { "label": "Last 4 digits" },
+        "balance_display": { "label": "Balance", "placeholder": "optional" },
+        "notes": { "label": "Notes" }
+      }
+    },
+    "trusted_person": {
+      "label": "Trusted person",
+      "saveThis": "Save this trusted person",
+      "fields": {
+        "name": { "label": "Name" },
+        "email": { "label": "Email" },
+        "role": {
+          "label": "Role",
+          "options": {
+            "spousePartner": "Spouse / Partner",
+            "primaryExecutor": "Primary Executor",
+            "secondaryExecutor": "Secondary Executor",
+            "solicitor": "Solicitor",
+            "familyMember": "Family Member",
+            "familyCaretaker": "Family Caretaker",
+            "financialAdviser": "Financial Adviser",
+            "healthcareProxy": "Healthcare Proxy"
+          }
+        },
+        "notes": { "label": "Notes" }
+      }
+    }
+  },
+  "details": {
+    "title": "A few details to round things off",
+    "subtitle": "So everything's accurate for the people who may one day need it. You can change any of this later in Settings.",
+    "fullName": "Full name",
+    "dateOfBirth": "Date of birth",
+    "phone": "Phone",
+    "phonePlaceholder": "+44 7700 900000",
+    "address1": "Address line 1",
+    "address1Placeholder": "14 Kensington Road",
+    "address2": "Address line 2",
+    "address2Placeholder": "Optional",
+    "city": "City / Town",
+    "cityPlaceholder": "London",
+    "postcode": "Postcode",
+    "postcodePlaceholder": "SW7 2BT",
+    "country": "Country",
+    "skipForNow": "Skip for now",
+    "saving": "Saving…",
+    "saveContinue": "Save & continue"
+  },
+  "celebrate": {
+    "title": "Brilliant start, {{name}}.",
+    "body": "You've taken one of the most caring steps there is, and everything you added will keep, safe and private, for whenever it's needed.",
+    "tourCta": "Take a quick tour",
+    "dashboardCta": "Go straight to my dashboard"
+  }
+}

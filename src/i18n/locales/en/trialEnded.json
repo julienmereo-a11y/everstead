@@ -1,0 +1,29 @@
+{
+  "fallbackName": "there",
+  "heading": "Payment failed, {{name}}.",
+  "deletionBanner": {
+    "strong": "Your account will be permanently deleted on {{date}}.",
+    "rest": "This is your last chance to save your plan."
+  },
+  "subtitleImminent": "Your account and all your data will be deleted on {{date}}. Update your payment method now to keep everything.",
+  "subtitle": "We couldn't charge the card on file when your trial ended. Update your payment method to keep your plan, all your data is safe.",
+  "priceLabel": "{{name}} plan, £{{monthly}}/mo or £{{yearly}}/mo yearly",
+  "updateCard": {
+    "title": "Update your payment method",
+    "opening": "Opening billing portal…",
+    "cta": "Update payment method"
+  },
+  "deleteLink": "Delete my account",
+  "confirm": {
+    "heading": "Are you sure?",
+    "body": "This will permanently delete your plan, documents, and trusted people. Your data will be removed within 30 days. This cannot be undone.",
+    "scheduling": "Scheduling deletion…",
+    "cta": "Yes, delete my account",
+    "back": "Go back"
+  },
+  "errors": {
+    "checkoutFailed": "Failed to start checkout",
+    "priceNotFound": "Price not found. Please contact support.",
+    "deleteFailed": "Could not schedule deletion. Please contact support."
+  }
+}

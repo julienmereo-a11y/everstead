@@ -2,7 +2,16 @@ import React, { useState, useEffect } from 'react'
 import { Helmet } from 'react-helmet-async'
 import { Link, useSearchParams, useNavigate } from 'react-router-dom'
 import { AlertCircle, Loader2, CheckCircle2, Gift as GiftIcon, Eye, EyeOff } from 'lucide-react'
+import { useTranslation, Trans } from 'react-i18next'
 import { supabase } from '../lib/supabase'
+import i18n from '../i18n'
+import enRedeemGift from '../i18n/locales/en/redeemGift.json'
+import frRedeemGift from '../i18n/locales/fr/redeemGift.json'
+
+// Self-registered namespace (keeps src/i18n/index.js untouched). Safe to move
+// into the central resources map later: re-adding the same bundle is a no-op.
+i18n.addResourceBundle('en', 'redeemGift', enRedeemGift)
+i18n.addResourceBundle('fr', 'redeemGift', frRedeemGift)
 
 // ─────────────────────────────────────────────────────────────
 // HELPERS
@@ -24,11 +33,38 @@ const inputClass = 'w-full border border-stone-300 rounded-lg px-4 py-2.5 text-s
 
 // 'essential' retained so any gift codes bought before Essential was retired still
 // display correctly on redemption.
-const PLAN_NAMES   = { essential: 'Essential', family: 'Everstead+' }
-const PLAN_DESCS   = {
-  essential: 'For individuals getting their digital life in order.',
-  family:    'Two private vaults, one subscription. For couples and families.',
+const PLAN_NAMES     = { essential: 'Essential', family: 'Everstead+' }
+const PLAN_DESC_KEYS = {
+  essential: 'plans.essential',
+  family:    'plans.family',
 }
+
+// Submitted country values stay in English in every locale (stored on the
+// profile row) — only the visible option labels are translated.
+const COUNTRY_OPTIONS = [
+  { value: 'United Kingdom', key: 'unitedKingdom' },
+  { value: 'United States',  key: 'unitedStates' },
+  { value: 'France',         key: 'france' },
+  { value: 'Germany',        key: 'germany' },
+  { value: 'Spain',          key: 'spain' },
+  { value: 'Italy',          key: 'italy' },
+  { value: 'Portugal',       key: 'portugal' },
+  { value: 'Netherlands',    key: 'netherlands' },
+  { value: 'Belgium',        key: 'belgium' },
+  { value: 'Switzerland',    key: 'switzerland' },
+  { value: 'Sweden',         key: 'sweden' },
+  { value: 'Norway',         key: 'norway' },
+  { value: 'Denmark',        key: 'denmark' },
+  { value: 'Ireland',        key: 'ireland' },
+  { value: 'Australia',      key: 'australia' },
+  { value: 'Canada',         key: 'canada' },
+  { value: 'New Zealand',    key: 'newZealand' },
+  { value: 'South Africa',   key: 'southAfrica' },
+  { value: 'India',          key: 'india' },
+  { value: 'Singapore',      key: 'singapore' },
+  { value: 'UAE',            key: 'uae' },
+  { value: 'Brazil',         key: 'brazil' },
+]
 
 // ─────────────────────────────────────────────────────────────
 // MAIN COMPONENT
@@ -37,6 +73,7 @@ const PLAN_DESCS   = {
 export default function RedeemGift() {
   const [searchParams]    = useSearchParams()
   const navigate          = useNavigate()
+  const { t }             = useTranslation('redeemGift')
   const code              = searchParams.get('code') || ''
 
   const [validating, setValidating]   = useState(true)
@@ -57,7 +94,7 @@ export default function RedeemGift() {
   // Validate the code on load
   useEffect(() => {
     if (!code) {
-      setValidateError('No gift code found in the URL. Check the link in your gift email.')
+      setValidateError(t('errors.noCode'))
       setValidating(false)
       return
     }
@@ -73,7 +110,7 @@ export default function RedeemGift() {
           setForm(v => ({ ...v, email: '' }))
         }
       })
-      .catch(() => setValidateError('Could not validate gift code. Please try again.'))
+      .catch(() => setValidateError(t('errors.validateFailed')))
       .finally(() => setValidating(false))
   }, [code])
 
@@ -100,14 +137,14 @@ export default function RedeemGift() {
 
       if (!registerRes.ok) {
         const { error: regErr } = await registerRes.json().catch(() => ({}))
-        throw new Error(regErr || 'Could not create account. Please try again.')
+        throw new Error(regErr || t('errors.accountFailed'))
       }
 
       const { access_token, refresh_token } = await registerRes.json()
       await supabase.auth.setSession({ access_token, refresh_token })
 
       const { data: { user } } = await supabase.auth.getUser()
-      if (!user?.id) throw new Error('Session error. Please try again.')
+      if (!user?.id) throw new Error(t('errors.sessionError'))
 
       // 2. Save country to profile
       if (form.country) {
@@ -128,7 +165,7 @@ export default function RedeemGift() {
 
       if (!redeemRes.ok) {
         const { error: redeemErr } = await redeemRes.json().catch(() => ({}))
-        throw new Error(redeemErr || 'Could not redeem gift. Please contact support@everstead.care.')
+        throw new Error(redeemErr || t('errors.redeemFailed'))
       }
 
       navigate('/dashboard?gift=redeemed')
@@ -145,13 +182,13 @@ export default function RedeemGift() {
     form.password.length >= 8
 
   const planName   = giftInfo ? (PLAN_NAMES[giftInfo.plan] || giftInfo.plan) : ''
-  const yearsLabel = giftInfo ? (giftInfo.years === 1 ? '1 year' : `${giftInfo.years} years`) : ''
+  const yearsLabel = giftInfo ? t('card.years', { count: giftInfo.years }) : ''
 
   return (
     <>
       <Helmet>
-        <title>Claim your Everstead gift | Everstead</title>
-        <meta name="description" content="You've received an Everstead plan as a gift. Create your account to claim it." />
+        <title>{t('meta.title')}</title>
+        <meta name="description" content={t('meta.description')} />
         <meta name="robots" content="noindex, nofollow" />
       </Helmet>
       <div className="bg-stone-50 pt-24 min-h-screen">
@@ -160,12 +197,12 @@ export default function RedeemGift() {
         <section className="py-16 lg:py-20 grain relative overflow-hidden">
           <div className="absolute inset-0 aurora-bg" />
           <div className="relative max-w-3xl mx-auto px-6 text-center">
-            <p className="text-xs font-semibold uppercase tracking-widest text-sage-400 mb-4">You've received a gift</p>
+            <p className="text-xs font-semibold uppercase tracking-widest text-sage-400 mb-4">{t('hero.eyebrow')}</p>
             <h1 className="font-display text-4xl lg:text-5xl font-light text-white leading-tight text-balance">
-              Claim your Everstead plan.
+              {t('hero.title')}
             </h1>
             <p className="mt-4 text-stone-300 text-base leading-relaxed max-w-md mx-auto">
-              Create your account to activate your gift. No credit card needed.
+              {t('hero.subtitle')}
             </p>
           </div>
         </section>
@@ -177,7 +214,7 @@ export default function RedeemGift() {
             {validating && (
               <div className="text-center py-12">
                 <Loader2 size={28} className="animate-spin text-navy-600 mx-auto mb-3" />
-                <p className="text-sm text-stone-500">Validating your gift…</p>
+                <p className="text-sm text-stone-500">{t('validating')}</p>
               </div>
             )}
 
@@ -187,12 +224,12 @@ export default function RedeemGift() {
                 <div className="w-14 h-14 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-5">
                   <AlertCircle size={24} className="text-red-400" />
                 </div>
-                <h2 className="font-display text-2xl font-light text-navy-950 mb-3">This gift link isn't valid.</h2>
+                <h2 className="font-display text-2xl font-light text-navy-950 mb-3">{t('invalid.title')}</h2>
                 <p className="text-stone-500 text-sm leading-relaxed mb-6">{validateError}</p>
                 <p className="text-sm text-stone-400">
-                  Need help?{' '}
+                  {t('invalid.needHelp')}{' '}
                   <a href="mailto:support@everstead.care" className="text-navy-700 font-medium hover:text-navy-900">
-                    Contact support
+                    {t('invalid.contactSupport')}
                   </a>
                 </p>
               </div>
@@ -208,26 +245,31 @@ export default function RedeemGift() {
                       <GiftIcon size={18} className="text-sage-600" />
                     </div>
                     <div>
-                      <p className="text-xs text-stone-400 mb-0.5">Your gift</p>
+                      <p className="text-xs text-stone-400 mb-0.5">{t('card.label')}</p>
                       <p className="font-semibold text-navy-900">
-                        Everstead {planName}, {yearsLabel}
+                        {t('card.planLine', { plan: planName, years: yearsLabel })}
                       </p>
                       {giftInfo.gifterName && (
                         <p className="text-xs text-stone-500 mt-1">
-                          From <span className="font-medium text-stone-700">{giftInfo.gifterName}</span>
+                          <Trans
+                            t={t}
+                            i18nKey="card.from"
+                            values={{ name: giftInfo.gifterName }}
+                            components={{ highlight: <span className="font-medium text-stone-700" /> }}
+                          />
                         </p>
                       )}
-                      <p className="text-xs text-stone-400 mt-1">{PLAN_DESCS[giftInfo.plan]}</p>
+                      <p className="text-xs text-stone-400 mt-1">{PLAN_DESC_KEYS[giftInfo.plan] && t(PLAN_DESC_KEYS[giftInfo.plan])}</p>
                     </div>
                   </div>
                   <div className="mt-4 flex items-center gap-2 text-xs text-sage-700 bg-sage-50 rounded-lg px-3 py-2">
                     <CheckCircle2 size={13} className="text-sage-500 flex-shrink-0" />
-                    No credit card required to get started
+                    {t('card.noCard')}
                   </div>
                 </div>
 
-                <h2 className="font-display text-2xl font-light text-navy-950 mb-2">Create your account</h2>
-                <p className="text-stone-500 text-sm mb-8">It only takes a minute. Your gift will be activated immediately.</p>
+                <h2 className="font-display text-2xl font-light text-navy-950 mb-2">{t('form.title')}</h2>
+                <p className="text-stone-500 text-sm mb-8">{t('form.subtitle')}</p>
 
                 {error && (
                   <div className="flex items-start gap-3 bg-red-50 border border-red-200 rounded-xl px-4 py-3.5 mb-6">
@@ -237,32 +279,32 @@ export default function RedeemGift() {
                 )}
 
                 <form onSubmit={handleSubmit} className="space-y-4">
-                  <Field label="Full name" required>
+                  <Field label={t('form.fullName')} required>
                     <input
                       type="text" name="fullName" value={form.fullName} onChange={handleChange}
-                      placeholder="Jane Smith" required autoFocus
+                      placeholder={t('form.fullNamePlaceholder')} required autoFocus
                       className={inputClass}
                     />
                   </Field>
 
-                  <Field label="Email address" required>
+                  <Field label={t('form.email')} required>
                     <input
                       type="email" name="email" value={form.email} onChange={handleChange}
-                      placeholder="jane@example.com" required
+                      placeholder={t('form.emailPlaceholder')} required
                       className={inputClass}
                     />
                   </Field>
 
-                  <Field label="Password" required>
+                  <Field label={t('form.password')} required>
                     <div className="relative">
                       <input
                         type={showPw ? 'text' : 'password'} name="password" value={form.password} onChange={handleChange}
-                        placeholder="Min. 8 characters" required minLength={8}
+                        placeholder={t('form.passwordPlaceholder')} required minLength={8}
                         className={`${inputClass} pr-10`}
                       />
                       <button
                         type="button" onClick={() => setShowPw(v => !v)}
-                        aria-label={showPw ? 'Hide password' : 'Show password'}
+                        aria-label={showPw ? t('form.hidePassword') : t('form.showPassword')}
                         className="absolute right-3 top-1/2 -translate-y-1/2 text-stone-400 hover:text-stone-600 transition-colors"
                       >
                         {showPw ? <EyeOff size={15} /> : <Eye size={15} />}
@@ -270,22 +312,21 @@ export default function RedeemGift() {
                     </div>
                   </Field>
 
-                  <Field label="Country" required={false}>
+                  <Field label={t('form.country')} required={false}>
                     <select name="country" value={form.country} onChange={handleChange} className={inputClass}>
-                      {[
-                        'United Kingdom','United States','France','Germany','Spain','Italy',
-                        'Portugal','Netherlands','Belgium','Switzerland','Sweden','Norway',
-                        'Denmark','Ireland','Australia','Canada','New Zealand','South Africa',
-                        'India','Singapore','UAE','Brazil',
-                      ].map(c => <option key={c} value={c}>{c}</option>)}
+                      {COUNTRY_OPTIONS.map(c => <option key={c.value} value={c.value}>{t(`countries.${c.key}`)}</option>)}
                     </select>
                   </Field>
 
                   <p className="text-xs text-stone-400 leading-relaxed pt-1">
-                    By creating an account you agree to our{' '}
-                    <Link to="/terms" className="text-navy-700 underline underline-offset-2" target="_blank">Terms of Service</Link>
-                    {' '}and{' '}
-                    <Link to="/privacy" className="text-navy-700 underline underline-offset-2" target="_blank">Privacy Policy</Link>.
+                    <Trans
+                      t={t}
+                      i18nKey="form.terms"
+                      components={{
+                        terms:   <Link to="/terms" className="text-navy-700 underline underline-offset-2" target="_blank" />,
+                        privacy: <Link to="/privacy" className="text-navy-700 underline underline-offset-2" target="_blank" />,
+                      }}
+                    />
                   </p>
 
                   <button
@@ -294,16 +335,16 @@ export default function RedeemGift() {
                     className="btn-aurora w-full text-white font-semibold text-sm py-3.5 rounded-full transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                   >
                     {loading ? (
-                      <><Loader2 size={15} className="animate-spin" />Activating your gift…</>
+                      <><Loader2 size={15} className="animate-spin" />{t('form.activating')}</>
                     ) : (
-                      <><GiftIcon size={15} />Claim my gift</>
+                      <><GiftIcon size={15} />{t('form.submit')}</>
                     )}
                   </button>
                 </form>
 
                 <p className="text-center mt-5 text-xs text-stone-400">
-                  Already have an account?{' '}
-                  <Link to="/login" className="text-navy-700 font-medium hover:text-navy-900">Sign in</Link>
+                  {t('form.haveAccount')}{' '}
+                  <Link to="/login" className="text-navy-700 font-medium hover:text-navy-900">{t('form.signIn')}</Link>
                 </p>
               </>
             )}

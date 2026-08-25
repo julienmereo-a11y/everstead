@@ -1,7 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../contexts/AuthContext'
+import i18n from '../i18n'
+import enPrintView from '../i18n/locales/en/printView.json'
+import frPrintView from '../i18n/locales/fr/printView.json'
 
 // ─────────────────────────────────────────────────────────────
 // PRINT VIEW — Clean printable estate plan summary
@@ -9,14 +13,20 @@ import { useAuth } from '../contexts/AuthContext'
 // Users click "Print / Save as PDF" → browser print dialog
 // ─────────────────────────────────────────────────────────────
 
-function fmt(iso) {
+// Self-registered namespace (keeps src/i18n/index.js untouched). Safe to move
+// into the central resources map later: re-adding the same bundle is a no-op.
+i18n.addResourceBundle('en', 'printView', enPrintView)
+i18n.addResourceBundle('fr', 'printView', frPrintView)
+
+function fmt(iso, locale) {
   if (!iso) return '—'
-  try { return new Intl.DateTimeFormat('en-GB', { dateStyle: 'medium' }).format(new Date(iso)) } catch { return '—' }
+  try { return new Intl.DateTimeFormat(locale, { dateStyle: 'medium' }).format(new Date(iso)) } catch { return '—' }
 }
 
 export default function PrintView() {
   const { user, profile, loading: authLoading } = useAuth()
   const navigate = useNavigate()
+  const { t } = useTranslation('printView')
 
   const [accounts,     setAccounts]     = useState([])
   const [documents,    setDocuments]    = useState([])
@@ -49,12 +59,13 @@ export default function PrintView() {
   if (authLoading || loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-white">
-        <p className="text-stone-400 text-sm">Preparing your plan summary…</p>
+        <p className="text-stone-400 text-sm">{t('loading')}</p>
       </div>
     )
   }
 
-  const generated = new Intl.DateTimeFormat('en-GB', { dateStyle: 'long', timeStyle: 'short' }).format(new Date())
+  const dateLocale = i18n.language === 'fr' ? 'fr-FR' : 'en-GB'
+  const generated  = new Intl.DateTimeFormat(dateLocale, { dateStyle: 'long', timeStyle: 'short' }).format(new Date())
 
   return (
     <div className="bg-white min-h-screen">
@@ -62,20 +73,20 @@ export default function PrintView() {
       <div className="print:hidden bg-navy-950 px-8 py-4 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <img src="/logo-v2-white.png" alt="Everstead" className="h-7 w-auto" />
-          <span className="text-stone-400 text-sm">Estate plan export</span>
+          <span className="text-stone-400 text-sm">{t('toolbar.exportLabel')}</span>
         </div>
         <div className="flex items-center gap-3">
           <button
             onClick={() => navigate('/dashboard')}
             className="text-stone-400 hover:text-white text-sm transition-colors"
           >
-            ← Back to dashboard
+            {t('toolbar.back')}
           </button>
           <button
             onClick={() => window.print()}
             className="bg-white text-navy-900 text-sm font-semibold px-5 py-2 rounded-lg hover:bg-stone-100 transition-colors"
           >
-            Print / Save as PDF
+            {t('toolbar.print')}
           </button>
         </div>
       </div>
@@ -88,39 +99,39 @@ export default function PrintView() {
           <div className="flex items-start justify-between">
             <div>
               <h1 className="text-3xl font-light text-navy-950" style={{ fontFamily: 'Georgia, serif' }}>
-                Estate Plan Summary
+                {t('header.title')}
               </h1>
               <p className="text-stone-500 mt-1 text-sm">{profile?.full_name}</p>
             </div>
             <div className="text-right text-xs text-stone-400">
-              <p>Generated {generated}</p>
-              <p className="mt-0.5">Everstead · everstead.care</p>
+              <p>{t('header.generated', { date: generated })}</p>
+              <p className="mt-0.5">{t('header.brandLine')}</p>
             </div>
           </div>
           <div className="mt-4 grid grid-cols-3 gap-4 text-sm">
             {profile?.email && (
-              <div><span className="text-stone-400 text-xs block">Email</span>{profile.email}</div>
+              <div><span className="text-stone-400 text-xs block">{t('header.email')}</span>{profile.email}</div>
             )}
             {profile?.plan && (
-              <div><span className="text-stone-400 text-xs block">Plan</span><span className="capitalize">{profile.plan}</span></div>
+              <div><span className="text-stone-400 text-xs block">{t('header.plan')}</span><span className="capitalize">{profile.plan}</span></div>
             )}
-            <div><span className="text-stone-400 text-xs block">Sections</span>{[accounts.length > 0, documents.length > 0, people.length > 0, instructions.length > 0, wishes.length > 0].filter(Boolean).length} of 5 complete</div>
+            <div><span className="text-stone-400 text-xs block">{t('header.sections')}</span>{t('header.sectionsComplete', { count: [accounts.length > 0, documents.length > 0, people.length > 0, instructions.length > 0, wishes.length > 0].filter(Boolean).length })}</div>
           </div>
         </div>
 
         {/* Important notice */}
         <div className="border border-amber-300 bg-amber-50 rounded-lg px-5 py-4 mb-8 text-sm text-amber-800 print:border-stone-300 print:bg-stone-50 print:text-stone-700">
-          <p className="font-semibold mb-1">For your executor and trusted people</p>
-          <p>This document is a summary export from Everstead. It should be kept with your other important papers or shared securely with your executor. For the live, up-to-date version, log in at everstead.care.</p>
+          <p className="font-semibold mb-1">{t('notice.title')}</p>
+          <p>{t('notice.body')}</p>
         </div>
 
         {/* ── Accounts ── */}
-        <Section title="Financial Accounts" count={accounts.length}>
-          {accounts.length === 0 ? <Empty>No accounts added yet.</Empty> : (
+        <Section title={t('accounts.title')} count={accounts.length}>
+          {accounts.length === 0 ? <Empty>{t('accounts.empty')}</Empty> : (
             <table className="w-full text-sm border-collapse">
               <thead>
                 <tr className="border-b border-stone-200">
-                  {['Account name', 'Institution', 'Type', 'Account no.', 'Est. value'].map(h => (
+                  {[t('accounts.colName'), t('accounts.colInstitution'), t('accounts.colType'), t('accounts.colNumber'), t('accounts.colValue')].map(h => (
                     <th key={h} className="text-left text-xs text-stone-400 pb-2 pr-4 font-medium">{h}</th>
                   ))}
                 </tr>
@@ -141,12 +152,12 @@ export default function PrintView() {
         </Section>
 
         {/* ── Documents ── */}
-        <Section title="Key Documents" count={documents.length}>
-          {documents.length === 0 ? <Empty>No documents uploaded yet.</Empty> : (
+        <Section title={t('documents.title')} count={documents.length}>
+          {documents.length === 0 ? <Empty>{t('documents.empty')}</Empty> : (
             <table className="w-full text-sm border-collapse">
               <thead>
                 <tr className="border-b border-stone-200">
-                  {['Document', 'Type', 'Status', 'Expires'].map(h => (
+                  {[t('documents.colDocument'), t('documents.colType'), t('documents.colStatus'), t('documents.colExpires')].map(h => (
                     <th key={h} className="text-left text-xs text-stone-400 pb-2 pr-4 font-medium">{h}</th>
                   ))}
                 </tr>
@@ -157,7 +168,7 @@ export default function PrintView() {
                     <td className="py-2 pr-4 font-medium text-navy-900">{d.name || '—'}</td>
                     <td className="py-2 pr-4 text-stone-600">{d.doc_type || '—'}</td>
                     <td className="py-2 pr-4 text-stone-600 capitalize">{d.status || '—'}</td>
-                    <td className="py-2 text-stone-600">{fmt(d.expires_at)}</td>
+                    <td className="py-2 text-stone-600">{fmt(d.expires_at, dateLocale)}</td>
                   </tr>
                 ))}
               </tbody>
@@ -166,12 +177,12 @@ export default function PrintView() {
         </Section>
 
         {/* ── Trusted people ── */}
-        <Section title="Trusted People" count={people.length}>
-          {people.length === 0 ? <Empty>No trusted contacts added yet.</Empty> : (
+        <Section title={t('people.title')} count={people.length}>
+          {people.length === 0 ? <Empty>{t('people.empty')}</Empty> : (
             <table className="w-full text-sm border-collapse">
               <thead>
                 <tr className="border-b border-stone-200">
-                  {['Name', 'Email', 'Role', 'Status'].map(h => (
+                  {[t('people.colName'), t('people.colEmail'), t('people.colRole'), t('people.colStatus')].map(h => (
                     <th key={h} className="text-left text-xs text-stone-400 pb-2 pr-4 font-medium">{h}</th>
                   ))}
                 </tr>
@@ -191,12 +202,12 @@ export default function PrintView() {
         </Section>
 
         {/* ── Instructions ── */}
-        <Section title="Instructions" count={instructions.length}>
-          {instructions.length === 0 ? <Empty>No instructions written yet.</Empty> : (
+        <Section title={t('instructions.title')} count={instructions.length}>
+          {instructions.length === 0 ? <Empty>{t('instructions.empty')}</Empty> : (
             <div className="space-y-4">
               {instructions.map(ins => (
                 <div key={ins.id} className="border border-stone-200 rounded-lg p-4">
-                  <p className="font-semibold text-navy-900 text-sm mb-1">{ins.title || 'Untitled'}</p>
+                  <p className="font-semibold text-navy-900 text-sm mb-1">{ins.title || t('untitled')}</p>
                   {ins.category && <p className="text-xs text-stone-400 mb-2 capitalize">{ins.category}</p>}
                   {ins.content && <p className="text-sm text-stone-600 whitespace-pre-wrap leading-relaxed">{ins.content}</p>}
                 </div>
@@ -206,12 +217,12 @@ export default function PrintView() {
         </Section>
 
         {/* ── Wishes ── */}
-        <Section title="Wishes" count={wishes.length}>
-          {wishes.length === 0 ? <Empty>No wishes recorded yet.</Empty> : (
+        <Section title={t('wishes.title')} count={wishes.length}>
+          {wishes.length === 0 ? <Empty>{t('wishes.empty')}</Empty> : (
             <div className="space-y-4">
               {wishes.map(w => (
                 <div key={w.id} className="border border-stone-200 rounded-lg p-4">
-                  <p className="font-semibold text-navy-900 text-sm mb-1">{w.title || 'Untitled'}</p>
+                  <p className="font-semibold text-navy-900 text-sm mb-1">{w.title || t('untitled')}</p>
                   {w.category && <p className="text-xs text-stone-400 mb-2 capitalize">{w.category}</p>}
                   {w.content && <p className="text-sm text-stone-600 whitespace-pre-wrap leading-relaxed">{w.content}</p>}
                 </div>
@@ -222,8 +233,8 @@ export default function PrintView() {
 
         {/* Footer */}
         <div className="border-t border-stone-200 mt-10 pt-6 text-xs text-stone-400 flex items-center justify-between">
-          <p>Everstead · everstead.care · support@everstead.care</p>
-          <p>Generated {generated}</p>
+          <p>{t('footer.contactLine')}</p>
+          <p>{t('footer.generated', { date: generated })}</p>
         </div>
       </div>
     </div>

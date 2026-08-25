@@ -1,0 +1,37 @@
+{
+  "loading": "Chargement de votre invitation…",
+  "found": {
+    "title": "{{name}} vous invite à rejoindre son plan Everstead.",
+    "roleLine": "Cette personne souhaite vous confier le rôle de <bold>{{role}}</bold>.",
+    "body": "Everstead est une plateforme sécurisée pour organiser sa vie numérique, ses comptes, ses documents, ses consignes et ses dernières volontés. En tant que <bold>{{role}}</bold>, vous aurez accès aux sections que {{name}} a choisi de partager avec votre rôle.",
+    "bullet1": "Vous ne voyez que ce qui a été partagé avec votre rôle",
+    "bullet2": "Vous n'avez rien à faire maintenant, seulement le moment venu",
+    "bullet3": "Vous pourrez mettre à jour vos coordonnées après avoir accepté",
+    "wrongAccount": "<bold>Attention :</bold> cette invitation est destinée à <bold>{{invited}}</bold>. Vous êtes connecté en tant que <bold>{{current}}</bold>. Déconnectez-vous d'abord si vous souhaitez accepter avec un autre compte.",
+    "accept": "Accepter l'invitation",
+    "decline": "Refuser"
+  },
+  "accepting": "Confirmation de votre rôle…",
+  "accepted": {
+    "title": "Votre rôle est confirmé.",
+    "bodyNamed": "Vous faites désormais partie du plan Everstead de {{name}} en tant que <bold>{{role}}</bold>.",
+    "bodyGeneric": "Vous faites désormais partie du plan Everstead en tant que <bold>{{role}}</bold>.",
+    "cta": "Ouvrir le tableau de bord délégué"
+  },
+  "declined": {
+    "title": "Invitation refusée.",
+    "body": "Nous avons prévenu le titulaire du plan. S'il s'agit d'une erreur, demandez-lui de renvoyer l'invitation."
+  },
+  "expired": {
+    "title": "Invitation expirée.",
+    "body": "Ce lien d'invitation n'est plus valide. Demandez au titulaire du plan de renvoyer votre invitation."
+  },
+  "error": {
+    "title": "Une erreur est survenue.",
+    "fallback": "Veuillez réessayer ou contacter l'assistance."
+  },
+  "errors": {
+    "noToken": "Aucun jeton d'invitation trouvé dans le lien.",
+    "wrongEmail": "Cette invitation a été envoyée à {{invited}}. Vous êtes connecté en tant que {{current}}. Veuillez vous connecter avec le bon compte."
+  }
+}

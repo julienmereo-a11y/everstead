@@ -1,0 +1,57 @@
+{
+  "loading": "Loading your invitation…",
+  "fallbackPartner": "Your partner",
+  "found": {
+    "title": "You've been invited to Everstead",
+    "subtitle": "<bold>{{name}}</bold> has invited you to set up your own private vault, as part of their Everstead+ plan.",
+    "benefit1": "Your own completely private vault",
+    "benefit2": "Organise accounts, documents, and final wishes",
+    "benefit3": "{{name}} cannot see your data unless you share it",
+    "benefit4": "Covered by their Everstead+ plan, no cost to you",
+    "signedInNotice": "You're signed in as <bold>{{email}}</bold>. Click below to accept and link your accounts.",
+    "accept": "Accept invitation",
+    "wrongAccount": "<bold>Heads up:</bold> This invite is for <bold>{{invited}}</bold>. You're signed in as <bold>{{current}}</bold>. Sign out first to accept with the correct account.",
+    "sentTo": "Invitation sent to",
+    "form": {
+      "nameLabel": "Your full name",
+      "namePlaceholder": "Jane Smith",
+      "passwordLabel": "Choose a password",
+      "passwordPlaceholder": "Min. 8 characters",
+      "hidePassword": "Hide password",
+      "showPassword": "Show password",
+      "creating": "Creating your vault…",
+      "submit": "Create your vault"
+    },
+    "privacyNote": "Your vault is completely private. {{name}} won't be able to see your data unless you choose to share it.",
+    "haveAccount": "Already have an account?",
+    "signIn": "Sign in instead"
+  },
+  "submitting": "Setting up your vault…",
+  "success": {
+    "title": "Your vault is ready.",
+    "body": "You're now part of {{name}}'s Everstead+ plan. Your vault is completely private to you.",
+    "cta": "Go to your dashboard"
+  },
+  "alreadyAccepted": {
+    "title": "Already accepted.",
+    "body": "This invitation has already been accepted. Sign in to access your vault.",
+    "cta": "Sign in"
+  },
+  "expired": {
+    "title": "Invitation expired.",
+    "body": "This invite link is more than 7 days old. Ask the plan owner to send a new invitation from their account settings."
+  },
+  "error": {
+    "title": "Something went wrong.",
+    "fallback": "Please try again or contact support."
+  },
+  "errors": {
+    "invalidLink": "This invitation link is invalid or has expired.",
+    "cancelled": "This invitation has been cancelled.",
+    "sessionNotFound": "Session not found. Please refresh and try again.",
+    "acceptFailed": "Could not accept invitation.",
+    "generic": "Something went wrong. Please try again.",
+    "accountCreationFailed": "Account creation failed. Please try again.",
+    "sessionError": "Session error. Please try again."
+  }
+}

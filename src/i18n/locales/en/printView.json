@@ -1,0 +1,59 @@
+{
+  "loading": "Preparing your plan summary…",
+  "toolbar": {
+    "exportLabel": "Estate plan export",
+    "back": "← Back to dashboard",
+    "print": "Print / Save as PDF"
+  },
+  "header": {
+    "title": "Estate Plan Summary",
+    "generated": "Generated {{date}}",
+    "brandLine": "Everstead · everstead.care",
+    "email": "Email",
+    "plan": "Plan",
+    "sections": "Sections",
+    "sectionsComplete": "{{count}} of 5 complete"
+  },
+  "notice": {
+    "title": "For your executor and trusted people",
+    "body": "This document is a summary export from Everstead. It should be kept with your other important papers or shared securely with your executor. For the live, up-to-date version, log in at everstead.care."
+  },
+  "accounts": {
+    "title": "Financial Accounts",
+    "empty": "No accounts added yet.",
+    "colName": "Account name",
+    "colInstitution": "Institution",
+    "colType": "Type",
+    "colNumber": "Account no.",
+    "colValue": "Est. value"
+  },
+  "documents": {
+    "title": "Key Documents",
+    "empty": "No documents uploaded yet.",
+    "colDocument": "Document",
+    "colType": "Type",
+    "colStatus": "Status",
+    "colExpires": "Expires"
+  },
+  "people": {
+    "title": "Trusted People",
+    "empty": "No trusted contacts added yet.",
+    "colName": "Name",
+    "colEmail": "Email",
+    "colRole": "Role",
+    "colStatus": "Status"
+  },
+  "instructions": {
+    "title": "Instructions",
+    "empty": "No instructions written yet."
+  },
+  "wishes": {
+    "title": "Wishes",
+    "empty": "No wishes recorded yet."
+  },
+  "untitled": "Untitled",
+  "footer": {
+    "contactLine": "Everstead · everstead.care · support@everstead.care",
+    "generated": "Generated {{date}}"
+  }
+}

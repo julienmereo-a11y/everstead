@@ -1,0 +1,55 @@
+{
+  "title": "Paramètres du compte",
+  "subtitle": "Gérez vos préférences de compte et les détails de votre forfait.",
+  "account": {
+    "label": "Votre compte",
+    "plan": "Plan :",
+    "rolePartner": "Coffre partenaire",
+    "rolePrimary": "Coffre principal"
+  },
+  "language": {
+    "label": "Langue / Language",
+    "description": "Choisissez la langue de votre compte Everstead et de vos e-mails."
+  },
+  "family": {
+    "sectionLabel": "Famille",
+    "heading": "Deux coffres privés, un seul abonnement",
+    "loading": "Chargement…",
+    "cancel": "Annuler",
+    "secondary": {
+      "joinedBefore": "Vous avez rejoint le forfait Everstead+ de ",
+      "joinedAfter": ". Votre coffre reste entièrement privé.",
+      "partnerFallback": "votre partenaire",
+      "primarySuffix": " · Principal",
+      "leave": "Quitter le forfait familial",
+      "confirmBody": "Êtes-vous sûr(e) ? Vous perdrez l'accès à Everstead+ et votre compte sera désactivé jusqu'à ce que vous souscriviez votre propre forfait.",
+      "confirmYes": "Oui, quitter"
+    },
+    "primary": {
+      "youFallback": "Vous",
+      "vaultSuffix": " · Votre coffre (principal)",
+      "invitePrompt": "Invitez votre partenaire, votre conjoint ou un membre de votre famille à créer son propre coffre privé, inclus dans votre forfait.",
+      "inviteSent": "Invitation envoyée. La personne recevra un e-mail avec un lien pour créer son coffre.",
+      "emailPlaceholder": "partenaire@exemple.com",
+      "sendInvite": "Envoyer l'invitation",
+      "pendingStatus": "Invitation envoyée, en attente d'acceptation",
+      "resend": "Renvoyer",
+      "cancelInvite": "Annuler l'invitation",
+      "theirVaultSuffix": " · Son coffre (privé)",
+      "connected": "Connecté",
+      "removePartner": "Retirer le partenaire",
+      "removeConfirmBefore": "Êtes-vous sûr(e) ? ",
+      "removeConfirmAfter": " perdra l'accès à Everstead+ et devra souscrire son propre abonnement pour continuer à utiliser Everstead.",
+      "partnerFallback": "Votre partenaire",
+      "removeYes": "Oui, retirer"
+    },
+    "errors": {
+      "invalidEmail": "Veuillez saisir une adresse e-mail valide.",
+      "sendFailed": "Impossible d'envoyer l'invitation. Veuillez réessayer.",
+      "resendFailed": "Impossible de renvoyer l'invitation. Veuillez réessayer.",
+      "cancelFailed": "Impossible d'annuler. Veuillez réessayer.",
+      "removeFailed": "Impossible de retirer le partenaire. Veuillez réessayer.",
+      "leaveFailed": "Impossible de quitter le forfait. Veuillez réessayer."
+    }
+  }
+}

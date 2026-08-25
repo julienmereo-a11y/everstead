@@ -1,7 +1,16 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { Sparkles, Send, Check, AlertTriangle, X, Trash2, ArrowRight, Loader2 } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import { supabase } from '../lib/supabase'
 import Markdown from './Markdown'
+import i18n from '../i18n'
+import enOnboarding from '../i18n/locales/en/onboarding.json'
+import frOnboarding from '../i18n/locales/fr/onboarding.json'
+
+// Self-registered namespace (keeps src/i18n/index.js untouched). Safe to move
+// into the central resources map later — re-adding the same bundle is a no-op.
+i18n.addResourceBundle('en', 'onboarding', enOnboarding)
+i18n.addResourceBundle('fr', 'onboarding', frOnboarding)
 
 // ─────────────────────────────────────────────────────────────────────────────
 // GUIDED ONBOARDING — first-run conversational setup
@@ -13,47 +22,64 @@ import Markdown from './Markdown'
 // ─────────────────────────────────────────────────────────────────────────────
 
 // Field config per proposable type — maps 1:1 to the real Everstead schema.
+// Labels and placeholders live in the `onboarding` namespace under
+// `types.<type>.fields.<key>` (see hasPlaceholder). Select option VALUES stay
+// in English in every locale — they are what gets stored / matched against the
+// schema — only the visible option labels are translated (via labelKey).
 const TYPE_META = {
   about_me: {
-    label: 'About you',
     required: [],
     defaults: {},
     fields: [
-      { key: 'passions',    label: 'Passions',      type: 'textarea' },
-      { key: 'reflections', label: 'Reflections',   type: 'textarea' },
-      { key: 'spotify_url', label: 'Playlist / song link', type: 'text' },
+      { key: 'passions',    type: 'textarea' },
+      { key: 'reflections', type: 'textarea' },
+      { key: 'spotify_url', type: 'text' },
     ],
   },
   profile: {
-    label: 'Your details',
     required: [],
     defaults: {},
     fields: [
-      { key: 'city', label: 'City / Town', type: 'text', placeholder: 'e.g. London' },
+      { key: 'city', type: 'text', hasPlaceholder: true },
     ],
   },
   account: {
-    label: 'Account',
     required: ['institution'],
     defaults: { account_type: 'Account', category: 'Other', status: 'active' },
     fields: [
-      { key: 'institution',         label: 'Institution',   type: 'text' },
-      { key: 'category',            label: 'Category',       type: 'select', options: ['Banking', 'Retirement', 'Investment', 'Insurance', 'Digital', 'Property', 'Other'] },
-      { key: 'account_type',        label: 'Type',           type: 'text', placeholder: 'e.g. Current account' },
-      { key: 'account_number_hint', label: 'Last 4 digits',  type: 'text' },
-      { key: 'balance_display',     label: 'Balance',        type: 'text', placeholder: 'optional' },
-      { key: 'notes',               label: 'Notes',          type: 'textarea' },
+      { key: 'institution',         type: 'text' },
+      { key: 'category',            type: 'select', options: [
+        { value: 'Banking',    labelKey: 'banking' },
+        { value: 'Retirement', labelKey: 'retirement' },
+        { value: 'Investment', labelKey: 'investment' },
+        { value: 'Insurance',  labelKey: 'insurance' },
+        { value: 'Digital',    labelKey: 'digital' },
+        { value: 'Property',   labelKey: 'property' },
+        { value: 'Other',      labelKey: 'other' },
+      ] },
+      { key: 'account_type',        type: 'text', hasPlaceholder: true },
+      { key: 'account_number_hint', type: 'text' },
+      { key: 'balance_display',     type: 'text', hasPlaceholder: true },
+      { key: 'notes',               type: 'textarea' },
     ],
   },
   trusted_person: {
-    label: 'Trusted person',
     required: ['name', 'email'],
     defaults: { invite_status: 'pending' },
     fields: [
-      { key: 'name',  label: 'Name',  type: 'text' },
-      { key: 'email', label: 'Email', type: 'text' },
-      { key: 'role',  label: 'Role',  type: 'select', options: ['Spouse / Partner', 'Primary Executor', 'Secondary Executor', 'Solicitor', 'Family Member', 'Family Caretaker', 'Financial Adviser', 'Healthcare Proxy'] },
-      { key: 'notes', label: 'Notes', type: 'textarea' },
+      { key: 'name',  type: 'text' },
+      { key: 'email', type: 'text' },
+      { key: 'role',  type: 'select', options: [
+        { value: 'Spouse / Partner',   labelKey: 'spousePartner' },
+        { value: 'Primary Executor',   labelKey: 'primaryExecutor' },
+        { value: 'Secondary Executor', labelKey: 'secondaryExecutor' },
+        { value: 'Solicitor',          labelKey: 'solicitor' },
+        { value: 'Family Member',      labelKey: 'familyMember' },
+        { value: 'Family Caretaker',   labelKey: 'familyCaretaker' },
+        { value: 'Financial Adviser',  labelKey: 'financialAdviser' },
+        { value: 'Healthcare Proxy',   labelKey: 'healthcareProxy' },
+      ] },
+      { key: 'notes', type: 'textarea' },
     ],
   },
 }
@@ -63,16 +89,16 @@ let cardSeq = 0
 // Soft, personal entries save directly — onboarding stays conversational. Only
 // higher-stakes entries (accounts, trusted people you'd invite) get a review card.
 const AUTO_SAVE = new Set(['about_me', 'profile'])
-function savedLabel(type) {
-  if (type === 'about_me') return 'Added to your About Me, change it any time'
-  if (type === 'profile') return 'Saved, you can edit it any time'
-  return 'Saved'
+function savedLabel(t, type) {
+  if (type === 'about_me') return t('saved.aboutMe')
+  if (type === 'profile') return t('saved.profile')
+  return t('saved.generic')
 }
 // A warmer, specific confirmation pill for the higher-stakes review cards.
-function savedPill(card) {
-  if (card.type === 'account') return `${card.fields?.institution?.trim() || 'Account'} added to your vault`
-  if (card.type === 'trusted_person') return `${card.fields?.name?.trim() || 'Trusted person'} added, invite them whenever you're ready`
-  return savedLabel(card.type)
+function savedPill(t, card) {
+  if (card.type === 'account') return t('saved.accountPill', { name: card.fields?.institution?.trim() || t('saved.accountFallback') })
+  if (card.type === 'trusted_person') return t('saved.trustedPersonPill', { name: card.fields?.name?.trim() || t('saved.trustedPersonFallback') })
+  return savedLabel(t, card.type)
 }
 
 // Pull a ```json { proposals: [...] } ``` block out of a reply. Defensive: never throws.
@@ -112,13 +138,14 @@ function parseReply(text) {
 export default function GuidedOnboarding({
   profile, updateProfile, addAccount, addPerson, saveAboutMe, aboutMe, onClose, onStartTour,
 }) {
-  const firstName = profile?.full_name?.split(' ')[0] || 'there'
+  const { t } = useTranslation('onboarding')
+  const firstName = profile?.full_name?.split(' ')[0] || t('fallbackName')
 
   // Scripted opener — instant, always on-spec. Shown but NOT sent to the model;
   // the system prompt knows the welcome + first question already happened.
   const opener = [
-    { role: 'assistant', scripted: true, content: `Welcome, **${firstName}** 👋 I'm really glad you're here. There's no rush today, and nothing you add is ever shared unless you choose to.` },
-    { role: 'assistant', scripted: true, content: "Before any of the practical bits, I'd love to start with **you**, the part that's actually worth keeping. Tell me one thing you'd want remembered: **a song you love** 🎵, something you believe in 💭, or a moment that shaped you ✨. Whatever comes to mind first." },
+    { role: 'assistant', scripted: true, content: t('opener.welcome', { name: firstName }) },
+    { role: 'assistant', scripted: true, content: t('opener.firstQuestion') },
   ]
 
   const [messages, setMessages] = useState([]) // opener is revealed below with a typing effect
@@ -200,7 +227,9 @@ export default function GuidedOnboarding({
         body: { messages: apiHistory },
       })
       if (invokeErr) {
-        let msg = 'The assistant is taking a moment. Please try again.'
+        // Server-returned error text is shown untouched; only the client-side
+        // fallback is translated.
+        let msg = t('errors.assistantBusy')
         try { msg = (await invokeErr.context?.json())?.error || msg } catch { /* keep default */ }
         throw new Error(msg)
       }
@@ -213,14 +242,14 @@ export default function GuidedOnboarding({
         if (AUTO_SAVE.has(p.type)) {
           try {
             await writeCard(p)
-            setMessages(h => [...h, { role: 'saved', content: savedLabel(p.type) }])
+            setMessages(h => [...h, { role: 'saved', content: savedLabel(t, p.type) }])
           } catch { setCards(c => [...c, p]) }
         } else {
           setCards(c => [...c, p])
         }
       }
     } catch (err) {
-      setError(err.message || 'Something went wrong. Please try again.')
+      setError(err.message || t('errors.generic'))
     } finally {
       setLoading(false)
     }
@@ -240,7 +269,7 @@ export default function GuidedOnboarding({
       .map(m => ({ role: m.role, content: m.content }))
     // A gentle next step to fall back on if the assistant call is slow or fails —
     // saving must never dead-end into silence.
-    const fallback = "Is there anything else you'd like to pop in, maybe an account, a document, or someone you trust? Or you're all set for now, and everything you added keeps safely."
+    const fallback = t('nudgeFallback')
     try {
       const { data, error: invokeErr } = await supabase.functions.invoke('onboarding-assistant', { body: { messages: apiHistory } })
       if (invokeErr) throw new Error('nudge failed')
@@ -270,8 +299,8 @@ export default function GuidedOnboarding({
     const meta = TYPE_META[card.type]
     for (const key of meta.required) {
       if (!String(card.fields[key] ?? '').trim()) {
-        const label = meta.fields.find(f => f.key === key)?.label || key
-        return `${label} is needed before this can be saved.`
+        const label = t(`types.${card.type}.fields.${key}.label`)
+        return t('cards.requiredError', { label })
       }
     }
     return null
@@ -315,10 +344,10 @@ export default function GuidedOnboarding({
         setCards(cs => cs.map(c => c.id === card.id ? { ...c, status: 'saved' } : c))
         // Instant confirmation pill — saving always has visible feedback, even
         // before (or if) the assistant's follow-up nudge arrives.
-        setMessages(h => [...h, { role: 'saved', content: savedPill(card) }])
+        setMessages(h => [...h, { role: 'saved', content: savedPill(t, card) }])
         savedAny = true
       } catch (e) {
-        setCards(cs => cs.map(c => c.id === card.id ? { ...c, status: 'error', error: e.message || 'Could not save this.' } : c))
+        setCards(cs => cs.map(c => c.id === card.id ? { ...c, status: 'error', error: e.message || t('errors.saveFailed') } : c))
       }
     }
     setTimeout(() => setCards(cs => cs.filter(c => c.status !== 'saved')), 1600)
@@ -346,11 +375,11 @@ export default function GuidedOnboarding({
               <Sparkles size={17} className="text-sage-300" />
             </div>
             <div>
-              <p className="font-display text-lg text-navy-950 leading-tight">Let's set up your Everstead</p>
-              <p className="text-xs text-stone-500">No rush, you can stop any time.</p>
+              <p className="font-display text-lg text-navy-950 leading-tight">{t('header.title')}</p>
+              <p className="text-xs text-stone-500">{t('header.subtitle')}</p>
             </div>
           </div>
-          <button onClick={finish} disabled={closing} title="Finish for now" className="text-stone-300 hover:text-stone-600 transition-colors shrink-0">
+          <button onClick={finish} disabled={closing} title={t('header.closeTitle')} className="text-stone-300 hover:text-stone-600 transition-colors shrink-0">
             <X size={20} />
           </button>
         </div>
@@ -397,8 +426,8 @@ export default function GuidedOnboarding({
           {cards.length > 0 && (
             <div className="border-t border-stone-100 pt-4 space-y-3">
               <div className="flex items-center gap-2 flex-wrap">
-                <span className="text-xs font-semibold uppercase tracking-wide text-sage-700 bg-sage-50 px-2 py-0.5 rounded-full">To save</span>
-                <span className="text-xs text-stone-400">Edit anything, untick to skip, nothing is saved until you add it.</span>
+                <span className="text-xs font-semibold uppercase tracking-wide text-sage-700 bg-sage-50 px-2 py-0.5 rounded-full">{t('cards.toSave')}</span>
+                <span className="text-xs text-stone-400">{t('cards.hint')}</span>
               </div>
               {cards.map(card => (
                 <ProposalCard key={card.id} card={card} onEdit={editField} onToggle={toggleApprove} onDismiss={dismissCard} />
@@ -409,7 +438,7 @@ export default function GuidedOnboarding({
                 className="inline-flex items-center gap-2 text-white text-sm font-semibold px-5 py-2.5 rounded-xl transition-colors disabled:opacity-40"
                 style={{ backgroundColor: '#4c7d47' }}
               >
-                <Check size={16} /> Save {approvedCount > 0 ? `${approvedCount} ` : ''}item{approvedCount === 1 ? '' : 's'}
+                <Check size={16} /> {approvedCount === 0 ? t('cards.saveZero') : approvedCount === 1 ? t('cards.saveItem') : t('cards.saveItems', { count: approvedCount })}
               </button>
             </div>
           )}
@@ -429,13 +458,13 @@ export default function GuidedOnboarding({
               onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send() } }}
               rows={1}
               disabled={loading}
-              placeholder="Type your answer…"
+              placeholder={t('input.placeholder')}
               className="flex-1 resize-none border border-stone-200 rounded-xl px-3 py-2 text-sm text-navy-900 placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-navy-300 focus:border-navy-300 max-h-32 disabled:bg-stone-50"
             />
             <button
               onClick={send}
               disabled={loading || !input.trim()}
-              aria-label="Send message"
+              aria-label={t('input.sendLabel')}
               className="shrink-0 w-9 h-9 rounded-xl bg-navy-800 text-white hover:bg-navy-700 transition-colors flex items-center justify-center disabled:opacity-40"
             >
               <Send size={16} />
@@ -443,10 +472,10 @@ export default function GuidedOnboarding({
           </div>
           <div className="flex items-center justify-between pt-2.5">
             <button onClick={finish} disabled={closing} className="text-xs text-stone-400 hover:text-stone-700 transition-colors">
-              Skip for now
+              {t('input.skipForNow')}
             </button>
             <button onClick={() => setStage('details')} className="text-xs font-semibold text-navy-700 hover:text-navy-900 inline-flex items-center gap-1 transition-colors">
-              Finish &amp; review my details <ArrowRight size={12} />
+              {t('input.finishReview')} <ArrowRight size={12} />
             </button>
           </div>
         </div>
@@ -457,6 +486,7 @@ export default function GuidedOnboarding({
 
 // ── A single editable proposal card ───────────────────────────────────────────
 function ProposalCard({ card, onEdit, onToggle, onDismiss }) {
+  const { t } = useTranslation('onboarding')
   const meta = TYPE_META[card.type]
   const saved = card.status === 'saved'
   return (
@@ -470,10 +500,10 @@ function ProposalCard({ card, onEdit, onToggle, onDismiss }) {
             <div className="w-9 h-5 rounded-full bg-stone-200 peer-checked:bg-navy-700 transition-colors" />
             <div className="absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-white shadow transition-transform peer-checked:translate-x-4" />
           </div>
-          <span className="text-sm font-medium text-navy-900">{saved ? 'Saved' : card.approved ? `Save this ${meta.label.toLowerCase()}` : 'Skip'}</span>
+          <span className="text-sm font-medium text-navy-900">{saved ? t('cards.saved') : card.approved ? t(`types.${card.type}.saveThis`) : t('cards.skip')}</span>
         </label>
         {!saved && (
-          <button onClick={() => onDismiss(card.id)} title="Dismiss" className="text-stone-300 hover:text-red-500 transition-colors">
+          <button onClick={() => onDismiss(card.id)} title={t('cards.dismiss')} className="text-stone-300 hover:text-red-500 transition-colors">
             <Trash2 size={15} />
           </button>
         )}
@@ -483,27 +513,28 @@ function ProposalCard({ card, onEdit, onToggle, onDismiss }) {
         {meta.fields.map(f => {
           const low = card.confidence[f.key] === 'low'
           const full = f.type === 'textarea' || meta.fields.length === 1
+          const placeholder = f.hasPlaceholder ? t(`types.${card.type}.fields.${f.key}.placeholder`) : undefined
           return (
             <div key={f.key} className={full ? 'sm:col-span-2' : ''}>
               <div className="flex items-center gap-2 mb-1">
-                <label className="text-xs font-medium text-stone-500">{f.label}</label>
+                <label className="text-xs font-medium text-stone-500">{t(`types.${card.type}.fields.${f.key}.label`)}</label>
                 {low && (
                   <span className="text-[10px] font-semibold text-amber-700 bg-amber-100 px-1.5 py-0.5 rounded-full flex items-center gap-1">
-                    <AlertTriangle size={9} /> Please check
+                    <AlertTriangle size={9} /> {t('cards.pleaseCheck')}
                   </span>
                 )}
               </div>
               {f.type === 'select' ? (
                 <select value={card.fields[f.key] || ''} disabled={saved} onChange={e => onEdit(card.id, f.key, e.target.value)}
                   className={`w-full border rounded-lg px-2.5 py-1.5 text-sm text-navy-900 bg-white focus:outline-none focus:ring-2 focus:ring-navy-300 ${low ? 'border-amber-300' : 'border-stone-200'}`}>
-                  <option value="">Select…</option>
-                  {f.options.map(o => <option key={o} value={o}>{o}</option>)}
+                  <option value="">{t('cards.selectPlaceholder')}</option>
+                  {f.options.map(o => <option key={o.value} value={o.value}>{t(`types.${card.type}.fields.${f.key}.options.${o.labelKey}`)}</option>)}
                 </select>
               ) : f.type === 'textarea' ? (
-                <textarea value={card.fields[f.key] || ''} disabled={saved} rows={2} placeholder={f.placeholder} onChange={e => onEdit(card.id, f.key, e.target.value)}
+                <textarea value={card.fields[f.key] || ''} disabled={saved} rows={2} placeholder={placeholder} onChange={e => onEdit(card.id, f.key, e.target.value)}
                   className={`w-full border rounded-lg px-2.5 py-1.5 text-sm text-navy-900 resize-none focus:outline-none focus:ring-2 focus:ring-navy-300 ${low ? 'border-amber-300' : 'border-stone-200'}`} />
               ) : (
-                <input type="text" value={card.fields[f.key] || ''} disabled={saved} placeholder={f.placeholder} onChange={e => onEdit(card.id, f.key, e.target.value)}
+                <input type="text" value={card.fields[f.key] || ''} disabled={saved} placeholder={placeholder} onChange={e => onEdit(card.id, f.key, e.target.value)}
                   className={`w-full border rounded-lg px-2.5 py-1.5 text-sm text-navy-900 focus:outline-none focus:ring-2 focus:ring-navy-300 ${low ? 'border-amber-300' : 'border-stone-200'}`} />
               )}
             </div>
@@ -513,7 +544,7 @@ function ProposalCard({ card, onEdit, onToggle, onDismiss }) {
 
       {card.type === 'about_me' && card.lifeEvents?.length > 0 && (
         <div className="mt-3">
-          <label className="text-xs font-medium text-stone-500">Life events</label>
+          <label className="text-xs font-medium text-stone-500">{t('cards.lifeEvents')}</label>
           <div className="mt-1 space-y-1.5">
             {card.lifeEvents.map((ev, i) => (
               <div key={i} className="bg-stone-50 rounded-lg px-3 py-1.5 text-sm text-navy-900"><span className="font-medium">{ev.year || '—'}</span> · {ev.description}</div>
@@ -540,33 +571,34 @@ function Field({ label, children }) {
 
 // ── Stage 2: confirm the full profile details ─────────────────────────────────
 function DetailsStage({ details, setDetails, saving, onSave, onSkip, onClose }) {
+  const { t } = useTranslation('onboarding')
   const set = k => e => setDetails(p => ({ ...p, [k]: e.target.value }))
   const inputCls = 'w-full border border-stone-300 rounded-lg px-3 py-2 text-sm text-navy-900 focus:outline-none focus:ring-2 focus:ring-navy-300'
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-navy-950/50 p-4" onClick={onClose}>
       <div className="w-full max-w-lg bg-white rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[88vh]" onClick={e => e.stopPropagation()}>
         <div className="px-6 pt-6 pb-4 border-b border-stone-100">
-          <p className="font-display text-xl text-navy-950">A few details to round things off</p>
-          <p className="text-sm text-stone-500 mt-1 leading-relaxed">So everything's accurate for the people who may one day need it. You can change any of this later in Settings.</p>
+          <p className="font-display text-xl text-navy-950">{t('details.title')}</p>
+          <p className="text-sm text-stone-500 mt-1 leading-relaxed">{t('details.subtitle')}</p>
         </div>
         <div className="px-6 py-5 space-y-4 overflow-y-auto flex-1">
-          <Field label="Full name"><input className={inputCls} value={details.full_name} onChange={set('full_name')} /></Field>
+          <Field label={t('details.fullName')}><input className={inputCls} value={details.full_name} onChange={set('full_name')} /></Field>
           <div className="grid grid-cols-2 gap-3">
-            <Field label="Date of birth"><input type="date" className={inputCls} value={details.date_of_birth || ''} onChange={set('date_of_birth')} /></Field>
-            <Field label="Phone"><input className={inputCls} value={details.phone} onChange={set('phone')} placeholder="+44 7700 900000" /></Field>
+            <Field label={t('details.dateOfBirth')}><input type="date" className={inputCls} value={details.date_of_birth || ''} onChange={set('date_of_birth')} /></Field>
+            <Field label={t('details.phone')}><input className={inputCls} value={details.phone} onChange={set('phone')} placeholder={t('details.phonePlaceholder')} /></Field>
           </div>
-          <Field label="Address line 1"><input className={inputCls} value={details.address_line1} onChange={set('address_line1')} placeholder="14 Kensington Road" /></Field>
-          <Field label="Address line 2"><input className={inputCls} value={details.address_line2} onChange={set('address_line2')} placeholder="Optional" /></Field>
+          <Field label={t('details.address1')}><input className={inputCls} value={details.address_line1} onChange={set('address_line1')} placeholder={t('details.address1Placeholder')} /></Field>
+          <Field label={t('details.address2')}><input className={inputCls} value={details.address_line2} onChange={set('address_line2')} placeholder={t('details.address2Placeholder')} /></Field>
           <div className="grid grid-cols-2 gap-3">
-            <Field label="City / Town"><input className={inputCls} value={details.city} onChange={set('city')} placeholder="London" /></Field>
-            <Field label="Postcode"><input className={inputCls} value={details.postcode} onChange={set('postcode')} placeholder="SW7 2BT" /></Field>
+            <Field label={t('details.city')}><input className={inputCls} value={details.city} onChange={set('city')} placeholder={t('details.cityPlaceholder')} /></Field>
+            <Field label={t('details.postcode')}><input className={inputCls} value={details.postcode} onChange={set('postcode')} placeholder={t('details.postcodePlaceholder')} /></Field>
           </div>
-          <Field label="Country"><input className={inputCls} value={details.country} onChange={set('country')} /></Field>
+          <Field label={t('details.country')}><input className={inputCls} value={details.country} onChange={set('country')} /></Field>
         </div>
         <div className="border-t border-stone-100 p-4 flex items-center justify-between gap-3">
-          <button onClick={onSkip} className="text-xs text-stone-400 hover:text-stone-700">Skip for now</button>
+          <button onClick={onSkip} className="text-xs text-stone-400 hover:text-stone-700">{t('details.skipForNow')}</button>
           <button onClick={onSave} disabled={saving} className="btn-aurora inline-flex items-center gap-2 text-white text-sm font-semibold px-6 py-2.5 rounded-full disabled:opacity-60">
-            {saving ? <><Loader2 size={14} className="animate-spin" /> Saving…</> : <>Save &amp; continue <ArrowRight size={15} /></>}
+            {saving ? <><Loader2 size={14} className="animate-spin" /> {t('details.saving')}</> : <>{t('details.saveContinue')} <ArrowRight size={15} /></>}
           </button>
         </div>
       </div>
@@ -576,20 +608,21 @@ function DetailsStage({ details, setDetails, saving, onSave, onSkip, onClose }) 
 
 // ── Stage 3: celebrate ────────────────────────────────────────────────────────
 function CelebrateStage({ firstName, onTour, onDashboard }) {
+  const { t } = useTranslation('onboarding')
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-navy-950/50 p-4">
       <div className="w-full max-w-md bg-white rounded-3xl shadow-2xl overflow-hidden text-center px-8 py-10">
         <div className="text-5xl mb-4">🎉</div>
-        <h2 className="font-display text-2xl text-navy-950 mb-2">Brilliant start, {firstName}.</h2>
+        <h2 className="font-display text-2xl text-navy-950 mb-2">{t('celebrate.title', { name: firstName })}</h2>
         <p className="text-sm text-stone-500 leading-relaxed mb-7 max-w-xs mx-auto">
-          You've taken one of the most caring steps there is, and everything you added will keep, safe and private, for whenever it's needed.
+          {t('celebrate.body')}
         </p>
         <div className="flex flex-col gap-2.5">
           <button onClick={onTour} className="btn-aurora inline-flex items-center justify-center gap-2 text-white text-sm font-semibold px-6 py-3 rounded-full">
-            Take a quick tour <ArrowRight size={15} />
+            {t('celebrate.tourCta')} <ArrowRight size={15} />
           </button>
           <button onClick={onDashboard} className="text-sm text-stone-500 hover:text-navy-800 transition-colors py-1">
-            Go straight to my dashboard
+            {t('celebrate.dashboardCta')}
           </button>
         </div>
       </div>

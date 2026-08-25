@@ -1,0 +1,698 @@
+{
+  "loading": "Loading delegate access…",
+  "tabs": {
+    "overview": "Overview",
+    "documents": "Documents",
+    "accounts": "Accounts",
+    "instructions": "Instructions",
+    "notify": "Notification tracker",
+    "messages": "Messages",
+    "alerts": "Alerts",
+    "activity": "Activity",
+    "resources": "Help & Guides",
+    "settings": "My settings"
+  },
+  "errors": {
+    "needToken": "This delegate dashboard needs a valid invite token.",
+    "invalidInvite": "We could not find a valid delegate invitation for this link.",
+    "openDoc": "We could not open that document right now.",
+    "reportSubmit": "Report could not be submitted"
+  },
+  "empty": {
+    "unavailableTitle": "Delegate access unavailable",
+    "missingToken": "This link is missing the required invite token.",
+    "notFoundTitle": "Invite not found",
+    "notFoundBody": "This delegate invitation could not be loaded.",
+    "acceptTitle": "Accept the invitation first",
+    "acceptBody": "This workspace becomes available after the invite is accepted. Return to the invitation link to confirm your role.",
+    "reviewInvite": "Review invitation",
+    "backHome": "Back to Everstead"
+  },
+  "common": {
+    "planOwner": "Plan owner",
+    "thePlanOwner": "the plan owner",
+    "thePlanOwnerCap": "The plan owner",
+    "document": "Document"
+  },
+  "banners": {
+    "demo": "Demo mode, showing Carol Thornton's executor view. Data is fictional.",
+    "demoCta": "Create your own plan →",
+    "upsell": "Want to protect your own family the same way {{name}} is protecting theirs?",
+    "upsellCta": "Start a free 14-day trial",
+    "deceasedTitle": "The passing of {{name}} has been verified by Everstead",
+    "deceasedBody": "All sealed messages addressed to you and all after-death access permissions are now active. The plan owner's account has been suspended and is read-only.",
+    "openMessages": "Open messages",
+    "incapTitle": "An incapacity report for {{name}} has been verified by Everstead",
+    "incapBody": "Your after-death / incapacity access permissions are now active. The plan owner's account has been suspended and is read-only pending further review.",
+    "viewDocuments": "View documents"
+  },
+  "header": {
+    "eyebrow": "Delegate dashboard",
+    "workspaceTitle": "{{name}}'s handoff workspace",
+    "viewingAs": "You are viewing this plan as <role>{{role}}</role>. Access is read-only.",
+    "export": "Export",
+    "exportTitle": "Export plan to PDF",
+    "whyProtected": "Why protected",
+    "exit": "Exit",
+    "searchPlaceholder": "Search documents, accounts, instructions…",
+    "toggleNav": "Toggle navigation"
+  },
+  "sidebar": {
+    "navigation": "Navigation",
+    "ariaSidebar": "Delegate sidebar",
+    "ariaNav": "Delegate dashboard navigation",
+    "planOwner": "Plan owner",
+    "accepted": "Accepted",
+    "lastUpdated": "Last updated",
+    "readiness": "Readiness",
+    "readinessValue": "{{score}}%",
+    "mySettings": "My settings",
+    "disclaimer": "Everstead is an organisation platform, not a legal service. Use the information here alongside professional legal or financial advice where needed.",
+    "reportDeath": "Report a death",
+    "reportIncident": "Report an incident",
+    "ariaMain": "Plan content"
+  },
+  "search": {
+    "resultsFor": "Results for",
+    "queryQuoted": "\"{{query}}\"",
+    "found_one": "{{count}} found",
+    "found_other": "{{count}} found",
+    "view": "View →",
+    "noResults": "No results for \"{{query}}\""
+  },
+  "panel": {
+    "total": "total"
+  },
+  "overview": {
+    "noAccessTitle": "No sections shared yet",
+    "noAccessBody": "<strong>{{name}}</strong> has accepted your invitation but has not yet granted you access to any sections of their plan. Once they update their sharing settings, the relevant accounts, documents, and instructions will appear here.",
+    "noAccessFootnote": "They can manage what you see from the <strong>People</strong> section of their Everstead dashboard at any time.",
+    "sharedDocuments": "Shared documents",
+    "sharedAccounts": "Shared accounts",
+    "sharedInstructions": "Shared instructions",
+    "unreadAlerts": "Unread alerts",
+    "statView": "View",
+    "accessTitle": "What you can access",
+    "accessEmpty": "No explicit access grants were found on this invite yet.",
+    "criticalTitle": "Critical attention items",
+    "criticalEmpty": "No unread critical alerts are currently visible in the shared plan.",
+    "recentInstructionsTitle": "Recent instructions",
+    "instructionFallback": "Instruction",
+    "recentActivityTitle": "Recent activity",
+    "expiringTitle": "Documents expiring soon",
+    "expiringCount_one": "{{count}} document expire within the next 90 days",
+    "expiringCount_other": "{{count}} documents expire within the next 90 days",
+    "viewAllDocs": "View all documents →"
+  },
+  "documents": {
+    "title": "Shared documents",
+    "updated": "Updated {{date}}",
+    "expires": "Expires {{date}}",
+    "status": {
+      "current": "current",
+      "expiring": "expiring",
+      "missing": "missing"
+    },
+    "notes": "Notes",
+    "type": "Type",
+    "lastUpdated": "Last updated",
+    "expiryDate": "Expiry date",
+    "opening": "Opening…",
+    "open": "Open / preview",
+    "download": "Download",
+    "noFile": "No file attached, this is a reference record only.",
+    "empty": "No documents are currently shared with this role.",
+    "sealedHeading": "Sealed until needed",
+    "sealedMeta": "Sealed, released to you only when the time comes",
+    "sealedBadge": "Sealed"
+  },
+  "accounts": {
+    "title": "Shared accounts",
+    "accountFallback": "Account",
+    "category": "Category",
+    "reference": "Reference",
+    "notProvided": "Not provided",
+    "copyReference": "Copy reference",
+    "lastUpdated": "Last updated",
+    "balance": "Balance / status",
+    "notes": "Notes & instructions",
+    "copied": "Copied!",
+    "copyInstitution": "Copy institution name",
+    "trackNotification": "Track notification",
+    "empty": "No accounts are currently shared with this role."
+  },
+  "instructions": {
+    "title": "Shared instructions",
+    "categoryFallback": "Instruction",
+    "audienceFallback": "Shared guidance",
+    "steps_one": "{{count}} steps",
+    "steps_other": "{{count}} steps",
+    "empty": "No instructions are currently shared with this role."
+  },
+  "alerts": {
+    "title": "Plan alerts",
+    "unreadLabel": "unread",
+    "markAllRead": "Mark all read",
+    "severity": {
+      "critical": "critical",
+      "warning": "warning",
+      "info": "info"
+    },
+    "received": "Received {{date}}",
+    "empty": "No alerts are visible right now."
+  },
+  "activity": {
+    "title": "Recent plan activity",
+    "empty": "No recent activity is visible yet."
+  },
+  "messages": {
+    "title": "Personal messages",
+    "autoReleased": "auto-released on death",
+    "releasedToYou": "released to you",
+    "deceasedNotice": "Following the verified passing of <strong>{{name}}</strong>, all personal messages addressed to you have been automatically released. These messages were written and sealed by {{name}} for you to read when the time came.",
+    "emptyTitle": "No messages released yet",
+    "emptyBody": "{{name}} has not yet released any personal messages to you. Messages are released manually or automatically when Everstead verifies the passing.",
+    "card": {
+      "from": "From",
+      "planOwnerFallback": "plan owner",
+      "released": "Released {{date}}",
+      "typeVideo": "Video",
+      "typePhoto": "Photo",
+      "typeNote": "Note",
+      "demoPlayback": "Playback available in your live plan",
+      "storedSecurely": "This {{type}} is stored securely.",
+      "typeNoun": {
+        "video": "video",
+        "photo": "photo"
+      },
+      "loadFailed": "This {{type}} couldn't be loaded right now, please try again later.",
+      "personalFrom": "A personal message from {{name}}",
+      "footer": "This message was written by {{name}} and addressed specifically to you.",
+      "footerReleased": "It was released on {{date}}."
+    }
+  },
+  "notify": {
+    "title": "Institution notification tracker",
+    "subtitle": "Track which organisations you've contacted, saved to this device",
+    "preNote": "This tracker is designed for use after a death or incapacity event has been verified. You can prepare now by reviewing the list.",
+    "progress": "{{done}} of {{total}} done",
+    "awaiting_one": "{{count}} awaiting response",
+    "awaiting_other": "{{count}} awaiting response",
+    "footer": "Progress is saved to this browser only. Screenshot or print to share with co-executors.",
+    "refPrefix": "ref: ",
+    "status": {
+      "todo": "To do",
+      "notified": "Notified",
+      "done": "Done"
+    },
+    "markAs": {
+      "todo": "Mark as todo",
+      "notified": "Mark as notified",
+      "done": "Mark as done"
+    },
+    "categories": {
+      "Government": "Government",
+      "Legal": "Legal",
+      "Healthcare": "Healthcare",
+      "Local": "Local",
+      "Utilities": "Utilities",
+      "Postal": "Postal",
+      "Financial": "Financial",
+      "Insurance": "Insurance",
+      "From this plan": "From this plan"
+    },
+    "institutions": {
+      "tell-us-once": {
+        "name": "Tell Us Once (GOV.UK)",
+        "how": "Online at gov.uk/tell-us-once, notifies DWP, DVLA, HMRC, and others in one step"
+      },
+      "hmrc": {
+        "name": "HMRC",
+        "how": "Call 0300 200 3300 or write. Final tax return may be needed for year of death."
+      },
+      "dwp": {
+        "name": "DWP / State pension",
+        "how": "Call 0800 731 0469. Stop pension payments and claim any arrears."
+      },
+      "probate": {
+        "name": "Probate Registry",
+        "how": "Apply online at gov.uk for Grant of Probate. Allow 4-8 weeks."
+      },
+      "nhs-gp": {
+        "name": "NHS / GP surgery",
+        "how": "Contact the GP surgery directly to cancel NHS records and return unused medications."
+      },
+      "council-tax": {
+        "name": "Council tax",
+        "how": "Contact the local council to update or cancel the council tax account."
+      },
+      "electoral": {
+        "name": "Electoral register",
+        "how": "Contact the local council to remove from the electoral register."
+      },
+      "dvla": {
+        "name": "DVLA",
+        "how": "Return driving licence and notify about any vehicles. gov.uk/tell-dvla-about-bereavement"
+      },
+      "passport": {
+        "name": "HM Passport Office",
+        "how": "Cancel and return the passport by post to HM Passport Office, Newport, NP20 9AR."
+      },
+      "energy": {
+        "name": "Energy supplier",
+        "how": "Contact provider to take final meter readings and close or transfer the account."
+      },
+      "broadband": {
+        "name": "Broadband / phone",
+        "how": "Contact provider to cancel or transfer contract. Early exit fees may be waived on death."
+      },
+      "water": {
+        "name": "Water company",
+        "how": "Contact local water company to update account name or close if property is empty."
+      },
+      "royal-mail": {
+        "name": "Royal Mail redirect",
+        "how": "Set up mail redirection at royalmail.com to avoid missing important correspondence."
+      },
+      "subscriptions": {
+        "name": "Subscriptions & direct debits",
+        "how": "Cancel all standing orders via the bank. Check accounts list for known subscriptions."
+      },
+      "life-insurance": {
+        "name": "Life insurance",
+        "how": "Contact insurer with policy number. Life policies are usually paid outside probate."
+      },
+      "pension-private": {
+        "name": "Private pension provider",
+        "how": "Contact each provider. Pensions written in trust are paid to nominated beneficiaries."
+      }
+    }
+  },
+  "resources": {
+    "title": "Help & Guides",
+    "topics_one": "{{count}} topics",
+    "topics_other": "{{count}} topics",
+    "guides": {
+      "role": {
+        "title": "Understanding your role",
+        "items": [
+          {
+            "label": "What is a trusted person?",
+            "detail": "A trusted person on Everstead is someone the plan owner has chosen to share part or all of their estate plan with. Depending on your role, you may be an executor, next of kin, financial power of attorney holder, or simply a trusted family member."
+          },
+          {
+            "label": "What does an executor do?",
+            "detail": "An executor is legally responsible for administering the estate after death. This includes locating the will, applying for probate, notifying institutions, settling debts, and distributing assets. Everstead gives you the information you need to do this, it does not replace legal advice for complex estates."
+          },
+          {
+            "label": "What does a power of attorney holder do?",
+            "detail": "If you hold a Lasting Power of Attorney (LPA) for property and financial affairs, you can act on behalf of the plan owner if they lose mental capacity. This is a serious legal responsibility. Only act within the scope of the LPA and keep records of all decisions."
+          },
+          {
+            "label": "Your access level",
+            "detail": "You can only see what the plan owner has explicitly shared with you. Some people see the full plan; others see only specific sections. If you need access to something not shown here, contact the plan owner directly."
+          }
+        ]
+      },
+      "documents": {
+        "title": "Working with documents",
+        "items": [
+          {
+            "label": "Finding the will",
+            "detail": "Look in the Documents section. If the original is held by a solicitor, the document record should include their contact details. You will need the original signed will (not a scan) to apply for probate in England and Wales."
+          },
+          {
+            "label": "Locating the LPA",
+            "detail": "The LPA must be registered with the Office of the Public Guardian (OPG) before it can be used. The registration certificate will show the OPG reference number. Financial institutions will ask to see a certified copy."
+          },
+          {
+            "label": "Downloading documents",
+            "detail": "Use the Download button next to any document to save a copy. Store these securely, you may need to send certified copies to banks, insurers, and HMRC."
+          },
+          {
+            "label": "What to do if documents are missing",
+            "detail": "If you cannot find a key document here, check with the plan owner's solicitor, bank, or family members. For a missing will, the Certainty National Will Register can run a search. For lost LPAs, contact the OPG directly."
+          }
+        ]
+      },
+      "finances": {
+        "title": "Handling accounts and finances",
+        "items": [
+          {
+            "label": "Notifying financial institutions",
+            "detail": "Each bank, insurer, and pension provider must be notified separately. Most accept a death certificate and grant of probate. Use the Tell Us Once service (gov.uk) to notify multiple government departments in a single step."
+          },
+          {
+            "label": "Freezing and closing accounts",
+            "detail": "Accounts are typically frozen on notification of death. Joint accounts may transfer automatically to the surviving holder. Sole accounts require probate before funds can be released."
+          },
+          {
+            "label": "Pensions and life insurance",
+            "detail": "These are usually written in trust and paid outside of probate, check the nomination of beneficiary forms. Contact the provider directly with the policy number shown in the Accounts section."
+          },
+          {
+            "label": "Subscriptions and direct debits",
+            "detail": "Cancel ongoing subscriptions as quickly as possible to avoid charges. Check the Subscriptions section for a list. Contact each provider with proof of death."
+          },
+          {
+            "label": "Tax and final returns",
+            "detail": "A final income tax return may be required for the year of death. If the estate exceeds the inheritance tax threshold (currently £325,000 + any allowances), an IHT400 form must be filed with HMRC before probate."
+          }
+        ]
+      },
+      "people": {
+        "title": "Working with other people",
+        "items": [
+          {
+            "label": "Co-executors",
+            "detail": "If there are multiple executors, all must act together unless one formally steps aside. Decisions should be agreed in writing where possible. Disagreements between executors can delay probate significantly."
+          },
+          {
+            "label": "Beneficiaries",
+            "detail": "You are not obliged to share the details of the estate with beneficiaries during administration, only the final distribution. However, keeping them reasonably informed reduces disputes."
+          },
+          {
+            "label": "Solicitors and professionals",
+            "detail": "For complex estates, instruct a probate solicitor early. Look in the People section for the plan owner's nominated solicitor. Most estate solicitors charge a percentage of the estate value or an hourly rate."
+          },
+          {
+            "label": "When to seek legal advice",
+            "detail": "Always seek legal advice if: the estate includes a business, overseas assets, disputed property, estranged family members, or debts that exceed the estate's value."
+          }
+        ]
+      },
+      "practical": {
+        "title": "Practical steps when the time comes",
+        "items": [
+          {
+            "label": "Register the death",
+            "detail": "In England and Wales, a death must be registered within 5 days at a local register office. You will receive a death certificate, request at least 10 certified copies, as institutions will ask for originals."
+          },
+          {
+            "label": "Locate the will and contact solicitors",
+            "detail": "Do this before making any major financial decisions. The will may name specific funeral wishes, executors, and bequests that affect immediate next steps."
+          },
+          {
+            "label": "Apply for probate",
+            "detail": "If the estate requires it, apply to the Probate Registry for a Grant of Probate (or Letters of Administration if there is no will). This typically takes 4-8 weeks. Estates under £10,000 may not require probate."
+          },
+          {
+            "label": "Notify Everstead via this dashboard",
+            "detail": "Use the Report a Death button in the left panel to formally notify Everstead. This will trigger a verification process and, once confirmed, release any personal messages addressed to you."
+          }
+        ]
+      }
+    },
+    "supportTitle": "Need further help?",
+    "supportBody": "Our support team can assist with questions about accessing this plan. For legal and probate matters, we always recommend consulting a qualified solicitor.",
+    "contactSupport": "Contact support"
+  },
+  "externalLinks": {
+    "title": "Useful services",
+    "intro": "External UK services that are commonly needed during estate administration.",
+    "disclaimer": "Everstead is not affiliated with these services. Always verify information on official websites.",
+    "items": {
+      "tellUsOnce": {
+        "label": "Tell Us Once",
+        "desc": "Notify multiple UK government departments about a death in one step"
+      },
+      "settld": {
+        "label": "Settld",
+        "desc": "Free service to notify banks, utilities and companies about a bereavement"
+      },
+      "probate": {
+        "label": "Apply for probate",
+        "desc": "GOV.UK guide to applying for a Grant of Probate or Letters of Administration"
+      },
+      "willRegister": {
+        "label": "National Will Register",
+        "desc": "Search the Certainty register to locate a missing will"
+      },
+      "opg": {
+        "label": "Office of the Public Guardian",
+        "desc": "Check or register a Lasting Power of Attorney with the OPG"
+      },
+      "hmrc": {
+        "label": "HMRC bereavement",
+        "desc": "Tell HMRC about a death and deal with tax affairs and final returns"
+      }
+    }
+  },
+  "settings": {
+    "personalTitle": "Personal details",
+    "personalSubtitle": "How Everstead contacts you",
+    "fullName": "Full name",
+    "email": "Email address",
+    "emailNote": "To change your email, contact support@everstead.care",
+    "phone": "Phone number",
+    "phonePlaceholder": "+44 7700 000000",
+    "addressHeading": "Address",
+    "address1": "Address line 1",
+    "address1Placeholder": "House name or number, street",
+    "address2": "Address line 2",
+    "address2Placeholder": "Apartment, suite, etc. (optional)",
+    "city": "City",
+    "cityPlaceholder": "London",
+    "postcode": "Postcode",
+    "postcodePlaceholder": "SW1A 1AA",
+    "country": "Country",
+    "countries": {
+      "uk": "United Kingdom",
+      "ireland": "Ireland",
+      "us": "United States",
+      "canada": "Canada",
+      "australia": "Australia",
+      "nz": "New Zealand",
+      "other": "Other"
+    },
+    "saving": "Saving…",
+    "saveChanges": "Save changes",
+    "passwordTitle": "Change password",
+    "passwordSubtitle": "Minimum 8 characters",
+    "currentPassword": "Current password",
+    "newPassword": "New password",
+    "confirmPassword": "Confirm new password",
+    "updating": "Updating…",
+    "updatePassword": "Update password",
+    "pwMismatch": "New passwords do not match.",
+    "pwTooShort": "Password must be at least 8 characters.",
+    "pwUpdateFailed": "Could not update password.",
+    "showPassword": "Show password",
+    "hidePassword": "Hide password",
+    "notifsTitle": "Notification preferences",
+    "notifsSubtitle": "Choose what Everstead sends you",
+    "notifs": {
+      "plan_updates": {
+        "label": "Plan updates",
+        "desc": "When the plan owner adds or changes something"
+      },
+      "new_messages": {
+        "label": "New personal messages",
+        "desc": "When a message is released to you"
+      },
+      "alerts_critical": {
+        "label": "Critical alerts",
+        "desc": "Urgent items that need your attention"
+      },
+      "alerts_info": {
+        "label": "Informational alerts",
+        "desc": "Non-urgent updates and reminders"
+      },
+      "digest_weekly": {
+        "label": "Weekly digest",
+        "desc": "A summary of plan activity every Monday"
+      }
+    },
+    "savePrefs": "Save preferences",
+    "saved": "Saved"
+  },
+  "report": {
+    "reporterHeading": "Your details (reporter)",
+    "fullName": "Full name *",
+    "email": "Email address *",
+    "phone": "Phone number *",
+    "phonePlaceholder": "+44 7700 000000",
+    "role": "Your role in this plan *",
+    "select": "Select…",
+    "requiredNote": "All fields marked * are required",
+    "uploadHeading": "Supporting document (optional)",
+    "uploadMeta": "PDF, JPG, PNG, max 10 MB. Document will be securely stored.",
+    "chooseFile": "Choose file",
+    "consentError": "Please confirm the declaration before submitting.",
+    "submitFailed": "Something went wrong. Please try again or contact support@everstead.care.",
+    "submitting": "Submitting…",
+    "submit": "Submit report",
+    "back": "Back",
+    "continueToForm": "Continue to form",
+    "confirmationSent": "A confirmation has been sent to <strong>{{email}}</strong>. If you have any questions, contact <a>support@everstead.care</a>.",
+    "relationship": {
+      "spouse": "Spouse / Partner",
+      "child": "Child",
+      "sibling": "Sibling",
+      "parent": "Parent",
+      "executor": "Named Executor",
+      "healthcareProxy": "Healthcare Proxy",
+      "solicitor": "Solicitor / Attorney",
+      "other": "Other"
+    }
+  },
+  "reportDeath": {
+    "title": "Report a death",
+    "subtitle": "Notify Everstead that {{name}} has passed away",
+    "formTitle": "Report a death, notification form",
+    "intro": "We are deeply sorry for your loss. This process allows you to formally notify Everstead of the passing of <strong>{{name}}</strong>. Once verified by our team:",
+    "bullets": [
+      "The subscription will enter a 30-day wind-down period, no further charges will be taken.",
+      "Delegate access to this plan will remain active for 90 days to allow proper handoff.",
+      "Data will be securely archived and then deleted in accordance with our retention policy.",
+      "You will receive a confirmation email and reference number within 2 business days."
+    ],
+    "notice": "This form is for notifications only. Everstead is not a legal service. Please also contact relevant authorities, financial institutions, and legal professionals as required.",
+    "rolePlaceholder": "e.g. Primary Executor",
+    "relationshipLabel": "Relationship to the deceased *",
+    "detailsHeading": "Details of passing",
+    "dateLabel": "Date of death *",
+    "placeLabel": "Place of death",
+    "placePlaceholder": "e.g. London, United Kingdom",
+    "certLabel": "Death certificate number (if available)",
+    "certPlaceholder": "Leave blank if not yet obtained",
+    "uploadLead": "Upload a copy of the death certificate or coroner's letter",
+    "notesLabel": "Additional notes",
+    "notesPlaceholder": "Any additional context for the Everstead team…",
+    "consent": "I confirm that I am an authorised delegate on this Everstead plan, that the information provided is accurate to the best of my knowledge, and that I have the right to notify Everstead of the death of the plan owner. I understand that Everstead will verify this report before taking any action on the account.",
+    "submittedTitle": "Report received",
+    "submittedBody": "We have received your notification. The Everstead team will review and verify the information within <strong>2 business days</strong>. The plan owner's subscription will be placed in a 30-day wind-down period, after which the account will be closed and data securely handled in accordance with our retention policy."
+  },
+  "reportIncident": {
+    "title": "Report an incident",
+    "subtitle": "Notify Everstead that {{name}} is incapacitated or unable to act",
+    "formTitle": "Report an incident, notification form",
+    "intro": "This form is for situations where <strong>{{name}}</strong> is alive but temporarily or permanently incapacitated (such as a serious accident, medical emergency, or a loss of mental capacity) and direct family or trusted contacts need access to act on their behalf.",
+    "bullets": [
+      "Your report will be reviewed by the Everstead team within 2 business days.",
+      "Access permissions configured for incapacity will be unlocked once verified.",
+      "The plan owner's account will not be closed, this is a temporary or situational access release.",
+      "You will receive a confirmation email and reference number after submission."
+    ],
+    "notice": "This form is for notifications only. Everstead is not a legal or medical service. Please also consult relevant authorities, medical professionals, and legal advisers as appropriate.",
+    "rolePlaceholder": "e.g. Primary Executor, Family Member",
+    "relationshipLabel": "Relationship to the plan owner *",
+    "detailsHeading": "Details of the incident",
+    "typeLabel": "Type of incident *",
+    "types": {
+      "medical": "Medical emergency (hospitalisation)",
+      "accident": "Serious accident or injury",
+      "capacity": "Diagnosed loss of mental capacity",
+      "degenerative": "Degenerative condition (e.g. dementia)",
+      "coma": "Prolonged unresponsiveness / coma",
+      "other": "Other incapacity"
+    },
+    "dateLabel": "Date of incident *",
+    "locationLabel": "Location / hospital (if applicable)",
+    "locationPlaceholder": "e.g. St Thomas' Hospital, London",
+    "descLabel": "Brief description of the situation *",
+    "descPlaceholder": "Describe what happened and the current condition of the plan owner…",
+    "accessLabel": "Why is access needed now? *",
+    "accessPlaceholder": "Explain which information needs to be accessed and why it is needed urgently…",
+    "uploadLead": "Upload a medical letter, LPA document, or other supporting evidence",
+    "consent": "I confirm that I am an authorised delegate on this Everstead plan, that the information provided is accurate to the best of my knowledge, and that I have reasonable grounds to believe the plan owner is incapacitated and unable to act. I understand that Everstead will verify this report before releasing any additional access.",
+    "submittedTitle": "Incident report received",
+    "submittedBody": "We have received your notification. The Everstead team will review the report within <strong>2 business days</strong> and may contact you for further verification. Relevant access permissions will be unlocked once the report is confirmed."
+  },
+  "aiGuide": {
+    "trustedPerson": "trusted person",
+    "aTrustedPerson": "a trusted person",
+    "opening": {
+      "deceased": "I'm here to help you through the next steps after {{name}}'s passing. This is a difficult time: I'll keep things clear and practical.\n\nWhat would you like to start with? You might ask:\n• \"What do I need to do this week?\"\n• \"How do I notify the bank?\"\n• \"What is probate and do I need it?\"\n• \"How do I find the will?\"",
+      "incapacitated": "I'm here to help you act as {{role}} for {{name}}. Their account is now suspended and your access permissions are active.\n\nWhat would you like help with? You might ask:\n• \"What are my responsibilities as {{roleA}}?\"\n• \"How do I use a Lasting Power of Attorney?\"\n• \"Which accounts should I contact first?\"",
+      "default": "I'm here to help you understand this plan and your role as {{role}} for {{name}}.\n\nWhat would you like to know? For example:\n• \"What does an executor do?\"\n• \"Where should I start?\"\n• \"How do I prepare for when the time comes?\""
+    },
+    "prompts": {
+      "deceased": ["What do I do this week?", "How do I notify banks?", "Do I need probate?"],
+      "incapacitated": ["What are my responsibilities?", "How do I use an LPA?", "Who should I contact?"],
+      "default": ["What does an executor do?", "How do I prepare?", "What is probate?"]
+    },
+    "triggerUrgent": "What do I do now?",
+    "triggerDefault": "Ask for guidance",
+    "openAria": "Open guide",
+    "closeAria": "Close guide",
+    "headerTitle": "Everstead guide",
+    "headerSubtitle": "Here to help, ask anything",
+    "thinking": "Thinking…",
+    "inputPlaceholder": "Ask anything…",
+    "sendAria": "Send",
+    "previewReply": "This is just a preview, in a live account, I’d help you through the practical next steps here.",
+    "errorReply": "Sorry, I couldn't connect right now. Please try again in a moment."
+  },
+  "firstSteps": {
+    "deceasedTitle": "What to do now, {{name}}",
+    "nextStepsFallback": "next steps",
+    "deceasedSubtitle": "A prioritised checklist for the days ahead",
+    "incapTitle": "Your immediate priorities",
+    "incapSubtitle": "As attorney, here's where to start",
+    "deceasedSteps": [
+      {
+        "label": "Register the death",
+        "detail": "Within 5 days at a local register office. Request at least 10 certified death certificates, banks and institutions each need an original."
+      },
+      {
+        "label": "Locate the will",
+        "detail": "Check the Documents tab. The original signed will (not a scan) is needed for probate. Check with their solicitor if it's not here."
+      },
+      {
+        "label": "Notify close family",
+        "detail": "Inform immediate family before making any formal notifications to institutions."
+      },
+      {
+        "label": "Apply for probate",
+        "detail": "A Grant of Probate from the Probate Registry is usually needed to access accounts. Takes 4-8 weeks. Estates under ~£10,000 may not require it."
+      },
+      {
+        "label": "Notify financial institutions",
+        "detail": "Check the Accounts tab for a full list. Use Tell Us Once (gov.uk) for government departments. Settld.com can notify banks and utilities in bulk."
+      },
+      {
+        "label": "Cancel subscriptions",
+        "detail": "Use the accounts list to find and cancel ongoing direct debits, they continue to charge until cancelled."
+      }
+    ],
+    "incapSteps": [
+      {
+        "label": "Confirm your LPA is registered",
+        "detail": "A Lasting Power of Attorney must be registered with the Office of the Public Guardian (OPG) before you can use it. Check you have the registration certificate."
+      },
+      {
+        "label": "Review the documents",
+        "detail": "Check the Documents tab for the LPA certificate, any medical directives, and care instructions."
+      },
+      {
+        "label": "Contact the plan owner's bank",
+        "detail": "Present your registered LPA to gain access to their accounts. Each institution has its own process, call ahead to find out what they need."
+      },
+      {
+        "label": "Review the instructions",
+        "detail": "Check the Instructions tab for any guidance the plan owner left for this situation."
+      },
+      {
+        "label": "Keep a record of all decisions",
+        "detail": "As attorney, you must act in the donor's best interests and keep records. Note all decisions and reasons."
+      }
+    ],
+    "viewDocuments": "View documents",
+    "viewAccounts": "View accounts",
+    "reportDeathCta": "Report the death to Everstead"
+  },
+  "print": {
+    "docTitle": "{{name}} | Handoff Plan",
+    "planFallback": "Plan",
+    "heading": "{{name}}'s handoff plan",
+    "viewedBy": "Viewed by {{name}} ({{role}}) · Printed {{date}}",
+    "delegateFallback": "delegate",
+    "roleFallback": "trusted person",
+    "accountsHeading": "Accounts ({{count}})",
+    "documentsHeading": "Documents ({{count}})",
+    "instructionsHeading": "Instructions ({{count}})",
+    "expires": "expires",
+    "footer": "Exported from Everstead | secure estate planning platform · everstead.care"
+  }
+}

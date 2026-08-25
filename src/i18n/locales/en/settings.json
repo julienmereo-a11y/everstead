@@ -1,0 +1,55 @@
+{
+  "title": "Account settings",
+  "subtitle": "Manage your account preferences and plan details.",
+  "account": {
+    "label": "Your account",
+    "plan": "Plan:",
+    "rolePartner": "Partner vault",
+    "rolePrimary": "Primary vault"
+  },
+  "language": {
+    "label": "Language / Langue",
+    "description": "Choose the language for your Everstead account and emails."
+  },
+  "family": {
+    "sectionLabel": "Family",
+    "heading": "Two private vaults, one subscription",
+    "loading": "Loading…",
+    "cancel": "Cancel",
+    "secondary": {
+      "joinedBefore": "You joined ",
+      "joinedAfter": "'s Everstead+ plan. Your vault is completely private to you.",
+      "partnerFallback": "a partner",
+      "primarySuffix": " · Primary",
+      "leave": "Leave family plan",
+      "confirmBody": "Are you sure? You'll lose access to Everstead+ and your account will be deactivated until you start your own plan.",
+      "confirmYes": "Yes, leave"
+    },
+    "primary": {
+      "youFallback": "You",
+      "vaultSuffix": " · Your vault (primary)",
+      "invitePrompt": "Invite a partner, spouse, or family member to set up their own private vault, included in your plan.",
+      "inviteSent": "Invitation sent. They'll receive an email with a link to set up their vault.",
+      "emailPlaceholder": "partner@example.com",
+      "sendInvite": "Send invitation",
+      "pendingStatus": "Invitation sent, waiting for them to accept",
+      "resend": "Resend",
+      "cancelInvite": "Cancel invitation",
+      "theirVaultSuffix": " · Their vault (private)",
+      "connected": "Connected",
+      "removePartner": "Remove partner",
+      "removeConfirmBefore": "Are you sure? ",
+      "removeConfirmAfter": " will lose access to Everstead+ and will need their own subscription to continue using Everstead.",
+      "partnerFallback": "Your partner",
+      "removeYes": "Yes, remove"
+    },
+    "errors": {
+      "invalidEmail": "Please enter a valid email address.",
+      "sendFailed": "Could not send invitation. Please try again.",
+      "resendFailed": "Could not resend. Please try again.",
+      "cancelFailed": "Could not cancel. Please try again.",
+      "removeFailed": "Could not remove partner. Please try again.",
+      "leaveFailed": "Could not leave. Please try again."
+    }
+  }
+}

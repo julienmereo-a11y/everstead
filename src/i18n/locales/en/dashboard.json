@@ -1,0 +1,1226 @@
+{
+  "banners": {
+    "trial": {
+      "endsTomorrow": "Your free trial ends tomorrow, your card on file will be charged unless you cancel.",
+      "endsInDays": "Your free trial ends in {{days}} days, your card on file will be charged automatically.",
+      "remaining": "You're on a free trial, {{days}} days remaining.",
+      "managePlan": "Manage plan →"
+    },
+    "trialExpired": {
+      "title": "Your trial has ended",
+      "body": "Your 14-day free trial has expired. Choose a plan to keep your vault, trusted contacts, and everything you've set up, all your data is safely saved.",
+      "plusPrice": "£9.99/mo",
+      "plusNote": "or £7.99/mo billed annually (£95.88/yr · save 20%), two private vaults",
+      "proPrice": "£60/mo",
+      "proNote": "or £48/mo yearly · For estate advisers",
+      "questions": "Questions? Email us at"
+    },
+    "advisorCancelled": {
+      "titleNamed": "{{name}} has cancelled their adviser plan.",
+      "titleUnnamed": "Your adviser has cancelled their plan.",
+      "lockedTomorrow": "Your account will be locked tomorrow unless you add a payment method.",
+      "graceDays": "You have {{days}} days to add a payment method and continue with your own paid plan. Your data is safe.",
+      "addPayment": "Add payment method"
+    },
+    "advisorModal": {
+      "title": "Payment required",
+      "cancelledNamedSuffix": "has cancelled their Everstead adviser plan.",
+      "cancelledUnnamed": "Your adviser has cancelled their Everstead plan.",
+      "graceEnded": "The 30-day grace period has ended. Add a payment method to continue, all your accounts, documents, and instructions are saved and waiting for you.",
+      "plusPrice": "£9.99/mo",
+      "plusNote": "or £7.99/mo billed annually (£95.88/yr · save 20%), all household members",
+      "questions": "Questions? Email us at"
+    },
+    "demo": {
+      "notice": "Demo mode, data is fictional and no changes are saved.",
+      "startReal": "Start your real plan →"
+    },
+    "suspended": {
+      "deceasedTitle": "This account has been suspended following a verified death report.",
+      "incapacitatedTitle": "This account has been suspended following a verified incapacity report.",
+      "body": "This plan is now read-only. Trusted people with after-death access permissions have been notified and their access has been unlocked. No changes can be made to this account. Contact",
+      "bodyEnd": "if you believe this is an error."
+    }
+  },
+  "shell": {
+    "title": "My Plan | Everstead",
+    "nav": {
+      "overview": "Overview",
+      "aboutme": "About Me",
+      "assistant": "Your AI Assistant",
+      "accounts": "Accounts",
+      "documents": "Documents",
+      "subscriptions": "Subscriptions",
+      "people": "People",
+      "family": "Family",
+      "messages": "Personal Messages",
+      "instructions": "Instructions",
+      "alerts": "Alerts",
+      "activity": "Activity",
+      "resources": "Help & Resources"
+    },
+    "navGroups": {
+      "vault": "Your vault",
+      "peopleWishes": "People & wishes",
+      "more": "More"
+    },
+    "messagesLocked": "Personal Messages, upgrade to access. Click to see options.",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu",
+    "sidebar": "Sidebar",
+    "dashboardNav": "Dashboard navigation",
+    "mainContent": "Main content",
+    "unreadAlerts": "{{n}} unread alerts",
+    "yourAccount": "Your Account",
+    "foundingMember": "Founding member",
+    "planSuffix": "{{plan}} plan",
+    "settings": "Settings",
+    "signOut": "Sign out",
+    "deletionFailed": "Deletion failed. Please contact support.",
+    "milestones": {
+      "firstAccount": {
+        "headline": "First account added!",
+        "body": "Your vault is taking shape. Keep going."
+      },
+      "firstDocument": {
+        "headline": "First document uploaded!",
+        "body": "One less thing for your family to hunt for."
+      }
+    },
+    "limitError": "You've reached your free {{freePlan}} plan limit. Upgrade to {{plusPlan}} to add more.",
+    "family": {
+      "title": "Family",
+      "subtitleSecondary": "You have your own private vault under an Everstead+ subscription.",
+      "subtitlePrimary": "Invite your partner or spouse to their own private vault under your plan."
+    }
+  },
+  "aiGuide": {
+    "greetingNamed": "Hi {{name}}! I'm your Everstead planning coach. I can help you think through your estate plan, explain concepts like wills and LPAs, or guide you on what to add to your vault next.\n\nWhat would you like to know?",
+    "greeting": "Hi! I'm your Everstead planning coach. I can help you think through your estate plan, explain concepts like wills and LPAs, or guide you on what to add to your vault next.\n\nWhat would you like to know?",
+    "previewOnly": "This is just a preview, sign in to your account to chat with the assistant.",
+    "error": "Sorry, I couldn't connect right now. Please try again.",
+    "quickPrompts": {
+      "focus": "What should I focus on?",
+      "addNext": "What should I add next?",
+      "executor": "How do I choose an executor?",
+      "lpa": "What is an LPA?"
+    },
+    "openCoach": "Open planning coach",
+    "askCoach": "Ask your coach",
+    "title": "Planning coach",
+    "subtitle": "Ask anything about your estate plan",
+    "thinking": "Thinking…",
+    "placeholder": "Ask anything about your plan…",
+    "send": "Send"
+  },
+  "tour": {
+    "progress": "A quick look around · {{step}}/{{total}}",
+    "skip": "Skip",
+    "back": "Back",
+    "next": "Next",
+    "done": "All set 🎉",
+    "steps": {
+      "overview": {
+        "title": "Welcome home",
+        "body": "Whenever you sign in, this is your calm overview, everything at a glance, no pressure to do it all at once."
+      },
+      "accounts": {
+        "title": "Your vault",
+        "body": "Your accounts, documents and subscriptions live here, the practical things, gathered safely in one place."
+      },
+      "people": {
+        "title": "The people you trust",
+        "body": "Invite family or an executor and choose exactly what each person can see, and only when the time is right. Nothing is shared until you say so."
+      },
+      "aboutme": {
+        "title": "The part that’s really you",
+        "body": "About Me is the heart of it, your story, your wishes, and messages for the people you love. Come back and add to it whenever something comes to mind."
+      }
+    }
+  },
+  "common": {
+    "close": "Close",
+    "loading": "Loading…"
+  },
+  "overview": {
+    "greeting": {
+      "morning": "Good morning, {{name}}.",
+      "afternoon": "Good afternoon, {{name}}.",
+      "evening": "Good evening, {{name}}.",
+      "morningNoName": "Good morning, there.",
+      "afternoonNoName": "Good afternoon, there.",
+      "eveningNoName": "Good evening, there."
+    },
+    "subtitle": "Here's where everything stands.",
+    "executorView": "Executor view",
+    "exportPlan": "Export plan",
+    "foundingMemberTitle": "You joined Everstead as a founding member, thank you for being here from the very start.",
+    "aboutMeCta": {
+      "kicker": "Start here",
+      "title": "Tell your story, start with “About Me”.",
+      "body": "The easiest, most personal part of your plan. Takes a few minutes, and it's yours to share with the people you love."
+    },
+    "criticalAlerts_one": "{{count}} critical item needs your attention",
+    "criticalAlerts_other": "{{count}} critical items need your attention",
+    "staleBanner": "Your vault hasn't been updated in {{days}} days, accounts, documents, or contacts may have changed since you last checked in.",
+    "reviewNow": "Review now →",
+    "dismiss": "Dismiss",
+    "stats": {
+      "accounts": "Accounts documented",
+      "documents": "Documents uploaded",
+      "trustedPeople": "Trusted people",
+      "trustedContacts": "Trusted contacts",
+      "instructions": "Instructions written"
+    },
+    "readiness100Title": "100% readiness!",
+    "readiness100Body": "Your vault is complete. Your family is protected.",
+    "familyReadiness": "Family readiness",
+    "planReadiness": "Plan readiness",
+    "scoreZero": "Your plan is\nwaiting to begin",
+    "scorePercent": "{{score}}%",
+    "scoreMsgHigh": "Excellent, your family is well prepared.",
+    "scoreMsgMid": "Good progress, a few items remaining.",
+    "scoreMsgLow": "Every item you add protects the people you love.",
+    "startHere": "Start here",
+    "statProgress_one": "{{value}} added · {{target}}+ recommended",
+    "statProgress_other": "{{value}} added · {{target}}+ recommended",
+    "addFirst": "Add your first →",
+    "messagesCta": {
+      "emptyTitle": "Leave something personal",
+      "emptyBody": "Write a letter to someone you love, sealed until you choose to release it.",
+      "writeMessage": "Write a message →",
+      "saved_one": "{{count}} personal message saved",
+      "saved_other": "{{count}} personal messages saved",
+      "savedBody": "Your words are sealed, ready to be delivered when the time comes.",
+      "addAnother": "Add another →"
+    },
+    "family": {
+      "secondaryActive": "Your Everstead+ vault is active",
+      "active": "Family vault active",
+      "secondaryBody": "Covered by the plan holder, your vault is fully private.",
+      "primaryBody": "{{email}} has their own private vault under your plan.",
+      "activeBadge": "Active",
+      "pending": "Invitation pending",
+      "pendingBody": "Waiting for {{email}} to accept.",
+      "manage": "Manage →",
+      "addTitle": "Add your partner or spouse",
+      "addBody": "Your plan includes a second private vault, invite them to set up theirs.",
+      "invite": "Invite →"
+    },
+    "recentDocuments": "Recent documents",
+    "totalCount": "{{count}} total",
+    "noDocuments": "No documents yet",
+    "uploadFirstDocument": "Upload your first document",
+    "recentAlerts": "Recent alerts",
+    "unreadCount": "{{count}} unread",
+    "noAlerts": "No alerts",
+    "allCaughtUp": "You're all caught up",
+    "upgrade": {
+      "title": "Ready for more? Upgrade to Everstead+",
+      "body": "Unlimited accounts & documents, up to 10 trusted contacts, two private vaults, Personal Messages, and 25 GB of secure storage, everything you've set up comes with you.",
+      "button": "Upgrade to Everstead+"
+    },
+    "planLimit": {
+      "noun": {
+        "account_one": "account",
+        "account_other": "accounts",
+        "document_one": "document",
+        "document_other": "documents",
+        "trustedContact_one": "trusted contact",
+        "trustedContact_other": "trusted contacts",
+        "instructionSet_one": "instruction set",
+        "instructionSet_other": "instruction sets"
+      },
+      "freeIntro": "You're on the free {{plan}} plan, which includes {{limit}} {{nounPlural}}.",
+      "reachedIntro": "You've reached your {{limit}}-{{nounSingular}} limit on the {{plan}} plan.",
+      "upgradeCta": "Upgrade to {{plan}} →"
+    }
+  },
+  "accounts": {
+    "title": "Accounts & Assets",
+    "subtitle_one": "{{count}} account documented",
+    "subtitle_other": "{{count}} accounts documented",
+    "addAccount": "Add account",
+    "editAccount": "Edit account",
+    "limitBenefit": "for unlimited accounts.",
+    "empty": "No accounts yet",
+    "emptyAction": "Add your first account to start building your vault.",
+    "category": {
+      "Banking": "Banking",
+      "Retirement": "Retirement",
+      "Investment": "Investment",
+      "Insurance": "Insurance",
+      "Digital": "Digital",
+      "Property": "Property",
+      "Other": "Other"
+    },
+    "editAria": "Edit {{name}}",
+    "deleteAria": "Delete {{name}}",
+    "propertyLifeEvent": "You've added a property, a significant asset. It's worth making sure your will and trusted contacts reflect this change.",
+    "reviewContacts": "Review trusted contacts →",
+    "saveError": "Could not save this account. Please try again.",
+    "fields": {
+      "institution": "Institution",
+      "institutionPlaceholder": "e.g. Barclays, Vanguard",
+      "type": "Account type",
+      "typePlaceholder": "e.g. Current Account, ISA",
+      "category": "Category",
+      "last4": "Last 4 digits (optional)",
+      "balance": "Balance / status (display only)",
+      "balancePlaceholder": "e.g. £12,000 or Active",
+      "notes": "Notes / instructions",
+      "notesPlaceholder": "Add helpful details, access notes, or instructions for this account…"
+    },
+    "saving": "Saving…",
+    "saveChanges": "Save changes",
+    "cancel": "Cancel"
+  },
+  "documents": {
+    "title": "Document Vault",
+    "subtitle": "{{count}} documents uploaded",
+    "uploadDocument": "Upload document",
+    "editDocument": "Edit document",
+    "limitBenefit": "for unlimited documents and storage.",
+    "storage": "Storage",
+    "storageUsed": "{{used}} of {{limit}} GB used",
+    "kb": "{{n}} KB",
+    "mb": "{{n}} MB",
+    "storageWarn": "Storage almost full, consider upgrading your plan.",
+    "priority": {
+      "title": "Priority legal documents",
+      "willTitle": "Last Will & Testament",
+      "willBody": "The most important document in any estate plan. Without one, UK intestacy rules decide who gets what.",
+      "lpaTitle": "Lasting Power of Attorney",
+      "lpaBody": "Grants someone you trust the legal authority to act for you if you lose mental capacity. Must be registered before it's needed.",
+      "uploadYours": "Upload yours",
+      "govGuidance": "gov.uk guidance →"
+    },
+    "will": {
+      "title": "Will & Solicitor Details",
+      "subtitle": "Record where your will is stored and how to reach your solicitor. Your executor will need this immediately.",
+      "locationLabel": "Where is your will stored?",
+      "locationPlaceholder": "e.g. In the filing cabinet in the study, or with my solicitor at Smith & Jones",
+      "solicitorName": "Solicitor name",
+      "solicitorNamePlaceholder": "e.g. Sarah Thompson",
+      "firmName": "Firm name",
+      "firmPlaceholder": "e.g. Thompson & Associates LLP",
+      "contactLabel": "Phone or email",
+      "contactPlaceholder": "e.g. 020 7123 4567 or sarah@thompsonlaw.co.uk",
+      "saveDetails": "Save details",
+      "savedTick": "✓ Saved",
+      "detailsSaved": "Details saved."
+    },
+    "empty": "No documents yet",
+    "emptyAction": "Upload your first document, will, insurance policies, property deeds, and more.",
+    "table": {
+      "document": "Document",
+      "type": "Type",
+      "status": "Status",
+      "lastUpdated": "Last updated",
+      "access": "Access"
+    },
+    "owner": "Owner",
+    "status": {
+      "current": "current",
+      "expiring": "expiring",
+      "missing": "missing",
+      "expired": "expired"
+    },
+    "type": {
+      "Legal": "Legal",
+      "Finance": "Finance",
+      "Insurance": "Insurance",
+      "Property": "Property",
+      "Personal": "Personal",
+      "Medical": "Medical",
+      "Other": "Other"
+    },
+    "previewAria": "Preview {{name}}",
+    "previewTitle": "Preview / download",
+    "noFileYet": "No file uploaded yet",
+    "downloadAria": "Download {{name}}",
+    "editAria": "Edit {{name}}",
+    "deleteAria": "Delete {{name}}",
+    "viewer": {
+      "openInTab": "Open in tab",
+      "download": "Download",
+      "loadingPreview": "Loading preview…",
+      "noFile": "No file available for this document.",
+      "noFileHint": "Upload a file to enable previewing."
+    },
+    "access": {
+      "title": "Who can access this document",
+      "subtitle": "Based on each person's access settings, tick or untick to override for this document only.",
+      "noPeople": "No trusted people yet, invite someone from the People section, then control their access to each document here.",
+      "trustedContact": "Trusted contact",
+      "addedOverride": "Added for this document",
+      "removedOverride": "Removed for this document",
+      "viaSettings": "Via their access settings",
+      "noAccess": "No access",
+      "releaseLabel": "When is it released?",
+      "releaseDefault": "Follow each person's access timing",
+      "releaseImmediate": "Available now to everyone with access",
+      "releaseSealed": "Sealed, released only when the time comes",
+      "sealedNote": "Sealed documents stay locked for everyone here, they'll see it exists, but it only opens once your passing is verified by our team."
+    },
+    "dropHere": "Drop file here or click to browse",
+    "dropFormats": "PDF, Word, JPG, PNG up to 50MB",
+    "fileSelected": "{{name}} ({{size}} KB)",
+    "ai": {
+      "offer": "Extract details automatically with AI?",
+      "scan": "Scan document",
+      "scanning": "Scanning…",
+      "done": "Details extracted, review and edit below before saving.",
+      "providerLine": "Provider: {{value}}",
+      "accountLine": "Reference/account no: {{value}}",
+      "valueLine": "Value: {{value}}"
+    },
+    "fields": {
+      "name": "Document name",
+      "namePlaceholder": "e.g. Last Will & Testament",
+      "type": "Type",
+      "status": "Status",
+      "notes": "Notes",
+      "notesPlaceholder": "Add context, what this document covers, or where the original is kept…",
+      "expiry": "Expiry date (optional)"
+    },
+    "expiryAlertTitle": "{{name}} expiry approaching",
+    "expiryAlertDetail": "Your {{name}} expires on {{date}}. Update it before it lapses.",
+    "docFallbackName": "Document",
+    "docFallbackNameLower": "document",
+    "willLifeEvent": "Great, your will is uploaded. It's worth checking your trusted contacts and instructions still align with your wishes.",
+    "reviewInstructions": "Review instructions →",
+    "lpaLifeEvent": "You've uploaded an LPA, an important document. Make sure your trusted contacts know who holds it, and that your access settings are up to date.",
+    "reviewContacts": "Review trusted contacts →",
+    "uploadError": "Upload failed. Please try again.",
+    "saveError": "Save failed. Please try again.",
+    "uploading": "Uploading…",
+    "upload": "Upload",
+    "saving": "Saving…",
+    "saveChanges": "Save changes",
+    "cancel": "Cancel"
+  },
+  "aboutMe": {
+    "title": "About Me",
+    "subtitle": "A personal page about who you are, shared only with the people you choose.",
+    "intro": "This is the easiest, most personal part of your plan, your story, your passions, the moments that shaped you. You choose who sees it, and whether it's shared now or kept for when your plan is activated. It's never shown to solicitors or professional advisers.",
+    "profileAlt": "Your profile",
+    "changePhoto": "Change photo",
+    "addPhoto": "Add photo",
+    "avatarNotImage": "Please choose an image file (JPG or PNG).",
+    "avatarTooBig": "That image is over 5 MB, please choose a smaller one.",
+    "avatarUploadError": "Could not upload the photo. Please try again.",
+    "fields": {
+      "fullName": "Full name",
+      "fullNamePlaceholder": "Your full name",
+      "dob": "Date of birth",
+      "passions": "Passions & interests",
+      "passionsPlaceholder": "The things you love, hobbies, places, people, causes…",
+      "spotify": "A playlist that's you (Spotify)",
+      "reflections": "Thoughts & reflections",
+      "reflectionsPlaceholder": "Anything you'd want the people you love to know. There's no wrong way to write this."
+    },
+    "lifeEvents": {
+      "title": "Life events",
+      "add": "Add event",
+      "hint": "The moments that mattered. e.g. \"1985: Married in Edinburgh\"",
+      "addFirst": "+ Add your first life event",
+      "year": "Year",
+      "description": "Description",
+      "descriptionPlaceholder": "Married in Edinburgh",
+      "removeAria": "Remove event"
+    },
+    "spotifyInvalid": "That doesn't look like a Spotify link, it should start with open.spotify.com/…",
+    "spotifyInvalidSave": "That doesn't look like a Spotify link. It should start with open.spotify.com/…",
+    "spotifyPreview": "Spotify preview",
+    "sharing": {
+      "title": "Who can see this?",
+      "subtitle": "Only the people you tick below. Solicitors and professional advisers are never included.",
+      "noPeopleBefore": "You haven't added any family, partners, or friends yet. Add trusted people under",
+      "noPeopleStrong": "People",
+      "noPeopleAfter": " first, then choose who sees your story.",
+      "timingTitle": "When is it shared?",
+      "onActivationTitle": "Share when my plan is activated",
+      "onActivationDesc": "Kept private until your trusted people are given access (recommended).",
+      "nowTitle": "Share now",
+      "nowDesc": "Available to the people above as soon as you save."
+    },
+    "celebrateTitle": "Your story is saved.",
+    "celebrateBody": "Thank you for sharing a little of who you are.",
+    "saveError": "Could not save. Please try again.",
+    "saved": "Saved",
+    "saving": "Saving…",
+    "signInToEdit": "Sign in to edit",
+    "saveButton": "Save About Me"
+  },
+  "media": {
+    "type": {
+      "video": "video",
+      "photo": "photo"
+    },
+    "loadFailed": "This {{type}} couldn't be loaded.",
+    "record": {
+      "preview": "Camera preview",
+      "start": "Record a video",
+      "stop": "Stop recording",
+      "blocked": "Camera & microphone access was blocked. Allow it in your browser to record.",
+      "failed": "Could not start recording on this device. You can upload a file instead."
+    }
+  },
+  "messages": {
+    "title": "Personal Messages",
+    "plusFeature": "{{plan}} feature",
+    "subtitle": "{{released}} released · {{sealed}} sealed",
+    "releaseAll": "Release all",
+    "newMessage": "New message",
+    "locked": {
+      "title": "Leave something behind that matters.",
+      "body": "Write letters, record final wishes, and set release triggers for the people you love, delivered when it matters most. Personal Messages are included in {{plan}}.",
+      "cta": "Upgrade to {{plan}} →"
+    },
+    "sealedBanner": "Messages are <b>sealed</b> by default, recipients cannot see them until you release them manually, or they are released automatically when Everstead verifies your passing. You can release a message at any time using the button on each card.",
+    "empty": "No messages yet",
+    "emptyAction": "Leave a personal note or video message for someone important, your spouse, children, solicitor, or anyone you choose.",
+    "forRecipient": "For <b>{{name}}</b>",
+    "viaEmail": "via email",
+    "releasesOn": "Releases {{date}}",
+    "released": "Released",
+    "releasedOn": "Released {{date}}",
+    "releasing": "Releasing…",
+    "releaseNow": "Release now",
+    "type": {
+      "note": {
+        "label": "Written note",
+        "desc": "A letter"
+      },
+      "video": {
+        "label": "Video",
+        "desc": "Record or upload"
+      },
+      "photo": {
+        "label": "Photo",
+        "desc": "Upload an image"
+      }
+    },
+    "timing": {
+      "question": "When is it released?",
+      "pickDate": "Pick a date, it stays sealed until then.",
+      "afterDeath": {
+        "label": "When the time comes",
+        "desc": "Released when Everstead verifies your passing, or whenever you choose."
+      },
+      "onDate": {
+        "label": "On a specific date",
+        "desc": "Delivered automatically, a wedding day, an 18th birthday…"
+      }
+    },
+    "confirm": {
+      "title": "Release this message now?",
+      "bodyEmail": "Once released, we'll email <b>{{email}}</b> a private, secure link to view this message, no account needed. This cannot be undone.",
+      "bodyPerson": "Once released, <b>{{name}}</b> will be able to see this message immediately on their delegate dashboard. This cannot be undone.",
+      "yes": "Yes, release"
+    },
+    "demoMedia": "{{type}} stored securely, preview available in your real plan.",
+    "noMediaYet": "No {{type}} added yet.",
+    "uploadType": "Upload {{type}}",
+    "contentLabel": "Message content",
+    "noContent": "No content written yet.",
+    "edit": "Edit",
+    "delete": "Delete",
+    "notInDemo": "Not available in demo",
+    "releasedTo": "This message has been released and is visible to {{name}}.",
+    "ai": {
+      "helpBtn": "Help me write this",
+      "modalTitle": "✨ Help me write this",
+      "intro": "Answer a few questions and I'll write a warm, heartfelt message for {{name}}.",
+      "defaultRecipient": "your recipient",
+      "relationship": "Your relationship",
+      "relationshipPlaceholder": "e.g. My daughter, My oldest friend, My partner",
+      "wants": "What do you most want them to know?",
+      "wantsPlaceholder": "e.g. How proud I am of them, how much they mean to me…",
+      "gratitude": "Anything you're grateful for, or want to say sorry for?",
+      "gratitudePlaceholder": "e.g. Thank you for always being there. I'm sorry we didn't talk more.",
+      "hopes": "What are your hopes for their future?",
+      "hopesPlaceholder": "e.g. That they find joy, that they follow their dreams…",
+      "writing": "Writing…",
+      "submit": "Write my message"
+    },
+    "releaseAllModal": {
+      "title": "Release all messages?",
+      "body_one": "This will immediately release <b>{{count}} sealed message</b> to its named recipient. That person will be able to see their message on their delegate dashboard straight away.",
+      "body_other": "This will immediately release <b>{{count}} sealed messages</b> to their named recipients. Each person will be able to see their message on their delegate dashboard straight away.",
+      "warning": "This cannot be undone. Released messages are permanently visible to their recipients.",
+      "confirm_one": "Release {{count}} message",
+      "confirm_other": "Release {{count}} messages"
+    },
+    "compose": {
+      "title": "New personal message",
+      "typeLabel": "Message type",
+      "titleField": "Message title",
+      "titlePlaceholder": "e.g. To my son Thomas",
+      "titlePlaceholderVideo": "e.g. A video for Emily",
+      "recipient": "Recipient",
+      "kindPerson": "A trusted person",
+      "kindEmail": "Someone by email",
+      "selectPerson": "Select a person…",
+      "noPeople": "No trusted people yet, add someone in People first",
+      "namePlaceholder": "Their name (optional)",
+      "emailPlaceholder": "their@email.com",
+      "emailHint": "They don't need an account. When you release the message, we'll email them a private, secure link to view it.",
+      "dateHint": "It stays sealed until this day, then is released automatically. You can still release it sooner.",
+      "dateHintEmail": "It stays sealed until this day, then is released automatically and emailed to them. You can still release it sooner.",
+      "messageLabel": "Message",
+      "contentPlaceholder": "Write your personal message here. It will be encrypted and only released to the recipient when needed.",
+      "yourVideo": "Your video",
+      "yourPhoto": "Your photo",
+      "previewAlt": "Preview",
+      "removeMedia": "Remove and choose again",
+      "uploadVideo": "Upload a video",
+      "uploadPhoto": "Upload a photo",
+      "videoHint": "Record yourself, or upload mp4 / mov / webm.",
+      "photoHint": "Upload a jpg or png, a scanned letter or a meaningful photo.",
+      "submit": "Save message"
+    },
+    "errors": {
+      "mediaRequired": "Please record or upload a {{type}} first.",
+      "dateRequired": "Please choose the date it should be released.",
+      "saveFailed": "Could not save the message. Please try again."
+    },
+    "saving": "Saving…",
+    "cancel": "Cancel"
+  },
+  "people": {
+    "title": "Trusted People",
+    "subtitle_one": "{{count}} trusted contact",
+    "subtitle_other": "{{count}} trusted contacts",
+    "subtitleLimited": "{{n}} / {{limit}} trusted contacts",
+    "limitReached": "Limit reached, upgrade",
+    "invitePerson": "Invite person",
+    "limitBenefit": "to invite up to 10 people.",
+    "releaseNote": "Nothing here is released while you're alive, you decide exactly what each person sees. After a death, a trusted person reports it and our team verifies before any after-death access opens.",
+    "releaseLink": "How access is released →",
+    "empty": "No trusted people yet",
+    "emptyAction": "Invite an executor, healthcare proxy, or family member to your plan.",
+    "accessLabel": "Access:",
+    "timingLabel": "Timing:",
+    "resend": "Resend",
+    "editAccess": "Edit access",
+    "editAccessAria": "Edit access for {{name}}",
+    "removePerson": "Remove person",
+    "removeAria": "Remove {{name}}",
+    "inviteModalTitle": "Invite trusted person",
+    "editModalTitle": "Edit access, {{name}}",
+    "sendInvite": "Send invite",
+    "saveChanges": "Save changes",
+    "thisPerson": "this person",
+    "confirmRemove": "Remove {{name}} from your trusted people? They will lose all access.",
+    "inviteStatus": {
+      "pending": "pending",
+      "accepted": "accepted",
+      "declined": "declined"
+    },
+    "role": {
+      "spousePartner": "Spouse / Partner",
+      "primaryExecutor": "Primary Executor",
+      "secondaryExecutor": "Secondary Executor",
+      "solicitor": "Solicitor",
+      "familyMember": "Family Member",
+      "familyCaretaker": "Family Caretaker",
+      "financialAdviser": "Financial Adviser",
+      "healthcareProxy": "Healthcare Proxy"
+    },
+    "roleGroup": {
+      "full": "Full access",
+      "estate": "Estate & legal",
+      "family": "Family",
+      "professional": "Professional"
+    },
+    "timing": {
+      "always": {
+        "label": "While I'm alive",
+        "desc": "Access granted now, upon acceptance"
+      },
+      "afterDeath": {
+        "label": "After death / incapacity",
+        "desc": "Locked until you are reported by a trusted contact"
+      },
+      "aliveShort": "While alive"
+    },
+    "access": {
+      "none": "No areas selected",
+      "full": "Full access",
+      "area": {
+        "accounts": {
+          "label": "Accounts & Assets",
+          "desc": "Bank accounts, investments, pensions",
+          "subLabel": "Which account categories?"
+        },
+        "documents": {
+          "label": "Documents",
+          "desc": "Wills, insurance policies, deeds",
+          "subLabel": "Which document types?"
+        },
+        "messages": {
+          "label": "Personal Messages",
+          "desc": "Private letters and video messages"
+        },
+        "instructions": {
+          "label": "Instructions",
+          "desc": "Step-by-step guidance and wishes"
+        },
+        "subscriptions": {
+          "label": "Subscriptions",
+          "desc": "Recurring services and memberships"
+        }
+      },
+      "accountCategories": {
+        "Banking": "Banking",
+        "Retirement": "Retirement",
+        "Investment": "Investment",
+        "Insurance": "Insurance",
+        "Digital": "Digital",
+        "Property": "Property",
+        "Other": "Other"
+      },
+      "documentTypes": {
+        "Legal": "Legal",
+        "Insurance": "Insurance",
+        "Property": "Property",
+        "Medical": "Medical",
+        "Personal": "Personal",
+        "Financial": "Financial",
+        "Other": "Other"
+      }
+    },
+    "form": {
+      "name": "Full name",
+      "namePlaceholder": "Jane Smith",
+      "email": "Email address",
+      "emailPlaceholder": "jane@example.com",
+      "role": "Role",
+      "selectRole": "Select a role…",
+      "fullAccessNote": "<b>Full access role</b>: {{role}} can view all sections of your plan.",
+      "accessAreas": "Access areas",
+      "accessAreasHint": "Choose which sections of your plan this person can view.",
+      "allTypes": "All types (no filter)",
+      "timingQuestion": "When can they access this?",
+      "timingHint": "Control whether access is immediate or only unlocked after you pass away or are reported incapacitated.",
+      "errorNoArea": "Please select at least one access area.",
+      "saving": "Saving…",
+      "cancel": "Cancel"
+    },
+    "errors": {
+      "inviteFailed": "Could not send invite. Please try again.",
+      "saveFailed": "Could not save changes.",
+      "removeFailed": "Could not remove person."
+    }
+  },
+  "instructions": {
+    "title": "Instructions",
+    "subtitle_one": "{{count}} instruction set",
+    "subtitle_other": "{{count}} instruction sets",
+    "writeWithAi": "Write with AI",
+    "helpMeWrite": "Help me write this",
+    "add": "Add instructions",
+    "editTitle": "Edit instructions",
+    "limitBenefit": "for unlimited instructions.",
+    "empty": "No instructions yet",
+    "emptyAction": "Write step-by-step guidance for your executor, family, or healthcare proxy.",
+    "meta": "{{category}} · For: {{audience}}",
+    "steps_one": "{{count}} step",
+    "steps_other": "{{count}} steps",
+    "noSteps": "No steps yet",
+    "editAria": "Edit {{title}}",
+    "deleteAria": "Delete {{title}}",
+    "category": {
+      "immediate": "Immediate",
+      "financial": "Financial",
+      "legal": "Legal",
+      "household": "Household",
+      "medical": "Medical",
+      "personal": "Personal",
+      "other": "Other"
+    },
+    "audience": {
+      "executor": "Executor",
+      "family": "Family",
+      "healthcareProxy": "Healthcare proxy",
+      "adviser": "Adviser",
+      "everyone": "Everyone"
+    },
+    "quickWrite": {
+      "title": "✨ Write with AI",
+      "intro": "Tell me about the instruction set you'd like to create and I'll draft it for you to review.",
+      "purpose": "What is this instruction set about?",
+      "purposePlaceholder": "e.g. What to do in the first 48 hours, How to access our finances, My medical wishes",
+      "recipient": "Who is this for?",
+      "recipientPlaceholder": "e.g. My executor, My children, My healthcare proxy",
+      "firstSteps": "What should they do first?",
+      "firstStepsPlaceholder": "e.g. Call my solicitor at Smith & Jones (01234 567890), notify the bank…",
+      "resources": "Useful contacts, accounts, or resources to mention",
+      "resourcesPlaceholder": "e.g. Barclays current account sort code 20-44-15, account 12345678",
+      "additional": "Anything else to include?",
+      "additionalPlaceholder": "Any additional wishes or important notes",
+      "writing": "Writing your instructions…",
+      "submit": "Write my instructions"
+    },
+    "assistant": {
+      "title": "Writing assistant",
+      "greeting": "I'm here to help you write clear instructions for your family or executor. What do you want to help them with? For example: \"What to do in the first 48 hours\", \"How to access our bank accounts\", or \"My medical wishes.\"",
+      "previewOnly": "This is just a preview, sign in to your account to use the assistant.",
+      "error": "Sorry, I couldn't connect right now. Please try again.",
+      "readyToUse": "Ready to use: \"{{title}}\"",
+      "suggestionMeta": "{{steps}} · {{category}} · For: {{audience}}",
+      "useThis": "Use this →",
+      "placeholder": "Describe what you want to communicate…",
+      "send": "Send"
+    },
+    "fields": {
+      "title": "Title",
+      "titlePlaceholder": "e.g. First 48 hours checklist",
+      "category": "Category",
+      "audience": "Audience",
+      "body": "Overview / notes",
+      "bodyPlaceholder": "Summarise what should happen and any context the person should know…",
+      "steps": "Step-by-step instructions",
+      "stepsPlaceholder": "Write one step per line\nCall the family solicitor\nLocate the signed will\nPause non-essential subscriptions"
+    },
+    "saving": "Saving…",
+    "saveChanges": "Save changes",
+    "cancel": "Cancel"
+  },
+  "subscriptions": {
+    "title": "Subscriptions",
+    "subtitle": "£{{total}}/mo total",
+    "add": "Add subscription",
+    "editTitle": "Edit subscription",
+    "empty": "No subscriptions tracked",
+    "emptyAction": "Add recurring bills so your family knows what to cancel.",
+    "meta": "{{cycle}} · Next: {{date}}",
+    "cycle": {
+      "monthly": "Monthly",
+      "annual": "Annual"
+    },
+    "editAria": "Edit {{name}}",
+    "deleteAria": "Delete {{name}}",
+    "saveError": "Could not save. Please try again.",
+    "fields": {
+      "name": "Subscription name",
+      "namePlaceholder": "e.g. Netflix, Spotify, Dropbox",
+      "cycle": "Billing cycle",
+      "amount": "Amount",
+      "amountPlaceholder": "12.99",
+      "nextCharge": "Next charge date",
+      "notes": "Notes",
+      "notesPlaceholder": "Useful cancellation steps, account owner, or login hints…"
+    },
+    "saving": "Saving…",
+    "saveChanges": "Save changes",
+    "cancel": "Cancel"
+  },
+  "alerts": {
+    "title": "Alerts",
+    "unread_one": "{{count}} unread",
+    "unread_other": "{{count}} unread",
+    "allCaughtUp": "All caught up",
+    "markAllRead": "Mark all read",
+    "empty": "No alerts",
+    "emptyAction": "You're all caught up.",
+    "markRead": "Mark as read",
+    "severity": {
+      "critical": "Critical",
+      "warning": "Warning",
+      "info": "Info"
+    }
+  },
+  "activity": {
+    "title": "Activity Log",
+    "subtitle": "All changes to your plan",
+    "empty": "No activity yet",
+    "emptyAction": "Changes to your plan will appear here.",
+    "resourceSuffix": ", {{name}}",
+    "action": {
+      "accountCreated": "Account added",
+      "accountUpdated": "Account updated",
+      "accountDeleted": "Account deleted",
+      "documentUploaded": "Document uploaded",
+      "documentUpdated": "Document updated",
+      "documentDeleted": "Document deleted",
+      "personInvited": "Person invited",
+      "personUpdated": "Access updated",
+      "personRemoved": "Person removed",
+      "instructionCreated": "Instructions added",
+      "instructionUpdated": "Instructions updated",
+      "instructionDeleted": "Instructions deleted",
+      "subscriptionCreated": "Subscription added",
+      "subscriptionUpdated": "Subscription updated",
+      "subscriptionDeleted": "Subscription deleted",
+      "messageCreated": "Message created",
+      "messageUpdated": "Message updated",
+      "messageReleased": "Message released",
+      "messageDeleted": "Message deleted",
+      "profileUpdated": "Profile updated"
+    }
+  },
+  "resources": {
+    "title": "Help & Resources",
+    "subtitle": "Guides to help you get the most out of your Everstead plan",
+    "topics_one": "{{count}} topic",
+    "topics_other": "{{count}} topics",
+    "needHelp": "Need more help?",
+    "needHelpBody": "Our support team is available Monday to Friday, 9am to 5pm GMT. We also have guides and FAQs on the resources page.",
+    "emailSupport": "Email support",
+    "resourcesLink": "Resources",
+    "guides": {
+      "accounts": {
+        "title": "Accounts, what to add",
+        "items": {
+          "bank": {
+            "label": "Bank & current accounts",
+            "detail": "Add the bank name, account number (last 4 digits is fine), and a branch contact or online login hint. Include all accounts the family would need to notify or close."
+          },
+          "savings": {
+            "label": "Savings & ISAs",
+            "detail": "Include the provider, account type, and rough value if comfortable. Even a ballpark figure helps your executor prioritise."
+          },
+          "pensions": {
+            "label": "Pensions & retirement funds",
+            "detail": "List every pension, workplace, personal, and state. Include the scheme name and a reference number. Many pensions are missed during estate admin."
+          },
+          "investments": {
+            "label": "Investments & shares",
+            "detail": "Stocks, funds, and ISAs. Note the platform (e.g. Vanguard, Hargreaves Lansdown) and any dealing accounts. Include share certificates if held in paper form."
+          },
+          "property": {
+            "label": "Property",
+            "detail": "Your main home, any buy-to-let, land, or overseas property. Include the title number if known (find it on the Land Registry) and the name of your solicitor."
+          },
+          "insurance": {
+            "label": "Insurance policies",
+            "detail": "Life insurance, income protection, critical illness, and home insurance. Record the policy number and the insurer's claims contact, not just the broker."
+          },
+          "digital": {
+            "label": "Digital assets & crypto",
+            "detail": "Cryptocurrency wallets, NFTs, or digital investment accounts. Note the platform and, separately in a secure place, the access recovery method."
+          },
+          "subscriptions": {
+            "label": "Subscriptions to cancel",
+            "detail": "Streaming services, software, memberships, and direct debits. Your executor cannot cancel what they can't find, even small ones add up."
+          }
+        }
+      },
+      "documents": {
+        "title": "Documents, what to upload",
+        "items": {
+          "will": {
+            "label": "Will",
+            "detail": "The single most important document. Upload the signed, witnessed copy. If you have a solicitor-held original, note their contact details in the description."
+          },
+          "lpa": {
+            "label": "Lasting Power of Attorney (LPA)",
+            "detail": "Both property & financial affairs and health & welfare LPAs if you have them. If you don't, consider making one, it is far harder to arrange once capacity is lost."
+          },
+          "identity": {
+            "label": "Passport & driving licence",
+            "detail": "Useful for identity verification during probate. A scan is fine. Note the expiry date."
+          },
+          "certificates": {
+            "label": "Birth & marriage certificates",
+            "detail": "Required for probate and benefit claims. Include any deed poll or change of name documents."
+          },
+          "deeds": {
+            "label": "Property deeds & mortgage documents",
+            "detail": "Title deeds, mortgage statements, and lease agreements for any property you own or part-own."
+          },
+          "insurance": {
+            "label": "Insurance schedules",
+            "detail": "The summary page of each policy, not just the renewal letter. Include the policy number and what is covered."
+          },
+          "funeral": {
+            "label": "Funeral wishes or pre-paid plan",
+            "detail": "A letter of wishes or pre-paid funeral plan. This does not need to be legally binding, a clear document is enough to guide your family."
+          },
+          "letterOfWishes": {
+            "label": "Letter of wishes",
+            "detail": "Not part of your will, but a personal note to your executor and family. Cover personal possessions, digital accounts, donations, and anything your will doesn't address."
+          }
+        }
+      },
+      "people": {
+        "title": "People, choosing your trusted contacts",
+        "items": {
+          "executor": {
+            "label": "Executor",
+            "detail": "The person responsible for administering your estate. They don't need legal expertise, but they need to be organised, trustworthy, and willing. Many people appoint two co-executors as a backup."
+          },
+          "lpaHolder": {
+            "label": "Lasting Power of Attorney holder",
+            "detail": "This person can make financial and legal decisions on your behalf if you lose mental capacity. Choose someone you trust completely, this is a significant responsibility."
+          },
+          "nextOfKin": {
+            "label": "Next of kin",
+            "detail": "Your closest relative, for emergency notification purposes. Different from your executor, they may be the same person or different."
+          },
+          "solicitor": {
+            "label": "Solicitor",
+            "detail": "If you use a solicitor to hold your will or LPA, add them as a professional contact with their firm name and direct number. They should be reachable within days, not weeks."
+          },
+          "adviser": {
+            "label": "Financial adviser",
+            "detail": "Your adviser will know which accounts and policies exist, add them as a contact. They can assist your executor in identifying assets and claims."
+          },
+          "accountant": {
+            "label": "Accountant",
+            "detail": "Useful for estates with business interests, rental income, or complex tax affairs. Your executor may need to file a final self-assessment return."
+          },
+          "accessLevel": {
+            "label": "How much access to grant",
+            "detail": "Only share what each person needs. Your executor needs the full picture. A family member you've added for emergency contact may only need to see your GP details and next of kin. Use the role-based access controls on each person's profile."
+          }
+        }
+      },
+      "instructions": {
+        "title": "Instructions, what to write",
+        "items": {
+          "first48": {
+            "label": "First 48 hours",
+            "detail": "What should happen immediately: who to call, which accounts to freeze, where the will is held. Write this for someone who has just received the news and doesn't know where to begin."
+          },
+          "funeral": {
+            "label": "Funeral arrangements",
+            "detail": "Your preferences for burial or cremation, any religious or personal wishes, favourite music, and whether flowers or donations are preferred. Even rough notes help."
+          },
+          "digital": {
+            "label": "Digital account access",
+            "detail": "Email, social media, photo libraries, and cloud storage. State whether accounts should be memorialised, deleted, or passed to someone. Include who holds access to recovery codes."
+          },
+          "property": {
+            "label": "Property & home",
+            "detail": "Where keys are held, utility providers and account numbers, any ongoing maintenance contracts, the alarm code (securely noted), and whether there is a lodger or tenant."
+          },
+          "business": {
+            "label": "Business or self-employment",
+            "detail": "If you run a business or are self-employed, write instructions for any partners, employees, or clients who need to be notified. Include company number and accountant details."
+          },
+          "messages": {
+            "label": "Personal messages",
+            "detail": "Consider using the Personal Messages feature to leave private notes for specific people, these are only released when your executor confirms a life event. It's separate from instructions."
+          }
+        }
+      },
+      "messages": {
+        "title": "Personal Messages, a note on timing",
+        "items": {
+          "what": {
+            "label": "What they are",
+            "detail": "Personal Messages are private letters or notes addressed to specific trusted people. They are stored encrypted and not visible to anyone until you or your executor releases them."
+          },
+          "when": {
+            "label": "When they are released",
+            "detail": "You can release a message yourself at any time (e.g. for a birthday or milestone). Or your executor can release them once a life event has been reported and verified by Everstead."
+          },
+          "write": {
+            "label": "What to write",
+            "detail": "Letters to your children or grandchildren, final words to a partner, guidance to a trusted friend. These are not legal documents, write them as you would speak."
+          },
+          "plan": {
+            "label": "Available on Everstead+",
+            "detail": "Personal Messages are included in Everstead+. Upgrade to unlock this feature."
+          }
+        }
+      }
+    }
+  },
+  "settings": {
+    "title": "Settings",
+    "subtitle": "Manage your account, contact details, and plan",
+    "saving": "Saving…",
+    "saved": "✓ Saved",
+    "saveChanges": "Save changes",
+    "cancel": "Cancel",
+    "profile": {
+      "heading": "Personal details",
+      "fullName": "Full name",
+      "fullNamePlaceholder": "James Thornton",
+      "email": "Email address",
+      "emailTitle": "To change your email address, contact support.",
+      "phone": "Phone number",
+      "phonePlaceholder": "+44 7700 900000",
+      "dob": "Date of birth",
+      "dobHint": "Used to send you a birthday message each year.",
+      "addressHeading": "Address",
+      "address1": "Address line 1",
+      "address1Placeholder": "14 Kensington Road",
+      "address2": "Address line 2",
+      "address2Placeholder": "Flat 2 (optional)",
+      "city": "City / Town",
+      "cityPlaceholder": "London",
+      "postcode": "Postcode",
+      "postcodePlaceholder": "SW7 2BT",
+      "country": "Country",
+      "countryPlaceholder": "United Kingdom",
+      "saveFailed": "Could not save profile.",
+      "updated": "Details updated."
+    },
+    "password": {
+      "heading": "Change password",
+      "new": "New password",
+      "confirm": "Confirm new password",
+      "updating": "Updating…",
+      "submit": "Update password",
+      "mismatch": "New passwords do not match.",
+      "demo": "Demo mode, password changes are not saved.",
+      "updated": "Password updated."
+    },
+    "mfa": {
+      "heading": "Two-factor authentication",
+      "body": "Add an extra layer of security with an authenticator app (Google Authenticator, Authy, 1Password). You'll still sign in with your email verification code, this is an additional optional step.",
+      "cta": "Set up authenticator app"
+    },
+    "subscription": {
+      "heading": "Subscription",
+      "currentlyOn": "Currently on the <b>{{plan}}</b> plan",
+      "trialActive": "· Free trial active",
+      "cancellationScheduled": "· Cancellation scheduled",
+      "planEnded": "· Plan ended",
+      "nextBilling": "· Next billing {{date}}",
+      "cancelledTitle": "Your plan has been cancelled.",
+      "cancelledBodyWithDate": "You'll keep full access until <b>{{date}}</b>. After this date, your account will be downgraded and your data kept safe for 30 days.",
+      "cancelledBody": "You'll keep full access until the end of your current billing period. After this date, your account will be downgraded.",
+      "changedMind": "Changed your mind? You can reactivate at any time before your access ends.",
+      "reactivating": "Reactivating…",
+      "reactivate": "Reactivate my plan",
+      "reactivateFailed": "Could not reactivate subscription.",
+      "endedTitle": "Your plan has ended.",
+      "endedBody": "Your data is kept safe for 30 days. Reactivate anytime to regain full access.",
+      "reactivateEverstead": "Reactivate Everstead",
+      "cycleMonthly": "Monthly",
+      "cycleYearly": "Yearly, save 20%",
+      "current": "Current",
+      "price": "£{{price}}/mo",
+      "billedAnnually": "billed annually · save 20%",
+      "activatePlan": "Activate {{plan}} plan",
+      "switchToYearly": "Switch to yearly billing",
+      "switchToMonthly": "Switch to monthly billing",
+      "upgradeTo": "Upgrade to {{plan}}",
+      "switchTo": "Switch to {{plan}}",
+      "portalHint": "Update your payment method or view invoices in the billing portal.",
+      "cancelConfirmTitle": "Are you sure you want to cancel?",
+      "cancelConfirmBody": "You'll keep full access until the end of your current billing period. After that, your plan will be downgraded and your data kept safe for 30 days.",
+      "keepPlan": "Keep my plan",
+      "cancelling": "Cancelling…",
+      "confirmCancel": "Yes, cancel my plan",
+      "cancelTrial": "Cancel trial",
+      "cancelSubscription": "Cancel subscription",
+      "cancelFailed": "Could not cancel subscription."
+    },
+    "plans": {
+      "essential": "Your current plan, unchanged.",
+      "family": "Two private vaults, up to 10 trusted contacts, 25 GB storage."
+    },
+    "billing": {
+      "opening": "Opening billing portal…",
+      "manage": "Manage billing & billing cycle"
+    },
+    "referral": {
+      "heading": "Refer a friend",
+      "body": "Share your unique link, your friend gets a <b>21-day free trial</b> instead of 14 days. Estate planning is a team effort.",
+      "copied": "Copied!",
+      "copy": "Copy link"
+    },
+    "ai": {
+      "heading": "AI features",
+      "body": "Everstead's AI Assistant can help you set up your account and answer questions, using a secure AI provider. Turn this off and no AI is used anywhere in your account, your data is never sent to an AI provider. You can turn it back on any time.",
+      "status": "AI-powered features are currently <b>{{state}}</b>.",
+      "on": "on",
+      "off": "off"
+    },
+    "notifications": {
+      "heading": "Email notifications",
+      "intro": "Choose which emails you'd like to receive from Everstead. You can update these at any time.",
+      "save": "Save preferences",
+      "updated": "Preferences updated.",
+      "items": {
+        "notify_birthday": {
+          "label": "Birthday reminder",
+          "desc": "A message on your birthday each year."
+        },
+        "notify_annual_review": {
+          "label": "Annual vault review",
+          "desc": "A prompt to review and update your plan once a year."
+        },
+        "notify_document_expiry": {
+          "label": "Document expiry alerts",
+          "desc": "Alerts when documents in your vault are approaching expiry."
+        },
+        "notify_vault_nudges": {
+          "label": "Vault completeness nudges",
+          "desc": "Tips when key items are missing from your vault."
+        },
+        "notify_reengagement": {
+          "label": "Re-engagement reminders",
+          "desc": "Gentle nudges if your vault hasn't been updated in a while."
+        },
+        "notify_trial_reminders": {
+          "label": "Trial & billing reminders",
+          "desc": "Important emails about your trial status and upcoming payments."
+        }
+      }
+    },
+    "data": {
+      "heading": "My data",
+      "intro": "Download a complete copy of everything in your Everstead plan, accounts, documents, instructions, wishes, and more. Your data belongs to you, always.",
+      "promiseLink": "Our data promise →",
+      "demoDisabled": "Data export is disabled in demo mode.",
+      "preparing": "Preparing your export…",
+      "export": "Export my data",
+      "reauthTitle": "Confirm it's you",
+      "reauthBody": "For your security, please re-enter your password before downloading a full copy of your vault.",
+      "passwordPlaceholder": "Your password",
+      "verifying": "Verifying…",
+      "confirmExport": "Confirm & export",
+      "reauthNoAccount": "Could not verify your account. Please sign in again.",
+      "reauthWrongPassword": "That password doesn't match. Please try again.",
+      "reauthFailed": "Could not verify right now. Please try again.",
+      "exportFailedStatus": "Export failed ({{status}})",
+      "exportFailed": "Export failed. Please try again.",
+      "exportDone": "Your data has been exported. Keep this file somewhere safe.",
+      "exportNote": "Includes all accounts, uploaded documents, instructions, wishes, trusted contacts, and your activity log. May take a few seconds for larger vaults."
+    },
+    "danger": {
+      "heading": "Danger zone",
+      "demoDisabled": "Account deletion disabled in demo mode.",
+      "intro": "Permanently delete your account and all associated data, documents, contacts, instructions, and settings. This cannot be undone.",
+      "start": "Delete my account",
+      "confirmTitle": "Before you go, please confirm:",
+      "checkData": "I have downloaded or noted all documents and information I need. I understand that once deleted, my files cannot be recovered.",
+      "checkPermanent": "I understand this is <b>permanent and irreversible</b>. My account, all data, and any active subscription will be deleted immediately.",
+      "deleting": "Deleting…",
+      "confirmDelete": "Permanently delete my account"
+    }
+  },
+  "modals": {
+    "lifeEvent": {
+      "title": "A thought while you're here",
+      "later": "Thanks, I'll do it later"
+    },
+    "executorPreview": {
+      "eyebrow": "Executor view preview",
+      "whatTheySee": "What {{name}} would see",
+      "yourExecutor": "your executor",
+      "planOwner": "Plan owner",
+      "dob": "DOB: {{date}}",
+      "trustedContacts": "Trusted contacts ({{n}})",
+      "noContacts": "No trusted contacts added yet",
+      "statusActive": "Active",
+      "statusPending": "Pending",
+      "personMeta": "{{role}} · {{email}}",
+      "accounts": "Financial accounts ({{n}})",
+      "noAccounts": "No accounts documented yet",
+      "documents": "Key documents ({{n}})",
+      "noDocuments": "No documents uploaded yet",
+      "instructions": "Instructions ({{n}})",
+      "footer": "<b>Preview only.</b> Your executor sees this view after verifying your incapacity or death, according to the access timing you've set for each contact."
+    }
+  }
+}

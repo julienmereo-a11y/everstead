@@ -1,0 +1,27 @@
+{
+  "meta": {
+    "title": "Set up two-factor authentication | Everstead"
+  },
+  "loading": "Setting up two-factor authentication…",
+  "enroll": {
+    "title": "Secure your account",
+    "subtitle": "Scan this QR code with an authenticator app (Google Authenticator, Authy, or 1Password) to enable two-factor authentication.",
+    "tryAgain": "Try again",
+    "qrAlt": "TOTP QR code",
+    "manualLabel": "Can't scan? Enter this code manually:",
+    "continue": "I've scanned it, continue",
+    "recommendedApps": "Recommended apps: Google Authenticator, Authy, 1Password, Microsoft Authenticator"
+  },
+  "verify": {
+    "title": "Enter the code",
+    "subtitle": "Enter the 6-digit code from your authenticator app to confirm setup.",
+    "verifying": "Verifying…",
+    "confirm": "Confirm & continue",
+    "back": "← Back to QR code"
+  },
+  "errors": {
+    "noQr": "Supabase returned no QR code. Please make sure MFA / TOTP is enabled in your Supabase project Authentication settings.",
+    "unexpected": "Unexpected error: {{message}}",
+    "incorrectCode": "Incorrect code. Please try again."
+  }
+}

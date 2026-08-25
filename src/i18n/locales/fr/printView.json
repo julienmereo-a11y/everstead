@@ -1,0 +1,59 @@
+{
+  "loading": "Préparation du résumé de votre plan…",
+  "toolbar": {
+    "exportLabel": "Export du plan de succession",
+    "back": "← Retour au tableau de bord",
+    "print": "Imprimer / Enregistrer en PDF"
+  },
+  "header": {
+    "title": "Résumé du plan de succession",
+    "generated": "Généré le {{date}}",
+    "brandLine": "Everstead · everstead.care",
+    "email": "E-mail",
+    "plan": "Forfait",
+    "sections": "Sections",
+    "sectionsComplete": "{{count}} sur 5 complétées"
+  },
+  "notice": {
+    "title": "Pour votre exécuteur testamentaire et vos personnes de confiance",
+    "body": "Ce document est un résumé exporté depuis Everstead. Conservez-le avec vos autres papiers importants ou partagez-le de façon sécurisée avec votre exécuteur testamentaire. Pour la version à jour, connectez-vous sur everstead.care."
+  },
+  "accounts": {
+    "title": "Comptes financiers",
+    "empty": "Aucun compte ajouté pour le moment.",
+    "colName": "Nom du compte",
+    "colInstitution": "Établissement",
+    "colType": "Type",
+    "colNumber": "N° de compte",
+    "colValue": "Valeur estimée"
+  },
+  "documents": {
+    "title": "Documents clés",
+    "empty": "Aucun document téléversé pour le moment.",
+    "colDocument": "Document",
+    "colType": "Type",
+    "colStatus": "Statut",
+    "colExpires": "Expire le"
+  },
+  "people": {
+    "title": "Personnes de confiance",
+    "empty": "Aucune personne de confiance ajoutée pour le moment.",
+    "colName": "Nom",
+    "colEmail": "E-mail",
+    "colRole": "Rôle",
+    "colStatus": "Statut"
+  },
+  "instructions": {
+    "title": "Consignes",
+    "empty": "Aucune consigne rédigée pour le moment."
+  },
+  "wishes": {
+    "title": "Volontés",
+    "empty": "Aucune volonté enregistrée pour le moment."
+  },
+  "untitled": "Sans titre",
+  "footer": {
+    "contactLine": "Everstead · everstead.care · support@everstead.care",
+    "generated": "Généré le {{date}}"
+  }
+}

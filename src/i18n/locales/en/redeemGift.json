@@ -1,0 +1,78 @@
+{
+  "meta": {
+    "title": "Claim your Everstead gift | Everstead",
+    "description": "You've received an Everstead plan as a gift. Create your account to claim it."
+  },
+  "hero": {
+    "eyebrow": "You've received a gift",
+    "title": "Claim your Everstead plan.",
+    "subtitle": "Create your account to activate your gift. No credit card needed."
+  },
+  "validating": "Validating your gift…",
+  "invalid": {
+    "title": "This gift link isn't valid.",
+    "needHelp": "Need help?",
+    "contactSupport": "Contact support"
+  },
+  "card": {
+    "label": "Your gift",
+    "planLine": "Everstead {{plan}}, {{years}}",
+    "years_one": "{{count}} year",
+    "years_other": "{{count}} years",
+    "from": "From <highlight>{{name}}</highlight>",
+    "noCard": "No credit card required to get started"
+  },
+  "plans": {
+    "essential": "For individuals getting their digital life in order.",
+    "family": "Two private vaults, one subscription. For couples and families."
+  },
+  "form": {
+    "title": "Create your account",
+    "subtitle": "It only takes a minute. Your gift will be activated immediately.",
+    "fullName": "Full name",
+    "fullNamePlaceholder": "Jane Smith",
+    "email": "Email address",
+    "emailPlaceholder": "jane@example.com",
+    "password": "Password",
+    "passwordPlaceholder": "Min. 8 characters",
+    "hidePassword": "Hide password",
+    "showPassword": "Show password",
+    "country": "Country",
+    "terms": "By creating an account you agree to our <terms>Terms of Service</terms> and <privacy>Privacy Policy</privacy>.",
+    "activating": "Activating your gift…",
+    "submit": "Claim my gift",
+    "haveAccount": "Already have an account?",
+    "signIn": "Sign in"
+  },
+  "countries": {
+    "unitedKingdom": "United Kingdom",
+    "unitedStates": "United States",
+    "france": "France",
+    "germany": "Germany",
+    "spain": "Spain",
+    "italy": "Italy",
+    "portugal": "Portugal",
+    "netherlands": "Netherlands",
+    "belgium": "Belgium",
+    "switzerland": "Switzerland",
+    "sweden": "Sweden",
+    "norway": "Norway",
+    "denmark": "Denmark",
+    "ireland": "Ireland",
+    "australia": "Australia",
+    "canada": "Canada",
+    "newZealand": "New Zealand",
+    "southAfrica": "South Africa",
+    "india": "India",
+    "singapore": "Singapore",
+    "uae": "UAE",
+    "brazil": "Brazil"
+  },
+  "errors": {
+    "noCode": "No gift code found in the URL. Check the link in your gift email.",
+    "validateFailed": "Could not validate gift code. Please try again.",
+    "accountFailed": "Could not create account. Please try again.",
+    "sessionError": "Session error. Please try again.",
+    "redeemFailed": "Could not redeem gift. Please contact support@everstead.care."
+  }
+}

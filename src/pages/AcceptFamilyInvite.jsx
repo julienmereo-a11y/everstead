@@ -1,14 +1,24 @@
 import React, { useEffect, useState } from 'react'
 import { useSearchParams, useNavigate, Link } from 'react-router-dom'
 import { Shield, CheckCircle2, XCircle, Loader2, ArrowRight, Eye, EyeOff, Lock } from 'lucide-react'
+import { useTranslation, Trans } from 'react-i18next'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../contexts/AuthContext'
+import i18n from '../i18n'
+import enAcceptFamilyInvite from '../i18n/locales/en/acceptFamilyInvite.json'
+import frAcceptFamilyInvite from '../i18n/locales/fr/acceptFamilyInvite.json'
+
+// Self-registered namespace (keeps src/i18n/index.js untouched). Safe to move
+// into the central resources map later: re-adding the same bundle is a no-op.
+i18n.addResourceBundle('en', 'acceptFamilyInvite', enAcceptFamilyInvite)
+i18n.addResourceBundle('fr', 'acceptFamilyInvite', frAcceptFamilyInvite)
 
 export default function AcceptFamilyInvite() {
   const [searchParams]            = useSearchParams()
   const navigate                  = useNavigate()
   const token                     = searchParams.get('token')
   const { user }                  = useAuth()
+  const { t }                     = useTranslation('acceptFamilyInvite')
 
   const [state, setState]         = useState('loading') // loading | found | submitting | success | error | expired | already_accepted
   const [membership, setMembership] = useState(null)
@@ -21,7 +31,7 @@ export default function AcceptFamilyInvite() {
   useEffect(() => {
     if (!token) {
       setState('error')
-      setErrorMsg('This invitation link is invalid or has expired.')
+      setErrorMsg(t('errors.invalidLink'))
       return
     }
     loadInvite()
@@ -35,7 +45,7 @@ export default function AcceptFamilyInvite() {
 
     if (error || !row) {
       setState('error')
-      setErrorMsg('This invitation link is invalid or has expired.')
+      setErrorMsg(t('errors.invalidLink'))
       return
     }
 
@@ -46,7 +56,7 @@ export default function AcceptFamilyInvite() {
 
     if (row.invite_status === 'cancelled') {
       setState('error')
-      setErrorMsg('This invitation has been cancelled.')
+      setErrorMsg(t('errors.cancelled'))
       return
     }
 
@@ -57,7 +67,7 @@ export default function AcceptFamilyInvite() {
     }
 
     setMembership(row)
-    setPrimaryName(row.primary_name || 'Your partner')
+    setPrimaryName(row.primary_name || t('fallbackPartner'))
     setState('found')
   }
 
@@ -68,7 +78,7 @@ export default function AcceptFamilyInvite() {
 
     try {
       const { data: { session } } = await supabase.auth.getSession()
-      if (!session) throw new Error('Session not found. Please refresh and try again.')
+      if (!session) throw new Error(t('errors.sessionNotFound'))
 
       // Server-side accept — uses service role key, validates token and expiry
       const res = await fetch('/api/family/accept-invite', {
@@ -79,7 +89,7 @@ export default function AcceptFamilyInvite() {
       const data = await res.json()
       if (!res.ok) {
         if (data.error === 'expired') { setState('expired'); return }
-        throw new Error(data.error || 'Could not accept invitation.')
+        throw new Error(data.error || t('errors.acceptFailed'))
       }
 
       // Notify primary (fire and forget)
@@ -94,7 +104,7 @@ export default function AcceptFamilyInvite() {
       navigate('/dashboard?welcome=family')
     } catch (err) {
       setState('error')
-      setErrorMsg(err.message || 'Something went wrong. Please try again.')
+      setErrorMsg(err.message || t('errors.generic'))
     } finally {
       setLoading(false)
     }
@@ -118,7 +128,7 @@ export default function AcceptFamilyInvite() {
 
       if (signUpError) throw signUpError
       const newUser = signUpData.user
-      if (!newUser) throw new Error('Account creation failed. Please try again.')
+      if (!newUser) throw new Error(t('errors.accountCreationFailed'))
 
       // Write basic profile row so the server endpoint can find it
       await supabase.from('profiles').upsert({
@@ -129,7 +139,7 @@ export default function AcceptFamilyInvite() {
 
       // Server-side accept — validates token, sets plan/status via service role
       const { data: { session } } = await supabase.auth.getSession()
-      if (!session) throw new Error('Session error. Please try again.')
+      if (!session) throw new Error(t('errors.sessionError'))
 
       const res = await fetch('/api/family/accept-invite', {
         method:  'POST',
@@ -139,7 +149,7 @@ export default function AcceptFamilyInvite() {
       const data = await res.json()
       if (!res.ok) {
         if (data.error === 'expired') { setState('expired'); return }
-        throw new Error(data.error || 'Could not accept invitation.')
+        throw new Error(data.error || t('errors.acceptFailed'))
       }
 
       // Notify primary (fire and forget)
@@ -153,7 +163,7 @@ export default function AcceptFamilyInvite() {
 
       navigate('/dashboard?welcome=family')
     } catch (err) {
-      setErrorMsg(err.message || 'Something went wrong. Please try again.')
+      setErrorMsg(err.message || t('errors.generic'))
     } finally {
       setLoading(false)
     }
@@ -175,7 +185,7 @@ export default function AcceptFamilyInvite() {
           {state === 'loading' && (
             <div className="p-10 flex flex-col items-center text-center gap-4">
               <Loader2 size={28} className="text-navy-400 animate-spin" />
-              <p className="text-stone-500 text-sm">Loading your invitation…</p>
+              <p className="text-stone-500 text-sm">{t('loading')}</p>
             </div>
           )}
 
@@ -184,10 +194,15 @@ export default function AcceptFamilyInvite() {
             <>
               <div className="aurora-field aurora-dim p-7">
                 <p className="font-display text-xl font-light text-white leading-snug">
-                  You've been invited to Everstead
+                  {t('found.title')}
                 </p>
                 <p className="text-stone-400 text-sm mt-2">
-                  <strong className="text-white">{primaryName}</strong> has invited you to set up your own private vault, as part of their Everstead+ plan.
+                  <Trans
+                    t={t}
+                    i18nKey="found.subtitle"
+                    values={{ name: primaryName }}
+                    components={{ bold: <strong className="text-white" /> }}
+                  />
                 </p>
               </div>
 
@@ -195,10 +210,10 @@ export default function AcceptFamilyInvite() {
                 {/* What you get */}
                 <div className="space-y-2.5 mb-7">
                   {[
-                    'Your own completely private vault',
-                    'Organise accounts, documents, and final wishes',
-                    primaryName + ' cannot see your data unless you share it',
-                    'Covered by their Everstead+ plan, no cost to you',
+                    t('found.benefit1'),
+                    t('found.benefit2'),
+                    t('found.benefit3', { name: primaryName }),
+                    t('found.benefit4'),
                   ].map(item => (
                     <div key={item} className="flex items-start gap-2.5">
                       <CheckCircle2 size={15} className="text-sage-500 mt-0.5 shrink-0" />
@@ -211,7 +226,12 @@ export default function AcceptFamilyInvite() {
                 {user && user.email === membership.secondary_email && (
                   <div className="mb-5">
                     <div className="px-4 py-3 bg-sage-50 border border-sage-200 rounded-xl text-xs text-sage-800 mb-4 leading-relaxed">
-                      You're signed in as <strong>{user.email}</strong>. Click below to accept and link your accounts.
+                      <Trans
+                        t={t}
+                        i18nKey="found.signedInNotice"
+                        values={{ email: user.email }}
+                        components={{ bold: <strong /> }}
+                      />
                     </div>
                     <button
                       onClick={handleLoggedInAccept}
@@ -219,7 +239,7 @@ export default function AcceptFamilyInvite() {
                       className="btn-aurora w-full text-white font-semibold text-sm py-3.5 rounded-full transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
                     >
                       {loading ? <Loader2 size={15} className="animate-spin" /> : <ArrowRight size={15} />}
-                      Accept invitation
+                      {t('found.accept')}
                     </button>
                   </div>
                 )}
@@ -227,7 +247,12 @@ export default function AcceptFamilyInvite() {
                 {/* Wrong account logged in */}
                 {user && user.email !== membership.secondary_email && (
                   <div className="mb-5 px-4 py-3 bg-amber-50 border border-amber-200 rounded-xl text-xs text-amber-800 leading-relaxed">
-                    <strong>Heads up:</strong> This invite is for <strong>{membership.secondary_email}</strong>. You're signed in as <strong>{user.email}</strong>. Sign out first to accept with the correct account.
+                    <Trans
+                      t={t}
+                      i18nKey="found.wrongAccount"
+                      values={{ invited: membership.secondary_email, current: user.email }}
+                      components={{ bold: <strong /> }}
+                    />
                   </div>
                 )}
 
@@ -236,7 +261,7 @@ export default function AcceptFamilyInvite() {
                   <>
                     {/* Pre-filled email */}
                     <div className="mb-5 px-4 py-3 bg-stone-50 border border-stone-200 rounded-xl">
-                      <p className="text-xs text-stone-500 mb-1">Invitation sent to</p>
+                      <p className="text-xs text-stone-500 mb-1">{t('found.sentTo')}</p>
                       <p className="text-sm font-medium text-navy-900">{membership.secondary_email}</p>
                     </div>
 
@@ -249,14 +274,14 @@ export default function AcceptFamilyInvite() {
                     <form onSubmit={handleSubmit} className="space-y-4 mb-5">
                       <div>
                         <label className="block text-xs font-semibold text-stone-600 mb-1.5">
-                          Your full name <span className="text-red-400">*</span>
+                          {t('found.form.nameLabel')} <span className="text-red-400">*</span>
                         </label>
                         <input
                           type="text"
                           name="fullName"
                           value={form.fullName}
                           onChange={handleChange}
-                          placeholder="Jane Smith"
+                          placeholder={t('found.form.namePlaceholder')}
                           required
                           autoFocus
                           className="w-full border border-stone-300 rounded-lg px-4 py-2.5 text-sm text-navy-900 placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-navy-400 focus:border-navy-400 bg-white transition-colors"
@@ -265,7 +290,7 @@ export default function AcceptFamilyInvite() {
 
                       <div>
                         <label className="block text-xs font-semibold text-stone-600 mb-1.5">
-                          Choose a password <span className="text-red-400">*</span>
+                          {t('found.form.passwordLabel')} <span className="text-red-400">*</span>
                         </label>
                         <div className="relative">
                           <input
@@ -273,7 +298,7 @@ export default function AcceptFamilyInvite() {
                             name="password"
                             value={form.password}
                             onChange={handleChange}
-                            placeholder="Min. 8 characters"
+                            placeholder={t('found.form.passwordPlaceholder')}
                             required
                             minLength={8}
                             className="w-full border border-stone-300 rounded-lg px-4 py-2.5 pr-10 text-sm text-navy-900 placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-navy-400 focus:border-navy-400 bg-white transition-colors"
@@ -281,7 +306,7 @@ export default function AcceptFamilyInvite() {
                           <button
                             type="button"
                             onClick={() => setShowPw(v => !v)}
-                            aria-label={showPw ? 'Hide password' : 'Show password'}
+                            aria-label={showPw ? t('found.form.hidePassword') : t('found.form.showPassword')}
                             className="absolute right-3 top-1/2 -translate-y-1/2 text-stone-400 hover:text-stone-600 transition-colors"
                           >
                             {showPw ? <EyeOff size={15} /> : <Eye size={15} />}
@@ -295,9 +320,9 @@ export default function AcceptFamilyInvite() {
                         className="btn-aurora w-full text-white font-semibold text-sm py-3.5 rounded-full transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                       >
                         {loading ? (
-                          <><Loader2 size={15} className="animate-spin" />Creating your vault…</>
+                          <><Loader2 size={15} className="animate-spin" />{t('found.form.creating')}</>
                         ) : (
-                          <>Create your vault <ArrowRight size={15} /></>
+                          <>{t('found.form.submit')} <ArrowRight size={15} /></>
                         )}
                       </button>
                     </form>
@@ -305,17 +330,17 @@ export default function AcceptFamilyInvite() {
                     <div className="flex items-start gap-3 bg-stone-50 rounded-xl p-4 mb-4">
                       <Lock size={14} className="text-navy-600 mt-0.5 flex-shrink-0" />
                       <p className="text-xs text-stone-500 leading-relaxed">
-                        Your vault is completely private. {primaryName} won't be able to see your data unless you choose to share it.
+                        {t('found.privacyNote', { name: primaryName })}
                       </p>
                     </div>
 
                     <p className="text-center text-xs text-stone-400">
-                      Already have an account?{' '}
+                      {t('found.haveAccount')}{' '}
                       <Link
                         to={`/login?redirect=${encodeURIComponent(`/accept-family-invite?token=${token}`)}`}
                         className="text-navy-700 font-medium hover:text-navy-900"
                       >
-                        Sign in instead
+                        {t('found.signIn')}
                       </Link>
                     </p>
                   </>
@@ -328,7 +353,7 @@ export default function AcceptFamilyInvite() {
           {state === 'submitting' && (
             <div className="p-10 flex flex-col items-center text-center gap-4">
               <Loader2 size={28} className="text-navy-400 animate-spin" />
-              <p className="text-stone-500 text-sm">Setting up your vault…</p>
+              <p className="text-stone-500 text-sm">{t('submitting')}</p>
             </div>
           )}
 
@@ -338,15 +363,15 @@ export default function AcceptFamilyInvite() {
               <div className="w-14 h-14 rounded-full bg-sage-50 flex items-center justify-center mb-5">
                 <CheckCircle2 size={28} className="text-sage-500" />
               </div>
-              <h2 className="font-display text-2xl font-light text-navy-950 mb-3">Your vault is ready.</h2>
+              <h2 className="font-display text-2xl font-light text-navy-950 mb-3">{t('success.title')}</h2>
               <p className="text-stone-500 text-sm leading-relaxed mb-8 max-w-xs">
-                You're now part of {primaryName}'s Everstead+ plan. Your vault is completely private to you.
+                {t('success.body', { name: primaryName })}
               </p>
               <Link
                 to="/dashboard?welcome=family"
                 className="inline-flex items-center gap-2 rounded-full bg-navy-800 px-5 py-3 text-sm text-white font-medium hover:bg-navy-700 transition-colors"
               >
-                Go to your dashboard <ArrowRight size={14} />
+                {t('success.cta')} <ArrowRight size={14} />
               </Link>
             </div>
           )}
@@ -357,15 +382,15 @@ export default function AcceptFamilyInvite() {
               <div className="w-14 h-14 rounded-full bg-sage-50 flex items-center justify-center mb-5">
                 <CheckCircle2 size={28} className="text-sage-500" />
               </div>
-              <h2 className="font-display text-2xl font-light text-navy-950 mb-3">Already accepted.</h2>
+              <h2 className="font-display text-2xl font-light text-navy-950 mb-3">{t('alreadyAccepted.title')}</h2>
               <p className="text-stone-500 text-sm leading-relaxed mb-8">
-                This invitation has already been accepted. Sign in to access your vault.
+                {t('alreadyAccepted.body')}
               </p>
               <Link
                 to="/login"
                 className="inline-flex items-center gap-2 rounded-full bg-navy-800 px-5 py-3 text-sm text-white font-medium hover:bg-navy-700 transition-colors"
               >
-                Sign in <ArrowRight size={14} />
+                {t('alreadyAccepted.cta')} <ArrowRight size={14} />
               </Link>
             </div>
           )}
@@ -376,9 +401,9 @@ export default function AcceptFamilyInvite() {
               <div className="w-14 h-14 rounded-full bg-amber-50 flex items-center justify-center mb-5">
                 <Shield size={28} className="text-amber-400" />
               </div>
-              <h2 className="font-display text-2xl font-light text-navy-950 mb-3">Invitation expired.</h2>
+              <h2 className="font-display text-2xl font-light text-navy-950 mb-3">{t('expired.title')}</h2>
               <p className="text-stone-500 text-sm leading-relaxed">
-                This invite link is more than 7 days old. Ask the plan owner to send a new invitation from their account settings.
+                {t('expired.body')}
               </p>
             </div>
           )}
@@ -389,8 +414,8 @@ export default function AcceptFamilyInvite() {
               <div className="w-14 h-14 rounded-full bg-red-50 flex items-center justify-center mb-5">
                 <XCircle size={28} className="text-red-400" />
               </div>
-              <h2 className="font-display text-2xl font-light text-navy-950 mb-3">Something went wrong.</h2>
-              <p className="text-stone-500 text-sm leading-relaxed">{errorMsg || 'Please try again or contact support.'}</p>
+              <h2 className="font-display text-2xl font-light text-navy-950 mb-3">{t('error.title')}</h2>
+              <p className="text-stone-500 text-sm leading-relaxed">{errorMsg || t('error.fallback')}</p>
             </div>
           )}
 

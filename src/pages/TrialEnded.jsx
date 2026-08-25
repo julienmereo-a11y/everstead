@@ -1,9 +1,18 @@
 import React, { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { Loader2, ArrowRight, ChevronDown } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import { useAuth } from '../contexts/AuthContext'
 import { PLANS, redirectToCustomerPortal } from '../lib/stripe'
 import { supabase } from '../lib/supabase'
+import i18n from '../i18n'
+import enTrialEnded from '../i18n/locales/en/trialEnded.json'
+import frTrialEnded from '../i18n/locales/fr/trialEnded.json'
+
+// Self-registered namespace (keeps src/i18n/index.js untouched). Safe to move
+// into the central resources map later, re-adding the same bundle is a no-op.
+i18n.addResourceBundle('en', 'trialEnded', enTrialEnded)
+i18n.addResourceBundle('fr', 'trialEnded', frTrialEnded)
 
 // Fallback: open Stripe Checkout with no trial if portal isn't available
 async function goToCheckout({ priceId, userEmail, customerId }) {
@@ -14,7 +23,7 @@ async function goToCheckout({ priceId, userEmail, customerId }) {
   })
   if (!res.ok) {
     const { error } = await res.json().catch(() => ({}))
-    throw new Error(error || 'Failed to start checkout')
+    throw new Error(error || i18n.t('trialEnded:errors.checkoutFailed'))
   }
   const { url } = await res.json()
   window.location.href = url
@@ -22,6 +31,7 @@ async function goToCheckout({ priceId, userEmail, customerId }) {
 
 export default function TrialEnded() {
   const navigate = useNavigate()
+  const { t } = useTranslation('trialEnded')
   const { user, profile, signOut } = useAuth()
 
   const [step, setStep]         = useState('choose') // choose | confirm-delete
@@ -39,8 +49,9 @@ export default function TrialEnded() {
   const plan         = profile.plan || 'essential'
   const billingCycle = profile.billing_cycle || 'yearly'
   const planConfig   = PLANS[plan] ?? PLANS.essential
-  const firstName    = profile.full_name?.split(' ')[0] ?? 'there'
-  const priceLabel   = `${planConfig.name} plan, £${planConfig.monthly}/mo or £${planConfig.yearly}/mo yearly`
+  const firstName    = profile.full_name?.split(' ')[0] ?? t('fallbackName')
+  const priceLabel   = t('priceLabel', { name: planConfig.name, monthly: planConfig.monthly, yearly: planConfig.yearly })
+  const dateLocale   = i18n.language === 'fr' ? 'fr-FR' : 'en-GB'
 
   // Deletion imminence
   const scheduledDeletionAt = profile.scheduled_deletion_at
@@ -51,7 +62,7 @@ export default function TrialEnded() {
     : null
   const deletionImminent  = daysUntilDeletion !== null && daysUntilDeletion <= 7
   const deletionDateStr   = scheduledDeletionAt
-    ? scheduledDeletionAt.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
+    ? scheduledDeletionAt.toLocaleDateString(dateLocale, { day: 'numeric', month: 'long', year: 'numeric' })
     : null
 
   const handleContinue = async () => {
@@ -66,7 +77,7 @@ export default function TrialEnded() {
       }
       // Fallback for legacy users without a card on file
       const priceId = planConfig.priceIds?.[billingCycle]
-      if (!priceId) throw new Error('Price not found. Please contact support.')
+      if (!priceId) throw new Error(t('errors.priceNotFound'))
       await goToCheckout({
         priceId,
         userEmail:  user.email,
@@ -93,7 +104,7 @@ export default function TrialEnded() {
       })
       if (!res.ok) {
         const d = await res.json().catch(() => ({}))
-        throw new Error(d.error || 'Could not schedule deletion. Please contact support.')
+        throw new Error(d.error || t('errors.deleteFailed'))
       }
       await signOut()
       navigate('/', { replace: true, state: { deletionScheduled: true } })
@@ -115,18 +126,18 @@ export default function TrialEnded() {
           <>
             {deletionImminent && (
               <div className="mb-6 px-4 py-3 bg-red-50 border border-red-200 rounded-xl text-sm text-red-800 text-center leading-relaxed">
-                <strong>Your account will be permanently deleted on {deletionDateStr}.</strong>
-                {' '}This is your last chance to save your plan.
+                <strong>{t('deletionBanner.strong', { date: deletionDateStr })}</strong>
+                {' '}{t('deletionBanner.rest')}
               </div>
             )}
 
             <h1 className="font-display text-2xl font-light text-navy-950 text-center mb-2">
-              Payment failed, {firstName}.
+              {t('heading', { name: firstName })}
             </h1>
             <p className="text-stone-500 text-sm text-center mb-8 leading-relaxed">
               {deletionImminent
-                ? `Your account and all your data will be deleted on ${deletionDateStr}. Update your payment method now to keep everything.`
-                : "We couldn't charge the card on file when your trial ended. Update your payment method to keep your plan, all your data is safe."
+                ? t('subtitleImminent', { date: deletionDateStr })
+                : t('subtitle')
               }
             </p>
 
@@ -140,7 +151,7 @@ export default function TrialEnded() {
 
               {/* Option 1 — Update payment method */}
               <div className="aurora-field aurora-dim rounded-2xl p-6 text-white">
-                <p className="font-semibold text-base mb-0.5">Update your payment method</p>
+                <p className="font-semibold text-base mb-0.5">{t('updateCard.title')}</p>
                 <p className="text-navy-300 text-sm mb-5">{priceLabel}</p>
                 <button
                   onClick={handleContinue}
@@ -148,8 +159,8 @@ export default function TrialEnded() {
                   className="btn-aurora flex items-center gap-2 text-white font-semibold text-sm px-5 py-2.5 rounded-full transition-colors disabled:opacity-50"
                 >
                   {busy === 'continue'
-                    ? <><Loader2 size={14} className="animate-spin" /> Opening billing portal…</>
-                    : <>Update payment method <ArrowRight size={14} /></>
+                    ? <><Loader2 size={14} className="animate-spin" /> {t('updateCard.opening')}</>
+                    : <>{t('updateCard.cta')} <ArrowRight size={14} /></>
                   }
                 </button>
               </div>
@@ -162,7 +173,7 @@ export default function TrialEnded() {
                 onClick={() => setStep('confirm-delete')}
                 className="text-xs text-stone-400 hover:text-stone-600 transition-colors underline underline-offset-2"
               >
-                Delete my account
+                {t('deleteLink')}
               </button>
             </div>
           </>
@@ -171,10 +182,10 @@ export default function TrialEnded() {
         {step === 'confirm-delete' && (
           <>
             <h1 className="font-display text-2xl font-light text-navy-950 text-center mb-2">
-              Are you sure?
+              {t('confirm.heading')}
             </h1>
             <p className="text-stone-500 text-sm text-center mb-8 leading-relaxed max-w-sm mx-auto">
-              This will permanently delete your plan, documents, and trusted people. Your data will be removed within 30 days. This cannot be undone.
+              {t('confirm.body')}
             </p>
 
             {error && (
@@ -190,15 +201,15 @@ export default function TrialEnded() {
                 className="w-full py-3 rounded-full border border-red-200 text-red-700 text-sm font-semibold hover:bg-red-50 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
               >
                 {busy === 'delete'
-                  ? <><Loader2 size={14} className="animate-spin" /> Scheduling deletion…</>
-                  : 'Yes, delete my account'
+                  ? <><Loader2 size={14} className="animate-spin" /> {t('confirm.scheduling')}</>
+                  : t('confirm.cta')
                 }
               </button>
               <button
                 onClick={() => { setStep('choose'); setError(null) }}
                 className="w-full py-3 rounded-full bg-navy-800 text-white text-sm font-semibold hover:bg-navy-700 transition-colors"
               >
-                Go back
+                {t('confirm.back')}
               </button>
             </div>
           </>

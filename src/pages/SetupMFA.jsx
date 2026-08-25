@@ -2,10 +2,20 @@ import React, { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Helmet } from 'react-helmet-async'
 import { ShieldCheck, Smartphone, ArrowRight, Loader2, Copy, Check } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import { supabase } from '../lib/supabase'
+import i18n from '../i18n'
+import enSetupMfa from '../i18n/locales/en/setupMfa.json'
+import frSetupMfa from '../i18n/locales/fr/setupMfa.json'
+
+// Self-registered namespace (keeps src/i18n/index.js untouched). Safe to move
+// into the central resources map later: re-adding the same bundle is a no-op.
+i18n.addResourceBundle('en', 'setupMfa', enSetupMfa)
+i18n.addResourceBundle('fr', 'setupMfa', frSetupMfa)
 
 export default function SetupMFA() {
   const navigate = useNavigate()
+  const { t } = useTranslation('setupMfa')
 
   const [step, setStep]         = useState('loading') // loading | enroll | verify
   const [qrCode, setQrCode]     = useState('')
@@ -59,7 +69,7 @@ export default function SetupMFA() {
       const qr = data?.totp?.qr_code
       const sec = data?.totp?.secret
       if (!qr) {
-        setError('Supabase returned no QR code. Please make sure MFA / TOTP is enabled in your Supabase project Authentication settings.')
+        setError(t('errors.noQr'))
         setStep('enroll')
         return
       }
@@ -72,7 +82,7 @@ export default function SetupMFA() {
     } catch (thrown) {
       // Catches JS exceptions (e.g. supabase.auth.mfa not available)
       const msg = thrown?.message || String(thrown)
-      setError(`Unexpected error: ${msg}`)
+      setError(t('errors.unexpected', { message: msg }))
       setStep('enroll')
     }
   }
@@ -121,7 +131,7 @@ export default function SetupMFA() {
       if (vErr) throw vErr
       navigate('/dashboard', { replace: true })
     } catch (err) {
-      setError(err.message ?? 'Incorrect code. Please try again.')
+      setError(err.message ?? t('errors.incorrectCode'))
       setDigits(['', '', '', '', '', ''])
       digitRefs.current[0]?.focus()
     } finally {
@@ -132,7 +142,7 @@ export default function SetupMFA() {
   return (
     <>
       <Helmet>
-        <title>Set up two-factor authentication | Everstead</title>
+        <title>{t('meta.title')}</title>
         <meta name="robots" content="noindex, nofollow" />
       </Helmet>
 
@@ -146,7 +156,7 @@ export default function SetupMFA() {
           {step === 'loading' && (
             <div className="flex flex-col items-center gap-4 py-16">
               <Loader2 size={28} className="text-navy-400 animate-spin" />
-              <p className="text-sm text-stone-500">Setting up two-factor authentication…</p>
+              <p className="text-sm text-stone-500">{t('loading')}</p>
             </div>
           )}
 
@@ -157,10 +167,10 @@ export default function SetupMFA() {
               </div>
 
               <h1 className="font-display text-2xl font-light text-navy-950 mb-2">
-                Secure your account
+                {t('enroll.title')}
               </h1>
               <p className="text-stone-500 text-sm mb-6 leading-relaxed">
-                Scan this QR code with an authenticator app (Google Authenticator, Authy, or 1Password) to enable two-factor authentication.
+                {t('enroll.subtitle')}
               </p>
 
               {error && (
@@ -170,7 +180,7 @@ export default function SetupMFA() {
                     onClick={startEnrollment}
                     className="block mt-2 text-xs font-semibold text-red-700 underline hover:text-red-900"
                   >
-                    Try again
+                    {t('enroll.tryAgain')}
                   </button>
                 </div>
               )}
@@ -187,7 +197,7 @@ export default function SetupMFA() {
                       />
                     ) : (
                       // data: URL
-                      <img src={qrCode} alt="TOTP QR code" width={168} height={168} />
+                      <img src={qrCode} alt={t('enroll.qrAlt')} width={168} height={168} />
                     )}
                   </div>
                 </div>
@@ -196,7 +206,7 @@ export default function SetupMFA() {
               {/* Manual entry */}
               {secret && (
                 <div className="mb-6">
-                  <p className="text-xs text-stone-500 mb-1.5">Can't scan? Enter this code manually:</p>
+                  <p className="text-xs text-stone-500 mb-1.5">{t('enroll.manualLabel')}</p>
                   <div className="flex items-center gap-2 bg-stone-100 rounded-lg px-3 py-2">
                     <code className="flex-1 text-xs text-navy-800 font-mono tracking-widest break-all">{secret}</code>
                     <button onClick={copySecret} className="flex-shrink-0 text-stone-400 hover:text-navy-700 transition-colors">
@@ -210,12 +220,12 @@ export default function SetupMFA() {
                 onClick={() => { setStep('verify'); setTimeout(() => digitRefs.current[0]?.focus(), 50) }}
                 className="btn-aurora w-full text-white font-semibold text-sm py-3 rounded-full transition-colors flex items-center justify-center gap-2"
               >
-                I've scanned it, continue <ArrowRight size={16} />
+                {t('enroll.continue')} <ArrowRight size={16} />
               </button>
 
               <div className="mt-4 flex items-start gap-2 text-xs text-stone-400 leading-relaxed">
                 <Smartphone size={14} className="flex-shrink-0 mt-0.5" />
-                <span>Recommended apps: Google Authenticator, Authy, 1Password, Microsoft Authenticator</span>
+                <span>{t('enroll.recommendedApps')}</span>
               </div>
             </>
           )}
@@ -227,10 +237,10 @@ export default function SetupMFA() {
               </div>
 
               <h1 className="font-display text-2xl font-light text-navy-950 mb-2">
-                Enter the code
+                {t('verify.title')}
               </h1>
               <p className="text-stone-500 text-sm mb-6 leading-relaxed">
-                Enter the 6-digit code from your authenticator app to confirm setup.
+                {t('verify.subtitle')}
               </p>
 
               <form onSubmit={handleVerify} className="space-y-5">
@@ -258,12 +268,12 @@ export default function SetupMFA() {
                   disabled={loading || code.length < 6}
                   className="btn-aurora w-full text-white font-semibold text-sm py-3 rounded-full transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
                 >
-                  {loading ? <><Loader2 size={16} className="animate-spin" /> Verifying…</> : <>Confirm &amp; continue <ArrowRight size={16} /></>}
+                  {loading ? <><Loader2 size={16} className="animate-spin" /> {t('verify.verifying')}</> : <>{t('verify.confirm')} <ArrowRight size={16} /></>}
                 </button>
 
                 <p className="text-center text-xs text-stone-400">
                   <button type="button" onClick={() => setStep('enroll')} className="text-navy-700 font-medium hover:text-navy-900">
-                    ← Back to QR code
+                    {t('verify.back')}
                   </button>
                 </p>
               </form>

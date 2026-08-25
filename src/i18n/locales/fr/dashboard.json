@@ -1,0 +1,1226 @@
+{
+  "banners": {
+    "trial": {
+      "endsTomorrow": "Votre essai gratuit se termine demain, la carte enregistrée sera débitée sauf si vous annulez.",
+      "endsInDays": "Votre essai gratuit se termine dans {{days}} jours, la carte enregistrée sera débitée automatiquement.",
+      "remaining": "Vous êtes en essai gratuit, il reste {{days}} jours.",
+      "managePlan": "Gérer mon forfait →"
+    },
+    "trialExpired": {
+      "title": "Votre essai est terminé",
+      "body": "Votre essai gratuit de 14 jours est arrivé à son terme. Choisissez un forfait pour conserver votre coffre, vos personnes de confiance et tout ce que vous avez mis en place, toutes vos données sont en sécurité.",
+      "plusPrice": "9,99 £/mois",
+      "plusNote": "ou 7,99 £/mois en facturation annuelle (95,88 £/an · 20 % d'économie), deux coffres privés",
+      "proPrice": "60 £/mois",
+      "proNote": "ou 48 £/mois en annuel · Pour les conseillers patrimoniaux",
+      "questions": "Des questions ? Écrivez-nous à"
+    },
+    "advisorCancelled": {
+      "titleNamed": "{{name}} a annulé son forfait conseiller.",
+      "titleUnnamed": "Votre conseiller a annulé son forfait.",
+      "lockedTomorrow": "Votre compte sera verrouillé demain sauf si vous ajoutez un moyen de paiement.",
+      "graceDays": "Il vous reste {{days}} jours pour ajouter un moyen de paiement et poursuivre avec votre propre forfait payant. Vos données sont en sécurité.",
+      "addPayment": "Ajouter un moyen de paiement"
+    },
+    "advisorModal": {
+      "title": "Paiement requis",
+      "cancelledNamedSuffix": "a annulé son forfait conseiller Everstead.",
+      "cancelledUnnamed": "Votre conseiller a annulé son forfait Everstead.",
+      "graceEnded": "Le délai de grâce de 30 jours est arrivé à son terme. Ajoutez un moyen de paiement pour continuer, tous vos comptes, documents et consignes sont enregistrés et vous attendent.",
+      "plusPrice": "9,99 £/mois",
+      "plusNote": "ou 7,99 £/mois en facturation annuelle (95,88 £/an · 20 % d'économie), tous les membres du foyer",
+      "questions": "Des questions ? Écrivez-nous à"
+    },
+    "demo": {
+      "notice": "Mode démo, les données sont fictives et aucune modification n'est enregistrée.",
+      "startReal": "Commencez votre vrai plan →"
+    },
+    "suspended": {
+      "deceasedTitle": "Ce compte a été suspendu à la suite d'un signalement de décès vérifié.",
+      "incapacitatedTitle": "Ce compte a été suspendu à la suite d'un signalement d'incapacité vérifié.",
+      "body": "Ce plan est désormais en lecture seule. Les personnes de confiance disposant d'un accès après le décès ont été prévenues et leur accès a été débloqué. Aucune modification ne peut être apportée à ce compte. Contactez",
+      "bodyEnd": "si vous pensez qu'il s'agit d'une erreur."
+    }
+  },
+  "shell": {
+    "title": "Mon plan | Everstead",
+    "nav": {
+      "overview": "Vue d'ensemble",
+      "aboutme": "À propos de moi",
+      "assistant": "Votre assistant IA",
+      "accounts": "Comptes",
+      "documents": "Documents",
+      "subscriptions": "Abonnements",
+      "people": "Personnes",
+      "family": "Famille",
+      "messages": "Messages personnels",
+      "instructions": "Consignes",
+      "alerts": "Alertes",
+      "activity": "Activité",
+      "resources": "Aide et ressources"
+    },
+    "navGroups": {
+      "vault": "Votre coffre",
+      "peopleWishes": "Personnes et volontés",
+      "more": "Plus"
+    },
+    "messagesLocked": "Messages personnels, passez à un forfait supérieur pour y accéder. Cliquez pour voir les options.",
+    "openMenu": "Ouvrir le menu",
+    "closeMenu": "Fermer le menu",
+    "sidebar": "Barre latérale",
+    "dashboardNav": "Navigation du tableau de bord",
+    "mainContent": "Contenu principal",
+    "unreadAlerts": "{{n}} alertes non lues",
+    "yourAccount": "Votre compte",
+    "foundingMember": "Membre fondateur",
+    "planSuffix": "Forfait {{plan}}",
+    "settings": "Paramètres",
+    "signOut": "Se déconnecter",
+    "deletionFailed": "La suppression a échoué. Veuillez contacter l'assistance.",
+    "milestones": {
+      "firstAccount": {
+        "headline": "Premier compte ajouté !",
+        "body": "Votre coffre prend forme. Continuez sur votre lancée."
+      },
+      "firstDocument": {
+        "headline": "Premier document téléversé !",
+        "body": "Une chose de moins à chercher pour votre famille."
+      }
+    },
+    "limitError": "Vous avez atteint la limite de votre forfait gratuit {{freePlan}}. Passez à {{plusPlan}} pour en ajouter davantage.",
+    "family": {
+      "title": "Famille",
+      "subtitleSecondary": "Vous disposez de votre propre coffre privé dans le cadre d'un abonnement Everstead+.",
+      "subtitlePrimary": "Invitez votre partenaire ou votre conjoint à créer son propre coffre privé, inclus dans votre forfait."
+    }
+  },
+  "aiGuide": {
+    "greetingNamed": "Bonjour {{name}} ! Je suis votre coach de planification Everstead. Je peux vous aider à réfléchir à votre plan de succession, vous expliquer des notions comme le testament ou le mandat de protection future, ou vous guider sur ce qu'il convient d'ajouter ensuite à votre coffre.\n\nQue souhaitez-vous savoir ?",
+    "greeting": "Bonjour ! Je suis votre coach de planification Everstead. Je peux vous aider à réfléchir à votre plan de succession, vous expliquer des notions comme le testament ou le mandat de protection future, ou vous guider sur ce qu'il convient d'ajouter ensuite à votre coffre.\n\nQue souhaitez-vous savoir ?",
+    "previewOnly": "Ceci est un simple aperçu, connectez-vous à votre compte pour discuter avec l'assistant.",
+    "error": "Désolé, la connexion n'a pas abouti. Veuillez réessayer.",
+    "quickPrompts": {
+      "focus": "Sur quoi devrais-je me concentrer ?",
+      "addNext": "Que devrais-je ajouter ensuite ?",
+      "executor": "Comment choisir un exécuteur testamentaire ?",
+      "lpa": "Qu'est-ce qu'un mandat de protection future ?"
+    },
+    "openCoach": "Ouvrir le coach de planification",
+    "askCoach": "Demandez à votre coach",
+    "title": "Coach de planification",
+    "subtitle": "Posez toutes vos questions sur votre plan de succession",
+    "thinking": "Réflexion…",
+    "placeholder": "Posez une question sur votre plan…",
+    "send": "Envoyer"
+  },
+  "tour": {
+    "progress": "Un petit tour d'horizon · {{step}}/{{total}}",
+    "skip": "Passer",
+    "back": "Retour",
+    "next": "Suivant",
+    "done": "Tout est prêt 🎉",
+    "steps": {
+      "overview": {
+        "title": "Bienvenue chez vous",
+        "body": "À chaque connexion, voici votre vue d'ensemble sereine, tout est visible d'un coup d'œil, sans obligation de tout faire en une fois."
+      },
+      "accounts": {
+        "title": "Votre coffre",
+        "body": "Vos comptes, documents et abonnements vivent ici, les choses pratiques, rassemblées en lieu sûr."
+      },
+      "people": {
+        "title": "Vos personnes de confiance",
+        "body": "Invitez votre famille ou un exécuteur testamentaire et choisissez exactement ce que chaque personne peut voir, et seulement le moment venu. Rien n'est partagé sans votre accord."
+      },
+      "aboutme": {
+        "title": "La partie qui vous ressemble vraiment",
+        "body": "À propos de moi en est le cœur, votre histoire, vos volontés et des messages pour ceux que vous aimez. Revenez l'enrichir dès qu'une idée vous vient."
+      }
+    }
+  },
+  "common": {
+    "close": "Fermer",
+    "loading": "Chargement…"
+  },
+  "overview": {
+    "greeting": {
+      "morning": "Bonjour, {{name}}.",
+      "afternoon": "Bonjour, {{name}}.",
+      "evening": "Bonsoir, {{name}}.",
+      "morningNoName": "Bonjour.",
+      "afternoonNoName": "Bonjour.",
+      "eveningNoName": "Bonsoir."
+    },
+    "subtitle": "Voici où en sont les choses.",
+    "executorView": "Vue de l'exécuteur",
+    "exportPlan": "Exporter le plan",
+    "foundingMemberTitle": "Vous avez rejoint Everstead en tant que membre fondateur, merci d'être là depuis le tout début.",
+    "aboutMeCta": {
+      "kicker": "Commencez ici",
+      "title": "Racontez votre histoire, commencez par « À propos de moi ».",
+      "body": "La partie la plus simple et la plus personnelle de votre plan. Quelques minutes suffisent, et elle est à partager avec ceux que vous aimez."
+    },
+    "criticalAlerts_one": "{{count}} élément critique demande votre attention",
+    "criticalAlerts_other": "{{count}} éléments critiques demandent votre attention",
+    "staleBanner": "Votre coffre n'a pas été mis à jour depuis {{days}} jours, vos comptes, documents ou contacts ont peut-être changé depuis votre dernière visite.",
+    "reviewNow": "Vérifier maintenant →",
+    "dismiss": "Ignorer",
+    "stats": {
+      "accounts": "Comptes documentés",
+      "documents": "Documents téléversés",
+      "trustedPeople": "Personnes de confiance",
+      "trustedContacts": "Contacts de confiance",
+      "instructions": "Consignes rédigées"
+    },
+    "readiness100Title": "Préparation à 100 % !",
+    "readiness100Body": "Votre coffre est complet. Votre famille est protégée.",
+    "familyReadiness": "Préparation de la famille",
+    "planReadiness": "Préparation du plan",
+    "scoreZero": "Votre plan ne demande\nqu'à commencer",
+    "scorePercent": "{{score}} %",
+    "scoreMsgHigh": "Excellent, votre famille est bien préparée.",
+    "scoreMsgMid": "Beaux progrès, il reste quelques éléments.",
+    "scoreMsgLow": "Chaque élément que vous ajoutez protège ceux que vous aimez.",
+    "startHere": "Commencez ici",
+    "statProgress_one": "{{value}} ajouté · {{target}}+ recommandés",
+    "statProgress_other": "{{value}} ajoutés · {{target}}+ recommandés",
+    "addFirst": "Ajoutez votre premier élément →",
+    "messagesCta": {
+      "emptyTitle": "Laissez quelque chose de personnel",
+      "emptyBody": "Écrivez une lettre à un être cher, scellée jusqu'à ce que vous choisissiez de la remettre.",
+      "writeMessage": "Écrire un message →",
+      "saved_one": "{{count}} message personnel enregistré",
+      "saved_other": "{{count}} messages personnels enregistrés",
+      "savedBody": "Vos mots sont scellés, prêts à être remis le moment venu.",
+      "addAnother": "En ajouter un autre →"
+    },
+    "family": {
+      "secondaryActive": "Votre coffre Everstead+ est actif",
+      "active": "Coffre familial actif",
+      "secondaryBody": "Couvert par le titulaire du forfait, votre coffre est entièrement privé.",
+      "primaryBody": "{{email}} dispose de son propre coffre privé dans le cadre de votre forfait.",
+      "activeBadge": "Actif",
+      "pending": "Invitation en attente",
+      "pendingBody": "En attente de l'acceptation de {{email}}.",
+      "manage": "Gérer →",
+      "addTitle": "Ajoutez votre partenaire ou conjoint",
+      "addBody": "Votre forfait inclut un second coffre privé, invitez-le à créer le sien.",
+      "invite": "Inviter →"
+    },
+    "recentDocuments": "Documents récents",
+    "totalCount": "{{count}} au total",
+    "noDocuments": "Aucun document pour le moment",
+    "uploadFirstDocument": "Téléversez votre premier document",
+    "recentAlerts": "Alertes récentes",
+    "unreadCount": "{{count}} non lues",
+    "noAlerts": "Aucune alerte",
+    "allCaughtUp": "Vous êtes à jour",
+    "upgrade": {
+      "title": "Envie d'aller plus loin ? Passez à Everstead+",
+      "body": "Comptes et documents illimités, jusqu'à 10 contacts de confiance, deux coffres privés, les Messages personnels et 25 Go de stockage sécurisé, tout ce que vous avez mis en place vous accompagne.",
+      "button": "Passer à Everstead+"
+    },
+    "planLimit": {
+      "noun": {
+        "account_one": "compte",
+        "account_other": "comptes",
+        "document_one": "document",
+        "document_other": "documents",
+        "trustedContact_one": "personne de confiance",
+        "trustedContact_other": "personnes de confiance",
+        "instructionSet_one": "jeu de consignes",
+        "instructionSet_other": "jeux de consignes"
+      },
+      "freeIntro": "Vous êtes sur le forfait gratuit {{plan}}, qui inclut {{limit}} {{nounPlural}}.",
+      "reachedIntro": "Vous avez atteint votre limite de {{limit}} {{nounPlural}} sur le forfait {{plan}}.",
+      "upgradeCta": "Passez à {{plan}} →"
+    }
+  },
+  "accounts": {
+    "title": "Comptes et actifs",
+    "subtitle_one": "{{count}} compte documenté",
+    "subtitle_other": "{{count}} comptes documentés",
+    "addAccount": "Ajouter un compte",
+    "editAccount": "Modifier le compte",
+    "limitBenefit": "pour des comptes illimités.",
+    "empty": "Aucun compte pour le moment",
+    "emptyAction": "Ajoutez votre premier compte pour commencer à constituer votre coffre.",
+    "category": {
+      "Banking": "Banque",
+      "Retirement": "Retraite",
+      "Investment": "Placements",
+      "Insurance": "Assurance",
+      "Digital": "Numérique",
+      "Property": "Immobilier",
+      "Other": "Autre"
+    },
+    "editAria": "Modifier {{name}}",
+    "deleteAria": "Supprimer {{name}}",
+    "propertyLifeEvent": "Vous avez ajouté un bien immobilier, un actif important. Il vaut la peine de vérifier que votre testament et vos personnes de confiance reflètent ce changement.",
+    "reviewContacts": "Vérifier les personnes de confiance →",
+    "saveError": "Impossible d'enregistrer ce compte. Veuillez réessayer.",
+    "fields": {
+      "institution": "Établissement",
+      "institutionPlaceholder": "ex. BNP Paribas, Boursorama",
+      "type": "Type de compte",
+      "typePlaceholder": "ex. compte courant, livret d'épargne",
+      "category": "Catégorie",
+      "last4": "4 derniers chiffres (facultatif)",
+      "balance": "Solde / statut (affichage uniquement)",
+      "balancePlaceholder": "ex. 12 000 £ ou Actif",
+      "notes": "Notes / consignes",
+      "notesPlaceholder": "Ajoutez des détails utiles, des notes d'accès ou des consignes pour ce compte…"
+    },
+    "saving": "Enregistrement…",
+    "saveChanges": "Enregistrer les modifications",
+    "cancel": "Annuler"
+  },
+  "documents": {
+    "title": "Coffre à documents",
+    "subtitle": "{{count}} documents téléversés",
+    "uploadDocument": "Téléverser un document",
+    "editDocument": "Modifier le document",
+    "limitBenefit": "pour des documents et un stockage illimités.",
+    "storage": "Stockage",
+    "storageUsed": "{{used}} sur {{limit}} Go utilisés",
+    "kb": "{{n}} Ko",
+    "mb": "{{n}} Mo",
+    "storageWarn": "Stockage presque plein, envisagez de passer à un forfait supérieur.",
+    "priority": {
+      "title": "Documents juridiques prioritaires",
+      "willTitle": "Testament",
+      "willBody": "Le document le plus important de tout plan de succession. Sans testament, ce sont les règles de la succession légale qui décident qui reçoit quoi.",
+      "lpaTitle": "Mandat de protection future",
+      "lpaBody": "Donne à une personne de confiance l'autorité légale d'agir pour vous si vous perdez vos capacités. Il doit être enregistré avant d'être nécessaire.",
+      "uploadYours": "Téléversez le vôtre",
+      "govGuidance": "guide gov.uk →"
+    },
+    "will": {
+      "title": "Testament et notaire",
+      "subtitle": "Notez où votre testament est conservé et comment joindre votre notaire. Votre exécuteur testamentaire en aura besoin immédiatement.",
+      "locationLabel": "Où votre testament est-il conservé ?",
+      "locationPlaceholder": "ex. dans le classeur du bureau, ou chez mon notaire",
+      "solicitorName": "Nom du notaire",
+      "solicitorNamePlaceholder": "ex. Marie Dupont",
+      "firmName": "Nom de l'étude",
+      "firmPlaceholder": "ex. Étude Dupont & Associés",
+      "contactLabel": "Téléphone ou e-mail",
+      "contactPlaceholder": "ex. 01 23 45 67 89 ou marie@notaires.fr",
+      "saveDetails": "Enregistrer les informations",
+      "savedTick": "✓ Enregistré",
+      "detailsSaved": "Informations enregistrées."
+    },
+    "empty": "Aucun document pour le moment",
+    "emptyAction": "Téléversez votre premier document, testament, polices d'assurance, titres de propriété et plus encore.",
+    "table": {
+      "document": "Document",
+      "type": "Type",
+      "status": "Statut",
+      "lastUpdated": "Dernière mise à jour",
+      "access": "Accès"
+    },
+    "owner": "Titulaire",
+    "status": {
+      "current": "à jour",
+      "expiring": "expire bientôt",
+      "missing": "manquant",
+      "expired": "expiré"
+    },
+    "type": {
+      "Legal": "Juridique",
+      "Finance": "Finances",
+      "Insurance": "Assurance",
+      "Property": "Immobilier",
+      "Personal": "Personnel",
+      "Medical": "Médical",
+      "Other": "Autre"
+    },
+    "previewAria": "Aperçu de {{name}}",
+    "previewTitle": "Aperçu / téléchargement",
+    "noFileYet": "Aucun fichier téléversé pour le moment",
+    "downloadAria": "Télécharger {{name}}",
+    "editAria": "Modifier {{name}}",
+    "deleteAria": "Supprimer {{name}}",
+    "viewer": {
+      "openInTab": "Ouvrir dans un onglet",
+      "download": "Télécharger",
+      "loadingPreview": "Chargement de l'aperçu…",
+      "noFile": "Aucun fichier disponible pour ce document.",
+      "noFileHint": "Téléversez un fichier pour activer l'aperçu."
+    },
+    "access": {
+      "title": "Qui peut accéder à ce document",
+      "subtitle": "Selon les réglages d'accès de chaque personne, cochez ou décochez pour ne modifier que ce document.",
+      "noPeople": "Pas encore de personnes de confiance, invitez quelqu'un depuis la section Personnes, puis contrôlez ici son accès à chaque document.",
+      "trustedContact": "Contact de confiance",
+      "addedOverride": "Ajouté pour ce document",
+      "removedOverride": "Retiré pour ce document",
+      "viaSettings": "Via ses réglages d'accès",
+      "noAccess": "Aucun accès",
+      "releaseLabel": "Quand est-il communiqué ?",
+      "releaseDefault": "Suivre les délais d'accès de chaque personne",
+      "releaseImmediate": "Disponible dès maintenant pour toutes les personnes ayant accès",
+      "releaseSealed": "Scellé, communiqué seulement le moment venu",
+      "sealedNote": "Les documents scellés restent verrouillés pour tout le monde ici, chacun verra qu'il existe, mais il ne s'ouvrira qu'une fois votre décès vérifié par notre équipe."
+    },
+    "dropHere": "Déposez le fichier ici ou cliquez pour parcourir",
+    "dropFormats": "PDF, Word, JPG, PNG jusqu'à 50 Mo",
+    "fileSelected": "{{name}} ({{size}} Ko)",
+    "ai": {
+      "offer": "Extraire les détails automatiquement avec l'IA ?",
+      "scan": "Analyser le document",
+      "scanning": "Analyse…",
+      "done": "Détails extraits, vérifiez et modifiez ci-dessous avant d'enregistrer.",
+      "providerLine": "Fournisseur : {{value}}",
+      "accountLine": "Référence ou numéro de compte : {{value}}",
+      "valueLine": "Valeur : {{value}}"
+    },
+    "fields": {
+      "name": "Nom du document",
+      "namePlaceholder": "ex. Testament",
+      "type": "Type",
+      "status": "Statut",
+      "notes": "Notes",
+      "notesPlaceholder": "Ajoutez du contexte, ce que couvre ce document, ou l'endroit où se trouve l'original…",
+      "expiry": "Date d'expiration (facultatif)"
+    },
+    "expiryAlertTitle": "L'expiration de {{name}} approche",
+    "expiryAlertDetail": "Votre {{name}} expire le {{date}}. Mettez-le à jour avant son échéance.",
+    "docFallbackName": "Document",
+    "docFallbackNameLower": "document",
+    "willLifeEvent": "Parfait, votre testament est téléversé. Il vaut la peine de vérifier que vos personnes de confiance et vos consignes correspondent toujours à vos volontés.",
+    "reviewInstructions": "Vérifier les consignes →",
+    "lpaLifeEvent": "Vous avez téléversé un mandat de protection, un document important. Assurez-vous que vos personnes de confiance savent qui le détient, et que vos réglages d'accès sont à jour.",
+    "reviewContacts": "Vérifier les personnes de confiance →",
+    "uploadError": "Le téléversement a échoué. Veuillez réessayer.",
+    "saveError": "L'enregistrement a échoué. Veuillez réessayer.",
+    "uploading": "Téléversement…",
+    "upload": "Téléverser",
+    "saving": "Enregistrement…",
+    "saveChanges": "Enregistrer les modifications",
+    "cancel": "Annuler"
+  },
+  "aboutMe": {
+    "title": "À propos de moi",
+    "subtitle": "Une page personnelle sur qui vous êtes, partagée uniquement avec les personnes de votre choix.",
+    "intro": "C'est la partie la plus simple et la plus personnelle de votre plan, votre histoire, vos passions, les moments qui vous ont façonné. Vous choisissez qui la voit, et si elle est partagée dès maintenant ou conservée pour l'activation de votre plan. Elle n'est jamais montrée aux notaires ni aux conseillers professionnels.",
+    "profileAlt": "Votre photo de profil",
+    "changePhoto": "Changer la photo",
+    "addPhoto": "Ajouter une photo",
+    "avatarNotImage": "Veuillez choisir un fichier image (JPG ou PNG).",
+    "avatarTooBig": "Cette image dépasse 5 Mo, veuillez en choisir une plus légère.",
+    "avatarUploadError": "Impossible de téléverser la photo. Veuillez réessayer.",
+    "fields": {
+      "fullName": "Nom complet",
+      "fullNamePlaceholder": "Votre nom complet",
+      "dob": "Date de naissance",
+      "passions": "Passions et centres d'intérêt",
+      "passionsPlaceholder": "Ce que vous aimez, loisirs, lieux, personnes, causes…",
+      "spotify": "Une playlist qui vous ressemble (Spotify)",
+      "reflections": "Pensées et réflexions",
+      "reflectionsPlaceholder": "Tout ce que vous aimeriez que vos proches sachent. Il n'y a pas de mauvaise façon de l'écrire."
+    },
+    "lifeEvents": {
+      "title": "Moments de vie",
+      "add": "Ajouter un moment",
+      "hint": "Les moments qui ont compté. ex. « 1985 : mariage à Édimbourg »",
+      "addFirst": "+ Ajoutez votre premier moment de vie",
+      "year": "Année",
+      "description": "Description",
+      "descriptionPlaceholder": "Mariage à Édimbourg",
+      "removeAria": "Supprimer ce moment"
+    },
+    "spotifyInvalid": "Cela ne ressemble pas à un lien Spotify, il devrait commencer par open.spotify.com/…",
+    "spotifyInvalidSave": "Cela ne ressemble pas à un lien Spotify. Il devrait commencer par open.spotify.com/…",
+    "spotifyPreview": "Aperçu Spotify",
+    "sharing": {
+      "title": "Qui peut voir cette page ?",
+      "subtitle": "Uniquement les personnes cochées ci-dessous. Les notaires et conseillers professionnels ne sont jamais inclus.",
+      "noPeopleBefore": "Vous n'avez pas encore ajouté de famille, de partenaires ou d'amis. Ajoutez d'abord des personnes de confiance dans la section",
+      "noPeopleStrong": "Personnes",
+      "noPeopleAfter": ", puis choisissez qui voit votre histoire.",
+      "timingTitle": "Quand est-elle partagée ?",
+      "onActivationTitle": "Partager à l'activation de mon plan",
+      "onActivationDesc": "Conservée en privé jusqu'à ce que vos personnes de confiance reçoivent l'accès (recommandé).",
+      "nowTitle": "Partager maintenant",
+      "nowDesc": "Disponible pour les personnes ci-dessus dès l'enregistrement."
+    },
+    "celebrateTitle": "Votre histoire est enregistrée.",
+    "celebrateBody": "Merci de partager un peu de qui vous êtes.",
+    "saveError": "Impossible d'enregistrer. Veuillez réessayer.",
+    "saved": "Enregistré",
+    "saving": "Enregistrement…",
+    "signInToEdit": "Connectez-vous pour modifier",
+    "saveButton": "Enregistrer « À propos de moi »"
+  },
+  "media": {
+    "type": {
+      "video": "vidéo",
+      "photo": "photo"
+    },
+    "loadFailed": "Impossible de charger cette {{type}}.",
+    "record": {
+      "preview": "Aperçu de la caméra",
+      "start": "Enregistrer une vidéo",
+      "stop": "Arrêter l'enregistrement",
+      "blocked": "L'accès à la caméra et au micro a été bloqué. Autorisez-le dans votre navigateur pour enregistrer.",
+      "failed": "Impossible de démarrer l'enregistrement sur cet appareil. Vous pouvez téléverser un fichier à la place."
+    }
+  },
+  "messages": {
+    "title": "Messages personnels",
+    "plusFeature": "Fonctionnalité {{plan}}",
+    "subtitle": "{{released}} remis · {{sealed}} scellés",
+    "releaseAll": "Tout remettre",
+    "newMessage": "Nouveau message",
+    "locked": {
+      "title": "Laissez quelque chose qui compte vraiment.",
+      "body": "Écrivez des lettres, enregistrez vos dernières volontés et définissez le moment de la remise pour ceux que vous aimez, remis quand cela compte le plus. Les messages personnels sont inclus dans {{plan}}.",
+      "cta": "Passer à {{plan}} →"
+    },
+    "sealedBanner": "Les messages sont <b>scellés</b> par défaut, les destinataires ne peuvent pas les voir tant que vous ne les remettez pas vous-même, ou bien ils sont remis automatiquement lorsque Everstead vérifie votre décès. Vous pouvez remettre un message à tout moment avec le bouton présent sur chaque carte.",
+    "empty": "Aucun message pour le moment",
+    "emptyAction": "Laissez une note personnelle ou un message vidéo à quelqu'un qui compte, votre conjoint, vos enfants, votre notaire ou toute autre personne de votre choix.",
+    "forRecipient": "Pour <b>{{name}}</b>",
+    "viaEmail": "par e-mail",
+    "releasesOn": "Remis le {{date}}",
+    "released": "Remis",
+    "releasedOn": "Remis le {{date}}",
+    "releasing": "Remise en cours…",
+    "releaseNow": "Remettre maintenant",
+    "type": {
+      "note": {
+        "label": "Note écrite",
+        "desc": "Une lettre"
+      },
+      "video": {
+        "label": "Vidéo",
+        "desc": "Enregistrer ou téléverser"
+      },
+      "photo": {
+        "label": "Photo",
+        "desc": "Téléverser une image"
+      }
+    },
+    "timing": {
+      "question": "Quand est-il remis ?",
+      "pickDate": "Choisissez une date, il reste scellé jusque-là.",
+      "afterDeath": {
+        "label": "Le moment venu",
+        "desc": "Remis lorsque Everstead vérifie votre décès, ou quand vous le décidez."
+      },
+      "onDate": {
+        "label": "À une date précise",
+        "desc": "Remis automatiquement, un jour de mariage, un 18e anniversaire…"
+      }
+    },
+    "confirm": {
+      "title": "Remettre ce message maintenant ?",
+      "bodyEmail": "Une fois remis, nous enverrons à <b>{{email}}</b> un lien privé et sécurisé pour consulter ce message, sans création de compte. Cette action est irréversible.",
+      "bodyPerson": "Une fois remis, <b>{{name}}</b> pourra voir ce message immédiatement sur son tableau de bord de délégué. Cette action est irréversible.",
+      "yes": "Oui, remettre"
+    },
+    "demoMedia": "{{type}} stockée en toute sécurité, aperçu disponible dans votre vrai forfait.",
+    "noMediaYet": "Aucune {{type}} ajoutée pour le moment.",
+    "uploadType": "Téléverser la {{type}}",
+    "contentLabel": "Contenu du message",
+    "noContent": "Aucun contenu rédigé pour le moment.",
+    "edit": "Modifier",
+    "delete": "Supprimer",
+    "notInDemo": "Non disponible en démo",
+    "releasedTo": "Ce message a été remis et est visible par {{name}}.",
+    "ai": {
+      "helpBtn": "Aidez-moi à l'écrire",
+      "modalTitle": "✨ Aidez-moi à l'écrire",
+      "intro": "Répondez à quelques questions et j'écrirai un message chaleureux et sincère pour {{name}}.",
+      "defaultRecipient": "votre destinataire",
+      "relationship": "Votre lien avec cette personne",
+      "relationshipPlaceholder": "ex. ma fille, mon plus vieil ami, mon partenaire",
+      "wants": "Que voulez-vous surtout lui faire savoir ?",
+      "wantsPlaceholder": "ex. à quel point je suis fier d'elle, ce qu'elle représente pour moi…",
+      "gratitude": "Y a-t-il quelque chose dont vous êtes reconnaissant, ou que vous voulez faire pardonner ?",
+      "gratitudePlaceholder": "ex. merci d'avoir toujours été là. Je regrette que nous n'ayons pas parlé davantage.",
+      "hopes": "Quels sont vos espoirs pour son avenir ?",
+      "hopesPlaceholder": "ex. qu'elle trouve la joie, qu'elle suive ses rêves…",
+      "writing": "Rédaction…",
+      "submit": "Écrire mon message"
+    },
+    "releaseAllModal": {
+      "title": "Remettre tous les messages ?",
+      "body_one": "Cela remettra immédiatement <b>{{count}} message scellé</b> à son destinataire désigné. Cette personne pourra voir son message sur son tableau de bord de délégué sans attendre.",
+      "body_other": "Cela remettra immédiatement <b>{{count}} messages scellés</b> à leurs destinataires désignés. Chaque personne pourra voir son message sur son tableau de bord de délégué sans attendre.",
+      "warning": "Cette action est irréversible. Les messages remis restent visibles en permanence par leurs destinataires.",
+      "confirm_one": "Remettre {{count}} message",
+      "confirm_other": "Remettre {{count}} messages"
+    },
+    "compose": {
+      "title": "Nouveau message personnel",
+      "typeLabel": "Type de message",
+      "titleField": "Titre du message",
+      "titlePlaceholder": "ex. à mon fils Thomas",
+      "titlePlaceholderVideo": "ex. une vidéo pour Émilie",
+      "recipient": "Destinataire",
+      "kindPerson": "Une personne de confiance",
+      "kindEmail": "Quelqu'un par e-mail",
+      "selectPerson": "Choisissez une personne…",
+      "noPeople": "Aucune personne de confiance pour le moment, ajoutez-en une dans Personnes d'abord",
+      "namePlaceholder": "Son nom (facultatif)",
+      "emailPlaceholder": "son@email.fr",
+      "emailHint": "Elle n'a pas besoin de compte. Lorsque vous remettrez le message, nous lui enverrons par e-mail un lien privé et sécurisé pour le consulter.",
+      "dateHint": "Il reste scellé jusqu'à ce jour, puis il est remis automatiquement. Vous pouvez toujours le remettre plus tôt.",
+      "dateHintEmail": "Il reste scellé jusqu'à ce jour, puis il est remis automatiquement et envoyé par e-mail. Vous pouvez toujours le remettre plus tôt.",
+      "messageLabel": "Message",
+      "contentPlaceholder": "Écrivez ici votre message personnel. Il sera chiffré et remis uniquement au destinataire, le moment venu.",
+      "yourVideo": "Votre vidéo",
+      "yourPhoto": "Votre photo",
+      "previewAlt": "Aperçu",
+      "removeMedia": "Retirer et choisir à nouveau",
+      "uploadVideo": "Téléverser une vidéo",
+      "uploadPhoto": "Téléverser une photo",
+      "videoHint": "Filmez-vous, ou téléversez un fichier mp4 / mov / webm.",
+      "photoHint": "Téléversez un jpg ou un png, une lettre scannée ou une photo qui compte.",
+      "submit": "Enregistrer le message"
+    },
+    "errors": {
+      "mediaRequired": "Veuillez d'abord enregistrer ou téléverser la {{type}}.",
+      "dateRequired": "Veuillez choisir la date à laquelle il doit être remis.",
+      "saveFailed": "Impossible d'enregistrer le message. Veuillez réessayer."
+    },
+    "saving": "Enregistrement…",
+    "cancel": "Annuler"
+  },
+  "people": {
+    "title": "Personnes de confiance",
+    "subtitle_one": "{{count}} personne de confiance",
+    "subtitle_other": "{{count}} personnes de confiance",
+    "subtitleLimited": "{{n}} / {{limit}} personnes de confiance",
+    "limitReached": "Limite atteinte, changez de forfait",
+    "invitePerson": "Inviter une personne",
+    "limitBenefit": "pour inviter jusqu'à 10 personnes.",
+    "releaseNote": "Rien n'est communiqué de votre vivant, vous décidez exactement ce que chaque personne voit. Après un décès, une personne de confiance le signale et notre équipe vérifie avant d'ouvrir le moindre accès post mortem.",
+    "releaseLink": "Comment l'accès est ouvert →",
+    "empty": "Aucune personne de confiance pour le moment",
+    "emptyAction": "Invitez un exécuteur testamentaire, un mandataire de santé ou un membre de votre famille à rejoindre votre plan.",
+    "accessLabel": "Accès :",
+    "timingLabel": "Moment :",
+    "resend": "Renvoyer",
+    "editAccess": "Modifier l'accès",
+    "editAccessAria": "Modifier l'accès de {{name}}",
+    "removePerson": "Retirer la personne",
+    "removeAria": "Retirer {{name}}",
+    "inviteModalTitle": "Inviter une personne de confiance",
+    "editModalTitle": "Modifier l'accès, {{name}}",
+    "sendInvite": "Envoyer l'invitation",
+    "saveChanges": "Enregistrer les modifications",
+    "thisPerson": "cette personne",
+    "confirmRemove": "Retirer {{name}} de vos personnes de confiance ? Elle perdra tout accès.",
+    "inviteStatus": {
+      "pending": "en attente",
+      "accepted": "acceptée",
+      "declined": "refusée"
+    },
+    "role": {
+      "spousePartner": "Conjoint / partenaire",
+      "primaryExecutor": "Exécuteur testamentaire principal",
+      "secondaryExecutor": "Exécuteur testamentaire suppléant",
+      "solicitor": "Notaire",
+      "familyMember": "Membre de la famille",
+      "familyCaretaker": "Aidant familial",
+      "financialAdviser": "Conseiller financier",
+      "healthcareProxy": "Mandataire de santé"
+    },
+    "roleGroup": {
+      "full": "Accès complet",
+      "estate": "Succession et juridique",
+      "family": "Famille",
+      "professional": "Professionnel"
+    },
+    "timing": {
+      "always": {
+        "label": "De mon vivant",
+        "desc": "Accès accordé dès maintenant, après acceptation"
+      },
+      "afterDeath": {
+        "label": "Après un décès ou une incapacité",
+        "desc": "Verrouillé jusqu'à ce qu'une personne de confiance le signale"
+      },
+      "aliveShort": "De votre vivant"
+    },
+    "access": {
+      "none": "Aucun domaine sélectionné",
+      "full": "Accès complet",
+      "area": {
+        "accounts": {
+          "label": "Comptes et actifs",
+          "desc": "Comptes bancaires, placements, retraite",
+          "subLabel": "Quelles catégories de comptes ?"
+        },
+        "documents": {
+          "label": "Documents",
+          "desc": "Testaments, contrats d'assurance, titres de propriété",
+          "subLabel": "Quels types de documents ?"
+        },
+        "messages": {
+          "label": "Messages personnels",
+          "desc": "Lettres privées et messages vidéo"
+        },
+        "instructions": {
+          "label": "Consignes",
+          "desc": "Guidage étape par étape et volontés"
+        },
+        "subscriptions": {
+          "label": "Abonnements",
+          "desc": "Services récurrents et adhésions"
+        }
+      },
+      "accountCategories": {
+        "Banking": "Banque",
+        "Retirement": "Retraite",
+        "Investment": "Placements",
+        "Insurance": "Assurance",
+        "Digital": "Numérique",
+        "Property": "Immobilier",
+        "Other": "Autre"
+      },
+      "documentTypes": {
+        "Legal": "Juridique",
+        "Insurance": "Assurance",
+        "Property": "Immobilier",
+        "Medical": "Médical",
+        "Personal": "Personnel",
+        "Financial": "Finances",
+        "Other": "Autre"
+      }
+    },
+    "form": {
+      "name": "Nom complet",
+      "namePlaceholder": "Marie Dupont",
+      "email": "Adresse e-mail",
+      "emailPlaceholder": "marie@exemple.fr",
+      "role": "Rôle",
+      "selectRole": "Choisissez un rôle…",
+      "fullAccessNote": "<b>Rôle à accès complet</b> : {{role}} peut consulter toutes les sections de votre plan.",
+      "accessAreas": "Domaines d'accès",
+      "accessAreasHint": "Choisissez les sections de votre plan que cette personne peut consulter.",
+      "allTypes": "Tous les types (aucun filtre)",
+      "timingQuestion": "Quand peut-elle y accéder ?",
+      "timingHint": "Choisissez si l'accès est immédiat ou s'il n'est débloqué qu'après votre décès ou le signalement de votre incapacité.",
+      "errorNoArea": "Veuillez sélectionner au moins un domaine d'accès.",
+      "saving": "Enregistrement…",
+      "cancel": "Annuler"
+    },
+    "errors": {
+      "inviteFailed": "Impossible d'envoyer l'invitation. Veuillez réessayer.",
+      "saveFailed": "Impossible d'enregistrer les modifications.",
+      "removeFailed": "Impossible de retirer cette personne."
+    }
+  },
+  "instructions": {
+    "title": "Consignes",
+    "subtitle_one": "{{count}} jeu de consignes",
+    "subtitle_other": "{{count}} jeux de consignes",
+    "writeWithAi": "Rédiger avec l'IA",
+    "helpMeWrite": "Aidez-moi à rédiger",
+    "add": "Ajouter des consignes",
+    "editTitle": "Modifier les consignes",
+    "limitBenefit": "pour des consignes illimitées.",
+    "empty": "Aucune consigne pour le moment",
+    "emptyAction": "Rédigez des instructions détaillées pour votre exécuteur testamentaire, votre famille ou votre mandataire de santé.",
+    "meta": "{{category}} · Pour : {{audience}}",
+    "steps_one": "{{count}} étape",
+    "steps_other": "{{count}} étapes",
+    "noSteps": "Aucune étape pour le moment",
+    "editAria": "Modifier {{title}}",
+    "deleteAria": "Supprimer {{title}}",
+    "category": {
+      "immediate": "Immédiat",
+      "financial": "Finances",
+      "legal": "Juridique",
+      "household": "Maison",
+      "medical": "Santé",
+      "personal": "Personnel",
+      "other": "Autre"
+    },
+    "audience": {
+      "executor": "Exécuteur testamentaire",
+      "family": "Famille",
+      "healthcareProxy": "Mandataire de santé",
+      "adviser": "Conseiller",
+      "everyone": "Tout le monde"
+    },
+    "quickWrite": {
+      "title": "✨ Rédiger avec l'IA",
+      "intro": "Décrivez-moi le jeu de consignes que vous souhaitez créer et j'en rédigerai un brouillon que vous pourrez relire.",
+      "purpose": "De quoi parlent ces consignes ?",
+      "purposePlaceholder": "ex. que faire dans les 48 premières heures, comment accéder à nos finances, mes volontés médicales",
+      "recipient": "À qui s'adressent-elles ?",
+      "recipientPlaceholder": "ex. mon exécuteur testamentaire, mes enfants, mon mandataire de santé",
+      "firstSteps": "Que doivent-ils faire en premier ?",
+      "firstStepsPlaceholder": "ex. appeler mon notaire, Maître Durand (01 23 45 67 89), prévenir la banque…",
+      "resources": "Contacts, comptes ou ressources utiles à mentionner",
+      "resourcesPlaceholder": "ex. compte courant BNP Paribas, IBAN se terminant par 4415",
+      "additional": "Autre chose à inclure ?",
+      "additionalPlaceholder": "Toute volonté supplémentaire ou note importante",
+      "writing": "Rédaction de vos consignes…",
+      "submit": "Rédiger mes consignes"
+    },
+    "assistant": {
+      "title": "Assistant de rédaction",
+      "greeting": "Je suis là pour vous aider à rédiger des consignes claires pour votre famille ou votre exécuteur testamentaire. Sur quoi souhaitez-vous les guider ? Par exemple : « que faire dans les 48 premières heures », « comment accéder à nos comptes bancaires » ou « mes volontés médicales ».",
+      "previewOnly": "Ceci n'est qu'un aperçu, connectez-vous à votre compte pour utiliser l'assistant.",
+      "error": "Désolé, la connexion a échoué. Veuillez réessayer.",
+      "readyToUse": "Prêt à utiliser : « {{title}} »",
+      "suggestionMeta": "{{steps}} · {{category}} · Pour : {{audience}}",
+      "useThis": "Utiliser ceci →",
+      "placeholder": "Décrivez ce que vous voulez transmettre…",
+      "send": "Envoyer"
+    },
+    "fields": {
+      "title": "Titre",
+      "titlePlaceholder": "ex. checklist des 48 premières heures",
+      "category": "Catégorie",
+      "audience": "Destinataires",
+      "body": "Aperçu / notes",
+      "bodyPlaceholder": "Résumez ce qui doit se passer et le contexte que la personne doit connaître…",
+      "steps": "Consignes étape par étape",
+      "stepsPlaceholder": "Écrivez une étape par ligne\nAppeler le notaire de la famille\nRetrouver le testament signé\nSuspendre les abonnements non essentiels"
+    },
+    "saving": "Enregistrement…",
+    "saveChanges": "Enregistrer les modifications",
+    "cancel": "Annuler"
+  },
+  "subscriptions": {
+    "title": "Abonnements",
+    "subtitle": "£{{total}}/mois au total",
+    "add": "Ajouter un abonnement",
+    "editTitle": "Modifier l'abonnement",
+    "empty": "Aucun abonnement suivi",
+    "emptyAction": "Ajoutez les prélèvements récurrents pour que votre famille sache quoi résilier.",
+    "meta": "{{cycle}} · Prochain : {{date}}",
+    "cycle": {
+      "monthly": "Mensuel",
+      "annual": "Annuel"
+    },
+    "editAria": "Modifier {{name}}",
+    "deleteAria": "Supprimer {{name}}",
+    "saveError": "Impossible d'enregistrer. Veuillez réessayer.",
+    "fields": {
+      "name": "Nom de l'abonnement",
+      "namePlaceholder": "ex. Netflix, Spotify, Dropbox",
+      "cycle": "Fréquence de facturation",
+      "amount": "Montant",
+      "amountPlaceholder": "12,99",
+      "nextCharge": "Date du prochain prélèvement",
+      "notes": "Notes",
+      "notesPlaceholder": "Étapes de résiliation utiles, titulaire du compte ou indices de connexion…"
+    },
+    "saving": "Enregistrement…",
+    "saveChanges": "Enregistrer les modifications",
+    "cancel": "Annuler"
+  },
+  "alerts": {
+    "title": "Alertes",
+    "unread_one": "{{count}} non lue",
+    "unread_other": "{{count}} non lues",
+    "allCaughtUp": "Tout est à jour",
+    "markAllRead": "Tout marquer comme lu",
+    "empty": "Aucune alerte",
+    "emptyAction": "Vous êtes à jour.",
+    "markRead": "Marquer comme lu",
+    "severity": {
+      "critical": "Critique",
+      "warning": "Avertissement",
+      "info": "Info"
+    }
+  },
+  "activity": {
+    "title": "Journal d'activité",
+    "subtitle": "Toutes les modifications de votre plan",
+    "empty": "Aucune activité pour le moment",
+    "emptyAction": "Les modifications de votre plan apparaîtront ici.",
+    "resourceSuffix": ", {{name}}",
+    "action": {
+      "accountCreated": "Compte ajouté",
+      "accountUpdated": "Compte modifié",
+      "accountDeleted": "Compte supprimé",
+      "documentUploaded": "Document téléversé",
+      "documentUpdated": "Document modifié",
+      "documentDeleted": "Document supprimé",
+      "personInvited": "Personne invitée",
+      "personUpdated": "Accès modifié",
+      "personRemoved": "Personne retirée",
+      "instructionCreated": "Consignes ajoutées",
+      "instructionUpdated": "Consignes modifiées",
+      "instructionDeleted": "Consignes supprimées",
+      "subscriptionCreated": "Abonnement ajouté",
+      "subscriptionUpdated": "Abonnement modifié",
+      "subscriptionDeleted": "Abonnement supprimé",
+      "messageCreated": "Message créé",
+      "messageUpdated": "Message modifié",
+      "messageReleased": "Message transmis",
+      "messageDeleted": "Message supprimé",
+      "profileUpdated": "Profil mis à jour"
+    }
+  },
+  "resources": {
+    "title": "Aide et ressources",
+    "subtitle": "Des guides pour tirer le meilleur parti de votre plan Everstead",
+    "topics_one": "{{count}} sujet",
+    "topics_other": "{{count}} sujets",
+    "needHelp": "Besoin d'aide supplémentaire ?",
+    "needHelpBody": "Notre équipe d'assistance est disponible du lundi au vendredi, de 9 h à 17 h (heure de Paris). Vous trouverez aussi des guides et une FAQ sur la page ressources.",
+    "emailSupport": "Écrire à l'assistance",
+    "resourcesLink": "Ressources",
+    "guides": {
+      "accounts": {
+        "title": "Comptes, quoi ajouter",
+        "items": {
+          "bank": {
+            "label": "Comptes bancaires et comptes courants",
+            "detail": "Indiquez le nom de la banque, le numéro de compte (les 4 derniers chiffres suffisent) et un contact en agence ou un indice de connexion en ligne. Ajoutez tous les comptes que votre famille devra prévenir ou clôturer."
+          },
+          "savings": {
+            "label": "Épargne, livrets et assurance vie",
+            "detail": "Indiquez l'établissement, le type de produit et un ordre de grandeur si cela vous convient. Même une estimation aide votre exécuteur testamentaire à établir des priorités."
+          },
+          "pensions": {
+            "label": "Retraite et PER",
+            "detail": "Listez chaque régime, de base, complémentaire et supplémentaire, ainsi que vos PER. Indiquez le nom du régime et un numéro de référence. Beaucoup de droits à la retraite sont oubliés lors du règlement d'une succession."
+          },
+          "investments": {
+            "label": "Placements et titres",
+            "detail": "Actions, fonds, PEA et comptes-titres. Notez la plateforme (ex. Boursorama, Bourse Direct) et les comptes de négociation. Ajoutez les titres détenus sous forme papier."
+          },
+          "property": {
+            "label": "Immobilier",
+            "detail": "Votre résidence principale, tout bien locatif, terrain ou bien à l'étranger. Indiquez la référence cadastrale si vous la connaissez et le nom de votre notaire."
+          },
+          "insurance": {
+            "label": "Contrats d'assurance",
+            "detail": "Assurance décès, prévoyance, garantie des accidents de la vie et assurance habitation. Notez le numéro de contrat et le contact sinistres de l'assureur, pas seulement celui du courtier."
+          },
+          "digital": {
+            "label": "Actifs numériques et crypto",
+            "detail": "Portefeuilles de cryptomonnaies, NFT ou comptes d'investissement en ligne. Notez la plateforme et, séparément dans un endroit sûr, la méthode de récupération des accès."
+          },
+          "subscriptions": {
+            "label": "Abonnements à résilier",
+            "detail": "Services de streaming, logiciels, adhésions et prélèvements automatiques. Votre exécuteur testamentaire ne peut pas résilier ce qu'il ne trouve pas, et même les petits montants s'additionnent."
+          }
+        }
+      },
+      "documents": {
+        "title": "Documents, quoi téléverser",
+        "items": {
+          "will": {
+            "label": "Testament",
+            "detail": "Le document le plus important. Téléversez la copie signée. Si l'original est conservé par votre notaire, notez ses coordonnées dans la description."
+          },
+          "lpa": {
+            "label": "Mandat de protection future",
+            "detail": "Votre mandat de protection future, et le mandat à effet posthume si vous en avez un. Si ce n'est pas le cas, envisagez d'en établir un : c'est bien plus difficile à organiser une fois la capacité perdue."
+          },
+          "identity": {
+            "label": "Passeport et permis de conduire",
+            "detail": "Utiles pour vérifier votre identité pendant le règlement de la succession. Un scan suffit. Notez la date d'expiration."
+          },
+          "certificates": {
+            "label": "Actes de naissance et de mariage",
+            "detail": "Nécessaires pour la succession et les demandes de prestations. Ajoutez tout acte de changement de nom, ainsi que votre livret de famille."
+          },
+          "deeds": {
+            "label": "Actes de propriété et documents de prêt",
+            "detail": "Actes notariés, tableaux d'amortissement de prêt et baux pour tout bien que vous possédez, seul ou en indivision."
+          },
+          "insurance": {
+            "label": "Conditions particulières d'assurance",
+            "detail": "La page de synthèse de chaque contrat, pas seulement l'avis d'échéance. Indiquez le numéro de contrat et ce qui est couvert."
+          },
+          "funeral": {
+            "label": "Volontés funéraires ou contrat obsèques",
+            "detail": "Une lettre de volontés ou un contrat obsèques. Aucune valeur juridique n'est exigée, un document clair suffit à guider votre famille."
+          },
+          "letterOfWishes": {
+            "label": "Lettre de volontés",
+            "detail": "Elle ne fait pas partie de votre testament, c'est une note personnelle à votre exécuteur testamentaire et à votre famille. Abordez les biens personnels, les comptes en ligne, les dons et tout ce que votre testament ne traite pas."
+          }
+        }
+      },
+      "people": {
+        "title": "Personnes, choisir vos personnes de confiance",
+        "items": {
+          "executor": {
+            "label": "Exécuteur testamentaire",
+            "detail": "La personne chargée de faire exécuter vos volontés. Elle n'a pas besoin d'expertise juridique, mais elle doit être organisée, digne de confiance et volontaire. Beaucoup de gens en désignent deux, par sécurité."
+          },
+          "lpaHolder": {
+            "label": "Mandataire de protection future",
+            "detail": "Cette personne peut prendre des décisions financières et juridiques à votre place si vous perdez vos facultés. Choisissez quelqu'un en qui vous avez une confiance totale, c'est une responsabilité importante."
+          },
+          "nextOfKin": {
+            "label": "Personne à prévenir",
+            "detail": "Votre parent le plus proche, à prévenir en cas d'urgence. Ce rôle est distinct de celui d'exécuteur testamentaire, même s'il peut s'agir de la même personne."
+          },
+          "solicitor": {
+            "label": "Notaire",
+            "detail": "Si votre notaire conserve votre testament ou votre mandat de protection future, ajoutez-le comme contact professionnel avec le nom de l'étude et une ligne directe. Il doit être joignable en quelques jours, pas en quelques semaines."
+          },
+          "adviser": {
+            "label": "Conseiller financier",
+            "detail": "Votre conseiller sait quels comptes et contrats existent, ajoutez-le comme contact. Il peut aider votre exécuteur testamentaire à identifier les actifs et les droits à réclamer."
+          },
+          "accountant": {
+            "label": "Expert-comptable",
+            "detail": "Utile pour les successions comportant une activité professionnelle, des revenus locatifs ou une situation fiscale complexe. Votre exécuteur testamentaire devra peut-être déposer une dernière déclaration de revenus."
+          },
+          "accessLevel": {
+            "label": "Quel niveau d'accès accorder",
+            "detail": "Ne partagez que ce dont chaque personne a besoin. Votre exécuteur testamentaire a besoin de la vue d'ensemble. Un proche ajouté comme contact d'urgence n'a peut-être besoin de voir que votre médecin traitant et la personne à prévenir. Utilisez les réglages d'accès par rôle sur la fiche de chaque personne."
+          }
+        }
+      },
+      "instructions": {
+        "title": "Consignes, quoi écrire",
+        "items": {
+          "first48": {
+            "label": "Les 48 premières heures",
+            "detail": "Ce qui doit se passer immédiatement : qui appeler, quels comptes bloquer, où se trouve le testament. Écrivez-le pour quelqu'un qui vient d'apprendre la nouvelle et ne sait pas par où commencer."
+          },
+          "funeral": {
+            "label": "Organisation des obsèques",
+            "detail": "Vos préférences entre inhumation et crémation, vos volontés religieuses ou personnelles, vos musiques préférées, et si vous préférez des fleurs ou des dons. Même des notes rapides aident."
+          },
+          "digital": {
+            "label": "Accès aux comptes en ligne",
+            "detail": "Messagerie, réseaux sociaux, photothèques et stockage en ligne. Précisez si les comptes doivent être transformés en compte de souvenir, supprimés ou transmis. Indiquez qui détient les codes de récupération."
+          },
+          "property": {
+            "label": "Logement et biens",
+            "detail": "Où sont les clés, les fournisseurs d'énergie et les numéros de contrat, les contrats d'entretien en cours, le code d'alarme (noté en lieu sûr) et s'il y a un locataire."
+          },
+          "business": {
+            "label": "Entreprise ou activité indépendante",
+            "detail": "Si vous dirigez une entreprise ou exercez en indépendant, rédigez des consignes pour les associés, salariés ou clients à prévenir. Indiquez le numéro SIREN et les coordonnées de votre expert-comptable."
+          },
+          "messages": {
+            "label": "Messages personnels",
+            "detail": "Pensez à la fonction Messages personnels pour laisser des mots privés à des personnes précises, ils ne sont transmis que lorsque votre exécuteur testamentaire confirme un événement de vie. C'est distinct des consignes."
+          }
+        }
+      },
+      "messages": {
+        "title": "Messages personnels, une note sur le moment",
+        "items": {
+          "what": {
+            "label": "Ce que c'est",
+            "detail": "Les Messages personnels sont des lettres ou des notes privées adressées à des personnes de confiance précises. Ils sont stockés chiffrés et invisibles pour tout le monde tant que vous ou votre exécuteur testamentaire ne les transmettez pas."
+          },
+          "when": {
+            "label": "Quand ils sont transmis",
+            "detail": "Vous pouvez transmettre un message vous-même à tout moment (ex. pour un anniversaire ou une étape importante). Ou votre exécuteur testamentaire peut les transmettre une fois qu'un événement de vie a été signalé et vérifié par Everstead."
+          },
+          "write": {
+            "label": "Quoi écrire",
+            "detail": "Des lettres à vos enfants ou petits-enfants, des derniers mots à votre conjoint, des conseils à un ami proche. Ce ne sont pas des documents juridiques, écrivez-les comme vous parleriez."
+          },
+          "plan": {
+            "label": "Disponible avec Everstead+",
+            "detail": "Les Messages personnels sont inclus dans Everstead+. Changez de forfait pour débloquer cette fonctionnalité."
+          }
+        }
+      }
+    }
+  },
+  "settings": {
+    "title": "Paramètres",
+    "subtitle": "Gérez votre compte, vos coordonnées et votre forfait",
+    "saving": "Enregistrement…",
+    "saved": "✓ Enregistré",
+    "saveChanges": "Enregistrer les modifications",
+    "cancel": "Annuler",
+    "profile": {
+      "heading": "Informations personnelles",
+      "fullName": "Nom complet",
+      "fullNamePlaceholder": "Jeanne Martin",
+      "email": "Adresse e-mail",
+      "emailTitle": "Pour changer votre adresse e-mail, contactez l'assistance.",
+      "phone": "Numéro de téléphone",
+      "phonePlaceholder": "+33 6 12 34 56 78",
+      "dob": "Date de naissance",
+      "dobHint": "Sert à vous envoyer un message chaque année pour votre anniversaire.",
+      "addressHeading": "Adresse",
+      "address1": "Adresse ligne 1",
+      "address1Placeholder": "14 rue de Rivoli",
+      "address2": "Adresse ligne 2",
+      "address2Placeholder": "Appartement 2 (facultatif)",
+      "city": "Ville",
+      "cityPlaceholder": "Paris",
+      "postcode": "Code postal",
+      "postcodePlaceholder": "75001",
+      "country": "Pays",
+      "countryPlaceholder": "France",
+      "saveFailed": "Impossible d'enregistrer le profil.",
+      "updated": "Informations mises à jour."
+    },
+    "password": {
+      "heading": "Changer de mot de passe",
+      "new": "Nouveau mot de passe",
+      "confirm": "Confirmer le nouveau mot de passe",
+      "updating": "Mise à jour…",
+      "submit": "Mettre à jour le mot de passe",
+      "mismatch": "Les nouveaux mots de passe ne correspondent pas.",
+      "demo": "Mode démo, les changements de mot de passe ne sont pas enregistrés.",
+      "updated": "Mot de passe mis à jour."
+    },
+    "mfa": {
+      "heading": "Authentification à deux facteurs",
+      "body": "Ajoutez une couche de sécurité avec une application d'authentification (Google Authenticator, Authy, 1Password). Vous continuerez à vous connecter avec le code envoyé par e-mail, ceci est une étape supplémentaire facultative.",
+      "cta": "Configurer l'application d'authentification"
+    },
+    "subscription": {
+      "heading": "Abonnement",
+      "currentlyOn": "Vous êtes sur le forfait <b>{{plan}}</b>",
+      "trialActive": "· Essai gratuit en cours",
+      "cancellationScheduled": "· Résiliation programmée",
+      "planEnded": "· Forfait terminé",
+      "nextBilling": "· Prochaine facturation le {{date}}",
+      "cancelledTitle": "Votre forfait a été résilié.",
+      "cancelledBodyWithDate": "Vous conservez un accès complet jusqu'au <b>{{date}}</b>. Après cette date, votre compte repassera au forfait gratuit et vos données seront conservées en sécurité pendant 30 jours.",
+      "cancelledBody": "Vous conservez un accès complet jusqu'à la fin de votre période de facturation en cours. Après cette date, votre compte repassera au forfait gratuit.",
+      "changedMind": "Vous avez changé d'avis ? Vous pouvez réactiver à tout moment avant la fin de votre accès.",
+      "reactivating": "Réactivation…",
+      "reactivate": "Réactiver mon forfait",
+      "reactivateFailed": "Impossible de réactiver l'abonnement.",
+      "endedTitle": "Votre forfait est terminé.",
+      "endedBody": "Vos données sont conservées en sécurité pendant 30 jours. Réactivez à tout moment pour retrouver un accès complet.",
+      "reactivateEverstead": "Réactiver Everstead",
+      "cycleMonthly": "Mensuel",
+      "cycleYearly": "Annuel, économisez 20 %",
+      "current": "Actuel",
+      "price": "£{{price}}/mois",
+      "billedAnnually": "facturé annuellement · économisez 20 %",
+      "activatePlan": "Activer le forfait {{plan}}",
+      "switchToYearly": "Passer à la facturation annuelle",
+      "switchToMonthly": "Passer à la facturation mensuelle",
+      "upgradeTo": "Passer à {{plan}}",
+      "switchTo": "Basculer vers {{plan}}",
+      "portalHint": "Mettez à jour votre moyen de paiement ou consultez vos factures dans le portail de facturation.",
+      "cancelConfirmTitle": "Voulez-vous vraiment résilier ?",
+      "cancelConfirmBody": "Vous conservez un accès complet jusqu'à la fin de votre période de facturation en cours. Ensuite, votre forfait repassera au gratuit et vos données seront conservées en sécurité pendant 30 jours.",
+      "keepPlan": "Garder mon forfait",
+      "cancelling": "Résiliation…",
+      "confirmCancel": "Oui, résilier mon forfait",
+      "cancelTrial": "Annuler l'essai",
+      "cancelSubscription": "Résilier l'abonnement",
+      "cancelFailed": "Impossible de résilier l'abonnement."
+    },
+    "plans": {
+      "essential": "Votre forfait actuel, inchangé.",
+      "family": "Deux coffres privés, jusqu'à 10 personnes de confiance, 25 Go de stockage."
+    },
+    "billing": {
+      "opening": "Ouverture du portail de facturation…",
+      "manage": "Gérer la facturation et la fréquence"
+    },
+    "referral": {
+      "heading": "Parrainer un proche",
+      "body": "Partagez votre lien unique, votre proche bénéficie d'un <b>essai gratuit de 21 jours</b> au lieu de 14. Organiser sa succession, c'est un travail d'équipe.",
+      "copied": "Copié !",
+      "copy": "Copier le lien"
+    },
+    "ai": {
+      "heading": "Fonctionnalités IA",
+      "body": "L'assistant IA d'Everstead peut vous aider à configurer votre compte et répondre à vos questions, via un fournisseur d'IA sécurisé. Désactivez-le et aucune IA n'est utilisée nulle part dans votre compte, vos données ne sont jamais envoyées à un fournisseur d'IA. Vous pouvez le réactiver à tout moment.",
+      "status": "Les fonctionnalités IA sont actuellement <b>{{state}}</b>.",
+      "on": "activées",
+      "off": "désactivées"
+    },
+    "notifications": {
+      "heading": "Notifications par e-mail",
+      "intro": "Choisissez les e-mails que vous souhaitez recevoir d'Everstead. Vous pouvez modifier ces choix à tout moment.",
+      "save": "Enregistrer les préférences",
+      "updated": "Préférences mises à jour.",
+      "items": {
+        "notify_birthday": {
+          "label": "Rappel d'anniversaire",
+          "desc": "Un message chaque année pour votre anniversaire."
+        },
+        "notify_annual_review": {
+          "label": "Revue annuelle du coffre",
+          "desc": "Une invitation à revoir et mettre à jour votre plan une fois par an."
+        },
+        "notify_document_expiry": {
+          "label": "Alertes d'expiration de documents",
+          "desc": "Des alertes lorsque des documents de votre coffre approchent de leur date d'expiration."
+        },
+        "notify_vault_nudges": {
+          "label": "Rappels pour compléter le coffre",
+          "desc": "Des conseils lorsque des éléments clés manquent dans votre coffre."
+        },
+        "notify_reengagement": {
+          "label": "Rappels de mise à jour",
+          "desc": "De légers rappels si votre coffre n'a pas été mis à jour depuis un moment."
+        },
+        "notify_trial_reminders": {
+          "label": "Rappels d'essai et de facturation",
+          "desc": "Des e-mails importants sur votre période d'essai et vos prochains paiements."
+        }
+      }
+    },
+    "data": {
+      "heading": "Mes données",
+      "intro": "Téléchargez une copie complète de tout ce que contient votre plan Everstead, comptes, documents, consignes, volontés et plus encore. Vos données vous appartiennent, toujours.",
+      "promiseLink": "Notre engagement sur les données →",
+      "demoDisabled": "L'export de données est désactivé en mode démo.",
+      "preparing": "Préparation de votre export…",
+      "export": "Exporter mes données",
+      "reauthTitle": "Confirmez que c'est bien vous",
+      "reauthBody": "Pour votre sécurité, veuillez ressaisir votre mot de passe avant de télécharger une copie complète de votre coffre.",
+      "passwordPlaceholder": "Votre mot de passe",
+      "verifying": "Vérification…",
+      "confirmExport": "Confirmer et exporter",
+      "reauthNoAccount": "Impossible de vérifier votre compte. Veuillez vous reconnecter.",
+      "reauthWrongPassword": "Ce mot de passe ne correspond pas. Veuillez réessayer.",
+      "reauthFailed": "Vérification impossible pour le moment. Veuillez réessayer.",
+      "exportFailedStatus": "Échec de l'export ({{status}})",
+      "exportFailed": "Échec de l'export. Veuillez réessayer.",
+      "exportDone": "Vos données ont été exportées. Conservez ce fichier en lieu sûr.",
+      "exportNote": "Comprend tous les comptes, les documents téléversés, les consignes, les volontés, les personnes de confiance et votre journal d'activité. Cela peut prendre quelques secondes pour les coffres volumineux."
+    },
+    "danger": {
+      "heading": "Zone sensible",
+      "demoDisabled": "La suppression de compte est désactivée en mode démo.",
+      "intro": "Supprimez définitivement votre compte et toutes les données associées, documents, contacts, consignes et réglages. Cette action est irréversible.",
+      "start": "Supprimer mon compte",
+      "confirmTitle": "Avant de partir, veuillez confirmer :",
+      "checkData": "J'ai téléchargé ou noté tous les documents et informations dont j'ai besoin. Je comprends qu'une fois supprimés, mes fichiers ne pourront pas être récupérés.",
+      "checkPermanent": "Je comprends que cette action est <b>définitive et irréversible</b>. Mon compte, toutes mes données et tout abonnement actif seront supprimés immédiatement.",
+      "deleting": "Suppression…",
+      "confirmDelete": "Supprimer définitivement mon compte"
+    }
+  },
+  "modals": {
+    "lifeEvent": {
+      "title": "Une pensée pendant que vous êtes là",
+      "later": "Merci, je le ferai plus tard"
+    },
+    "executorPreview": {
+      "eyebrow": "Aperçu de la vue exécuteur",
+      "whatTheySee": "Ce que {{name}} verrait",
+      "yourExecutor": "votre exécuteur testamentaire",
+      "planOwner": "Titulaire du plan",
+      "dob": "Né(e) le : {{date}}",
+      "trustedContacts": "Personnes de confiance ({{n}})",
+      "noContacts": "Aucune personne de confiance ajoutée pour le moment",
+      "statusActive": "Actif",
+      "statusPending": "En attente",
+      "personMeta": "{{role}} · {{email}}",
+      "accounts": "Comptes financiers ({{n}})",
+      "noAccounts": "Aucun compte documenté pour le moment",
+      "documents": "Documents clés ({{n}})",
+      "noDocuments": "Aucun document téléversé pour le moment",
+      "instructions": "Consignes ({{n}})",
+      "footer": "<b>Aperçu uniquement.</b> Votre exécuteur testamentaire voit cette vue après vérification de votre incapacité ou de votre décès, selon le moment d'accès que vous avez défini pour chaque personne."
+    }
+  }
+}

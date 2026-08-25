@@ -1,21 +1,31 @@
 import React, { useEffect, useState } from 'react'
 import { useSearchParams, useNavigate, Link } from 'react-router-dom'
 import { Shield, CheckCircle2, XCircle, Loader2, ArrowRight } from 'lucide-react'
+import { useTranslation, Trans } from 'react-i18next'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../contexts/AuthContext'
+import i18n from '../i18n'
+import enAcceptInvite from '../i18n/locales/en/acceptInvite.json'
+import frAcceptInvite from '../i18n/locales/fr/acceptInvite.json'
+
+// Self-registered namespace (keeps src/i18n/index.js untouched). Safe to move
+// into the central resources map later: re-adding the same bundle is a no-op.
+i18n.addResourceBundle('en', 'acceptInvite', enAcceptInvite)
+i18n.addResourceBundle('fr', 'acceptInvite', frAcceptInvite)
 
 export default function AcceptInvite() {
   const [searchParams]          = useSearchParams()
   const navigate                = useNavigate()
   const token                   = searchParams.get('token')
   const { user }                = useAuth()
+  const { t }                   = useTranslation('acceptInvite')
   const [state, setState]       = useState('loading')
   const [invite, setInvite]     = useState(null)
   const [owner, setOwner]       = useState(null)
   const [errorMsg, setErrorMsg] = useState('')
 
   useEffect(() => {
-    if (!token) { setState('error'); setErrorMsg('No invite token found in the link.'); return }
+    if (!token) { setState('error'); setErrorMsg(t('errors.noToken')); return }
     loadInvite()
   }, [token])
 
@@ -48,7 +58,7 @@ export default function AcceptInvite() {
     // Logged in — check email matches invite
     if (user.email !== invite.email) {
       setState('error')
-      setErrorMsg(`This invitation was sent to ${invite.email}. You're logged in as ${user.email}. Please sign in with the correct account.`)
+      setErrorMsg(t('errors.wrongEmail', { invited: invite.email, current: user.email }))
       return
     }
 
@@ -98,7 +108,7 @@ export default function AcceptInvite() {
           {state === 'loading' && (
             <div className="p-10 flex flex-col items-center text-center gap-4">
               <Loader2 size={28} className="text-navy-400 animate-spin" />
-              <p className="text-stone-500 text-sm">Loading your invitation…</p>
+              <p className="text-stone-500 text-sm">{t('loading')}</p>
             </div>
           )}
 
@@ -106,23 +116,32 @@ export default function AcceptInvite() {
             <>
               <div className="aurora-field aurora-dim p-7">
                 <p className="font-display text-xl font-light text-white leading-snug">
-                  {owner?.full_name} has invited you to their Everstead plan.
+                  {t('found.title', { name: owner?.full_name })}
                 </p>
                 <p className="text-stone-400 text-sm mt-2">
-                  They'd like you to be their <strong className="text-white">{invite.role}</strong>.
+                  <Trans
+                    t={t}
+                    i18nKey="found.roleLine"
+                    values={{ role: invite.role }}
+                    components={{ bold: <strong className="text-white" /> }}
+                  />
                 </p>
               </div>
               <div className="p-7">
                 <p className="text-stone-600 text-sm leading-relaxed mb-6">
-                  Everstead is a secure platform for organising digital life, accounts, documents, instructions, and final wishes.
-                  As <strong>{invite.role}</strong>, you'll have access to the sections {owner?.full_name} has chosen to share with your role.
+                  <Trans
+                    t={t}
+                    i18nKey="found.body"
+                    values={{ role: invite.role, name: owner?.full_name }}
+                    components={{ bold: <strong /> }}
+                  />
                 </p>
 
                 <div className="space-y-3 mb-7">
                   {[
-                    'You only see what\'s been shared with your specific role',
-                    'You don\'t need to do anything now, only when needed',
-                    'You can update your contact details after accepting',
+                    t('found.bullet1'),
+                    t('found.bullet2'),
+                    t('found.bullet3'),
                   ].map(item => (
                     <div key={item} className="flex items-start gap-2.5">
                       <CheckCircle2 size={15} className="text-sage-500 mt-0.5 shrink-0" />
@@ -133,7 +152,12 @@ export default function AcceptInvite() {
 
                 {user && user.email !== invite.email && (
                   <div className="mb-5 px-4 py-3 bg-amber-50 border border-amber-200 rounded-xl text-xs text-amber-800 leading-relaxed">
-                    <strong>Heads up:</strong> This invite is for <strong>{invite.email}</strong>. You're signed in as <strong>{user.email}</strong>. Sign out first if you want to accept with a different account.
+                    <Trans
+                      t={t}
+                      i18nKey="found.wrongAccount"
+                      values={{ invited: invite.email, current: user.email }}
+                      components={{ bold: <strong /> }}
+                    />
                   </div>
                 )}
 
@@ -141,13 +165,13 @@ export default function AcceptInvite() {
                   onClick={handleAccept}
                   className="btn-aurora w-full text-white font-semibold text-sm py-3.5 rounded-full transition-colors flex items-center justify-center gap-2 mb-3"
                 >
-                  Accept invitation <ArrowRight size={15} />
+                  {t('found.accept')} <ArrowRight size={15} />
                 </button>
                 <button
                   onClick={handleDecline}
                   className="w-full text-stone-400 text-sm py-2 hover:text-stone-600 transition-colors"
                 >
-                  Decline
+                  {t('found.decline')}
                 </button>
               </div>
             </>
@@ -156,7 +180,7 @@ export default function AcceptInvite() {
           {state === 'accepting' && (
             <div className="p-10 flex flex-col items-center text-center gap-4">
               <Loader2 size={28} className="text-navy-400 animate-spin" />
-              <p className="text-stone-500 text-sm">Confirming your role…</p>
+              <p className="text-stone-500 text-sm">{t('accepting')}</p>
             </div>
           )}
 
@@ -165,15 +189,20 @@ export default function AcceptInvite() {
               <div className="w-14 h-14 rounded-full bg-sage-50 flex items-center justify-center mb-5">
                 <CheckCircle2 size={28} className="text-sage-500" />
               </div>
-              <h2 className="font-display text-2xl font-light text-navy-950 mb-3">You're confirmed.</h2>
+              <h2 className="font-display text-2xl font-light text-navy-950 mb-3">{t('accepted.title')}</h2>
               <p className="text-stone-500 text-sm leading-relaxed mb-8 max-w-xs">
-                You're now part of {owner?.full_name ? `${owner.full_name}'s` : 'the'} Everstead plan as <strong>{invite?.role}</strong>.
+                <Trans
+                  t={t}
+                  i18nKey={owner?.full_name ? 'accepted.bodyNamed' : 'accepted.bodyGeneric'}
+                  values={{ name: owner?.full_name, role: invite?.role }}
+                  components={{ bold: <strong /> }}
+                />
               </p>
               <Link
                 to={`/delegate-dashboard?token=${token}`}
                 className="inline-flex items-center gap-2 rounded-full bg-navy-800 px-5 py-3 text-sm text-white font-medium hover:bg-navy-700 transition-colors"
               >
-                Open delegate dashboard <ArrowRight size={14} />
+                {t('accepted.cta')} <ArrowRight size={14} />
               </Link>
             </div>
           )}
@@ -183,9 +212,9 @@ export default function AcceptInvite() {
               <div className="w-14 h-14 rounded-full bg-stone-100 flex items-center justify-center mb-5">
                 <XCircle size={28} className="text-stone-400" />
               </div>
-              <h2 className="font-display text-2xl font-light text-navy-950 mb-3">Invitation declined.</h2>
+              <h2 className="font-display text-2xl font-light text-navy-950 mb-3">{t('declined.title')}</h2>
               <p className="text-stone-500 text-sm leading-relaxed">
-                We've notified the plan owner. If this was a mistake, ask them to re-send the invitation.
+                {t('declined.body')}
               </p>
             </div>
           )}
@@ -195,9 +224,9 @@ export default function AcceptInvite() {
               <div className="w-14 h-14 rounded-full bg-amber-50 flex items-center justify-center mb-5">
                 <Shield size={28} className="text-amber-400" />
               </div>
-              <h2 className="font-display text-2xl font-light text-navy-950 mb-3">Invitation expired.</h2>
+              <h2 className="font-display text-2xl font-light text-navy-950 mb-3">{t('expired.title')}</h2>
               <p className="text-stone-500 text-sm leading-relaxed">
-                This invite link is no longer valid. Ask the plan owner to re-send your invitation.
+                {t('expired.body')}
               </p>
             </div>
           )}
@@ -207,8 +236,8 @@ export default function AcceptInvite() {
               <div className="w-14 h-14 rounded-full bg-red-50 flex items-center justify-center mb-5">
                 <XCircle size={28} className="text-red-400" />
               </div>
-              <h2 className="font-display text-2xl font-light text-navy-950 mb-3">Something went wrong.</h2>
-              <p className="text-stone-500 text-sm leading-relaxed">{errorMsg || 'Please try again or contact support.'}</p>
+              <h2 className="font-display text-2xl font-light text-navy-950 mb-3">{t('error.title')}</h2>
+              <p className="text-stone-500 text-sm leading-relaxed">{errorMsg || t('error.fallback')}</p>
             </div>
           )}
 

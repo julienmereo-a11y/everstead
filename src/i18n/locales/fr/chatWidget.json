@@ -1,0 +1,10 @@
+{
+  "greeting": "Bonjour ! Je suis l'assistant Everstead. Je peux vous aider à comprendre comment Everstead fonctionne, répondre à vos questions sur les tarifs ou les fonctionnalités, ou vous aider à tirer le meilleur parti de votre forfait. Que souhaitez-vous savoir ?",
+  "launcherLabel": "Ouvrir le chat",
+  "assistantTag": "Assistant IA",
+  "inputPlaceholder": "Posez votre question…",
+  "errors": {
+    "generic": "Désolé, une erreur est survenue.",
+    "connection": "Désolé, je rencontre un problème de connexion. Veuillez réessayer."
+  }
+}

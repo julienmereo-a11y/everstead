@@ -1,0 +1,57 @@
+{
+  "loading": "Chargement de votre invitation…",
+  "fallbackPartner": "Votre partenaire",
+  "found": {
+    "title": "Invitation à rejoindre Everstead",
+    "subtitle": "<bold>{{name}}</bold> vous invite à créer votre propre coffre privé, dans le cadre de son plan Everstead+.",
+    "benefit1": "Votre propre coffre, entièrement privé",
+    "benefit2": "Organisez vos comptes, vos documents et vos dernières volontés",
+    "benefit3": "{{name}} ne peut pas voir vos données, sauf si vous les partagez",
+    "benefit4": "Couvert par son plan Everstead+, sans aucun coût pour vous",
+    "signedInNotice": "Vous êtes connecté en tant que <bold>{{email}}</bold>. Cliquez ci-dessous pour accepter et lier vos comptes.",
+    "accept": "Accepter l'invitation",
+    "wrongAccount": "<bold>Attention :</bold> cette invitation est destinée à <bold>{{invited}}</bold>. Vous êtes connecté en tant que <bold>{{current}}</bold>. Déconnectez-vous d'abord pour accepter avec le bon compte.",
+    "sentTo": "Invitation envoyée à",
+    "form": {
+      "nameLabel": "Votre nom complet",
+      "namePlaceholder": "Marie Dupont",
+      "passwordLabel": "Choisissez un mot de passe",
+      "passwordPlaceholder": "8 caractères minimum",
+      "hidePassword": "Masquer le mot de passe",
+      "showPassword": "Afficher le mot de passe",
+      "creating": "Création de votre coffre…",
+      "submit": "Créer votre coffre"
+    },
+    "privacyNote": "Votre coffre est entièrement privé. {{name}} ne pourra pas voir vos données, sauf si vous choisissez de les partager.",
+    "haveAccount": "Vous avez déjà un compte ?",
+    "signIn": "Connectez-vous plutôt"
+  },
+  "submitting": "Configuration de votre coffre…",
+  "success": {
+    "title": "Votre coffre est prêt.",
+    "body": "Vous faites désormais partie du plan Everstead+ de {{name}}. Votre coffre reste entièrement privé.",
+    "cta": "Accéder à votre tableau de bord"
+  },
+  "alreadyAccepted": {
+    "title": "Invitation déjà acceptée.",
+    "body": "Cette invitation a déjà été acceptée. Connectez-vous pour accéder à votre coffre.",
+    "cta": "Se connecter"
+  },
+  "expired": {
+    "title": "Invitation expirée.",
+    "body": "Ce lien d'invitation date de plus de 7 jours. Demandez au titulaire du plan d'envoyer une nouvelle invitation depuis les réglages de son compte."
+  },
+  "error": {
+    "title": "Une erreur est survenue.",
+    "fallback": "Veuillez réessayer ou contacter l'assistance."
+  },
+  "errors": {
+    "invalidLink": "Ce lien d'invitation est invalide ou a expiré.",
+    "cancelled": "Cette invitation a été annulée.",
+    "sessionNotFound": "Session introuvable. Veuillez actualiser la page et réessayer.",
+    "acceptFailed": "Impossible d'accepter l'invitation.",
+    "generic": "Une erreur est survenue. Veuillez réessayer.",
+    "accountCreationFailed": "La création du compte a échoué. Veuillez réessayer.",
+    "sessionError": "Erreur de session. Veuillez réessayer."
+  }
+}

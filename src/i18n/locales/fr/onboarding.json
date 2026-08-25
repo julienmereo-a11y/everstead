@@ -1,0 +1,136 @@
+{
+  "fallbackName": "cher membre",
+  "opener": {
+    "welcome": "Bienvenue, **{{name}}** 👋 Quel plaisir de vous accueillir. Rien ne presse aujourd'hui, et rien de ce que vous ajoutez ne sera jamais partagé sans votre accord.",
+    "firstQuestion": "Avant les aspects pratiques, j'aimerais commencer par **vous**, la part qui mérite vraiment d'être conservée. Confiez-moi une chose que vous aimeriez voir transmise : **une chanson que vous aimez** 🎵, une conviction qui vous tient à cœur 💭, ou un moment qui vous a marqué ✨. Ce qui vous vient en premier."
+  },
+  "header": {
+    "title": "Préparons votre Everstead",
+    "subtitle": "Rien ne presse, vous pouvez vous arrêter à tout moment.",
+    "closeTitle": "Terminer pour l'instant"
+  },
+  "saved": {
+    "aboutMe": "Ajouté à votre page À propos de moi, vous pourrez le modifier à tout moment",
+    "profile": "Enregistré, vous pouvez le modifier à tout moment",
+    "generic": "Enregistré",
+    "accountPill": "{{name}} ajouté à votre coffre",
+    "accountFallback": "Compte",
+    "trustedPersonPill": "{{name}} ajouté(e), envoyez l'invitation quand vous le souhaitez",
+    "trustedPersonFallback": "Personne de confiance"
+  },
+  "errors": {
+    "assistantBusy": "L'assistant met un peu de temps à répondre. Veuillez réessayer.",
+    "generic": "Une erreur est survenue. Veuillez réessayer.",
+    "saveFailed": "Impossible d'enregistrer cet élément."
+  },
+  "nudgeFallback": "Souhaitez-vous ajouter autre chose, peut-être un compte, un document ou une personne de confiance ? Sinon, tout est en ordre pour l'instant, et tout ce que vous avez ajouté reste conservé en lieu sûr.",
+  "cards": {
+    "toSave": "À enregistrer",
+    "hint": "Modifiez ce que vous voulez, décochez pour passer, rien n'est enregistré tant que vous ne validez pas.",
+    "saveZero": "Enregistrer",
+    "saveItem": "Enregistrer 1 élément",
+    "saveItems": "Enregistrer {{count}} éléments",
+    "requiredError": "Le champ {{label}} doit être renseigné avant de pouvoir enregistrer.",
+    "saved": "Enregistré",
+    "skip": "Passer",
+    "dismiss": "Ignorer",
+    "pleaseCheck": "À vérifier",
+    "selectPlaceholder": "Sélectionner…",
+    "lifeEvents": "Moments de vie"
+  },
+  "input": {
+    "placeholder": "Écrivez votre réponse…",
+    "sendLabel": "Envoyer le message",
+    "skipForNow": "Passer pour l'instant",
+    "finishReview": "Terminer et vérifier mes informations"
+  },
+  "types": {
+    "about_me": {
+      "label": "À propos de vous",
+      "saveThis": "Enregistrer ces informations sur vous",
+      "fields": {
+        "passions": { "label": "Passions" },
+        "reflections": { "label": "Réflexions" },
+        "spotify_url": { "label": "Lien playlist ou chanson" }
+      }
+    },
+    "profile": {
+      "label": "Vos coordonnées",
+      "saveThis": "Enregistrer vos coordonnées",
+      "fields": {
+        "city": { "label": "Ville", "placeholder": "ex. Paris" }
+      }
+    },
+    "account": {
+      "label": "Compte",
+      "saveThis": "Enregistrer ce compte",
+      "fields": {
+        "institution": { "label": "Établissement" },
+        "category": {
+          "label": "Catégorie",
+          "options": {
+            "banking": "Banque",
+            "retirement": "Retraite",
+            "investment": "Placements",
+            "insurance": "Assurance",
+            "digital": "Numérique",
+            "property": "Immobilier",
+            "other": "Autre"
+          }
+        },
+        "account_type": { "label": "Type", "placeholder": "ex. Compte courant" },
+        "account_number_hint": { "label": "4 derniers chiffres" },
+        "balance_display": { "label": "Solde", "placeholder": "facultatif" },
+        "notes": { "label": "Notes" }
+      }
+    },
+    "trusted_person": {
+      "label": "Personne de confiance",
+      "saveThis": "Enregistrer cette personne de confiance",
+      "fields": {
+        "name": { "label": "Nom" },
+        "email": { "label": "Adresse e-mail" },
+        "role": {
+          "label": "Rôle",
+          "options": {
+            "spousePartner": "Conjoint / Partenaire",
+            "primaryExecutor": "Exécuteur testamentaire principal",
+            "secondaryExecutor": "Exécuteur testamentaire secondaire",
+            "solicitor": "Notaire",
+            "familyMember": "Membre de la famille",
+            "familyCaretaker": "Aidant familial",
+            "financialAdviser": "Conseiller financier",
+            "healthcareProxy": "Mandataire de santé"
+          }
+        },
+        "notes": { "label": "Notes" }
+      }
+    }
+  },
+  "details": {
+    "title": "Quelques détails pour compléter l'ensemble",
+    "subtitle": "Pour que tout soit exact pour les personnes qui pourraient un jour en avoir besoin. Vous pourrez modifier tout cela plus tard dans les Paramètres.",
+    "fullName": "Nom complet",
+    "dateOfBirth": "Date de naissance",
+    "phone": "Téléphone",
+    "phonePlaceholder": "+33 6 12 34 56 78",
+    "address1": "Adresse (ligne 1)",
+    "address1Placeholder": "14 rue des Lilas",
+    "address2": "Adresse (ligne 2)",
+    "address2Placeholder": "Facultatif",
+    "city": "Ville",
+    "cityPlaceholder": "Paris",
+    "postcode": "Code postal",
+    "postcodePlaceholder": "75011",
+    "country": "Pays",
+    "skipForNow": "Passer pour l'instant",
+    "saving": "Enregistrement…",
+    "saveContinue": "Enregistrer et continuer"
+  },
+  "celebrate": {
+    "title": "Un très beau début, {{name}}.",
+    "body": "Vous venez de faire l'un des gestes les plus attentionnés qui soient, et tout ce que vous avez ajouté sera conservé, en lieu sûr et en toute confidentialité, pour le moment où l'on en aura besoin.",
+    "tourCta": "Faire une visite rapide",
+    "dashboardCta": "Aller directement à mon tableau de bord"
+  }
+}
