@@ -2839,7 +2839,6 @@ export default function AdminPanel() {
   const isDemo = searchParams.get('demo') === 'true'
 
   const [activeTab, setActiveTab]           = useState('overview')
-  const [needsMfa, setNeedsMfa]             = useState(false)
   const [reports, setReports]               = useState(() => isDemo ? getLiveReports() : [])
   const [selected, setSelected]             = useState(null)
   const [filterType, setFilterType]         = useState('all')
@@ -2858,35 +2857,24 @@ export default function AdminPanel() {
   }
 
   // Announce the sign-in. One email per browser session, not per page load, so
-  // a day of moving around the panel is a single alert. The endpoint also tells
-  // us whether this admin still has no authenticator app enrolled.
+  // a day of moving around the panel is a single alert.
   useEffect(() => {
     if (isDemo) return
-    let active = true
     const ALERTED = 'everstead_admin_alerted'
     ;(async () => {
       try {
         const { data: { session } } = await supabase.auth.getSession()
         if (!session?.access_token) return
-        if (sessionStorage.getItem(ALERTED) === session.user?.id) {
-          // Already alerted this browser session; still need the MFA status.
-          const { data } = await supabase.auth.mfa.listFactors()
-          const verified = [...(data?.totp ?? [])].filter(f => f.status === 'verified')
-          if (active) setNeedsMfa(verified.length === 0)
-          return
-        }
+        if (sessionStorage.getItem(ALERTED) === session.user?.id) return
         const res = await fetch('/api/admin/signin-alert', {
           method:  'POST',
           headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${session.access_token}` },
         })
-        const json = await res.json().catch(() => ({}))
         if (res.ok) sessionStorage.setItem(ALERTED, session.user?.id || '1')
-        if (active) setNeedsMfa(!!json.needsMfa)
       } catch {
         // An alert we could not send must never keep an admin out of the panel.
       }
     })()
-    return () => { active = false }
   }, [isDemo])
 
   useEffect(() => {
@@ -2996,28 +2984,6 @@ export default function AdminPanel() {
       </div>
 
       <div className="flex-1 max-w-6xl w-full mx-auto px-6 py-8 space-y-8">
-
-        {/* Until an authenticator app is enrolled, a stolen password is the only
-            thing between an attacker and this panel. Kept prominent on purpose. */}
-        {needsMfa && (
-          <div className="bg-amber-50 border border-amber-300 rounded-2xl px-5 py-4 flex flex-col sm:flex-row sm:items-center gap-4">
-            <div className="w-10 h-10 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center shrink-0">
-              <ShieldAlert size={18} />
-            </div>
-            <div className="flex-1">
-              <p className="text-sm font-semibold text-amber-900">This admin account has no authenticator app</p>
-              <p className="text-sm text-amber-800 mt-0.5">
-                The emailed sign-in code protects the browser flow, not the account. An authenticator app is checked inside the token itself, so it also protects the admin API.
-              </p>
-            </div>
-            <Link
-              to="/setup-mfa?next=/admin"
-              className="shrink-0 inline-flex items-center gap-1.5 bg-amber-600 hover:bg-amber-700 text-white text-xs font-semibold px-4 py-2.5 rounded-full transition-colors"
-            >
-              <Shield size={13} /> Set it up
-            </Link>
-          </div>
-        )}
 
         {/* ── Overview tab ── */}
         {activeTab === 'overview' && (

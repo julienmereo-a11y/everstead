@@ -31,14 +31,17 @@ function claimFromVerifiedToken(token, claim) {
  *
  * Two gates:
  *  1. A valid JWT whose profiles.role is 'admin'.
- *  2. STEP-UP: if that admin has enrolled an authenticator app, the session
- *     must actually have completed it (aal2). A stolen password alone is then
- *     not enough to reach the admin surface.
+ *  2. STEP-UP: the session must have completed an authenticator challenge
+ *     (aal2). A stolen password alone is not enough to reach the admin surface.
  *
- * The step-up is conditional ON PURPOSE. Enforcing aal2 unconditionally would
- * lock out an admin who has not enrolled yet, including the only admin on the
- * account. Once every admin has a verified factor, drop the
- * `factors?.length` condition below and require aal2 outright.
+ * The aal2 requirement is unconditional as of 2026-08-26, once every admin had
+ * enrolled. An admin without a verified factor can no longer reach the admin
+ * API at all: AdminLogin sends them to /setup-mfa to enrol, which verifies as
+ * part of setup and lands them back here at aal2.
+ *
+ * Note the emailed sign-in code cannot serve as this gate. It is a client-flow
+ * check that returns a plain password grant, so nothing in the token proves it
+ * happened. Only a TOTP challenge is stamped into the JWT.
  */
 export async function requireAdmin(req) {
   const token = (req.headers.authorization || '').replace(/^Bearer\s+/i, '')
@@ -50,10 +53,8 @@ export async function requireAdmin(req) {
     .from('profiles').select('role').eq('id', user.id).maybeSingle()
   if (profile?.role !== 'admin') return null
 
-  const { data: factorData } = await adminDb.auth.admin.mfa.listFactors({ userId: user.id })
-  const factors = (factorData?.factors ?? []).filter(f => f.status === 'verified')
-  if (factors.length > 0 && claimFromVerifiedToken(token, 'aal') !== 'aal2') {
-    return null // enrolled but this session never completed the second factor
+  if (claimFromVerifiedToken(token, 'aal') !== 'aal2') {
+    return null // no authenticator challenge on this session
   }
 
   return user
