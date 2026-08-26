@@ -8,8 +8,10 @@ import { clearReminders, notificationsGranted, requestNotificationPermission, re
 import { haptic } from '../../../../lib/haptics'
 import SecScreen from '../components/SecScreen'
 
-// Bump on each build so you can confirm on-device which bundle is running.
-const APP_BUILD = '2026-08-12 · build 41'
+// Stamped by vite at build time (date + git sha, see vite.config.js), so what
+// you read on the device is always the bundle actually running. Never edit by
+// hand: a marker somebody has to remember to bump is a marker that lies.
+const APP_BUILD = typeof __APP_BUILD__ === 'string' ? __APP_BUILD__ : 'dev'
 
 function Toggle({ on, onChange, disabled }) {
   return (

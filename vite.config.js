@@ -3,6 +3,7 @@ import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa'
 import fs from 'node:fs/promises'
 import path from 'node:path'
+import { execSync } from 'node:child_process'
 
 const isCapacitorBuild = process.env.CAP_BUILD === '1'
 // The on-screen error catcher below is a DEBUG tool. It must never ship in a build
@@ -68,7 +69,21 @@ function dropWebOnlyMediaFromNative() {
   }
 }
 
+// On-device build marker. This used to be a string somebody had to remember to
+// edit, so it sat reading "2026-08-12 · build 41" for two weeks and told you
+// nothing about what was actually running. Now it is stamped at build time, so
+// the number on the Settings screen is always the bundle in front of you and a
+// stale Xcode build is obvious.
+const gitSha = (() => {
+  try { return execSync('git rev-parse --short HEAD', { encoding: 'utf8' }).trim() }
+  catch { return 'nogit' }
+})()
+const BUILD_MARKER = `${new Date().toISOString().slice(0, 10)} · ${gitSha}`
+
 export default defineConfig({
+  define: {
+    __APP_BUILD__: JSON.stringify(BUILD_MARKER),
+  },
   plugins: [
     react(),
     stripWebOnlyTagsForNative(),
