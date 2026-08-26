@@ -1,7 +1,8 @@
 import React, { useState } from 'react'
 import { supabase } from '../../../lib/supabase'
 import { apiPost, isNative, isIOS } from '../../../lib/platform'
-import { detectDeviceLanguage } from '../../../lib/deviceLanguage'
+import { detectDeviceLanguage, detectDeviceCountry } from '../../../lib/deviceLanguage'
+import { countryByCode } from '../../../config/countries'
 import { AccountsIcon, DocIcon, HeartIcon } from './icons'
 
 // Google ships on BOTH platforms now that iOS pairs it with Sign in with Apple
@@ -91,6 +92,11 @@ export default function MobileAuthFlow() {
         // email match the app this person just signed up in. handle_new_user
         // reads it off the signup metadata.
         language: detectDeviceLanguage(),
+        // The app does not ask for a country the way the web form does, which
+        // left every app member with a null one: outside the euro pricing rule
+        // and missing from every breakdown by market. This is a guess from the
+        // phone, null when unclear, and editable in Settings.
+        country: detectDeviceCountry(countryByCode),
       })
       await applySession(data)
     } catch (err) {

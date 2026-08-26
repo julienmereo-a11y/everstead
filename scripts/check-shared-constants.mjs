@@ -105,6 +105,21 @@ const pricing = await loadWithEnvStubbed('src/config/pricing.js')
   }
 }
 
+// ── Fact 4: the country lists ───────────────────────────────────────────────
+// Owner: src/config/countries.js, the list the signup form renders.
+// Mirror: api/_lib/countries.js, which decides who is allowed to register.
+// A copy, because no api/ file imports from src/ and this one guards account
+// creation. Drift here would let the form offer a country the server refuses,
+// or worse, let the server accept one the product will not serve.
+{
+  const client = await loadWithEnvStubbed('src/config/countries.js')
+  const server = await import(ROOT + 'api/_lib/countries.js')
+  check('ACCEPTED_COUNTRIES: api/_lib/countries.js has drifted from src/config/countries.js',
+        client.COUNTRIES.map(c => c.name).sort(), [...server.ACCEPTED_COUNTRIES].sort())
+  check('RESTRICTED_COUNTRIES: api/_lib/countries.js has drifted from src/config/countries.js',
+        [...client.RESTRICTED_COUNTRIES].sort(), [...server.RESTRICTED_COUNTRIES].sort())
+}
+
 if (failures.length) {
   console.error('\n  Shared constants have drifted:\n')
   for (const f of failures) console.error('    ' + f + '\n')

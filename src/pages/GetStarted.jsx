@@ -10,6 +10,7 @@ import {
 import { Elements, PaymentElement, useStripe, useElements } from '@stripe/react-stripe-js'
 import { useTranslation } from 'react-i18next'
 import i18n from '../i18n'
+import { COUNTRIES, RESTRICTED_COUNTRIES } from '../config/countries'
 import enGetStarted from '../i18n/locales/en/getStarted.json'
 import frGetStarted from '../i18n/locales/fr/getStarted.json'
 import { useAuth } from '../contexts/AuthContext'
@@ -53,42 +54,6 @@ const PLAN_OPTIONS = [
   // demo and presented as its own band below the two consumer cards (mirrors /pricing).
 ]
 
-// Sanctioned / restricted countries — registration blocked for compliance
-const RESTRICTED_COUNTRIES = new Set([
-  'Russia', 'North Korea', 'Iran', 'Syria', 'Belarus', 'Afghanistan',
-  'Myanmar', 'Venezuela', 'Zimbabwe', 'Nicaragua', 'Libya', 'Somalia',
-  'Yemen', 'Sudan', 'Mali', 'Burundi', 'Central African Republic',
-  'Democratic Republic of Congo', 'Iraq', 'Lebanon', 'Bosnia and Herzegovina',
-])
-
-const COUNTRIES = [
-  // Primary markets
-  { name: 'United Kingdom', code: 'GB', dial: '+44'  },
-  { name: 'Ireland',        code: 'IE', dial: '+353' },
-  { name: 'United States',  code: 'US', dial: '+1'   },
-  { name: 'Canada',         code: 'CA', dial: '+1'   },
-  // Europe
-  { name: 'Austria',        code: 'AT', dial: '+43'  },
-  { name: 'Belgium',        code: 'BE', dial: '+32'  },
-  { name: 'Denmark',        code: 'DK', dial: '+45'  },
-  { name: 'Finland',        code: 'FI', dial: '+358' },
-  { name: 'France',         code: 'FR', dial: '+33'  },
-  { name: 'Germany',        code: 'DE', dial: '+49'  },
-  { name: 'Greece',         code: 'GR', dial: '+30'  },
-  { name: 'Italy',          code: 'IT', dial: '+39'  },
-  { name: 'Luxembourg',     code: 'LU', dial: '+352' },
-  { name: 'Netherlands',    code: 'NL', dial: '+31'  },
-  { name: 'Norway',         code: 'NO', dial: '+47'  },
-  { name: 'Poland',         code: 'PL', dial: '+48'  },
-  { name: 'Portugal',       code: 'PT', dial: '+351' },
-  { name: 'Spain',          code: 'ES', dial: '+34'  },
-  { name: 'Sweden',         code: 'SE', dial: '+46'  },
-  { name: 'Switzerland',    code: 'CH', dial: '+41'  },
-  // Middle East
-  { name: 'UAE',            code: 'AE', dial: '+971' },
-  { name: 'Qatar',          code: 'QA', dial: '+974' },
-  { name: 'Saudi Arabia',   code: 'SA', dial: '+966' },
-]
 
 // ─────────────────────────────────────────────────────────────
 // GEO-ACCESS CONFIG

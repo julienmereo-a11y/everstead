@@ -1,6 +1,7 @@
 import { createClient } from '@supabase/supabase-js'
 import { Resend } from 'resend'
 import { withSentry, captureException } from '../lib/sentry.js'
+import { ACCEPTED_COUNTRIES, RESTRICTED_COUNTRIES } from '../_lib/countries.js'
 
 const supabase = createClient(process.env.VITE_SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY)
 const resend = new Resend(process.env.RESEND_API_KEY)
@@ -165,6 +166,16 @@ async function handler(req, res) {
     // Whitelisted language preference ('fr' signups come from the /fr funnel);
     // handle_new_user stamps profiles.language at INSERT.
     const language    = ['en', 'fr'].includes(req.body.language) ? req.body.language : 'en'
+    // Country, when the caller knows one. The app has no country field so it
+    // sends a guess from the phone; the web form asks outright. Validated
+    // against the accepted list, so a client cannot write an arbitrary string,
+    // and refused outright for a restricted one — the web checked this in the
+    // browser only, which is no check at all for anything hitting the API.
+    const rawCountry  = typeof req.body.country === 'string' ? req.body.country.trim() : ''
+    if (rawCountry && RESTRICTED_COUNTRIES.has(rawCountry)) {
+      return res.status(403).json({ error: 'We cannot open accounts in that country.' })
+    }
+    const country     = ACCEPTED_COUNTRIES.has(rawCountry) ? rawCountry : null
     // Create user server-side (bypasses captcha). Auto-confirm email. Pass the plan in
     // metadata so the handle_new_user trigger stamps profiles.plan at INSERT — this is
     // the ONLY way the client can end up on 'free', since the profile guard trigger
@@ -172,7 +183,8 @@ async function handler(req, res) {
     const { data: created, error: createErr } = await supabase.auth.admin.createUser({
       email,
       password,
-      user_metadata: { full_name: name ?? email, role: profileRole, language, ...(plan ? { plan } : {}) },
+      user_metadata: { full_name: name ?? email, role: profileRole, language,
+                       ...(country ? { country } : {}), ...(plan ? { plan } : {}) },
       email_confirm: true,
     })
     if (createErr) return res.status(400).json({ error: createErr.message })

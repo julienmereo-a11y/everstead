@@ -93,3 +93,40 @@ export function preferredAppLanguage() {
   const lang = detectDeviceLanguage()
   return SUPPORTED.includes(lang) ? lang : 'en'
 }
+
+/**
+ * A best guess at which country the phone is in, as the English country name
+ * stored in profiles.country, or null when the signals do not clearly agree.
+ *
+ * The app never asks this at sign-up (the web form does), so app members had a
+ * null country, which left them out of the euro pricing rule and out of every
+ * admin breakdown by market. A guess from the phone beats nothing, and it is
+ * editable in Settings.
+ *
+ * Null on anything unclear ON PURPOSE. A wrong country is worse than an empty
+ * one: it feeds the restricted-country rule and which currency someone is
+ * billed in, so this only answers where it is confident.
+ */
+const TIME_ZONE_COUNTRIES = {
+  'Europe/London': 'United Kingdom',
+  'Europe/Paris':  'France',
+  'Europe/Dublin': 'Ireland',
+}
+
+export function detectDeviceCountry(countryByCode) {
+  try {
+    // The region subtag is the explicit answer when the phone gives one.
+    for (const tag of deviceLocales()) {
+      const subtags = String(tag).split(/[-_]/).slice(1)
+      for (const s of subtags) {
+        if (!/^[A-Za-z]{2}$/.test(s)) continue
+        const name = countryByCode?.(s)
+        if (name) return name
+      }
+    }
+    // Otherwise fall back to the time zone, for the handful we are sure about.
+    return TIME_ZONE_COUNTRIES[deviceTimeZone()] ?? null
+  } catch {
+    return null
+  }
+}

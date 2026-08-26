@@ -75,6 +75,32 @@ ok('app returns fr for an English phone in France',
 ok('app returns en for an English phone in the UK',
    await preferred({ native: true, languages: ['en-GB'] }) === 'en')
 
+// detectDeviceCountry(): confident answers only. A wrong country feeds the
+// restricted-country rule and the billing currency, so unclear must mean null.
+async function country({ languages, timeZone = 'Europe/London' }) {
+  Object.defineProperty(globalThis, 'navigator', {
+    value: { languages, language: languages[0] }, configurable: true, writable: true,
+  })
+  Object.defineProperty(globalThis, 'Intl', {
+    value: { DateTimeFormat: () => ({ resolvedOptions: () => ({ locale: languages[0], timeZone }) }) },
+    configurable: true, writable: true,
+  })
+  const { detectDeviceCountry } = await import(mod + '?t=' + Math.random())
+  const { countryByCode } = await import(new URL('../src/config/countries.js', import.meta.url).href)
+  return detectDeviceCountry(countryByCode)
+}
+
+ok('fr-FR → France',            await country({ languages: ['fr-FR'], timeZone: 'Europe/Paris' }) === 'France')
+ok('en-GB → United Kingdom',    await country({ languages: ['en-GB'] }) === 'United Kingdom')
+ok('en-IE → Ireland',           await country({ languages: ['en-IE'], timeZone: 'Europe/Dublin' }) === 'Ireland')
+ok('de-DE → Germany',           await country({ languages: ['de-DE'], timeZone: 'Europe/Berlin' }) === 'Germany')
+ok('bare fr in Paris → France (time zone)',
+   await country({ languages: ['fr'], timeZone: 'Europe/Paris' }) === 'France')
+ok('unknown region + unknown zone → null',
+   await country({ languages: ['xx'], timeZone: 'Pacific/Chatham' }) === null)
+ok('region we do not sell to → null rather than a guess',
+   await country({ languages: ['ja-JP'], timeZone: 'Asia/Tokyo' }) === null)
+
 delete globalThis.Capacitor
 Object.defineProperty(globalThis, 'Intl', { value: realIntl, configurable: true, writable: true })
 console.log(`\n  ${pass} passed, ${fail} failed`)

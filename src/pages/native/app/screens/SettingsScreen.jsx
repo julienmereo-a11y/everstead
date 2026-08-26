@@ -7,6 +7,8 @@ import { getLockState, setBiometricEnabled, clearPasscode, biometricAvailable } 
 import { clearReminders, notificationsGranted, requestNotificationPermission, registerForPush, notificationStatus } from '../../../../lib/notifications'
 import { haptic } from '../../../../lib/haptics'
 import SecScreen from '../components/SecScreen'
+import i18n from '../../../../i18n'
+import { COUNTRIES } from '../../../../config/countries'
 
 // Stamped by vite at build time (date + git sha, see vite.config.js), so what
 // you read on the device is always the bundle actually running. Never edit by
@@ -49,7 +51,7 @@ export default function SettingsScreen({ app }) {
   const profile = app.profile || auth.profile
   const updateProfile = app.demo ? (async () => {}) : auth.updateProfile
   const signOut = app.demo ? app.onSignOut : auth.signOut
-  const [details, setDetails] = useState({ full_name: '', phone: '' })
+  const [details, setDetails] = useState({ full_name: '', phone: '', country: '' })
   const [pw, setPw] = useState({ next: '', confirm: '' })
   const [pwMsg, setPwMsg] = useState(null)
   const [notifs, setNotifs] = useState({})
@@ -104,7 +106,7 @@ export default function SettingsScreen({ app }) {
 
   useEffect(() => {
     if (!profile) return
-    setDetails({ full_name: profile.full_name || '', phone: profile.phone || '' })
+    setDetails({ full_name: profile.full_name || '', phone: profile.phone || '', country: profile.country || '' })
     setNotifs(Object.fromEntries(NOTIFS.map(n => [n.key, profile[n.key] !== false])))
     setAiOn(profile.ai_features_enabled !== false)
   }, [profile])
@@ -173,7 +175,35 @@ export default function SettingsScreen({ app }) {
         <input className="inp" value={details.full_name} onChange={e => setDetails(d => ({ ...d, full_name: e.target.value }))} />
         <label className="flabel">Phone</label>
         <input className="inp" value={details.phone} onChange={e => setDetails(d => ({ ...d, phone: e.target.value }))} placeholder="Optional" />
+        {/* The app never asks for this at sign-up, so it is a guess from the
+            phone until someone corrects it here. It decides which currency
+            Everstead+ is billed in. */}
+        <label className="flabel">Country</label>
+        <select className="inp" value={details.country} onChange={e => setDetails(d => ({ ...d, country: e.target.value }))}>
+          <option value="">Not set</option>
+          {COUNTRIES.map(c => <option key={c.code} value={c.name}>{c.name}</option>)}
+        </select>
         <button className={`btn w100 ${savingDetails ? 'dis' : ''}`} style={{ marginTop: 16 }} onClick={saveDetails} disabled={savingDetails}>{savingDetails ? 'Saving…' : 'Save details'}</button>
+      </Card>
+
+      {/* The app picks a language from the phone on first launch (see
+          src/lib/deviceLanguage.js). This is how someone overrides that, and
+          the choice follows them into their emails. */}
+      <Card title="Language">
+        <select
+          className="inp"
+          value={profile?.language === 'fr' ? 'fr' : 'en'}
+          onChange={async (e) => {
+            const lang = e.target.value
+            i18n.changeLanguage(lang)
+            haptic.tick()
+            try { await updateProfile({ language: lang }); app.say(lang === 'fr' ? 'Langue enregistrée' : 'Language saved') }
+            catch { app.say('Could not save your language.', 'error') }
+          }}
+        >
+          <option value="en">English</option>
+          <option value="fr">Français</option>
+        </select>
       </Card>
 
       <Card title="Change password">
