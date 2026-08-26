@@ -3,6 +3,7 @@ import { Resend } from 'resend'
 import { withSentry } from '../lib/sentry.js'
 import { rateLimited } from '../_lib/rate-limit.js'
 import { translator, languageForUser } from '../_lib/email-i18n.js'
+import { sealToken, hashCode } from '../_lib/mfa-crypto.js'
 
 const supabase = createClient(process.env.VITE_SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY)
 const resend   = new Resend(process.env.RESEND_API_KEY)
@@ -55,15 +56,22 @@ async function handler(req, res) {
     ? String(process.env.APP_REVIEW_CODE)
     : String(Math.floor(100000 + Math.random() * 900000))
 
-  // Store session + code — upsert so a retry replaces the previous one
+  // Sweep rows whose window has passed. Without this they were never deleted:
+  // an abandoned sign-in left a usable session sitting in the table indefinitely
+  // (the oldest found in production was three months old).
+  await supabase.from('mfa_pending').delete().lt('expires_at', new Date().toISOString())
+
+  // Store the half-finished session + code — upsert so a retry replaces the
+  // previous one. The tokens are sealed and the code is stored as an HMAC, so
+  // this row is inert to anyone who can read the table but not the environment.
   const { error: dbErr } = await supabase.from('mfa_pending').upsert(
     {
       email,
-      code,
-      access_token,
-      refresh_token,
-      attempts:   0,
-      expires_at: new Date(Date.now() + 10 * 60 * 1000).toISOString(),
+      code:          hashCode(code, email),
+      access_token:  sealToken(access_token),
+      refresh_token: sealToken(refresh_token),
+      attempts:      0,
+      expires_at:    new Date(Date.now() + 10 * 60 * 1000).toISOString(),
     },
     { onConflict: 'email' }
   )

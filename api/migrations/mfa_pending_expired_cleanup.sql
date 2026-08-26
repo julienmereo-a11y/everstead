@@ -1,0 +1,17 @@
+-- ─────────────────────────────────────────────────────────────────────────────
+-- One-off cleanup of expired mfa_pending rows (applied 2026-08-26).
+--
+-- mfa_pending holds a half-finished sign-in between the password step and the
+-- emailed code step. Rows were only ever deleted on a successful verify, so an
+-- abandoned sign-in left its row behind forever. Two were found in production,
+-- one from 16 May, each still holding a live access token and refresh token in
+-- plain text, for accounts that still had active sessions.
+--
+-- Both rows deleted. The tokens are now sealed with AES-256-GCM and the code is
+-- stored as an HMAC (api/_lib/mfa-crypto.js), and api/auth/mfa-send-code.js
+-- sweeps expired rows on every sign-in attempt, so this cannot accumulate again.
+--
+-- RLS is on with zero policies, so only the service role ever reads this table.
+-- That is correct and should stay that way.
+-- ─────────────────────────────────────────────────────────────────────────────
+delete from public.mfa_pending where expires_at < now();
