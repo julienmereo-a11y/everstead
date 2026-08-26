@@ -1,5 +1,6 @@
 import { createClient } from '@supabase/supabase-js'
 import { withSentry } from '../lib/sentry.js'
+import { requireAdmin } from '../_lib/admin-auth.js'
 
 const supabase = createClient(
   process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL,
@@ -12,29 +13,37 @@ const supabase = createClient(
 // Returns a cohort funnel for the last N days (default 90) based on the
 // `first_X_added_at` columns stamped by add_funnel_instrumentation.sql.
 //
-// Auth: Bearer CRON_SECRET (or ?token= query param for browser convenience)
+// Auth, in order of preference:
+//   1. An admin session (Authorization: Bearer <supabase access token>)
+//   2. Authorization: Bearer $ADMIN_TOKEN or $CRON_SECRET, for scripts
+//   3. ?token=$ADMIN_TOKEN, for opening the HTML view in a browser
+//
+// A URL secret ends up in browser history, referrer headers and every proxy log
+// it passes through, so the query-string path takes ADMIN_TOKEN only. CRON_SECRET
+// authorises every cron endpoint we have and must never travel in a URL.
 //
 // Usage:
-//   curl -H "Authorization: Bearer $CRON_SECRET" \
+//   curl -H "Authorization: Bearer $ADMIN_TOKEN" \
 //        https://www.everstead.care/api/admin/funnel?days=90
 //
 //   Browser (nicely formatted HTML):
-//   https://www.everstead.care/api/admin/funnel?token=YOUR_CRON_SECRET&format=html
-//
-//   Browser (JSON):
-//   https://www.everstead.care/api/admin/funnel?token=YOUR_CRON_SECRET
+//   https://www.everstead.care/api/admin/funnel?token=YOUR_ADMIN_TOKEN&format=html
 // ─────────────────────────────────────────────────────────────────────────────
 
 async function handler(req, res) {
   // ── Auth ────────────────────────────────────────────────────────────────
-  // Accepts either CRON_SECRET (used by cron jobs) OR ADMIN_TOKEN
-  // (separate non-sensitive token for browser/admin convenience).
-  const bearerToken = (req.headers.authorization || '').replace(/^Bearer\s+/i, '')
-  const queryToken  = (req.query.token || '').toString()
-  const provided    = bearerToken || queryToken
-  const validTokens = [process.env.ADMIN_TOKEN, process.env.CRON_SECRET].filter(Boolean)
-  if (validTokens.length === 0 || !validTokens.includes(provided)) {
-    return res.status(401).json({ error: 'Unauthorised' })
+  const bearerToken  = (req.headers.authorization || '').replace(/^Bearer\s+/i, '')
+  const queryToken   = (req.query.token || '').toString()
+  const headerSecrets = [process.env.ADMIN_TOKEN, process.env.CRON_SECRET].filter(Boolean)
+
+  const bySecret = (bearerToken && headerSecrets.includes(bearerToken))
+    || (queryToken && !!process.env.ADMIN_TOKEN && queryToken === process.env.ADMIN_TOKEN)
+
+  if (!bySecret) {
+    // Falls back to a real admin session, which carries the authenticator
+    // step-up when one is enrolled.
+    const admin = bearerToken ? await requireAdmin(req) : null
+    if (!admin) return res.status(401).json({ error: 'Unauthorised' })
   }
 
   const days   = Math.max(1, Math.min(365, parseInt(req.query.days || '90', 10) || 90))

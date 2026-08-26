@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next'
 import { Mail, Lock, Eye, EyeOff, ArrowRight, ShieldCheck } from 'lucide-react'
 import { supabase } from '../lib/supabase'
 import { isNative, isIOS } from '../lib/platform'
+import { verifiedTotpFactor, completeTotpChallenge } from '../lib/totpStepUp'
 
 function GoogleIcon() {
   return (
@@ -44,6 +45,7 @@ export default function Login() {
   }, [])
 
   const [step, setStep]         = useState(1)
+  const [factorId, setFactorId] = useState('')
   const [email, setEmail]       = useState('')
   const [password, setPassword] = useState('')
   const [showPw, setShowPw]     = useState(false)
@@ -145,34 +147,69 @@ export default function Login() {
         throw new Error(t('errors.generic'))
       }
 
-      if (redirectParam) { navigate(redirectParam, { replace: true }); return }
-      if (from) { navigate(from, { replace: true }); return }
-
-      const userId    = sessionData?.user?.id
-      const userEmail = sessionData?.user?.email
-
-      const [{ data: prof }, { data: delegateRows }] = await Promise.all([
-        supabase.from('profiles').select('plan, role, subscription_status').eq('id', userId).single(),
-        supabase.from('trusted_people').select('id, invite_token').eq('email', userEmail).eq('invite_status', 'accepted'),
-      ])
-
-      if (prof?.plan === 'advisor') { navigate('/advisor-portal', { replace: true }); return }
-
-      const isOwner    = prof?.role !== 'delegate'
-      const isDelegate = !!delegateRows?.length
-      const isDualRole = isOwner && isDelegate
-
-      if (isDualRole) {
-        navigate('/choose-account', { replace: true })
-      } else if (isDelegate && !isOwner) {
-        navigate(`/delegate-dashboard?token=${delegateRows[0].invite_token}`, { replace: true })
-      } else {
-        navigate('/dashboard', { replace: true })
+      // An authenticator app, once enrolled, is a stronger second factor than
+      // the emailed code: Supabase stamps it into the token itself (aal2), and
+      // the admin API requires it. Ask for it before landing anywhere.
+      const factor = await verifiedTotpFactor()
+      if (factor) {
+        setFactorId(factor.id)
+        setDigits(['', '', '', '', '', ''])
+        setStep(3)
+        return
       }
+
+      await routeAfterLogin(sessionData)
     } catch (err) {
       setError(err.message)
     } finally {
       setLoading(false)
+    }
+  }
+
+  // ── Step 3: authenticator code, then land ──────────────────
+  const handleVerifyTotp = async (e) => {
+    e.preventDefault()
+    setError(null)
+    setLoading(true)
+    try {
+      await completeTotpChallenge(factorId, code)
+      const { data: { session } } = await supabase.auth.getSession()
+      await routeAfterLogin(session)
+    } catch (err) {
+      setError(err.message || t('errors.generic'))
+      setDigits(['', '', '', '', '', ''])
+      digitRefs.current[0]?.focus()
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  // Where a signed-in member lands. Shared by both finishing paths above so the
+  // authenticator step never changes the destination.
+  const routeAfterLogin = async (sessionData) => {
+    if (redirectParam) { navigate(redirectParam, { replace: true }); return }
+    if (from) { navigate(from, { replace: true }); return }
+
+    const userId    = sessionData?.user?.id
+    const userEmail = sessionData?.user?.email
+
+    const [{ data: prof }, { data: delegateRows }] = await Promise.all([
+      supabase.from('profiles').select('plan, role, subscription_status').eq('id', userId).single(),
+      supabase.from('trusted_people').select('id, invite_token').eq('email', userEmail).eq('invite_status', 'accepted'),
+    ])
+
+    if (prof?.plan === 'advisor') { navigate('/advisor-portal', { replace: true }); return }
+
+    const isOwner    = prof?.role !== 'delegate'
+    const isDelegate = !!delegateRows?.length
+    const isDualRole = isOwner && isDelegate
+
+    if (isDualRole) {
+      navigate('/choose-account', { replace: true })
+    } else if (isDelegate && !isOwner) {
+      navigate(`/delegate-dashboard?token=${delegateRows[0].invite_token}`, { replace: true })
+    } else {
+      navigate('/dashboard', { replace: true })
     }
   }
 
@@ -411,6 +448,50 @@ export default function Login() {
                       {t('step2.goBack')}
                     </button>
                   </p>
+                </form>
+              </>
+            )}
+
+            {/* ── STEP 3: authenticator app (only when one is enrolled) ── */}
+            {step === 3 && (
+              <>
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-5" style={{ backgroundColor: 'rgba(76,125,71,0.1)' }}>
+                  <ShieldCheck size={22} style={{ color: '#4c7d47' }} />
+                </div>
+                <h1 style={{ fontFamily: 'Georgia, serif', fontSize: '28px', fontWeight: '400', color: '#0d1628', marginBottom: '6px', letterSpacing: '-0.01em' }}>{t('step3.title')}</h1>
+                <p style={{ fontSize: '14px', color: '#78716c', marginBottom: '28px' }}>{t('step3.subtitle')}</p>
+
+                <form onSubmit={handleVerifyTotp} className="space-y-5">
+                  <div className="flex gap-2 justify-between" onPaste={handleDigitPaste}>
+                    {digits.map((d, i) => (
+                      <input
+                        key={i}
+                        ref={el => digitRefs.current[i] = el}
+                        type="text" inputMode="numeric" maxLength={1}
+                        value={d}
+                        onChange={e => handleDigit(i, e.target.value)}
+                        onKeyDown={e => handleDigitKey(i, e)}
+                        autoFocus={i === 0}
+                        style={{ width: '44px', height: '56px', textAlign: 'center', fontSize: '22px', fontWeight: '600', color: '#0d1628', border: `1px solid ${d ? '#4c7d47' : '#e5e2dc'}`, borderRadius: '10px', outline: 'none', backgroundColor: d ? 'rgba(76,125,71,0.05)' : '#fafaf9', transition: 'all 0.15s ease' }}
+                        onFocus={e => { e.target.style.borderColor = '#0d1628'; e.target.style.boxShadow = '0 0 0 3px rgba(13,22,40,0.08)'; e.target.style.backgroundColor = '#ffffff' }}
+                        onBlur={e => { e.target.style.borderColor = d ? '#4c7d47' : '#e5e2dc'; e.target.style.boxShadow = 'none'; e.target.style.backgroundColor = d ? 'rgba(76,125,71,0.05)' : '#fafaf9' }}
+                      />
+                    ))}
+                  </div>
+
+                  {error && (
+                    <div style={{ background: '#fef2f2', border: '1px solid #fecaca', borderRadius: '8px', padding: '10px 14px', fontSize: '13px', color: '#b91c1c' }}>{error}</div>
+                  )}
+
+                  <button
+                    type="submit"
+                    disabled={loading || code.length < 6}
+                    className="btn-aurora w-full flex items-center justify-center gap-2 transition-all disabled:opacity-50"
+                    style={{ color: '#ffffff', fontWeight: '600', fontSize: '14px', padding: '13px', borderRadius: '9999px', border: 'none', cursor: 'pointer' }}
+                  >
+                    {loading ? t('step3.submitLoading') : t('step3.submit')}
+                    {!loading && <ArrowRight size={16} />}
+                  </button>
                 </form>
               </>
             )}

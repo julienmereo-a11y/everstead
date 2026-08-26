@@ -3,11 +3,13 @@ import { Helmet } from 'react-helmet-async'
 import { useNavigate } from 'react-router-dom'
 import { Shield, Eye, EyeOff, Loader2, AlertCircle } from 'lucide-react'
 import { supabase } from '../lib/supabase'
+import { verifiedTotpFactor, completeTotpChallenge } from '../lib/totpStepUp'
 
 export default function AdminLogin() {
   const navigate = useNavigate()
 
   const [step, setStep]         = useState(1)
+  const [factorId, setFactorId] = useState('')
   const [email, setEmail]       = useState('')
   const [password, setPassword] = useState('')
   const [showPw, setShowPw]     = useState(false)
@@ -91,12 +93,40 @@ export default function AdminLogin() {
 
       if (prof?.role !== 'admin') {
         await supabase.auth.signOut()
-        throw new Error('Access denied — this account does not have admin privileges.')
+        throw new Error('Access denied, this account does not have admin privileges.')
       }
 
-      navigate('/admin', { replace: true })
+      // Step 3. The admin API requires an authenticator code (aal2) once the
+      // account has one enrolled, so ask for it here rather than letting the
+      // panel load and then fail every request. No factor yet: send them to
+      // enrol, which verifies as part of setup and returns here.
+      const factor = await verifiedTotpFactor()
+      if (!factor) {
+        navigate('/setup-mfa?next=/admin', { replace: true })
+        return
+      }
+      setFactorId(factor.id)
+      setDigits(['', '', '', '', '', ''])
+      setStep(3)
     } catch (err) {
       setError(err.message)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  // ── Step 3: authenticator code (upgrades the session to aal2) ──
+  const handleVerifyTotp = async (e) => {
+    e.preventDefault()
+    setError(null)
+    setLoading(true)
+    try {
+      await completeTotpChallenge(factorId, code)
+      navigate('/admin', { replace: true })
+    } catch (err) {
+      setError(err.message || 'Incorrect code. Please try again.')
+      setDigits(['', '', '', '', '', ''])
+      digitRefs.current[0]?.focus()
     } finally {
       setLoading(false)
     }
@@ -220,6 +250,45 @@ export default function AdminLogin() {
                   className="w-full text-xs text-stone-500 hover:text-stone-300 transition-colors py-1"
                 >
                   ← Back
+                </button>
+              </form>
+            )}
+
+            {/* ── Step 3: authenticator app ── */}
+            {step === 3 && (
+              <form onSubmit={handleVerifyTotp} className="space-y-5">
+                <div className="text-center">
+                  <p className="text-sm text-stone-300 leading-relaxed">
+                    Open your authenticator app and enter the current Everstead code.
+                  </p>
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-stone-400 mb-3 text-center">Authenticator code</label>
+                  <div className="flex gap-2 justify-center">
+                    {digits.map((d, i) => (
+                      <input
+                        key={i}
+                        ref={el => digitRefs.current[i] = el}
+                        type="text"
+                        inputMode="numeric"
+                        maxLength={1}
+                        value={d}
+                        autoFocus={i === 0}
+                        onChange={e => handleDigit(i, e.target.value)}
+                        onKeyDown={e => handleDigitKey(i, e)}
+                        onPaste={i === 0 ? handleDigitPaste : undefined}
+                        className="w-10 h-12 text-center text-lg font-semibold border border-stone-700 bg-navy-800 text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-sage-500 focus:border-sage-500 transition-colors"
+                      />
+                    ))}
+                  </div>
+                </div>
+                <button
+                  type="submit"
+                  disabled={loading || code.length < 6}
+                  className="btn-aurora w-full text-white font-semibold text-sm py-3 rounded-full transition-colors disabled:opacity-60 flex items-center justify-center gap-2"
+                >
+                  {loading && <Loader2 size={15} className="animate-spin" />}
+                  {loading ? 'Verifying…' : 'Sign in to admin panel'}
                 </button>
               </form>
             )}

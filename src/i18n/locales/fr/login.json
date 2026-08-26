@@ -70,6 +70,12 @@
     "wrongEmail": "Ce n'est pas la bonne adresse ?",
     "goBack": "Retour"
   },
+  "step3": {
+    "title": "Un dernier code",
+    "subtitle": "Ouvrez votre application d'authentification et saisissez le code Everstead affiché.",
+    "submit": "Se connecter",
+    "submitLoading": "Vérification…"
+  },
   "errors": {
     "generic": "Quelque chose n'a pas fonctionné de notre côté. Merci de réessayer dans un instant."
   },

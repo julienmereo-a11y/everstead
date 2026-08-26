@@ -6,7 +6,6 @@ import { isNative } from './lib/platform'
 import ProtectedRoute from './components/ProtectedRoute'
 import AdvisorProtectedRoute from './components/AdvisorProtectedRoute'
 import AdminProtectedRoute from './components/AdminProtectedRoute'
-import AdminGate from './components/AdminGate'
 import ErrorBoundary from './components/ErrorBoundary'
 import BiometricGate from './components/native/BiometricGate'
 import Nav from './components/Nav'
@@ -247,22 +246,18 @@ export default function App() {
               <Route path="/accept-admin-invite" element={<AcceptAdminInvite />} />
               <Route path="/accept-adviser-invite" element={<AcceptAdviserInvite />} />
               <Route path="/accept-family-invite" element={<AcceptFamilyInvite />} />
-              <Route
-                path="/admin-login"
-                element={
-                  <AdminGate>
-                    <AdminLogin />
-                  </AdminGate>
-                }
-              />
+              <Route path="/admin-login" element={<AdminLogin />} />
+              {/* No shared-password gate: it was client-side theatre and its
+                  plaintext sat in a public repo. Real protection is Supabase
+                  auth + profiles.role='admin' (AdminProtectedRoute here,
+                  requireAdmin on every admin endpoint) plus the authenticator
+                  step-up enforced in api/_lib/admin-auth.js. */}
               <Route
                 path="/admin"
                 element={
-                  <AdminGate>
-                    <AdminProtectedRoute>
-                      <AdminPanel />
-                    </AdminProtectedRoute>
-                  </AdminGate>
+                  <AdminProtectedRoute>
+                    <AdminPanel />
+                  </AdminProtectedRoute>
                 }
               />
 

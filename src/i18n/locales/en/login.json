@@ -70,6 +70,12 @@
     "wrongEmail": "Wrong email?",
     "goBack": "Go back"
   },
+  "step3": {
+    "title": "One more code",
+    "subtitle": "Open your authenticator app and enter the current Everstead code.",
+    "submit": "Sign in",
+    "submitLoading": "Verifying…"
+  },
   "errors": {
     "generic": "Something went wrong."
   },

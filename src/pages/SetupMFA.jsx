@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import { Helmet } from 'react-helmet-async'
 import { ShieldCheck, Smartphone, ArrowRight, Loader2, Copy, Check } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
@@ -15,7 +15,13 @@ i18n.addResourceBundle('fr', 'setupMfa', frSetupMfa)
 
 export default function SetupMFA() {
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
   const { t } = useTranslation('setupMfa')
+
+  // Where to land once the factor is verified. Only in-app paths are honoured,
+  // so a crafted ?next= can never bounce someone off to another site.
+  const nextParam = searchParams.get('next') ?? ''
+  const destination = /^\/[A-Za-z0-9/_-]*$/.test(nextParam) ? nextParam : '/dashboard'
 
   const [step, setStep]         = useState('loading') // loading | enroll | verify
   const [qrCode, setQrCode]     = useState('')
@@ -129,7 +135,7 @@ export default function SetupMFA() {
         code,
       })
       if (vErr) throw vErr
-      navigate('/dashboard', { replace: true })
+      navigate(destination, { replace: true })
     } catch (err) {
       setError(err.message ?? t('errors.incorrectCode'))
       setDigits(['', '', '', '', '', ''])
