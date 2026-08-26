@@ -1,6 +1,7 @@
 import i18n from 'i18next'
 import { initReactI18next } from 'react-i18next'
 import LanguageDetector from 'i18next-browser-languagedetector'
+import { preferredAppLanguage } from '../lib/deviceLanguage'
 import enCommon from './locales/en/common.json'
 import frCommon from './locales/fr/common.json'
 import enHome from './locales/en/home.json'
@@ -66,12 +67,16 @@ export function languageFromPath(pathname) {
   return pathname === '/fr' || pathname.startsWith('/fr/') ? 'fr' : 'en'
 }
 
-// Custom detector: path prefix only. No navigator fallback, no caching.
+// Custom detector. On the WEB the path is the only signal: no navigator
+// fallback and no caching, so / and /fr stay two stable trees for search
+// engines. The APP has no path to read (it loads capacitor://localhost/), which
+// used to mean it was always English however French the phone was, so there it
+// asks the device instead. See src/lib/deviceLanguage.js.
 const pathDetector = {
   name: 'urlPathPrefix',
   lookup() {
     if (typeof window === 'undefined') return 'en'
-    return languageFromPath(window.location.pathname)
+    return preferredAppLanguage() ?? languageFromPath(window.location.pathname)
   },
 }
 
@@ -108,7 +113,7 @@ i18n
     fallbackLng: 'en',
     supportedLngs: SUPPORTED_LANGUAGES,
     detection: {
-      order: ['urlPathPrefix'], // path only — never the browser language
+      order: ['urlPathPrefix'], // path on the web, device in the app
       caches: [],               // persist nothing (the URL is canonical)
     },
     interpolation: { escapeValue: false }, // React already escapes

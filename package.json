@@ -10,7 +10,7 @@
     "build:capacitor": "npm run check && CAP_BUILD=1 vite build",
     "cap:sync": "npx cap sync ios && npx cap sync android",
     "build:cap:debug": "npm run check && CAP_BUILD=1 CAP_DEBUG=1 vite build",
-    "check": "node scripts/check-shared-constants.mjs && node scripts/test-mfa-crypto.mjs"
+    "check": "node scripts/check-shared-constants.mjs && node scripts/test-mfa-crypto.mjs && node scripts/test-device-language.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.94.0",

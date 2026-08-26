@@ -1,5 +1,7 @@
 import React, { createContext, useContext, useEffect, useState, useCallback } from 'react'
 import { supabase } from '../lib/supabase'
+import { preferredAppLanguage } from '../lib/deviceLanguage'
+import { languageFromPath } from '../i18n'
 import { isNative, isIOS, apiPost } from '../lib/platform'
 
 const AuthContext = createContext(null)
@@ -182,11 +184,19 @@ export function AuthProvider({ children }) {
 
   // ── Auth actions ─────────────────────────────────────────────
   const signUp = async ({ email, password, fullName, metadata = {} }) => {
+    // Record the language this person signed up in, so their dashboard and every
+    // email they get from us match the experience they just came through. In the
+    // app that is the phone's language; on the web it is the tree they signed up
+    // in (/fr means French). handle_new_user reads this off the signup metadata,
+    // accepting only 'en' or 'fr'. An explicit choice in metadata still wins.
+    const signupLanguage = preferredAppLanguage()
+      ?? languageFromPath(window.location.pathname)
+
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
       options: {
-        data: { full_name: fullName, ...metadata },
+        data: { full_name: fullName, language: signupLanguage, ...metadata },
         emailRedirectTo: `${window.location.origin}/dashboard`,
       },
     })

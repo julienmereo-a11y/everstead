@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { supabase } from '../../../lib/supabase'
 import { apiPost, isNative, isIOS } from '../../../lib/platform'
+import { detectDeviceLanguage } from '../../../lib/deviceLanguage'
 import { AccountsIcon, DocIcon, HeartIcon } from './icons'
 
 // Google ships on BOTH platforms now that iOS pairs it with Sign in with Apple
@@ -86,6 +87,10 @@ export default function MobileAuthFlow() {
         // the founder about the new signup.
         mode: 'register', plan: 'free', wantsTrial: true,
         email: email.trim(), password: pw, name: name.trim(),
+        // Stamp the phone's language onto the profile so the dashboard and every
+        // email match the app this person just signed up in. handle_new_user
+        // reads it off the signup metadata.
+        language: detectDeviceLanguage(),
       })
       await applySession(data)
     } catch (err) {

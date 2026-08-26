@@ -1,6 +1,7 @@
 import React, { useEffect, Suspense, lazy } from 'react'
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import i18n, { languageFromPath, rememberLanguage } from './i18n'
+import { preferredAppLanguage } from './lib/deviceLanguage'
 import { AuthProvider, useAuth } from './contexts/AuthContext'
 import { isNative } from './lib/platform'
 import ProtectedRoute from './components/ProtectedRoute'
@@ -141,9 +142,11 @@ function ProfileLanguage() {
   const { pathname } = useLocation()
   useEffect(() => {
     const inApp = isNative() || APP_LANGUAGE_PREFIXES.some(p => pathname === p || pathname.startsWith(`${p}/`))
+    // A member's own choice always wins. Before anyone has signed in, the app
+    // follows the phone and the website follows the URL.
     const target = inApp && ['en', 'fr'].includes(profile?.language)
       ? profile.language
-      : languageFromPath(window.location.pathname)
+      : preferredAppLanguage() ?? languageFromPath(window.location.pathname)
     if (i18n.language !== target) i18n.changeLanguage(target)
   }, [pathname, profile?.language])
 
