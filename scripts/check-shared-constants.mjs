@@ -78,6 +78,33 @@ const pricing = await loadWithEnvStubbed('src/config/pricing.js')
   }
 }
 
+// ── Fact 3: the limits the CLIENT actually enforces ─────────────────────────
+// PLANS.free.limits in src/lib/stripe.js is what isAtLimit() reads, so it is
+// what every screen gates on, web and native. This is the exact pair that broke
+// before: the database and FREE_LIMITS said 5 while PLANS still said 1, so the
+// product refused what the database allowed. Checking FREE_LIMITS alone would
+// not have caught it.
+//
+// We assert the DERIVATION rather than the value. A number copied across can
+// drift; `FREE_LIMITS.accounts` cannot.
+{
+  const stripePath = 'src/lib/stripe.js'
+  const src   = await readFile(ROOT + stripePath, 'utf8')
+  const start = src.indexOf('free:', src.indexOf('export const PLANS'))
+  const block = start === -1 ? '' : src.slice(start, src.indexOf('essential:', start))
+  const wants = [['maxAccounts', 'FREE_LIMITS.accounts'],
+                 ['maxDocuments', 'FREE_LIMITS.documents'],
+                 ['trustedPeople', 'FREE_LIMITS.trustedPeople']]
+  const wrong = wants.filter(([field, from]) =>
+    !new RegExp(`${field}:\\s*${from.replace('.', '\\.')}\\b`).test(block))
+  if (!block) {
+    failures.push(`FREE_LIMITS: could not find the free plan in ${stripePath}.`)
+  } else if (wrong.length) {
+    failures.push(`PLANS.free.limits in ${stripePath} must derive from FREE_LIMITS, not hard-code numbers\n`
+      + wrong.map(([f, from]) => `      ${f} should read \`${f}: ${from}\``).join('\n'))
+  }
+}
+
 if (failures.length) {
   console.error('\n  Shared constants have drifted:\n')
   for (const f of failures) console.error('    ' + f + '\n')
