@@ -1,6 +1,8 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa'
+import fs from 'node:fs/promises'
+import path from 'node:path'
 
 const isCapacitorBuild = process.env.CAP_BUILD === '1'
 // The on-screen error catcher below is a DEBUG tool. It must never ship in a build
@@ -39,10 +41,38 @@ function stripWebOnlyTagsForNative() {
   }
 }
 
+// Everything in public/ is copied into the bundle, and for a Capacitor build the
+// bundle IS the app download. The marketing hero video is web-only (native opens
+// MobileApp, never the marketing Home), so shipping it just made every install
+// tens of megabytes heavier for a file the app can never play. Drop web-only
+// heavy media from native builds; the website keeps all of it.
+const WEB_ONLY_MEDIA = [/\.mp4$/i]
+
+function dropWebOnlyMediaFromNative() {
+  return {
+    name: 'drop-web-only-media-from-native',
+    apply: 'build',
+    // closeBundle, not generateBundle: public/ files are copied straight to the
+    // output directory and never enter the rollup bundle graph.
+    async closeBundle() {
+      if (!isCapacitorBuild) return
+      const outDir = path.resolve('dist')
+      let entries = []
+      try { entries = await fs.readdir(outDir) } catch { return }
+      for (const name of entries) {
+        if (!WEB_ONLY_MEDIA.some(re => re.test(name))) continue
+        await fs.rm(path.join(outDir, name), { force: true })
+        console.log(`[native build] dropped web-only asset: ${name}`)
+      }
+    },
+  }
+}
+
 export default defineConfig({
   plugins: [
     react(),
     stripWebOnlyTagsForNative(),
+    dropWebOnlyMediaFromNative(),
     // Skipped for the Capacitor build: the PWA service worker's own offline
     // caching would otherwise fight with Capacitor's local-file serving of
     // the bundled app (stale-cache-after-native-update class of bug).

@@ -72,11 +72,9 @@ const MessageView           = lazy(() => import('./pages/MessageView'))
 const DataPromise           = lazy(() => import('./pages/DataPromise'))
 const ForAdvisors           = lazy(() => import('./pages/ForAdvisors'))
 const DualVault             = lazy(() => import('./pages/DualVault'))
-// NOTE: IAPPaywall / NativeWelcome / NativeSignUp were the pre-redesign native
-// entry screens. They are superseded by MobileApp (which owns auth, the free tier
-// and the Everstead+ paywall in its own state) and still contained the RETIRED
-// Essential pricing — a real App Review hazard if a reviewer ever reached them.
-// Routes removed 2026-07-14; the files can be deleted.
+// The native app is MobileApp: it owns auth, the free tier and the Everstead+
+// paywall in its own state. (The pre-redesign entry screens it replaced were
+// deleted 2026-08-26; they still carried the retired Essential pricing.)
 const MobileApp             = lazy(() => import('./pages/native/app/MobileApp'))
 
 // ── Page loading fallback ─────────────────────────────────────────────────────

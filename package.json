@@ -5,11 +5,12 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "npm run check && vite build",
     "preview": "vite preview",
-    "build:capacitor": "CAP_BUILD=1 vite build",
+    "build:capacitor": "npm run check && CAP_BUILD=1 vite build",
     "cap:sync": "npx cap sync ios && npx cap sync android",
-    "build:cap:debug": "CAP_BUILD=1 CAP_DEBUG=1 vite build"
+    "build:cap:debug": "npm run check && CAP_BUILD=1 CAP_DEBUG=1 vite build",
+    "check": "node scripts/check-shared-constants.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.94.0",

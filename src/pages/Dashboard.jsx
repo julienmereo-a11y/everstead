@@ -167,8 +167,8 @@ function TrialExpiredModal({ profile, onUpgrade }) {
         </p>
         <div className="space-y-3 mb-8">
           {[
-            { name: 'Everstead+', price: t('banners.trialExpired.plusPrice'), note: t('banners.trialExpired.plusNote'), id: 'family', highlight: profile.plan !== 'advisor' },
-            ...(profile.plan === 'advisor' ? [{ name: 'Everstead Pro', price: t('banners.trialExpired.proPrice'), note: t('banners.trialExpired.proNote'), id: 'advisor', highlight: true }] : []),
+            { name: planLabel('family'), price: t('banners.trialExpired.plusPrice'), note: t('banners.trialExpired.plusNote'), id: 'family', highlight: profile.plan !== 'advisor' },
+            ...(profile.plan === 'advisor' ? [{ name: planLabel('advisor'), price: t('banners.trialExpired.proPrice'), note: t('banners.trialExpired.proNote'), id: 'advisor', highlight: true }] : []),
           ].map(plan => (
             <button
               key={plan.id}
@@ -248,7 +248,7 @@ function AdvisorCancelledModal({ advisorName, onAddPayment }) {
         </p>
         <div className="space-y-3 mb-8">
           {[
-            { name: 'Everstead+', price: t('banners.advisorModal.plusPrice'), note: t('banners.advisorModal.plusNote'), id: 'family', highlight: true },
+            { name: planLabel('family'), price: t('banners.advisorModal.plusPrice'), note: t('banners.advisorModal.plusNote'), id: 'family', highlight: true },
           ].map(plan => (
             <button
               key={plan.id}

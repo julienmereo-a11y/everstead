@@ -2,6 +2,7 @@ import { createClient } from '@supabase/supabase-js'
 import { Resend } from 'resend'
 import { withSentry } from '../lib/sentry.js'
 import { translator, pickLang } from '../_lib/email-i18n.js'
+import { planLabel } from '../_lib/plan-label.js'
 
 const supabase = createClient(
   process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL,
@@ -15,17 +16,17 @@ const APP_URL = process.env.VITE_APP_URL || 'https://www.everstead.care'
 // bullets live in COPY below because they are prose, not data.
 const PLAN_META = {
   essential: {
-    label:        'Essential',
+    label:        planLabel('essential'),
     priceKey:     'priceEssential',
     featureKeys:  ['essentialFeature1', 'essentialFeature2', 'essentialFeature3'],
   },
   family: {
-    label:        'Everstead+',
+    label:        planLabel('family'),
     priceKey:     'priceFamily',
     featureKeys:  ['familyFeature1', 'familyFeature2', 'familyFeature3', 'familyFeature4'],
   },
   advisor: {
-    label:        'Everstead Pro',
+    label:        planLabel('advisor'),
     priceKey:     'priceAdvisor',
     featureKeys:  ['advisorFeature1', 'advisorFeature2', 'advisorFeature3', 'advisorFeature4'],
   },

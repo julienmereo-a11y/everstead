@@ -3,6 +3,7 @@ import { createClient } from '@supabase/supabase-js'
 import { Resend } from 'resend'
 import { withSentry, captureException } from '../lib/sentry.js'
 import { translator, languageForUser, emailDate, pickLang } from '../_lib/email-i18n.js'
+import { planLabel } from '../_lib/plan-label.js'
 
 const stripe   = new Stripe(process.env.STRIPE_SECRET_KEY)
 const supabase = createClient(process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY)
@@ -85,7 +86,7 @@ async function handler(req, res) {
     const lang = (await storedLanguage({ userId }))
       ?? await languageForUser(supabase, { email: gift.gifter_email })
     const t = translator(COPY, lang)
-    const planName    = gift.plan === 'family' ? 'Everstead+' : 'Essential'
+    const planName    = planLabel(gift.plan)
     const trialEndStr = emailDate(trialEnd * 1000, lang)
     await resend.emails.send({
       from:    'Everstead <hello@everstead.care>',

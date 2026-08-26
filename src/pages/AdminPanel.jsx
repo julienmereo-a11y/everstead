@@ -2277,10 +2277,10 @@ const BROADCAST_SENDERS = [
 
 const BROADCAST_AUDIENCES = [
   ['all',           'All users'],
-  ['free',          'Everstead (free)'],
-  ['family',        'Everstead+'],
-  ['essential',     'Essential (grandfathered)'],
-  ['advisor',       'Everstead Pro (advisers)'],
+  ['free',          `${planLabel('free')} (free)`],
+  ['family',        planLabel('family')],
+  ['essential',     `${planLabel('essential')} (grandfathered)`],
+  ['advisor',       `${planLabel('advisor')} (advisers)`],
   ['founding',      'Founding members'],
   ['trialing',      'Currently on trial'],
   ['payment_issue', 'Payment issue (trial expired / past due)'],
@@ -2701,7 +2701,7 @@ function UsersSection({ isDemo }) {
           />
         </div>
         <div className="flex rounded-xl border border-stone-200 bg-white overflow-hidden text-xs font-medium">
-          {[['all','All plans'],['free','Everstead'],['essential','Essential'],['family','Everstead+'],['advisor','Everstead Pro']].map(([v,l]) => (
+          {[['all','All plans'], ...['free','essential','family','advisor'].map(k => [k, planLabel(k)])].map(([v,l]) => (
             <button key={v} onClick={() => setPlan(v)}
               className={`px-3 py-2 transition-colors ${planFilter === v ? 'bg-navy-900 text-white' : 'text-stone-500 hover:bg-stone-50'}`}
             >{l}</button>

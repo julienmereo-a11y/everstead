@@ -2,6 +2,7 @@ import { createClient } from '@supabase/supabase-js'
 import { Resend } from 'resend'
 import { withSentry, captureException } from '../lib/sentry.js'
 import { translator, languageForUser, emailDate, pickLang } from '../_lib/email-i18n.js'
+import { planLabel } from '../_lib/plan-label.js'
 
 const supabase = createClient(
   process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL,
@@ -10,7 +11,6 @@ const supabase = createClient(
 const resend  = new Resend(process.env.RESEND_API_KEY)
 const APP_URL = process.env.VITE_APP_URL || 'https://www.everstead.care'
 
-const PLAN_NAMES = { essential: 'Essential', family: 'Everstead+' }
 
 async function handler(req, res) {
   if (req.method !== 'GET' && req.method !== 'POST') {
@@ -48,7 +48,7 @@ async function handler(req, res) {
     try {
       const lang = await giftLanguage(gift)
       const t    = translator(COPY, lang)
-      const planName   = PLAN_NAMES[gift.plan] || gift.plan
+      const planName   = planLabel(gift.plan)
       const yearsLabel = gift.years === 1 ? t('year1') : t('yearsN', { years: gift.years })
       const subject    = gift.gifter_name
         ? t('subjGiftFrom', { gifter: gift.gifter_name })
@@ -90,7 +90,7 @@ async function handler(req, res) {
     try {
       const lang = await giftLanguage(gift)
       const t    = translator(COPY, lang)
-      const planName   = PLAN_NAMES[gift.plan] || gift.plan
+      const planName   = planLabel(gift.plan)
       const yearsLabel = gift.years === 1 ? t('year1') : t('yearsN', { years: gift.years })
 
       await resend.emails.send({

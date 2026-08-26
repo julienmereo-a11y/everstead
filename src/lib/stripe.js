@@ -1,6 +1,6 @@
 import { loadStripe } from '@stripe/stripe-js'
 import { createClient } from '@supabase/supabase-js'
-import { PRICING, FREE_LIMITS } from '../config/pricing'
+import { PRICING, FREE_LIMITS, PLAN_LABELS } from '../config/pricing'
 
 const supabase = createClient(
   import.meta.env.VITE_SUPABASE_URL,
@@ -30,7 +30,7 @@ export const PLANS = {
   // FREE_LIMITS in config/pricing.js and the migration; the database is the
   // authority, this is only so the UI can gate before the insert is rejected.
   free: {
-    name: 'Everstead',
+    name: PLAN_LABELS.free,
     // The caps come from FREE_LIMITS so there is ONE client-side number per
     // resource. These are what isAtLimit() reads, and therefore what the web
     // dashboard AND the native apps gate on; they previously drifted from
@@ -47,7 +47,7 @@ export const PLANS = {
     },
   },
   essential: {
-    name: 'Essential',
+    name: PLAN_LABELS.essential,
     monthly: PRICING.essential.monthly.perMonth, // 3.99
     yearly:  PRICING.essential.annual.perMonth,  // 3.19 (/mo billed annually)
     priceIds: {
@@ -65,7 +65,7 @@ export const PLANS = {
     },
   },
   family: {
-    name: 'Everstead+',
+    name: PLAN_LABELS.family,
     monthly: PRICING.family.monthly.perMonth, // 9.99
     yearly:  PRICING.family.annual.perMonth,  // 7.99 (/mo billed annually)
     priceIds: {
@@ -83,7 +83,7 @@ export const PLANS = {
     },
   },
   advisor: {
-    name: 'Everstead Pro',
+    name: PLAN_LABELS.advisor,
     monthly: 60,
     yearly:  48,
     priceIds: {

@@ -3,13 +3,13 @@ import { createClient } from '@supabase/supabase-js'
 import { Resend } from 'resend'
 import { withSentry } from '../lib/sentry.js'
 import { translator, languageForUser, emailDate } from '../_lib/email-i18n.js'
+import { planLabel } from '../_lib/plan-label.js'
 
 const stripe   = new Stripe(process.env.STRIPE_SECRET_KEY)
 const supabase = createClient(process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY)
 const resend   = new Resend(process.env.RESEND_API_KEY)
 const APP_URL  = process.env.VITE_APP_URL || 'https://www.everstead.care'
 
-const PLAN_NAMES = { essential: 'Essential', family: 'Everstead+' }
 
 async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).end()
@@ -57,7 +57,7 @@ async function handler(req, res) {
   // unknown buyer falls back to English (languageForUser's own default).
   const lang = await languageForUser(supabase, { email: gifterEmail })
   const t    = translator(COPY, lang)
-  const planName   = PLAN_NAMES[plan] || plan
+  const planName   = planLabel(plan)
   const totalGBP   = (intent.amount / 100).toFixed(2)
   const deliveryStr = sendNow
     ? t('deliveryNow', { recipient: recipientName || recipientEmail })

@@ -7,6 +7,7 @@ import { supabase } from '../lib/supabase'
 import i18n from '../i18n'
 import enRedeemGift from '../i18n/locales/en/redeemGift.json'
 import frRedeemGift from '../i18n/locales/fr/redeemGift.json'
+import { planLabel } from '../config/pricing'
 
 // Self-registered namespace (keeps src/i18n/index.js untouched). Safe to move
 // into the central resources map later: re-adding the same bundle is a no-op.
@@ -33,7 +34,6 @@ const inputClass = 'w-full border border-stone-300 rounded-lg px-4 py-2.5 text-s
 
 // 'essential' retained so any gift codes bought before Essential was retired still
 // display correctly on redemption.
-const PLAN_NAMES     = { essential: 'Essential', family: 'Everstead+' }
 const PLAN_DESC_KEYS = {
   essential: 'plans.essential',
   family:    'plans.family',
@@ -185,7 +185,7 @@ export default function RedeemGift() {
     /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email) &&
     form.password.length >= 8
 
-  const planName   = giftInfo ? (PLAN_NAMES[giftInfo.plan] || giftInfo.plan) : ''
+  const planName   = giftInfo ? planLabel(giftInfo.plan) : ''
   const yearsLabel = giftInfo ? t('card.years', { count: giftInfo.years }) : ''
 
   return (

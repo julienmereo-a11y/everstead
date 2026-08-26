@@ -2,6 +2,7 @@ import { Resend } from 'resend'
 import { requireAdmin, adminDb } from '../_lib/admin-auth.js'
 import { withSentry, captureException } from '../lib/sentry.js'
 import { translator, languageForUser, pickLang, DEFAULT_LANG } from '../_lib/email-i18n.js'
+import { planLabel } from '../_lib/plan-label.js'
 
 const resend = new Resend(process.env.RESEND_API_KEY)
 
@@ -377,10 +378,7 @@ const COPY = {
 function welcomeHtml(name, plan, lang) {
   const t = translator(COPY, lang)
   const isFree    = plan === 'free'
-  // Mirrors PLAN_LABELS in src/config/pricing.js (not imported here — that module reads
-  // import.meta.env at load and would crash in this serverless runtime).
-  const planLabel = { free: 'Everstead', essential: 'Essential', family: 'Everstead+', advisor: 'Everstead Pro' }[plan] || plan || 'Everstead'
-  name = esc(name); const planName = esc(planLabel)
+  name = esc(name); const planName = esc(planLabel(plan))
   return `<!DOCTYPE html>
 <html>
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
