@@ -196,7 +196,7 @@ export function AuthProvider({ children }) {
       email,
       password,
       options: {
-        data: { full_name: fullName, language: signupLanguage, ...metadata },
+        data: { full_name: fullName, language: signupLanguage, signup_platform: 'web', ...metadata },
         emailRedirectTo: `${window.location.origin}/dashboard`,
       },
     })

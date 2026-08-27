@@ -2832,6 +2832,107 @@ function InviteUserModal({ isDemo, onClose }) {
 // ─────────────────────────────────────────────────────────────
 // MAIN ADMIN PANEL
 // ─────────────────────────────────────────────────────────────
+
+// ─────────────────────────────────────────────────────────────
+// FUNNEL — activation, surfaced at last
+// ─────────────────────────────────────────────────────────────
+// The instrumentation existed for months (first_X_added_at columns, the
+// /api/admin/funnel endpoint) and nothing displayed it, so "where do the 90%
+// stop?" stayed a guess. This tab is the answer, refreshed on every visit.
+function FunnelSection({ isDemo }) {
+  const [data, setData] = useState(null)
+  const [days, setDays] = useState(90)
+  const [err, setErr] = useState(null)
+
+  useEffect(() => {
+    if (isDemo) return
+    let on = true
+    ;(async () => {
+      setErr(null)
+      try {
+        const { data: { session } } = await supabase.auth.getSession()
+        const res = await fetch(`/api/admin/funnel?days=${days}`, {
+          headers: { Authorization: `Bearer ${session?.access_token || ''}` },
+        })
+        if (!res.ok) throw new Error((await res.json().catch(() => ({}))).error || 'Could not load the funnel')
+        const json = await res.json()
+        if (on) setData(json)
+      } catch (e) { if (on) setErr(e.message) }
+    })()
+    return () => { on = false }
+  }, [days, isDemo])
+
+  if (isDemo) return <p className="text-sm text-stone-500">The funnel reads live data and is not available in demo mode.</p>
+  if (err) return <p className="text-sm text-red-600">{err}</p>
+  if (!data) return <div className="flex justify-center py-16"><Loader2 className="animate-spin text-stone-400" /></div>
+
+  const ef = data.early_funnel
+  const f  = data.funnel
+  const Bar = ({ label, count, pctVal, sub }) => (
+    <div className="py-2.5 border-b border-stone-100 last:border-0">
+      <div className="flex items-baseline justify-between text-sm">
+        <span className="text-navy-950">{label}{sub && <span className="text-stone-400 text-xs"> · {sub}</span>}</span>
+        <span className="font-semibold tabular-nums text-navy-900">{count} <span className="text-sage-700">({pctVal}%)</span></span>
+      </div>
+      <div className="mt-1.5 h-1.5 rounded-full bg-stone-100 overflow-hidden">
+        <div className="h-full rounded-full bg-sage-500" style={{ width: `${Math.min(100, pctVal)}%` }} />
+      </div>
+    </div>
+  )
+
+  return (
+    <div className="space-y-6">
+      <div className="flex items-center gap-2">
+        {[30, 90, 365].map(d => (
+          <button key={d} onClick={() => setDays(d)}
+            className={`text-xs font-semibold px-3 py-1.5 rounded-full border transition-colors ${days === d ? 'bg-navy-900 text-white border-navy-900' : 'bg-white text-stone-500 border-stone-200 hover:bg-stone-50'}`}>
+            {d} days
+          </button>
+        ))}
+        <span className="text-xs text-stone-400 ml-2">{data.cohort_size} signups in this window</span>
+      </div>
+
+      {ef && (
+        <div className="bg-white border border-stone-200 rounded-2xl p-5">
+          <h3 className="text-xs font-bold uppercase tracking-widest text-sage-700 mb-3">Before anything is added</h3>
+          <Bar label="Confirmed their email" count={ef.email_confirmed.count} pctVal={ef.email_confirmed.pct_of_signups} />
+          <Bar label="Came back after day 1" count={ef.returned_day1.count} pctVal={ef.returned_day1.pct} sub={`of ${ef.returned_day1.eligible} old enough to count`} />
+          <Bar label="Came back after day 7" count={ef.returned_day7.count} pctVal={ef.returned_day7.pct} sub={`of ${ef.returned_day7.eligible} old enough to count`} />
+          <div className="flex flex-wrap gap-x-6 gap-y-1 mt-3 text-xs text-stone-500">
+            <span>Active in the last 7 days: <strong className="text-navy-900">{ef.active_last_7d}</strong></span>
+            <span>Platforms: {Object.entries(ef.platforms).map(([k, v]) => `${k} ${v}`).join(' · ')}</span>
+          </div>
+          <p className="text-[11px] text-stone-400 mt-2">{ef.caveat}</p>
+        </div>
+      )}
+
+      <div className="bg-white border border-stone-200 rounded-2xl p-5">
+        <h3 className="text-xs font-bold uppercase tracking-widest text-sage-700 mb-3">First value</h3>
+        <Bar label="Reached Stripe checkout" count={f.reached_checkout.count} pctVal={f.reached_checkout.pct_of_signups} />
+        <Bar label="Added first account" count={f.added_account.count} pctVal={f.added_account.pct_of_signups} />
+        <Bar label="Added first trusted contact" count={f.added_contact.count} pctVal={f.added_contact.pct_of_signups} />
+        <Bar label="Uploaded first document" count={f.added_document.count} pctVal={f.added_document.pct_of_signups} />
+        <Bar label="Wrote first instruction" count={f.wrote_instruction.count} pctVal={f.wrote_instruction.pct_of_signups} />
+      </div>
+
+      <div className="bg-white border border-stone-200 rounded-2xl p-5">
+        <h3 className="text-xs font-bold uppercase tracking-widest text-sage-700 mb-3">Median time from signup to action</h3>
+        <div className="grid grid-cols-3 gap-4 text-sm">
+          {[['First account', data.median_time_to_action.median_hours_to_first_account],
+            ['First contact', data.median_time_to_action.median_hours_to_first_contact],
+            ['First document', data.median_time_to_action.median_hours_to_first_doc]].map(([l, h]) => (
+            <div key={l}>
+              <div className="text-xs text-stone-400">{l}</div>
+              <div className="font-semibold text-navy-900 mt-0.5">{h == null ? '—' : h < 24 ? `${h.toFixed(1)}h` : `${(h / 24).toFixed(1)}d`}</div>
+            </div>
+          ))}
+        </div>
+        <p className="text-[11px] text-stone-400 mt-3">Medians among those who acted at all. The people who never act are the story above.</p>
+      </div>
+    </div>
+  )
+}
+
 export default function AdminPanel() {
   const [searchParams] = useSearchParams()
   const navigate       = useNavigate()
@@ -2921,6 +3022,7 @@ export default function AdminPanel() {
 
   const NAV = [
     { id: 'overview', label: 'Overview', Icon: LayoutDashboard },
+    { id: 'funnel',   label: 'Funnel',   Icon: Filter },
     { id: 'reports',  label: 'Reports',  Icon: Clock },
     { id: 'users',    label: 'Users',    Icon: UserRound },
     { id: 'email',    label: 'Email',    Icon: Mail },
@@ -2993,6 +3095,17 @@ export default function AdminPanel() {
               <p className="text-sm text-stone-500 mt-1">Key metrics and recent activity</p>
             </div>
             <OverviewSection isDemo={isDemo} />
+          </>
+        )}
+
+        {/* ── Funnel tab ── */}
+        {activeTab === 'funnel' && (
+          <>
+            <div>
+              <h1 className="text-2xl font-semibold text-navy-950">Activation funnel</h1>
+              <p className="text-sm text-stone-500 mt-1">Where new members stop, from signup to first value</p>
+            </div>
+            <FunnelSection isDemo={isDemo} />
           </>
         )}
 

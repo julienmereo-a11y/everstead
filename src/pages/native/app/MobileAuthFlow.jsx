@@ -102,6 +102,7 @@ export default function MobileAuthFlow() {
         // and missing from every breakdown by market. This is a guess from the
         // phone, null when unclear, and editable in Settings.
         country: detectDeviceCountry(countryByCode),
+        signup_platform: isIOS() ? 'ios' : 'android',
       })
       await applySession(data)
     } catch (err) {

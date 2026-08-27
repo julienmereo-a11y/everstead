@@ -102,9 +102,27 @@ async function handler(req, res) {
     median_hours_to_first_doc:     median(cohort.filter(u => u.first_document_added_at).map(u => hoursBetween(u.created_at, u.first_document_added_at))),
   }
 
+  // Early-funnel numbers live in auth.users, out of REST's reach: a SECURITY
+  // DEFINER aggregate (service-role only) answers them. Caveat carried into the
+  // UI: last_sign_in_at only moves on a fresh sign-in, so members who simply
+  // STAYED signed in undercount as returners.
+  let extras = null
+  try {
+    const { data } = await supabase.rpc('admin_funnel_extras', { p_days: days })
+    extras = data ?? null
+  } catch { /* the core funnel still renders without them */ }
+
   const result = {
     window_days: days,
     cohort_size: total,
+    early_funnel: extras && {
+      email_confirmed:  { count: extras.email_confirmed, pct_of_signups: pct(extras.email_confirmed, extras.cohort_size) },
+      returned_day1:    { count: extras.returned_day1, eligible: extras.eligible_day1, pct: pct(extras.returned_day1, extras.eligible_day1) },
+      returned_day7:    { count: extras.returned_day7, eligible: extras.eligible_day7, pct: pct(extras.returned_day7, extras.eligible_day7) },
+      active_last_7d:   extras.active_last_7d,
+      platforms:        extras.platforms,
+      caveat: 'Returns are counted by fresh sign-ins; members who stayed signed in undercount.',
+    },
     funnel: {
       signups:           { count: c.signups,            pct_of_signups: 100 },
       reached_checkout:  { count: c.reached_checkout,   pct_of_signups: pct(c.reached_checkout, c.signups) },
@@ -178,6 +196,23 @@ function htmlPage(r) {
   <div class="wrap">
     <h1>Funnel snapshot</h1>
     <p class="sub">Cohort: ${r.cohort_size} signups in the last ${r.window_days} days · generated ${new Date(r.generated_at).toLocaleString('en-GB')}</p>
+
+    ${r.early_funnel ? `
+    <div class="card">
+      <div class="cardHead">Before anything is added</div>
+      <table>
+        <tbody>
+          ${row('Confirmed their email', r.early_funnel.email_confirmed.count, r.early_funnel.email_confirmed.pct_of_signups)}
+          ${row('Came back after day 1', r.early_funnel.returned_day1.count, r.early_funnel.returned_day1.pct, `of ${r.early_funnel.returned_day1.eligible} old enough to count`)}
+          ${row('Came back after day 7', r.early_funnel.returned_day7.count, r.early_funnel.returned_day7.pct, `of ${r.early_funnel.returned_day7.eligible} old enough to count`)}
+        </tbody>
+      </table>
+      <div class="kv">
+        <div><strong>Active in the last 7 days</strong><span>${r.early_funnel.active_last_7d}</span></div>
+        <div><strong>Signup platform</strong><span>${Object.entries(r.early_funnel.platforms).map(([k, v]) => `${k} ${v}`).join(' · ')}</span></div>
+      </div>
+      <p style="margin:0;padding:0 18px 14px;color:#9ca3af;font-size:11px;">${r.early_funnel.caveat}</p>
+    </div>` : ''}
 
     <div class="card">
       <div class="cardHead">Funnel</div>

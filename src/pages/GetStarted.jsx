@@ -492,6 +492,7 @@ export default function GetStarted() {
           // Free signups carry the referral too; paid ones also stamp it via
           // Stripe metadata later, same value, so the double write is harmless.
           referredBy: referralCode,
+          signup_platform: 'web',
         }),
       })
 

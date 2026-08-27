@@ -196,6 +196,10 @@ async function handler(req, res) {
       }
       if (refOwner) referredBy = rawRef // unknown code: drop silently, never block a signup
     }
+    // Which surface this signup came from, for activation comparison. Whitelisted;
+    // handle_new_user stamps profiles.signup_platform at INSERT.
+    const signupPlatform = ['web', 'ios', 'android'].includes(req.body.signup_platform)
+      ? req.body.signup_platform : null
     // Create user server-side (bypasses captcha). Auto-confirm email. Pass the plan in
     // metadata so the handle_new_user trigger stamps profiles.plan at INSERT — this is
     // the ONLY way the client can end up on 'free', since the profile guard trigger
@@ -204,7 +208,8 @@ async function handler(req, res) {
       email,
       password,
       user_metadata: { full_name: name ?? email, role: profileRole, language,
-                       ...(country ? { country } : {}), ...(plan ? { plan } : {}) },
+                       ...(country ? { country } : {}), ...(signupPlatform ? { signup_platform: signupPlatform } : {}),
+                       ...(plan ? { plan } : {}) },
       email_confirm: true,
     })
     if (createErr) return res.status(400).json({ error: createErr.message })

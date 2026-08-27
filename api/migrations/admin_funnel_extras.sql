@@ -1,0 +1,10 @@
+-- Applied 2026-08-27. Early-funnel aggregates the REST API cannot reach
+-- (auth.users is outside the exposed schema): email confirmation, day-1/day-7
+-- return, last-seen, signup-platform split. Aggregates only, service_role only
+-- (the admin funnel endpoint is the single caller).
+--
+-- Caveat baked into the UI: auth.users.last_sign_in_at only moves on a FRESH
+-- sign-in. A member who stays signed in and returns does not bump it, so the
+-- return rates are a floor, not the truth. First-party open events (funnel
+-- step 2) are the accurate version.
+-- Function body: see the applied migration admin_funnel_extras in production.
