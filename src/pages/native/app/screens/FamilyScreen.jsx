@@ -1,15 +1,18 @@
 import React from 'react'
+import { useTranslation } from 'react-i18next'
+import '../i18n'
 import { PlusIcon } from '../icons'
 
 // Family — the owner plus real trusted people (trusted_people via usePeople),
 // with access chips derived from access_grants / invite_status.
 export default function FamilyScreen({ app }) {
+  const { t } = useTranslation('mobile')
   const { membersV, famSub, openInvite } = app
   return (
     <div className="scr">
       <div className="head">
-        <div><h1 className="h1">Family</h1><p className="sub">{famSub}</p></div>
-        <button className="btn btn-sm" onClick={openInvite}><PlusIcon />Invite</button>
+        <div><h1 className="h1">{t('family.title')}</h1><p className="sub">{famSub}</p></div>
+        <button className="btn btn-sm" onClick={openInvite}><PlusIcon />{t('family.invite')}</button>
       </div>
       <div className="pad">
         <div className="card-light ohide">
@@ -22,7 +25,7 @@ export default function FamilyScreen({ app }) {
           ))}
         </div>
         <div className="note">
-          Emergency-only members see nothing today. If something happens to you, your executor can unlock exactly what they need, nothing more.
+          {t('family.note')}
         </div>
       </div>
     </div>

@@ -1,4 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import '../../pages/native/app/i18n'
 import { LockKeyhole } from 'lucide-react'
 import { isNative } from '../../lib/platform'
 import { getLockState, verifyPasscode, verifyBiometric, clearPasscode } from './appLock'
@@ -17,6 +19,7 @@ import { haptic } from '../../lib/haptics'
 const BACKGROUND_LOCK_THRESHOLD_MS = 60_000
 
 export default function BiometricGate({ children }) {
+  const { t } = useTranslation('mobile')
   const [checking, setChecking] = useState(false)
   const [locked, setLocked] = useState(false)
   const [biometric, setBiometric] = useState(false)
@@ -37,7 +40,7 @@ export default function BiometricGate({ children }) {
   const submitPin = async (value = pin) => {
     if (value.length < 4) return
     if (await verifyPasscode(value)) { haptic.light(); setLocked(false); setPin(''); setError(null) }
-    else { haptic.error(); setError('Incorrect passcode.'); setPin('') }
+    else { haptic.error(); setError(t('lock.wrongPasscode')); setPin('') }
   }
 
   // Re-lock (on cold start or after backgrounding) only if a passcode is set.
@@ -94,7 +97,7 @@ export default function BiometricGate({ children }) {
         <img src="/logo-v2-white.png" alt="Everstead" className="h-11 w-auto opacity-95 mb-2" />
         <div className="flex items-center gap-2">
           <LockKeyhole size={16} className="text-sage-300" />
-          <p className="text-white text-base font-medium">Everstead is locked</p>
+          <p className="text-white text-base font-medium">{t('lock.locked')}</p>
         </div>
         <input
           type="password" inputMode="numeric" maxLength={6} autoFocus
@@ -113,10 +116,10 @@ export default function BiometricGate({ children }) {
           onClick={submitPin} disabled={pin.length < 4}
           className="rounded-full px-8 py-3 text-sm font-semibold bg-white text-navy-900 disabled:opacity-40"
         >
-          Unlock
+          {t('lock.unlock')}
         </button>
         {biometric && (
-          <button onClick={promptBiometric} className="text-sage-300 text-sm font-medium">Use Face ID</button>
+          <button onClick={promptBiometric} className="text-sage-300 text-sm font-medium">{t('lock.useFaceId')}</button>
         )}
         {/* Escape hatch — without it a forgotten passcode is a PERMANENT
             lockout (the lock screen was the only surface, with no way out
@@ -134,7 +137,7 @@ export default function BiometricGate({ children }) {
           }}
           className="text-white/50 text-xs font-medium mt-4"
         >
-          {confirmExit ? 'Tap again to sign out, your passcode will be reset' : 'Forgotten your passcode? Sign out'}
+          {confirmExit ? t('lock.confirmSignOut') : t('lock.forgotSignOut')}
         </button>
       </div>
   ) : null

@@ -1,4 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import '../i18n'
 import { useAboutMe } from '../../../../hooks/useData'
 import { useAuth } from '../../../../contexts/AuthContext'
 import { initialsOf } from '../helpers'
@@ -35,6 +37,7 @@ let avatarFileStash = null    // { file, at }, picked but not yet uploaded
 let deliverAvatarToLive = null // (file) => void, bound to the mounted screen
 
 export default function AboutMeScreen({ app }) {
+  const { t } = useTranslation('mobile')
   const auth = useAuth()
   const profile = app.profile || auth.profile
   const live = useAboutMe()
@@ -86,8 +89,8 @@ export default function AboutMeScreen({ app }) {
       avatarFileStash = null
       if (ANDROID_CAPTURE) pickedAvatar = { url, at: Date.now(), userId: auth.user?.id || null }
       setAvatar(url)
-      app.say('Photo added, tap Save to keep it')
-    } catch { app.say('Could not upload that photo.', 'error') }
+      app.say(t('aboutMe.photoAdded'))
+    } catch { app.say(t('aboutMe.photoUploadFailed'), 'error') }
   }
   const pickAvatar = async (e) => {
     // Take the pick as-is — no type gating (pickers can report octet-stream for
@@ -107,7 +110,7 @@ export default function AboutMeScreen({ app }) {
       avatarFileStash = { file, at: Date.now() }
       if (deliverAvatarToLive) deliverAvatarToLive(file)
     } catch {
-      app.say('Could not read that photo. Please try again.', 'error')
+      app.say(t('aboutMe.photoReadFailed'), 'error')
     }
   }
 
@@ -140,60 +143,60 @@ export default function AboutMeScreen({ app }) {
       // separate state, and the website persists it the same way (with the form).
       await save({ ...form, avatar_url: avatar || null, life_events: events.filter(e => e.year || e.description) })
       pickedAvatar = null // persisted, the server row is the truth again
-      app.say('About Me saved')
-    } catch { app.say('Could not save. Please try again.', 'error') } finally { setBusy(false) }
+      app.say(t('aboutMe.saved'))
+    } catch { app.say(t('aboutMe.saveFailed'), 'error') } finally { setBusy(false) }
   }
 
-  if (loading) return <SecScreen title="About Me" onBack={() => app.go('more')}><Busy /></SecScreen>
+  if (loading) return <SecScreen title={t('aboutMe.title')} onBack={() => app.go('more')}><Busy /></SecScreen>
 
   return (
-    <SecScreen title="About Me" subtitle="Your story, for the people you love" onBack={() => app.go('more')}>
+    <SecScreen title={t('aboutMe.title')} subtitle={t('aboutMe.subtitle')} onBack={() => app.go('more')}>
       <div className="fx col ac" style={{ marginBottom: 18 }}>
         <button onClick={changePhoto} style={{ border: 0, background: 'none', cursor: 'pointer' }}>
           {avatar
             ? <img src={avatar} alt="" style={{ width: 76, height: 76, borderRadius: '999px', objectFit: 'cover' }} />
-            : <span className="avatar avatar-round" style={{ width: 76, height: 76, fontSize: 28 }}>{initialsOf(form.full_name || 'You')}</span>}
+            : <span className="avatar avatar-round" style={{ width: 76, height: 76, fontSize: 28 }}>{initialsOf(form.full_name || t('shell.youRow'))}</span>}
         </button>
         {!ANDROID_CAPTURE && <input ref={fileInput} type="file" accept="image/*" style={{ display: 'none' }} onChange={pickAvatar} />}
         {ANDROID_CAPTURE ? (
           <div className="fx ac" style={{ gap: 18, marginTop: 2 }}>
-            <button className="linkbtn" style={{ width: 'auto', margin: 0, color: 'var(--color-navy-600)' }} onClick={() => setCapture(true)}>Take photo</button>
-            <button className="linkbtn" style={{ width: 'auto', margin: 0, color: 'var(--color-navy-600)' }} onClick={changePhoto}>Upload photo</button>
+            <button className="linkbtn" style={{ width: 'auto', margin: 0, color: 'var(--color-navy-600)' }} onClick={() => setCapture(true)}>{t('aboutMe.takePhoto')}</button>
+            <button className="linkbtn" style={{ width: 'auto', margin: 0, color: 'var(--color-navy-600)' }} onClick={changePhoto}>{t('aboutMe.uploadPhoto')}</button>
           </div>
         ) : (
-          <button className="linkbtn" style={{ color: 'var(--color-navy-600)' }} onClick={changePhoto}>Change photo</button>
+          <button className="linkbtn" style={{ color: 'var(--color-navy-600)' }} onClick={changePhoto}>{t('aboutMe.changePhoto')}</button>
         )}
       </div>
 
       <div className="card-light" style={{ padding: 16 }}>
-        <label className="flabel" style={{ marginTop: 0 }}>Full name</label>
-        <input className="inp" value={form.full_name} onChange={set('full_name')} placeholder="Your name" />
-        <label className="flabel">Date of birth</label>
+        <label className="flabel" style={{ marginTop: 0 }}>{t('aboutMe.fullName')}</label>
+        <input className="inp" value={form.full_name} onChange={set('full_name')} placeholder={t('aboutMe.yourNamePh')} />
+        <label className="flabel">{t('aboutMe.dob')}</label>
         <input className="inp" type="date" value={form.date_of_birth || ''} onChange={set('date_of_birth')} />
-        <label className="flabel">Passions</label>
-        <textarea className="inp" rows={3} value={form.passions} onChange={set('passions')} placeholder="What lights you up?" style={{ resize: 'none' }} />
-        <label className="flabel">Reflections</label>
-        <textarea className="inp" rows={3} value={form.reflections} onChange={set('reflections')} placeholder="Anything you'd like to pass on" style={{ resize: 'none' }} />
+        <label className="flabel">{t('aboutMe.passions')}</label>
+        <textarea className="inp" rows={3} value={form.passions} onChange={set('passions')} placeholder={t('aboutMe.passionsPh')} style={{ resize: 'none' }} />
+        <label className="flabel">{t('aboutMe.reflections')}</label>
+        <textarea className="inp" rows={3} value={form.reflections} onChange={set('reflections')} placeholder={t('aboutMe.reflectionsPh')} style={{ resize: 'none' }} />
       </div>
 
       <div className="fx jb ac" style={{ margin: '20px 0 8px' }}>
-        <span className="eyebrow m0">Life events</span>
+        <span className="eyebrow m0">{t('aboutMe.lifeEvents')}</span>
         <button className="linkbtn" style={{ width: 'auto', margin: 0, color: 'var(--color-navy-600)' }} onClick={addEvent}>+ Add</button>
       </div>
       <div className="fx col gap12">
-        {events.length === 0 && <p className="rdet">No milestones yet.</p>}
+        {events.length === 0 && <p className="rdet">{t('aboutMe.noMilestones')}</p>}
         {events.map((ev, i) => (
           <div key={i} className="card-light" style={{ padding: 12 }}>
             <div className="fx gap12">
-              <input className="inp" style={{ maxWidth: 90 }} value={ev.year} onChange={e => setEvent(i, 'year', e.target.value)} placeholder="Year" />
-              <input className="inp" value={ev.description} onChange={e => setEvent(i, 'description', e.target.value)} placeholder="What happened" />
+              <input className="inp" style={{ maxWidth: 90 }} value={ev.year} onChange={e => setEvent(i, 'year', e.target.value)} placeholder={t('aboutMe.yearPh')} />
+              <input className="inp" value={ev.description} onChange={e => setEvent(i, 'description', e.target.value)} placeholder={t('aboutMe.whatHappenedPh')} />
             </div>
-            <button className="linkbtn" style={{ width: 'auto', margin: '8px 0 0', color: 'var(--color-stone-400)', textAlign: 'left' }} onClick={() => removeEvent(i)}>Remove</button>
+            <button className="linkbtn" style={{ width: 'auto', margin: '8px 0 0', color: 'var(--color-stone-400)', textAlign: 'left' }} onClick={() => removeEvent(i)}>{t('aboutMe.remove')}</button>
           </div>
         ))}
       </div>
 
-      <button className={`btn w100 ${busy ? 'dis' : ''}`} style={{ marginTop: 22 }} onClick={onSave}>{busy ? 'Saving…' : 'Save'}</button>
+      <button className={`btn w100 ${busy ? 'dis' : ''}`} style={{ marginTop: 22 }} onClick={onSave}>{busy ? t('common.saving') : t('common.save')}</button>
 
       {capture && (
         <RecorderSheet

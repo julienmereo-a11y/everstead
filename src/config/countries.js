@@ -44,3 +44,19 @@ export const COUNTRIES = [
 export const countryByCode = (code) =>
   COUNTRIES.find(c => c.code === String(code || '').toUpperCase())?.name ?? null
 
+/**
+ * Display name for a country in the given language, falling back to the stored
+ * English name. The STORED value never changes ('France', 'United Kingdom'):
+ * the database, the sanctions rule and the euro pricing rule all match on it.
+ * Only what the person reads is localised, via the platform's own region names.
+ */
+export function countryDisplayName(name, language) {
+  if (language !== 'fr') return name
+  try {
+    const code = COUNTRIES.find(c => c.name === name)?.code
+    if (!code) return name
+    return new Intl.DisplayNames(['fr'], { type: 'region' }).of(code) || name
+  } catch {
+    return name
+  }
+}

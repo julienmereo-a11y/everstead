@@ -10,6 +10,8 @@ import MobileAppDemo from './MobileAppDemo'
 import MobilePlanSelect from './MobilePlanSelect'
 import SecuritySetup from './SecuritySetup'
 import AppIntro, { hasSeenIntro } from './AppIntro'
+import i18n from '../../../i18n'
+import './i18n'
 
 // Entry point for the Everstead native mobile app. Resolved in order:
 //  • while the session resolves → spinner
@@ -41,9 +43,9 @@ function ProfileWait({ retry }) {
   return (
     <div className="evst-app" style={{ background: '#0d1628', height: '100dvh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 14, padding: 32, textAlign: 'center' }}>
       <p style={{ color: 'rgba(255,255,255,0.75)', fontSize: 14.5, lineHeight: 1.5, margin: 0 }}>
-        We couldn't reach Everstead. Check your connection and try again.
+        {i18n.t('mobile:shell.offline')}
       </p>
-      <button className="btn btn-light" onClick={retry}>Try again</button>
+      <button className="btn btn-light" onClick={retry}>{i18n.t('mobile:shell.tryAgain')}</button>
     </div>
   )
 }

@@ -1,4 +1,7 @@
 import React, { useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import i18n from '../../../i18n'
+import './i18n'
 import { supabase } from '../../../lib/supabase'
 import { apiPost, isNative, isIOS } from '../../../lib/platform'
 import { detectDeviceLanguage, detectDeviceCountry } from '../../../lib/deviceLanguage'
@@ -39,19 +42,21 @@ const GoogleG = () => (
 // MobileApp drops the user straight into the app on the free Everstead tier.
 // Upgrading to Everstead+ happens later, inside the app (Settings / limit nudges).
 
-const VALUE_PROPS = [
-  { Icon: AccountsIcon, title: 'Accounts & money', sub: 'Banks, pensions and bills, one clear picture.' },
-  { Icon: DocIcon,      title: 'Documents',        sub: 'Wills, deeds and policies, safe in one vault.' },
-  { Icon: HeartIcon,    title: 'Wishes',           sub: 'Your wishes, recorded for the people you love.' },
+const valueProps = (t) => [
+  { Icon: AccountsIcon, title: t('auth.valueAccountsTitle'), sub: t('auth.valueAccountsSub') },
+  { Icon: DocIcon,      title: t('auth.valueDocsTitle'),     sub: t('auth.valueDocsSub') },
+  { Icon: HeartIcon,    title: t('auth.valueWishesTitle'),   sub: t('auth.valueWishesSub') },
 ]
 
 async function postJson(path, body) {
   const { ok, data } = await apiPost(path, body)
-  if (!ok) throw new Error(data?.error || 'Something went wrong. Please try again.')
+  // Server errors arrive in the server's language; the fallback is ours.
+  if (!ok) throw new Error(data?.error || i18n.t('mobile:common.genericError'))
   return data
 }
 
 export default function MobileAuthFlow() {
+  const { t } = useTranslation('mobile')
   const [mode, setMode] = useState('onboarding') // 'onboarding' | 'auth'
   const [obStep, setObStep] = useState(0)
   const [authMode, setAuthMode] = useState('signin') // 'signin' | 'signup'
@@ -72,7 +77,7 @@ export default function MobileAuthFlow() {
 
   const applySession = async ({ access_token, refresh_token }) => {
     const { error: sErr } = await supabase.auth.setSession({ access_token, refresh_token })
-    if (sErr) throw new Error('Could not sign you in. Please try again.')
+    if (sErr) throw new Error(t('auth.signInFailed'))
     // AuthContext's onAuthStateChange picks up the session → MobileApp advances.
   }
 
@@ -116,7 +121,7 @@ export default function MobileAuthFlow() {
       // Surfaces in the Xcode console (and logcat) — the ASAuthorization and
       // Supabase failure modes are indistinguishable without it.
       console.log('[auth] apple sign-in error:', e?.message || e, e?.code || '')
-      setError('Apple sign-in could not complete. Please try again.')
+      setError(t('auth.appleFailed'))
     }
   }
 
@@ -129,7 +134,7 @@ export default function MobileAuthFlow() {
       const { signInWithGoogleNative } = await import('../../../lib/nativeGoogleAuth')
       await signInWithGoogleNative()
     } catch {
-      setError('Google sign-in could not start. Please try again.')
+      setError(t('auth.googleFailed'))
     }
   }
 
@@ -139,7 +144,7 @@ export default function MobileAuthFlow() {
     try {
       await postJson('/api/auth/mfa-send-code', { email: email.trim(), password: pw })
       setAuthStep('code')
-      setInfo(`We've emailed a 6-digit code to ${email.trim()}.`)
+      setInfo(t('auth.codeSent', { email: email.trim() }))
     } catch (err) {
       setError(err.message)
     } finally { setBusy(false) }
@@ -157,10 +162,10 @@ export default function MobileAuthFlow() {
   }
 
   const forgotPw = async () => {
-    if (!email.trim()) { setError('Enter your email first.'); return }
+    if (!email.trim()) { setError(t('auth.enterEmailFirst')); return }
     setError(null)
     try { await postJson('/api/auth/forgot-password', { email: email.trim() }) } catch { /* don't reveal existence */ }
-    setInfo(`If an account exists for ${email.trim()}, we've sent a reset link.`)
+    setInfo(t('auth.resetSent', { email: email.trim() }))
   }
 
   // ── Onboarding ──────────────────────────────────────────────
@@ -168,17 +173,17 @@ export default function MobileAuthFlow() {
     return (
       <div className="ob grain">
         <div className="hero-glow" />
-        {obStep < 2 && <button className="skip" onClick={() => goAuth('signup')}>Skip</button>}
+        {obStep < 2 && <button className="skip" onClick={() => goAuth('signup')}>{t('common.skip')}</button>}
 
         {obStep === 0 && (
           <div className="f1 fx col posrel">
             <img className="oblogo" src="/logo-v2-white.png" alt="Everstead" />
             <div className="f1 fx col jc ac tc">
               <h1 className="obh" style={{ fontSize: 38 }}>
-                Everything that matters, <span className="aurora">gathered</span> in one secure place.
+                {t('auth.heroTitlePre')}<span className="aurora">{t('auth.heroTitleAccent')}</span>{t('auth.heroTitlePost')}
               </h1>
               <p style={{ fontSize: 15.5, lineHeight: 1.6, color: 'rgba(255,255,255,0.65)', margin: '18px 0 0' }}>
-                Accounts, documents and wishes, organised for today, ready for whatever comes.
+                {t('auth.heroSub')}
               </p>
             </div>
           </div>
@@ -186,9 +191,9 @@ export default function MobileAuthFlow() {
 
         {obStep === 1 && (
           <div className="f1 fx col jc posrel">
-            <h1 className="obh">Everything that matters, in one place.</h1>
+            <h1 className="obh">{t('auth.valueTitle')}</h1>
             <div className="fx col gap12" style={{ marginTop: 26 }}>
-              {VALUE_PROPS.map(({ Icon, title, sub }) => (
+              {valueProps(t).map(({ Icon, title, sub }) => (
                 <div key={title} className="card-dark fx gap12" style={{ padding: 15, alignItems: 'flex-start' }}>
                   <span className="ficon"><Icon s={20} /></span>
                   <div>
@@ -203,11 +208,11 @@ export default function MobileAuthFlow() {
 
         {obStep === 2 && (
           <div className="f1 fx col jc posrel">
-            <h1 className="obh">First, a little about you.</h1>
-            <label className="flabel flabel-dark" style={{ marginTop: 24 }}>Your name</label>
-            <input className="inp inp-dark" value={name} onChange={e => setName(e.target.value)} placeholder="e.g. Eleanor Whitmore" autoComplete="name" autoCapitalize="words" enterKeyHint="done" />
+            <h1 className="obh">{t('auth.aboutYouTitle')}</h1>
+            <label className="flabel flabel-dark" style={{ marginTop: 24 }}>{t('auth.yourName')}</label>
+            <input className="inp inp-dark" value={name} onChange={e => setName(e.target.value)} placeholder={t('auth.namePlaceholder')} autoComplete="name" autoCapitalize="words" enterKeyHint="done" />
             <p style={{ fontSize: 12.5, color: 'rgba(255,255,255,0.5)', margin: '12px 0 0', lineHeight: 1.5 }}>
-              Just your name for now, you can invite family once you're in.
+              {t('auth.nameNote')}
             </p>
           </div>
         )}
@@ -220,16 +225,16 @@ export default function MobileAuthFlow() {
           </div>
           {obStep < 2 && (
             <button className="btn btn-light w100" onClick={() => setObStep(s => s + 1)}>
-              {obStep === 0 ? 'Get started' : 'Continue'}
+              {obStep === 0 ? t('auth.getStarted') : t('common.continue')}
             </button>
           )}
           {obStep === 2 && (
             <button className={`btn btn-light w100 ${canFinishOnboarding ? '' : 'dis'}`} onClick={() => canFinishOnboarding && goAuth('signup')}>
-              Create my home
+              {t('auth.createMyHome')}
             </button>
           )}
           {obStep === 0 && (
-            <button className="linkbtn" onClick={() => goAuth('signin')}>I already have an account</button>
+            <button className="linkbtn" onClick={() => goAuth('signin')}>{t('auth.haveAccount')}</button>
           )}
         </div>
       </div>
@@ -247,7 +252,7 @@ export default function MobileAuthFlow() {
   return (
     <div className="ob grain">
       <div className="hero-glow" />
-      <button className="skip" onClick={() => { if (authStep === 'code') { setAuthStep('form'); setError(null) } else setMode('onboarding') }}>Back</button>
+      <button className="skip" onClick={() => { if (authStep === 'code') { setAuthStep('form'); setError(null) } else setMode('onboarding') }}>{t('common.back')}</button>
 
       <div className="f1 fx col jc posrel">
         <div className="eyebrow eyebrow-sage">Everstead</div>
@@ -255,8 +260,8 @@ export default function MobileAuthFlow() {
         {/* Sign-in code step */}
         {authMode === 'signin' && authStep === 'code' ? (
           <>
-            <h1 className="obh" style={{ fontSize: 33 }}>Check your email.</h1>
-            <label className="flabel flabel-dark" style={{ marginTop: 22 }}>6-digit code</label>
+            <h1 className="obh" style={{ fontSize: 33 }}>{t('auth.checkEmailTitle')}</h1>
+            <label className="flabel flabel-dark" style={{ marginTop: 22 }}>{t('auth.codeLabel')}</label>
             <input
               className="inp inp-dark" inputMode="numeric" maxLength={6} value={code}
               onChange={e => setCode(e.target.value.replace(/\D/g, ''))} placeholder="000000"
@@ -264,14 +269,14 @@ export default function MobileAuthFlow() {
               onKeyDown={e => { if (e.key === 'Enter' && code.trim().length === 6 && !busy) submitVerifyCode() }}
               style={{ letterSpacing: '0.3em', fontSize: 18 }}
             />
-            <button className="fpw" onClick={submitSendCode}>Resend code</button>
+            <button className="fpw" onClick={submitSendCode}>{t('auth.resendCode')}</button>
             {messages}
           </>
         ) : (
           <>
             {authMode === 'signin'
               ? <>
-                  <h1 className="obh" style={{ fontSize: 33 }}>Welcome back.</h1>
+                  <h1 className="obh" style={{ fontSize: 33 }}>{t('auth.welcomeBack')}</h1>
                   {APPLE_SIGNIN && (
                     <button
                       onClick={appleSignIn}
@@ -282,7 +287,7 @@ export default function MobileAuthFlow() {
                         background: '#fff', border: 0, color: '#000', fontSize: 14.5, fontWeight: 600,
                       }}
                     >
-                      <AppleMark />Continue with Apple
+                      <AppleMark />{t('auth.continueApple')}
                     </button>
                   )}
                   {GOOGLE_SIGNIN && (
@@ -296,30 +301,30 @@ export default function MobileAuthFlow() {
                           background: '#fafaf9', border: 0, color: 'var(--color-navy-900)', fontSize: 14.5, fontWeight: 600,
                         }}
                       >
-                        <GoogleG />Continue with Google
+                        <GoogleG />{t('auth.continueGoogle')}
                       </button>
                       <div className="fx ac" style={{ gap: 12, margin: '16px 0 0' }}>
                         <span style={{ flex: 1, height: 1, background: 'rgba(255,255,255,0.15)' }} />
-                        <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.45)' }}>or sign in with email</span>
+                        <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.45)' }}>{t('auth.orEmail')}</span>
                         <span style={{ flex: 1, height: 1, background: 'rgba(255,255,255,0.15)' }} />
                       </div>
                     </>
                   )}
                 </>
               : <>
-                  <h1 className="obh" style={{ fontSize: 33 }}>Create your account.</h1>
-                  <label className="flabel flabel-dark" style={{ marginTop: 22 }}>Your name</label>
-                  <input className="inp inp-dark" value={name} onChange={e => setName(e.target.value)} placeholder="e.g. Eleanor Whitmore" autoComplete="name" autoCapitalize="words" enterKeyHint="next" />
+                  <h1 className="obh" style={{ fontSize: 33 }}>{t('auth.createAccountTitle')}</h1>
+                  <label className="flabel flabel-dark" style={{ marginTop: 22 }}>{t('auth.yourName')}</label>
+                  <input className="inp inp-dark" value={name} onChange={e => setName(e.target.value)} placeholder={t('auth.namePlaceholder')} autoComplete="name" autoCapitalize="words" enterKeyHint="next" />
                 </>}
-            <label className="flabel flabel-dark" style={{ marginTop: 18 }}>Email</label>
+            <label className="flabel flabel-dark" style={{ marginTop: 18 }}>{t('auth.email')}</label>
             <input className="inp inp-dark" type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="you@example.com" autoComplete="email" autoCapitalize="none" autoCorrect="off" inputMode="email" enterKeyHint="next" />
-            <label className="flabel flabel-dark">Password</label>
+            <label className="flabel flabel-dark">{t('auth.password')}</label>
             <input
               className="inp inp-dark" type="password" value={pw} onChange={e => setPw(e.target.value)} placeholder="••••••••"
               autoComplete={authMode === 'signin' ? 'current-password' : 'new-password'} enterKeyHint="go"
               onKeyDown={e => { if (e.key === 'Enter' && canForm && !busy) (authMode === 'signin' ? submitSendCode : submitSignup)() }}
             />
-            {authMode === 'signin' && <button className="fpw" onClick={forgotPw}>Forgot password?</button>}
+            {authMode === 'signin' && <button className="fpw" onClick={forgotPw}>{t('auth.forgotPassword')}</button>}
             {messages}
           </>
         )}
@@ -330,26 +335,26 @@ export default function MobileAuthFlow() {
           authStep === 'code' ? (
             <>
               <button className={`btn btn-light w100 ${code.trim().length === 6 && !busy ? '' : 'dis'}`} onClick={submitVerifyCode}>
-                {busy ? 'Verifying…' : 'Verify & sign in'}
+                {busy ? t('auth.verifying') : t('auth.verifySignIn')}
               </button>
             </>
           ) : (
             <>
               <button className={`btn btn-light w100 ${canForm && !busy ? '' : 'dis'}`} onClick={submitSendCode}>
-                {busy ? 'Sending…' : 'Continue'}
+                {busy ? t('auth.sending') : t('common.continue')}
               </button>
               <button className="linkbtn" onClick={() => { setAuthMode('signup'); setError(null); setInfo(null) }}>
-                New to Everstead? Create an account
+                {t('auth.newHere')}
               </button>
             </>
           )
         ) : (
           <>
             <button className={`btn btn-light w100 ${canForm && !busy ? '' : 'dis'}`} onClick={submitSignup}>
-              {busy ? 'Creating account…' : 'Create account'}
+              {busy ? t('auth.creatingAccount') : t('auth.createAccount')}
             </button>
             <button className="linkbtn" onClick={() => { setAuthMode('signin'); setAuthStep('form'); setError(null); setInfo(null) }}>
-              Already have an account? Sign in
+              {t('auth.alreadyAccount')}
             </button>
           </>
         )}

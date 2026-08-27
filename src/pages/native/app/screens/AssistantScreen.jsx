@@ -1,4 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import '../i18n'
 import { supabase } from '../../../../lib/supabase'
 import { useAuth } from '../../../../contexts/AuthContext'
 import { hasAiConsent, grantAiConsent } from '../../../../lib/aiConsent'
@@ -13,6 +15,7 @@ function stripProposals(reply) {
 }
 
 export default function AssistantScreen({ app }) {
+  const { t } = useTranslation('mobile')
   const auth = useAuth()
   const [messages, setMessages] = useState([
     { role: 'assistant', content: "Hello: I'm here to help you organise your accounts, documents, people and wishes. What would you like to sort out first?" },
@@ -44,7 +47,7 @@ export default function AssistantScreen({ app }) {
   const profile = app.profile || auth.profile
   if (profile?.ai_features_enabled === false) {
     return (
-      <SecScreen title="AI Assistant" onBack={() => app.go('more')}>
+      <SecScreen title={t('assistant.title')} onBack={() => app.go('more')}>
         <div className="card-light" style={{ padding: 18 }}>
           <p className="rdet" style={{ margin: 0, lineHeight: 1.55 }}>
             AI features are turned off for your account. You can switch them back on in Settings → AI features.
@@ -59,28 +62,25 @@ export default function AssistantScreen({ app }) {
   // of the real product flow).
   if (consent !== true) {
     return (
-      <SecScreen title="AI Assistant" onBack={() => app.go('more')}>
+      <SecScreen title={t('assistant.title')} onBack={() => app.go('more')}>
         {consent === false && (
           <div className="card-light" style={{ padding: 20 }}>
-            <h3 className="serif" style={{ fontSize: 20, fontWeight: 600, margin: '0 0 10px' }}>Before you start</h3>
+            <h3 className="serif" style={{ fontSize: 20, fontWeight: 600, margin: '0 0 10px' }}>{t('assistant.consentTitle')}</h3>
             <p className="rdet" style={{ margin: 0, lineHeight: 1.6 }}>
-              The Assistant is powered by Claude, an AI service from <strong>Anthropic</strong>.
-              When you send a message, <strong>the text you type</strong> is sent securely to
-              Anthropic to generate a reply, processed on Everstead's behalf and{' '}
-              <strong>never used to train AI models</strong>.
+              {t('assistant.consentP1a')}<strong>Anthropic</strong>{t('assistant.consentP1b')}
+              <strong>{t('assistant.consentP1c')}</strong>{t('assistant.consentP1d')}
+              <strong>{t('assistant.consentP1e')}</strong>{t('assistant.consentP1f')}
             </p>
             <p className="rdet" style={{ margin: '10px 0 0', lineHeight: 1.6 }}>
-              The Assistant only sees what you write here, it cannot open your vault,
-              documents or messages on its own. Please avoid typing passwords or full
-              account numbers.
+              {t('assistant.consentP2')}
             </p>
             <p className="rdet" style={{ margin: '10px 0 0', lineHeight: 1.6 }}>
-              Details are in our{' '}
-              <a href="https://www.everstead.care/privacy" onClick={openPrivacy} style={{ color: 'var(--color-navy-600)', textDecoration: 'underline' }}>Privacy Policy</a>.
-              You can turn AI features off anytime in Settings.
+              {t('assistant.consentP3a')}
+              <a href="https://www.everstead.care/privacy" onClick={openPrivacy} style={{ color: 'var(--color-navy-600)', textDecoration: 'underline' }}>{t('assistant.privacyPolicy')}</a>
+              {t('assistant.consentP3b')}
             </p>
-            <button className="btn w100" style={{ marginTop: 16 }} onClick={agree}>Agree and continue</button>
-            <button className="linkbtn w100" style={{ marginTop: 8, color: 'var(--color-stone-500)' }} onClick={() => app.go('more')}>Not now</button>
+            <button className="btn w100" style={{ marginTop: 16 }} onClick={agree}>{t('assistant.agree')}</button>
+            <button className="linkbtn w100" style={{ marginTop: 8, color: 'var(--color-stone-500)' }} onClick={() => app.go('more')}>{t('assistant.notNow')}</button>
           </div>
         )}
       </SecScreen>
@@ -98,7 +98,7 @@ export default function AssistantScreen({ app }) {
     // Demo mode: no backend — reply with a canned, on-brand response.
     if (app.demo) {
       setTimeout(() => {
-        setMessages(h => [...h, { role: 'assistant', content: "In the live app I'd help you capture that, for example, adding an account or drafting a note to a loved one. This is a preview, so I'm not connected right now." }])
+        setMessages(h => [...h, { role: 'assistant', content: t('assistant.demoReply') }])
         setLoading(false)
       }, 500)
       return
@@ -106,11 +106,11 @@ export default function AssistantScreen({ app }) {
     try {
       const { data, error: invokeErr } = await supabase.functions.invoke('ai-assistant', { body: { messages: next, file: null } })
       if (invokeErr) throw invokeErr
-      const reply = stripProposals(data?.reply || '') || "I've noted that."
+      const reply = stripProposals(data?.reply || '') || t('assistant.noted')
       setMessages(h => [...h, { role: 'assistant', content: reply }])
       setTimeout(() => { const s = scroller.current; if (s) s.scrollTop = s.scrollHeight }, 50)
     } catch {
-      setError('The assistant is unavailable right now. Please try again.')
+      setError(t('assistant.unavailable'))
     } finally {
       setLoading(false)
     }
@@ -123,7 +123,7 @@ export default function AssistantScreen({ app }) {
           <button onClick={() => app.go('more')} aria-label="Back" style={{ background: 'none', border: 0, padding: 0, color: 'var(--color-stone-500)', cursor: 'pointer' }}>
             <svg width="20" height="20" viewBox="0 0 22 22" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M13.5 5l-6 6 6 6" /></svg>
           </button>
-          <h1 className="h1" style={{ fontSize: 26 }}>AI Assistant</h1>
+          <h1 className="h1" style={{ fontSize: 26 }}>{t('assistant.title')}</h1>
         </div>
       </div>
 
@@ -140,7 +140,7 @@ export default function AssistantScreen({ app }) {
               }}>{m.content}</div>
             </div>
           ))}
-          {loading && <div className="rdet">Thinking…</div>}
+          {loading && <div className="rdet">{t('assistant.thinking')}</div>}
           {error && <div style={{ color: '#b91c1c', fontSize: 13 }}>{error}</div>}
         </div>
       </div>
@@ -149,9 +149,9 @@ export default function AssistantScreen({ app }) {
         <input
           className="inp" value={input} onChange={e => setInput(e.target.value)}
           onKeyDown={e => { if (e.key === 'Enter') send() }}
-          placeholder="Ask anything…"
+          placeholder={t('assistant.askPh')}
         />
-        <button className={`btn ${input.trim() && !loading ? '' : 'dis'}`} style={{ flex: 'none' }} onClick={send}>Send</button>
+        <button className={`btn ${input.trim() && !loading ? '' : 'dis'}`} style={{ flex: 'none' }} onClick={send}>{t('assistant.send')}</button>
       </div>
     </div>
   )

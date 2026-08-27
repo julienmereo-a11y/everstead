@@ -1,4 +1,6 @@
 import React, { useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import './i18n'
 import { getPref, setPref } from '../../../lib/prefs'
 import { haptic } from '../../../lib/haptics'
 import { HomeIcon, AccountsIcon, DocIcon, FamilyIcon, HeartIcon, SparkIcon, MessageIcon } from './icons'
@@ -13,41 +15,45 @@ const INTRO_SEEN_KEY = 'evst_intro_seen'
 export const hasSeenIntro = async () => (await getPref(INTRO_SEEN_KEY)) === 'true'
 const markIntroSeen = () => setPref(INTRO_SEEN_KEY, 'true')
 
-const STEPS = [
+// Built per render from t(): the strings live in the `mobile` namespace
+// (en/fr), and a language change re-renders straight into the other language.
+const steps = (t) => [
   {
     logo: true,
-    title: <>Welcome to <span className="aurora">Everstead</span>.</>,
-    sub: "One calm, private place to get life's important things organised, for you today, and for the people you love tomorrow.",
+    title: <>{t('intro.welcomeTitlePre')}<span className="aurora">Everstead</span>{t('intro.welcomeTitlePost')}</>,
+    sub: t('intro.welcomeSub'),
     points: [],
   },
   {
-    title: 'Build your plan, step by step.',
-    sub: "Home shows your estate readiness. Follow “Up next” and watch your score grow as your plan takes shape.",
+    title: t('intro.buildTitle'),
+    sub: t('intro.buildSub'),
     points: [
-      { Icon: AccountsIcon, label: 'Add your accounts', text: 'Banks, pensions and policies, one clear picture.' },
-      { Icon: DocIcon,      label: 'Fill your vault',   text: 'Wills, deeds and documents, encrypted and safe.' },
+      { Icon: AccountsIcon, label: t('intro.buildAccountsLabel'), text: t('intro.buildAccountsText') },
+      { Icon: DocIcon,      label: t('intro.buildVaultLabel'),    text: t('intro.buildVaultText') },
     ],
   },
   {
-    title: 'Choose who sees what.',
-    sub: 'Invite the people you trust from the Family tab, each person gets exactly the access you choose.',
+    title: t('intro.accessTitle'),
+    sub: t('intro.accessSub'),
     points: [
-      { Icon: FamilyIcon, label: 'Trusted contacts', text: 'Spouse, executors, advisers, each with their own role.' },
-      { Icon: HeartIcon,  label: 'On your terms',    text: "Share now, or only after you're gone. Nothing without your say-so." },
+      { Icon: FamilyIcon, label: t('intro.accessContactsLabel'), text: t('intro.accessContactsText') },
+      { Icon: HeartIcon,  label: t('intro.accessTermsLabel'),    text: t('intro.accessTermsText') },
     ],
   },
   {
-    title: 'And when you need more.',
-    sub: 'Everything else lives under More, private and locked behind your passcode.',
+    title: t('intro.moreTitle'),
+    sub: t('intro.moreSub'),
     points: [
-      { Icon: MessageIcon, label: 'Personal messages', text: 'Sealed letters for the people you love.' },
-      { Icon: SparkIcon,   label: 'Your AI assistant', text: 'Gentle help organising it all, whenever you ask.' },
+      { Icon: MessageIcon, label: t('intro.moreMessagesLabel'),  text: t('intro.moreMessagesText') },
+      { Icon: SparkIcon,   label: t('intro.moreAssistantLabel'), text: t('intro.moreAssistantText') },
     ],
   },
 ]
 
 export default function AppIntro({ onDone }) {
+  const { t } = useTranslation('mobile')
   const [step, setStep] = useState(0)
+  const STEPS = steps(t)
   const s = STEPS[step]
   const last = step === STEPS.length - 1
 
@@ -57,12 +63,12 @@ export default function AppIntro({ onDone }) {
   return (
     <div className="ob grain">
       <div className="hero-glow" />
-      {!last && <button className="skip" onClick={finish}>Skip</button>}
+      {!last && <button className="skip" onClick={finish}>{t('common.skip')}</button>}
 
       <div className="f1 fx col jc posrel">
         {s.logo
           ? <img src="/logo-v2-white.png" alt="Everstead" style={{ height: 44, width: 'auto', alignSelf: 'flex-start', marginBottom: 26 }} />
-          : <div className="eyebrow eyebrow-sage">Getting started</div>}
+          : <div className="eyebrow eyebrow-sage">{t('intro.eyebrow')}</div>}
         <h1 className="obh" style={{ fontSize: 32 }}>{s.title}</h1>
         <p style={{ fontSize: 15, lineHeight: 1.6, color: 'rgba(255,255,255,0.65)', margin: '14px 0 0' }}>{s.sub}</p>
 
@@ -86,10 +92,10 @@ export default function AppIntro({ onDone }) {
           {STEPS.map((_, i) => <span key={i} className={`dot ${step === i ? 'on' : ''}`} />)}
         </div>
         <button className="btn btn-light w100" onClick={next}>
-          {last ? 'Start my plan' : step === 0 ? 'Show me around' : 'Continue'}
+          {last ? t('intro.startPlan') : step === 0 ? t('intro.showMeAround') : t('common.continue')}
         </button>
         {step > 0 && !last && (
-          <button className="linkbtn" onClick={() => setStep(n => n - 1)}>Back</button>
+          <button className="linkbtn" onClick={() => setStep(n => n - 1)}>{t('common.back')}</button>
         )}
       </div>
     </div>

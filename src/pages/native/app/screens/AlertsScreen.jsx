@@ -1,4 +1,6 @@
 import React from 'react'
+import { useTranslation } from 'react-i18next'
+import '../i18n'
 import { useAlerts } from '../../../../hooks/useData'
 import { relativeTime } from '../helpers'
 import SecScreen, { Busy } from '../components/SecScreen'
@@ -6,12 +8,13 @@ import SecScreen, { Busy } from '../components/SecScreen'
 // Human labels — never show a raw enum to the user; critical gets a visually
 // distinct (amber) chip so it doesn't read the same as a routine warning.
 const SEV = {
-  critical: { label: 'Urgent', style: { background: '#fef3c7', color: '#92400e' } },
-  warning:  { label: 'Review', cls: 'chip-stone' },
-  info:     { label: 'Note',   cls: 'chip-navy' },
+  critical: { labelKey: 'alertsScr.sevUrgent', style: { background: '#fef3c7', color: '#92400e' } },
+  warning:  { labelKey: 'alertsScr.sevReview', cls: 'chip-stone' },
+  info:     { labelKey: 'alertsScr.sevNote',   cls: 'chip-navy' },
 }
 
 export default function AlertsScreen({ app }) {
+  const { t } = useTranslation('mobile')
   const live = useAlerts()
   const data = app.demo ? app.demoData.alerts : live.data
   const loading = app.demo ? false : live.loading
@@ -20,15 +23,15 @@ export default function AlertsScreen({ app }) {
   const unreadCount = app.demo ? data.filter(a => !a.is_read).length : live.unreadCount
   return (
     <SecScreen
-      title="Alerts"
-      subtitle={loading ? '' : `${unreadCount} unread`}
+      title={t('alertsScr.title')}
+      subtitle={loading ? '' : t('alertsScr.unread', { count: unreadCount })}
       onBack={() => app.go('more')}
-      action={unreadCount > 0 ? <button className="btn btn-sm" onClick={() => { markAllRead(); app.say('All alerts marked as read') }}>Mark all read</button> : null}
+      action={unreadCount > 0 ? <button className="btn btn-sm" onClick={() => { markAllRead(); app.say(t('alertsScr.allRead')) }}>{t('alertsScr.markAllRead')}</button> : null}
     >
       {loading ? (
         <Busy />
       ) : data.length === 0 ? (
-        <div className="card-light" style={{ padding: 18 }}><p className="rdet" style={{ margin: 0 }}>No alerts, you're all clear.</p></div>
+        <div className="card-light" style={{ padding: 18 }}><p className="rdet" style={{ margin: 0 }}>{t('alertsScr.empty')}</p></div>
       ) : (
         <div className="card-light ohide">
           {data.map((a, i) => (
@@ -38,7 +41,7 @@ export default function AlertsScreen({ app }) {
                 {a.detail && <div className="rdet">{a.detail}</div>}
                 <div className="awhen" style={{ marginTop: 4 }}>{relativeTime(a.created_at)}</div>
               </div>
-              <span className={`chip ${(SEV[a.severity] || SEV.warning).cls || ''}`} style={(SEV[a.severity] || SEV.warning).style}>{(SEV[a.severity] || SEV.warning).label}</span>
+              <span className={`chip ${(SEV[a.severity] || SEV.warning).cls || ''}`} style={(SEV[a.severity] || SEV.warning).style}>{t((SEV[a.severity] || SEV.warning).labelKey)}</span>
             </div>
           ))}
         </div>

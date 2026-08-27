@@ -1,6 +1,9 @@
 import React, { useState, useRef, useCallback, useMemo, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
+import i18n from '../../../i18n'
+import './i18n'
 import { computeReadiness } from './readiness'
-import { ACCOUNT_CATEGORY_ORDER, docChip, personAccessChip, initialsOf, activityText, relativeTime } from './helpers'
+import { ACCOUNT_CATEGORY_ORDER, docChip, personAccessChip, initialsOf, activityText, relativeTime, dateLocale } from './helpers'
 import { HomeIcon, AccountsIcon, VaultIcon, PlanIcon, FamilyIcon, MoreIcon } from './icons'
 import HomeScreen from './screens/HomeScreen'
 import AccountsScreen from './screens/AccountsScreen'
@@ -35,19 +38,19 @@ import { haptic } from '../../../lib/haptics'
 
 const RING_CIRCUMFERENCE = 226.2
 const TABS = [
-  { key: 'home', label: 'Home', Icon: HomeIcon },
-  { key: 'accounts', label: 'Accounts', Icon: AccountsIcon },
-  { key: 'vault', label: 'Vault', Icon: VaultIcon },
-  { key: 'plan', label: 'Plan', Icon: PlanIcon },
-  { key: 'family', label: 'Family', Icon: FamilyIcon },
-  { key: 'more', label: 'More', Icon: MoreIcon },
+  { key: 'home', Icon: HomeIcon },
+  { key: 'accounts', Icon: AccountsIcon },
+  { key: 'vault', Icon: VaultIcon },
+  { key: 'plan', Icon: PlanIcon },
+  { key: 'family', Icon: FamilyIcon },
+  { key: 'more', Icon: MoreIcon },
 ]
 const MAIN_TAB_KEYS = ['home', 'accounts', 'vault', 'plan', 'family']
 const UP_NEXT = {
-  accounts: { screen: 'accounts', label: 'Add your accounts' },
-  documents: { screen: 'vault', label: 'Upload key documents' },
-  people: { screen: 'family', label: 'Invite a trusted contact' },
-  instructions: { screen: 'plan', label: 'Write instructions for your family' },
+  accounts: { screen: 'accounts', labelKey: 'shell.upAccounts' },
+  documents: { screen: 'vault', labelKey: 'shell.upDocuments' },
+  people: { screen: 'family', labelKey: 'shell.upPeople' },
+  instructions: { screen: 'plan', labelKey: 'shell.upInstructions' },
 }
 const SECONDARY = {
   more: MoreScreen, aboutme: AboutMeScreen, messages: MessagesScreen,
@@ -114,6 +117,9 @@ const DEMO = {
 }
 
 export default function MobileAppDemo() {
+  // Subscribes this shell to language changes; the memo below re-derives its
+  // strings when the language flips (same pattern as MobileAppAuthed).
+  const { i18n: i18nLive } = useTranslation('mobile')
   // Demo-only deep link (/mobile?demo=1&screen=vault): store-listing screenshot
   // tooling opens each screen directly. Harmless otherwise — bad values just
   // fall through to the default screen render.
@@ -177,10 +183,10 @@ export default function MobileAppDemo() {
     })).filter(g => g.items.length)
 
     const docsV = d.documents.map(x => { const c = docChip(x.status); return { id: x.id, name: x.name, detail: x.notes || x.doc_type, status: c.label, chipCls: c.cls } })
-    const ownerRow = { id: 'owner', name: DEMO_PROFILE.full_name, rel: 'You · Owner', access: 'Full access', chipCls: 'chip-sage', initials: initialsOf(DEMO_PROFILE.full_name) }
+    const ownerRow = { id: 'owner', name: DEMO_PROFILE.full_name, rel: i18n.t('mobile:shell.youOwner'), access: i18n.t('mobile:shell.fullAccess'), chipCls: 'chip-sage', initials: initialsOf(DEMO_PROFILE.full_name) }
     const memberRows = d.people.map(m => { const c = personAccessChip(m); return { id: m.id, name: m.name, rel: m.role, access: c.label, chipCls: c.cls, initials: initialsOf(m.name) } })
-    const upNext = stats.filter(s => s.value < s.target).slice(0, 2).map(s => ({ key: s.key, label: UP_NEXT[s.key]?.label || s.label, detail: `${s.value} of ${s.target}`, screen: UP_NEXT[s.key]?.screen || 'plan' }))
-    const readinessRows = stats.map(s => ({ key: s.key, label: s.label, detail: `${Math.min(s.value, s.target)} of ${s.target}`, done: s.value >= s.target, screen: UP_NEXT[s.key]?.screen || 'plan' }))
+    const upNext = stats.filter(s => s.value < s.target).slice(0, 2).map(s => ({ key: s.key, label: UP_NEXT[s.key] ? i18n.t('mobile:' + UP_NEXT[s.key].labelKey) : s.label, detail: i18n.t('mobile:shell.ofTarget', { value: s.value, target: s.target }), screen: UP_NEXT[s.key]?.screen || 'plan' }))
+    const readinessRows = stats.map(s => ({ key: s.key, label: s.label, detail: i18n.t('mobile:shell.ofTarget', { value: Math.min(s.value, s.target), target: s.target }), done: s.value >= s.target, screen: UP_NEXT[s.key]?.screen || 'plan' }))
 
     const freeCapped = (key, count) => DEMO_PROFILE.plan === 'free' && isAtLimit('free', key, count)
 
@@ -188,17 +194,17 @@ export default function MobileAppDemo() {
       demo: true, profile: DEMO_PROFILE, demoData: d, demoAppend, demoUpdate, demoSetAboutMe, onSignOut,
       go, say, score,
       firstName: DEMO_PROFILE.full_name.split(' ')[0], initials: initialsOf(DEMO_PROFILE.full_name),
-      greeting: hour < 12 ? 'Good morning' : hour < 18 ? 'Good afternoon' : 'Good evening',
-      dateLabel: now.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' }),
+      greeting: hour < 12 ? i18n.t('mobile:shell.morning') : hour < 18 ? i18n.t('mobile:shell.afternoon') : i18n.t('mobile:shell.evening'),
+      dateLabel: now.toLocaleDateString(dateLocale(), { weekday: 'long', day: 'numeric', month: 'long' }),
       scorePct: score + '%', ringOff: RING_CIRCUMFERENCE * (1 - score / 100), ringCircumference: RING_CIRCUMFERENCE,
-      scoreTxt: `${completeAreas} of ${stats.length} areas complete`,
-      planSub: `${score}% ready · ${stats.length - completeAreas} steps left`,
+      scoreTxt: i18n.t('mobile:shell.areasComplete', { count: completeAreas, target: stats.length }),
+      planSub: i18n.t('mobile:shell.planSub', { score, steps: stats.length - completeAreas }),
       upNext, upEmpty: upNext.length === 0, readinessRows,
       accCount: d.accounts.length, docCount: d.documents.length, memCount: d.people.length + 1,
-      accGroups, accSub: `${d.accounts.length} accounts across ${accGroups.length} categories`,
-      docsV, vaultSub: `${d.documents.length} documents in your vault`,
+      accGroups, accSub: `${i18n.t('mobile:shell.accCount', { count: d.accounts.length })} ${i18n.t('mobile:shell.acrossCats', { count: accGroups.length })}`,
+      docsV, vaultSub: i18n.t('mobile:shell.vaultSub', { count: d.documents.length }),
       lpaMissing: !d.documents.some(x => /power of attorney|lpa/i.test(x.name || '')),
-      membersV: [ownerRow, ...memberRows], famSub: `${d.people.length + 1} people in your household`,
+      membersV: [ownerRow, ...memberRows], famSub: i18n.t('mobile:shell.famSub', { count: d.people.length + 1 }),
       activity: d.activity.map(r => ({ id: r.id, text: activityText(r), when: relativeTime(r.created_at) })),
       openAdd: () => freeCapped('maxAccounts', d.accounts.length)
         ? (haptic.warning(), setLimitNudge({ noun: 'account' }), setSheet('limit'))
@@ -217,7 +223,7 @@ export default function MobileAppDemo() {
       closeSheet, sheetPrefill,
       addAccount, uploadDocument, invitePerson, onTapAccount,
     }
-  }, [d, go, say, closeSheet, sheetPrefill, demoAppend, demoUpdate, demoSetAboutMe, onSignOut, addAccount, uploadDocument, invitePerson, onTapAccount])
+  }, [d, go, say, closeSheet, sheetPrefill, demoAppend, demoUpdate, demoSetAboutMe, onSignOut, addAccount, uploadDocument, invitePerson, onTapAccount, i18nLive.language])
 
   // Milestone moments — same as the live shell: celebrate crossing 25/50/75/100%
   // readiness during the session (first computed score only primes the baseline).
@@ -250,7 +256,7 @@ export default function MobileAppDemo() {
   if (screen === 'security') {
     return (
       <div className="evst-app">
-        <SecuritySetup onDone={() => { go('settings'); say('App lock updated') }} />
+        <SecuritySetup onDone={() => { go('settings'); say(i18n.t('mobile:shell.lockUpdated')) }} />
       </div>
     )
   }
@@ -267,9 +273,9 @@ export default function MobileAppDemo() {
         {Secondary && <Secondary app={app} />}
       </div>
       <nav className="tabbar">
-        {TABS.map(({ key, label, Icon }) => {
+        {TABS.map(({ key, Icon }) => {
           const on = key === 'more' ? !MAIN_TAB_KEYS.includes(screen) : screen === key
-          return <button key={key} className={`tab ${on ? 'on' : ''}`} onClick={() => { haptic.tick(); go(key) }}><Icon />{label}</button>
+          return <button key={key} className={`tab ${on ? 'on' : ''}`} onClick={() => { haptic.tick(); go(key) }}><Icon />{i18n.t('mobile:tabs.' + key)}</button>
         })}
       </nav>
       {sheet && (

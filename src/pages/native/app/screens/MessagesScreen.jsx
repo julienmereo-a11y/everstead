@@ -1,4 +1,7 @@
 import React, { useState, useRef, useMemo, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
+import '../i18n'
+import { dateLocale } from '../helpers'
 import { useMessages, usePeople } from '../../../../hooks/useData'
 import { useAuth } from '../../../../contexts/AuthContext'
 import { canUseFeature } from '../../../../lib/planLimits'
@@ -19,9 +22,9 @@ const CameraIcon = () => <svg width="16" height="16" viewBox="0 0 24 24" {...str
 const UploadIcon = () => <svg width="16" height="16" viewBox="0 0 24 24" {...stroke}><path d="M12 15V4M8 8l4-4 4 4M5 19h14" /></svg>
 
 const TYPES = [
-  { key: 'note',  label: 'Letter', Icon: NoteIcon },
-  { key: 'video', label: 'Video',  Icon: VideoIcon },
-  { key: 'photo', label: 'Photo',  Icon: ImageIcon },
+  { key: 'note',  labelKey: 'messages.typeLetter', Icon: NoteIcon },
+  { key: 'video', labelKey: 'messages.typeVideo',  Icon: VideoIcon },
+  { key: 'photo', labelKey: 'messages.typePhoto',  Icon: ImageIcon },
 ]
 
 // Composer rescue (module scope — survives a screen remount). Picking from the
@@ -59,6 +62,7 @@ function SignedMedia({ m }) {
 }
 
 export default function MessagesScreen({ app }) {
+  const { t } = useTranslation('mobile')
   const auth = useAuth()
   const profile = app.profile || auth.profile
   // Everstead+ only (family/advisor) — mirrors the web's PLANS[plan].limits
@@ -182,7 +186,7 @@ export default function MessagesScreen({ app }) {
       if (deliverToLive) deliverToLive(f, msgType)
     } catch {
       draftStash = null
-      app.say(`Could not read that ${kind}. Please try again.`, 'error')
+      app.say(t('messages.readFailed', { kind }), 'error')
     }
   }
   // No type gating on the pick — pickers can report octet-stream (or nothing)
@@ -215,14 +219,14 @@ export default function MessagesScreen({ app }) {
           // The message row exists but its media didn't upload — say so
           // honestly rather than a generic failure (the row IS saved).
           resetSheet()
-          app.say(`Message saved, but the ${msgType} didn’t upload, try again from everstead.care.`, 'error')
+          app.say(t('messages.savedNoMedia', { kind: msgType }), 'error')
           return
         }
       }
       resetSheet()
-      app.say(msgType === 'note' ? 'Message sealed' : `${msgType === 'video' ? 'Video' : 'Photo'} message sealed`)
+      app.say(msgType === 'note' ? t('messages.sealed') : msgType === 'video' ? t('messages.videoSealed') : t('messages.photoSealed'))
     } catch (e) {
-      app.say(e?.message === 'demo' ? 'Media messages need a real account.' : 'Could not save that message.', 'error')
+      app.say(e?.message === 'demo' ? t('messages.demoNoMedia') : t('messages.saveFailed'), 'error')
     } finally { setBusy(false) }
   }
 
@@ -232,17 +236,17 @@ export default function MessagesScreen({ app }) {
         // External recipient: mint the secure view link and email it (server-side).
         await live.releaseExternal(m.id)
         await live.refresh()
-        app.say(`Released, link emailed to ${m.recipient_email}`)
+        app.say(t('messages.releasedEmailed', { email: m.recipient_email }))
       } else {
         await update(m.id, { released: true, released_at: new Date().toISOString() })
-        app.say('Message released')
+        app.say(t('messages.released'))
       }
-    } catch { app.say('Could not release that message.', 'error') }
+    } catch { app.say(t('messages.releaseFailed'), 'error') }
   }
 
   // UTC so the chip echoes the day the user picked (release days are stored as
   // noon UTC; UTC+13/14 would otherwise show the next day).
-  const fmtDay = (iso) => { try { return new Intl.DateTimeFormat('en-GB', { dateStyle: 'medium', timeZone: 'UTC' }).format(new Date(iso)) } catch { return '' } }
+  const fmtDay = (iso) => { try { return new Intl.DateTimeFormat(dateLocale(), { dateStyle: 'medium', timeZone: 'UTC' }).format(new Date(iso)) } catch { return '' } }
   // Tomorrow in the user's LOCAL timezone (toISOString would block "tomorrow"
   // for evening users west of Greenwich).
   const localTomorrow = () => { const d = new Date(Date.now() + 86400000); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}` }
@@ -252,10 +256,10 @@ export default function MessagesScreen({ app }) {
 
   return (
     <SecScreen
-      title="Personal Messages"
-      subtitle={loading ? '' : `${data.length} message${data.length === 1 ? '' : 's'}`}
+      title={t('messages.title')}
+      subtitle={loading ? '' : t('messages.count', { count: data.length })}
       onBack={() => app.go('more')}
-      action={<button className="btn btn-sm" onClick={() => setSheet(true)}><PlusIcon />New</button>}
+      action={<button className="btn btn-sm" onClick={() => setSheet(true)}><PlusIcon />{t('messages.new')}</button>}
     >
       {loading ? (
         <Busy />
@@ -273,13 +277,13 @@ export default function MessagesScreen({ app }) {
                     </span>
                     <div className="rname">{m.title}</div>
                   </div>
-                  <span className={`chip ${m.released ? 'chip-sage' : 'chip-stone'}`}>{m.released ? 'Released' : 'Sealed'}</span>
+                  <span className={`chip ${m.released ? 'chip-sage' : 'chip-stone'}`}>{m.released ? t('messages.chipReleased') : t('messages.chipSealed')}</span>
                 </div>
                 <div className="rdet" style={{ marginTop: 2 }}>
-                  For {m.recipient_name}{m.recipient_role ? ` · ${m.recipient_role}` : ''}{m.recipient_email ? ' · via email' : ''}
+                  {t('messages.forName', { name: m.recipient_name })}{m.recipient_role ? ` · ${t('roles.' + m.recipient_role, { defaultValue: m.recipient_role })}` : ''}{m.recipient_email ? t('messages.viaEmail') : ''}
                   {!m.released && m.release_timing === 'on_date' && m.release_at && (
                     <span style={{ display: 'inline-block', marginLeft: 6, fontSize: 11, fontWeight: 600, color: '#92400e', background: '#fef3c7', padding: '1px 8px', borderRadius: 999 }}>
-                      Releases {fmtDay(m.release_at)}
+                      {t('messages.releasesOn', { date: fmtDay(m.release_at) })}
                     </span>
                   )}
                 </div>
@@ -289,7 +293,7 @@ export default function MessagesScreen({ app }) {
                 {m.content && <p className="rdet" style={{ marginTop: 8, lineHeight: 1.5, color: 'var(--color-stone-600)' }}>{m.content}</p>}
                 {!m.released && confirmId !== m.id && (
                   <div className="fx" style={{ gap: 8, marginTop: 12 }}>
-                    <button className="btn btn-sm" onClick={() => { haptic.warning(); setConfirmId(m.id); setEditTiming(null) }}>Release now</button>
+                    <button className="btn btn-sm" onClick={() => { haptic.warning(); setConfirmId(m.id); setEditTiming(null) }}>{t('messages.releaseNow')}</button>
                     <button
                       className="btn btn-sm"
                       style={{ background: '#fff', color: 'var(--color-navy-800)', border: '1px solid var(--color-stone-200)' }}
@@ -299,24 +303,24 @@ export default function MessagesScreen({ app }) {
                         setEditDate(m.release_at ? String(m.release_at).slice(0, 10) : '')
                       }}
                     >
-                      {m.release_timing === 'on_date' && m.release_at ? 'Change date' : 'Schedule'}
+                      {m.release_timing === 'on_date' && m.release_at ? t('messages.changeDate') : t('messages.schedule')}
                     </button>
                   </div>
                 )}
                 {!m.released && confirmId === m.id && (
                   <div style={{ marginTop: 12 }}>
                     <p className="rdet" style={{ margin: '0 0 8px', color: 'var(--color-stone-600)' }}>
-                      {m.recipient_name} will be able to {m.type === 'video' ? 'watch' : m.type === 'photo' ? 'see' : 'read'} this straight away{m.recipient_email ? ', we’ll email them the private link now' : ''}. It can’t be sealed again.
+                      {t('messages.confirmRelease', { name: m.recipient_name, verb: m.type === 'video' ? t('messages.confirmWatch') : m.type === 'photo' ? t('messages.confirmSee') : t('messages.confirmRead'), emailNote: m.recipient_email ? t('messages.confirmEmailNote') : '' })}
                     </p>
                     <div className="fx" style={{ gap: 8 }}>
-                      <button className="btn btn-sm f1" onClick={() => { setConfirmId(null); release(m) }}>Yes, release it now</button>
-                      <button className="btn btn-sm f1" style={{ background: '#fff', color: 'var(--color-navy-800)', border: '1px solid var(--color-stone-200)' }} onClick={() => setConfirmId(null)}>Keep it sealed</button>
+                      <button className="btn btn-sm f1" onClick={() => { setConfirmId(null); release(m) }}>{t('messages.yesRelease')}</button>
+                      <button className="btn btn-sm f1" style={{ background: '#fff', color: 'var(--color-navy-800)', border: '1px solid var(--color-stone-200)' }} onClick={() => setConfirmId(null)}>{t('messages.keepSealed')}</button>
                     </div>
                   </div>
                 )}
                 {!m.released && editTiming === m.id && (
                   <div style={{ marginTop: 10, padding: 12, background: 'var(--color-stone-50)', borderRadius: 12 }}>
-                    <div className="rdet" style={{ fontWeight: 600, marginBottom: 8, color: 'var(--color-stone-600)' }}>When is it released?</div>
+                    <div className="rdet" style={{ fontWeight: 600, marginBottom: 8, color: 'var(--color-stone-600)' }}>{t('messages.whenReleased')}</div>
                     <div className="fx" style={{ gap: 8 }}>
                       <button
                         className="btn btn-sm f1"
@@ -326,10 +330,10 @@ export default function MessagesScreen({ app }) {
                         onClick={async () => {
                           try {
                             await update(m.id, { release_timing: 'after_death', release_at: null })
-                            setEditTiming(null); app.say('Released when the time comes')
-                          } catch { app.say('Could not update that.', 'error') }
+                            setEditTiming(null); app.say(t('messages.afterDeathSaved'))
+                          } catch { app.say(t('messages.updateFailed'), 'error') }
                         }}
-                      >When the time comes</button>
+                      >{t('messages.whenTimeComes')}</button>
                     </div>
                     <input
                       className="inp" type="date" value={editDate} onChange={e => setEditDate(e.target.value)}
@@ -342,10 +346,10 @@ export default function MessagesScreen({ app }) {
                         if (!editDate) return
                         try {
                           await update(m.id, { release_timing: 'on_date', release_at: new Date(`${editDate}T12:00:00Z`).toISOString() })
-                          setEditTiming(null); app.say(`Will release on ${fmtDay(editDate)}`)
-                        } catch { app.say('Could not update that.', 'error') }
+                          setEditTiming(null); app.say(t('messages.willReleaseOn', { date: fmtDay(editDate) }))
+                        } catch { app.say(t('messages.updateFailed'), 'error') }
                       }}
-                    >Release on this date</button>
+                    >{t('messages.releaseOnDate')}</button>
                   </div>
                 )}
               </div>
@@ -359,11 +363,11 @@ export default function MessagesScreen({ app }) {
           <div className="scrim" onClick={resetSheet} />
           <div className="sheet" style={{ maxHeight: '88vh', overflowY: 'auto' }}>
             <button className="grab" aria-label="Close" onClick={resetSheet} style={{ display: 'block', border: 0, cursor: 'pointer', padding: 10, margin: '-10px auto 4px', background: 'none' }}><span style={{ display: 'block', width: 36, height: 4, borderRadius: 99, background: 'var(--color-stone-300)' }} /></button>
-            <h3 className="sh-title">Write a message</h3>
+            <h3 className="sh-title">{t('messages.sheetTitle')}</h3>
 
             {/* Type selector */}
             <div className="fx" style={{ gap: 8, marginBottom: 4 }}>
-              {TYPES.map(({ key, label, Icon }) => {
+              {TYPES.map(({ key, labelKey, Icon }) => {
                 const on = msgType === key
                 return (
                   <button
@@ -378,16 +382,16 @@ export default function MessagesScreen({ app }) {
                     }}
                   >
                     <Icon />
-                    <span style={{ fontSize: 12.5, fontWeight: on ? 600 : 500 }}>{label}</span>
+                    <span style={{ fontSize: 12.5, fontWeight: on ? 600 : 500 }}>{t(labelKey)}</span>
                   </button>
                 )
               })}
             </div>
 
             {/* Recipient — a trusted person, or anyone by email (mirrors the web). */}
-            <label className="flabel">Recipient</label>
+            <label className="flabel">{t('messages.recipient')}</label>
             <div className="fx" style={{ gap: 0, padding: 3, background: 'var(--color-stone-100)', borderRadius: 999, marginBottom: 8 }}>
-              {[{ k: 'person', l: 'A trusted person' }, { k: 'email', l: 'Someone by email' }].map(({ k, l }) => (
+              {[{ k: 'person', l: t('messages.aTrustedPerson') }, { k: 'email', l: t('messages.someoneByEmail') }].map(({ k, l }) => (
                 <button
                   key={k}
                   onClick={() => setForm(f => ({ ...f, recipient_kind: k, recipient_name: '', recipient_role: '', recipient_email: '' }))}
@@ -411,28 +415,28 @@ export default function MessagesScreen({ app }) {
                     setForm(f => ({ ...f, recipient_name: e.target.value, recipient_role: person?.role || '' }))
                   }}
                 >
-                  <option value="" disabled>Select a person…</option>
+                  <option value="" disabled>{t('messages.selectPerson')}</option>
                   {people.length > 0
-                    ? people.map(p => <option key={p.id} value={p.name}>{p.name}{p.role ? `, ${p.role}` : ''}</option>)
-                    : <option disabled>No trusted people yet, add someone in Family first</option>}
+                    ? people.map(p => <option key={p.id} value={p.name}>{p.name}{p.role ? `, ${t('roles.' + p.role, { defaultValue: p.role })}` : ''}</option>)
+                    : <option disabled>{t('messages.noPeopleYet')}</option>}
                 </select>
               </>
             ) : (
               <>
-                <input className="inp" value={form.recipient_name} onChange={set('recipient_name')} placeholder="Their name (optional)" />
+                <input className="inp" value={form.recipient_name} onChange={set('recipient_name')} placeholder={t('messages.theirNamePh')} />
                 <div style={{ height: 8 }} />
                 <input className="inp" type="email" value={form.recipient_email} onChange={set('recipient_email')} placeholder="their@email.com" autoCapitalize="none" autoCorrect="off" />
-                <p className="rdet" style={{ margin: '6px 0 0', fontSize: 11.5 }}>They don't need an account, when it's released, we'll email them a private, secure link.</p>
+                <p className="rdet" style={{ margin: '6px 0 0', fontSize: 11.5 }}>{t('messages.noAccountNote')}</p>
               </>
             )}
 
-            <label className="flabel">Title</label>
-            <input className="inp" value={form.title} onChange={set('title')} placeholder={msgType === 'video' ? 'e.g. A video for your wedding day' : msgType === 'photo' ? 'e.g. Us at the lake, 2019' : 'e.g. For your wedding day'} />
+            <label className="flabel">{t('messages.titleLabel')}</label>
+            <input className="inp" value={form.title} onChange={set('title')} placeholder={msgType === 'video' ? t('messages.titlePhVideo') : msgType === 'photo' ? t('messages.titlePhPhoto') : t('messages.titlePhNote')} />
 
             {/* Media capture */}
             {isMedia && (
               <>
-                <label className="flabel">{msgType === 'video' ? 'Your video' : 'Your photo'}</label>
+                <label className="flabel">{msgType === 'video' ? t('messages.yourVideo') : t('messages.yourPhoto')}</label>
                 {mediaFile ? (
                   <div style={{ marginTop: 2 }}>
                     {msgType === 'photo' && previewUrl && (
@@ -447,7 +451,7 @@ export default function MessagesScreen({ app }) {
                     <div className="rdet fx ac" style={{ gap: 6, marginTop: 8, color: 'var(--color-sage-700)', fontWeight: 600, fontSize: 13 }}>
                       <span style={{ color: 'var(--color-sage-600)' }}>✓</span>
                       <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                        {mediaFile.name || (msgType === 'video' ? 'Video attached' : 'Photo attached')}
+                        {mediaFile.name || (msgType === 'video' ? t('messages.videoAttached') : t('messages.photoAttached'))}
                         {mediaFile.size ? ` · ${(mediaFile.size / 1024 / 1024).toFixed(1)} MB` : ''}
                       </span>
                     </div>
@@ -455,7 +459,7 @@ export default function MessagesScreen({ app }) {
                       className="btn btn-sm w100"
                       style={{ marginTop: 8, background: '#fff', color: 'var(--color-navy-800)', border: '1px solid var(--color-stone-200)' }}
                       onClick={() => setMediaFile(null)}
-                    >Choose a different {msgType === 'video' ? 'video' : 'photo'}</button>
+                    >{msgType === 'video' ? t('messages.chooseDifferentVideo') : t('messages.chooseDifferentPhoto')}</button>
                   </div>
                 ) : (
                   <div className="fx" style={{ gap: 8, marginTop: 2 }}>
@@ -466,18 +470,18 @@ export default function MessagesScreen({ app }) {
                       className="btn btn-sm f1 fx ac jc" style={{ gap: 6 }}
                       onClick={ANDROID ? () => setRecorder(msgType === 'video' ? 'video' : 'photo') : pickFrom(captureRef)}
                     >
-                      <CameraIcon />{msgType === 'video' ? 'Record' : 'Take photo'}
+                      <CameraIcon />{msgType === 'video' ? t('messages.record') : t('messages.takePhoto')}
                     </button>
                     {/* Upload from the gallery — Android goes through the native
                         pick plugin (uploadFromGallery); iOS/web use the hidden
                         libraryRef input. */}
                     <button className="btn btn-sm f1 fx ac jc" style={{ gap: 6, background: '#fff', color: 'var(--color-navy-800)', border: '1px solid var(--color-stone-200)' }} onClick={ANDROID ? uploadFromGallery : pickFrom(libraryRef)}>
-                      <UploadIcon />Upload
+                      <UploadIcon />{t('messages.upload')}
                     </button>
                   </div>
                 )}
                 <p className="rdet" style={{ margin: '8px 0 0', fontSize: 11.5 }}>
-                  {msgType === 'video' ? 'Record yourself now, or upload an existing video.' : 'Take a photo now, or upload a meaningful one from your library.'}
+                  {msgType === 'video' ? t('messages.mediaHintVideo') : t('messages.mediaHintPhoto')}
                 </p>
                 {/* Hidden inputs are iOS/web only — Android captures in the
                     RecorderSheet and uploads via the native picker plugin. */}
@@ -488,11 +492,11 @@ export default function MessagesScreen({ app }) {
 
             {/* When is it released? — mirrors the web composer. Manual "Release
                 now" stays available on every message regardless of this choice. */}
-            <label className="flabel">When is it released?</label>
+            <label className="flabel">{t('messages.whenReleased')}</label>
             <div className="fx" style={{ gap: 8 }}>
               {[
-                { v: 'after_death', l: 'When the time comes', d: 'On verified passing, or whenever you choose' },
-                { v: 'on_date',     l: 'On a specific date',  d: 'A wedding day, an 18th birthday…' },
+                { v: 'after_death', l: t('messages.timingAfterLabel'), d: t('messages.timingAfterDesc') },
+                { v: 'on_date',     l: t('messages.timingDateLabel'),  d: t('messages.timingDateDesc') },
               ].map(({ v, l, d }) => {
                 const on = form.release_timing === v
                 return (
@@ -520,20 +524,20 @@ export default function MessagesScreen({ app }) {
                   style={{ marginTop: 8 }}
                 />
                 <p className="rdet" style={{ margin: '6px 0 0', fontSize: 11.5 }}>
-                  Sealed until this day, then released automatically{isEmail ? ' and emailed to them' : ''}. You can still release it sooner.
+                  {t('messages.sealedUntil', { emailed: isEmail ? t('messages.andEmailed') : '' })}
                 </p>
               </>
             )}
 
-            <label className="flabel">{msgType === 'note' ? 'Message' : 'Caption (optional)'}</label>
+            <label className="flabel">{msgType === 'note' ? t('messages.messageLabel') : t('messages.captionLabel')}</label>
             <textarea
               className="inp" rows={msgType === 'note' ? 5 : 3} value={form.content} onChange={set('content')}
-              placeholder={msgType === 'note' ? 'Write from the heart…' : 'Add a few words to go with it…'}
+              placeholder={msgType === 'note' ? t('messages.writeHeartPh') : t('messages.captionPh')}
               style={{ resize: 'none' }}
             />
 
             <button className={`btn w100 ${canSubmit ? '' : 'dis'}`} style={{ marginTop: 18 }} onClick={submit} disabled={!canSubmit}>
-              {busy ? 'Saving…' : 'Seal message'}
+              {busy ? t('common.saving') : t('messages.sealMessage')}
             </button>
           </div>
         </div>

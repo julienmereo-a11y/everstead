@@ -101,7 +101,7 @@ export const isPaidPlan = (key) => key === 'essential' || key === 'family' || ke
 export const PRICING_FR = {
   family: {
     monthly: { perMonth: 9.99, display: '9,99 €' },
-    annual:  { perMonth: 8.33, perYear: 99.99, display: '99,99 €' },
+    annual:  { perMonth: 8.33, perMonthDisplay: '8,33 €', perYear: 99.99, display: '99,99 €' },
     monthsFree: 2,
   },
 }

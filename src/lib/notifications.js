@@ -1,4 +1,6 @@
 import { isNative, isIOS, apiPost } from './platform'
+import i18n from '../i18n'
+import '../pages/native/app/i18n'
 import { supabase } from './supabase'
 import { getPref, setPref } from './prefs'
 
@@ -161,7 +163,9 @@ export async function syncReminders(args) {
       for (const doc of documents) {
         if (!doc.expires_at) continue
         const exp = toLocalDate(doc.expires_at).getTime()
-        for (const [days, phrase] of [[30, 'in a month'], [7, 'in a week']]) {
+        // Reminder copy follows the app language at SCHEDULE time; a language
+        // change re-schedules on the next app open (syncReminders runs then).
+        for (const [days, titleKey] of [[30, 'notifs.expiryTitle30'], [7, 'notifs.expiryTitle7']]) {
           const when = at(exp - days * 86400000, 9)
           // 60s cushion: iOS REJECTS THE WHOLE schedule() batch for a past-dated entry
           // (Android just skips it), and there's a network round-trip below before we
@@ -170,8 +174,8 @@ export async function syncReminders(args) {
           if (when.getTime() > now + 60_000) {
             notifications.push({
               id: id++,
-              title: `${doc.name} expires ${phrase}`,
-              body: 'Review or replace it in Everstead so your vault stays up to date.',
+              title: i18n.t('mobile:' + titleKey, { name: doc.name }),
+              body: i18n.t('mobile:notifs.expiryBody'),
               schedule: { at: when },
             })
           }
@@ -184,8 +188,8 @@ export async function syncReminders(args) {
       const c = new Date(profile.created_at)
       notifications.push({
         id: id++,
-        title: 'Time for your annual review',
-        body: 'A year moves fast — ten minutes keeps your plan true to life.',
+        title: i18n.t('mobile:notifs.annualTitle'),
+        body: i18n.t('mobile:notifs.annualBody'),
         schedule: { on: { month: c.getMonth() + 1, day: c.getDate(), hour: 10, minute: 0 } },
       })
     }
@@ -198,8 +202,8 @@ export async function syncReminders(args) {
           const b = toLocalDate(data.date_of_birth)
           notifications.push({
             id: id++,
-            title: 'Happy birthday from Everstead 🌱',
-            body: 'Another year of a life well lived. Your plan is keeping it all safe.',
+            title: i18n.t('mobile:notifs.birthdayTitle'),
+            body: i18n.t('mobile:notifs.birthdayBody'),
             schedule: { on: { month: b.getMonth() + 1, day: b.getDate(), hour: 9, minute: 0 } },
           })
         }
@@ -211,8 +215,8 @@ export async function syncReminders(args) {
     if (profile.notify_vault_nudges !== false) {
       notifications.push({
         id: id++,
-        title: 'Your plan misses you',
-        body: 'Two minutes today keeps everything ready for the people you love.',
+        title: i18n.t('mobile:notifs.nudgeTitle'),
+        body: i18n.t('mobile:notifs.nudgeBody'),
         schedule: { at: at(now + 14 * 86400000, 18) },
       })
     }

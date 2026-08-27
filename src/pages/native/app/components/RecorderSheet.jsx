@@ -1,4 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import '../i18n'
 
 // In-webview camera capture (getUserMedia), for Android where launching the
 // system camera/picker is NOT survivable: One UI's low-memory killer reaps the
@@ -21,6 +23,7 @@ const MIME_CANDIDATES = [
 ]
 
 export default function RecorderSheet({ mode = 'video', onUse, onClose }) {
+  const { t } = useTranslation('mobile')
   const isPhoto = mode === 'photo'
   const videoRef = useRef(null)
   const streamRef = useRef(null)
@@ -140,7 +143,7 @@ export default function RecorderSheet({ mode = 'video', onUse, onClose }) {
     <div style={{ position: 'fixed', inset: 0, zIndex: 9000, background: '#0d1628', display: 'flex', flexDirection: 'column' }}>
       <div className="fx jb ac" style={{ padding: '16px 18px' }}>
         <span style={{ color: 'rgba(255,255,255,0.85)', fontSize: 14, fontWeight: 600 }}>
-          {phase === 'review' ? (isPhoto ? 'Review your photo' : 'Review your video') : (isPhoto ? 'Take a photo' : 'Record a video')}
+          {phase === 'review' ? (isPhoto ? t('recorder.reviewPhoto') : t('recorder.reviewVideo')) : (isPhoto ? t('recorder.takePhoto') : t('recorder.recordVideo'))}
         </span>
         <button onClick={onClose} style={{ background: 'rgba(255,255,255,0.12)', border: 0, color: '#fff', borderRadius: 999, width: 32, height: 32, fontSize: 16, cursor: 'pointer' }}>✕</button>
       </div>
@@ -153,10 +156,10 @@ export default function RecorderSheet({ mode = 'video', onUse, onClose }) {
           ? <img src={reviewUrl} alt="" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'contain', background: '#000' }} />
           : <video src={reviewUrl} controls playsInline style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'contain', background: '#000' }} />
         )}
-        {phase === 'starting' && <p style={{ position: 'absolute', top: '50%', width: '100%', textAlign: 'center', color: 'rgba(255,255,255,0.7)', fontSize: 14 }}>Starting camera…</p>}
+        {phase === 'starting' && <p style={{ position: 'absolute', top: '50%', width: '100%', textAlign: 'center', color: 'rgba(255,255,255,0.7)', fontSize: 14 }}>{t('recorder.startingCamera')}</p>}
         {phase === 'error' && (
           <div style={{ position: 'absolute', top: '40%', width: '100%', textAlign: 'center', padding: '0 32px' }}>
-            <p style={{ color: '#fff', fontSize: 15, lineHeight: 1.5 }}>We couldn't access the camera{isPhoto ? '' : ' and microphone'}. Please allow the permission for Everstead and try again.</p>
+            <p style={{ color: '#fff', fontSize: 15, lineHeight: 1.5 }}>{isPhoto ? t('recorder.cameraDeniedPhoto') : t('recorder.cameraDeniedVideo')}</p>
           </div>
         )}
         {phase === 'recording' && (
@@ -178,8 +181,8 @@ export default function RecorderSheet({ mode = 'video', onUse, onClose }) {
         )}
         {phase === 'review' && (
           <>
-            <button className="btn" style={{ flex: 1, background: 'rgba(255,255,255,0.12)', color: '#fff' }} onClick={retake}>Retake</button>
-            <button className="btn" style={{ flex: 1 }} onClick={use}>{isPhoto ? 'Use this photo' : 'Use this video'}</button>
+            <button className="btn" style={{ flex: 1, background: 'rgba(255,255,255,0.12)', color: '#fff' }} onClick={retake}>{t('recorder.retake')}</button>
+            <button className="btn" style={{ flex: 1 }} onClick={use}>{isPhoto ? t('recorder.usePhoto') : t('recorder.useVideo')}</button>
           </>
         )}
       </div>

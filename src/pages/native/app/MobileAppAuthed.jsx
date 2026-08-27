@@ -1,4 +1,6 @@
 import React, { useState, useRef, useCallback, useMemo, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
+import './i18n'
 import { useAuth } from '../../../contexts/AuthContext'
 import {
   useAccounts, useDocuments, usePeople, useInstructions, useActivityLog,
@@ -6,8 +8,7 @@ import {
 import { isNative } from '../../../lib/platform'
 import { computeReadiness } from './readiness'
 import {
-  ACCOUNT_CATEGORY_ORDER, docChip, personAccessChip, initialsOf, relativeTime, activityText,
-} from './helpers'
+  ACCOUNT_CATEGORY_ORDER, docChip, personAccessChip, initialsOf, relativeTime, activityText, docTypeLabel, dateLocale } from './helpers'
 import { HomeIcon, AccountsIcon, VaultIcon, PlanIcon, FamilyIcon, MoreIcon } from './icons'
 import HomeScreen from './screens/HomeScreen'
 import AccountsScreen from './screens/AccountsScreen'
@@ -47,12 +48,12 @@ const SECONDARY = {
 const RING_CIRCUMFERENCE = 226.2
 
 const TABS = [
-  { key: 'home',     label: 'Home',     Icon: HomeIcon },
-  { key: 'accounts', label: 'Accounts', Icon: AccountsIcon },
-  { key: 'vault',    label: 'Vault',    Icon: VaultIcon },
-  { key: 'plan',     label: 'Plan',     Icon: PlanIcon },
-  { key: 'family',   label: 'Family',   Icon: FamilyIcon },
-  { key: 'more',     label: 'More',     Icon: MoreIcon },
+  { key: 'home',     Icon: HomeIcon },
+  { key: 'accounts', Icon: AccountsIcon },
+  { key: 'vault',    Icon: VaultIcon },
+  { key: 'plan',     Icon: PlanIcon },
+  { key: 'family',   Icon: FamilyIcon },
+  { key: 'more',     Icon: MoreIcon },
 ]
 
 // The five primary tabs. The "More" tab stays highlighted for the hub itself and
@@ -61,10 +62,10 @@ const TABS = [
 const MAIN_TAB_KEYS = ['home', 'accounts', 'vault', 'plan', 'family']
 
 const UP_NEXT = {
-  accounts:     { screen: 'accounts', label: 'Add your accounts' },
-  documents:    { screen: 'vault',    label: 'Upload key documents' },
-  people:       { screen: 'family',   label: 'Invite a trusted contact' },
-  instructions: { screen: 'plan',     label: 'Write instructions for your family' },
+  accounts:     { screen: 'accounts', labelKey: 'shell.upAccounts' },
+  documents:    { screen: 'vault',    labelKey: 'shell.upDocuments' },
+  people:       { screen: 'family',   labelKey: 'shell.upPeople' },
+  instructions: { screen: 'plan',     labelKey: 'shell.upInstructions' },
 }
 
 // Infer doc_type from the document name. Values MUST be from the DB CHECK list
@@ -81,6 +82,7 @@ function inferDocType(name) {
 }
 
 export default function MobileAppAuthed() {
+  const { t, i18n } = useTranslation('mobile')
   const { profile, refreshProfile } = useAuth()
   const accounts = useAccounts()
   const documents = useDocuments()
@@ -155,18 +157,18 @@ export default function MobileAppAuthed() {
     try {
       await accounts.add({ institution, account_type, category })
       closeSheet()
-      say(`${institution} added to your accounts`)
+      say(t('shell.accountAdded', { name: institution }))
       offerNotifications()
-    } catch { say('Could not add that account. Please try again.', 'error') }
+    } catch { say(t('shell.addAccountFailed'), 'error') }
   }, [accounts, closeSheet, say, offerNotifications])
 
   const uploadDocument = useCallback(async ({ name, file, expires_at }) => {
     try {
       await documents.uploadFile({ name, doc_type: inferDocType(name), status: 'current', expires_at: expires_at || null }, file)
       closeSheet()
-      say(/power of attorney|lpa/i.test(name) ? `${name} saved to your vault` : `${name} added to your vault`)
+      say(/power of attorney|lpa|mandat de protection/i.test(name) ? t('shell.docSaved', { name }) : t('shell.docAdded', { name }))
       offerNotifications()
-    } catch { say('Upload failed. Please try again.', 'error') }
+    } catch { say(t('shell.uploadFailed'), 'error') }
   }, [documents, closeSheet, say, offerNotifications])
 
   const invitePerson = useCallback(async ({ name, email, role, accessAreas, accessTiming }) => {
@@ -181,10 +183,10 @@ export default function MobileAppAuthed() {
       closeSheet()
       // Don't claim "sent" if the email actually failed — the row exists either way.
       say(person?.emailSent === false
-        ? `${name} was added, but the invite email didn’t send. You can resend it from everstead.care.`
-        : `Invite sent to ${name}`)
+        ? t('shell.inviteNoEmail', { name })
+        : t('shell.inviteSent', { name }))
       offerNotifications()
-    } catch { say('Could not send that invite. Please try again.', 'error') }
+    } catch { say(t('shell.inviteFailed'), 'error') }
   }, [people, closeSheet, say, offerNotifications])
 
   // Refetch on app resume: data edited on the website (or an invite accepted)
@@ -223,7 +225,9 @@ export default function MobileAppAuthed() {
       accounts: acc, documents: docs, people: ppl, instructions: instr, isFamilyPlus,
     })
     const completeAreas = stats.filter(s => s.value >= s.target).length
-    const first = (profile?.full_name || '').trim().split(/\s+/)[0] || 'there'
+    // No fallback name: '' makes HomeScreen greet with just "Good morning." /
+    // "Bonjour." — French has no natural equivalent of the English "there".
+    const first = (profile?.full_name || '').trim().split(/\s+/)[0] || ''
     const now = new Date()
     const hour = now.getHours()
 
@@ -239,34 +243,34 @@ export default function MobileAppAuthed() {
 
     const docsV = docs.map(d => {
       const chip = docChip(d.status)
-      const detail = d.notes || d.doc_type || (d.expires_at ? `Expires ${new Date(d.expires_at).toLocaleDateString('en-GB', { month: 'short', year: 'numeric' })}` : 'Uploaded')
+      const detail = d.notes || docTypeLabel(d.doc_type) || (d.expires_at ? t('shell.expires', { date: new Date(d.expires_at).toLocaleDateString(dateLocale(), { month: 'short', year: 'numeric' }) }) : t('shell.uploaded'))
       return { id: d.id, name: d.name, detail, status: chip.label, chipCls: chip.cls }
     })
 
     const ownerRow = {
       id: 'owner',
-      name: profile?.full_name || 'You',
-      rel: 'You · Owner',
-      access: 'Full access',
+      name: profile?.full_name || t('shell.youRow'),
+      rel: t('shell.youOwner'),
+      access: t('shell.fullAccess'),
       chipCls: 'chip-sage',
-      initials: initialsOf(profile?.full_name || 'You'),
+      initials: initialsOf(profile?.full_name || t('shell.youRow')),
     }
     const memberRows = ppl.map(m => {
       const chip = personAccessChip(m)
-      return { id: m.id, name: m.name, rel: m.role || 'Trusted contact', access: chip.label, chipCls: chip.cls, initials: initialsOf(m.name) }
+      return { id: m.id, name: m.name, rel: m.role || t('shell.trustedContact'), access: chip.label, chipCls: chip.cls, initials: initialsOf(m.name) }
     })
 
     const upNext = stats.filter(s => s.value < s.target).slice(0, 2).map(s => ({
       key: s.key,
-      label: UP_NEXT[s.key]?.label || s.label,
-      detail: `${s.value} of ${s.target}`,
+      label: UP_NEXT[s.key] ? t(UP_NEXT[s.key].labelKey) : s.label,
+      detail: t('shell.ofTarget', { value: s.value, target: s.target }),
       screen: UP_NEXT[s.key]?.screen || 'plan',
     }))
 
     const readinessRows = stats.map(s => ({
       key: s.key,
       label: s.label,
-      detail: `${Math.min(s.value, s.target)} of ${s.target}`,
+      detail: t('shell.ofTarget', { value: Math.min(s.value, s.target), target: s.target }),
       done: s.value >= s.target,
       screen: UP_NEXT[s.key]?.screen || 'plan',
     }))
@@ -278,14 +282,14 @@ export default function MobileAppAuthed() {
       // identity
       firstName: first,
       initials: initialsOf(profile?.full_name || 'E'),
-      greeting: hour < 12 ? 'Good morning' : hour < 18 ? 'Good afternoon' : 'Good evening',
-      dateLabel: now.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' }),
+      greeting: hour < 12 ? t('shell.morning') : hour < 18 ? t('shell.afternoon') : t('shell.evening'),
+      dateLabel: now.toLocaleDateString(dateLocale(), { weekday: 'long', day: 'numeric', month: 'long' }),
       // score
       scorePct: score + '%',
       ringOff: RING_CIRCUMFERENCE * (1 - score / 100),
       ringCircumference: RING_CIRCUMFERENCE,
-      scoreTxt: `${completeAreas} of ${stats.length} areas complete`,
-      planSub: `${score}% ready · ${stats.length - completeAreas} steps left`,
+      scoreTxt: t('shell.areasComplete', { count: completeAreas, target: stats.length }),
+      planSub: t('shell.planSub', { score, steps: stats.length - completeAreas }),
       upNext,
       upEmpty: upNext.length === 0,
       readinessRows,
@@ -295,12 +299,12 @@ export default function MobileAppAuthed() {
       memCount: ppl.length + 1,
       // lists
       accGroups,
-      accSub: `${acc.length} account${acc.length === 1 ? '' : 's'} across ${accGroups.length} categor${accGroups.length === 1 ? 'y' : 'ies'}`,
+      accSub: `${t('shell.accCount', { count: acc.length })} ${t('shell.acrossCats', { count: accGroups.length })}`,
       docsV,
-      vaultSub: `${docs.length} document${docs.length === 1 ? '' : 's'} in your vault`,
-      lpaMissing: !docs.some(d => /power of attorney|lpa/i.test(d.name || '')),
+      vaultSub: t('shell.vaultSub', { count: docs.length }),
+      lpaMissing: !docs.some(d => /power of attorney|lpa|mandat de protection/i.test(d.name || '')),
       membersV: [ownerRow, ...memberRows],
-      famSub: `${ppl.length + 1} people in your household`,
+      famSub: t('shell.famSub', { count: ppl.length + 1 }),
       activity: (activityLog.data || []).map(r => ({ id: r.id, text: activityText(r), when: relativeTime(r.created_at) })),
       // sheet actions — the free tier is capped at 5 accounts / 5 documents / 3 trusted
       // contact (DB-enforced). Intercept a capped FREE user with an upgrade nudge
@@ -316,7 +320,7 @@ export default function MobileAppAuthed() {
       },
       openLpa: () => {
         if (isFreeCapped('maxDocuments', docs.length)) { haptic.warning(); setLimitNudge({ noun: 'document' }); setSheet('limit'); return }
-        setSheetPrefill({ name: 'Lasting Power of Attorney' }); setSheet('upload')
+        setSheetPrefill({ name: i18n.language === 'fr' ? 'Mandat de protection future' : 'Lasting Power of Attorney' }); setSheet('upload')
       },
       openInvite: () => isFreeCapped('trustedPeople', ppl.length)
         ? (haptic.warning(), setLimitNudge({ noun: 'trusted contact' }), setSheet('limit'))
@@ -325,7 +329,8 @@ export default function MobileAppAuthed() {
       sheetPrefill,
       addAccount, uploadDocument, invitePerson,
     }
-  }, [acc, docs, ppl, instr, isFamilyPlus, profile, activityLog.data, go, say, closeSheet, sheetPrefill, addAccount, uploadDocument, invitePerson, refreshReminders])
+  // i18n.language: every derived string above must recompute when the language flips.
+  }, [acc, docs, ppl, instr, isFamilyPlus, profile, activityLog.data, go, say, closeSheet, sheetPrefill, addAccount, uploadDocument, invitePerson, refreshReminders, t, i18n.language])
 
   // Keep on-device reminders (document expiry, annual review, birthday, vault
   // nudge) in step with live data. No-op on web / without permission.
@@ -356,7 +361,7 @@ export default function MobileAppAuthed() {
       if (crossed) {
         clearTimeout(milestoneTimer.current)
         milestoneTimer.current = setTimeout(
-          () => say(crossed === 100 ? 'Your plan is 100% ready (wonderful work' : `Milestone reached) ${crossed}% ready`, 'success'),
+          () => say(crossed === 100 ? t('shell.milestone100') : t('shell.milestone', { pct: crossed }), 'success'),
           1400,
         )
       }
@@ -382,13 +387,13 @@ export default function MobileAppAuthed() {
           // success before it's true, and poll long enough for slow webhooks
           // (the old 6s window routinely lost the race, so a paying user kept
           // seeing free-tier limit nudges until a restart).
-          go('home'); say('Payment received, finalising your upgrade…')
+          go('home'); say(t('shell.upgradeProcessing'))
           for (let i = 0; i < 15; i++) {
             const p = await refreshProfile?.()
-            if (p?.plan && p.plan !== 'free') { say('Welcome to Everstead+', 'success'); return }
+            if (p?.plan && p.plan !== 'free') { say(t('shell.upgradeWelcome'), 'success'); return }
             await new Promise(r => setTimeout(r, 2000))
           }
-          say('Your upgrade is processing, it will appear in a moment.')
+          say(t('shell.upgradeStillProcessing'))
         }}
         />
       </>
@@ -398,7 +403,7 @@ export default function MobileAppAuthed() {
   // Set / change the app-lock passcode, reached from Settings. Full-screen (no tab
   // bar); returns to Settings when done or skipped.
   if (screen === 'security') {
-    return <SecuritySetup onDone={(changed) => { go('settings'); if (changed) say('App lock updated') }} />
+    return <SecuritySetup onDone={(changed) => { go('settings'); if (changed) say(t('shell.lockUpdated')) }} />
   }
 
   return (
@@ -423,11 +428,11 @@ export default function MobileAppAuthed() {
       </div>
 
       <nav className="tabbar">
-        {TABS.map(({ key, label, Icon }) => {
+        {TABS.map(({ key, Icon }) => {
           const on = key === 'more' ? !MAIN_TAB_KEYS.includes(screen) : screen === key
           return (
             <button key={key} className={`tab ${on ? 'on' : ''}`} onClick={() => { haptic.tick(); go(key) }}>
-              <Icon />{label}
+              <Icon />{t('tabs.' + key)}
             </button>
           )
         })}

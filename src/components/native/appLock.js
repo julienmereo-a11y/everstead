@@ -1,4 +1,6 @@
 import { isNative, isIOS } from '../../lib/platform'
+import i18n from '../../i18n'
+import '../../pages/native/app/i18n'
 
 // App-lock state for the native iOS app: an optional numeric passcode plus an
 // optional Face ID / Touch ID shortcut. This is a convenience lock in FRONT of the
@@ -119,7 +121,7 @@ export async function verifyBiometric() {
     const { NativeBiometric } = await import('@capgo/capacitor-native-biometric')
     const { isAvailable } = await NativeBiometric.isAvailable({ useFallback: false })
     if (!isAvailable) return false
-    await NativeBiometric.verifyIdentity({ reason: 'Unlock Everstead', title: 'Unlock Everstead', subtitle: '', useFallback: false })
+    await NativeBiometric.verifyIdentity({ reason: i18n.t('mobile:biometric.unlockReason'), title: i18n.t('mobile:biometric.unlockReason'), subtitle: '', useFallback: false })
     return true
   } catch { return false }
 }

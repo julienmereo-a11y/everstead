@@ -1,7 +1,9 @@
 import React from 'react'
+import { useTranslation } from 'react-i18next'
+import '../i18n'
 import { useAuth } from '../../../../contexts/AuthContext'
 import { ChevronIcon, CheckIcon } from '../icons'
-import { planLabel, PRICING } from '../../../../config/pricing'
+import { planLabel, marketPricing, FREE_LIMITS } from '../../../../config/pricing'
 
 // Home — dark hero (greeting + real readiness ring), Up next (real gaps),
 // stat tiles (real counts), upgrade nudge (free plan only), recent activity
@@ -9,6 +11,10 @@ import { planLabel, PRICING } from '../../../../config/pricing'
 // ../readiness.js, matching the web exactly.
 
 export default function HomeScreen({ app }) {
+  const { t, i18n } = useTranslation('mobile')
+  // French members see euro prices; the Apple purchase itself is priced by the
+  // App Store in the buyer's storefront currency, so this is display only.
+  const market = marketPricing(i18n.language)
   const auth = useAuth()
   const profile = app.profile || auth.profile
   const {
@@ -20,8 +26,9 @@ export default function HomeScreen({ app }) {
   // Upgrade nudge — free plan only (grandfathered Essential subscribers already
   // pay; they get upgrade prompts contextually, not on Home).
   const showUpgrade = (profile?.plan || 'free') === 'free' && !app.demo
-  // Lead with the wall they're closest to hitting — free caps are 1/1/1.
-  const capped = docCount >= 1 ? 'documents' : accCount >= 1 ? 'accounts' : null
+  // Lead with the wall they're closest to hitting (free caps: FREE_LIMITS).
+  const capped = docCount >= FREE_LIMITS.documents ? 'documents'
+    : accCount >= FREE_LIMITS.accounts ? 'accounts' : null
 
   return (
     <div className="scr">
@@ -37,7 +44,7 @@ export default function HomeScreen({ app }) {
           <div>
             <div className="eyebrow eyebrow-sage">{dateLabel}</div>
             <h1 className="serif m0" style={{ fontSize: 27, fontWeight: 600, lineHeight: 1.15, color: '#fafaf9' }}>
-              {greeting}, {firstName}.
+              {firstName ? `${greeting}, ${firstName}.` : `${greeting}.`}
             </h1>
           </div>
           <button className="hav" onClick={() => go('more')} aria-label="More" style={{ cursor: 'pointer' }}>{initials}</button>
@@ -56,10 +63,10 @@ export default function HomeScreen({ app }) {
             <div className="posabs fx ac jc serif" style={{ inset: 0, fontSize: 21, fontWeight: 600 }}>{scorePct}</div>
           </div>
           <div className="f1">
-            <div className="fs14 fw6">Estate readiness</div>
+            <div className="fs14 fw6">{t('home.estateReadiness')}</div>
             <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.6)', marginTop: 3 }}>{scoreTxt}</div>
             <button className="btn btn-light btn-sm" style={{ marginTop: 10 }} onClick={() => go('plan')}>
-              Continue planning
+              {t('home.continuePlanning')}
             </button>
           </div>
         </div>
@@ -67,12 +74,12 @@ export default function HomeScreen({ app }) {
 
       {/* ── Up next (real readiness gaps) ── */}
       <div className="pad" style={{ paddingTop: 20 }}>
-        <div className="eyebrow">Up next</div>
+        <div className="eyebrow">{t('home.upNext')}</div>
         <div className="card-light ohide">
           {upEmpty ? (
             <div className="task" style={{ cursor: 'default' }}>
               <span className="ck on"><CheckIcon on /></span>
-              <span className="task-lbl">You're all caught up.</span>
+              <span className="task-lbl">{t('home.allCaughtUp')}</span>
             </div>
           ) : (
             upNext.map((t, i) => (
@@ -86,7 +93,7 @@ export default function HomeScreen({ app }) {
             ))
           )}
           <div className="bt fx jb ac" style={{ padding: '11px 16px', cursor: 'pointer' }} onClick={() => go('plan')}>
-            <span style={{ fontSize: 12.5, fontWeight: 600, color: 'var(--color-navy-600)' }}>View your full plan</span>
+            <span style={{ fontSize: 12.5, fontWeight: 600, color: 'var(--color-navy-600)' }}>{t('home.viewFullPlan')}</span>
             <ChevronIcon />
           </div>
         </div>
@@ -94,13 +101,13 @@ export default function HomeScreen({ app }) {
         {/* ── Stat tiles ── */}
         <div className="fx gap10" style={{ marginTop: 18 }}>
           <div className="card-light tile" onClick={() => go('accounts')}>
-            <div className="num">{accCount}</div><div className="lbl">Accounts</div>
+            <div className="num">{accCount}</div><div className="lbl">{t('home.tileAccounts')}</div>
           </div>
           <div className="card-light tile" onClick={() => go('vault')}>
-            <div className="num">{docCount}</div><div className="lbl">Documents</div>
+            <div className="num">{docCount}</div><div className="lbl">{t('home.tileDocuments')}</div>
           </div>
           <div className="card-light tile" onClick={() => go('family')}>
-            <div className="num">{memCount}</div><div className="lbl">Family</div>
+            <div className="num">{memCount}</div><div className="lbl">{t('home.tileFamily')}</div>
           </div>
         </div>
 
@@ -119,36 +126,32 @@ export default function HomeScreen({ app }) {
               <div className="eyebrow eyebrow-sage">{planLabel('family')}</div>
               <div className="serif" style={{ fontSize: 19, fontWeight: 600, lineHeight: 1.25, margin: '2px 0 10px' }}>
                 {capped === 'documents'
-                  ? 'Your vault is just getting started.'
+                  ? t('home.upsellDocs')
                   : capped === 'accounts'
-                    ? 'One account is only the beginning.'
-                    : 'Open every part of your plan.'}
+                    ? t('home.upsellAccounts')
+                    : t('home.upsellDefault')}
               </div>
-              {[
-                'Unlimited accounts and documents, up to 10 trusted people',
-                'Sealed personal messages, letters, videos and photos',
-                'Reminders and alerts for the things that matter',
-              ].map(line => (
+              {[t('home.upsellLine1'), t('home.upsellLine2'), t('home.upsellLine3')].map(line => (
                 <div key={line} className="fx ac" style={{ gap: 8, marginTop: 6 }}>
                   <span style={{ color: '#6e9b6a', flex: 'none', display: 'inline-flex' }}><CheckIcon on /></span>
                   <span style={{ fontSize: 12.5, color: 'rgba(255,255,255,0.82)', lineHeight: 1.4 }}>{line}</span>
                 </div>
               ))}
               <button className="btn btn-light w100" style={{ marginTop: 14 }} onClick={(e) => { e.stopPropagation(); go('upgrade') }}>
-                Start your 14-day free trial
+                {t('home.startTrial')}
               </button>
               <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.7)', textAlign: 'center', marginTop: 8 }}>
-                {PRICING.family.monthly.display}/month, or {PRICING.family.annual.perMonthDisplay}/month billed annually. Cancel anytime.
+                {t('home.priceLine', { monthly: market.family.monthly.display, annualPerMonth: market.family.annual.perMonthDisplay })}
               </div>
             </div>
           </div>
         )}
 
         {/* ── Recent activity ── */}
-        <div className="eyebrow" style={{ marginTop: 22 }}>Recent activity</div>
+        <div className="eyebrow" style={{ marginTop: 22 }}>{t('home.recentActivity')}</div>
         <div className="card-light ohide">
           {activity.length === 0 ? (
-            <div className="arow"><span className="f1" style={{ color: 'var(--color-stone-400)' }}>No activity yet.</span></div>
+            <div className="arow"><span className="f1" style={{ color: 'var(--color-stone-400)' }}>{t('home.noActivity')}</span></div>
           ) : (
             activity.map((v, i) => (
               <div key={v.id} className={`arow ${i === 0 ? '' : 'bt'}`}>

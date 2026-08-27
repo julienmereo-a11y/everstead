@@ -5,12 +5,16 @@
 // Four equally-weighted metrics, each a completion ratio capped at 1.0, averaged,
 // then penalised 5% per critical alert (max 15%).
 
+import i18n from '../../../i18n'
+import './i18n'
+
 export function readinessStats({ accounts = [], documents = [], people = [], instructions = [], isFamilyPlus = false }) {
+  const T = (k) => i18n.t('mobile:readiness.' + k)
   return [
-    { key: 'accounts',     label: 'Accounts documented',                         value: accounts.length,                                          target: 5 },
-    { key: 'documents',    label: 'Documents uploaded',                          value: documents.filter(d => d.status !== 'missing').length,     target: 5 },
-    { key: 'people',       label: isFamilyPlus ? 'Trusted people' : 'Trusted contacts', value: people.length,                                    target: isFamilyPlus ? 5 : 2 },
-    { key: 'instructions', label: 'Instructions written',                        value: instructions.length,                                      target: 3 },
+    { key: 'accounts',     label: T('accounts'),     value: accounts.length,                                      target: 5 },
+    { key: 'documents',    label: T('documents'),    value: documents.filter(d => d.status !== 'missing').length, target: 5 },
+    { key: 'people',       label: isFamilyPlus ? T('trustedPeople') : T('trustedContacts'), value: people.length, target: isFamilyPlus ? 5 : 2 },
+    { key: 'instructions', label: T('instructions'), value: instructions.length,                                  target: 3 },
   ]
 }
 

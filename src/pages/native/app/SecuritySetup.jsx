@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
+import './i18n'
 import { setPasscode, setBiometricEnabled, markSetupDone, biometricAvailable, getLockState, verifyPasscode } from '../../../components/native/appLock'
 import { haptic } from '../../../lib/haptics'
 import { FaceIdIcon } from './icons'
@@ -9,6 +11,7 @@ import { FaceIdIcon } from './icons'
 // Skippable — they can turn it on later in Settings. Rendered inside `.evst-app`,
 // so it reuses the dark onboarding styles.
 export default function SecuritySetup({ onDone }) {
+  const { t } = useTranslation('mobile')
   const [step, setStep] = useState('pin')      // 'current' | 'pin' | 'confirm' | 'bio'
   const [pin, setPin] = useState('')
   const [confirm, setConfirm] = useState('')
@@ -30,16 +33,16 @@ export default function SecuritySetup({ onDone }) {
   const submitCurrent = async () => {
     if (current.length < 4) return
     if (await verifyPasscode(current)) { setError(null); setStep('pin') }
-    else { haptic.error(); setError('That isn’t your current passcode.'); setCurrent('') }
+    else { haptic.error(); setError(t('security.wrongCurrent')); setCurrent('') }
   }
 
   const submitPin = () => {
-    if (pin.length < 4) { setError('Choose at least 4 digits.'); return }
+    if (pin.length < 4) { setError(t('security.tooShort')); return }
     setError(null); setStep('confirm')
   }
 
   const submitConfirm = async () => {
-    if (confirm !== pin) { haptic.error(); setError("Those didn't match. Try again."); setConfirm(''); return }
+    if (confirm !== pin) { haptic.error(); setError(t('security.noMatch')); setConfirm(''); return }
     setError(null); setBusy(true)
     try {
       await setPasscode(pin)
@@ -48,7 +51,7 @@ export default function SecuritySetup({ onDone }) {
       haptic.success() // passcode is set, a meaningful completion
       if (bioAvail) { setStep('bio'); setBusy(false) }
       else { onDone(true) }
-    } catch { setError('Could not save your passcode. Please try again.'); setBusy(false) }
+    } catch { setError(t('security.saveFailed')); setBusy(false) }
   }
 
   const finishBio = async (enable) => {
@@ -73,15 +76,15 @@ export default function SecuritySetup({ onDone }) {
       <img className="oblogo" src="/logo-v2-white.png" alt="Everstead" />
 
       <div className="f1 fx col jc posrel">
-        <div className="eyebrow eyebrow-sage">Extra security</div>
+        <div className="eyebrow eyebrow-sage">{t('security.eyebrow')}</div>
 
         {step === 'current' && (
           <>
-            <h1 className="obh" style={{ fontSize: 32 }}>Enter your current passcode.</h1>
+            <h1 className="obh" style={{ fontSize: 32 }}>{t('security.currentTitle')}</h1>
             <p style={{ fontSize: 14.5, color: 'rgba(255,255,255,0.6)', margin: '10px 0 0', lineHeight: 1.5 }}>
-              To change your passcode, confirm the one you use now.
+              {t('security.currentSub')}
             </p>
-            <label className="flabel flabel-dark" style={{ marginTop: 24 }}>Current passcode</label>
+            <label className="flabel flabel-dark" style={{ marginTop: 24 }}>{t('security.currentLabel')}</label>
             {pinInput(current, setCurrent, true, submitCurrent)}
             {error && <p style={{ color: '#fca5a5', fontSize: 12.5, marginTop: 12 }}>{error}</p>}
           </>
@@ -89,11 +92,11 @@ export default function SecuritySetup({ onDone }) {
 
         {step === 'pin' && (
           <>
-            <h1 className="obh" style={{ fontSize: 32 }}>Set a passcode.</h1>
+            <h1 className="obh" style={{ fontSize: 32 }}>{t('security.setTitle')}</h1>
             <p style={{ fontSize: 14.5, color: 'rgba(255,255,255,0.6)', margin: '10px 0 0', lineHeight: 1.5 }}>
-              Everstead will ask for this each time you open the app, so your plan stays private on this device.
+              {t('security.setSub')}
             </p>
-            <label className="flabel flabel-dark" style={{ marginTop: 24 }}>Choose a 4-6 digit passcode</label>
+            <label className="flabel flabel-dark" style={{ marginTop: 24 }}>{t('security.setLabel')}</label>
             {pinInput(pin, setPin, true, submitPin)}
             {error && <p style={{ color: '#fca5a5', fontSize: 12.5, marginTop: 12 }}>{error}</p>}
           </>
@@ -101,11 +104,11 @@ export default function SecuritySetup({ onDone }) {
 
         {step === 'confirm' && (
           <>
-            <h1 className="obh" style={{ fontSize: 32 }}>Confirm it.</h1>
+            <h1 className="obh" style={{ fontSize: 32 }}>{t('security.confirmTitle')}</h1>
             <p style={{ fontSize: 14.5, color: 'rgba(255,255,255,0.6)', margin: '10px 0 0', lineHeight: 1.5 }}>
-              Enter the same passcode once more.
+              {t('security.confirmSub')}
             </p>
-            <label className="flabel flabel-dark" style={{ marginTop: 24 }}>Re-enter passcode</label>
+            <label className="flabel flabel-dark" style={{ marginTop: 24 }}>{t('security.confirmLabel')}</label>
             {pinInput(confirm, setConfirm, true, submitConfirm)}
             {error && <p style={{ color: '#fca5a5', fontSize: 12.5, marginTop: 12 }}>{error}</p>}
           </>
@@ -114,9 +117,9 @@ export default function SecuritySetup({ onDone }) {
         {step === 'bio' && (
           <>
             <span className="ficon" style={{ marginBottom: 18 }}><FaceIdIcon s={26} /></span>
-            <h1 className="obh" style={{ fontSize: 32 }}>Unlock with Face ID?</h1>
+            <h1 className="obh" style={{ fontSize: 32 }}>{t('security.bioTitle')}</h1>
             <p style={{ fontSize: 14.5, color: 'rgba(255,255,255,0.6)', margin: '10px 0 0', lineHeight: 1.5 }}>
-              Use Face ID or Touch ID to unlock Everstead quickly. You can always enter your passcode instead.
+              {t('security.bioSub')}
             </p>
           </>
         )}
@@ -125,28 +128,28 @@ export default function SecuritySetup({ onDone }) {
       <div className="posrel">
         {step === 'current' && (
           <>
-            <button className={`btn btn-light w100 ${current.length >= 4 ? '' : 'dis'}`} onClick={submitCurrent}>Continue</button>
-            <button className="linkbtn" onClick={skip} disabled={busy}>Cancel</button>
+            <button className={`btn btn-light w100 ${current.length >= 4 ? '' : 'dis'}`} onClick={submitCurrent}>{t('common.continue')}</button>
+            <button className="linkbtn" onClick={skip} disabled={busy}>{t('common.cancel')}</button>
           </>
         )}
         {step === 'pin' && (
           <>
-            <button className={`btn btn-light w100 ${pin.length >= 4 ? '' : 'dis'}`} onClick={submitPin}>Continue</button>
-            <button className="linkbtn" onClick={skip} disabled={busy}>Skip for now</button>
+            <button className={`btn btn-light w100 ${pin.length >= 4 ? '' : 'dis'}`} onClick={submitPin}>{t('common.continue')}</button>
+            <button className="linkbtn" onClick={skip} disabled={busy}>{t('security.skipForNow')}</button>
           </>
         )}
         {step === 'confirm' && (
           <>
             <button className={`btn btn-light w100 ${confirm.length >= 4 && !busy ? '' : 'dis'}`} onClick={submitConfirm}>
-              {busy ? 'Saving…' : 'Set passcode'}
+              {busy ? t('common.saving') : t('security.setPasscode')}
             </button>
-            <button className="linkbtn" onClick={() => { setStep('pin'); setConfirm(''); setError(null) }}>Back</button>
+            <button className="linkbtn" onClick={() => { setStep('pin'); setConfirm(''); setError(null) }}>{t('common.back')}</button>
           </>
         )}
         {step === 'bio' && (
           <>
-            <button className={`btn btn-light w100 ${busy ? 'dis' : ''}`} onClick={() => finishBio(true)}>Enable Face ID</button>
-            <button className="linkbtn" onClick={() => finishBio(false)} disabled={busy}>Not now, use passcode only</button>
+            <button className={`btn btn-light w100 ${busy ? 'dis' : ''}`} onClick={() => finishBio(true)}>{t('security.enableFaceId')}</button>
+            <button className="linkbtn" onClick={() => finishBio(false)} disabled={busy}>{t('security.notNowPasscode')}</button>
           </>
         )}
       </div>
