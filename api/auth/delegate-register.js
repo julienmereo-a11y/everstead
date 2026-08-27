@@ -176,6 +176,26 @@ async function handler(req, res) {
       return res.status(403).json({ error: 'We cannot open accounts in that country.' })
     }
     const country     = ACCEPTED_COUNTRIES.has(rawCountry) ? rawCountry : null
+    // Referral code from a shared link. Until now only PAID checkouts recorded
+    // referred_by (via Stripe metadata), so a friend who joined on the free plan
+    // was invisible to the person who invited them, which on a freemium product
+    // is most referrals. Validated against a real profile before it is stored:
+    // referral_code first, then profile id (older links use the id as the code).
+    // Two .eq lookups, never .or() with raw input, which is a filter-injection
+    // surface in PostgREST.
+    const rawRef = typeof req.body.referredBy === 'string' ? req.body.referredBy.trim().slice(0, 64) : ''
+    let referredBy = null
+    if (rawRef) {
+      const { data: byCode } = await supabase.from('profiles')
+        .select('id').eq('referral_code', rawRef).limit(1).maybeSingle()
+      let refOwner = byCode
+      if (!refOwner && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(rawRef)) {
+        const { data: byId } = await supabase.from('profiles')
+          .select('id').eq('id', rawRef).limit(1).maybeSingle()
+        refOwner = byId
+      }
+      if (refOwner) referredBy = rawRef // unknown code: drop silently, never block a signup
+    }
     // Create user server-side (bypasses captcha). Auto-confirm email. Pass the plan in
     // metadata so the handle_new_user trigger stamps profiles.plan at INSERT — this is
     // the ONLY way the client can end up on 'free', since the profile guard trigger
@@ -196,6 +216,7 @@ async function handler(req, res) {
       const upd = isFree
         ? { role: profileRole, subscription_status: null, trial_ends_at: null }
         : { role: profileRole }
+      if (referredBy) upd.referred_by = referredBy // service role, so the column guard allows it
       await supabase.from('profiles').update(upd).eq('id', created.user.id)
     }
 

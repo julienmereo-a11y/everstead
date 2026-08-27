@@ -2,7 +2,7 @@
 // account deletion. The three small controls it owns (billing portal, referral
 // link, biometric lock) live here because nothing else uses them.
 //
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { PLAN_LABELS, PRICING, planLabel } from '../../../config/pricing'
 import i18n from '../../../i18n'
 import { PLANS, redirectToCustomerPortal } from '../../../lib/stripe'
@@ -41,7 +41,22 @@ export function ManageBillingButton() {
 export function ReferralLinkBox({ referralCode }) {
   const { t } = useTranslation('dashboard')
   const [copied, setCopied] = useState(false)
+  // Friends who joined through this link. Null (line hidden) until the RPC
+  // answers; in demo mode there is no session so it stays hidden, which is fine.
+  const [joined, setJoined] = useState(null)
   const link = `${window.location.origin}/get-started?ref=${referralCode}`
+
+  useEffect(() => {
+    let on = true
+    ;(async () => {
+      try {
+        const { supabase: sb } = await import('../../../lib/supabase')
+        const { data, error } = await sb.rpc('my_referral_count')
+        if (on && !error && typeof data === 'number') setJoined(data)
+      } catch { /* count is a nicety, never an error state */ }
+    })()
+    return () => { on = false }
+  }, [])
 
   const handleCopy = () => {
     navigator.clipboard.writeText(link).then(() => {
@@ -51,6 +66,7 @@ export function ReferralLinkBox({ referralCode }) {
   }
 
   return (
+    <>
     <div className="flex items-center gap-2">
       <div className="flex-1 bg-stone-50 border border-stone-200 rounded-xl px-3.5 py-2.5 text-xs text-stone-600 font-mono truncate">
         {link}
@@ -62,6 +78,12 @@ export function ReferralLinkBox({ referralCode }) {
         {copied ? <><Check size={13} />{t('settings.referral.copied')}</> : <><Copy size={13} />{t('settings.referral.copy')}</>}
       </button>
     </div>
+    {joined > 0 && (
+      <p className="text-xs text-sage-700 font-medium mt-2.5">
+        {t('settings.referral.joined', { count: joined })}
+      </p>
+    )}
+    </>
   )
 }
 

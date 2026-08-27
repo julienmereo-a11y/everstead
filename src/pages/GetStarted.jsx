@@ -489,6 +489,9 @@ export default function GetStarted() {
           name:       form.fullName,
           plan:       selectedPlan,
           language:   i18n.language === 'fr' ? 'fr' : 'en',
+          // Free signups carry the referral too; paid ones also stamp it via
+          // Stripe metadata later, same value, so the double write is harmless.
+          referredBy: referralCode,
         }),
       })
 

@@ -57,6 +57,10 @@ export default function SettingsScreen({ app }) {
   const [notifs, setNotifs] = useState({})
   const [aiOn, setAiOn] = useState(true)
   const [lock, setLock] = useState({ hasPin: false, biometric: false })
+  // Friends who joined through the referral link. Demo shows a canned number;
+  // real accounts ask the my_referral_count RPC (await + try/catch, never a
+  // .catch chained on the builder, which PostgREST builders do not have).
+  const [joined, setJoined] = useState(null)
   const [bioAvail, setBioAvail] = useState(false)
   const [notifGranted, setNotifGranted] = useState(null) // null = unknown/web
   const [notifStatus, setNotifStatus] = useState('')
@@ -103,6 +107,18 @@ export default function SettingsScreen({ app }) {
       setDeleting(false)
     }
   }
+
+  useEffect(() => {
+    if (app.demo) { setJoined(2); return }
+    let on = true
+    ;(async () => {
+      try {
+        const { data, error } = await supabase.rpc('my_referral_count')
+        if (on && !error && typeof data === 'number') setJoined(data)
+      } catch { /* a missing count is not an error state */ }
+    })()
+    return () => { on = false }
+  }, [app.demo])
 
   useEffect(() => {
     if (!profile) return
@@ -299,10 +315,31 @@ export default function SettingsScreen({ app }) {
         ))}
       </Card>
 
-      <Card title="Refer a friend">
-        <p className="rdet" style={{ margin: '0 0 10px' }}>Your friend gets a 21-day free trial instead of 14.</p>
+      {/* Everstead is freemium now, so the old "21-day trial instead of 14"
+          pitch described a path most invitees never take. The trial bonus still
+          exists but only if the friend picks Everstead+ at signup; free is the
+          default and needs no card. */}
+      <Card title="Invite friends & family">
+        <p className="rdet" style={{ margin: '0 0 10px' }}>
+          Everstead is free to start. Share your link so the people you love can get organised too.
+        </p>
+        {joined > 0 && (
+          <p className="rdet" style={{ margin: '0 0 10px', color: 'var(--color-sage-700)', fontWeight: 600 }}>
+            {joined} {joined === 1 ? 'friend has' : 'friends have'} joined with your link.
+          </p>
+        )}
         <div className="fx gap12 ac">
           <input className="inp" readOnly value={referralLink} style={{ fontSize: 12 }} />
+          {/* WKWebView exposes navigator.share on recent iOS; when it is there,
+              the native share sheet beats copy-paste. Feature-detected so older
+              webviews quietly keep the Copy button alone. */}
+          {typeof navigator !== 'undefined' && navigator.share ? (
+            <button className="btn btn-sm" style={{ flex: 'none' }} onClick={async () => {
+              haptic.tick()
+              try { await navigator.share({ url: referralLink, text: 'I use Everstead to keep my accounts, documents and wishes in one place for my family. It is free to start:' }) }
+              catch { /* user closed the sheet */ }
+            }}>Share</button>
+          ) : null}
           <button className="btn btn-sm" style={{ flex: 'none' }} onClick={copyReferral}>{copied ? 'Copied' : 'Copy'}</button>
         </div>
       </Card>

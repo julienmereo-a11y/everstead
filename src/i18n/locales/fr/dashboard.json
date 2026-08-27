@@ -1123,10 +1123,12 @@
       "manage": "Gérer la facturation et sa fréquence"
     },
     "referral": {
-      "heading": "Parrainer un proche",
-      "body": "Partagez votre lien personnel : votre proche bénéficie d'un <b>essai gratuit de 21 jours</b> au lieu de 14. Préparer sa succession, c'est un travail d'équipe.",
+      "heading": "Invitez vos proches",
+      "body": "Partagez votre lien personnel. Everstead est gratuit pour commencer, et si votre proche choisit Everstead+, il bénéficie d'un <b>essai gratuit de 21 jours</b> au lieu de 14.",
       "copied": "Copié !",
-      "copy": "Copier le lien"
+      "copy": "Copier le lien",
+      "joined_one": "{{count}} proche a rejoint Everstead avec votre lien.",
+      "joined_other": "{{count}} proches ont rejoint Everstead avec votre lien."
     },
     "ai": {
       "heading": "Fonctionnalités IA",

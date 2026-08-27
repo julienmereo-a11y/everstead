@@ -1123,10 +1123,12 @@
       "manage": "Manage billing & billing cycle"
     },
     "referral": {
-      "heading": "Refer a friend",
-      "body": "Share your unique link, your friend gets a <b>21-day free trial</b> instead of 14 days. Estate planning is a team effort.",
+      "heading": "Invite friends & family",
+      "body": "Share your personal link. Everstead is free to start, and if your friend chooses Everstead+ they get a <b>21-day free trial</b> instead of 14.",
       "copied": "Copied!",
-      "copy": "Copy link"
+      "copy": "Copy link",
+      "joined_one": "{{count}} friend has joined with your link.",
+      "joined_other": "{{count}} friends have joined with your link."
     },
     "ai": {
       "heading": "AI features",
