@@ -5,7 +5,8 @@ import { useAuth } from '../../../contexts/AuthContext'
 import {
   useAccounts, useDocuments, usePeople, useInstructions, useActivityLog,
 } from '../../../hooks/useData'
-import { isNative } from '../../../lib/platform'
+import { isNative, isIOS } from '../../../lib/platform'
+import { supabase } from '../../../lib/supabase'
 import { computeReadiness } from './readiness'
 import {
   ACCOUNT_CATEGORY_ORDER, docChip, personAccessChip, initialsOf, relativeTime, activityText, docTypeLabel, dateLocale } from './helpers'
@@ -344,6 +345,15 @@ export default function MobileAppAuthed() {
   // alerts). Idempotent; silently inert until permission + push setup exist.
   useEffect(() => {
     if (profile?.id) registerForPush()
+  }, [profile?.id])
+
+  // Same daily open-signal as the web dashboard (see member_activity_days).
+  useEffect(() => {
+    if (!profile?.id) return
+    ;(async () => {
+      try { await supabase.rpc('record_activity', { p_platform: isIOS() ? 'ios' : 'android' }) }
+      catch { /* never block the app on measurement */ }
+    })()
   }, [profile?.id])
 
   // Milestone moments — celebrate crossing 25/50/75/100% readiness during THIS

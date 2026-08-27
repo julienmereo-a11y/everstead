@@ -79,6 +79,18 @@ export default function Dashboard() {
   const { user, profile, signOut, updateProfile, refreshProfile } = useAuth()
   const [searchParams, setSearchParams] = useSearchParams()
   const isDemo          = searchParams.get('demo') === 'true'
+
+  // One tiny idempotent write per day: the accurate "they came back" signal.
+  // last_sign_in_at misses everyone who stays signed in; this does not.
+  useEffect(() => {
+    if (isDemo) return
+    ;(async () => {
+      try {
+        const { supabase: sb } = await import('../lib/supabase')
+        await sb.rpc('record_activity', { p_platform: 'web' })
+      } catch { /* measurement must never break the dashboard */ }
+    })()
+  }, [isDemo])
   const checkoutSuccess = searchParams.get('checkout') === 'success'
 
   // Conversion event: fired here (the post-payment landing) rather than in the payment

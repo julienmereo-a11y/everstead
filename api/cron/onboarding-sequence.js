@@ -69,6 +69,10 @@ async function handler(req, res) {
 
   const now     = new Date()
   const results = { sent: {}, errors: [] }
+  // At most ONE sequence email per member per run. The cron is daily, so a
+  // member whose earlier steps are overdue catches up a day at a time rather
+  // than getting several emails in one morning.
+  const emailedThisRun = new Set()
 
   for (const step of SEQUENCE) {
     // Anchor to trial start (trial_ends_at - 14 days), falling back to created_at.
@@ -77,10 +81,16 @@ async function handler(req, res) {
     const earliestCutoff = new Date(now.getTime() - step.afterDays * 86_400_000).toISOString()
 
     // Eligible: paying/trialing, this email not yet sent
+    // Paid members (subscription) AND free members. The old filter required a
+    // stripe_subscription_id, which free members never have by design, so from
+    // the freemium switch until 2026-08-27 every free signup received none of
+    // these emails: the exact population that churns on day one. Advisers are
+    // B2B and never belonged in a consumer drip.
     const { data: users, error } = await supabase
       .from('profiles')
       .select(`id, full_name, email, plan, language, created_at, trial_ends_at`)
-      .not('stripe_subscription_id', 'is', null)
+      .or('stripe_subscription_id.not.is.null,plan.eq.free')
+      .neq('plan', 'advisor')
       .neq('role', 'delegate')
       .not('email', 'is', null)
       .neq('marketing_emails_enabled', false) // respect unsubscribe
@@ -102,6 +112,7 @@ async function handler(req, res) {
         : new Date(user.created_at)
       const sendAfter = new Date(trialStart.getTime() + step.afterDays * 86_400_000)
       if (now < sendAfter) continue // not yet time for this user
+      if (emailedThisRun.has(user.id)) continue // one per member per run
 
       try {
         // ── State-aware progress check (always fetch — needed for skip/recovery logic) ──
@@ -126,7 +137,7 @@ async function handler(req, res) {
         if (step.n === 3 && progress.total === 0) {
           // Recovery branch: D7 with zero progress → re-engagement
           subject = t('recoverySubject')
-          html = recoveryHtml(user.full_name, user.id, user.language)
+          html = recoveryHtml(user.full_name, user.id, user.language, user.plan)
         } else if (step.n === 5) {
           // Personalised day-13 check-in
           html = step.html(user.full_name, user.plan, progress.accounts, progress.documents, progress.contacts, user.id, user.language)
@@ -136,6 +147,7 @@ async function handler(req, res) {
           subject = t(step.subjectKey)
         }
 
+        emailedThisRun.add(user.id)
         await resend.emails.send({
           from:    'Everstead <hello@everstead.care>',
           to:      user.email,
@@ -227,6 +239,7 @@ const COPY = {
     email5NoGaps:       'Your plan is shaping up well, keep it up.',
     email5P3:           "If you got stuck on anything, or there's something I can help you set up, just hit reply. I read every message.",
     email5P4:           "And if your trial is ending soon, everything you've built is still here, ready to go.",
+    email5P4Free:       "And remember, your free plan does not expire. Everything you add is yours to keep.",
     email5Cta:          'Go to my vault →',
 
     // Counts used by email 5
@@ -243,6 +256,7 @@ const COPY = {
     recoveryP1:      "Hi {{name}}, it's Julien: I'm writing personally because I noticed you signed up a week ago and haven't added anything to your vault yet. That's pretty common, and usually for one of three reasons:",
     recoveryP2:      "<strong>1. You're not sure where to start.</strong> Honestly, the easiest first step is adding one account, a current account, a savings account, your work pension. It takes about 90 seconds and the rest gets easier from there.",
     recoveryP3:      "<strong>2. The timing isn't right.</strong> You meant to come back to it. Life got busy. That's OK, your account is here whenever you're ready, and your trial doesn't start counting against you until you actually use the platform.",
+    recoveryP3Free:  "<strong>2. The timing isn't right.</strong> You meant to come back to it. Life got busy. That's OK, your account is free and it will be here whenever you're ready.",
     recoveryP4:      "<strong>3. Something's broken or confusing.</strong> If anything didn't work the way you expected (sign-in, navigation, finding where to add things) please just reply and tell me. I'll either fix it or walk you through it.",
     recoveryP5:      'Hit reply if you want a hand. Otherwise, the simplest possible next step is below.',
     recoveryCta:     'Add one account in 90 seconds →',
@@ -306,6 +320,7 @@ const COPY = {
     email5NoGaps:       'Votre plan prend forme, continuez comme cela.',
     email5P3:           'Si quelque chose vous a bloqué, ou si je peux vous aider à mettre quoi que ce soit en place, répondez simplement à ce message. Je lis tout.',
     email5P4:           "Et si votre essai touche à sa fin, tout ce que vous avez construit reste ici, prêt à l'emploi.",
+    email5P4Free:       "Et rappelez-vous, votre plan gratuit n'expire pas. Tout ce que vous y mettez reste à vous.",
     email5Cta:          'Accéder à mon coffre →',
 
     // Counts used by email 5
@@ -322,6 +337,7 @@ const COPY = {
     recoveryP1:      "Bonjour {{name}}, c'est Julien\u00A0: je vous écris personnellement parce que j'ai remarqué que votre coffre est encore vide, une semaine après votre inscription. C'est très courant, et en général pour l'une de ces trois raisons\u00A0:",
     recoveryP2:      "<strong>1. Vous ne savez pas par où commencer.</strong> Le plus simple, honnêtement, c'est d'ajouter un seul compte\u00A0: un compte courant, un livret, votre retraite d'entreprise. Cela prend environ 90 secondes et tout le reste devient plus facile ensuite.",
     recoveryP3:      "<strong>2. Ce n'est pas le bon moment.</strong> Vous comptiez y revenir. La vie a pris le dessus. Ce n'est pas grave, votre compte vous attend, et votre essai ne joue pas contre vous tant que vous n'utilisez pas vraiment la plateforme.",
+    recoveryP3Free:  "<strong>2. Ce n'est pas le bon moment.</strong> Vous comptiez y revenir. La vie a pris le dessus. Ce n'est pas grave, votre compte est gratuit et il vous attendra.",
     recoveryP4:      "<strong>3. Quelque chose ne fonctionne pas ou prête à confusion.</strong> Si quoi que ce soit ne s'est pas passé comme prévu (connexion, navigation, trouver où ajouter les choses), répondez-moi simplement. Soit je le corrige, soit je vous guide.",
     recoveryP5:      "Répondez à ce message si vous voulez un coup de main. Sinon, l'étape la plus simple est juste en dessous.",
     recoveryCta:     'Ajouter un compte en 90 secondes →',
@@ -494,6 +510,7 @@ function email4Html(name, _plan, userId, lang) {
 // EMAIL 5 — Day 13: Personal check-in from Julien (data-driven)
 // ─────────────────────────────────────────────────────────────────────────────
 function email5Html(name, plan, accountCount = 0, documentCount = 0, contactCount = 0, userId, lang) {
+  const isFree = plan === 'free'
   const t        = translator(COPY, lang)
   const first    = name?.split(' ')[0] || t('fallbackName')
   const planName = planLabel(plan)
@@ -537,7 +554,7 @@ function email5Html(name, plan, accountCount = 0, documentCount = 0, contactCoun
       ${t('email5P3')}
     </p>
     <p style="margin:0 0 32px;color:#4a5568;font-size:16px;line-height:1.7;">
-      ${t('email5P4')}
+      ${isFree ? t('email5P4Free') : t('email5P4')}
     </p>
     ${cta(`${APP_URL}/dashboard`, t('email5Cta'))}
     <p style="margin:32px 0 0;color:#6b7280;font-size:14px;line-height:1.6;">${t('signature')}</p>
@@ -591,7 +608,8 @@ function shouldSkipForProgress(stepN, progress) {
 // ─────────────────────────────────────────────────────────────────────────────
 //  Recovery email — sent at D7 if the user has done literally nothing
 // ─────────────────────────────────────────────────────────────────────────────
-function recoveryHtml(name, userId, lang) {
+function recoveryHtml(name, userId, lang, plan) {
+  const isFree = plan === 'free'
   const t     = translator(COPY, lang)
   const first = name?.split(' ')[0] || t('fallbackName')
   return layout(`
@@ -605,7 +623,7 @@ function recoveryHtml(name, userId, lang) {
       ${t('recoveryP2')}
     </p>
     <p style="margin:0 0 14px;color:#4a5568;font-size:16px;line-height:1.7;">
-      ${t('recoveryP3')}
+      ${isFree ? t('recoveryP3Free') : t('recoveryP3')}
     </p>
     <p style="margin:0 0 24px;color:#4a5568;font-size:16px;line-height:1.7;">
       ${t('recoveryP4')}

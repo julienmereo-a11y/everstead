@@ -121,7 +121,8 @@ async function handler(req, res) {
       returned_day7:    { count: extras.returned_day7, eligible: extras.eligible_day7, pct: pct(extras.returned_day7, extras.eligible_day7) },
       active_last_7d:   extras.active_last_7d,
       platforms:        extras.platforms,
-      caveat: 'Returns are counted by fresh sign-ins; members who stayed signed in undercount.',
+      measured:         extras.measured || null,
+      caveat: 'Returns are counted by fresh sign-ins; members who stayed signed in undercount. "Measured" rows come from real daily opens, collected since the date shown.',
     },
     funnel: {
       signups:           { count: c.signups,            pct_of_signups: 100 },
@@ -210,6 +211,9 @@ function htmlPage(r) {
       <div class="kv">
         <div><strong>Active in the last 7 days</strong><span>${r.early_funnel.active_last_7d}</span></div>
         <div><strong>Signup platform</strong><span>${Object.entries(r.early_funnel.platforms).map(([k, v]) => `${k} ${v}`).join(' · ')}</span></div>
+        ${r.early_funnel.measured?.since ? `
+        <div><strong>Measured opens, last 7d</strong><span>${r.early_funnel.measured.opened_last_7d}</span></div>
+        <div><strong>Measured returners (since ${r.early_funnel.measured.since})</strong><span>${r.early_funnel.measured.returners}</span></div>` : ''}
       </div>
       <p style="margin:0;padding:0 18px 14px;color:#9ca3af;font-size:11px;">${r.early_funnel.caveat}</p>
     </div>` : ''}

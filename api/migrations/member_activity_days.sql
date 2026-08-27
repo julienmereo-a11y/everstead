@@ -1,0 +1,7 @@
+-- Applied 2026-08-27. One row per member per day the product was opened, via
+-- the record_activity() RPC (SECURITY DEFINER, writes auth.uid() only, clients
+-- cannot touch the table: RLS on, zero policies). Exists because
+-- auth.users.last_sign_in_at only moves on FRESH sign-ins, so members who stay
+-- signed in were invisible as returners. admin_funnel_extras v2 reports the
+-- measured numbers alongside the proxy. Minimal by design: date + platform.
+-- Bodies: see applied migrations member_activity_days in production.

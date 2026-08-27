@@ -2901,6 +2901,9 @@ function FunnelSection({ isDemo }) {
           <div className="flex flex-wrap gap-x-6 gap-y-1 mt-3 text-xs text-stone-500">
             <span>Active in the last 7 days: <strong className="text-navy-900">{ef.active_last_7d}</strong></span>
             <span>Platforms: {Object.entries(ef.platforms).map(([k, v]) => `${k} ${v}`).join(' · ')}</span>
+            {ef.measured?.since && (
+              <span>Measured opens 7d: <strong className="text-navy-900">{ef.measured.opened_last_7d}</strong> · returners since {ef.measured.since}: <strong className="text-navy-900">{ef.measured.returners}</strong></span>
+            )}
           </div>
           <p className="text-[11px] text-stone-400 mt-2">{ef.caveat}</p>
         </div>
