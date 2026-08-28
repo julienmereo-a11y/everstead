@@ -4,6 +4,7 @@ import '../i18n'
 import { useAuth } from '../../../../contexts/AuthContext'
 import { ChevronIcon, CheckIcon } from '../icons'
 import { planLabel, marketPricing, FREE_LIMITS } from '../../../../config/pricing'
+import { useStorePrices } from '../../../../lib/storePricing'
 
 // Home — dark hero (greeting + real readiness ring), Up next (real gaps),
 // stat tiles (real counts), upgrade nudge (free plan only), recent activity
@@ -12,9 +13,14 @@ import { planLabel, marketPricing, FREE_LIMITS } from '../../../../config/pricin
 
 export default function HomeScreen({ app }) {
   const { t, i18n } = useTranslation('mobile')
-  // French members see euro prices; the Apple purchase itself is priced by the
-  // App Store in the buyer's storefront currency, so this is display only.
+  // What the store will actually charge, when we can get it. The billing
+  // currency follows the store account's country, NOT the app language, so the
+  // catalogue below is only a fallback until the store answers (and on the web
+  // preview, where there is no store).
+  const storePrices = useStorePrices()
   const market = marketPricing(i18n.language)
+  const monthlyPrice = storePrices?.monthly || market.family.monthly.display
+  const annualPerMonth = storePrices?.yearlyPerMonth || market.family.annual.perMonthDisplay
   const auth = useAuth()
   const profile = app.profile || auth.profile
   const {
@@ -141,7 +147,7 @@ export default function HomeScreen({ app }) {
                 {t('home.startTrial')}
               </button>
               <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.7)', textAlign: 'center', marginTop: 8 }}>
-                {t('home.priceLine', { monthly: market.family.monthly.display, annualPerMonth: market.family.annual.perMonthDisplay })}
+                {t('home.priceLine', { monthly: monthlyPrice, annualPerMonth: annualPerMonth })}
               </div>
             </div>
           </div>

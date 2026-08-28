@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import './i18n'
 import { PRICING, planLabel, marketPricing } from '../../../config/pricing'
+import { useStorePrices } from '../../../lib/storePricing'
 import { isNative, isIOS } from '../../../lib/platform'
 import { haptic } from '../../../lib/haptics'
 import { CheckIcon } from './icons'
@@ -26,38 +27,10 @@ export default function MobilePlanSelect({ onSubscribed, onBack, demo }) {
   const [annual, setAnnual] = useState(true)
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState(null)
-  // The store's OWN localised prices, when we can get them. Apple bills the
-  // buyer's storefront price, which is not necessarily our GBP or EUR list
-  // price, and guideline 3.1.2(c) wants the billed amount to be the clearest
-  // figure on the screen — so the App Store's number beats our catalogue
-  // whenever it is available, with the market catalogue as the fallback.
-  const [storePrices, setStorePrices] = useState(null)
-
-  // RevenueCat identifiers live on the GBP catalogue only; PRICING_FR is a
-  // display overlay and deliberately has none.
-  const p = PRICING[PLAN_KEY]
-  const market = marketPricing(i18n.language)
-  const name = planLabel(PLAN_KEY)
-
-  useEffect(() => {
-    if (demo || !isNative()) return
-    let on = true
-    ;(async () => {
-      try {
-        const { Purchases } = await import('@revenuecat/purchases-capacitor')
-        const { current } = await Purchases.getOfferings()
-        const find = (id) => current?.availablePackages?.find(x =>
-          x.identifier === id || String(x.product?.identifier || '').split(':')[0] === id)
-        const m = find(p.monthly.revenueCatIdentifier)
-        const y = find(p.annual.revenueCatIdentifier)
-        if (on && (m?.product?.priceString || y?.product?.priceString)) {
-          setStorePrices({ monthly: m?.product?.priceString, yearly: y?.product?.priceString })
-        }
-      } catch { /* fall back to the market catalogue */ }
-    })()
-    return () => { on = false }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  // The store's OWN localised prices (shared with Home via lib/storePricing):
+  // Apple and Google bill the buyer's storefront price, which is not
+  // necessarily our GBP or EUR catalogue price.
+  const storePrices = useStorePrices()
 
   // Guideline 3.1.2(c): the BILLED amount must be the most clear and conspicuous
   // price on the screen. Yearly bills the full-year figure, so that leads at
@@ -67,7 +40,9 @@ export default function MobilePlanSelect({ onSubscribed, onBack, demo }) {
   const monthlyList = fam.monthly.display
   const price = annual
     ? { big: storePrices?.yearly || yearlyList, unit: t('paywall.perYear'),
-        note: storePrices?.yearly ? t('paywall.noteAnnualStore') : t('paywall.noteAnnual', { perMonth: fam.annual.perMonthDisplay }) }
+        note: storePrices?.yearlyPerMonth ? t('paywall.noteAnnual', { perMonth: storePrices.yearlyPerMonth })
+          : storePrices?.yearly ? t('paywall.noteAnnualStore')
+          : t('paywall.noteAnnual', { perMonth: fam.annual.perMonthDisplay }) }
     : { big: storePrices?.monthly || monthlyList, unit: t('paywall.perMonth'), note: t('paywall.noteMonthly') }
 
   const subscribe = async () => {
