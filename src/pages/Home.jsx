@@ -62,6 +62,10 @@ function AnimatedHeroScore({ target = 76, duration = 1500 }) {
 export default function Home() {
   useReveal()
   const { t, i18n } = useTranslation('home')
+  // Screenshot images have their UI text baked in, so the French tree needs its
+  // own files (public/*-fr.jpg, drawn from the same photos). Falls back to the
+  // English asset for any screenshot that has no French version yet.
+  const shot = (name) => (i18n.language === 'fr' ? `/${name}-fr.jpg` : `/${name}.jpg`)
   const [annualPricing, setAnnualPricing] = useState(true)
 
   // /fr pages canonicalise to the /fr URL tree; English stays at the root.
@@ -358,7 +362,7 @@ export default function Home() {
               </ul>
             </div>
             <img
-              src="/screenshot-doc.jpg"
+              src={shot('screenshot-doc')}
               alt={t('rows.current.imageAlt')}
               width="944" height="780"
               loading="lazy"
@@ -370,7 +374,7 @@ export default function Home() {
           {/* Row: Share exactly what you choose (image left on desktop) */}
           <div className="mt-20 lg:mt-28 grid lg:grid-cols-2 gap-10 lg:gap-16 items-center reveal">
             <img
-              src="/screenshot-access.jpg"
+              src={shot('screenshot-access')}
               alt={t('rows.share.imageAlt')}
               width="944" height="780"
               loading="lazy"
