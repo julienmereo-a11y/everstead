@@ -13,7 +13,7 @@
     "yearly": "Annuel",
     "savingActive": "✓ 2 mois offerts",
     "save": "2 mois offerts",
-    "billingNoteAnnual": "Facturation annuelle : 2 mois offerts par rapport au paiement mensuel, soit près de {{saving}} € d'économie. ✓",
+    "billingNoteAnnual": "Facturation annuelle : 2 mois offerts par rapport au paiement mensuel, soit près de {{saving}} € d'économie. ✓",
     "billingNoteMonthly": "Facturation mensuelle. Passez à l'année et profitez de 2 mois offerts."
   },
   "plans": {
@@ -75,7 +75,7 @@
       ],
       "cta": "Réserver une démo",
       "priceNote": "Tarif sur demande : nous accompagnons personnellement notre premier groupe de conseillers.",
-      "blurb": "Pour les notaires, avocats et conseillers en gestion de patrimoine : un espace multi-clients à vos couleurs.",
+      "blurb": "Pour les notaires, avocats et conseillers en gestion de patrimoine : un espace multi-clients à vos couleurs.",
       "learnMore": "En savoir plus"
     }
   },
@@ -169,7 +169,7 @@
       },
       {
         "q": "Y a-t-il une réduction pour la facturation annuelle ?",
-        "a": "Oui. La facturation annuelle revient à 99,99 € au lieu de 119,88 € : 2 mois vous sont offerts par rapport au paiement mensuel. Le tarif s'applique dès le premier jour et reste garanti pendant toute l'année."
+        "a": "Oui. La facturation annuelle revient à 99,99 € au lieu de 119,88 € : 2 mois vous sont offerts par rapport au paiement mensuel. Le tarif s'applique dès le premier jour et reste garanti pendant toute l'année."
       },
       {
         "q": "Qu'apporte le forfait Everstead+ que l'offre gratuite n'a pas ?",

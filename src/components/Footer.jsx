@@ -138,8 +138,22 @@ function LanguageLink() {
   )
 }
 
+// Paths whose FRENCH version really exists. TRANSLATED_PATHS drives hreflang
+// and the language switcher, but sub-routes (use-cases/*, resources/*) are
+// translated without being listed there, so the footer keeps its own additions.
+// On the French tree, any link outside this set is HIDDEN rather than shown:
+// a shorter footer in one language reads as finished, a full footer that dumps
+// the reader onto an English page reads as abandoned.
+const FR_EXTRA = new Set([
+  '/use-cases/families', '/use-cases/parents', '/use-cases/executors',
+  '/resources/blog', '/resources/guides', '/resources/checklists',
+  '/resources/faqs', '/resources#tools',
+])
+const frHasPage = (href) => TRANSLATED_PATHS.has(href.split('#')[0]) || FR_EXTRA.has(href)
+
 export default function Footer() {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
+  const isFr = i18n.language === 'fr'
   return (
     <footer className="aurora-field aurora-dim text-stone-400">
       <div className="max-w-7xl mx-auto px-6 lg:px-8 py-16 lg:py-20">
@@ -166,7 +180,7 @@ export default function Footer() {
             <div key={col.headingKey}>
               <h4 className="text-xs font-semibold uppercase tracking-widest text-stone-500 mb-4">{t(`footer.cols.${col.headingKey}`)}</h4>
               <ul className="space-y-2.5">
-                {col.links.map(l => (
+                {col.links.filter(l => !isFr || frHasPage(l.href)).map(l => (
                   <li key={l.href}>
                     <Link to={l.href} className="text-sm text-stone-400 hover:text-white transition-colors">
                       {t(`footer.links.${l.key}`)}

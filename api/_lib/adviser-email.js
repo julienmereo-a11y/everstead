@@ -46,10 +46,29 @@ export async function sendAdviserInvite({ email, firmName, token }) {
 const esc = (s) => String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
 
 // A firm invites a client family to create their Everstead plan.
-export async function sendClientInvite({ email, clientName, firmName, firmId, note }) {
+// `lang` follows the ADVISER's own language: a French notaire invites French
+// families, and this email is often the family's very first contact with
+// Everstead. The signup link points at the matching tree for the same reason.
+export async function sendClientInvite({ email, clientName, firmName, firmId, note, lang = 'en' }) {
   if (!email || !firmId) return
-  const url = `${APP}/get-started?adviser=${firmId}`
-  const firm = esc(firmName) || 'Your adviser'
+  const fr = lang === 'fr'
+  const url = `${APP}${fr ? '/fr' : ''}/get-started?adviser=${firmId}`
+  const firm = esc(firmName) || (fr ? 'Votre conseiller' : 'Your adviser')
+  if (fr) {
+    const inner = `
+    <h1 style="margin:0 0 16px;color:#0d1628;font-size:24px;font-weight:normal;">${firm} vous invite sur Everstead</h1>
+    <p style="margin:0 0 16px;color:#4a5568;font-size:16px;line-height:1.6;">Bonjour ${esc(clientName) || ''}, <strong>${firm}</strong> utilise Everstead pour aider les familles à réunir en un seul endroit sécurisé tout ce dont leurs proches auraient besoin${'\u00a0'}: comptes, documents, personnes de confiance et dernières volontés.</p>
+    ${note ? `<p style="margin:0 0 16px;color:#4a5568;font-size:15px;line-height:1.6;border-left:3px solid #e8e5e0;padding-left:14px;font-style:italic;">&laquo;${'\u00a0'}${esc(note)}${'\u00a0'}&raquo;</p>` : ''}
+    <p style="margin:0 0 28px;color:#4a5568;font-size:16px;line-height:1.6;">Créez votre espace ci-dessous. Vous gardez le contrôle total de vos informations, et ne partagez jamais que ce que vous choisissez.</p>
+    ${button(url, 'Créer mon espace Everstead →')}
+    <p style="margin:28px 0 0;color:#9ca3af;font-size:13px;line-height:1.5;">Cette invitation a été envoyée à ${esc(email)} à la demande de ${firm}. Si vous ne l'attendiez pas, vous pouvez ignorer cet e-mail.</p>`
+    try {
+      await resend.emails.send({ from: FROM, to: email, subject: `${firmName || 'Votre conseiller'} vous invite sur Everstead`, html: shell(inner) })
+    } catch (err) {
+      console.error('[adviser-email] client invite failed:', err?.message)
+    }
+    return
+  }
   const inner = `
     <h1 style="margin:0 0 16px;color:#0d1628;font-size:24px;font-weight:normal;">${firm} has invited you to Everstead</h1>
     <p style="margin:0 0 16px;color:#4a5568;font-size:16px;line-height:1.6;">Hi ${esc(clientName) || 'there'}, <strong>${firm}</strong> uses Everstead to help families keep everything their loved ones would need (accounts, documents, trusted people and final wishes) organised in one secure place.</p>

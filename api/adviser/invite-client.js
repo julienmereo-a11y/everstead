@@ -62,7 +62,12 @@ async function handler(req, res) {
       )
     if (invErr && !String(invErr.message || '').includes('duplicate')) throw invErr
 
-    await sendClientInvite({ email, clientName: name, firmName: firm.firm_name, firmId: firm.id, note })
+    // The invite follows the adviser's own language: a French notaire invites
+    // French families, and this is often their first contact with Everstead.
+    const { data: adviserProfile } = await db.from('profiles')
+      .select('language').eq('id', ctx.user.id).maybeSingle()
+    await sendClientInvite({ email, clientName: name, firmName: firm.firm_name, firmId: firm.id, note,
+                             lang: adviserProfile?.language === 'fr' ? 'fr' : 'en' })
     return res.status(200).json({ ok: true })
   } catch (err) {
     console.error('adviser/invite-client error:', err)

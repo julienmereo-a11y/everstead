@@ -34,7 +34,7 @@ async function handler(req, res) {
   const ownerId = tp.user_id
   const { data: owner } = await supabase
     .from('profiles')
-    .select('full_name, email, plan')
+    .select('full_name, email, plan, language')
     .eq('id', ownerId)
     .maybeSingle()
 
@@ -72,17 +72,26 @@ async function handler(req, res) {
     return res.status(500).json({ error: 'Could not save the report' })
   }
 
-  const ownerName = owner?.full_name || 'the plan owner'
+  // The reporter follows the OWNER's language: the trusted people of a French
+  // member are, in practice, French. This email lands at the hardest moment the
+  // product ever touches; getting the language wrong here is not a detail.
+  const lang = owner?.language === 'fr' ? 'fr' : 'en'
+  const ownerName = owner?.full_name || (lang === 'fr' ? 'le titulaire du plan' : 'the plan owner')
 
-  // Email the reporter — the UK guide for a death, a short confirmation otherwise.
+  // Email the reporter — the local step-by-step guide for a death, a short
+  // confirmation otherwise. The French guide is NOT a translation of the UK
+  // one: registering at the mairie, the six-working-day funeral window and the
+  // notaire have no gov.uk equivalents, so each language gets its own steps.
   try {
     await resend.emails.send({
       from:    'Everstead <hello@everstead.care>',
       to:      reporterEmail,
       subject: type === 'death'
-        ? 'What to do now, a guide, and the support available to you'
-        : 'We have received your report',
-      html:    type === 'death' ? guideHtml(reporterName, ownerName) : confirmHtml(reporterName, ownerName),
+        ? (lang === 'fr' ? 'Un guide pour les jours qui viennent' : 'What to do now, a guide, and the support available to you')
+        : (lang === 'fr' ? 'Nous avons bien reçu votre signalement' : 'We have received your report'),
+      html:    type === 'death'
+        ? (lang === 'fr' ? guideFrHtml(reporterName, ownerName) : guideHtml(reporterName, ownerName))
+        : (lang === 'fr' ? confirmFrHtml(reporterName, ownerName) : confirmHtml(reporterName, ownerName)),
     })
   } catch (err) {
     console.error('reports/submit reporter email:', err.message)
@@ -166,6 +175,43 @@ function confirmHtml(reporterName, ownerName) {
     <p style="margin:0 0 16px;font-size:15px;line-height:1.65;">Dear ${escapeHtml(reporterName)},</p>
     <p style="margin:0 0 18px;font-size:15px;line-height:1.65;color:#44403c;">Thank you for letting us know about ${escapeHtml(ownerName)}. We've received your report and our team will review it within <strong>2 business days</strong>. We may contact you for verification, and relevant access will be unlocked once it's confirmed.</p>`
   return shell('We have received your report', body)
+}
+
+function guideFrHtml(reporterName, ownerName) {
+  const body = `
+    <p style="margin:0 0 16px;font-size:15px;line-height:1.65;">Bonjour ${escapeHtml(reporterName)},</p>
+    <p style="margin:0 0 20px;font-size:15px;line-height:1.65;color:#44403c;">Nous sommes sincèrement désolés pour la perte de ${escapeHtml(ownerName)}. Quand vous vous en sentirez la force, voici les démarches que les familles doivent généralement accomplir en France. Rien ne presse : prenez ce qui vous est utile, le reste attendra.</p>
+
+    <p style="margin:0 0 8px;font-size:13px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:#2d5082;">Dans les premiers jours</p>
+    <ul style="margin:0 0 22px;padding-left:20px;font-size:15px;line-height:1.7;color:#44403c;">
+      <li>Faire constater le décès par un médecin, puis le déclarer en mairie sous 24 heures (les pompes funèbres peuvent s'en charger)</li>
+      <li>Demander plusieurs copies de l'acte de décès : chaque banque et organisme en demandera une</li>
+      <li>Organiser les obsèques, qui ont lieu en principe dans les six jours ouvrables, en vérifiant si des volontés ou un contrat obsèques existaient</li>
+    </ul>
+
+    <p style="margin:0 0 8px;font-size:13px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:#2d5082;">Dans les semaines qui suivent</p>
+    <ul style="margin:0 0 22px;padding-left:20px;font-size:15px;line-height:1.7;color:#44403c;">
+      <li>Prévenir les banques, l'employeur ou les caisses de retraite, les assurances et les organismes sociaux</li>
+      <li>Prendre contact avec un notaire pour le règlement de la succession</li>
+      <li>Retrouver l'ensemble des démarches officielles sur ${link('https://www.service-public.fr', 'service-public.fr')}, rubrique Décès</li>
+    </ul>
+
+    <div style="background:#f5f8f4;border:1px solid #dfeadd;border-radius:12px;padding:18px 20px;margin:0 0 22px;">
+      <p style="margin:0 0 10px;font-size:15px;line-height:1.6;color:#1c1917;"><strong>Votre guide Everstead</strong></p>
+      <p style="margin:0 0 14px;font-size:14px;line-height:1.6;color:#44403c;">Un guide gratuit, pas à pas, pensé pour les démarches françaises :</p>
+      <a href="${BASE_URL}/fr/apres-un-deces" style="display:inline-block;background:#2d5082;background:${AURORA};color:#fff;font-weight:600;font-size:14px;text-decoration:none;padding:11px 22px;border-radius:9999px;">Ouvrir le guide complet</a>
+    </div>
+
+    <p style="margin:0 0 6px;font-size:13px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:#2d5082;">Prendre soin de vous</p>
+    <p style="margin:0 0 4px;font-size:15px;line-height:1.65;color:#44403c;">Le deuil est une épreuve. Votre médecin traitant peut vous orienter vers un accompagnement adapté, et des associations spécialisées existent partout en France.</p>`
+  return shell('Un guide pour les jours qui viennent', body)
+}
+
+function confirmFrHtml(reporterName, ownerName) {
+  const body = `
+    <p style="margin:0 0 16px;font-size:15px;line-height:1.65;">Bonjour ${escapeHtml(reporterName)},</p>
+    <p style="margin:0 0 18px;font-size:15px;line-height:1.65;color:#44403c;">Merci de nous avoir prévenus au sujet de ${escapeHtml(ownerName)}. Nous avons bien reçu votre signalement : notre équipe l'examinera sous <strong>2 jours ouvrés</strong>. Nous pourrons vous contacter pour vérification, et les accès prévus seront ouverts une fois le signalement confirmé.</p>`
+  return shell('Nous avons bien reçu votre signalement', body)
 }
 
 function teamHtml(type, p) {
