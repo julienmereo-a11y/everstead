@@ -77,5 +77,21 @@
     "lead": "The Everstead app is here, on the",
     "and": "and",
     "dismiss": "Dismiss announcement"
+  },
+  "notFound": {
+    "badge": "Page not found",
+    "title": "This page doesn't exist.",
+    "body": "It may have moved, or the link might be wrong. Here are a few useful places to start.",
+    "backHome": "Back to home",
+    "featuresDesc": "What Everstead includes",
+    "howDesc": "Step by step guide",
+    "pricingDesc": "Plans and free trial",
+    "securityDesc": "How we protect your data",
+    "features": "Features",
+    "how": "How It Works",
+    "pricing": "Pricing",
+    "security": "Security",
+    "stillLost": "Still lost?",
+    "metaTitle": "Page not found | Everstead"
   }
 }

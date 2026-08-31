@@ -80,6 +80,44 @@ const gitSha = (() => {
 })()
 const BUILD_MARKER = `${new Date().toISOString().slice(0, 10)} · ${gitSha}`
 
+// Link unfurlers (LinkedIn, WhatsApp, Slack, iMessage) never execute
+// JavaScript, so sharing everstead.care/fr showed the ENGLISH title and
+// description from the static index.html — Helmet's French override only
+// exists after React renders. This writes dist/fr.html, the same shell with
+// French metadata, and vercel.json rewrites /fr/* to it. Real visitors are
+// untouched: the same JS boots and Helmet still owns the head afterwards.
+const FR_META = {
+  '<html lang="en-GB">': '<html lang="fr">',
+  '<title>Everstead | Your life, organised.</title>':
+    '<title>Everstead | Le coffre numérique pour préparer votre succession</title>',
+}
+const FR_DESC = "Comptes, assurance-vie, documents et dernières volontés réunis dans un coffre numérique sécurisé, que vous partagez avec vos proches ou votre notaire le moment venu. Préparez votre succession l'esprit tranquille, l'inscription est gratuite."
+const FR_OG_TITLE = 'Everstead | Tout ce qui compte, réuni en un seul endroit sûr.'
+
+function writeFrenchShell() {
+  return {
+    name: 'write-french-shell',
+    apply: 'build',
+    async closeBundle() {
+      if (isCapacitorBuild) return // the app never serves /fr
+      const p = path.resolve('dist/index.html')
+      let html
+      try { html = await fs.readFile(p, 'utf8') } catch { return }
+      for (const [en, fr] of Object.entries(FR_META)) html = html.split(en).join(fr)
+      html = html
+        .replace(/(<meta name="description" content=")[^"]*(")/, `$1${FR_DESC}$2`)
+        .replace(/(<meta property="og:title" content=")[^"]*(")/, `$1${FR_OG_TITLE}$2`)
+        .replace(/(<meta property="og:description" content=")[^"]*(")/, `$1${FR_DESC}$2`)
+        .replace(/(<meta property="og:url" content=")[^"]*(")/, '$1https://www.everstead.care/fr$2')
+        .replace(/(<meta name="twitter:title" content=")[^"]*(")/, `$1${FR_OG_TITLE}$2`)
+        .replace(/(<meta name="twitter:description" content=")[^"]*(")/, `$1${FR_DESC}$2`)
+        .replace(/(<meta property="og:locale" content=")[^"]*(")/, '$1fr_FR$2')
+      await fs.writeFile(path.resolve('dist/fr.html'), html)
+      console.log('[build] dist/fr.html written (French share metadata)')
+    },
+  }
+}
+
 export default defineConfig({
   define: {
     __APP_BUILD__: JSON.stringify(BUILD_MARKER),
@@ -88,6 +126,7 @@ export default defineConfig({
     react(),
     stripWebOnlyTagsForNative(),
     dropWebOnlyMediaFromNative(),
+    writeFrenchShell(),
     // Skipped for the Capacitor build: the PWA service worker's own offline
     // caching would otherwise fight with Capacitor's local-file serving of
     // the bundled app (stale-cache-after-native-update class of bug).

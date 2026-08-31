@@ -1,13 +1,17 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { Helmet } from 'react-helmet-async'
+import { useTranslation } from 'react-i18next'
 import { ArrowRight, Home, HelpCircle, Shield, Star } from 'lucide-react'
 
 export default function NotFound() {
+  // The 404 renders under BOTH url trees (the /fr basename included), so it was
+  // the one fully-English page a French visitor could still land on.
+  const { t } = useTranslation()
   return (
     <>
       <Helmet>
-        <title>Page not found | Everstead</title>
+        <title>{t('notFound.metaTitle')}</title>
         <meta name="robots" content="noindex, nofollow" />
       </Helmet>
 
@@ -37,18 +41,18 @@ export default function NotFound() {
               className="inline-flex items-center gap-2 rounded-full px-4 py-1.5 mb-6 text-xs font-semibold uppercase tracking-widest"
               style={{ backgroundColor: 'rgba(76,125,71,0.15)', color: '#86b882', border: '1px solid rgba(76,125,71,0.25)' }}
             >
-              Page not found
+              {t('notFound.badge')}
             </div>
 
             <h1
               className="font-display text-4xl lg:text-6xl font-light text-white text-balance mb-5"
               style={{ fontFamily: 'Georgia, serif', letterSpacing: '-0.02em' }}
             >
-              This page doesn't exist.
+              {t('notFound.title')}
             </h1>
 
             <p className="text-stone-300 text-lg leading-relaxed max-w-md mx-auto mb-10">
-              It may have moved, or the link might be wrong. Here are a few useful places to start.
+              {t('notFound.body')}
             </p>
 
             {/* Primary CTA */}
@@ -57,16 +61,16 @@ export default function NotFound() {
               className="btn-aurora inline-flex items-center gap-2 text-white font-semibold text-sm px-7 py-3.5 rounded-full mb-12"
             >
               <Home size={15} />
-              Back to home
+              {t('notFound.backHome')}
             </Link>
 
             {/* Quick nav */}
             <div className="grid sm:grid-cols-2 gap-3 max-w-lg mx-auto w-full">
               {[
-                { label: 'Features', to: '/features', icon: Star, desc: 'What Everstead includes' },
-                { label: 'How It Works', to: '/how-it-works', icon: HelpCircle, desc: 'Step by step guide' },
-                { label: 'Pricing', to: '/pricing', icon: ArrowRight, desc: 'Plans and free trial' },
-                { label: 'Security', to: '/security', icon: Shield, desc: 'How we protect your data' },
+                { label: t('notFound.features'), to: '/features', icon: Star, desc: t('notFound.featuresDesc') },
+                { label: t('notFound.how'), to: '/how-it-works', icon: HelpCircle, desc: t('notFound.howDesc') },
+                { label: t('notFound.pricing'), to: '/pricing', icon: ArrowRight, desc: t('notFound.pricingDesc') },
+                { label: t('notFound.security'), to: '/security', icon: Shield, desc: t('notFound.securityDesc') },
               ].map(({ label, to, icon: Icon, desc }) => (
                 <Link
                   key={to}
@@ -98,7 +102,7 @@ export default function NotFound() {
         {/* Footer strip */}
         <div className="relative border-t py-5 px-6 text-center" style={{ borderColor: 'rgba(255,255,255,0.08)' }}>
           <p className="text-stone-500 text-xs">
-            Still lost?{' '}
+            {t('notFound.stillLost')}{' '}
             <a href="mailto:support@everstead.care" className="text-stone-300 hover:text-white transition-colors">
               support@everstead.care
             </a>

@@ -77,5 +77,21 @@
     "lead": "L'application Everstead est disponible sur l'",
     "and": "et",
     "dismiss": "Fermer cette annonce"
+  },
+  "notFound": {
+    "badge": "Page introuvable",
+    "title": "Cette page n'existe pas.",
+    "body": "Elle a peut-être été déplacée, ou le lien est erroné. Voici quelques repères utiles.",
+    "backHome": "Retour à l'accueil",
+    "featuresDesc": "Ce que comprend Everstead",
+    "howDesc": "Le guide pas à pas",
+    "pricingDesc": "Nos offres et le plan gratuit",
+    "securityDesc": "Comment nous protégeons vos données",
+    "features": "Fonctionnalités",
+    "how": "Comment ça marche",
+    "pricing": "Tarifs",
+    "security": "Sécurité",
+    "stillLost": "Besoin d'aide ?",
+    "metaTitle": "Page introuvable | Everstead"
   }
 }

@@ -243,13 +243,12 @@ export default function Pricing() {
             <div className="max-w-lg">
               <p className="text-sm font-semibold text-sage-300">{t('plans.adviser.name')}</p>
               <p className="mt-2 text-stone-300 text-sm leading-relaxed">
-                For solicitors, will-writers, and financial advisers, a co-branded, multi-client
-                workspace. {t('plans.adviser.priceNote')}
+                {t('plans.adviser.blurb')} {t('plans.adviser.priceNote')}
               </p>
             </div>
             <div className="mt-5 sm:mt-0 flex flex-col sm:flex-row gap-3 shrink-0">
               <Link to="/for-advisers" className="inline-flex items-center justify-center gap-2 rounded-full px-5 py-3 text-sm font-semibold border border-white/25 text-white hover:bg-white/10 transition-colors">
-                Learn more
+                {t('plans.adviser.learnMore')}
               </Link>
               <Link to="/book-demo" className="btn-aurora inline-flex items-center justify-center gap-2 rounded-full px-5 py-3 text-sm font-semibold">
                 {t('plans.adviser.cta')} <ArrowRight size={15} />

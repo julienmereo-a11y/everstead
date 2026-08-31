@@ -74,7 +74,9 @@
         "Assistance prioritaire"
       ],
       "cta": "Réserver une démo",
-      "priceNote": "Tarif sur demande : nous accompagnons personnellement notre premier groupe de conseillers."
+      "priceNote": "Tarif sur demande : nous accompagnons personnellement notre premier groupe de conseillers.",
+      "blurb": "Pour les notaires, avocats et conseillers en gestion de patrimoine : un espace multi-clients à vos couleurs.",
+      "learnMore": "En savoir plus"
     }
   },
   "prices": {
