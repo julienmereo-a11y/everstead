@@ -10,22 +10,69 @@ import Markdown from '../components/Markdown'
 // No login required. Full-screen chat interface.
 // ─────────────────────────────────────────────────────────────────────────────
 
-const OPENING_MESSAGE = `I'm so sorry for your loss. This is one of the hardest things to navigate, and I'm here to help with the practical steps, one at a time, at your own pace.
+// Copy per language, chosen from the URL tree (the page renders under both
+// basenames). The FR side is not a translation: the steps, the FAQ schema and
+// the assistant's server prompt (griefGuideFrPrompt) all carry FRENCH
+// procedure, because gov.uk has no mairie and France has no Tell Us Once.
+const COPY = {
+  en: {
+    metaTitle: 'What to do when someone dies | Free UK guide | Everstead',
+    metaDesc: 'A free, compassionate AI guide to help you navigate the practical steps after a death in the UK, from registering the death to sorting the estate.',
+    headerLabel: 'What to do when someone dies',
+    back: 'Back to Everstead',
+    h1: 'What to do when someone dies',
+    sub: 'A free, compassionate guide through the practical steps after a death in the UK. No sign-up needed, just ask.',
+    emailLink: 'Or have the full written guide emailed to you',
+    checklistLink: null,
+    thinking: 'Thinking…',
+    placeholder: "Ask anything: I'm here to help…",
+    error: "I'm sorry, something went wrong on my end. Please try again in a moment.",
+    opening: "I'm so sorry for your loss. This is one of the hardest things to navigate, and I'm here to help with the practical steps, one at a time, at your own pace.\n\nI can guide you through registering the death, arranging the funeral, notifying banks and the government, dealing with the estate, and much more.\n\nWhere are you right now?",
+    disclaimer: 'This is a guide, not legal advice. For complex estates, always seek a solicitor.',
+    footerCta: 'Organise your own estate with Everstead \u2192',
+    prompts: [
+      { label: 'It just happened, what do I do first?', icon: '🕯️' },
+      { label: 'The funeral is arranged, what comes next?', icon: '📋' },
+      { label: 'I need to notify banks and institutions', icon: '🏦' },
+      { label: "I'm dealing with the estate and probate", icon: '⚖️' },
+    ],
+  },
+  fr: {
+    metaTitle: 'Que faire après un décès ? | Guide gratuit France | Everstead',
+    metaDesc: "Un guide gratuit et bienveillant pour vous accompagner dans les démarches après un décès en France : déclaration, obsèques, banques, organismes et succession.",
+    headerLabel: 'Que faire après un décès',
+    back: "Retour sur Everstead",
+    h1: 'Que faire après un décès',
+    sub: "Un guide gratuit et bienveillant à travers les démarches après un décès en France. Sans inscription, posez simplement votre question.",
+    emailLink: null,
+    checklistLink: 'Ou suivez la liste des démarches, étape par étape',
+    thinking: 'Je réfléchis…',
+    placeholder: 'Posez votre question, je suis là pour vous aider…',
+    error: "Je suis désolé, une erreur est survenue de mon côté. Veuillez réessayer dans un instant.",
+    opening: "Je suis sincèrement désolé pour votre perte. C'est l'une des épreuves les plus difficiles à traverser, et je suis là pour vous accompagner dans les démarches, une étape à la fois, à votre rythme.\n\nJe peux vous guider pour la déclaration du décès, les obsèques, les banques et les organismes, la succession, et bien plus.\n\nOù en êtes-vous en ce moment ?",
+    disclaimer: "Ce guide est informatif et ne constitue pas un conseil juridique. Pour une succession complexe, consultez un notaire.",
+    footerCta: 'Organisez votre propre patrimoine avec Everstead \u2192',
+    prompts: [
+      { label: "C'est arrivé à l'instant, que faire en premier ?", icon: '🕯️' },
+      { label: 'Les obsèques sont organisées, et ensuite ?', icon: '📋' },
+      { label: 'Je dois prévenir les banques et les organismes', icon: '🏦' },
+      { label: "Je m'occupe de la succession", icon: '⚖️' },
+    ],
+  },
+}
 
-I can guide you through registering the death, arranging the funeral, notifying banks and the government, dealing with the estate, and much more.
-
-Where are you right now?`
-
-const QUICK_PROMPTS = [
-  { label: 'It just happened, what do I do first?', icon: '🕯️' },
-  { label: 'The funeral is arranged, what comes next?', icon: '📋' },
-  { label: 'I need to notify banks and institutions', icon: '🏦' },
-  { label: "I'm dealing with the estate and probate", icon: '⚖️' },
+const FAQ_FR = [
+  { q: 'Que faire en premier après un décès en France ?', a: "Faire constater le décès par un médecin, qui établit le certificat de décès. En cas de décès soudain ou suspect, la police ou la gendarmerie interviennent. Le décès doit ensuite être déclaré en mairie sous 24 heures, démarche que les pompes funèbres prennent le plus souvent en charge." },
+  { q: 'Sous quel délai les obsèques doivent-elles avoir lieu ?', a: "Les obsèques ont lieu entre 24 heures et 6 jours ouvrables après le décès, sauf dérogation préfectorale. Pensez à vérifier si le défunt avait exprimé des volontés ou souscrit un contrat obsèques." },
+  { q: 'Faut-il obligatoirement un notaire ?', a: "Le notaire est en pratique indispensable dès qu'il existe un testament, un bien immobilier, un contrat de mariage ou des montants significatifs. Il établit l'acte de notoriété qui prouve la qualité d'héritier auprès des banques et des organismes." },
+  { q: 'Comment retrouver une assurance-vie ou un compte oublié ?', a: "La démarche AGIRA, gratuite, permet d'interroger l'ensemble des assureurs pour rechercher un contrat d'assurance-vie. Les avoirs bancaires jamais réclamés sont transférés à la Caisse des Dépôts et consultables via le service Ciclade." },
 ]
 
 export default function WhenSomeoneDies() {
+  const lang = typeof window !== 'undefined' && (window.location.pathname.startsWith('/fr/') || window.location.pathname === '/fr' || window.location.pathname.startsWith('/assistant-apres-deces')) ? 'fr' : 'en'
+  const C = COPY[lang]
   const [messages, setMessages] = useState([
-    { role: 'assistant', content: OPENING_MESSAGE },
+    { role: 'assistant', content: C.opening },
   ])
   const [input, setInput]     = useState('')
   const [loading, setLoading] = useState(false)
@@ -53,7 +100,7 @@ export default function WhenSomeoneDies() {
       const res  = await fetch('/api/ai/assist', {
         method:  'POST',
         headers: { 'Content-Type': 'application/json' },
-        body:    JSON.stringify({ type: 'grief-guide', messages: next }),
+        body:    JSON.stringify({ type: 'grief-guide', lang, messages: next }),
       })
       const data = await res.json()
       if (!res.ok || data.error) throw new Error(data.error || `Server error ${res.status}`)
@@ -61,7 +108,7 @@ export default function WhenSomeoneDies() {
     } catch {
       setMessages(prev => [...prev, {
         role: 'assistant',
-        content: "I'm sorry, something went wrong on my end. Please try again in a moment.",
+        content: C.error,
       }])
     } finally {
       setLoading(false)
@@ -70,24 +117,33 @@ export default function WhenSomeoneDies() {
   }
 
   const hasStarted = messages.some(m => m.role === 'user')
+  const pageUrl = lang === 'fr'
+    ? 'https://www.everstead.care/fr/assistant-apres-deces'
+    : 'https://www.everstead.care/what-to-do-when-someone-dies'
 
   return (
     <>
       <Helmet>
-        <title>What to do when someone dies | Free UK guide | Everstead</title>
+        <title>{C.metaTitle}</title>
         <meta
           name="description"
-          content="A free, compassionate AI guide to help you navigate the practical steps after a death in the UK, from registering the death to sorting the estate."
+          content={C.metaDesc}
         />
-        <link rel="canonical" href="https://www.everstead.care/what-to-do-when-someone-dies" />
+        <link rel="canonical" href={pageUrl} />
+        <link rel="alternate" hrefLang="en-GB" href="https://www.everstead.care/what-to-do-when-someone-dies" />
+        <link rel="alternate" hrefLang="fr" href="https://www.everstead.care/fr/assistant-apres-deces" />
         <meta property="og:type" content="website" />
-        <meta property="og:title" content="What to do when someone dies | Free UK guide | Everstead" />
-        <meta property="og:description" content="A free, compassionate AI guide to help you navigate the practical steps after a death in the UK, from registering the death to sorting the estate." />
-        <meta property="og:url" content="https://www.everstead.care/what-to-do-when-someone-dies" />
+        <meta property="og:title" content={C.metaTitle} />
+        <meta property="og:description" content={C.metaDesc} />
+        <meta property="og:url" content={pageUrl} />
         <meta property="og:image" content="https://www.everstead.care/og-image.png" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:image" content="https://www.everstead.care/og-image.png" />
-        <script type="application/ld+json">{JSON.stringify({
+        <script type="application/ld+json">{JSON.stringify(lang === 'fr' ? {
+          '@context': 'https://schema.org',
+          '@type': 'FAQPage',
+          mainEntity: FAQ_FR.map(f => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })),
+        } : {
           '@context': 'https://schema.org',
           '@type': 'FAQPage',
           mainEntity: [
@@ -137,14 +193,14 @@ export default function WhenSomeoneDies() {
             </Link>
             <div className="hidden sm:block w-px h-5 bg-stone-200" />
             <p className="hidden sm:block text-sm text-stone-500 font-medium">
-              What to do when someone dies
+              {C.headerLabel}
             </p>
           </div>
           <Link
             to="/"
             className="inline-flex items-center gap-1.5 text-xs text-stone-400 hover:text-navy-700 transition-colors"
           >
-            <ArrowLeft size={13} /> Back to Everstead
+            <ArrowLeft size={13} /> {C.back}
           </Link>
         </header>
 
@@ -155,19 +211,25 @@ export default function WhenSomeoneDies() {
               <Heart size={20} className="text-stone-400" />
             </div>
             <h1 className="font-display text-2xl sm:text-3xl font-light text-navy-950 mb-1.5">
-              What to do when someone dies
+              {C.h1}
             </h1>
             <p className="text-stone-500 text-sm max-w-md mx-auto leading-relaxed">
-              A free, compassionate guide through the practical steps after a death in the UK.
-              No sign-up needed, just ask.
+              {C.sub}
             </p>
 
-            {!showEmailCapture ? (
+            {lang === 'fr' ? (
+              <Link
+                to="/apres-un-deces"
+                className="mt-4 inline-flex items-center gap-1.5 text-xs font-medium text-sage-700 hover:text-sage-800 underline underline-offset-2 transition-colors"
+              >
+                <Mail size={12} /> {C.checklistLink}
+              </Link>
+            ) : !showEmailCapture ? (
               <button
                 onClick={() => setShowEmailCapture(true)}
                 className="mt-4 inline-flex items-center gap-1.5 text-xs font-medium text-sage-700 hover:text-sage-800 underline underline-offset-2 transition-colors"
               >
-                <Mail size={12} /> Or have the full written guide emailed to you
+                <Mail size={12} /> {C.emailLink}
               </button>
             ) : (
               <div className="mt-5 max-w-xl mx-auto text-left">
@@ -209,7 +271,7 @@ export default function WhenSomeoneDies() {
                 <img src="/favicon.png" alt="" className="w-7 h-7 rounded-xl object-cover shrink-0 mr-2.5 mt-0.5" />
                 <div className="bg-white border border-stone-200 rounded-2xl rounded-bl-sm px-4 py-3 flex items-center gap-2 shadow-sm">
                   <Loader2 size={14} className="animate-spin text-stone-400" />
-                  <span className="text-xs text-stone-400">Thinking…</span>
+                  <span className="text-xs text-stone-400">{C.thinking}</span>
                 </div>
               </div>
             )}
@@ -222,7 +284,7 @@ export default function WhenSomeoneDies() {
         {!hasStarted && (
           <div className="shrink-0 bg-stone-50 border-t border-stone-100 px-4 sm:px-6 py-3">
             <div className="max-w-2xl mx-auto flex gap-2 overflow-x-auto pb-0.5 scrollbar-none">
-              {QUICK_PROMPTS.map(({ label, icon }) => (
+              {C.prompts.map(({ label, icon }) => (
                 <button
                   key={label}
                   onClick={() => send(label)}
@@ -246,7 +308,7 @@ export default function WhenSomeoneDies() {
               value={input}
               onChange={e => setInput(e.target.value)}
               onKeyDown={e => e.key === 'Enter' && !e.shiftKey && send()}
-              placeholder="Ask anything: I'm here to help…"
+              placeholder={C.placeholder}
               disabled={loading}
               aria-label="Your message"
             />
@@ -264,13 +326,13 @@ export default function WhenSomeoneDies() {
         {/* ── Footer ── */}
         <div className="shrink-0 bg-white border-t border-stone-100 px-4 sm:px-6 py-2.5 text-center">
           <p className="text-xs text-stone-400">
-            This is a guide, not legal advice. For complex estates, always seek a solicitor.
+            {C.disclaimer}
             {' '}·{' '}
             <Link
               to="/get-started"
               className="text-navy-600 hover:text-navy-800 underline underline-offset-2 transition-colors"
             >
-              Organise your own estate with Everstead →
+              {C.footerCta}
             </Link>
           </p>
         </div>

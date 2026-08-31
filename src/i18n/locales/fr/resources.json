@@ -55,7 +55,7 @@
   "tools": {
     "eyebrow": "Outils gratuits",
     "title": "Des outils pratiques, sans inscription.",
-    "subtitle": "Ces outils vous aident à savoir où vous en êtes, à suivre les démarches d'une succession ou à estimer votre patrimoine numérique. Le premier est en français et pensé pour la France. Les autres sont en anglais et pensés pour le Royaume-Uni.",
+    "subtitle": "Ces outils vous aident à savoir où vous en êtes, à suivre les démarches d'une succession ou à estimer votre patrimoine numérique. Les deux premiers sont en français et pensés pour la France. Les autres sont en anglais et pensés pour le Royaume-Uni.",
     "items": {
       "apresDeces": {
         "title": "Après un décès : les démarches en France",
@@ -66,8 +66,8 @@
       },
       "afterDeath": {
         "title": "Que faire après un décès",
-        "tag": "Guide IA",
-        "desc": "Un guide IA gratuit et bienveillant pour traverser les démarches après un décès au Royaume-Uni, des premières heures à la clôture de la succession. Sans inscription.",
+        "tag": "Assistant IA",
+        "desc": "Un assistant IA gratuit et bienveillant qui répond à vos questions sur les démarches après un décès en France, des premières heures au règlement de la succession. Sans inscription.",
         "cta": "Ouvrir le guide",
         "badge": "Gratuit · Sans compte"
       },

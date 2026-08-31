@@ -300,6 +300,9 @@ export default function App() {
               <Route path="/compare"       element={<Layout><Compare /></Layout>} />
               <Route path="/compare/:slug" element={<Layout><Compare /></Layout>} />
               <Route path="/what-to-do-when-someone-dies" element={<WhenSomeoneDies />} />
+              {/* French alias for the same AI guide: the component reads the
+                  path and switches copy, FAQ schema and the server prompt. */}
+              <Route path="/assistant-apres-deces" element={<WhenSomeoneDies />} />
               <Route path="/m/:token" element={<MessageView />} />
               <Route path="/data-promise"  element={<Layout><DataPromise /></Layout>} />
               <Route path="/for-advisers" element={<Layout><ForAdvisors /></Layout>} />
