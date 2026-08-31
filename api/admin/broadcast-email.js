@@ -33,6 +33,7 @@ async function handler(req, res) {
   const {
     mode = 'preview',
     audience,
+    language: rawLanguage,
     emails,
     subject = '',
     message = '',
@@ -66,13 +67,15 @@ async function handler(req, res) {
     }
 
     if (!AUDIENCES.has(audience)) return res.status(400).json({ error: 'Unknown audience' })
+    // 'all' (ou absent) = toutes les langues → null en base.
+    const language = ['fr', 'en'].includes(rawLanguage) ? rawLanguage : null
     const from = SENDERS[sender]
     if (!from) return res.status(400).json({ error: 'Unknown sender' })
     if (mode !== 'preview' && (!subject.trim() || !message.trim())) {
       return res.status(400).json({ error: 'Subject and message are required' })
     }
 
-    const recipients = await resolveAudience({ audience, emails, respectMarketingPrefs })
+    const recipients = await resolveAudience({ audience, emails, respectMarketingPrefs, language })
 
     if (mode === 'preview') {
       return res.status(200).json({
@@ -100,6 +103,7 @@ async function handler(req, res) {
       const { data, error } = await db.from('admin_broadcasts').insert({
         sent_by: admin.id,
         audience,
+        language,
         sender,
         subject,
         message,
@@ -122,6 +126,7 @@ async function handler(req, res) {
     await db.from('admin_broadcasts').insert({
       sent_by: admin.id,
       audience,
+      language,
       sender,
       subject,
       message,

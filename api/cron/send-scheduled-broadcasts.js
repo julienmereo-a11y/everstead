@@ -40,7 +40,7 @@ async function handler(req, res) {
   }
 
   const { data: due, error } = await db.from('admin_broadcasts')
-    .select('id, audience, sender, subject, message, respect_marketing_prefs, audience_emails')
+    .select('id, audience, language, sender, subject, message, respect_marketing_prefs, audience_emails')
     .eq('status', 'scheduled')
     .lte('scheduled_at', new Date().toISOString())
     .order('scheduled_at', { ascending: true })
@@ -65,6 +65,7 @@ async function handler(req, res) {
       // Old rows may hold the full From string rather than the allowlist key.
       const from = SENDERS[row.sender] || Object.values(SENDERS).find(v => v === row.sender) || SENDERS.hello
       const recipients = await resolveAudience({
+        language: row.language,
         audience: row.audience,
         emails: row.audience_emails ?? [],
         respectMarketingPrefs: row.respect_marketing_prefs !== false,

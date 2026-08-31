@@ -81,10 +81,16 @@ export function emailHtml({ message, name }) {
 // the list — 'emails' is intersected with existing accounts, so this can never be
 // used to email arbitrary addresses. Excludes suspended accounts and (by default)
 // marketing opt-outs; dedupes case-insensitively.
-export async function resolveAudience({ audience, emails, respectMarketingPrefs }) {
+export async function resolveAudience({ audience, emails, respectMarketingPrefs, language }) {
   let query = db.from('profiles')
-    .select('id, email, full_name, plan, subscription_status, is_founding_member, marketing_emails_enabled, is_suspended')
+    .select('id, email, full_name, plan, subscription_status, is_founding_member, marketing_emails_enabled, is_suspended, language')
     .not('email', 'is', null)
+
+  // Language crosses the audience ("free members, in French"). 'fr' matches
+  // exactly; 'en' matches everything that is not 'fr', NULL included, so a
+  // profile that somehow lost its language never falls out of every broadcast.
+  if (language === 'fr') query = query.eq('language', 'fr')
+  if (language === 'en') query = query.or('language.eq.en,language.is.null')
 
   if (['free', 'essential', 'family', 'advisor'].includes(audience)) query = query.eq('plan', audience)
   if (audience === 'founding')      query = query.eq('is_founding_member', true)

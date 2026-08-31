@@ -2290,6 +2290,9 @@ const BROADCAST_AUDIENCES = [
 function EmailSection({ isDemo }) {
   const [sender, setSender]             = useState('hello')
   const [audience, setAudience]         = useState('all')
+  // Language crosses the audience ("free members, in French"). 'all' sends to
+  // everyone; scheduled sends keep the choice and re-apply it at send time.
+  const [bcastLang, setBcastLang]       = useState('all')
   const [emailsText, setEmailsText]     = useState('')
   const [respectPrefs, setRespectPrefs] = useState(true)
   const [subject, setSubject]           = useState('')
@@ -2326,7 +2329,7 @@ function EmailSection({ isDemo }) {
     setPreviewLoading(true)
     const t = setTimeout(async () => {
       try {
-        const data = await post({ mode: 'preview', audience, emails: emailList, respectMarketingPrefs: respectPrefs })
+        const data = await post({ mode: 'preview', audience, language: bcastLang, emails: emailList, respectMarketingPrefs: respectPrefs })
         if (!cancelled) setPreview(data)
       } catch {
         if (!cancelled) setPreview(null)
@@ -2336,13 +2339,13 @@ function EmailSection({ isDemo }) {
     }, 400)
     return () => { cancelled = true; clearTimeout(t) }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [audience, emailsText, respectPrefs, isDemo])
+  }, [audience, bcastLang, emailsText, respectPrefs, isDemo])
 
   const sendTest = async () => {
     setError(null); setResult(null); setBusy('test')
     try {
       if (isDemo) { await new Promise(r => setTimeout(r, 600)); setResult({ test: true, to: 'you@demo' }) }
-      else setResult(await post({ mode: 'test', sender, audience, emails: emailList, subject, message, respectMarketingPrefs: respectPrefs }))
+      else setResult(await post({ mode: 'test', sender, audience, language: bcastLang, emails: emailList, subject, message, respectMarketingPrefs: respectPrefs }))
     } catch (err) { setError(err.message) }
     finally { setBusy(null) }
   }
@@ -2364,7 +2367,7 @@ function EmailSection({ isDemo }) {
         await new Promise(r => setTimeout(r, 900))
         setResult(scheduledAt ? { scheduled: true, at: scheduledAt } : { sent: preview?.count ?? 0, failed: 0 })
       } else {
-        setResult(await post({ mode: 'send', sender, audience, emails: emailList, subject, message, respectMarketingPrefs: respectPrefs, scheduledAt }))
+        setResult(await post({ mode: 'send', sender, audience, language: bcastLang, emails: emailList, subject, message, respectMarketingPrefs: respectPrefs, scheduledAt }))
       }
       setConfirmText(null)
       if (scheduledAt) { setScheduleAt(''); loadBroadcasts() }
@@ -2410,6 +2413,24 @@ function EmailSection({ isDemo }) {
           >
             {BROADCAST_AUDIENCES.map(([v, l]) => <option key={v} value={v}>{l}</option>)}
           </select>
+        </div>
+
+        <div>
+          <label className="block text-xs font-semibold text-stone-600 mb-1.5">Language</label>
+          <select
+            value={bcastLang}
+            onChange={e => setBcastLang(e.target.value)}
+            className="w-full text-sm border border-stone-200 rounded-xl px-3 py-2.5 bg-white focus:outline-none focus:ring-2 focus:ring-navy-300"
+          >
+            <option value="all">All languages</option>
+            <option value="fr">🇫🇷 French members only</option>
+            <option value="en">🇬🇧 English members only</option>
+          </select>
+          {bcastLang !== 'all' && (
+            <p className="text-[11px] text-stone-400 mt-1.5">
+              Write this broadcast in {bcastLang === 'fr' ? 'French' : 'English'}, it only reaches members whose account is set to that language.
+            </p>
+          )}
         </div>
 
         {audience === 'emails' && (
