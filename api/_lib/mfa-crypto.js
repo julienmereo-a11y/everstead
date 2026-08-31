@@ -41,15 +41,15 @@ export function sealToken(plain) {
 /**
  * Open a sealed token.
  *
- * Rows written by the previous deploy hold plain text and have no prefix, so
- * they are returned as-is. That keeps anyone who asked for a code seconds before
- * this shipped from being locked out mid-sign-in. Once no such row can still be
- * inside its ten-minute window, the fallback can go.
+ * Anything not in the v1 format is refused rather than trusted. The migration
+ * fallback that returned unprefixed rows as plain text was removed on
+ * 2026-08-28, once no pre-fix row could still be inside its ten-minute window
+ * (verified in production: zero unsealed rows).
  */
 export function openToken(stored) {
-  if (!stored || typeof stored !== 'string') return stored
+  if (!stored || typeof stored !== 'string') return null
   const parts = stored.split(':')
-  if (parts[0] !== PREFIX || parts.length !== 4) return stored // legacy plaintext
+  if (parts[0] !== PREFIX || parts.length !== 4) return null // not a sealed value
   try {
     const [, iv, tag, ct] = parts
     const d = crypto.createDecipheriv('aes-256-gcm', key('token'), Buffer.from(iv, 'base64'))
@@ -68,13 +68,17 @@ export function hashCode(code, email) {
     .digest('hex')
 }
 
-/** Constant-time check, accepting legacy plaintext rows for the same reason as above. */
+/**
+ * Constant-time check against the stored HMAC.
+ *
+ * The legacy branch that also accepted a short plaintext code was removed on
+ * 2026-08-28 with the token fallback above. It had to go: a stored value short
+ * enough to look "legacy" would otherwise have been comparable directly, which
+ * is exactly the shape an attacker would try to force.
+ */
 export function codeMatches(submitted, stored, email) {
   if (!stored) return false
-  const eq = (a, b) => {
-    const x = Buffer.from(String(a)), y = Buffer.from(String(b))
-    return x.length === y.length && crypto.timingSafeEqual(x, y)
-  }
-  if (eq(hashCode(submitted, email), stored)) return true
-  return stored.length <= 12 && eq(submitted, stored) // legacy plaintext row
+  const x = Buffer.from(hashCode(submitted, email))
+  const y = Buffer.from(String(stored))
+  return x.length === y.length && crypto.timingSafeEqual(x, y)
 }

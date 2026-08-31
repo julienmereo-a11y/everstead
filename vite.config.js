@@ -132,8 +132,6 @@ export default defineConfig({
         navigateFallback: '/index.html',
         // Don't let the SW intercept API routes — always hit the network.
         navigateFallbackDenylist: [/^\/api\//],
-        // Pull in the push-notification scaffold (listeners only — see public/sw-push.js).
-        importScripts: ['/sw-push.js'],
         runtimeCaching: [
           {
             urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
