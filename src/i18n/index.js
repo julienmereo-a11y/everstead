@@ -38,7 +38,7 @@ export const TRANSLATED_PATHS = new Set([
   '/get-started', '/forgot-password', '/reset-password', '/contact', '/book-demo',
   '/about', '/gift', '/compare', '/for-advisers',
   '/privacy', '/cookies', '/accessibility', '/data-promise', '/subprocessors',
-  '/terms', '/mentions-legales', '/resources', '/apres-un-deces',
+  '/terms', '/mentions-legales', '/resources', '/apres-un-deces', '/press',
 ])
 
 /**

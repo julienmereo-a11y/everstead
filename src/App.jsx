@@ -294,6 +294,8 @@ export default function App() {
               <Route path="/cookies"      element={<Layout><Cookies /></Layout>} />
               <Route path="/accessibility" element={<Layout><Accessibility /></Layout>} />
               <Route path="/press"        element={<Layout><Press /></Layout>} />
+              {/* French vanity URL for the same bilingual page */}
+              <Route path="/presse"       element={<Layout><Press /></Layout>} />
               <Route path="/adviser-dpa"  element={<Layout><AdviserDPA /></Layout>} />
               <Route path="/subprocessors" element={<Layout><Subprocessors /></Layout>} />
               <Route path="/changelog"    element={<Layout><Changelog /></Layout>} />
