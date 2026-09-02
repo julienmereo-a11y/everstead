@@ -36,35 +36,35 @@ const SEQUENCE = [
   {
     n:          1,
     field:      'onboarding_email_1_sent_at',
-    afterDays:  2,
+    afterDays:  4,
     subjectKey: 'email1Subject',
     html:       email1Html,
   },
   {
     n:          2,
     field:      'onboarding_email_2_sent_at',
-    afterDays:  4,
+    afterDays:  6,
     subjectKey: 'email2Subject',
     html:       email2Html,
   },
   {
     n:          3,
     field:      'onboarding_email_3_sent_at',
-    afterDays:  7,
+    afterDays:  9,
     subjectKey: 'email3Subject',
     html:       email3Html,
   },
   {
     n:          4,
     field:      'onboarding_email_4_sent_at',
-    afterDays:  10,
+    afterDays:  12,
     subjectKey: 'email4Subject',
     html:       email4Html,
   },
   {
     n:          5,
     field:      'onboarding_email_5_sent_at',
-    afterDays:  13,
+    afterDays:  15,
     subjectKey: 'email5Subject',
     html:       email5Html,
   },
@@ -148,7 +148,7 @@ async function handler(req, res) {
         const t = translator(COPY, user.language)
         let html, subject
         if (step.n === 3 && progress.total === 0) {
-          // Recovery branch: D7 with zero progress → re-engagement
+          // Recovery branch: D9 with zero progress → re-engagement
           subject = t('recoverySubject')
           html = recoveryHtml(user.full_name, user.id, user.language, user.plan)
         } else if (step.n === 5) {
@@ -212,7 +212,7 @@ const COPY = {
     email0SignName: 'Julien',
     email0SignRole: 'Founder, Everstead',
 
-    // Email 1, Day 2: add your first account
+    // Email 1, Day 4: add your first account
     email1Subject: 'Start here: add your first financial account',
     email1H1:      "{{name}}, let's start with what you own.",
     email1P1:      "The foundation of any good estate plan is a clear picture of your finances, bank accounts, investments, pensions, property. It's what your family would need to find in an emergency.",
@@ -223,7 +223,7 @@ const COPY = {
     email1Tip4:    '<strong>Insurance policies</strong>, life, critical illness, income protection',
     email1Cta:     'Add my first account →',
 
-    // Email 2, Day 4: trusted contacts
+    // Email 2, Day 6: trusted contacts
     email2Subject: "Who would handle things if you couldn't?",
     email2H1:      "Who would handle things if you couldn't?",
     email2P1:      'Hi {{name}}. One of the most important things you can do in Everstead is name the people who should have access to your plan, your spouse, a sibling, a solicitor, or a close friend.',
@@ -231,7 +231,7 @@ const COPY = {
     email2P3:      'It takes 60 seconds and makes an enormous difference.',
     email2Cta:     'Add a trusted contact →',
 
-    // Email 3, Day 7: document vault
+    // Email 3, Day 9: document vault
     email3Subject: 'Your will, passport, and pension, stored in one safe place',
     email3H1:      'Your documents deserve a safer home.',
     email3P1:      'Hi {{name}}. Think about where your will is right now. Your passport. Your pension statements. Your life insurance policy. Could your family find them quickly if they needed to?',
@@ -242,7 +242,7 @@ const COPY = {
     email3Tip4:    '<strong>Property deeds</strong>, especially if you own without a mortgage',
     email3Cta:     'Upload my first document →',
 
-    // Email 4, Day 10: instructions
+    // Email 4, Day 12: instructions
     email4Subject: 'The one thing most people forget in their estate plan',
     email4H1:      'The one thing most people forget.',
     email4P1:      "Hi {{name}}. Accounts and documents are essential, but there's something just as important that almost everyone overlooks: <strong>instructions</strong>.",
@@ -251,7 +251,7 @@ const COPY = {
     email4P4:      "It doesn't need to be perfect. Just start.",
     email4Cta:     'Write my first instruction →',
 
-    // Email 5, Day 13: personal check-in
+    // Email 5, Day 15: personal check-in
     email5Subject:      'A quick check-in from Julien',
     email5H1:           'A quick note from me.',
     email5P1:           "Hi {{name}}, it's Julien: I started Everstead after watching my own family struggle to piece together a loved one's affairs under enormous stress. I built it so no one else would have to go through that.",
@@ -274,10 +274,10 @@ const COPY = {
     countContactsOne:  '{{n}} trusted contact',
     countContactsMany: '{{n}} trusted contacts',
 
-    // Recovery email, D7 with zero progress
+    // Recovery email, D9 with zero progress
     recoverySubject: 'Is something getting in the way?',
     recoveryH1:      'Is something getting in the way?',
-    recoveryP1:      "Hi {{name}}, it's Julien: I'm writing personally because I noticed you signed up a week ago and haven't added anything to your vault yet. That's pretty common, and usually for one of three reasons:",
+    recoveryP1:      "Hi {{name}}, it's Julien: I'm writing personally because I noticed you signed up over a week ago and haven't added anything to your vault yet. That's pretty common, and usually for one of three reasons:",
     recoveryP2:      "<strong>1. You're not sure where to start.</strong> Honestly, the easiest first step is adding one account, a current account, a savings account, your work pension. It takes about 90 seconds and the rest gets easier from there.",
     recoveryP3:      "<strong>2. The timing isn't right.</strong> You meant to come back to it. Life got busy. That's OK, your account is here whenever you're ready, and your trial doesn't start counting against you until you actually use the platform.",
     recoveryP3Free:  "<strong>2. The timing isn't right.</strong> You meant to come back to it. Life got busy. That's OK, your account is free and it will be here whenever you're ready.",
@@ -304,7 +304,7 @@ const COPY = {
     email0SignName: 'Julien',
     email0SignRole: "Fondateur d'Everstead",
 
-    // Email 1, Day 2: add your first account
+    // Email 1, Day 4: add your first account
     email1Subject: 'Commencez ici\u00A0: ajoutez votre premier compte financier',
     email1H1:      '{{name}}, commençons par ce que vous possédez.',
     email1P1:      "La base d'un bon plan de succession, c'est une vision claire de vos finances\u00A0: comptes bancaires, placements, retraite, biens immobiliers. C'est ce que vos proches auraient besoin de retrouver en cas d'urgence.",
@@ -315,7 +315,7 @@ const COPY = {
     email1Tip4:    '<strong>Contrats de prévoyance</strong>, assurance décès, garantie invalidité, maintien de salaire',
     email1Cta:     'Ajouter mon premier compte →',
 
-    // Email 2, Day 4: trusted contacts
+    // Email 2, Day 6: trusted contacts
     email2Subject: 'Qui prendrait le relais si vous ne pouviez plus\u00A0?',
     email2H1:      'Qui prendrait le relais si vous ne pouviez plus\u00A0?',
     email2P1:      "Bonjour {{name}}. L'une des choses les plus importantes à faire dans Everstead, c'est de désigner les personnes qui doivent avoir accès à votre plan\u00A0: votre conjoint, un frère ou une sœur, votre notaire, ou un proche.",
@@ -323,7 +323,7 @@ const COPY = {
     email2P3:      'Cela prend 60 secondes et change tout pour vos proches.',
     email2Cta:     'Ajouter une personne de confiance →',
 
-    // Email 3, Day 7: document vault
+    // Email 3, Day 9: document vault
     email3Subject: 'Votre testament, votre passeport et vos contrats de retraite, réunis en lieu sûr',
     email3H1:      'Vos documents méritent un endroit plus sûr.',
     email3P1:      "Bonjour {{name}}. Pensez à l'endroit où se trouve votre testament en ce moment. Votre passeport. Vos relevés de retraite. Votre contrat d'assurance vie. Vos proches sauraient-ils les retrouver rapidement en cas de besoin\u00A0?",
@@ -334,7 +334,7 @@ const COPY = {
     email3Tip4:    '<strong>Actes de propriété</strong>, surtout si votre bien est déjà payé',
     email3Cta:     'Ajouter mon premier document →',
 
-    // Email 4, Day 10: instructions
+    // Email 4, Day 12: instructions
     email4Subject: 'Ce que presque tout le monde oublie dans son plan de succession',
     email4H1:      'Ce que presque tout le monde oublie.',
     email4P1:      "Bonjour {{name}}. Les comptes et les documents sont essentiels, mais il y a tout aussi important, et presque personne n'y pense\u00A0: les <strong>consignes</strong>.",
@@ -343,7 +343,7 @@ const COPY = {
     email4P4:      "Elles n'ont pas besoin d'être parfaites. Commencez, simplement.",
     email4Cta:     'Écrire ma première consigne →',
 
-    // Email 5, Day 13: personal check-in
+    // Email 5, Day 15: personal check-in
     email5Subject:      'Un petit mot de Julien',
     email5H1:           'Un mot de ma part.',
     email5P1:           "Bonjour {{name}}, c'est Julien\u00A0: j'ai créé Everstead après avoir vu ma propre famille tenter de reconstituer les affaires d'un proche dans un moment déjà très difficile. Je l'ai construit pour que personne d'autre n'ait à vivre cela.",
@@ -366,10 +366,10 @@ const COPY = {
     countContactsOne:  '{{n}} personne de confiance',
     countContactsMany: '{{n}} personnes de confiance',
 
-    // Recovery email, D7 with zero progress
+    // Recovery email, D9 with zero progress
     recoverySubject: 'Quelque chose vous bloque\u00A0?',
     recoveryH1:      'Quelque chose vous bloque\u00A0?',
-    recoveryP1:      "Bonjour {{name}}, c'est Julien\u00A0: je vous écris personnellement parce que j'ai remarqué que votre coffre est encore vide, une semaine après votre inscription. C'est très courant, et en général pour l'une de ces trois raisons\u00A0:",
+    recoveryP1:      "Bonjour {{name}}, c'est Julien\u00A0: je vous écris personnellement parce que j'ai remarqué que votre coffre est encore vide, plus d'une semaine après votre inscription. C'est très courant, et en général pour l'une de ces trois raisons\u00A0:",
     recoveryP2:      "<strong>1. Vous ne savez pas par où commencer.</strong> Le plus simple, honnêtement, c'est d'ajouter un seul compte\u00A0: un compte courant, un livret, votre retraite d'entreprise. Cela prend environ 90 secondes et tout le reste devient plus facile ensuite.",
     recoveryP3:      "<strong>2. Ce n'est pas le bon moment.</strong> Vous comptiez y revenir. La vie a pris le dessus. Ce n'est pas grave, votre compte vous attend, et votre essai ne joue pas contre vous tant que vous n'utilisez pas vraiment la plateforme.",
     recoveryP3Free:  "<strong>2. Ce n'est pas le bon moment.</strong> Vous comptiez y revenir. La vie a pris le dessus. Ce n'est pas grave, votre compte est gratuit et il vous attendra.",
@@ -476,7 +476,7 @@ function email0Html(name, _plan, userId, lang) {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// EMAIL 1 — Day 2: Add your first account
+// EMAIL 1 — Day 4: Add your first account
 // ─────────────────────────────────────────────────────────────────────────────
 function email1Html(name, _plan, userId, lang) {
   const t     = translator(COPY, lang)
@@ -503,7 +503,7 @@ function email1Html(name, _plan, userId, lang) {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// EMAIL 2 — Day 4: Trusted contacts
+// EMAIL 2 — Day 6: Trusted contacts
 // ─────────────────────────────────────────────────────────────────────────────
 function email2Html(name, _plan, userId, lang) {
   const t     = translator(COPY, lang)
@@ -527,7 +527,7 @@ function email2Html(name, _plan, userId, lang) {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// EMAIL 3 — Day 7: Document vault
+// EMAIL 3 — Day 9: Document vault
 // ─────────────────────────────────────────────────────────────────────────────
 function email3Html(name, _plan, userId, lang) {
   const t     = translator(COPY, lang)
@@ -554,7 +554,7 @@ function email3Html(name, _plan, userId, lang) {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// EMAIL 4 — Day 10: Instructions feature
+// EMAIL 4 — Day 12: Instructions feature
 // ─────────────────────────────────────────────────────────────────────────────
 function email4Html(name, _plan, userId, lang) {
   const t     = translator(COPY, lang)
@@ -581,7 +581,7 @@ function email4Html(name, _plan, userId, lang) {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// EMAIL 5 — Day 13: Personal check-in from Julien (data-driven)
+// EMAIL 5 — Day 15: Personal check-in from Julien (data-driven)
 // ─────────────────────────────────────────────────────────────────────────────
 function email5Html(name, plan, accountCount = 0, documentCount = 0, contactCount = 0, userId, lang) {
   const isFree = plan === 'free'
@@ -680,7 +680,7 @@ function shouldSkipForProgress(stepN, progress) {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-//  Recovery email — sent at D7 if the user has done literally nothing
+//  Recovery email — sent at D9 if the user has done literally nothing
 // ─────────────────────────────────────────────────────────────────────────────
 function recoveryHtml(name, userId, lang, plan) {
   const isFree = plan === 'free'
