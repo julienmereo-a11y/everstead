@@ -15,7 +15,7 @@ const storeConsent = () => {
 }
 
 export default function CookieBanner() {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const [visible, setVisible] = useState(false)
 
   useEffect(() => {
@@ -66,7 +66,8 @@ export default function CookieBanner() {
       <div style={{ maxWidth: '860px', margin: '0 auto', display: 'flex', alignItems: 'center', gap: '16px', flexWrap: 'wrap' }}>
         <p style={{ flex: 1, margin: 0, fontSize: '13px', color: '#5a6475', lineHeight: '1.5', minWidth: '200px' }}>
           {t('cookie.message')}{' '}
-          <a href="/privacy#cookies" style={{ color: '#4c7d47', textDecoration: 'underline' }}>{t('cookie.learnMore')}</a>
+          {/* Plain <a>, so it must carry the /fr prefix itself: a bare /privacy would drop a French visitor onto the English policy. */}
+          <a href={`${i18n.language === 'fr' ? '/fr' : ''}/privacy#cookies`} style={{ color: '#4c7d47', textDecoration: 'underline' }}>{t('cookie.learnMore')}</a>
         </p>
         <div style={{ display: 'flex', gap: '8px', flexShrink: 0 }}>
           <button

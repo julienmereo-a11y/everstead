@@ -3,6 +3,7 @@ import { Helmet } from 'react-helmet-async'
 import HreflangLinks from '../components/HreflangLinks'
 import { useParams, Link, useLocation } from 'react-router-dom'
 import { useTranslation, Trans } from 'react-i18next'
+import { marketPricing } from '../config/pricing'
 import i18n from '../i18n'
 import { useReveal } from '../components/useReveal'
 import { CheckCircle2, XCircle, ArrowRight } from 'lucide-react'
@@ -73,7 +74,8 @@ export default function Compare() {
   const competitorDesc = t(`${c}.competitorDesc`)
   const category = t(`${c}.category`)
   const verdict = t(`${c}.verdict`)
-  const price = t(`${c}.price`)
+  const market = marketPricing(i18nInstance.language)
+  const price = t(`${c}.price`, { monthly: market.money(market.family.monthly.perMonth) })
   const competitorPrice = t(`${c}.competitorPrice`)
   const cta = t(`${c}.cta`)
   const rows = t(`${c}.rows`, { returnObjects: true })

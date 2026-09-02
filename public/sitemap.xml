@@ -11,6 +11,11 @@
     <priority>0.9</priority>
   </url>
   <url>
+    <loc>https://www.everstead.care/get-started</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
     <loc>https://www.everstead.care/how-it-works</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
@@ -26,14 +31,34 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://www.everstead.care/use-cases/families</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.everstead.care/use-cases/parents</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.everstead.care/use-cases/executors</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://www.everstead.care/gift</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.everstead.care/get-started</loc>
+    <loc>https://www.everstead.care/for-advisers</loc>
     <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.everstead.care/what-to-do-when-someone-dies</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.everstead.care/book-demo</loc>
@@ -44,6 +69,26 @@
     <loc>https://www.everstead.care/resources</loc>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.everstead.care/resources/blog</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.everstead.care/resources/guides</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.everstead.care/resources/checklists</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.everstead.care/resources/faqs</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
   </url>
   <url>
     <loc>https://www.everstead.care/executor-checklist</loc>
@@ -66,49 +111,9 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://www.everstead.care/about</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://www.everstead.care/contact</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://www.everstead.care/press</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://www.everstead.care/changelog</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://www.everstead.care/for-advisers</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://www.everstead.care/subprocessors</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.3</priority>
-  </url>
-  <url>
     <loc>https://www.everstead.care/family-vault</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.everstead.care/what-to-do-when-someone-dies</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://www.everstead.care/data-promise</loc>
-    <changefreq>yearly</changefreq>
-    <priority>0.5</priority>
   </url>
   <url>
     <loc>https://www.everstead.care/compare</loc>
@@ -146,9 +151,44 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://www.everstead.care/about</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.everstead.care/contact</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.everstead.care/press</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.everstead.care/changelog</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.everstead.care/apres-un-deces</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.everstead.care/data-promise</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
     <loc>https://www.everstead.care/adviser-dpa</loc>
     <changefreq>yearly</changefreq>
     <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://www.everstead.care/subprocessors</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.3</priority>
   </url>
   <url>
     <loc>https://www.everstead.care/privacy</loc>
@@ -170,164 +210,295 @@
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
-
-  <!-- Resources — section indexes -->
-  <url><loc>https://www.everstead.care/resources/blog</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://www.everstead.care/resources/guides</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://www.everstead.care/resources/checklists</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://www.everstead.care/resources/faqs</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
-
-  <!-- Resources — blog articles -->
-  <url><loc>https://www.everstead.care/resources/blog/what-happens-to-your-pension-when-you-die</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://www.everstead.care/resources/blog/what-happens-to-bank-accounts-when-you-die</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://www.everstead.care/resources/blog/how-to-organise-your-estate-uk</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://www.everstead.care/resources/blog/what-to-do-when-someone-dies</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://www.everstead.care/resources/blog/what-executors-wish-they-had-known</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://www.everstead.care/resources/blog/digital-accounts-problem</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://www.everstead.care/resources/blog/how-to-set-up-digital-legacy</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://www.everstead.care/resources/blog/estate-conversation-aging-parents</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://www.everstead.care/resources/blog/why-a-will-is-not-enough</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://www.everstead.care/resources/blog/building-financial-inventory</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://www.everstead.care/resources/blog/what-advisors-can-offer-beyond-portfolio</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
-  <url><loc>https://www.everstead.care/resources/blog/how-to-write-a-letter-of-wishes</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://www.everstead.care/resources/blog/where-to-keep-important-documents</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
-
-  <!-- Resources — guides -->
-  <url><loc>https://www.everstead.care/resources/guides/complete-guide-digital-estate-planning</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://www.everstead.care/resources/guides/executors-playbook</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://www.everstead.care/resources/guides/setting-up-emergency-vault</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://www.everstead.care/resources/guides/financial-accounts-inventory-framework</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-
-  <!-- Resources — checklists -->
-  <url><loc>https://www.everstead.care/resources/checklists/estate-readiness-checklist</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://www.everstead.care/resources/checklists/executor-first-steps-checklist</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://www.everstead.care/resources/checklists/annual-plan-review-checklist</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
-  <url><loc>https://www.everstead.care/resources/checklists/digital-accounts-inventory-template</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
-
-  <!-- Resources — FAQs -->
-  <url><loc>https://www.everstead.care/resources/faqs/general-questions</loc><changefreq>monthly</changefreq><priority>0.5</priority></url>
-  <url><loc>https://www.everstead.care/resources/faqs/security-privacy-questions</loc><changefreq>monthly</changefreq><priority>0.5</priority></url>
-  <url><loc>https://www.everstead.care/resources/faqs/pricing-billing-questions</loc><changefreq>monthly</changefreq><priority>0.5</priority></url>
-  <url><loc>https://www.everstead.care/resources/faqs/estate-planning-101</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
-  <url>
-    <loc>https://www.everstead.care/fr/press</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://www.everstead.care/fr</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://www.everstead.care/fr/pricing</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.everstead.care/fr/features</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://www.everstead.care/fr/how-it-works</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://www.everstead.care/fr/security</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://www.everstead.care/fr/use-cases</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://www.everstead.care/fr/login</loc>
-    <changefreq>yearly</changefreq>
-    <priority>0.3</priority>
-  </url>
-  <url>
-    <loc>https://www.everstead.care/fr/get-started</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  <url>
-    <loc>https://www.everstead.care/fr/about</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  <url>
-    <loc>https://www.everstead.care/fr/contact</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  <url>
-    <loc>https://www.everstead.care/fr/book-demo</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  <url>
-    <loc>https://www.everstead.care/fr/gift</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  <url>
-    <loc>https://www.everstead.care/fr/compare</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  <url>
-    <loc>https://www.everstead.care/fr/for-advisers</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  <url>
-    <loc>https://www.everstead.care/fr/privacy</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  <url>
-    <loc>https://www.everstead.care/fr/cookies</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  <url>
-    <loc>https://www.everstead.care/fr/accessibility</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  <url>
-    <loc>https://www.everstead.care/fr/data-promise</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  <url>
-    <loc>https://www.everstead.care/fr/subprocessors</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-  </url>
   <url>
     <loc>https://www.everstead.care/mentions-legales</loc>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
   <url>
-    <loc>https://www.everstead.care/fr/terms</loc>
+    <loc>https://www.everstead.care/resources/blog/what-happens-to-your-pension-when-you-die</loc>
     <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.everstead.care/resources/blog/what-happens-to-bank-accounts-when-you-die</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.everstead.care/resources/blog/how-to-organise-your-estate-uk</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.everstead.care/resources/blog/what-to-do-when-someone-dies</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.everstead.care/resources/blog/what-executors-wish-they-had-known</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.everstead.care/resources/blog/digital-accounts-problem</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.everstead.care/resources/blog/how-to-set-up-digital-legacy</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.everstead.care/resources/blog/estate-conversation-aging-parents</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.everstead.care/resources/blog/why-a-will-is-not-enough</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.everstead.care/resources/blog/building-financial-inventory</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.everstead.care/resources/blog/what-advisors-can-offer-beyond-portfolio</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.everstead.care/resources/blog/how-to-write-a-letter-of-wishes</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.everstead.care/resources/blog/where-to-keep-important-documents</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.everstead.care/resources/guides/complete-guide-digital-estate-planning</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.everstead.care/resources/guides/executors-playbook</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.everstead.care/resources/guides/setting-up-emergency-vault</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.everstead.care/resources/guides/financial-accounts-inventory-framework</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.everstead.care/resources/checklists/estate-readiness-checklist</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.everstead.care/resources/checklists/executor-first-steps-checklist</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.everstead.care/resources/checklists/annual-plan-review-checklist</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.everstead.care/resources/checklists/digital-accounts-inventory-template</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.everstead.care/resources/faqs/general-questions</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.everstead.care/resources/faqs/security-privacy-questions</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.everstead.care/resources/faqs/pricing-billing-questions</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.everstead.care/resources/faqs/estate-planning-101</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.everstead.care/fr</loc>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://www.everstead.care/fr/features</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.everstead.care/fr/how-it-works</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.everstead.care/fr/pricing</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://www.everstead.care/fr/security</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.everstead.care/fr/use-cases</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.everstead.care/fr/get-started</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://www.everstead.care/fr/contact</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.everstead.care/fr/book-demo</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.everstead.care/fr/about</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.everstead.care/fr/gift</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.everstead.care/fr/compare</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.everstead.care/fr/for-advisers</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.everstead.care/fr/privacy</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+  <url>
+    <loc>https://www.everstead.care/fr/cookies</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+  <url>
+    <loc>https://www.everstead.care/fr/accessibility</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+  <url>
+    <loc>https://www.everstead.care/fr/data-promise</loc>
+    <changefreq>yearly</changefreq>
     <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://www.everstead.care/fr/subprocessors</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.3</priority>
+  </url>
+  <url>
+    <loc>https://www.everstead.care/fr/terms</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
   </url>
   <url>
     <loc>https://www.everstead.care/fr/mentions-legales</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
   </url>
   <url>
     <loc>https://www.everstead.care/fr/resources</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.everstead.care/fr/apres-un-deces</loc>
     <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.everstead.care/fr/press</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.everstead.care/fr/use-cases/families</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.everstead.care/fr/use-cases/parents</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.everstead.care/fr/use-cases/executors</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.everstead.care/fr/resources/blog</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.everstead.care/fr/resources/guides</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.everstead.care/fr/resources/checklists</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.everstead.care/fr/resources/faqs</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.everstead.care/fr/assistant-apres-deces</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.everstead.care/fr/compare/doing-nothing</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
   </url>
   <url>
     <loc>https://www.everstead.care/fr/resources/blog/assurance-vie-succession</loc>
@@ -345,17 +516,22 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://www.everstead.care/apres-un-deces</loc>
+    <loc>https://www.everstead.care/fr/resources/blog/notaires-conseillers-clients-prepares</loc>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://www.everstead.care/fr/apres-un-deces</loc>
+    <loc>https://www.everstead.care/fr/resources/blog/deces-comptes-bancaires-france</loc>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://www.everstead.care/fr/compare/doing-nothing</loc>
+    <loc>https://www.everstead.care/fr/resources/blog/vie-numerique-succession</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.everstead.care/fr/resources/blog/que-faire-apres-un-deces-france</loc>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>

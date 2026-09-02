@@ -5,6 +5,7 @@ import React, { useState } from 'react'
 import { EmptyState, Field, LoadingSpinner, Modal, SectionShell, input, primaryBtn, secondaryBtn } from '../../dashboard/ui'
 import { CreditCard, Pencil, Plus, Trash2 } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
+import { marketPricing } from '../../../config/pricing'
 export const BILLING_CYCLES = [
   { value: 'Monthly', id: 'monthly' },
   { value: 'Annual',  id: 'annual' },
@@ -24,7 +25,9 @@ export function billingCycleLabel(t, value) {
 }
 
 export function SubscriptionsSection({ subscriptions: remoteSubs, loading, add, update, remove }) {
-  const { t } = useTranslation('dashboard')
+  const { t, i18n } = useTranslation('dashboard')
+  // Amounts are the member's own subscriptions, shown in their market's currency.
+  const market = marketPricing(i18n.language)
   const emptyForm = { name: '', billing_cycle: 'Monthly', amount: '', next_charge_date: '', notes: '' }
   const [showAdd, setShowAdd] = useState(false)
   const [editingSubscription, setEditingSubscription] = useState(null)
@@ -100,7 +103,7 @@ export function SubscriptionsSection({ subscriptions: remoteSubs, loading, add, 
   }
 
   return (
-    <SectionShell title={t('subscriptions.title')} subtitle={t('subscriptions.subtitle', { total: total.toFixed(2) })} action={<button onClick={openAdd} className={primaryBtn}><Plus size={15} />{t('subscriptions.add')}</button>}>
+    <SectionShell title={t('subscriptions.title')} subtitle={t('subscriptions.subtitle', { total: market.money(total) })} action={<button onClick={openAdd} className={primaryBtn}><Plus size={15} />{t('subscriptions.add')}</button>}>
       {loading ? <LoadingSpinner /> : subscriptions.length === 0 ? (
         <EmptyState icon={CreditCard} label={t('subscriptions.empty')} action={t('subscriptions.emptyAction')} onAction={openAdd} />
       ) : (
@@ -115,7 +118,7 @@ export function SubscriptionsSection({ subscriptions: remoteSubs, loading, add, 
                 <p className="text-xs text-stone-400">{t('subscriptions.meta', { cycle: billingCycleLabel(t, sub.billing_cycle), date: sub.next_charge_date ?? '—' })}</p>
                 {sub.cancel_instructions && <p className="text-xs text-stone-400 mt-0.5 truncate">{sub.cancel_instructions}</p>}
               </div>
-              <p className="font-semibold text-navy-900 text-sm">£{Number(sub.amount || 0).toFixed(2)}</p>
+              <p className="font-semibold text-navy-900 text-sm">{market.money(sub.amount || 0)}</p>
               <div className="flex items-center gap-1 shrink-0">
                 <button onClick={() => openEdit(sub)} className="p-1.5 text-stone-300 hover:text-navy-600 transition-colors rounded-lg hover:bg-navy-50" aria-label={t('subscriptions.editAria', { name: sub.name })}>
                   <Pencil size={14} />

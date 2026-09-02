@@ -9,8 +9,8 @@
     "trialExpired": {
       "title": "Votre essai est terminé",
       "body": "Votre essai gratuit de 14 jours est arrivé à son terme. Choisissez un forfait pour conserver le coffre, les personnes de confiance et tout ce que vous avez mis en place. Rien n'est perdu : vos données restent en sécurité.",
-      "plusPrice": "9,99 £/mois",
-      "plusNote": "ou 7,99 £/mois en paiement annuel (95,88 £/an, soit 20 % d'économie), deux coffres privés",
+      "plusPrice": "{{monthly}}/mois",
+      "plusNote": "ou {{annualPerMonth}}/mois en paiement annuel ({{annual}}/an, soit 2 mois offerts), deux coffres privés",
       "proPrice": "60 £/mois",
       "proNote": "ou 48 £/mois en paiement annuel · Pour les conseillers patrimoniaux",
       "questions": "Des questions ? Écrivez-nous à"
@@ -27,8 +27,8 @@
       "cancelledNamedSuffix": "a annulé son forfait conseiller Everstead.",
       "cancelledUnnamed": "Votre conseiller a annulé son forfait Everstead.",
       "graceEnded": "Le délai de grâce de 30 jours est arrivé à son terme. Ajoutez un moyen de paiement pour reprendre là où vous en étiez : vos comptes, documents et consignes sont bien enregistrés.",
-      "plusPrice": "9,99 £/mois",
-      "plusNote": "ou 7,99 £/mois en paiement annuel (95,88 £/an, soit 20 % d'économie), tous les membres du foyer",
+      "plusPrice": "{{monthly}}/mois",
+      "plusNote": "ou {{annualPerMonth}}/mois en paiement annuel ({{annual}}/an, soit 2 mois offerts), tous les membres du foyer",
       "questions": "Des questions ? Écrivez-nous à"
     },
     "demo": {
@@ -267,7 +267,7 @@
       "category": "Catégorie",
       "last4": "4 derniers chiffres (facultatif)",
       "balance": "Solde ou statut (à titre indicatif)",
-      "balancePlaceholder": "ex. 12 000 £ ou Actif",
+      "balancePlaceholder": "ex. 12 000 € ou Actif",
       "notes": "Notes / consignes",
       "notesPlaceholder": "Détails utiles, modalités d'accès, consignes particulières…"
     },
@@ -791,7 +791,7 @@
   },
   "subscriptions": {
     "title": "Abonnements",
-    "subtitle": "{{total}} £/mois au total",
+    "subtitle": "{{total}}/mois au total",
     "add": "Ajouter un abonnement",
     "editTitle": "Modifier l'abonnement",
     "empty": "Aucun abonnement suivi",
@@ -1095,10 +1095,10 @@
       "endedBody": "Vos données sont conservées en sécurité pendant 30 jours. Réactivez votre forfait quand vous le souhaitez pour retrouver un accès complet.",
       "reactivateEverstead": "Réactiver Everstead",
       "cycleMonthly": "Mensuel",
-      "cycleYearly": "Annuel, 20 % d'économie",
+      "cycleYearly": "Annuel, 2 mois offerts",
       "current": "Actuel",
-      "price": "{{price}} £/mois",
-      "billedAnnually": "facturé annuellement · 20 % d'économie",
+      "price": "{{price}}/mois",
+      "billedAnnually": "facturé annuellement · 2 mois offerts",
       "activatePlan": "Activer le forfait {{plan}}",
       "switchToYearly": "Passer à la facturation annuelle",
       "switchToMonthly": "Passer à la facturation mensuelle",

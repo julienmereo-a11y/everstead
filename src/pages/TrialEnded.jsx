@@ -4,6 +4,7 @@ import { Loader2, ArrowRight, ChevronDown } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { useAuth } from '../contexts/AuthContext'
 import { PLANS, redirectToCustomerPortal } from '../lib/stripe'
+import { marketPricing } from '../config/pricing'
 import { supabase } from '../lib/supabase'
 import i18n from '../i18n'
 import enTrialEnded from '../i18n/locales/en/trialEnded.json'
@@ -50,7 +51,11 @@ export default function TrialEnded() {
   const billingCycle = profile.billing_cycle || 'yearly'
   const planConfig   = PLANS[plan] ?? PLANS.essential
   const firstName    = profile.full_name?.split(' ')[0] ?? t('fallbackName')
-  const priceLabel   = t('priceLabel', { name: planConfig.name, monthly: planConfig.monthly, yearly: planConfig.yearly })
+  // Everstead+ is priced per market; the retired Essential plan only ever existed in pounds.
+  const market       = marketPricing(i18n.language)
+  const priceLabel   = plan === 'family'
+    ? t('priceLabel', { name: planConfig.name, monthly: market.money(market.family.monthly.perMonth), yearly: market.money(market.family.annual.perMonth) })
+    : t('priceLabel', { name: planConfig.name, monthly: `£${planConfig.monthly}`, yearly: `£${planConfig.yearly}` })
   const dateLocale   = i18n.language === 'fr' ? 'fr-FR' : 'en-GB'
 
   // Deletion imminence

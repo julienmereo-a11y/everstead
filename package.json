@@ -5,9 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "npm run check && vite build",
+    "build": "npm run check && node scripts/gen-sitemap.mjs && vite build",
     "preview": "vite preview",
-    "build:capacitor": "npm run check && CAP_BUILD=1 vite build",
+    "build:capacitor": "npm run check && node scripts/gen-sitemap.mjs && CAP_BUILD=1 vite build",
     "cap:sync": "npx cap sync ios && npx cap sync android",
     "build:cap:debug": "npm run check && CAP_BUILD=1 CAP_DEBUG=1 vite build",
     "check": "node scripts/check-shared-constants.mjs && node scripts/test-mfa-crypto.mjs && node scripts/test-device-language.mjs && node scripts/check-native-i18n.mjs"

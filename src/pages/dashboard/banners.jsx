@@ -3,13 +3,26 @@
 // the executor preview, and the first-run tour.
 //
 import React, { useEffect, useState } from 'react'
-import { planLabel } from '../../config/pricing'
+import { marketPricing, planLabel } from '../../config/pricing'
 import i18n from '../../i18n'
 import { FamilySection } from '../Settings'
 import { roleLabel } from '../dashboard/shared'
 import { SectionShell } from '../dashboard/ui'
 import { AlertTriangle, ArrowRight, BookOpen, Clock, CreditCard, FileText, Home, Key, Landmark, Lock, Sparkles, UserCircle, Users, X } from 'lucide-react'
 import { Trans, useTranslation } from 'react-i18next'
+
+// Everstead+ figures for the member's market: a French member pays in euros,
+// so no price is spelled out in the copy, only interpolated from the catalogue.
+function plusFigures(language) {
+  const m = marketPricing(language)
+  const annual = m.family.annual.perYear ?? Number((m.family.annual.perMonth * 12).toFixed(2))
+  return {
+    monthly:        m.money(m.family.monthly.perMonth),
+    annualPerMonth: m.money(m.family.annual.perMonth),
+    annual:         m.money(annual),
+  }
+}
+
 export function getTrialDaysLeft(trialEndsAt) {
   if (!trialEndsAt) return null
   const ms = new Date(trialEndsAt) - Date.now()
@@ -65,7 +78,8 @@ export function TrialBanner({ daysLeft, onUpgrade }) {
 }
 
 export function TrialExpiredModal({ profile, onUpgrade }) {
-  const { t } = useTranslation('dashboard')
+  const { t, i18n } = useTranslation('dashboard')
+  const figures = plusFigures(i18n.language)
   return (
     <div className="fixed inset-0 z-[60] bg-navy-950/90 backdrop-blur-sm flex items-center justify-center p-6">
       <div className="bg-white rounded-3xl shadow-2xl max-w-md w-full p-10 text-center">
@@ -78,7 +92,7 @@ export function TrialExpiredModal({ profile, onUpgrade }) {
         </p>
         <div className="space-y-3 mb-8">
           {[
-            { name: planLabel('family'), price: t('banners.trialExpired.plusPrice'), note: t('banners.trialExpired.plusNote'), id: 'family', highlight: profile.plan !== 'advisor' },
+            { name: planLabel('family'), price: t('banners.trialExpired.plusPrice', figures), note: t('banners.trialExpired.plusNote', figures), id: 'family', highlight: profile.plan !== 'advisor' },
             ...(profile.plan === 'advisor' ? [{ name: planLabel('advisor'), price: t('banners.trialExpired.proPrice'), note: t('banners.trialExpired.proNote'), id: 'advisor', highlight: true }] : []),
           ].map(plan => (
             <button
@@ -142,7 +156,8 @@ export function AdvisorCancelledBanner({ daysLeft, advisorName, onAddPayment }) 
 }
 
 export function AdvisorCancelledModal({ advisorName, onAddPayment }) {
-  const { t } = useTranslation('dashboard')
+  const { t, i18n } = useTranslation('dashboard')
+  const figures = plusFigures(i18n.language)
   return (
     <div className="fixed inset-0 z-[60] bg-navy-950/90 backdrop-blur-sm flex items-center justify-center p-6">
       <div className="bg-white rounded-3xl shadow-2xl max-w-md w-full p-10 text-center">
@@ -160,7 +175,7 @@ export function AdvisorCancelledModal({ advisorName, onAddPayment }) {
         </p>
         <div className="space-y-3 mb-8">
           {[
-            { name: planLabel('family'), price: t('banners.advisorModal.plusPrice'), note: t('banners.advisorModal.plusNote'), id: 'family', highlight: true },
+            { name: planLabel('family'), price: t('banners.advisorModal.plusPrice', figures), note: t('banners.advisorModal.plusNote', figures), id: 'family', highlight: true },
           ].map(plan => (
             <button
               key={plan.id}

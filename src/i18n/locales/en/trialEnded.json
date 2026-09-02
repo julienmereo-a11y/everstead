@@ -7,7 +7,7 @@
   },
   "subtitleImminent": "Your account and all your data will be deleted on {{date}}. Update your payment method now to keep everything.",
   "subtitle": "We couldn't charge the card on file when your trial ended. Update your payment method to keep your plan, all your data is safe.",
-  "priceLabel": "{{name}} plan, £{{monthly}}/mo or £{{yearly}}/mo yearly",
+  "priceLabel": "{{name}} plan, {{monthly}}/mo or {{yearly}}/mo yearly",
   "updateCard": {
     "title": "Update your payment method",
     "opening": "Opening billing portal…",

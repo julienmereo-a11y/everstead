@@ -286,7 +286,7 @@ export default function Changelog() {
                     <ul className="space-y-2.5">
                       {entry.items.map((item, j) => (
                         <li key={j} className="flex items-start gap-3 text-sm leading-relaxed text-stone-600">
-                          <span className="text-sage-500 font-bold mt-0.5 shrink-0">—</span>
+                          <span className="text-sage-500 font-bold mt-0.5 shrink-0">·</span>
                           {item}
                         </li>
                       ))}

@@ -3,7 +3,7 @@
 // link, biometric lock) live here because nothing else uses them.
 //
 import React, { useState, useEffect } from 'react'
-import { PLAN_LABELS, PRICING, planLabel } from '../../../config/pricing'
+import { PLAN_LABELS, PRICING, marketPricing, planLabel } from '../../../config/pricing'
 import i18n from '../../../i18n'
 import { PLANS, redirectToCustomerPortal } from '../../../lib/stripe'
 import { Field, SectionShell, input, primaryBtn, secondaryBtn } from '../../dashboard/ui'
@@ -98,6 +98,7 @@ export function BiometricLockSetting() {
 export function SettingsSection({ profile, isDemo, updateProfile, refreshProfile, onUpgrade, onDeleteAccount, upgradeError }) {
   const { t } = useTranslation('dashboard')
   const dateLocale = i18n.language?.startsWith('fr') ? 'fr-FR' : 'en-GB'
+  const market = marketPricing(i18n.language)
   // Everstead+ is the self-serve upgrade for Free and grandfathered Essential users.
   // Essential is retired, so it only appears for someone already on it (never offered
   // to Free or new users).
@@ -106,7 +107,8 @@ export function SettingsSection({ profile, isDemo, updateProfile, refreshProfile
     ...(profile.plan === 'essential'
       ? [{ id: 'essential', name: PLAN_LABELS.essential, tier: 1, monthly: PRICING.essential.monthly.perMonth, yearly: PRICING.essential.annual.perMonth, desc: t('settings.plans.essential') }]
       : []),
-    { id: 'family', name: PLAN_LABELS.family, tier: 2, monthly: PRICING.family.monthly.perMonth, yearly: PRICING.family.annual.perMonth, desc: t('settings.plans.family') },
+    // Everstead+ follows the member's market (euros for French members); Essential is a retired GBP plan.
+    { id: 'family', name: PLAN_LABELS.family, tier: 2, monthly: market.family.monthly.perMonth, yearly: market.family.annual.perMonth, desc: t('settings.plans.family') },
   ]
   const PLAN_TIERS = { free: 0, essential: 1, family: 2, advisor: 3 }
   const currentTier   = PLAN_TIERS[profile.plan] ?? 0
@@ -628,7 +630,7 @@ export function SettingsSection({ profile, isDemo, updateProfile, refreshProfile
                         {isCurrent && <span className="text-xs bg-navy-800 text-white px-2 py-0.5 rounded-full">{t('settings.subscription.current')}</span>}
                       </div>
                       <p className="text-lg font-display font-light text-navy-950">
-                        {t('settings.subscription.price', { price })}
+                        {t('settings.subscription.price', { price: plan.id === 'essential' ? `£${price.toFixed(2)}` : market.money(price) })}
                         {billingCycle === 'yearly' && <span className="text-xs text-stone-400 ml-1">{t('settings.subscription.billedAnnually')}</span>}
                       </p>
                       <p className="text-xs text-stone-500 mt-1 leading-snug flex-1">{plan.desc}</p>
