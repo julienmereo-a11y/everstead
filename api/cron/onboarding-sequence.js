@@ -21,6 +21,19 @@ const APP_URL = process.env.VITE_APP_URL || 'https://www.everstead.care'
 // ─────────────────────────────────────────────────────────────────────────────
 const SEQUENCE = [
   {
+    // Day 1: a personal welcome from Julien himself. Unlike the rest of the
+    // sequence it is plain text on white (no logo banner, no button) and is
+    // sent FROM julien@ so a reply lands in the founder's own inbox.
+    n:          0,
+    field:      'onboarding_email_0_sent_at',
+    afterDays:  1,
+    subjectKey: 'email0Subject',
+    html:       email0Html,
+    from:       (lang) => pickLang(lang) === 'fr'
+      ? "Julien d'Everstead <julien@everstead.care>"
+      : 'Julien from Everstead <julien@everstead.care>',
+  },
+  {
     n:          1,
     field:      'onboarding_email_1_sent_at',
     afterDays:  2,
@@ -149,7 +162,7 @@ async function handler(req, res) {
 
         emailedThisRun.add(user.id)
         await resend.emails.send({
-          from:    'Everstead <hello@everstead.care>',
+          from:    step.from ? step.from(user.language) : 'Everstead <hello@everstead.care>',
           to:      user.email,
           subject,
           html,
@@ -187,6 +200,17 @@ const COPY = {
     footerUnsubscribe:'Unsubscribe',
     fallbackName:     'there',
     fallbackNameLead: 'there',
+
+    // Email 0, Day 1: personal welcome from Julien
+    email0Subject: 'A personal welcome to Everstead',
+    email0P1: "Hi {{name}},",
+    email0P2: "It's Julien, the founder of Everstead. I wanted to write to you myself, a day in, just to say welcome, and thank you for trusting us with something this personal.",
+    email0P3: "I started Everstead after my grandmother died. We found a small notebook in a drawer with everything we needed to know: her accounts, her passwords, the people to call. That notebook was an act of love, and Everstead is my attempt to give every family the same, kept safe.",
+    email0P4: "There's no rush and no right pace. Add one thing when you have a quiet moment, and it will already be more than most families have.",
+    email0P5: "If anything is unclear, or if you simply want to tell me what brought you here, reply to this email. It comes straight to me, and I read every message.",
+    email0P6: "I truly hope Everstead helps you, and the people you love.",
+    email0SignName: 'Julien',
+    email0SignRole: 'Founder, Everstead',
 
     // Email 1, Day 2: add your first account
     email1Subject: 'Start here: add your first financial account',
@@ -268,6 +292,17 @@ const COPY = {
     footerUnsubscribe:'Se désabonner',
     fallbackName:     'à vous',
     fallbackNameLead: 'Bonjour',
+
+    // Email 0, Day 1: personal welcome from Julien
+    email0Subject: 'Un mot de bienvenue, personnellement',
+    email0P1: 'Bonjour {{name}},',
+    email0P2: "C'est Julien, le fondateur d'Everstead. Je tenais à vous écrire moi-même, au lendemain de votre inscription, simplement pour vous souhaiter la bienvenue, et vous remercier de nous confier quelque chose d'aussi personnel.",
+    email0P3: "J'ai créé Everstead après le décès de ma grand-mère. Nous avons trouvé dans un tiroir un petit carnet avec tout ce qu'il fallait savoir\u00A0: ses comptes, ses mots de passe, les personnes à prévenir. Ce carnet était un acte d'amour, et Everstead est ma façon d'offrir la même chose à chaque famille, en lieu sûr.",
+    email0P4: "Il n'y a ni urgence ni bon rythme. Ajoutez une seule chose quand vous aurez un moment calme, et ce sera déjà plus que ce que la plupart des familles ont.",
+    email0P5: "Si quoi que ce soit n'est pas clair, ou si vous avez simplement envie de me raconter ce qui vous a amené ici, répondez à ce message. Il arrive directement dans ma boîte, et je lis tout.",
+    email0P6: "J'espère sincèrement qu'Everstead vous aidera, vous et ceux que vous aimez.",
+    email0SignName: 'Julien',
+    email0SignRole: "Fondateur d'Everstead",
 
     // Email 1, Day 2: add your first account
     email1Subject: 'Commencez ici\u00A0: ajoutez votre premier compte financier',
@@ -399,6 +434,45 @@ function tip(icon, text) {
     <td style="padding:10px 14px;vertical-align:top;font-size:20px;line-height:1;">${icon}</td>
     <td style="padding:10px 0;color:#4a5568;font-size:14px;line-height:1.6;">${text}</td>
   </tr>`
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// EMAIL 0 — Day 1: personal welcome, written as Julien
+// ─────────────────────────────────────────────────────────────────────────────
+// Deliberately NOT the branded layout: no logo banner, no gradient button, no
+// tips table. It should read like a short letter someone actually typed. Only
+// the legally required unsubscribe survives, as small and quiet as possible.
+function email0Html(name, _plan, userId, lang) {
+  const t     = translator(COPY, lang)
+  const first = name?.split(' ')[0] || t('fallbackNameLead')
+  const unsubUrl = userId
+    ? `${APP_URL}/api/email/unsubscribe?token=${unsubToken(userId)}`
+    : 'mailto:hello@everstead.care?subject=Unsubscribe'
+  const para = (text, mb = 16) =>
+    `<p style="margin:0 0 ${mb}px;color:#1f2937;font-size:16px;line-height:1.75;">${text}</p>`
+  return `<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
+<body style="margin:0;padding:0;background:#ffffff;font-family:Georgia,serif;">
+  <table width="100%" cellpadding="0" cellspacing="0"><tr><td align="center" style="padding:44px 20px;">
+    <table width="540" cellpadding="0" cellspacing="0" style="max-width:540px;width:100%;text-align:left;">
+      <tr><td>
+        ${para(t('email0P1', { name: first }))}
+        ${para(t('email0P2'))}
+        ${para(t('email0P3'))}
+        ${para(t('email0P4'))}
+        ${para(t('email0P5'))}
+        ${para(t('email0P6'), 28)}
+        <p style="margin:0;color:#1f2937;font-size:16px;line-height:1.6;">${t('email0SignName')}</p>
+        <p style="margin:0 0 36px;color:#6b7280;font-size:14px;line-height:1.6;">${t('email0SignRole')}</p>
+        <p style="margin:0;color:#c2beb8;font-size:12px;line-height:1.5;">
+          <a href="${unsubUrl}" style="color:#c2beb8;">${t('footerUnsubscribe')}</a>
+        </p>
+      </td></tr>
+    </table>
+  </td></tr></table>
+</body>
+</html>`
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
