@@ -93,5 +93,22 @@
     "security": "Sécurité",
     "stillLost": "Besoin d'aide ?",
     "metaTitle": "Page introuvable | Everstead"
+  },
+  "emailCapture": {
+    "defaultTitle": "Recevoir la version complète par e-mail ?",
+    "defaultSub": "Nous vous l'envoyons dans votre boîte. Un seul e-mail, pas de spam.",
+    "defaultButton": "Me l'envoyer",
+    "errorEmail": "Merci d'indiquer votre e-mail.",
+    "errorConsent": "Merci de cocher la case de consentement pour continuer.",
+    "errorGeneric": "Une erreur est survenue. Veuillez réessayer.",
+    "successTitle": "Regardez votre boîte de réception.",
+    "successBody": "Nous venons de vous envoyer la version complète. Si vous ne la voyez pas d'ici une ou deux minutes, vérifiez vos spams, et marquez le message comme non indésirable pour recevoir les suivants.",
+    "namePlaceholder": "Votre prénom (facultatif)",
+    "nameAria": "Prénom",
+    "emailPlaceholder": "vous@exemple.fr",
+    "emailAria": "Adresse e-mail",
+    "consent": "Envoyez-moi le résultat, ainsi que de temps en temps un guide Everstead. Je peux me désinscrire à tout moment. Voir notre",
+    "privacyLink": "politique de confidentialité",
+    "sending": "Envoi…"
   }
 }

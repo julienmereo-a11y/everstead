@@ -2677,6 +2677,7 @@ const tools = [
   {
     i18nKey: 'executor',
     href: '/executor-checklist',
+    lang: 'en', // the French tree lists /apres-un-deces instead
     title: 'Executor Checklist',
     tag: 'Interactive',
     tagColor: 'bg-navy-50 text-navy-700 border-navy-200',

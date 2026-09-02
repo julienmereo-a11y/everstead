@@ -1,0 +1,127 @@
+{
+  "meta": {
+    "title": "Estate Readiness Score | Free Tool | Everstead",
+    "desc": "Take our free 5-question quiz and instantly see how ready your estate really is. No sign-up required. Get your personalised score out of 100."
+  },
+  "hero": {
+    "eyebrow": "Free tool, no sign-up needed",
+    "title": "Estate Readiness Score",
+    "sub": "Five questions. Instant results. Find out exactly where you stand, and what your family actually needs from you."
+  },
+  "progress": {
+    "label": "Question {{n}} of {{total}}",
+    "answered": "answered",
+    "current": "current",
+    "back": "Back"
+  },
+  "questions": {
+    "will": {
+      "text": "Do you have an up-to-date will?",
+      "hint": "A will ensures your wishes are legally recognised and reduces burden on those left behind.",
+      "options": [
+        "Yes, it's up to date",
+        "I have one but it's out of date",
+        "No, I don't have one"
+      ]
+    },
+    "accounts": {
+      "text": "Have you documented your financial accounts and assets?",
+      "hint": "Without a clear record, families can spend months locating accounts, or miss them entirely.",
+      "options": [
+        "Yes, fully documented",
+        "Partially, some listed",
+        "Not yet"
+      ]
+    },
+    "lpa": {
+      "text": "Do you have a Lasting Power of Attorney in place?",
+      "hint": "An LPA lets trusted people manage your affairs if you lose capacity, without one, families face court applications.",
+      "options": [
+        "Yes, both types (property & health)",
+        "One of them",
+        "No"
+      ]
+    },
+    "people": {
+      "text": "Have you designated trusted people with access to your plan?",
+      "hint": "Knowing who to contact (and what they're allowed to see) removes confusion in a crisis.",
+      "options": [
+        "Yes, they know and have access",
+        "I've thought about it",
+        "No"
+      ]
+    },
+    "wishes": {
+      "text": "Have you recorded your funeral wishes or final instructions?",
+      "hint": "Leaving clear wishes is one of the most meaningful gifts you can give your family.",
+      "options": [
+        "Yes, written down and shared",
+        "In my head but not written",
+        "No"
+      ]
+    }
+  },
+  "bands": {
+    "urgent": "Your estate needs urgent attention",
+    "gaps": "A good start, but critical gaps remain",
+    "ahead": "You're ahead of most, a few things to complete",
+    "excellent": "Excellent, your family will thank you"
+  },
+  "summary": {
+    "urgent": "Right now, your family would face real difficulty if something happened to you. The good news: this is entirely fixable, and Everstead is built to help you work through it step by step.",
+    "gaps": "You've made a start, but there are still gaps that could cause real stress for those you leave behind. A little more preparation goes a long way.",
+    "ahead": "You're more prepared than most people. A few final steps would give your family complete clarity, and you complete peace of mind.",
+    "excellent": "You've done the hard work. Your family will be well-supported. Consider keeping your plan updated annually as life changes."
+  },
+  "results": {
+    "outOf": "out of 100",
+    "toAddress": "What to address",
+    "partial": "(partial)",
+    "retake": "Retake the quiz"
+  },
+  "missing": {
+    "will": {
+      "title": "No up-to-date will",
+      "message": "Without a valid will, the law decides how your estate is distributed, not you. Updating a will after major life events (marriage, children, new property) is essential to ensure it reflects your actual wishes."
+    },
+    "accounts": {
+      "title": "Undocumented accounts and assets",
+      "message": "Billions of pounds sit in dormant accounts every year because families don't know they exist. A clear inventory means nothing is overlooked and executors can act quickly."
+    },
+    "lpa": {
+      "title": "No Lasting Power of Attorney",
+      "message": "If you lost capacity tomorrow, your family could face lengthy and expensive Court of Protection proceedings to manage your affairs. An LPA avoids this entirely, and can only be set up while you still have capacity."
+    },
+    "people": {
+      "title": "No designated trusted contacts",
+      "message": "Even with perfect documents, if nobody knows where they are or who to call, the information is inaccessible when it matters most. Identifying and briefing trusted people is a critical step."
+    },
+    "wishes": {
+      "title": "Funeral and final wishes not recorded",
+      "message": "Families often disagree about arrangements because wishes weren't written down. Even a simple note removes the guesswork and reduces stress at an already difficult time."
+    }
+  },
+  "email": {
+    "title": "Get your full personalised report",
+    "sub": "We'll send a detailed breakdown of your score, what it means, and the exact steps to improve it, at your own pace.",
+    "nameLabel": "Your first name",
+    "optional": "(optional)",
+    "namePlaceholder": "Sarah",
+    "emailLabel": "Email address",
+    "emailPlaceholder": "you@example.com",
+    "sending": "Sending…",
+    "send": "Send my report",
+    "noSpam": "No spam. One email. You can unsubscribe at any time.",
+    "sentTitle": "Report on its way",
+    "sentBody": "Check your inbox{{name}}, your personalised estate readiness report will arrive shortly.",
+    "cta": "Start your estate plan with Everstead",
+    "ctaNote": "Free plan · No card needed",
+    "errorEmail": "Please enter your email address.",
+    "errorGeneric": "Something went wrong. Please try again or email hello@everstead.care."
+  },
+  "soft": {
+    "ready": "Ready to act on your score?",
+    "cta": "Start building your estate plan, free"
+  },
+  "footnote": "Your answers are never stored without your consent. Everstead is a UK digital estate planning service, not legal or financial advice."
+}

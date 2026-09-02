@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import { Helmet } from 'react-helmet-async'
-import { Link } from 'react-router-dom'
+import { Link, Navigate } from 'react-router-dom'
+import i18n from '../i18n'
 import { Printer, RotateCcw, CheckCircle2, Circle } from 'lucide-react'
 import EmailCaptureCard from '../components/EmailCaptureCard'
 
@@ -212,7 +213,7 @@ function DontSection({ section }) {
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
-export default function ExecutorChecklist() {
+function ExecutorChecklistEn() {
   const [checkedMap, setCheckedMap] = useState({})
   const [showResetConfirm, setShowResetConfirm] = useState(false)
   const [loaded, setLoaded] = useState(false)
@@ -463,4 +464,14 @@ export default function ExecutorChecklist() {
       </div>
     </>
   )
+}
+
+// The executor role and this timeline are England & Wales law. The French tree
+// has its own native checklist (mairie, notaire, CPAM, six months for the
+// succession declaration), so a French visitor lands there instead of on an
+// English page dressed in French chrome. The basename turns this into
+// /fr/apres-un-deces.
+export default function ExecutorChecklist() {
+  if (i18n.language === 'fr') return <Navigate to="/apres-un-deces" replace />
+  return <ExecutorChecklistEn />
 }

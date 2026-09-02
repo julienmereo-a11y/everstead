@@ -456,6 +456,16 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://www.everstead.care/fr/estate-readiness-score</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.everstead.care/fr/digital-estate-worth</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://www.everstead.care/fr/use-cases/families</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>

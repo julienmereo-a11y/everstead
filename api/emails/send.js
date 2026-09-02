@@ -155,10 +155,9 @@ async function handler(req, res) {
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
         return res.status(400).json({ error: 'Invalid email' })
       }
-      // A public lead with no sender to inherit from: their profile language if
-      // they already hold an Everstead account, English otherwise. The score tool
-      // itself is English-only today, so that is the honest default.
-      const lang = await languageForUser(adminDb, { email })
+      // The quiz exists in both languages and sends the one it was taken in;
+      // an existing member's profile language is the fallback, then English.
+      const lang = body.lang === 'fr' ? 'fr' : await languageForUser(adminDb, { email })
       const t = translator(COPY, lang)
       await resend.emails.send({
         from:    'Everstead <hello@everstead.care>',

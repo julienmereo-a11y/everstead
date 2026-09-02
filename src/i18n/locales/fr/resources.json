@@ -55,7 +55,7 @@
   "tools": {
     "eyebrow": "Outils gratuits",
     "title": "Des outils pratiques, sans inscription.",
-    "subtitle": "Ces outils vous aident à savoir où vous en êtes, à suivre les démarches d'une succession ou à estimer votre patrimoine numérique. Les deux premiers sont en français et pensés pour la France. Les autres sont en anglais et pensés pour le Royaume-Uni.",
+    "subtitle": "Ces outils vous aident à savoir où vous en êtes, à suivre les démarches d'une succession ou à estimer votre patrimoine. Ils sont gratuits, sans inscription, et pensés pour la France.",
     "items": {
       "apresDeces": {
         "title": "Après un décès : les démarches en France",
@@ -72,9 +72,9 @@
         "badge": "Gratuit · Sans compte"
       },
       "readiness": {
-        "title": "Score de préparation",
+        "title": "Score de préparation successorale",
         "tag": "Quiz",
-        "desc": "Répondez à 5 questions et obtenez un score sur 100, avec le détail de ce qui vous manque et pourquoi c'est important.",
+        "desc": "Répondez à 5 questions et obtenez un score sur 100, avec le détail de ce qui manque à vos proches et pourquoi c'est important. Testament, mandat de protection future, personnes de confiance.",
         "cta": "Faire le quiz"
       },
       "executor": {
@@ -85,9 +85,9 @@
         "badge": "Le plus consulté"
       },
       "calculator": {
-        "title": "Calculateur de patrimoine numérique",
+        "title": "Calculateur de patrimoine",
         "tag": "Calculateur",
-        "desc": "Renseignez vos comptes, pensions, biens et actifs pour obtenir une estimation de votre patrimoine, avec une alerte au seuil d'imposition successorale britannique.",
+        "desc": "Renseignez vos comptes, votre épargne, vos biens et vos placements pour une estimation de votre patrimoine, avec un repère sur les droits de succession en France.",
         "cta": "Calculer"
       }
     }

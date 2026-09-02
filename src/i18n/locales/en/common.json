@@ -93,5 +93,22 @@
     "security": "Security",
     "stillLost": "Still lost?",
     "metaTitle": "Page not found | Everstead"
+  },
+  "emailCapture": {
+    "defaultTitle": "Want the full version by email?",
+    "defaultSub": "We'll send it to your inbox. One email, no spam.",
+    "defaultButton": "Send it to me",
+    "errorEmail": "Please enter your email.",
+    "errorConsent": "Please tick the consent box to continue.",
+    "errorGeneric": "Something went wrong. Please try again.",
+    "successTitle": "Check your inbox.",
+    "successBody": "We've just emailed you the full version. If you don't see it in a minute or two, check your spam folder, and please mark it as not spam so future emails reach you.",
+    "namePlaceholder": "Your first name (optional)",
+    "nameAria": "First name",
+    "emailPlaceholder": "you@example.com",
+    "emailAria": "Email address",
+    "consent": "Send me the result, plus the occasional Everstead guide. I can unsubscribe at any time. See our",
+    "privacyLink": "privacy policy",
+    "sending": "Sending…"
   }
 }

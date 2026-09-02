@@ -1,0 +1,127 @@
+{
+  "meta": {
+    "title": "Score de préparation successorale | Outil gratuit | Everstead",
+    "desc": "Cinq questions, un résultat immédiat : découvrez gratuitement si votre succession est vraiment préparée, et ce qui manque à vos proches. Sans inscription."
+  },
+  "hero": {
+    "eyebrow": "Outil gratuit, sans inscription",
+    "title": "Score de préparation successorale",
+    "sub": "Cinq questions. Un résultat immédiat. Sachez exactement où vous en êtes, et ce dont vos proches auront vraiment besoin."
+  },
+  "progress": {
+    "label": "Question {{n}} sur {{total}}",
+    "answered": "répondue",
+    "current": "en cours",
+    "back": "Retour"
+  },
+  "questions": {
+    "will": {
+      "text": "Avez-vous un testament à jour ?",
+      "hint": "Sans testament, c'est la loi qui répartit votre patrimoine. Un testament, de préférence déposé chez un notaire, garantit que vos volontés sont connues et respectées.",
+      "options": [
+        "Oui, il est à jour",
+        "J'en ai un, mais il n'est plus à jour",
+        "Non, je n'en ai pas"
+      ]
+    },
+    "accounts": {
+      "text": "Avez-vous recensé vos comptes et vos biens ?",
+      "hint": "Sans liste claire, vos proches peuvent passer des mois à retrouver vos comptes, ou ne jamais les retrouver : c'est ainsi que des milliards d'euros dorment à la Caisse des Dépôts.",
+      "options": [
+        "Oui, tout est recensé",
+        "En partie",
+        "Pas encore"
+      ]
+    },
+    "lpa": {
+      "text": "Avez-vous établi un mandat de protection future ?",
+      "hint": "Il permet à une personne de confiance de gérer vos affaires si vous perdez vos capacités, sans passer par une tutelle ou une curatelle décidée par le juge.",
+      "options": [
+        "Oui, il est signé",
+        "J'ai commencé la démarche",
+        "Non"
+      ]
+    },
+    "people": {
+      "text": "Avez-vous désigné des personnes de confiance qui ont accès à votre plan ?",
+      "hint": "Savoir qui contacter, et ce que chacun a le droit de voir, évite la confusion au pire moment.",
+      "options": [
+        "Oui, elles sont informées et ont accès",
+        "J'y ai réfléchi",
+        "Non"
+      ]
+    },
+    "wishes": {
+      "text": "Avez-vous écrit vos volontés pour vos obsèques et vos dernières consignes ?",
+      "hint": "Laisser des volontés claires est l'un des cadeaux les plus précieux que vous puissiez faire à vos proches.",
+      "options": [
+        "Oui, écrites et partagées",
+        "Dans ma tête, mais pas écrites",
+        "Non"
+      ]
+    }
+  },
+  "bands": {
+    "urgent": "Votre succession demande une attention urgente",
+    "gaps": "Un bon début, mais des manques importants subsistent",
+    "ahead": "Vous êtes en avance sur la plupart, il reste quelques points",
+    "excellent": "Excellent, vos proches vous remercieront"
+  },
+  "summary": {
+    "urgent": "Aujourd'hui, vos proches seraient en réelle difficulté s'il vous arrivait quelque chose. La bonne nouvelle : tout cela se corrige, et Everstead est conçu pour vous y aider pas à pas.",
+    "gaps": "Vous avez commencé, mais il reste des manques qui pourraient peser lourd sur ceux qui restent. Un peu plus de préparation change beaucoup de choses.",
+    "ahead": "Vous êtes mieux préparé que la plupart des gens. Quelques dernières étapes donneraient à vos proches une clarté complète, et à vous une vraie tranquillité.",
+    "excellent": "Le plus dur est fait. Vos proches seront bien accompagnés. Pensez à mettre votre plan à jour chaque année, au fil des changements de vie."
+  },
+  "results": {
+    "outOf": "sur 100",
+    "toAddress": "À traiter",
+    "partial": "(en partie)",
+    "retake": "Refaire le quiz"
+  },
+  "missing": {
+    "will": {
+      "title": "Pas de testament à jour",
+      "message": "Sans testament valide, c'est la loi qui répartit votre patrimoine, pas vous. Le mettre à jour après chaque étape de vie (mariage, naissance, achat immobilier) garantit qu'il reflète vos volontés réelles, dans le respect de la réserve héréditaire."
+    },
+    "accounts": {
+      "title": "Comptes et biens non recensés",
+      "message": "Des milliards d'euros dorment à la Caisse des Dépôts parce que les proches ignorent l'existence de certains comptes. Un inventaire clair évite les oublis et permet au notaire et aux héritiers d'agir vite."
+    },
+    "lpa": {
+      "title": "Pas de mandat de protection future",
+      "message": "Si vous perdiez vos capacités demain, vos proches devraient saisir le juge pour une mesure de tutelle ou de curatelle, longue et lourde. Le mandat de protection future l'évite, et ne peut être établi que tant que vous êtes en pleine capacité."
+    },
+    "people": {
+      "title": "Aucune personne de confiance désignée",
+      "message": "Même avec des documents parfaits, si personne ne sait où ils sont ni qui appeler, l'information est inaccessible au moment où elle compte le plus. Désigner et informer des personnes de confiance est une étape essentielle."
+    },
+    "wishes": {
+      "title": "Volontés pour les obsèques non écrites",
+      "message": "Les familles se déchirent souvent sur les obsèques parce que rien n'a été écrit. Même une simple note lève les doutes et apaise un moment déjà difficile."
+    }
+  },
+  "email": {
+    "title": "Recevez votre rapport personnalisé complet",
+    "sub": "Nous vous enverrons le détail de votre score, ce qu'il signifie, et les étapes précises pour l'améliorer, à votre rythme.",
+    "nameLabel": "Votre prénom",
+    "optional": "(facultatif)",
+    "namePlaceholder": "Camille",
+    "emailLabel": "Adresse e-mail",
+    "emailPlaceholder": "vous@exemple.fr",
+    "sending": "Envoi…",
+    "send": "Recevoir mon rapport",
+    "noSpam": "Pas de spam. Un seul e-mail. Désinscription possible à tout moment.",
+    "sentTitle": "Rapport en route",
+    "sentBody": "Regardez votre boîte de réception{{name}}, votre rapport de préparation successorale arrive dans un instant.",
+    "cta": "Commencer mon plan avec Everstead",
+    "ctaNote": "Offre gratuite · Sans carte bancaire",
+    "errorEmail": "Merci d'indiquer votre adresse e-mail.",
+    "errorGeneric": "Une erreur est survenue. Réessayez ou écrivez à hello@everstead.care."
+  },
+  "soft": {
+    "ready": "Prêt à agir sur votre score ?",
+    "cta": "Commencez votre plan de succession, gratuitement"
+  },
+  "footnote": "Vos réponses ne sont jamais conservées sans votre accord. Everstead est un service d'organisation successorale, pas un conseil juridique ou financier."
+}

@@ -15,7 +15,7 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 // Each maps to a render function that produces the takeaway email.
 const SOURCES = {
   'executor-checklist':              { subject: 'Your executor checklist',                                            render: executorChecklistHtml },
-  'digital-estate-calculator':       { subject: 'Your digital estate estimate',                                       render: digitalEstateHtml      },
+  'digital-estate-calculator':       { subject: 'Your digital estate estimate', subjectFr: 'Votre estimation de patrimoine', render: digitalEstateHtml },
   'when-someone-dies':               { subject: 'What to do when someone dies, your full guide',                     render: whenSomeoneDiesHtml    },
   'adviser-inheritance-conversations': { subject: "The Adviser's Guide to Inheritance Conversations",                  render: inheritanceConversationsHtml },
   'adviser-pre-bereavement-checklist': { subject: 'Pre-bereavement client checklist (template)',                       render: preBereavementChecklistHtml },
@@ -26,6 +26,8 @@ async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' })
 
   const { email, name, source, metadata } = req.body || {}
+  // Interface language the tool was used in; only the calculator has a French edition.
+  const lang = req.body?.lang === 'fr' ? 'fr' : 'en'
 
   if (!email || typeof email !== 'string' || !EMAIL_RE.test(email.trim())) {
     return res.status(400).json({ error: 'Please enter a valid email address.' })
@@ -98,15 +100,15 @@ async function handler(req, res) {
 
   // Send the tool-specific takeaway email (best-effort — log failures)
   try {
-    const { subject, render } = SOURCES[source]
+    const { subject, subjectFr, render } = SOURCES[source]
     const unsubLink = unsubscribeToken
       ? `${APP_URL}/api/leads/unsubscribe?token=${unsubscribeToken}`
       : `${APP_URL}/api/leads/unsubscribe`
     await resend.emails.send({
       from:    'Everstead <hello@everstead.care>',
       to:      normalised,
-      subject,
-      html:    render({ name: cleanName, metadata: metadata || {}, unsubLink }),
+      subject: lang === 'fr' && subjectFr ? subjectFr : subject,
+      html:    render({ name: cleanName, metadata: metadata || {}, unsubLink, lang }),
     })
   } catch (err) {
     console.error('[leads/capture] email send error:', err)
@@ -121,7 +123,16 @@ async function handler(req, res) {
 //  Email templates
 // ─────────────────────────────────────────────────────────────────────────────
 
-function shell({ heading, body, footerNote, unsubLink }) {
+function shell({ heading, body, footerNote, unsubLink, lang = 'en' }) {
+  const fr = lang === 'fr'
+  const pitch  = fr
+    ? "Everstead réunit vos comptes, vos documents, vos personnes de confiance et vos volontés en un seul endroit sécurisé, pour que ceux que vous aimez sachent exactement quoi faire, le jour où cela compte."
+    : 'Everstead is where you put your accounts, documents, trusted people, and final wishes in one secure place, so the people you love know exactly what to do, when it counts.'
+  const ctaHref  = fr ? `${APP_URL}/fr/get-started` : `${APP_URL}/get-started`
+  const ctaLabel = fr ? 'Commencer gratuitement →' : 'Start your free plan →'
+  const ctaNote  = fr ? 'Offre gratuite · Sans carte bancaire' : 'Free plan · No card needed'
+  const defaultFooter = fr ? "Vous avez demandé cet envoi depuis un outil gratuit sur everstead.care." : 'You requested this from a free tool on everstead.care.'
+  const unsubLabel = fr ? 'Se désinscrire de cette liste' : 'Unsubscribe from this list'
   return `<!DOCTYPE html>
 <html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
 <body style="margin:0;padding:0;background:#f5f4f0;font-family:Georgia,serif;">
@@ -135,14 +146,14 @@ function shell({ heading, body, footerNote, unsubLink }) {
           <h1 style="margin:0 0 20px;color:#0d1628;font-size:26px;font-weight:normal;line-height:1.3;">${heading}</h1>
           ${body}
           <div style="margin:36px 0 0;text-align:center;border-top:1px solid #e8e5e0;padding-top:28px;">
-            <p style="margin:0 0 16px;color:#4a5568;font-size:15px;line-height:1.6;">Everstead is where you put your accounts, documents, trusted people, and final wishes in one secure place, so the people you love know exactly what to do, when it counts.</p>
-            <a href="${APP_URL}/get-started" style="display:inline-block;background:#2d5082;background:linear-gradient(100deg,#2d5082 0%,#6f6bc6 50%,#6e9b6a 100%);color:#ffffff;text-decoration:none;padding:14px 28px;border-radius:9999px;font-size:15px;">Start your free plan →</a>
-            <p style="margin:14px 0 0;color:#9ca3af;font-size:13px;">14-day free trial · No card needed to try the demo</p>
+            <p style="margin:0 0 16px;color:#4a5568;font-size:15px;line-height:1.6;">${pitch}</p>
+            <a href="${ctaHref}" style="display:inline-block;background:#2d5082;background:linear-gradient(100deg,#2d5082 0%,#6f6bc6 50%,#6e9b6a 100%);color:#ffffff;text-decoration:none;padding:14px 28px;border-radius:9999px;font-size:15px;">${ctaLabel}</a>
+            <p style="margin:14px 0 0;color:#9ca3af;font-size:13px;">${ctaNote}</p>
           </div>
         </td></tr>
         <tr><td style="padding:20px 40px;background:#f9f8f6;border-top:1px solid #e8e5e0;">
-          <p style="margin:0 0 6px;color:#9ca3af;font-size:12px;line-height:1.5;">${footerNote || 'You requested this from a free tool on everstead.care.'}</p>
-          <p style="margin:0;color:#9ca3af;font-size:12px;line-height:1.5;"><a href="${unsubLink}" style="color:#6b7280;">Unsubscribe from this list</a> · Everstead Digital Ltd · UK</p>
+          <p style="margin:0 0 6px;color:#9ca3af;font-size:12px;line-height:1.5;">${footerNote || defaultFooter}</p>
+          <p style="margin:0;color:#9ca3af;font-size:12px;line-height:1.5;"><a href="${unsubLink}" style="color:#6b7280;">${unsubLabel}</a> · Everstead Digital Ltd · ${fr ? 'Royaume-Uni' : 'UK'}</p>
         </td></tr>
       </table>
     </td></tr>
@@ -213,13 +224,15 @@ function executorChecklistHtml({ name, unsubLink }) {
   })
 }
 
-function digitalEstateHtml({ name, metadata, unsubLink }) {
-  const firstName = name?.split(' ')[0] || 'there'
+function digitalEstateHtml({ name, metadata, unsubLink, lang = 'en' }) {
+  const fr        = lang === 'fr'
+  const firstName = name?.split(' ')[0] || (fr ? '' : 'there')
   const total     = metadata?.total ?? null
   const breakdown = Array.isArray(metadata?.breakdown) ? metadata.breakdown : []
+  const currency  = metadata?.currency === 'EUR' ? 'EUR' : 'GBP'
 
   const formatted = total != null
-    ? new Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP', maximumFractionDigits: 0 }).format(total)
+    ? new Intl.NumberFormat(currency === 'EUR' ? 'fr-FR' : 'en-GB', { style: 'currency', currency, maximumFractionDigits: 0 }).format(total)
     : null
 
   const breakdownHtml = breakdown.length > 0
@@ -235,12 +248,19 @@ function digitalEstateHtml({ name, metadata, unsubLink }) {
 
   const totalCard = formatted
     ? `<div style="background:#f9f8f6;border-radius:12px;padding:24px;text-align:center;margin:0 0 28px;">
-         <p style="margin:0 0 4px;font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;color:#9ca3af;">Estimated digital estate value</p>
+         <p style="margin:0 0 4px;font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;color:#9ca3af;">${fr ? 'Valeur estimée de votre patrimoine' : 'Estimated digital estate value'}</p>
          <p style="margin:0;font-size:48px;font-weight:300;color:#0d1628;line-height:1.1;">${formatted}</p>
        </div>`
     : ''
 
-  const body = `
+  const body = fr ? `
+    <p style="margin:0 0 20px;color:#4a5568;font-size:15px;line-height:1.7;">Bonjour${firstName ? ` ${firstName}` : ''}, voici votre estimation de patrimoine.</p>
+    ${totalCard}
+    ${breakdown.length > 0 ? `<h2 style="margin:0 0 12px;color:#0d1628;font-size:17px;font-weight:600;">Où se trouve la valeur</h2>${breakdownHtml}` : ''}
+    <h2 style="margin:24px 0 12px;color:#0d1628;font-size:17px;font-weight:600;">Pourquoi cela compte</h2>
+    <p style="margin:0 0 16px;color:#4a5568;font-size:14px;line-height:1.7;">Une vie d'adulte se répartit aujourd'hui entre des dizaines de comptes\u00a0: banques en ligne, assurance-vie, plans d'épargne, portefeuilles de cryptomonnaies, abonnements, espaces de stockage. Après un décès, une grande partie reste introuvable pour les proches, simplement parce que personne ne sait qu'elle existe. La loi Eckert transfère chaque année les comptes oubliés à la Caisse des Dépôts.</p>
+    <p style="margin:0 0 16px;color:#4a5568;font-size:14px;line-height:1.7;">Le rôle d'Everstead est simple\u00a0: un endroit structuré pour recenser chaque compte (sans mot de passe, de simples repères), qui y a accès, et ce qu'il doit en advenir. Vos proches héritent d'une carte lisible, pas d'un jeu de devinettes.</p>
+  ` : `
     <p style="margin:0 0 20px;color:#4a5568;font-size:15px;line-height:1.7;">Hi ${firstName}, here's your digital estate estimate.</p>
     ${totalCard}
     ${breakdown.length > 0 ? `<h2 style="margin:0 0 12px;color:#0d1628;font-size:17px;font-weight:600;">Where the value sits</h2>${breakdownHtml}` : ''}
@@ -250,10 +270,13 @@ function digitalEstateHtml({ name, metadata, unsubLink }) {
   `
 
   return shell({
-    heading: 'Your digital estate estimate',
+    heading: fr ? 'Votre estimation de patrimoine' : 'Your digital estate estimate',
     body,
-    footerNote: 'You requested this estimate from everstead.care/digital-estate-worth.',
+    footerNote: fr
+      ? 'Vous avez demandé cette estimation depuis everstead.care/fr/digital-estate-worth.'
+      : 'You requested this estimate from everstead.care/digital-estate-worth.',
     unsubLink,
+    lang,
   })
 }
 

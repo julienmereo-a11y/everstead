@@ -1,0 +1,113 @@
+{
+  "meta": {
+    "title": "What's Your Digital Estate Worth? Free Calculator | Everstead",
+    "desc": "Calculate the estimated value of your estate in under 2 minutes. Free tool for UK families, includes financial accounts, property, pensions, and digital assets."
+  },
+  "hero": {
+    "eyebrow": "Free tool, no sign-up needed",
+    "title": "What's your digital estate worth?",
+    "sub": "Enter estimated values below for an instant breakdown of your estate. Takes under 2 minutes, and could matter more than you think."
+  },
+  "form": {
+    "heading": "Enter your estimated values",
+    "reset": "Start over",
+    "resetAria": "Clear all values and start over",
+    "inputAria": "{{label}}, enter value in pounds"
+  },
+  "categories": {
+    "financial": {
+      "label": "Financial",
+      "fields": {
+        "current_savings": {
+          "label": "Current & savings accounts",
+          "placeholder": "12,000"
+        },
+        "isas": {
+          "label": "ISAs",
+          "placeholder": "45,000"
+        },
+        "pensions": {
+          "label": "Pensions",
+          "placeholder": "180,000"
+        },
+        "investments": {
+          "label": "Investments & shares",
+          "placeholder": "30,000"
+        }
+      }
+    },
+    "property": {
+      "label": "Property",
+      "fields": {
+        "property_equity": {
+          "label": "Property equity",
+          "placeholder": "200,000",
+          "note": "Estimated value minus outstanding mortgage"
+        },
+        "other_property": {
+          "label": "Other property",
+          "placeholder": "0"
+        }
+      }
+    },
+    "digital": {
+      "label": "Digital assets",
+      "fields": {
+        "crypto": {
+          "label": "Cryptocurrency",
+          "placeholder": "0"
+        }
+      }
+    },
+    "other": {
+      "label": "Other assets",
+      "fields": {
+        "business": {
+          "label": "Business interests",
+          "placeholder": "0"
+        },
+        "vehicles": {
+          "label": "Vehicles",
+          "placeholder": "8,000"
+        },
+        "valuables": {
+          "label": "Valuable personal items",
+          "placeholder": "5,000"
+        }
+      }
+    }
+  },
+  "results": {
+    "heading": "Your estimated estate",
+    "totalAria": "Total estimated estate: {{total}}",
+    "donutAria": "Donut chart showing estate breakdown. Total: {{total}}",
+    "centre": "estimated estate",
+    "share": "Share your result",
+    "shareAria": "Copy a shareable link with your result total to the clipboard",
+    "copied": "Link copied!"
+  },
+  "context": {
+    "modest": "A modest estate, still worth organising carefully for your family.",
+    "meaningful": "A meaningful estate. Clear records will make a real difference to your family.",
+    "taxable": "This estate may be subject to inheritance tax. Professional advice is recommended.",
+    "significant": "A significant estate. Thorough planning and professional advice are strongly recommended."
+  },
+  "tax": {
+    "title": "Inheritance Tax threshold",
+    "body": "Your estate exceeds the UK nil-rate band of £325,000.",
+    "high": "At this level, thorough IHT planning is strongly recommended.",
+    "mid": "Professional advice could help reduce your family's tax exposure."
+  },
+  "email": {
+    "title": "Email me my estimate",
+    "sub": "We'll send a clean summary of your digital estate value and where it sits, useful to share with a spouse, executor, or financial adviser.",
+    "button": "Send my estimate"
+  },
+  "cta": {
+    "title": "Now make it official",
+    "body": "Everstead helps you document every account, nominate trusted people, and leave your family with complete clarity, all in one secure place.",
+    "button": "Start your estate plan, free",
+    "note": "Free plan · No card needed"
+  },
+  "disclaimer": "This calculator is for estimation purposes only. Figures are approximate and should not be relied upon for legal or financial planning without professional advice. Everstead is a UK digital estate planning service, not a financial adviser."
+}

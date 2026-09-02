@@ -1,0 +1,113 @@
+{
+  "meta": {
+    "title": "Combien vaut votre patrimoine ? Calculateur gratuit | Everstead",
+    "desc": "Estimez la valeur de votre patrimoine en moins de deux minutes. Outil gratuit pour les familles en France : comptes, épargne, immobilier, retraite et actifs numériques."
+  },
+  "hero": {
+    "eyebrow": "Outil gratuit, sans inscription",
+    "title": "Combien vaut votre patrimoine ?",
+    "sub": "Renseignez des estimations ci-dessous pour une répartition immédiate de votre patrimoine. Moins de deux minutes, et plus utile que vous ne le pensez."
+  },
+  "form": {
+    "heading": "Renseignez vos estimations",
+    "reset": "Recommencer",
+    "resetAria": "Effacer toutes les valeurs et recommencer",
+    "inputAria": "{{label}}, saisissez un montant en euros"
+  },
+  "categories": {
+    "financial": {
+      "label": "Financier",
+      "fields": {
+        "current_savings": {
+          "label": "Comptes courants et livrets",
+          "placeholder": "12 000"
+        },
+        "isas": {
+          "label": "Assurance-vie",
+          "placeholder": "45 000"
+        },
+        "pensions": {
+          "label": "Épargne retraite (PER, Madelin)",
+          "placeholder": "80 000"
+        },
+        "investments": {
+          "label": "Placements, PEA et actions",
+          "placeholder": "30 000"
+        }
+      }
+    },
+    "property": {
+      "label": "Immobilier",
+      "fields": {
+        "property_equity": {
+          "label": "Valeur nette de votre logement",
+          "placeholder": "200 000",
+          "note": "Valeur estimée moins le capital restant dû"
+        },
+        "other_property": {
+          "label": "Autres biens immobiliers",
+          "placeholder": "0"
+        }
+      }
+    },
+    "digital": {
+      "label": "Actifs numériques",
+      "fields": {
+        "crypto": {
+          "label": "Cryptomonnaies",
+          "placeholder": "0"
+        }
+      }
+    },
+    "other": {
+      "label": "Autres actifs",
+      "fields": {
+        "business": {
+          "label": "Parts d'entreprise",
+          "placeholder": "0"
+        },
+        "vehicles": {
+          "label": "Véhicules",
+          "placeholder": "8 000"
+        },
+        "valuables": {
+          "label": "Objets de valeur",
+          "placeholder": "5 000"
+        }
+      }
+    }
+  },
+  "results": {
+    "heading": "Votre patrimoine estimé",
+    "totalAria": "Patrimoine total estimé : {{total}}",
+    "donutAria": "Graphique de répartition du patrimoine. Total : {{total}}",
+    "centre": "patrimoine estimé",
+    "share": "Partager votre résultat",
+    "shareAria": "Copier un lien de partage avec votre total",
+    "copied": "Lien copié !"
+  },
+  "context": {
+    "modest": "Un patrimoine modeste, qui mérite tout de même d'être organisé avec soin pour vos proches.",
+    "meaningful": "Un patrimoine significatif. Des informations claires feront une vraie différence pour vos proches.",
+    "taxable": "À ce niveau, des droits de succession peuvent s'appliquer selon vos héritiers. L'avis d'un notaire est recommandé.",
+    "significant": "Un patrimoine important. Une organisation rigoureuse et l'accompagnement d'un notaire sont vivement recommandés."
+  },
+  "tax": {
+    "title": "Droits de succession",
+    "body": "Au-delà de 100 000 € transmis à chaque enfant, des droits de succession s'appliquent selon un barème progressif. Le conjoint et le partenaire de PACS en sont exonérés.",
+    "high": "À ce niveau, une préparation approfondie avec un notaire est vivement recommandée.",
+    "mid": "L'assurance-vie suit ses propres règles et peut alléger la transmission ; un professionnel saura vous guider."
+  },
+  "email": {
+    "title": "Recevoir mon estimation par e-mail",
+    "sub": "Nous vous enverrons un résumé clair de la valeur de votre patrimoine et de sa répartition, utile à partager avec votre conjoint, votre notaire ou votre conseiller.",
+    "button": "Recevoir mon estimation"
+  },
+  "cta": {
+    "title": "Maintenant, rendez-le officiel",
+    "body": "Everstead vous aide à recenser chaque compte, à désigner vos personnes de confiance et à laisser à vos proches une clarté totale, au même endroit sécurisé.",
+    "button": "Commencer mon plan, gratuitement",
+    "note": "Offre gratuite · Sans carte bancaire"
+  },
+  "disclaimer": "Ce calculateur fournit une estimation indicative. Les montants sont approximatifs et ne remplacent pas l'avis d'un notaire ou d'un conseiller. Everstead est un service d'organisation successorale, pas un conseiller financier."
+}

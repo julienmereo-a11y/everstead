@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Mail, CheckCircle2 } from 'lucide-react'
 
 /**
@@ -7,19 +8,19 @@ import { Mail, CheckCircle2 } from 'lucide-react'
  * Props:
  *   source     — tool slug, must match one of the API's SOURCES keys:
  *                'executor-checklist' | 'digital-estate-calculator' | 'when-someone-dies'
- *   title      — h2 inside the card
+ *   title      — h2 inside the card (defaults to the localised generic title)
  *   subtitle   — short blurb under the title
  *   buttonLabel — submit button text
  *   metadata   — optional object passed back to the email template
  *                (e.g. { total, breakdown } for the calculator)
+ *
+ * The interface language is sent along so the takeaway email arrives in the
+ * language the reader used the tool in.
  */
-export default function EmailCaptureCard({
-  source,
-  title       = 'Want the full version by email?',
-  subtitle    = "We'll send it to your inbox. One email, no spam.",
-  buttonLabel = 'Send it to me',
-  metadata    = null,
-}) {
+export default function EmailCaptureCard({ source, title, subtitle, buttonLabel, metadata = null }) {
+  const { t, i18n } = useTranslation()
+  const lang = i18n.language === 'fr' ? 'fr' : 'en'
+
   const [name,     setName]     = useState('')
   const [email,    setEmail]    = useState('')
   const [consent,  setConsent]  = useState(true)
@@ -29,8 +30,8 @@ export default function EmailCaptureCard({
   const submit = async (e) => {
     e.preventDefault()
     if (status === 'submitting') return
-    if (!email.trim()) { setStatus('error'); setErrorMsg('Please enter your email.'); return }
-    if (!consent)      { setStatus('error'); setErrorMsg('Please tick the consent box to continue.'); return }
+    if (!email.trim()) { setStatus('error'); setErrorMsg(t('emailCapture.errorEmail')); return }
+    if (!consent)      { setStatus('error'); setErrorMsg(t('emailCapture.errorConsent')); return }
 
     setStatus('submitting')
     setErrorMsg('')
@@ -38,18 +39,18 @@ export default function EmailCaptureCard({
       const res = await fetch('/api/leads/capture', {
         method:  'POST',
         headers: { 'Content-Type': 'application/json' },
-        body:    JSON.stringify({ email: email.trim(), name: name.trim() || null, source, metadata }),
+        body:    JSON.stringify({ email: email.trim(), name: name.trim() || null, source, metadata, lang }),
       })
       const data = await res.json().catch(() => ({}))
       if (!res.ok) {
         setStatus('error')
-        setErrorMsg(data.error || "Something went wrong. Please try again.")
+        setErrorMsg(data.error || t('emailCapture.errorGeneric'))
         return
       }
       setStatus('success')
     } catch {
       setStatus('error')
-      setErrorMsg("Something went wrong. Please try again.")
+      setErrorMsg(t('emailCapture.errorGeneric'))
     }
   }
 
@@ -59,10 +60,8 @@ export default function EmailCaptureCard({
         <div className="flex items-start gap-3">
           <CheckCircle2 size={22} className="text-sage-700 shrink-0 mt-0.5" />
           <div>
-            <h3 className="font-display text-xl text-navy-950 mb-2">Check your inbox.</h3>
-            <p className="text-sm text-stone-700 leading-relaxed">
-              We've just emailed you the full version. If you don't see it in a minute or two, check your spam folder, and please mark it as <em>not spam</em> so future emails reach you.
-            </p>
+            <h3 className="font-display text-xl text-navy-950 mb-2">{t('emailCapture.successTitle')}</h3>
+            <p className="text-sm text-stone-700 leading-relaxed">{t('emailCapture.successBody')}</p>
           </div>
         </div>
       </div>
@@ -74,8 +73,8 @@ export default function EmailCaptureCard({
       <div className="flex items-start gap-3 mb-5">
         <Mail size={22} className="text-sage-700 shrink-0 mt-1" />
         <div>
-          <h3 className="font-display text-xl text-navy-950 mb-1">{title}</h3>
-          <p className="text-sm text-stone-600 leading-relaxed">{subtitle}</p>
+          <h3 className="font-display text-xl text-navy-950 mb-1">{title ?? t('emailCapture.defaultTitle')}</h3>
+          <p className="text-sm text-stone-600 leading-relaxed">{subtitle ?? t('emailCapture.defaultSub')}</p>
         </div>
       </div>
 
@@ -85,8 +84,8 @@ export default function EmailCaptureCard({
             type="text"
             value={name}
             onChange={(e) => { setName(e.target.value); if (status === 'error') setStatus('idle') }}
-            placeholder="Your first name (optional)"
-            aria-label="First name"
+            placeholder={t('emailCapture.namePlaceholder')}
+            aria-label={t('emailCapture.nameAria')}
             autoComplete="given-name"
             className="w-full px-4 py-2.5 text-sm rounded-xl border border-stone-300 bg-white placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-sage-500/40 focus:border-sage-500"
             disabled={status === 'submitting'}
@@ -96,8 +95,8 @@ export default function EmailCaptureCard({
             required
             value={email}
             onChange={(e) => { setEmail(e.target.value); if (status === 'error') setStatus('idle') }}
-            placeholder="you@example.com"
-            aria-label="Email address"
+            placeholder={t('emailCapture.emailPlaceholder')}
+            aria-label={t('emailCapture.emailAria')}
             autoComplete="email"
             className="w-full px-4 py-2.5 text-sm rounded-xl border border-stone-300 bg-white placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-sage-500/40 focus:border-sage-500"
             disabled={status === 'submitting'}
@@ -112,7 +111,8 @@ export default function EmailCaptureCard({
             className="mt-0.5 h-4 w-4 rounded border-stone-300 text-sage-700 focus:ring-sage-500/40"
           />
           <span>
-            Send me the result, plus the occasional Everstead guide. I can unsubscribe at any time. See our <a href="/privacy" target="_blank" rel="noopener" className="underline hover:text-stone-700">privacy policy</a>.
+            {t('emailCapture.consent')}{' '}
+            <a href={`${lang === 'fr' ? '/fr' : ''}/privacy`} target="_blank" rel="noopener" className="underline hover:text-stone-700">{t('emailCapture.privacyLink')}</a>.
           </span>
         </label>
 
@@ -122,7 +122,7 @@ export default function EmailCaptureCard({
             disabled={status === 'submitting'}
             className="inline-flex items-center justify-center px-5 py-2.5 text-sm font-medium rounded-xl bg-navy-900 text-white hover:bg-navy-800 transition-colors disabled:bg-stone-300 disabled:cursor-not-allowed"
           >
-            {status === 'submitting' ? 'Sending…' : buttonLabel}
+            {status === 'submitting' ? t('emailCapture.sending') : (buttonLabel ?? t('emailCapture.defaultButton'))}
           </button>
           {status === 'error' && (
             <p className="text-xs text-red-700" role="alert">{errorMsg}</p>

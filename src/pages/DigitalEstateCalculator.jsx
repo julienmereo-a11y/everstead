@@ -1,94 +1,73 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react'
 import { Helmet } from 'react-helmet-async'
 import { Link } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { ArrowRight, RotateCcw, Copy, CheckCheck } from 'lucide-react'
 import EmailCaptureCard from '../components/EmailCaptureCard'
+import HreflangLinks from '../components/HreflangLinks'
+import i18n from '../i18n'
+import enCopy from '../i18n/locales/en/estateCalculator.json'
+import frCopy from '../i18n/locales/fr/estateCalculator.json'
 
-// ─── Asset categories & fields ────────────────────────────────────────────────
+// Self-registered namespace. The two markets differ in more than the words:
+// the UK version watches the £325,000 nil-rate band, the French one the
+// 100 000 € abattement each child receives, and euros sit after the number.
+i18n.addResourceBundle('en', 'estateCalculator', enCopy)
+i18n.addResourceBundle('fr', 'estateCalculator', frCopy)
+
+// ─── Asset categories & fields (labels live in the locale files) ─────────────
 
 const CATEGORIES = [
-  {
-    id:    'financial',
-    label: 'Financial',
-    color: '#0d1628',   // navy-950
-    fields: [
-      { id: 'current_savings',   label: 'Current & savings accounts', placeholder: '12,000' },
-      { id: 'isas',              label: 'ISAs',                        placeholder: '45,000' },
-      { id: 'pensions',          label: 'Pensions',                    placeholder: '180,000' },
-      { id: 'investments',       label: 'Investments & shares',        placeholder: '30,000' },
-    ],
-  },
-  {
-    id:    'property',
-    label: 'Property',
-    color: '#4c7d47',   // sage-500
-    fields: [
-      {
-        id:          'property_equity',
-        label:       'Property equity',
-        placeholder: '200,000',
-        note:        'Estimated value minus outstanding mortgage',
-      },
-      { id: 'other_property', label: 'Other property', placeholder: '0' },
-    ],
-  },
-  {
-    id:    'digital',
-    label: 'Digital assets',
-    color: '#d97706',   // amber-600
-    fields: [
-      { id: 'crypto', label: 'Cryptocurrency', placeholder: '0' },
-    ],
-  },
-  {
-    id:    'other',
-    label: 'Other assets',
-    color: '#78716c',   // stone-500
-    fields: [
-      { id: 'business',  label: 'Business interests',    placeholder: '0'     },
-      { id: 'vehicles',  label: 'Vehicles',              placeholder: '8,000' },
-      { id: 'valuables', label: 'Valuable personal items', placeholder: '5,000' },
-    ],
-  },
+  { id: 'financial', color: '#0d1628', fields: ['current_savings', 'isas', 'pensions', 'investments'] },
+  { id: 'property',  color: '#4c7d47', fields: ['property_equity', 'other_property'], noted: ['property_equity'] },
+  { id: 'digital',   color: '#d97706', fields: ['crypto'] },
+  { id: 'other',     color: '#78716c', fields: ['business', 'vehicles', 'valuables'] },
 ]
 
-const ALL_FIELDS = CATEGORIES.flatMap(cat =>
-  cat.fields.map(f => ({ ...f, categoryId: cat.id }))
-)
+const ALL_FIELD_IDS = CATEGORIES.flatMap(cat => cat.fields)
+
+// Market rules keyed by interface language (fr ⇔ France, en ⇔ UK).
+const MARKETS = {
+  en: {
+    locale:    'en-GB',
+    currency:  'GBP',
+    symbol:    '£',
+    suffix:    false,
+    taxLow:    325_000,   // nil-rate band
+    taxHigh:   500_000,
+    shareBase: 'https://www.everstead.care/digital-estate-worth',
+  },
+  fr: {
+    locale:    'fr-FR',
+    currency:  'EUR',
+    symbol:    '€',
+    suffix:    true,
+    taxLow:    100_000,   // abattement per child in the direct line
+    taxHigh:   500_000,
+    shareBase: 'https://www.everstead.care/fr/digital-estate-worth',
+  },
+}
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
-/** Strip non-digits, parse as integer */
 function parseValue(str) {
-  const n = parseInt(str.replace(/[^0-9]/g, ''), 10)
+  const n = parseInt(String(str).replace(/[^0-9]/g, ''), 10)
   return isNaN(n) ? 0 : n
 }
 
-/** Format a number with thousands commas */
-function fmt(n) {
-  return n.toLocaleString('en-GB')
+function makeMoney(market) {
+  const fmt = (n) => n.toLocaleString(market.locale)
+  return {
+    fmt,
+    money: (n) => (market.suffix ? `${fmt(n)} ${market.symbol}` : `${market.symbol}${fmt(n)}`),
+  }
 }
 
-/** Format with £ prefix */
-function fmtGBP(n) {
-  return '£' + fmt(n)
-}
-
-/** Contextual message based on total */
-function contextMessage(total) {
-  if (total < 50_000)
-    return 'A modest estate, still worth organising carefully for your family.'
-  if (total < 325_000)
-    return 'A meaningful estate. Clear records will make a real difference to your family.'
-  if (total < 500_000)
-    return 'This estate may be subject to inheritance tax. Professional advice is recommended.'
-  return 'A significant estate. Thorough planning and professional advice are strongly recommended.'
-}
-
-/** Build URL-encoded shareable hash */
-function buildShareUrl(total) {
-  const base = 'https://www.everstead.care/digital-estate-worth'
-  return `${base}#est=${encodeURIComponent(total)}`
+function contextKey(total, market) {
+  if (total < 50_000)         return 'modest'
+  if (total < market.taxLow)  return 'meaningful'
+  if (total < market.taxHigh) return 'taxable'
+  return 'significant'
 }
 
 // ─── Count-up hook ────────────────────────────────────────────────────────────
@@ -100,27 +79,18 @@ function useCountUp(target, duration = 900, trigger = false) {
 
   useEffect(() => {
     if (!trigger && target === 0) { setValue(0); return }
-
     const from  = prev.current
     const delta = target - from
     if (delta === 0) return
-
     const startTime = performance.now()
-
     const tick = (now) => {
-      const elapsed  = now - startTime
-      const t        = Math.min(elapsed / duration, 1)
-      // ease-out-expo
-      const eased    = t === 1 ? 1 : 1 - Math.pow(2, -10 * t)
-      const current  = Math.round(from + delta * eased)
-      setValue(current)
-      if (t < 1) {
-        raf.current = requestAnimationFrame(tick)
-      } else {
-        prev.current = target
-      }
+      const elapsed = now - startTime
+      const t       = Math.min(elapsed / duration, 1)
+      const eased   = t === 1 ? 1 : 1 - Math.pow(2, -10 * t)
+      setValue(Math.round(from + delta * eased))
+      if (t < 1) raf.current = requestAnimationFrame(tick)
+      else prev.current = target
     }
-
     cancelAnimationFrame(raf.current)
     raf.current = requestAnimationFrame(tick)
     return () => cancelAnimationFrame(raf.current)
@@ -132,21 +102,12 @@ function useCountUp(target, duration = 900, trigger = false) {
 
 // ─── Donut chart (pure SVG) ───────────────────────────────────────────────────
 
-/**
- * Converts polar coordinates to Cartesian.
- * cx/cy = centre, r = radius, angleDeg = degrees from 12 o'clock.
- */
 function polar(cx, cy, r, angleDeg) {
   const rad = ((angleDeg - 90) * Math.PI) / 180
   return { x: cx + r * Math.cos(rad), y: cy + r * Math.sin(rad) }
 }
 
-/**
- * Returns an SVG arc path for a donut segment.
- * startAngle / endAngle in degrees (0 = top, clockwise).
- */
 function arcPath(cx, cy, r, startAngle, endAngle) {
-  // Clamp to avoid degenerate arcs (full 360 = invisible in SVG)
   const sweep = Math.min(endAngle - startAngle, 359.99)
   const start = polar(cx, cy, r, startAngle)
   const end   = polar(cx, cy, r, startAngle + sweep)
@@ -154,19 +115,16 @@ function arcPath(cx, cy, r, startAngle, endAngle) {
   return `M ${start.x} ${start.y} A ${r} ${r} 0 ${large} 1 ${end.x} ${end.y}`
 }
 
-function DonutChart({ categoryTotals, grandTotal, displayTotal }) {
+function DonutChart({ categoryTotals, displayTotal, money, ariaLabel, centreLabel }) {
   const cx = 80, cy = 80, r = 64, strokeW = 16
-  const gap = 3 // degrees between segments
+  const gap = 3
 
-  // Build segments only for non-zero categories
   const segments = CATEGORIES
     .map(cat => ({ cat, value: categoryTotals[cat.id] || 0 }))
     .filter(s => s.value > 0)
+  const total   = segments.reduce((a, s) => a + s.value, 0)
+  const hasData = total > 0
 
-  const total    = segments.reduce((a, s) => a + s.value, 0)
-  const hasData  = total > 0
-
-  // Compute angles
   let cursor = 0
   const arcs = segments.map(s => {
     const span  = (s.value / total) * (360 - gap * segments.length)
@@ -176,23 +134,8 @@ function DonutChart({ categoryTotals, grandTotal, displayTotal }) {
   })
 
   return (
-    <svg
-      viewBox="0 0 160 160"
-      className="w-full max-w-[200px] sm:max-w-[220px]"
-      aria-label={`Donut chart showing estate breakdown. Total: ${fmtGBP(displayTotal)}`}
-      role="img"
-    >
-      {/* Track ring when no data */}
-      {!hasData && (
-        <circle
-          cx={cx} cy={cy} r={r}
-          fill="none"
-          stroke="#e7e5e4"
-          strokeWidth={strokeW}
-        />
-      )}
-
-      {/* Segments */}
+    <svg viewBox="0 0 160 160" className="w-full max-w-[200px] sm:max-w-[220px]" aria-label={ariaLabel} role="img">
+      {!hasData && <circle cx={cx} cy={cy} r={r} fill="none" stroke="#e7e5e4" strokeWidth={strokeW} />}
       {arcs.map(({ cat, start, span }) => (
         <path
           key={cat.id}
@@ -201,35 +144,14 @@ function DonutChart({ categoryTotals, grandTotal, displayTotal }) {
           stroke={cat.color}
           strokeWidth={strokeW}
           strokeLinecap="round"
-          style={{
-            transition: 'stroke-dasharray 0.6s ease, opacity 0.4s ease',
-          }}
+          style={{ transition: 'stroke-dasharray 0.6s ease, opacity 0.4s ease' }}
         />
       ))}
-
-      {/* Centre label */}
-      <text
-        x={cx}
-        y={cy - 7}
-        textAnchor="middle"
-        dominantBaseline="middle"
-        fontFamily="'Cormorant Garamond', Georgia, serif"
-        fontSize="14"
-        fontWeight="300"
-        fill="#0d1628"
-      >
-        {hasData ? fmtGBP(displayTotal) : '£0'}
+      <text x={cx} y={cy - 7} textAnchor="middle" dominantBaseline="middle" fontFamily="'Cormorant Garamond', Georgia, serif" fontSize="14" fontWeight="300" fill="#0d1628">
+        {money(hasData ? displayTotal : 0)}
       </text>
-      <text
-        x={cx}
-        y={cy + 11}
-        textAnchor="middle"
-        dominantBaseline="middle"
-        fontFamily="'DM Sans', system-ui, sans-serif"
-        fontSize="7"
-        fill="#78716c"
-      >
-        estimated estate
+      <text x={cx} y={cy + 11} textAnchor="middle" dominantBaseline="middle" fontFamily="'DM Sans', system-ui, sans-serif" fontSize="7" fill="#78716c">
+        {centreLabel}
       </text>
     </svg>
   )
@@ -237,28 +159,24 @@ function DonutChart({ categoryTotals, grandTotal, displayTotal }) {
 
 // ─── Currency input ───────────────────────────────────────────────────────────
 
-function CurrencyInput({ id, label, placeholder, note, value, onChange }) {
-  // Format display value with commas; store raw digits
+function CurrencyInput({ id, label, placeholder, note, value, onChange, market, ariaLabel }) {
   const handleChange = (e) => {
     const raw     = e.target.value.replace(/[^0-9]/g, '')
-    const display = raw ? parseInt(raw, 10).toLocaleString('en-GB') : ''
+    const display = raw ? parseInt(raw, 10).toLocaleString(market.locale) : ''
     onChange(display)
   }
+  const symbolCls = market.suffix ? 'right-3.5' : 'left-3.5'
+  const inputPad  = market.suffix ? 'pl-4 pr-9' : 'pl-8 pr-4'
 
   return (
     <div className="flex flex-col gap-1">
       <label htmlFor={id} className="text-sm font-medium text-navy-900 leading-snug">
         {label}
-        {note && (
-          <span className="block text-xs font-normal text-stone-400 mt-0.5">{note}</span>
-        )}
+        {note && <span className="block text-xs font-normal text-stone-400 mt-0.5">{note}</span>}
       </label>
       <div className="relative flex items-center">
-        <span
-          aria-hidden="true"
-          className="absolute left-3.5 text-sm font-medium text-stone-400 pointer-events-none select-none"
-        >
-          £
+        <span aria-hidden="true" className={`absolute ${symbolCls} text-sm font-medium text-stone-400 pointer-events-none select-none`}>
+          {market.symbol}
         </span>
         <input
           id={id}
@@ -267,8 +185,8 @@ function CurrencyInput({ id, label, placeholder, note, value, onChange }) {
           value={value}
           onChange={handleChange}
           placeholder={placeholder}
-          className="w-full pl-8 pr-4 py-2.5 rounded-xl border border-stone-200 bg-white text-sm text-navy-950 placeholder:text-stone-300 focus:outline-none focus:ring-2 focus:ring-navy-700 focus:border-transparent transition"
-          aria-label={`${label}, enter value in pounds`}
+          className={`w-full ${inputPad} py-2.5 rounded-xl border border-stone-200 bg-white text-sm text-navy-950 placeholder:text-stone-300 focus:outline-none focus:ring-2 focus:ring-navy-700 focus:border-transparent transition`}
+          aria-label={ariaLabel}
         />
       </div>
     </div>
@@ -277,22 +195,16 @@ function CurrencyInput({ id, label, placeholder, note, value, onChange }) {
 
 // ─── Category legend item ─────────────────────────────────────────────────────
 
-function LegendItem({ color, label, value, pct }) {
+function LegendItem({ color, label, value, pct, money }) {
   return (
     <div className="flex items-center justify-between gap-3">
       <div className="flex items-center gap-2 min-w-0">
-        <div
-          className="w-2.5 h-2.5 rounded-full shrink-0"
-          style={{ backgroundColor: color }}
-          aria-hidden="true"
-        />
+        <div className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: color }} aria-hidden="true" />
         <span className="text-xs text-stone-500 truncate">{label}</span>
       </div>
       <div className="text-right shrink-0">
-        <span className="text-xs font-medium text-navy-950">{fmtGBP(value)}</span>
-        {pct > 0 && (
-          <span className="text-[10px] text-stone-400 ml-1.5">({pct}%)</span>
-        )}
+        <span className="text-xs font-medium text-navy-950">{money(value)}</span>
+        {pct > 0 && <span className="text-[10px] text-stone-400 ml-1.5">({pct}%)</span>}
       </div>
     </div>
   )
@@ -320,26 +232,28 @@ function Toast({ visible, message }) {
 
 // ─── Main component ───────────────────────────────────────────────────────────
 
-const EMPTY_VALUES = Object.fromEntries(ALL_FIELDS.map(f => [f.id, '']))
+const EMPTY_VALUES = Object.fromEntries(ALL_FIELD_IDS.map(id => [id, '']))
 
 export default function DigitalEstateCalculator() {
-  const [values, setValues]       = useState(EMPTY_VALUES)
-  const [toastVisible, setToast]  = useState(false)
-  const toastTimer                = useRef(null)
+  const { t, i18n: i18nInstance } = useTranslation('estateCalculator')
+  const lang    = i18nInstance.language === 'fr' ? 'fr' : 'en'
+  const market  = MARKETS[lang]
+  const { fmt, money } = makeMoney(market)
+  const pageUrl = `https://www.everstead.care${lang === 'fr' ? '/fr' : ''}/digital-estate-worth`
 
-  // Per-category and grand totals
+  const [values, setValues]      = useState(EMPTY_VALUES)
+  const [toastVisible, setToast] = useState(false)
+  const toastTimer               = useRef(null)
+
   const categoryTotals = Object.fromEntries(
-    CATEGORIES.map(cat => [
-      cat.id,
-      cat.fields.reduce((sum, f) => sum + parseValue(values[f.id] || ''), 0),
-    ])
+    CATEGORIES.map(cat => [cat.id, cat.fields.reduce((sum, id) => sum + parseValue(values[id] || ''), 0)])
   )
   const grandTotal = Object.values(categoryTotals).reduce((a, b) => a + b, 0)
 
-  const hasAnyValue   = grandTotal > 0
-  const displayTotal  = useCountUp(grandTotal)
-  const exceedsNRB    = grandTotal > 325_000
-  const exceedsHalfM  = grandTotal >= 500_000
+  const hasAnyValue  = grandTotal > 0
+  const displayTotal = useCountUp(grandTotal)
+  const exceedsLow   = grandTotal > market.taxLow
+  const exceedsHigh  = grandTotal >= market.taxHigh
 
   const handleChange = useCallback((fieldId, display) => {
     setValues(prev => ({ ...prev, [fieldId]: display }))
@@ -350,11 +264,10 @@ export default function DigitalEstateCalculator() {
   }
 
   async function handleShare() {
-    const url = buildShareUrl(grandTotal)
+    const url = `${market.shareBase}#est=${encodeURIComponent(grandTotal)}`
     try {
       await navigator.clipboard.writeText(url)
     } catch {
-      // Fallback: create a temporary input
       const el = document.createElement('input')
       el.value = url
       document.body.appendChild(el)
@@ -367,95 +280,76 @@ export default function DigitalEstateCalculator() {
     toastTimer.current = setTimeout(() => setToast(false), 2800)
   }
 
-  // Read shared result from URL hash on mount
+  // A shared link carries the total in the hash; pre-fill one line so it renders.
   useEffect(() => {
-    const hash = window.location.hash
-    const match = hash.match(/est=([0-9]+)/)
+    const match = window.location.hash.match(/est=([0-9]+)/)
     if (match) {
-      // Pre-fill "pensions" with the shared total as a single line item (best-effort)
-      // so the total renders correctly on share
       const shared = parseInt(match[1], 10)
-      if (!isNaN(shared) && shared > 0) {
-        setValues(prev => ({
-          ...prev,
-          pensions: fmt(shared),
-        }))
-      }
+      if (!isNaN(shared) && shared > 0) setValues(prev => ({ ...prev, pensions: fmt(shared) }))
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  const fieldLabel = (cat, id) => t(`categories.${cat.id}.fields.${id}.label`)
 
   return (
     <>
       <Helmet>
-        <title>What's Your Digital Estate Worth? Free Calculator | Everstead</title>
-        <meta
-          name="description"
-          content="Calculate the estimated value of your estate in under 2 minutes. Free tool for UK families, includes financial accounts, property, pensions, and digital assets."
-        />
-        <link rel="canonical" href="https://www.everstead.care/digital-estate-worth" />
+        <title>{t('meta.title')}</title>
+        <meta name="description" content={t('meta.desc')} />
+        <link rel="canonical" href={pageUrl} />
         <meta property="og:type" content="website" />
-        <meta property="og:title" content="What's Your Digital Estate Worth? Free Calculator | Everstead" />
-        <meta property="og:description" content="Calculate the estimated value of your estate in under 2 minutes. Free tool for UK families, includes financial accounts, property, pensions, and digital assets." />
-        <meta property="og:url" content="https://www.everstead.care/digital-estate-worth" />
+        <meta property="og:title" content={t('meta.title')} />
+        <meta property="og:description" content={t('meta.desc')} />
+        <meta property="og:url" content={pageUrl} />
         <meta property="og:image" content="https://www.everstead.care/og-image.png" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:image" content="https://www.everstead.care/og-image.png" />
       </Helmet>
+      <HreflangLinks path="/digital-estate-worth" />
 
       {/* ── Hero ── */}
       <section className="relative overflow-hidden grain">
         <div className="absolute inset-0 aurora-bg" />
         <div className="relative max-w-3xl mx-auto px-6 pt-28 pb-16 lg:pt-32 lg:pb-20 text-center">
-          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-sage-300 mb-4">
-            Free tool, no sign-up needed
-          </p>
+          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-sage-300 mb-4">{t('hero.eyebrow')}</p>
           <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-light text-white leading-tight text-balance">
-            What's your digital estate worth?
+            {t('hero.title')}
           </h1>
-          <p className="mt-4 text-base sm:text-lg leading-relaxed text-stone-300 max-w-xl mx-auto">
-            Enter estimated values below for an instant breakdown of your estate.
-            Takes under 2 minutes, and could matter more than you think.
-          </p>
+          <p className="mt-4 text-base sm:text-lg leading-relaxed text-stone-300 max-w-xl mx-auto">{t('hero.sub')}</p>
         </div>
       </section>
 
       {/* ── Main content ── */}
       <section className="max-w-5xl mx-auto px-4 sm:px-6 pb-24 pt-8">
-
         <div className="grid lg:grid-cols-[1fr_360px] gap-6 items-start">
 
           {/* ── LEFT: input card ── */}
           <div className="bg-white rounded-2xl shadow-xl border border-stone-100 overflow-hidden">
             <div className="px-6 sm:px-8 pt-8 pb-2">
-              <p className="text-xs font-semibold uppercase tracking-widest text-stone-400">
-                Enter your estimated values
-              </p>
+              <p className="text-xs font-semibold uppercase tracking-widest text-stone-400">{t('form.heading')}</p>
             </div>
 
             <div className="px-6 sm:px-8 pb-8 pt-4 space-y-8">
               {CATEGORIES.map(cat => (
                 <fieldset key={cat.id}>
                   <legend className="flex items-center gap-2 mb-4">
-                    <div
-                      className="w-2.5 h-2.5 rounded-full"
-                      style={{ backgroundColor: cat.color }}
-                      aria-hidden="true"
-                    />
-                    <span className="text-sm font-semibold text-navy-950 uppercase tracking-wider">
-                      {cat.label}
-                    </span>
+                    <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: cat.color }} aria-hidden="true" />
+                    <span className="text-sm font-semibold text-navy-950 uppercase tracking-wider">{t(`categories.${cat.id}.label`)}</span>
                   </legend>
 
                   <div className="grid sm:grid-cols-2 gap-4">
-                    {cat.fields.map(field => (
+                    {cat.fields.map(id => (
                       <CurrencyInput
-                        key={field.id}
-                        id={field.id}
-                        label={field.label}
-                        placeholder={field.placeholder}
-                        note={field.note}
-                        value={values[field.id]}
-                        onChange={(val) => handleChange(field.id, val)}
+                        key={id}
+                        id={id}
+                        label={fieldLabel(cat, id)}
+                        placeholder={t(`categories.${cat.id}.fields.${id}.placeholder`)}
+                        note={cat.noted?.includes(id) ? t(`categories.${cat.id}.fields.${id}.note`) : undefined}
+                        value={values[id]}
+                        onChange={(val) => handleChange(id, val)}
+                        market={market}
+                        ariaLabel={t('form.inputAria', { label: fieldLabel(cat, id) })}
                       />
                     ))}
                   </div>
@@ -463,23 +357,20 @@ export default function DigitalEstateCalculator() {
               ))}
             </div>
 
-            {/* Reset */}
             <div className="px-6 sm:px-8 pb-7 border-t border-stone-100 pt-5 flex items-center justify-end">
               <button
                 onClick={handleReset}
                 className="inline-flex items-center gap-1.5 text-xs text-stone-400 hover:text-navy-700 transition-colors duration-150 focus:outline-none focus-visible:underline"
-                aria-label="Clear all values and start over"
+                aria-label={t('form.resetAria')}
               >
                 <RotateCcw size={13} />
-                Start over
+                {t('form.reset')}
               </button>
             </div>
           </div>
 
           {/* ── RIGHT: results panel ── */}
           <div className="space-y-4 lg:sticky lg:top-6">
-
-            {/* Results card */}
             <div
               className={[
                 'bg-white rounded-2xl shadow-xl border border-stone-100 overflow-hidden transition-all duration-500',
@@ -488,129 +379,96 @@ export default function DigitalEstateCalculator() {
               aria-live="polite"
               aria-atomic="true"
             >
-              {/* Total header */}
               <div className="px-6 pt-7 pb-5 text-center border-b border-stone-100">
-                <p className="text-xs font-semibold uppercase tracking-widest text-stone-400 mb-1">
-                  Your estimated estate
-                </p>
-                <p
-                  className="font-display text-4xl sm:text-5xl font-light text-navy-950 leading-none tabular-nums"
-                  aria-label={`Total estimated estate: ${fmtGBP(displayTotal)}`}
-                >
-                  {fmtGBP(displayTotal)}
+                <p className="text-xs font-semibold uppercase tracking-widest text-stone-400 mb-1">{t('results.heading')}</p>
+                <p className="font-display text-4xl sm:text-5xl font-light text-navy-950 leading-none tabular-nums" aria-label={t('results.totalAria', { total: money(displayTotal) })}>
+                  {money(displayTotal)}
                 </p>
               </div>
 
-              {/* Donut + legend */}
               <div className="px-6 py-6 flex flex-col items-center gap-5">
                 <DonutChart
                   categoryTotals={categoryTotals}
-                  grandTotal={grandTotal}
                   displayTotal={displayTotal}
+                  money={money}
+                  ariaLabel={t('results.donutAria', { total: money(displayTotal) })}
+                  centreLabel={t('results.centre')}
                 />
-
-                {/* Legend */}
                 <div className="w-full space-y-2">
                   {CATEGORIES.map(cat => {
                     const val = categoryTotals[cat.id]
                     const pct = grandTotal > 0 ? Math.round((val / grandTotal) * 100) : 0
-                    return (
-                      <LegendItem
-                        key={cat.id}
-                        color={cat.color}
-                        label={cat.label}
-                        value={val}
-                        pct={pct}
-                      />
-                    )
+                    return <LegendItem key={cat.id} color={cat.color} label={t(`categories.${cat.id}.label`)} value={val} pct={pct} money={money} />
                   })}
                 </div>
               </div>
 
-              {/* Contextual message */}
               {hasAnyValue && (
                 <div className="mx-5 mb-5 rounded-xl bg-stone-50 border border-stone-200 px-4 py-3.5">
-                  <p className="text-sm leading-relaxed text-stone-700">
-                    {contextMessage(grandTotal)}
-                  </p>
+                  <p className="text-sm leading-relaxed text-stone-700">{t(`context.${contextKey(grandTotal, market)}`)}</p>
                 </div>
               )}
 
-              {/* IHT callout */}
-              {exceedsNRB && (
+              {exceedsLow && (
                 <div className="mx-5 mb-5 rounded-xl bg-amber-50 border border-amber-200 px-4 py-3.5">
-                  <p className="text-xs font-semibold text-amber-700 uppercase tracking-wider mb-1">
-                    Inheritance Tax threshold
-                  </p>
+                  <p className="text-xs font-semibold text-amber-700 uppercase tracking-wider mb-1">{t('tax.title')}</p>
                   <p className="text-sm leading-relaxed text-amber-800">
-                    Your estate exceeds the UK nil-rate band of £325,000.
-                    {exceedsHalfM
-                      ? ' At this level, thorough IHT planning is strongly recommended.'
-                      : ' Professional advice could help reduce your family\'s tax exposure.'}
+                    {t('tax.body')} {exceedsHigh ? t('tax.high') : t('tax.mid')}
                   </p>
                 </div>
               )}
 
-              {/* Share button */}
               <div className="px-5 pb-6 space-y-3">
                 <button
                   onClick={handleShare}
                   disabled={!hasAnyValue}
                   className="w-full flex items-center justify-center gap-2 rounded-full border-2 border-navy-200 bg-navy-50 hover:bg-navy-100 hover:border-navy-300 text-navy-800 text-sm font-medium px-4 py-3 transition-colors duration-150 disabled:opacity-40 disabled:cursor-not-allowed focus:outline-none focus-visible:ring-2 focus-visible:ring-navy-700 focus-visible:ring-offset-2"
-                  aria-label="Copy a shareable link with your result total to the clipboard"
+                  aria-label={t('results.shareAria')}
                 >
                   <Copy size={15} />
-                  Share your result
+                  {t('results.share')}
                 </button>
               </div>
             </div>
 
-            {/* Email capture — only show once they have a result */}
             {grandTotal > 0 && (
               <EmailCaptureCard
                 source="digital-estate-calculator"
-                title="Email me my estimate"
-                subtitle="We'll send a clean summary of your digital estate value and where it sits, useful to share with a spouse, executor, or financial adviser."
-                buttonLabel="Send my estimate"
+                title={t('email.title')}
+                subtitle={t('email.sub')}
+                buttonLabel={t('email.button')}
                 metadata={{
                   total: grandTotal,
+                  currency: market.currency,
                   breakdown: CATEGORIES
-                    .map(cat => ({ label: cat.label || cat.id, value: new Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP', maximumFractionDigits: 0 }).format(categoryTotals[cat.id] || 0) }))
-                    .filter((row, i) => (categoryTotals[CATEGORIES[i].id] || 0) > 0),
+                    .filter(cat => (categoryTotals[cat.id] || 0) > 0)
+                    .map(cat => ({
+                      label: t(`categories.${cat.id}.label`),
+                      value: new Intl.NumberFormat(market.locale, { style: 'currency', currency: market.currency, maximumFractionDigits: 0 }).format(categoryTotals[cat.id] || 0),
+                    })),
                 }}
               />
             )}
 
-            {/* CTA card */}
             <div className="aurora-field aurora-dim rounded-2xl border border-navy-800 px-6 py-7 text-center">
-              <p className="font-display text-xl font-light text-white leading-snug mb-2">
-                Now make it official
-              </p>
-              <p className="text-sm text-stone-400 leading-relaxed mb-5">
-                Everstead helps you document every account, nominate trusted people, and leave your family with complete clarity, all in one secure place.
-              </p>
+              <p className="font-display text-xl font-light text-white leading-snug mb-2">{t('cta.title')}</p>
+              <p className="text-sm text-stone-400 leading-relaxed mb-5">{t('cta.body')}</p>
               <Link
                 to="/get-started"
                 className="btn-aurora inline-flex items-center gap-2 rounded-full px-5 py-3 text-sm font-semibold transition-colors duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-navy-950"
               >
-                Start your estate plan, free
+                {t('cta.button')}
                 <ArrowRight size={15} />
               </Link>
-              <p className="mt-3 text-[11px] text-stone-600">
-                Free 14-day trial · Card required · No charge until trial ends
-              </p>
+              <p className="mt-3 text-[11px] text-stone-600">{t('cta.note')}</p>
             </div>
           </div>
         </div>
 
-        {/* ── Disclaimer ── */}
-        <p className="text-center text-xs text-stone-400 leading-relaxed mt-8 max-w-2xl mx-auto">
-          This calculator is for estimation purposes only. Figures are approximate and should not be relied upon for legal or financial planning without professional advice. Everstead is a UK digital estate planning service, not a financial adviser.
-        </p>
+        <p className="text-center text-xs text-stone-400 leading-relaxed mt-8 max-w-2xl mx-auto">{t('disclaimer')}</p>
       </section>
 
-      {/* ── Toast ── */}
-      <Toast visible={toastVisible} message="Link copied!" />
+      <Toast visible={toastVisible} message={t('results.copied')} />
     </>
   )
 }
