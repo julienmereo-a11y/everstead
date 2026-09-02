@@ -1199,6 +1199,12 @@
       "checkPermanent": "I understand this is <b>permanent and irreversible</b>. My account, all data, and any active subscription will be deleted immediately.",
       "deleting": "Deleting…",
       "confirmDelete": "Permanently delete my account"
+    },
+    "language": {
+      "heading": "Language",
+      "body": "Used across your dashboard and in the emails Everstead sends you.",
+      "saved": "Language updated.",
+      "failed": "Could not update your language. Please try again."
     }
   },
   "modals": {
@@ -1223,6 +1229,89 @@
       "noDocuments": "No documents uploaded yet",
       "instructions": "Instructions ({{n}})",
       "footer": "<b>Preview only.</b> Your executor sees this view after verifying your incapacity or death, according to the access timing you've set for each contact."
+    }
+  },
+  "ai": {
+    "title": "Your AI Assistant",
+    "subtitle": "Chat, or drop in a document: I'll suggest entries for you to review. Nothing is saved until you confirm it.",
+    "offTitle": "AI features are turned off",
+    "offBody": "You can turn them back on any time in Settings → AI features. Nothing is sent to an AI provider while they're off.",
+    "fileTooLarge": "That file is too large. Please use one under {{mb}}MB.",
+    "fileBadType": "Please upload a PDF or an image (PNG, JPG, GIF, or WebP).",
+    "uploadedMsg": "(uploaded {{name}})",
+    "unavailable": "The assistant is unavailable right now. Please try again.",
+    "genericError": "Something went wrong. Please try again.",
+    "couldNotSave": "Could not save this.",
+    "requiredField": "{{label}} is needed before this can be saved.",
+    "greeting": "Hello{{name}}. I'm here to help you set things up, one small step at a time, no rush. You can tell me about an account, a person you trust, or a wish, or drop in a document and I'll read it. What feels like a good first step?",
+    "rememberLabel": "Remember this conversation",
+    "rememberTitle": "Saved on this device only. Turn off to keep nothing.",
+    "newConversation": "New conversation",
+    "thinking": "Thinking…",
+    "keepQuestion": "Keep “{{name}}” in your vault?",
+    "keepNote": "It isn't stored unless you choose to keep it.",
+    "discard": "Discard",
+    "keeping": "Keeping…",
+    "tryAgain": "Try again",
+    "keepInVault": "Keep in vault",
+    "kept": "Kept",
+    "viaAssistantNote": "Added via your AI Assistant",
+    "suggested": "Suggested entries",
+    "suggestedHint": "Tick what you'd like, edit anything, then add.",
+    "addConfirmedZero": "Add confirmed items",
+    "addConfirmed_one": "Add {{count}} confirmed item",
+    "addConfirmed_other": "Add {{count}} confirmed items",
+    "onlyTicked": "Only ticked items are saved.",
+    "attachTitle": "Attach a document or image",
+    "placeholder": "Tell me about an account, a person, a wish…",
+    "placeholderDemo": "Sign in to your account to chat with the assistant",
+    "reassurance": "Your AI Assistant works only inside your Everstead account and never shares your information elsewhere. Nothing is saved until you review and confirm it, it suggests, you decide. Your documents are protected with the same AES-256 encryption as the rest of Everstead, and are never used to train AI or for advertising. You can switch AI features off any time in Settings.",
+    "demoNote": "Demo mode, the assistant is read-only here. Start your own plan to use it for real.",
+    "card": {
+      "saved": "Saved",
+      "willBeAdded": "Will be added",
+      "approve": "Approve",
+      "dismiss": "Dismiss",
+      "checkThis": "Please check this",
+      "select": "Select…",
+      "lifeEvents": "Life events"
+    },
+    "types": {
+      "account": "Account",
+      "trusted_person": "Trusted person",
+      "document": "Document",
+      "wish": "Wish",
+      "about_me": "About Me"
+    },
+    "fields": {
+      "institution": "Institution",
+      "category": "Category",
+      "accountType": "Type",
+      "last4": "Last 4 digits",
+      "balance": "Balance",
+      "notes": "Notes",
+      "name": "Name",
+      "email": "Email",
+      "role": "Role",
+      "expiry": "Expiry date",
+      "title": "Title",
+      "details": "Details",
+      "passions": "Passions",
+      "reflections": "Reflections",
+      "playlist": "Playlist link"
+    },
+    "ph": {
+      "accountType": "e.g. Current account, Cash ISA",
+      "optional": "optional",
+      "role": "e.g. Executor, Next of kin",
+      "date": "YYYY-MM-DD"
+    },
+    "wishCategory": {
+      "Funeral": "Funeral",
+      "Personal Letters": "Personal Letters",
+      "Sentimental Items": "Sentimental Items",
+      "Digital Legacy": "Digital Legacy",
+      "Other": "Other"
     }
   }
 }

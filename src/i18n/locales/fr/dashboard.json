@@ -1199,6 +1199,12 @@
       "checkPermanent": "Je comprends que cette action est <b>définitive et irréversible</b>. Mon compte, toutes mes données et tout abonnement actif seront supprimés immédiatement.",
       "deleting": "Suppression…",
       "confirmDelete": "Supprimer définitivement mon compte"
+    },
+    "language": {
+      "heading": "Langue",
+      "body": "Utilisée dans votre espace et dans les e-mails qu'Everstead vous envoie.",
+      "saved": "Langue mise à jour.",
+      "failed": "Impossible de changer la langue. Veuillez réessayer."
     }
   },
   "modals": {
@@ -1223,6 +1229,89 @@
       "noDocuments": "Aucun document téléversé pour le moment",
       "instructions": "Consignes ({{n}})",
       "footer": "<b>Aperçu uniquement.</b> Votre exécuteur testamentaire voit cette vue après vérification de votre incapacité ou de votre décès, selon les délais d'accès que vous avez définis pour chaque personne."
+    }
+  },
+  "ai": {
+    "title": "Votre assistant IA",
+    "subtitle": "Discutez, ou déposez un document : je vous proposerai des entrées à vérifier. Rien n'est enregistré sans votre confirmation.",
+    "offTitle": "Les fonctions IA sont désactivées",
+    "offBody": "Vous pouvez les réactiver à tout moment dans Réglages → Fonctions IA. Tant qu'elles sont désactivées, rien n'est transmis à un fournisseur d'IA.",
+    "fileTooLarge": "Ce fichier est trop volumineux. Utilisez un fichier de moins de {{mb}} Mo.",
+    "fileBadType": "Merci d'utiliser un PDF ou une image (PNG, JPG, GIF ou WebP).",
+    "uploadedMsg": "(fichier envoyé : {{name}})",
+    "unavailable": "L'assistant est indisponible pour le moment. Veuillez réessayer.",
+    "genericError": "Une erreur est survenue. Veuillez réessayer.",
+    "couldNotSave": "Impossible d'enregistrer cette entrée.",
+    "requiredField": "{{label}} est requis avant de pouvoir enregistrer.",
+    "greeting": "Bonjour{{name}}. Je suis là pour vous aider à tout mettre en place, une petite étape à la fois, sans précipitation. Parlez-moi d'un compte, d'une personne de confiance ou d'un souhait, ou déposez un document et je le lirai. Par quoi aimeriez-vous commencer ?",
+    "rememberLabel": "Mémoriser cette conversation",
+    "rememberTitle": "Enregistrée sur cet appareil uniquement. Désactivez pour ne rien conserver.",
+    "newConversation": "Nouvelle conversation",
+    "thinking": "Je réfléchis…",
+    "keepQuestion": "Conserver « {{name}} » dans votre coffre ?",
+    "keepNote": "Le fichier n'est conservé que si vous le décidez.",
+    "discard": "Ignorer",
+    "keeping": "Enregistrement…",
+    "tryAgain": "Réessayer",
+    "keepInVault": "Conserver dans le coffre",
+    "kept": "Conservé",
+    "viaAssistantNote": "Ajouté via votre assistant IA",
+    "suggested": "Entrées suggérées",
+    "suggestedHint": "Cochez ce qui vous convient, modifiez si besoin, puis ajoutez.",
+    "addConfirmedZero": "Ajouter les entrées confirmées",
+    "addConfirmed_one": "Ajouter {{count}} entrée confirmée",
+    "addConfirmed_other": "Ajouter {{count}} entrées confirmées",
+    "onlyTicked": "Seules les entrées cochées sont enregistrées.",
+    "attachTitle": "Joindre un document ou une image",
+    "placeholder": "Parlez-moi d'un compte, d'une personne, d'un souhait…",
+    "placeholderDemo": "Connectez-vous à votre compte pour discuter avec l'assistant",
+    "reassurance": "Votre assistant IA fonctionne uniquement au sein de votre compte Everstead et ne partage jamais vos informations ailleurs. Rien n'est enregistré sans votre relecture et votre confirmation : il suggère, vous décidez. Vos documents sont protégés par le même chiffrement AES-256 que le reste d'Everstead, et ne servent jamais à entraîner une IA ni à des fins publicitaires. Vous pouvez désactiver les fonctions IA à tout moment dans les réglages.",
+    "demoNote": "Mode démo : l'assistant est en lecture seule ici. Créez votre compte pour l'utiliser réellement.",
+    "card": {
+      "saved": "Enregistré",
+      "willBeAdded": "Sera ajouté",
+      "approve": "Approuver",
+      "dismiss": "Ignorer",
+      "checkThis": "À vérifier",
+      "select": "Choisir…",
+      "lifeEvents": "Étapes de vie"
+    },
+    "types": {
+      "account": "Compte",
+      "trusted_person": "Personne de confiance",
+      "document": "Document",
+      "wish": "Souhait",
+      "about_me": "À propos de moi"
+    },
+    "fields": {
+      "institution": "Établissement",
+      "category": "Catégorie",
+      "accountType": "Type",
+      "last4": "4 derniers chiffres",
+      "balance": "Solde",
+      "notes": "Notes",
+      "name": "Nom",
+      "email": "E-mail",
+      "role": "Rôle",
+      "expiry": "Date d'expiration",
+      "title": "Titre",
+      "details": "Détails",
+      "passions": "Passions",
+      "reflections": "Réflexions",
+      "playlist": "Lien de playlist"
+    },
+    "ph": {
+      "accountType": "ex. Compte courant, Livret A",
+      "optional": "facultatif",
+      "role": "ex. Exécuteur testamentaire, Notaire",
+      "date": "AAAA-MM-JJ"
+    },
+    "wishCategory": {
+      "Funeral": "Obsèques",
+      "Personal Letters": "Lettres personnelles",
+      "Sentimental Items": "Objets sentimentaux",
+      "Digital Legacy": "Héritage numérique",
+      "Other": "Autre"
     }
   }
 }

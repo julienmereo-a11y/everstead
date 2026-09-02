@@ -7,7 +7,7 @@ import { PLAN_LABELS, PRICING, planLabel } from '../../../config/pricing'
 import i18n from '../../../i18n'
 import { PLANS, redirectToCustomerPortal } from '../../../lib/stripe'
 import { Field, SectionShell, input, primaryBtn, secondaryBtn } from '../../dashboard/ui'
-import { AlertCircle, Bell, Check, Copy, CreditCard, Download, ExternalLink, Gift, Loader2, Lock, ShieldCheck, Sparkles, Users } from 'lucide-react'
+import { AlertCircle, Bell, Check, Copy, CreditCard, Download, ExternalLink, Gift, Globe, Loader2, Lock, ShieldCheck, Sparkles, Users } from 'lucide-react'
 import { Trans, useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 export function ManageBillingButton() {
@@ -348,6 +348,17 @@ export function SettingsSection({ profile, isDemo, updateProfile, refreshProfile
     finally { setProfileSaving(false) }
   }
 
+  // Language: mirrors the native Settings toggle. The choice drives the whole
+  // signed-in app (ProfileLanguage follows profiles.language) and the emails.
+  const [langMsg, setLangMsg] = useState(null)
+  const changeLanguage = async (lang) => {
+    setLangMsg(null)
+    i18n.changeLanguage(lang)
+    if (isDemo) return
+    try { await updateProfile({ language: lang }); setLangMsg({ ok: true }) }
+    catch { setLangMsg({ ok: false }) }
+  }
+
   const handlePasswordSave = async (e) => {
     e.preventDefault()
     if (pwForm.next !== pwForm.confirm) { setPwMsg({ type: 'error', text: t('settings.password.mismatch') }); return }
@@ -445,6 +456,27 @@ export function SettingsSection({ profile, isDemo, updateProfile, refreshProfile
               {profileSaved && <span className="text-xs text-emerald-600 font-medium">{t('settings.profile.updated')}</span>}
             </div>
           </form>
+        </div>
+
+        {/* ── Language ── */}
+        <div className="bg-white border border-stone-200 rounded-2xl p-6">
+          <h2 className="font-semibold text-navy-950 text-sm mb-1 flex items-center gap-2">
+            <Globe size={15} className="text-navy-600" /> {t('settings.language.heading')}
+          </h2>
+          <p className="text-xs text-stone-500 mb-4">{t('settings.language.body')}</p>
+          <select
+            className={`${input} max-w-xs`}
+            value={i18n.language === 'fr' ? 'fr' : 'en'}
+            onChange={e => changeLanguage(e.target.value)}
+          >
+            <option value="en">English</option>
+            <option value="fr">Français</option>
+          </select>
+          {langMsg && (
+            <p className={`text-xs mt-2 ${langMsg.ok ? 'text-emerald-600' : 'text-red-600'}`}>
+              {langMsg.ok ? t('settings.language.saved') : t('settings.language.failed')}
+            </p>
+          )}
         </div>
 
         {/* ── Password ── */}

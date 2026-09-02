@@ -34,7 +34,7 @@ const json = (body: unknown, status = 200) =>
 // Warm, low-pressure setup helper for Everstead. Extracts structured PROPOSALS
 // that the user reviews and confirms before anything is saved. Not a therapist
 // or adviser. Hard crisis-handling and scope rules are baked in below.
-const SYSTEM_PROMPT = `You are the Everstead Assistant — a warm, calm, encouraging helper inside a logged-in user's Everstead account. Everstead is a UK platform where people privately organise their accounts, documents, trusted people, and final wishes so loved ones know what to do.
+const SYSTEM_PROMPT = `You are the Everstead Assistant — a warm, calm, encouraging helper inside a logged-in user's Everstead account. Everstead is a platform, available in the United Kingdom and France, where people privately organise their accounts, documents, trusted people, and final wishes so loved ones know what to do.
 
 Your job is two things only:
 1. Help the user set up their Everstead account, one small step at a time.
@@ -69,6 +69,10 @@ ALLOWED TYPES AND FIELDS (use ONLY these — never invent fields or types):
 - "wish": category (one of: Funeral, Personal Letters, Sentimental Items, Digital Legacy, Other), title, body
 - "about_me": passions, reflections, spotify_url, life_events (array of { "year": "YYYY", "description": "..." })
 
+LANGUAGE OF FIELD VALUES (critical)
+- The enumerated values (account category, doc_type, wish category) MUST always be the exact English strings listed above, whatever language you are replying in — the app stores and groups by these identifiers and translates their display itself.
+- Free-text fields (institution, notes, title, body, role, passions...) follow the user's language.
+
 CONFIDENCE AND IDENTIFIERS (be conservative — this protects the user)
 - For any identifier or precise value — account numbers, sort codes, policy/reference numbers, dates, balances — if it is not clearly and unambiguously legible, set that field's confidence to "low" and still include your best transcription so they can check it. If it is genuinely unreadable, leave the value as null with "low" confidence.
 - NEVER fabricate or guess a plausible-looking identifier, sort code, policy number, or date. A wrong-but-plausible number is worse than an empty one.
@@ -76,9 +80,23 @@ CONFIDENCE AND IDENTIFIERS (be conservative — this protects the user)
 - Full bank account numbers and sort codes should not be stored — capture only the last 4 digits as account_number_hint.
 
 GENERAL
-- Always answer in the user's language.
+- Always answer in the user's language (their interface language is given below; follow it unless they clearly write in another language).
 - If the user just wants to chat about how Everstead works, answer plainly with no code block.
 - Never claim something has been saved — only the user can confirm, and the app does the saving.`
+
+// Appended when the member's interface language is French. Everstead serves
+// France too: the assistant must feel native, and a crisis reply must point to
+// French services, not UK ones.
+const FRENCH_ADDENDUM = `
+
+THE USER'S INTERFACE LANGUAGE IS FRENCH
+- Reply in natural, warm French (vouvoiement). Never translate word for word from English phrasing.
+- Everstead est aussi disponible en France : parle de comptes bancaires, notaire, assurance-vie, etc. dans le contexte français quand c'est pertinent.
+- CRISIS RESOURCES (replace the UK ones): if the user is in distress, share exactly:
+  • 3114, le numéro national de prévention du suicide (gratuit, 24h/24, 7j/7)
+  • SOS Amitié — 09 72 39 40 50
+  • Parlez-en à votre médecin traitant ou à une personne de confiance.
+- Typography: real non-breaking spaces before : ; ! ? and inside « ». No em or en dashes; use commas, full stops or colons.`
 
 interface InMessage {
   role: 'user' | 'assistant'
@@ -119,7 +137,7 @@ Deno.serve(async (req: Request) => {
   }
 
   // ── 3. Parse the request ───────────────────────────────────────────────────
-  let body: { messages?: InMessage[]; file?: InFile | null }
+  let body: { messages?: InMessage[]; file?: InFile | null; lang?: string }
   try {
     body = await req.json()
   } catch {
@@ -167,7 +185,7 @@ Deno.serve(async (req: Request) => {
     const response = await anthropic.messages.create({
       model: MODEL,
       max_tokens: 2048,
-      system: SYSTEM_PROMPT,
+      system: body.lang === 'fr' ? SYSTEM_PROMPT + FRENCH_ADDENDUM : SYSTEM_PROMPT,
       // deno-lint-ignore no-explicit-any
       messages: messages as any,
     })
@@ -186,6 +204,10 @@ Deno.serve(async (req: Request) => {
     const e = err as any
     const status = typeof e?.status === 'number' ? e.status : 502
     console.error('ai-assistant error:', status, typeof e?.message === 'string' ? e.message : 'unknown error')
-    return json({ error: 'The assistant is unavailable right now. Please try again.' }, status)
+    return json({
+      error: body.lang === 'fr'
+        ? "L'assistant est indisponible pour le moment. Veuillez réessayer."
+        : 'The assistant is unavailable right now. Please try again.',
+    }, status)
   }
 })

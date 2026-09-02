@@ -3,7 +3,9 @@ import {
   Sparkles, Send, Loader2, Paperclip, X, Check, AlertTriangle,
   CheckCircle2, Lock, Trash2,
 } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import { supabase } from '../lib/supabase'
+import i18n from '../i18n'
 import Markdown from './Markdown'
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -23,58 +25,53 @@ const MAX_FILE_MB = 8
 // Field config per proposable type — maps 1:1 to the real Everstead schema.
 const TYPE_META = {
   account: {
-    label: 'Account',
     required: ['institution'],
     defaults: { account_type: 'Account', category: 'Other', status: 'active' },
     fields: [
-      { key: 'institution',        label: 'Institution',     type: 'text' },
-      { key: 'category',           label: 'Category',        type: 'select', options: ['Banking', 'Retirement', 'Investment', 'Insurance', 'Digital', 'Property', 'Other'] },
-      { key: 'account_type',       label: 'Type',            type: 'text', placeholder: 'e.g. Current account, Cash ISA' },
-      { key: 'account_number_hint',label: 'Last 4 digits',   type: 'text' },
-      { key: 'balance_display',    label: 'Balance',         type: 'text', placeholder: 'optional' },
-      { key: 'notes',              label: 'Notes',           type: 'textarea' },
+      { key: 'institution',        labelKey: 'ai.fields.institution', type: 'text' },
+      { key: 'category',           labelKey: 'ai.fields.category',    type: 'select', options: ['Banking', 'Retirement', 'Investment', 'Insurance', 'Digital', 'Property', 'Other'], optionNs: 'accounts.category' },
+      { key: 'account_type',       labelKey: 'ai.fields.accountType', type: 'text', phKey: 'ai.ph.accountType' },
+      { key: 'account_number_hint',labelKey: 'ai.fields.last4',       type: 'text' },
+      { key: 'balance_display',    labelKey: 'ai.fields.balance',     type: 'text', phKey: 'ai.ph.optional' },
+      { key: 'notes',              labelKey: 'ai.fields.notes',       type: 'textarea' },
     ],
   },
   trusted_person: {
-    label: 'Trusted person',
     required: ['name', 'email'],
     defaults: { role: 'Contact', invite_status: 'pending' },
     fields: [
-      { key: 'name',  label: 'Name',  type: 'text' },
-      { key: 'email', label: 'Email', type: 'text', required: true },
-      { key: 'role',  label: 'Role',  type: 'text', placeholder: 'e.g. Executor, Next of kin' },
-      { key: 'notes', label: 'Notes', type: 'textarea' },
+      { key: 'name',  labelKey: 'ai.fields.name',  type: 'text' },
+      { key: 'email', labelKey: 'ai.fields.email', type: 'text', required: true },
+      { key: 'role',  labelKey: 'ai.fields.role',  type: 'text', phKey: 'ai.ph.role' },
+      { key: 'notes', labelKey: 'ai.fields.notes', type: 'textarea' },
     ],
   },
   document: {
-    label: 'Document',
     required: ['name'],
     defaults: { doc_type: 'Other', status: 'current' },
     fields: [
-      { key: 'name',       label: 'Name',        type: 'text' },
-      { key: 'doc_type',   label: 'Type',        type: 'select', options: ['Legal', 'Finance', 'Insurance', 'Property', 'Personal', 'Medical', 'Other'] },
-      { key: 'expires_at', label: 'Expiry date', type: 'text', placeholder: 'YYYY-MM-DD' },
-      { key: 'notes',      label: 'Notes',       type: 'textarea' },
+      { key: 'name',       labelKey: 'ai.fields.name',   type: 'text' },
+      { key: 'doc_type',   labelKey: 'ai.fields.accountType', type: 'select', options: ['Legal', 'Finance', 'Insurance', 'Property', 'Personal', 'Medical', 'Other'], optionNs: 'documents.type' },
+      { key: 'expires_at', labelKey: 'ai.fields.expiry', type: 'text', phKey: 'ai.ph.date' },
+      { key: 'notes',      labelKey: 'ai.fields.notes',  type: 'textarea' },
     ],
   },
   wish: {
-    label: 'Wish',
     required: ['title'],
     defaults: { category: 'Other' },
     fields: [
-      { key: 'category', label: 'Category', type: 'select', options: ['Funeral', 'Personal Letters', 'Sentimental Items', 'Digital Legacy', 'Other'] },
-      { key: 'title',    label: 'Title',    type: 'text' },
-      { key: 'body',     label: 'Details',  type: 'textarea' },
+      { key: 'category', labelKey: 'ai.fields.category', type: 'select', options: ['Funeral', 'Personal Letters', 'Sentimental Items', 'Digital Legacy', 'Other'], optionNs: 'ai.wishCategory' },
+      { key: 'title',    labelKey: 'ai.fields.title',    type: 'text' },
+      { key: 'body',     labelKey: 'ai.fields.details',  type: 'textarea' },
     ],
   },
   about_me: {
-    label: 'About Me',
     required: [],
     defaults: {},
     fields: [
-      { key: 'passions',    label: 'Passions',      type: 'textarea' },
-      { key: 'reflections', label: 'Reflections',   type: 'textarea' },
-      { key: 'spotify_url', label: 'Playlist link', type: 'text' },
+      { key: 'passions',    labelKey: 'ai.fields.passions',    type: 'textarea' },
+      { key: 'reflections', labelKey: 'ai.fields.reflections', type: 'textarea' },
+      { key: 'spotify_url', labelKey: 'ai.fields.playlist',    type: 'text' },
     ],
   },
 }
@@ -133,6 +130,7 @@ export default function AIAssistantSection({
   profile, isDemo,
   addAccount, addPerson, addDocument, addWish, uploadFile, saveAboutMe, aboutMe,
 }) {
+  const { t } = useTranslation('dashboard')
   const aiEnabled = profile?.ai_features_enabled !== false
 
   // Remembering the conversation is the user's choice (saved on this device).
@@ -190,10 +188,8 @@ export default function AIAssistantSection({
         <div className="w-14 h-14 rounded-2xl bg-stone-100 flex items-center justify-center mx-auto mb-5">
           <Lock size={22} className="text-stone-400" />
         </div>
-        <h2 className="font-display text-2xl font-light text-navy-950 mb-2">AI features are turned off</h2>
-        <p className="text-stone-500 text-sm leading-relaxed max-w-sm mx-auto">
-          You can turn them back on any time in <span className="font-medium text-navy-700">Settings → AI features</span>. Nothing is sent to an AI provider while they're off.
-        </p>
+        <h2 className="font-display text-2xl font-light text-navy-950 mb-2">{t('ai.offTitle')}</h2>
+        <p className="text-stone-500 text-sm leading-relaxed max-w-sm mx-auto">{t('ai.offBody')}</p>
       </div>
     )
   }
@@ -203,12 +199,12 @@ export default function AIAssistantSection({
     e.target.value = ''
     if (!file) return
     if (file.size > MAX_FILE_MB * 1024 * 1024) {
-      setError(`That file is too large. Please use one under ${MAX_FILE_MB}MB.`)
+      setError(t('ai.fileTooLarge', { mb: MAX_FILE_MB }))
       return
     }
     const okType = /^(application\/pdf|image\/(png|jpeg|gif|webp))$/.test(file.type)
     if (!okType) {
-      setError('Please upload a PDF or an image (PNG, JPG, GIF, or WebP).')
+      setError(t('ai.fileBadType'))
       return
     }
     setError(null)
@@ -221,7 +217,7 @@ export default function AIAssistantSection({
     const text = input.trim()
     if ((!text && !pendingFile) || loading) return
 
-    const userMsg = { role: 'user', content: text || `(uploaded ${pendingFile?.name})` }
+    const userMsg = { role: 'user', content: text || t('ai.uploadedMsg', { name: pendingFile?.name }) }
     const nextHistory = [...messages, userMsg]
     setMessages(nextHistory)
     setInput('')
@@ -235,12 +231,13 @@ export default function AIAssistantSection({
       const { data, error: invokeErr } = await supabase.functions.invoke('ai-assistant', {
         body: {
           messages: nextHistory,
+          lang: i18n.language === 'fr' ? 'fr' : 'en',
           file: sentFile ? { data: sentFile.base64, media_type: sentFile.media_type } : null,
         },
       })
       if (invokeErr) {
         // Surface the function's JSON error message when present
-        let msg = 'The assistant is unavailable right now. Please try again.'
+        let msg = t('ai.unavailable')
         try { msg = (await invokeErr.context?.json())?.error || msg } catch { /* keep default */ }
         throw new Error(msg)
       }
@@ -254,7 +251,7 @@ export default function AIAssistantSection({
         setKeepStatus('idle')
       }
     } catch (err) {
-      setError(err.message || 'Something went wrong. Please try again.')
+      setError(err.message || t('ai.genericError'))
       setMessages(h => h.slice(0, -1)) // roll back the optimistic user turn isn't needed; keep it
     } finally {
       setLoading(false)
@@ -275,8 +272,8 @@ export default function AIAssistantSection({
     const meta = TYPE_META[card.type]
     for (const key of meta.required) {
       if (!String(card.fields[key] ?? '').trim()) {
-        const label = meta.fields.find(f => f.key === key)?.label || key
-        return `${label} is needed before this can be saved.`
+        const field = meta.fields.find(f => f.key === key)
+        return t('ai.requiredField', { label: field ? t(field.labelKey) : key })
       }
     }
     return null
@@ -320,7 +317,7 @@ export default function AIAssistantSection({
         await writeCard(card)
         setCards(cs => cs.map(c => c.id === card.id ? { ...c, status: 'saved' } : c))
       } catch (e) {
-        setCards(cs => cs.map(c => c.id === card.id ? { ...c, status: 'error', error: e.message || 'Could not save this.' } : c))
+        setCards(cs => cs.map(c => c.id === card.id ? { ...c, status: 'error', error: e.message || t('ai.couldNotSave') } : c))
       }
     }
     // Clear saved cards shortly after, so the list reflects what's left to do.
@@ -332,7 +329,7 @@ export default function AIAssistantSection({
     setKeepStatus('saving')
     try {
       await uploadFile(
-        { name: keepFile.name, doc_type: 'Other', notes: 'Added via your AI Assistant' },
+        { name: keepFile.name, doc_type: 'Other', notes: t('ai.viaAssistantNote') },
         keepFile.file,
       )
       setKeepStatus('saved')
@@ -355,10 +352,8 @@ export default function AIAssistantSection({
           <Sparkles size={20} className="text-sage-300" />
         </div>
         <div>
-          <h1 className="font-display text-2xl font-light text-navy-950 leading-tight">Your AI Assistant</h1>
-          <p className="text-sm text-stone-500 mt-0.5 leading-relaxed">
-            Chat, or drop in a document: I'll suggest entries for you to review. Nothing is saved until you confirm it.
-          </p>
+          <h1 className="font-display text-2xl font-light text-navy-950 leading-tight">{t('ai.title')}</h1>
+          <p className="text-sm text-stone-500 mt-0.5 leading-relaxed">{t('ai.subtitle')}</p>
         </div>
       </div>
 
@@ -366,17 +361,17 @@ export default function AIAssistantSection({
       <div className="bg-white border border-stone-200 rounded-2xl overflow-hidden">
         {/* Memory controls — let the user choose whether this chat is remembered */}
         <div className="flex items-center justify-between gap-3 px-5 py-2.5 border-b border-stone-100 bg-stone-50/60">
-          <label className="flex items-center gap-2 cursor-pointer select-none" title="Saved on this device only. Turn off to keep nothing.">
+          <label className="flex items-center gap-2 cursor-pointer select-none" title={t('ai.rememberTitle')}>
             <span className="relative shrink-0">
               <input type="checkbox" className="sr-only peer" checked={remember} onChange={() => setRemember(v => !v)} disabled={!rememberKey} />
               <span className="block w-8 h-[18px] rounded-full bg-stone-300 peer-checked:bg-sage-500 peer-disabled:opacity-50 transition-colors" />
               <span className="absolute top-0.5 left-0.5 w-3.5 h-3.5 rounded-full bg-white shadow transition-transform peer-checked:translate-x-[14px]" />
             </span>
-            <span className="text-xs font-medium text-stone-600">Remember this conversation</span>
+            <span className="text-xs font-medium text-stone-600">{t('ai.rememberLabel')}</span>
           </label>
           {messages.length > 0 && (
             <button onClick={clearChat} className="text-xs text-stone-400 hover:text-stone-700 flex items-center gap-1 transition-colors">
-              <Trash2 size={12} /> New conversation
+              <Trash2 size={12} /> {t('ai.newConversation')}
             </button>
           )}
         </div>
@@ -387,7 +382,7 @@ export default function AIAssistantSection({
               <Sparkles size={13} className="text-sage-300" />
             </div>
             <div className="bg-stone-50 rounded-2xl rounded-tl-sm px-4 py-3 text-sm text-navy-900 leading-relaxed max-w-[85%]">
-              Hello{profile?.full_name ? `, ${profile.full_name.split(' ')[0]}` : ''}. I'm here to help you set things up, one small step at a time, no rush. You can tell me about an account, a person you trust, or a wish, or drop in a document and I'll read it. What feels like a good first step?
+              {t('ai.greeting', { name: profile?.full_name ? `, ${profile.full_name.split(' ')[0]}` : '' })}
             </div>
           </div>
 
@@ -414,7 +409,7 @@ export default function AIAssistantSection({
                 <Sparkles size={13} className="text-sage-300" />
               </div>
               <div className="bg-stone-50 rounded-2xl rounded-tl-sm px-4 py-3 text-sm text-stone-400 flex items-center gap-2">
-                <Loader2 size={14} className="animate-spin" /> Thinking…
+                <Loader2 size={14} className="animate-spin" /> {t('ai.thinking')}
               </div>
             </div>
           )}
@@ -425,22 +420,22 @@ export default function AIAssistantSection({
               <div className="flex items-center gap-3 min-w-0">
                 <Paperclip size={16} className="text-sage-700 shrink-0" />
                 <div className="min-w-0">
-                  <p className="text-sm font-medium text-navy-900 truncate">Keep “{keepFile.name}” in your vault?</p>
-                  <p className="text-xs text-stone-500">It isn't stored unless you choose to keep it.</p>
+                  <p className="text-sm font-medium text-navy-900 truncate">{t('ai.keepQuestion', { name: keepFile.name })}</p>
+                  <p className="text-xs text-stone-500">{t('ai.keepNote')}</p>
                 </div>
               </div>
               <div className="flex items-center gap-2 shrink-0">
                 {keepStatus === 'saved' ? (
-                  <span className="text-xs text-emerald-600 font-medium flex items-center gap-1"><CheckCircle2 size={14} /> Kept</span>
+                  <span className="text-xs text-emerald-600 font-medium flex items-center gap-1"><CheckCircle2 size={14} /> {t('ai.kept')}</span>
                 ) : (
                   <>
-                    <button onClick={() => setKeepFile(null)} className="text-xs font-medium text-stone-500 hover:text-stone-800 px-3 py-2">Discard</button>
+                    <button onClick={() => setKeepFile(null)} className="text-xs font-medium text-stone-500 hover:text-stone-800 px-3 py-2">{t('ai.discard')}</button>
                     <button
                       onClick={keepDocument}
                       disabled={keepStatus === 'saving'}
                       className="text-xs font-semibold bg-navy-800 text-white px-4 py-2 rounded-xl hover:bg-navy-700 transition-colors disabled:opacity-50"
                     >
-                      {keepStatus === 'saving' ? 'Keeping…' : keepStatus === 'error' ? 'Try again' : 'Keep in vault'}
+                      {keepStatus === 'saving' ? t('ai.keeping') : keepStatus === 'error' ? t('ai.tryAgain') : t('ai.keepInVault')}
                     </button>
                   </>
                 )}
@@ -452,13 +447,13 @@ export default function AIAssistantSection({
           {grouped.length > 0 && (
             <div className="border-t border-stone-100 pt-4">
               <div className="flex items-center gap-2 mb-3 flex-wrap">
-                <span className="text-xs font-semibold uppercase tracking-wide text-sage-700 bg-sage-50 px-2 py-0.5 rounded-full">Suggested entries</span>
-                <span className="text-xs text-stone-400">Tick what you'd like, edit anything, then add.</span>
+                <span className="text-xs font-semibold uppercase tracking-wide text-sage-700 bg-sage-50 px-2 py-0.5 rounded-full">{t('ai.suggested')}</span>
+                <span className="text-xs text-stone-400">{t('ai.suggestedHint')}</span>
               </div>
               <div className="space-y-5">
                 {grouped.map(group => (
                   <div key={group.type}>
-                    <p className="text-xs font-semibold uppercase tracking-wide text-stone-400 mb-2">{TYPE_META[group.type].label}</p>
+                    <p className="text-xs font-semibold uppercase tracking-wide text-stone-400 mb-2">{t(`ai.types.${group.type}`)}</p>
                     <div className="space-y-3">
                       {group.items.map(card => (
                         <ProposalCard
@@ -481,9 +476,9 @@ export default function AIAssistantSection({
                   className="inline-flex items-center gap-2 text-white text-sm font-semibold px-5 py-2.5 rounded-xl transition-colors disabled:opacity-40"
                   style={{ backgroundColor: '#4c7d47' }}
                 >
-                  <Check size={16} /> Add {approvedCount > 0 ? `${approvedCount} ` : ''}confirmed item{approvedCount === 1 ? '' : 's'}
+                  <Check size={16} /> {approvedCount > 0 ? t('ai.addConfirmed', { count: approvedCount }) : t('ai.addConfirmedZero')}
                 </button>
-                <span className="text-xs text-stone-400">Only ticked items are saved.</span>
+                <span className="text-xs text-stone-400">{t('ai.onlyTicked')}</span>
               </div>
             </div>
           )}
@@ -508,7 +503,7 @@ export default function AIAssistantSection({
             <button
               onClick={() => fileInput.current?.click()}
               disabled={isDemo || loading}
-              title="Attach a document or image"
+              title={t('ai.attachTitle')}
               className="shrink-0 w-9 h-9 rounded-xl border border-stone-200 text-stone-500 hover:text-navy-700 hover:border-navy-300 transition-colors flex items-center justify-center disabled:opacity-40"
             >
               <Paperclip size={16} />
@@ -520,7 +515,7 @@ export default function AIAssistantSection({
               onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send() } }}
               rows={1}
               disabled={isDemo || loading}
-              placeholder={isDemo ? 'Sign in to your account to chat with the assistant' : 'Tell me about an account, a person, a wish…'}
+              placeholder={isDemo ? t('ai.placeholderDemo') : t('ai.placeholder')}
               className="flex-1 resize-none border border-stone-200 rounded-xl px-3 py-2 text-sm text-navy-900 placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-navy-300 focus:border-navy-300 max-h-32 disabled:bg-stone-50"
             />
             <button
@@ -535,12 +530,10 @@ export default function AIAssistantSection({
       </div>
 
       {/* Reassurance copy (exact, required) */}
-      <p className="text-xs text-stone-400 leading-relaxed mt-3 px-1">
-        Your AI Assistant works only inside your Everstead account and never shares your information elsewhere. Nothing is saved until you review and confirm it, it suggests, you decide. Your documents are protected with the same AES-256 encryption as the rest of Everstead, and are never used to train AI or for advertising. You can switch AI features off any time in Settings.
-      </p>
+      <p className="text-xs text-stone-400 leading-relaxed mt-3 px-1">{t('ai.reassurance')}</p>
 
       {isDemo && (
-        <p className="text-xs text-amber-600 mt-2 px-1">Demo mode, the assistant is read-only here. Start your own plan to use it for real.</p>
+        <p className="text-xs text-amber-600 mt-2 px-1">{t('ai.demoNote')}</p>
       )}
     </div>
   )
@@ -548,6 +541,7 @@ export default function AIAssistantSection({
 
 // ── A single editable proposal card ───────────────────────────────────────────
 function ProposalCard({ card, onEdit, onToggle, onDismiss, onDropLifeEvent }) {
+  const { t } = useTranslation('dashboard')
   const meta = TYPE_META[card.type]
   const saved = card.status === 'saved'
   return (
@@ -563,10 +557,10 @@ function ProposalCard({ card, onEdit, onToggle, onDismiss, onDropLifeEvent }) {
             <div className="w-9 h-5 rounded-full bg-stone-200 peer-checked:bg-navy-700 transition-colors" />
             <div className="absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-white shadow transition-transform peer-checked:translate-x-4" />
           </div>
-          <span className="text-sm font-medium text-navy-900">{saved ? 'Saved' : card.approved ? 'Will be added' : 'Approve'}</span>
+          <span className="text-sm font-medium text-navy-900">{saved ? t('ai.card.saved') : card.approved ? t('ai.card.willBeAdded') : t('ai.card.approve')}</span>
         </label>
         {!saved && (
-          <button onClick={() => onDismiss(card.id)} title="Dismiss" className="text-stone-300 hover:text-red-500 transition-colors">
+          <button onClick={() => onDismiss(card.id)} title={t('ai.card.dismiss')} className="text-stone-300 hover:text-red-500 transition-colors">
             <Trash2 size={15} />
           </button>
         )}
@@ -579,10 +573,10 @@ function ProposalCard({ card, onEdit, onToggle, onDismiss, onDropLifeEvent }) {
           return (
             <div key={f.key} className={full ? 'sm:col-span-2' : ''}>
               <div className="flex items-center gap-2 mb-1">
-                <label className="text-xs font-medium text-stone-500">{f.label}</label>
+                <label className="text-xs font-medium text-stone-500">{t(f.labelKey)}</label>
                 {low && (
                   <span className="text-[10px] font-semibold text-amber-700 bg-amber-100 px-1.5 py-0.5 rounded-full flex items-center gap-1">
-                    <AlertTriangle size={9} /> Please check this
+                    <AlertTriangle size={9} /> {t('ai.card.checkThis')}
                   </span>
                 )}
               </div>
@@ -593,15 +587,16 @@ function ProposalCard({ card, onEdit, onToggle, onDismiss, onDropLifeEvent }) {
                   onChange={e => onEdit(card.id, f.key, e.target.value)}
                   className={`w-full border rounded-lg px-2.5 py-1.5 text-sm text-navy-900 bg-white focus:outline-none focus:ring-2 focus:ring-navy-300 ${low ? 'border-amber-300 ring-1 ring-amber-200' : 'border-stone-200'}`}
                 >
-                  <option value="">Select…</option>
-                  {f.options.map(o => <option key={o} value={o}>{o}</option>)}
+                  <option value="">{t('ai.card.select')}</option>
+                  {/* Stored option VALUES stay English; only the visible labels translate. */}
+                  {f.options.map(o => <option key={o} value={o}>{t(`${f.optionNs}.${o}`, { defaultValue: o })}</option>)}
                 </select>
               ) : f.type === 'textarea' ? (
                 <textarea
                   value={card.fields[f.key] || ''}
                   disabled={saved}
                   rows={2}
-                  placeholder={f.placeholder}
+                  placeholder={f.phKey ? t(f.phKey) : undefined}
                   onChange={e => onEdit(card.id, f.key, e.target.value)}
                   className={`w-full border rounded-lg px-2.5 py-1.5 text-sm text-navy-900 resize-none focus:outline-none focus:ring-2 focus:ring-navy-300 ${low ? 'border-amber-300 ring-1 ring-amber-200' : 'border-stone-200'}`}
                 />
@@ -610,7 +605,7 @@ function ProposalCard({ card, onEdit, onToggle, onDismiss, onDropLifeEvent }) {
                   type="text"
                   value={card.fields[f.key] || ''}
                   disabled={saved}
-                  placeholder={f.placeholder}
+                  placeholder={f.phKey ? t(f.phKey) : undefined}
                   onChange={e => onEdit(card.id, f.key, e.target.value)}
                   className={`w-full border rounded-lg px-2.5 py-1.5 text-sm text-navy-900 focus:outline-none focus:ring-2 focus:ring-navy-300 ${low ? 'border-amber-300 ring-1 ring-amber-200' : 'border-stone-200'}`}
                 />
@@ -623,7 +618,7 @@ function ProposalCard({ card, onEdit, onToggle, onDismiss, onDropLifeEvent }) {
       {/* About Me life events (preview, removable) */}
       {card.type === 'about_me' && card.lifeEvents?.length > 0 && (
         <div className="mt-3">
-          <label className="text-xs font-medium text-stone-500">Life events</label>
+          <label className="text-xs font-medium text-stone-500">{t('ai.card.lifeEvents')}</label>
           <div className="mt-1 space-y-1.5">
             {card.lifeEvents.map((ev, i) => (
               <div key={i} className="flex items-center justify-between gap-2 bg-stone-50 rounded-lg px-3 py-1.5">
