@@ -16,7 +16,6 @@ import Footer from './components/Footer'
 // saves ~50 kB+ of the entry chunk. A null fallback is invisible (floating widget).
 const ChatWidget = lazy(() => import('./components/ChatWidget'))
 import CookieBanner from './components/CookieBanner'
-import InstallPrompt from './components/InstallPrompt'
 import OfflineBanner from './components/OfflineBanner'
 
 // ── Lazy-loaded pages ─────────────────────────────────────────────────────────
@@ -314,16 +313,15 @@ export default function App() {
           </BiometricGate>
           </Suspense>
         </ErrorBoundary>
-        {/* Web-only overlays. None of these belong in the native shell: cookie consent
-            is a web concern, InstallPrompt advertises the PWA (nonsensical inside the
-            real app), and OfflineBanner trusts navigator.onLine — which is unreliable
-            in the Capacitor webview and can report offline forever, permanently
-            covering the UI. */}
+        {/* Web-only overlays. Neither belongs in the native shell: cookie consent
+            is a web concern, and OfflineBanner trusts navigator.onLine, which is
+            unreliable in the Capacitor webview and can report offline forever,
+            permanently covering the UI. The old PWA "add to home screen" prompt is
+            gone: the real apps are in both stores and AppBanner points there. */}
         {!isNative() && (
           <>
             <CookieBanner />
             <OfflineBanner />
-            <InstallPrompt />
           </>
         )}
       </BrowserRouter>

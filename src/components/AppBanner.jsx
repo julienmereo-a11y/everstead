@@ -1,6 +1,7 @@
 import React from 'react'
 import { Smartphone, X } from 'lucide-react'
 import { trackEvent } from '../lib/analytics'
+import { storeUrls } from './StoreBadges'
 import { useTranslation } from 'react-i18next'
 
 // Slim site-wide announcement bar for the upcoming mobile apps.
@@ -23,7 +24,8 @@ export function isAppBannerDismissed() {
 }
 
 export default function AppBanner({ onDismiss }) {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
+  const stores = storeUrls(i18n.language)
   const dismiss = () => {
     try { localStorage.setItem(DISMISS_KEY, '1') } catch { /* private mode, dismiss for this session only */ }
     onDismiss?.()
@@ -43,9 +45,10 @@ export default function AppBanner({ onDismiss }) {
         <p className="flex items-center gap-2 text-xs sm:text-sm font-medium leading-none text-center">
           <Smartphone size={14} className="shrink-0" aria-hidden="true" />
           <span>
-            {t('appBanner.lead')}{' '}
+            {/* French elides: "sur l'App Store" takes no space after the apostrophe. */}
+            {t('appBanner.lead')}{/['’]$/.test(t('appBanner.lead')) ? '' : ' '}
             <a
-              href="https://apps.apple.com/gb/app/id6791210842"
+              href={stores.appStore}
               target="_blank"
               rel="noopener noreferrer"
               onClick={() => trackEvent('app_store_click', { store: 'app_store', location: 'banner' })}
@@ -55,7 +58,7 @@ export default function AppBanner({ onDismiss }) {
             </a>{' '}
             {t('appBanner.and')}{' '}
             <a
-              href="https://play.google.com/store/apps/details?id=care.everstead.app"
+              href={stores.playStore}
               target="_blank"
               rel="noopener noreferrer"
               onClick={() => trackEvent('app_store_click', { store: 'google_play', location: 'banner' })}

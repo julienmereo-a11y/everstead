@@ -6,17 +6,34 @@ import { trackEvent } from '../lib/analytics'
 // are the untouched official artwork (Google's badge generator + Apple's badge
 // API), localized EN/FR to match the site tree.
 //
-export const PLAY_STORE_URL = 'https://play.google.com/store/apps/details?id=care.everstead.app'
-// v1.0 approved 30 July 2026 — both stores live.
-export const APP_STORE_URL = 'https://apps.apple.com/gb/app/id6791210842'
+// v1.0 approved 30 July 2026, both stores live; French listings since v1.2.
+const APP_STORE_ID = 'id6791210842'
+const PLAY_PACKAGE = 'care.everstead.app'
+
+/**
+ * Store URLs for the visitor's market. A French reader must land on the French
+ * storefront (apps.apple.com/fr, Play in French for France); the storefront
+ * segment is what shows the localised listing, not the browser language.
+ */
+export function storeUrls(language) {
+  const fr = language === 'fr'
+  return {
+    appStore:  `https://apps.apple.com/${fr ? 'fr' : 'gb'}/app/${APP_STORE_ID}`,
+    playStore: `https://play.google.com/store/apps/details?id=${PLAY_PACKAGE}&hl=${fr ? 'fr' : 'en_GB'}&gl=${fr ? 'FR' : 'GB'}`,
+  }
+}
+// English defaults, kept for callers outside a React tree.
+export const PLAY_STORE_URL = storeUrls('en').playStore
+export const APP_STORE_URL  = storeUrls('en').appStore
 
 export default function StoreBadges({ className = '', location = 'footer' }) {
   const { i18n } = useTranslation()
   const fr = i18n.language === 'fr'
+  const { appStore, playStore } = storeUrls(i18n.language)
   return (
     <div className={`flex flex-wrap items-center gap-3 ${className}`}>
       <a
-        href={PLAY_STORE_URL}
+        href={playStore}
         target="_blank"
         rel="noopener noreferrer"
         onClick={() => trackEvent('app_store_click', { store: 'google_play', location })}
@@ -31,9 +48,9 @@ export default function StoreBadges({ className = '', location = 'footer' }) {
           loading="lazy"
         />
       </a>
-      {APP_STORE_URL && (
+      {appStore && (
         <a
-          href={APP_STORE_URL}
+          href={appStore}
           target="_blank"
           rel="noopener noreferrer"
           onClick={() => trackEvent('app_store_click', { store: 'app_store', location })}
