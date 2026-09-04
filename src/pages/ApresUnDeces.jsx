@@ -312,9 +312,9 @@ export default function ApresUnDeces() {
           {/* Assistant IA : la checklist dit QUOI faire, l'assistant répond aux
               questions singulières que chaque situation soulève. */}
           <div className="mt-8 bg-navy-950 rounded-2xl p-6 text-center">
-            <p className="text-white font-medium text-sm mb-1">Une question sur votre situation ?</p>
-            <p className="text-stone-400 text-xs mb-4 max-w-md mx-auto">Notre assistant gratuit répond à vos questions sur les démarches, à votre rythme, sans inscription.</p>
-            <a href={`${localePrefix}/assistant-apres-deces`} className="btn-aurora inline-flex items-center gap-2 text-white font-semibold text-xs px-5 py-2.5 rounded-full">Poser une question à l'assistant</a>
+            <p className="text-white font-medium text-sm mb-1">{t('assistant.title')}</p>
+            <p className="text-stone-400 text-xs mb-4 max-w-md mx-auto">{t('assistant.body')}</p>
+            <a href={`${localePrefix}/assistant-apres-deces`} className="btn-aurora inline-flex items-center gap-2 text-white font-semibold text-xs px-5 py-2.5 rounded-full">{t('assistant.cta')}</a>
           </div>
 
           {/* Disclaimer */}
