@@ -180,5 +180,10 @@
   "schema": {
     "name": "Après un décès : les démarches en France",
     "description": "La liste pas à pas des démarches après un décès en France, des premières 24 heures au règlement de la succession."
+  },
+  "assistant": {
+    "title": "Une question sur votre situation ?",
+    "body": "Notre assistant gratuit répond à vos questions sur les démarches, à votre rythme, sans inscription.",
+    "cta": "Poser une question à l'assistant"
   }
 }

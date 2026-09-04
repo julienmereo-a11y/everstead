@@ -180,5 +180,10 @@
   "schema": {
     "name": "After a Death in France: The Formalities Step by Step",
     "description": "The step-by-step checklist of formalities after a death in France, from the first 24 hours to settling the estate."
+  },
+  "assistant": {
+    "title": "A question about your situation?",
+    "body": "Our free assistant answers your questions about the French process, at your own pace, no sign-up needed.",
+    "cta": "Ask the assistant"
   }
 }
