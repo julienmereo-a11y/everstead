@@ -1,4 +1,5 @@
 import { defineConfig } from 'vite'
+import { SEO_DEFAULTS } from './src/seo/defaults.js'
 import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa'
 import fs from 'node:fs/promises'
@@ -87,12 +88,11 @@ const BUILD_MARKER = `${new Date().toISOString().slice(0, 10)} · ${gitSha}`
 // French metadata, and vercel.json rewrites /fr/* to it. Real visitors are
 // untouched: the same JS boots and Helmet still owns the head afterwards.
 const FR_META = {
-  '<html lang="en-GB">': '<html lang="fr">',
-  '<title>Everstead | Your life, organised.</title>':
-    '<title>Everstead | Le coffre numérique pour préparer votre succession</title>',
+  [`<html lang="${SEO_DEFAULTS.en.htmlLang}">`]: `<html lang="${SEO_DEFAULTS.fr.htmlLang}">`,
+  [`<title>${SEO_DEFAULTS.en.title}</title>`]: `<title>${SEO_DEFAULTS.fr.title}</title>`,
 }
-const FR_DESC = "Comptes, assurance-vie, documents et dernières volontés réunis dans un coffre numérique sécurisé, que vous partagez avec vos proches ou votre notaire le moment venu. Préparez votre succession l'esprit tranquille, l'inscription est gratuite."
-const FR_OG_TITLE = 'Everstead | Tout ce qui compte, réuni en un seul endroit sûr.'
+const FR_DESC = SEO_DEFAULTS.fr.description
+const FR_OG_TITLE = SEO_DEFAULTS.fr.ogTitle
 
 function writeFrenchShell() {
   return {

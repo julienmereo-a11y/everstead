@@ -13,8 +13,8 @@
     "seeComparison": "See the comparison",
     "cta": {
       "title": "The simplest comparison is trying it.",
-      "body": "14-day free trial. Full access. Cancel before it ends and pay nothing.",
-      "button": "Start your free trial"
+      "body": "Free to start, no card required. Everstead+ adds a 14-day trial, cancel before it ends and pay nothing.",
+      "button": "Start free"
     }
   },
   "detail": {
@@ -30,8 +30,8 @@
     "alsoIntro": "In fairness, {{name}} does some things Everstead doesn't, and that's by design. These are a separate service you can use <em>alongside</em> Everstead, not instead of it:",
     "alsoOutro": "None of these replace what Everstead does: keeping your whole estate organised, current, and ready for the people you trust.",
     "differenceTitle": "The real difference",
-    "ctaTitle": "Try Everstead free for 14 days",
-    "ctaBody": "No commitment. Full access. Cancel before the trial ends and pay nothing."
+    "ctaTitle": "Start Everstead free today",
+    "ctaBody": "No card, no time limit. Upgrade to Everstead+ whenever you want more, with a 14-day trial."
   },
   "competitors": {
     "farewill": {
@@ -65,7 +65,7 @@
       ],
       "price": "Free to start · Everstead+ {{monthly}}/month",
       "competitorPrice": "From £90 one-time for a basic will",
-      "cta": "Start your free trial"
+      "cta": "Start free"
     },
     "settld": {
       "name": "Settld",
@@ -97,7 +97,7 @@
       ],
       "price": "Free to start · Everstead+ {{monthly}}/month",
       "competitorPrice": "Free",
-      "cta": "Start your free trial"
+      "cta": "Start free"
     },
     "safekeep": {
       "name": "SafeKeep",
@@ -130,7 +130,7 @@
       ],
       "price": "Free to start · Everstead+ {{monthly}}/month",
       "competitorPrice": "From £5.99/mo",
-      "cta": "Start your free trial"
+      "cta": "Start free"
     },
     "octopus-legacy": {
       "name": "Octopus Legacy",
@@ -166,7 +166,7 @@
       ],
       "price": "Free to start · Everstead+ {{monthly}}/month",
       "competitorPrice": "From £90 for a basic will",
-      "cta": "Start your free trial"
+      "cta": "Start free"
     },
     "lyfeguard": {
       "name": "Lyfeguard",
@@ -199,7 +199,7 @@
       ],
       "price": "Free to start · Everstead+ {{monthly}}/month",
       "competitorPrice": "From £4.99/mo",
-      "cta": "Start your free trial"
+      "cta": "Start free"
     },
     "doing-nothing": {
       "name": "a spreadsheet",
@@ -220,7 +220,7 @@
         "Personal letters and final wishes preserved",
         "Works when your laptop is locked or lost",
         "Recoverable when memory fails",
-        "Free, for the first 14 days"
+        "Free plan, no time limit"
       ],
       "verdict": "There is no real contest here. A spreadsheet or a drawer of papers fails your family at the worst possible moment. Everstead is the organised, secure, shareable version of everything you would otherwise have meant to write down.",
       "positioning": [

@@ -38,7 +38,7 @@
     "demo": "Demo mode, showing Carol Thornton's executor view. Data is fictional.",
     "demoCta": "Create your own plan →",
     "upsell": "Want to protect your own family the same way {{name}} is protecting theirs?",
-    "upsellCta": "Start a free 14-day trial",
+    "upsellCta": "Start free",
     "deceasedTitle": "The passing of {{name}} has been verified by Everstead",
     "deceasedBody": "All sealed messages addressed to you and all after-death access permissions are now active. The plan owner's account has been suspended and is read-only.",
     "openMessages": "Open messages",
@@ -608,9 +608,21 @@
       "default": "I'm here to help you understand this plan and your role as {{role}} for {{name}}.\n\nWhat would you like to know? For example:\n• \"What does an executor do?\"\n• \"Where should I start?\"\n• \"How do I prepare for when the time comes?\""
     },
     "prompts": {
-      "deceased": ["What do I do this week?", "How do I notify banks?", "Do I need probate?"],
-      "incapacitated": ["What are my responsibilities?", "How do I use an LPA?", "Who should I contact?"],
-      "default": ["What does an executor do?", "How do I prepare?", "What is probate?"]
+      "deceased": [
+        "What do I do this week?",
+        "How do I notify banks?",
+        "Do I need probate?"
+      ],
+      "incapacitated": [
+        "What are my responsibilities?",
+        "How do I use an LPA?",
+        "Who should I contact?"
+      ],
+      "default": [
+        "What does an executor do?",
+        "How do I prepare?",
+        "What is probate?"
+      ]
     },
     "triggerUrgent": "What do I do now?",
     "triggerDefault": "Ask for guidance",

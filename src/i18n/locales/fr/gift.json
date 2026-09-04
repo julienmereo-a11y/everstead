@@ -91,8 +91,8 @@
     "scheduled": "Votre cadeau arrivera le <bold>{{date}}</bold>. Vous recevrez une confirmation par e-mail sous peu.",
     "receiptSent": "Un reçu a été envoyé à {{email}}.",
     "upsellTitle": "Et si vous protégiez aussi votre propre plan ?",
-    "upsellBody": "Créez votre propre compte Everstead et profitez de 14 jours gratuits.",
-    "upsellCta": "Commencez votre essai gratuit"
+    "upsellBody": "Créez votre propre compte Everstead, gratuit et sans carte bancaire.",
+    "upsellCta": "Commencer gratuitement"
   },
   "errors": {
     "confirmFailed": "Impossible de confirmer le cadeau. Veuillez contacter support@everstead.care.",

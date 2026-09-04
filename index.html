@@ -16,29 +16,30 @@
     <!-- Primary SEO -->
     <title>Everstead | Your life, organised.</title>
     <!-- Generic fallback so raw HTML (non-JS crawlers, share-preview bots, SEO
-         scanners) always sees a real description. Every page's <Helmet> still
-         overrides this with its own specific description once React renders, 
-         this is only what's seen before that happens. -->
-    <meta name="description" content="One secure place for your accounts, documents, trusted contacts, and wishes, organised for life, not just for death." />
+         scanners) always sees a real description. The SEO tags below carry
+         data-rh="true" so react-helmet-async REPLACES them once React renders;
+         without it every page ended up with two descriptions and two og:titles,
+         this generic English one first. Values live in src/seo/defaults.js. -->
+    <meta name="description" content="One secure place for your accounts, documents, trusted contacts, and wishes, organised for life, not just for death." data-rh="true" />
     <meta name="keywords" content="digital estate planning UK, estate planning app, online will organiser, executor tools, family estate planning London" />
     <meta name="robots" content="index, follow" />
     <!-- Canonical is set per-page via react-helmet (see each page's <Helmet>). A
          static canonical here would override every subpage with the home URL. -->
 
     <!-- Open Graph -->
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://www.everstead.care" />
-    <meta property="og:title" content="Everstead | Everything that matters, gathered in one secure place." />
-    <meta property="og:description" content="One secure place for your accounts, documents, trusted contacts, and wishes, organised for life, not just for death." />
-    <meta property="og:image" content="https://www.everstead.care/og-image.png?v=2" />
+    <meta property="og:type" content="website" data-rh="true" />
+    <meta property="og:url" content="https://www.everstead.care" data-rh="true" />
+    <meta property="og:title" content="Everstead | Everything that matters, gathered in one secure place." data-rh="true" />
+    <meta property="og:description" content="One secure place for your accounts, documents, trusted contacts, and wishes, organised for life, not just for death." data-rh="true" />
+    <meta property="og:image" content="https://www.everstead.care/og-image.png?v=2" data-rh="true" />
     <meta property="og:site_name" content="Everstead" />
-    <meta property="og:locale" content="en_GB" />
+    <meta property="og:locale" content="en_GB" data-rh="true" />
 
     <!-- Twitter/X Card -->
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Everstead | Everything that matters, gathered in one secure place." />
-    <meta name="twitter:description" content="One secure place for your accounts, documents, trusted contacts, and wishes, organised for life, not just for death." />
-    <meta name="twitter:image" content="https://www.everstead.care/og-image.png?v=2" />
+    <meta name="twitter:card" content="summary_large_image" data-rh="true" />
+    <meta name="twitter:title" content="Everstead | Everything that matters, gathered in one secure place." data-rh="true" />
+    <meta name="twitter:description" content="One secure place for your accounts, documents, trusted contacts, and wishes, organised for life, not just for death." data-rh="true" />
+    <meta name="twitter:image" content="https://www.everstead.care/og-image.png?v=2" data-rh="true" />
 
     <!-- Geo targeting -->
     <meta name="geo.region" content="GB" />

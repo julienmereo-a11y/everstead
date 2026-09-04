@@ -13,8 +13,8 @@
     "seeComparison": "Voir le comparatif",
     "cta": {
       "title": "Le comparatif le plus simple, c'est d'essayer.",
-      "body": "14 jours d'essai gratuit. Accès complet. Annulez avant la fin et ne payez rien.",
-      "button": "Commencez votre essai gratuit"
+      "body": "Gratuit pour commencer, sans carte bancaire. Everstead+ s'essaie 14 jours, résiliez avant la fin et vous ne payez rien.",
+      "button": "Commencer gratuitement"
     }
   },
   "detail": {
@@ -30,8 +30,8 @@
     "alsoIntro": "En toute honnêteté, {{name}} fait certaines choses qu'Everstead ne fait pas, et c'est voulu. Il s'agit d'un service distinct, à utiliser <em>en complément</em> d'Everstead, et non à sa place :",
     "alsoOutro": "Rien de tout cela ne remplace ce que fait Everstead : garder l'ensemble de votre succession organisée, à jour et prête pour les personnes de confiance.",
     "differenceTitle": "La vraie différence",
-    "ctaTitle": "Essayez Everstead gratuitement pendant 14 jours",
-    "ctaBody": "Sans engagement. Accès complet. Annulez avant la fin de l'essai et ne payez rien."
+    "ctaTitle": "Commencez Everstead gratuitement dès aujourd'hui",
+    "ctaBody": "Sans carte, sans limite de durée. Passez à Everstead+ quand vous voulez aller plus loin, avec 14 jours d'essai."
   },
   "competitors": {
     "farewill": {
@@ -65,7 +65,7 @@
       ],
       "price": "Gratuit pour commencer · Everstead+ à {{monthly}}/mois",
       "competitorPrice": "À partir de 90 £ en paiement unique pour un testament simple",
-      "cta": "Commencez votre essai gratuit"
+      "cta": "Commencer gratuitement"
     },
     "settld": {
       "name": "Settld",
@@ -97,7 +97,7 @@
       ],
       "price": "Gratuit pour commencer · Everstead+ à {{monthly}}/mois",
       "competitorPrice": "Gratuit",
-      "cta": "Commencez votre essai gratuit"
+      "cta": "Commencer gratuitement"
     },
     "safekeep": {
       "name": "SafeKeep",
@@ -130,7 +130,7 @@
       ],
       "price": "Gratuit pour commencer · Everstead+ à {{monthly}}/mois",
       "competitorPrice": "À partir de 5,99 £/mois",
-      "cta": "Commencez votre essai gratuit"
+      "cta": "Commencer gratuitement"
     },
     "octopus-legacy": {
       "name": "Octopus Legacy",
@@ -166,7 +166,7 @@
       ],
       "price": "Gratuit pour commencer · Everstead+ à {{monthly}}/mois",
       "competitorPrice": "À partir de 90 £ pour un testament simple",
-      "cta": "Commencez votre essai gratuit"
+      "cta": "Commencer gratuitement"
     },
     "lyfeguard": {
       "name": "Lyfeguard",
@@ -199,7 +199,7 @@
       ],
       "price": "Gratuit pour commencer · Everstead+ à {{monthly}}/mois",
       "competitorPrice": "À partir de 4,99 £/mois",
-      "cta": "Commencez votre essai gratuit"
+      "cta": "Commencer gratuitement"
     },
     "doing-nothing": {
       "name": "un tableur",
@@ -220,7 +220,7 @@
         "Lettres personnelles et dernières volontés préservées",
         "Fonctionne même si votre ordinateur est verrouillé ou perdu",
         "Récupérable quand la mémoire fait défaut",
-        "Gratuit, pendant les 14 premiers jours"
+        "Forfait gratuit, sans limite de durée"
       ],
       "verdict": "Il n'y a pas vraiment de match. Un tableur ou un tiroir de papiers fait défaut à votre famille au pire moment possible. Everstead est la version organisée, sécurisée et partageable de tout ce que vous aviez de toute façon l'intention de noter.",
       "positioning": [

@@ -91,8 +91,8 @@
     "scheduled": "Your gift is scheduled to arrive on <bold>{{date}}</bold>. You'll receive a confirmation by email shortly.",
     "receiptSent": "A receipt has been sent to {{email}}.",
     "upsellTitle": "Want to protect your own plan too?",
-    "upsellBody": "Start your own Everstead account and get 14 days free.",
-    "upsellCta": "Start your free trial"
+    "upsellBody": "Start your own Everstead account, free, no card required.",
+    "upsellCta": "Start free"
   },
   "errors": {
     "confirmFailed": "Could not confirm gift. Please contact support@everstead.care.",

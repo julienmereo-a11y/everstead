@@ -38,7 +38,7 @@
     "demo": "Mode démonstration, vue de l'exécuteur testamentaire du plan de Carol Thornton. Les données sont fictives.",
     "demoCta": "Créez votre propre plan →",
     "upsell": "Vous souhaitez protéger votre propre famille comme {{name}} protège la sienne ?",
-    "upsellCta": "Commencer un essai gratuit de 14 jours",
+    "upsellCta": "Commencer gratuitement",
     "deceasedTitle": "Le décès de {{name}} a été vérifié par Everstead",
     "deceasedBody": "Tous les messages scellés qui vous sont adressés et toutes les autorisations d'accès après décès sont désormais actifs. Le compte du titulaire du plan a été suspendu et reste en lecture seule.",
     "openMessages": "Ouvrir les messages",

@@ -1,6 +1,9 @@
 import React, { useEffect, Suspense, lazy } from 'react'
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import i18n, { languageFromPath, rememberLanguage } from './i18n'
+import { Helmet } from 'react-helmet-async'
+import { useTranslation } from 'react-i18next'
+import { SEO_DEFAULTS, SEO_IMAGE } from './seo/defaults'
 import { preferredAppLanguage } from './lib/deviceLanguage'
 import { AuthProvider, useAuth } from './contexts/AuthContext'
 import { isNative } from './lib/platform'
@@ -136,6 +139,32 @@ function RootRoute() {
 // trees. Native shells always follow the profile preference.
 const APP_LANGUAGE_PREFIXES = ['/dashboard', '/settings', '/advisor-portal', '/delegate-dashboard', '/setup-mfa']
 
+// Site-wide <head> defaults for the current language tree. index.html carries
+// the same tags marked data-rh="true", so Helmet replaces them here rather
+// than appending duplicates; a page's own <Helmet> then overrides tag by tag.
+function DefaultHead() {
+  const { i18n: inst } = useTranslation()
+  const { pathname } = useLocation()
+  const lang = inst.language === 'fr' ? 'fr' : 'en'
+  const d = SEO_DEFAULTS[lang]
+  const url = `https://www.everstead.care${lang === 'fr' ? '/fr' : ''}${pathname === '/' ? '' : pathname}`
+  return (
+    <Helmet>
+      <meta name="description" content={d.description} />
+      <meta property="og:type" content="website" />
+      <meta property="og:url" content={url} />
+      <meta property="og:title" content={d.ogTitle} />
+      <meta property="og:description" content={d.description} />
+      <meta property="og:image" content={SEO_IMAGE} />
+      <meta property="og:locale" content={d.locale} />
+      <meta name="twitter:card" content="summary_large_image" />
+      <meta name="twitter:title" content={d.ogTitle} />
+      <meta name="twitter:description" content={d.description} />
+      <meta name="twitter:image" content={SEO_IMAGE} />
+    </Helmet>
+  )
+}
+
 function ProfileLanguage() {
   const { profile } = useAuth()
   const { pathname } = useLocation()
@@ -177,6 +206,7 @@ export default function App() {
       <BrowserRouter basename={lang === 'fr' ? '/fr' : '/'}>
         <ScrollToTop />
         <ProfileLanguage />
+        <DefaultHead />
         <ErrorBoundary>
           <Suspense fallback={<PageLoader />}>
           <BiometricGate>
