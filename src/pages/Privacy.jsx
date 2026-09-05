@@ -20,6 +20,10 @@ export default function Privacy() {
   const pageUrl = `https://www.everstead.care${localePrefix}/privacy`
 
   const sections = t('sections', { returnObjects: true })
+  // Linkable sections (e.g. /privacy#your-rights-and-controls is the data
+  // deletion instructions URL registered with Meta and the app stores).
+  const anchor = (title) => title.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')
 
   return (
     <>
@@ -46,7 +50,7 @@ export default function Privacy() {
         <div className="max-w-3xl mx-auto px-6 lg:px-8">
           <div className="prose-style space-y-10">
             {sections.map(({ title, content }) => (
-              <div key={title} className="reveal">
+              <div key={title} id={anchor(title)} className="reveal scroll-mt-28">
                 <h2 className="font-display text-xl font-medium text-navy-950 mb-3">{title}</h2>
                 {content.split('\n\n').map((para, j) => (
                   <p key={j} className="text-stone-600 text-sm leading-relaxed mb-3 last:mb-0">{para}</p>
