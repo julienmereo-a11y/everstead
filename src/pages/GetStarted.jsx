@@ -428,6 +428,8 @@ export default function GetStarted() {
         { onConflict: 'id', ignoreDuplicates: false }
       )
 
+      // Account exists and profile is complete: this is the Google signup's conversion.
+      trackEvent('signup_completed', { plan: selectedPlan, method: 'google' })
       const { data: profile } = await supabase
         .from('profiles')
         .select('stripe_customer_id, full_name, email, plan, billing_cycle')
@@ -456,6 +458,7 @@ export default function GetStarted() {
       setClientSecret(secret)
       setStripeCustomerId(customerId)
       setIsOAuthProfile(false)
+      trackEvent('checkout_started', { plan: selectedPlan, billing: annualBilling ? 'yearly' : 'monthly', method: 'google' })
       setStep(3)
     } catch (err) {
       setError(err.message ?? t('errors.generic'))
@@ -503,7 +506,7 @@ export default function GetStarted() {
 
       const { access_token, refresh_token } = await registerRes.json()
       await supabase.auth.setSession({ access_token, refresh_token })
-      trackEvent('signup_completed', { plan: selectedPlan })
+      trackEvent('signup_completed', { plan: selectedPlan, method: 'email' })
 
       const { data: { user } } = await supabase.auth.getUser()
 

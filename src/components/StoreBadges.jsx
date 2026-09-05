@@ -1,6 +1,7 @@
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { trackEvent } from '../lib/analytics'
+import { getCampaign } from '../lib/campaign'
 
 // Official store badges linking to the app listings. Assets in /public/badges
 // are the untouched official artwork (Google's badge generator + Apple's badge
@@ -10,6 +11,13 @@ import { trackEvent } from '../lib/analytics'
 const APP_STORE_ID = 'id6791210842'
 const PLAY_PACKAGE = 'care.everstead.app'
 
+// Install attribution without an SDK (see lib/campaign). Apple only honours a
+// campaign token (ct) when the team's provider token (pt) is present: generate
+// any campaign link in App Store Connect → App Analytics → Acquisition →
+// Campaigns and paste its pt value here. Until then Apple links stay clean and
+// Play links carry the UTM referrer on their own.
+const APPLE_PROVIDER_TOKEN = ''
+
 /**
  * Store URLs for the visitor's market. A French reader must land on the French
  * storefront (apps.apple.com/fr, Play in French for France); the storefront
@@ -17,10 +25,14 @@ const PLAY_PACKAGE = 'care.everstead.app'
  */
 export function storeUrls(language) {
   const fr = language === 'fr'
-  return {
-    appStore:  `https://apps.apple.com/${fr ? 'fr' : 'gb'}/app/${APP_STORE_ID}`,
-    playStore: `https://play.google.com/store/apps/details?id=${PLAY_PACKAGE}&hl=${fr ? 'fr' : 'en_GB'}&gl=${fr ? 'FR' : 'GB'}`,
+  let appStore  = `https://apps.apple.com/${fr ? 'fr' : 'gb'}/app/${APP_STORE_ID}`
+  let playStore = `https://play.google.com/store/apps/details?id=${PLAY_PACKAGE}&hl=${fr ? 'fr' : 'en_GB'}&gl=${fr ? 'FR' : 'GB'}`
+  const c = getCampaign()
+  if (c) {
+    if (APPLE_PROVIDER_TOKEN) appStore += `?pt=${APPLE_PROVIDER_TOKEN}&ct=${c.campaign}&mt=8`
+    playStore += `&referrer=${encodeURIComponent(`utm_source=${c.source}&utm_medium=${c.medium}&utm_campaign=${c.campaign}`)}`
   }
+  return { appStore, playStore }
 }
 // English defaults, kept for callers outside a React tree.
 export const PLAY_STORE_URL = storeUrls('en').playStore

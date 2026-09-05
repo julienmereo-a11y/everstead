@@ -15,6 +15,21 @@
 //   subscription_created { plan, billing }           payment confirmed
 //   upgrade_click        { plan, billing, from_plan } in-app upgrade intent
 //   app_store_click      { store, location }         Google Play / App Store link
+//
+// META PIXEL MIRROR. The same calls also reach the Meta Pixel so Ads Manager can
+// optimise campaigns on real conversions (accounts created) instead of clicks.
+// `fbq` exists ONLY after Cookiebot marketing consent (the pixel tag in
+// index.html is type="text/plain" data-cookieconsent="marketing") and never in
+// the native build (vite strips the tag) — so the presence check IS the consent
+// check, and the apps stay Meta-free. Standard events are what Meta can bid on;
+// the rest go out as custom events for reporting.
+const META_STANDARD = {
+  signup_completed:     'CompleteRegistration',
+  checkout_started:     'InitiateCheckout',
+  subscription_created: 'Subscribe',
+}
+const META_CUSTOM = new Set(['plan_selected', 'upgrade_click', 'app_store_click'])
+
 export function trackEvent(name, params = {}) {
   try {
     if (typeof window !== 'undefined' && typeof window.gtag === 'function') {
@@ -22,5 +37,21 @@ export function trackEvent(name, params = {}) {
     }
   } catch {
     // Analytics must never break the app.
+  }
+  try {
+    const fbq = typeof window !== 'undefined' ? window.fbq : undefined
+    if (typeof fbq !== 'function') return
+    const standard = META_STANDARD[name]
+    if (standard) {
+      // Meta's vocabulary: content_name = which plan, content_category = billing period.
+      const meta = {}
+      if (params.plan)    meta.content_name = params.plan
+      if (params.billing) meta.content_category = params.billing
+      fbq('track', standard, meta)
+    } else if (META_CUSTOM.has(name)) {
+      fbq('trackCustom', name, params)
+    }
+  } catch {
+    // Same rule: measurement never breaks the product.
   }
 }

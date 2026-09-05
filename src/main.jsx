@@ -4,8 +4,12 @@ import { HelmetProvider } from 'react-helmet-async'
 import { Analytics } from '@vercel/analytics/react'
 import App from './App.jsx'
 import { isNative } from './lib/platform'
+import { captureCampaign } from './lib/campaign'
 import './i18n' // initialise i18next BEFORE the app renders (path-based locale)
 import './index.css'
+
+// Store-link attribution: keep the utm_* the visitor arrived with (see lib/campaign).
+if (!isNative()) captureCampaign()
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
