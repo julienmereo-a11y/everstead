@@ -70,7 +70,8 @@
       "dataPromise": "Data Promise",
       "cookies": "Cookies",
       "accessibility": "Accessibility",
-      "trust": "Trust"
+      "trust": "Trust",
+      "cookieSettings": "Cookie settings"
     }
   },
   "appBanner": {

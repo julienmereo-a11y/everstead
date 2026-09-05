@@ -103,6 +103,13 @@ export default function Cookies() {
               <p className="text-stone-600 text-sm leading-relaxed">
                 {t('managing.p2')}
               </p>
+              <button
+                type="button"
+                onClick={() => window.Cookiebot?.renew?.()}
+                className="mt-4 inline-flex items-center rounded-full border border-navy-950/20 px-4 py-2 text-sm font-medium text-navy-950 hover:bg-navy-950/5 transition-colors"
+              >
+                {t('managing.button')}
+              </button>
             </div>
 
             <div className="reveal">

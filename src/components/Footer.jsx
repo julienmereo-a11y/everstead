@@ -199,6 +199,10 @@ export default function Footer() {
             <Link to="/terms" className="hover:text-stone-400 transition-colors">{t('footer.bottom.terms')}</Link>
             <Link to="/data-promise" className="hover:text-stone-400 transition-colors">{t('footer.bottom.dataPromise')}</Link>
             <Link to="/cookies" className="hover:text-stone-400 transition-colors">{t('footer.bottom.cookies')}</Link>
+            {/* Consent must be as easy to withdraw as to give: reopens the Cookiebot dialog. */}
+            <button type="button" onClick={() => window.Cookiebot?.renew?.()} className="hover:text-stone-400 transition-colors">
+              {t('footer.bottom.cookieSettings')}
+            </button>
             <Link to="/accessibility" className="hover:text-stone-400 transition-colors">{t('footer.bottom.accessibility')}</Link>
             <Link to="/security" className="hover:text-stone-400 transition-colors">{t('footer.bottom.trust')}</Link>
             <LanguageLink />
