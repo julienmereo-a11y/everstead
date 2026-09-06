@@ -12,11 +12,10 @@ const APP_STORE_ID = 'id6791210842'
 const PLAY_PACKAGE = 'care.everstead.app'
 
 // Install attribution without an SDK (see lib/campaign). Apple only honours a
-// campaign token (ct) when the team's provider token (pt) is present: generate
-// any campaign link in App Store Connect → App Analytics → Acquisition →
-// Campaigns and paste its pt value here. Until then Apple links stay clean and
-// Play links carry the UTM referrer on their own.
-const APPLE_PROVIDER_TOKEN = ''
+// campaign token (ct) when the team's provider token (pt) is present; pt is the
+// team-wide value from any App Store Connect campaign link (App Analytics →
+// Acquisition → Campaigns). Installs then show per campaign in App Analytics.
+const APPLE_PROVIDER_TOKEN = '129142120'
 
 /**
  * Store URLs for the visitor's market. A French reader must land on the French

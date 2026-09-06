@@ -20,8 +20,8 @@ created, and the stores attribute installs from tagged badge links.
 
 - `src/lib/campaign.js` remembers `utm_*` (or `fbclid`) from the landing URL for
   the session; `storeUrls()` tags the badges: Play gets a `referrer` UTM (shows
-  in Play Console → Acquisition), the App Store gets `pt`/`ct` once
-  `APPLE_PROVIDER_TOKEN` in `StoreBadges.jsx` is filled in.
+  in Play Console → Acquisition), the App Store gets `pt`/`ct` (shows in
+  App Analytics → Acquisition → Campaigns).
 
 ## One-time portal steps (Julien)
 
@@ -45,8 +45,9 @@ created, and the stores attribute installs from tagged badge links.
 2. **Events Manager** → pixel → verify CompleteRegistration arrives (Test Events
    tab, accept marketing cookies on the site, create a test account).
 
-3. **App Store Connect** → App Analytics → Acquisition → Campaigns → Generate
-   Campaign Link → copy the `pt=` value into `APPLE_PROVIDER_TOKEN`.
+3. **App Store Connect** provider token: done (`pt=129142120`, set in
+   `StoreBadges.jsx`). Installs per campaign appear in App Analytics →
+   Acquisition → Campaigns under the `utm_campaign` name.
 
 ## Campaign recipe
 
