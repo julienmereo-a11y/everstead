@@ -1,0 +1,26 @@
+/* Everstead look for the consent dialogs (vanilla-cookieconsent v3 tokens). */
+#cc-main {
+  --cc-font-family: "DM Sans", system-ui, sans-serif;
+  --cc-bg: #ffffff;
+  --cc-primary-color: #0d1628;
+  --cc-secondary-color: #5a6475;
+  --cc-link-color: #4c7d47;
+  --cc-btn-primary-bg: #152240;
+  --cc-btn-primary-color: #ffffff;
+  --cc-btn-primary-hover-bg: #0d1628;
+  --cc-btn-secondary-bg: #f3f1ec;
+  --cc-btn-secondary-color: #152240;
+  --cc-btn-secondary-hover-bg: #e8e5e0;
+  --cc-btn-border-radius: 9999px;
+  --cc-modal-border-radius: 16px;
+  --cc-toggle-on-bg: #4c7d47;
+  --cc-cookie-category-block-bg: #f8f7f4;
+  --cc-cookie-category-block-border: #e8e5e0;
+  --cc-separator-border-color: #e8e5e0;
+  --cc-footer-bg: #f8f7f4;
+  --cc-overlay-bg: rgba(13, 22, 40, 0.45);
+  --cc-z-index: 99999;
+  font-size: 14px;
+}
+#cc-main .cm__title, #cc-main .pm__title { font-weight: 600; }
+#cc-main .cc-meta { margin: 8px 0 0; font-size: 12px; color: #6b7280; line-height: 1.5; }

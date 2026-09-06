@@ -38,13 +38,6 @@
   }
 }
 
-/* ── Suppress Cookiebot native UI — replaced by CookieBanner.jsx */
-#CybotCookiebotDialog,
-#CybotCookiebotDialogBodyUnderlay,
-#CookiebotWidget {
-  display: none !important;
-}
-
 /* ── Grain overlay ───────────────────────────────────────────── */
 .grain {
   position: relative;

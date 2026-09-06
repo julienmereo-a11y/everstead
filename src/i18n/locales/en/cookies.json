@@ -21,7 +21,7 @@
     {
       "name": "Essential cookies",
       "description": "These cookies are strictly necessary for Everstead to function. They keep you securely logged in, protect your session against fraud, and ensure the platform works correctly. They cannot be disabled, the service cannot operate without them. No consent is required under UK PECR.",
-      "examples": "Authentication session tokens, security tokens, user preference cookies.",
+      "examples": "Authentication session tokens, security tokens, user preference cookies, your cookie choice (everstead_consent).",
       "provider": "Everstead Digital Ltd",
       "retention": "Session / up to 1 year"
     },

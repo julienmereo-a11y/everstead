@@ -3,6 +3,7 @@ import { Helmet } from 'react-helmet-async'
 import HreflangLinks from '../components/HreflangLinks'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import { showCookiePreferences } from '../lib/consent'
 import { useReveal } from '../components/useReveal'
 import i18n from '../i18n'
 import enCookies from '../i18n/locales/en/cookies.json'
@@ -105,7 +106,7 @@ export default function Cookies() {
               </p>
               <button
                 type="button"
-                onClick={() => window.Cookiebot?.renew?.()}
+                onClick={() => showCookiePreferences()}
                 className="mt-4 inline-flex items-center rounded-full border border-navy-950/20 px-4 py-2 text-sm font-medium text-navy-950 hover:bg-navy-950/5 transition-colors"
               >
                 {t('managing.button')}

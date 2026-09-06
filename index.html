@@ -50,14 +50,10 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet" />
 
-    <!-- 1. Cookiebot CMP, must be first, blocks non-essential scripts until consent -->
-    <script id="Cookiebot" src="https://consent.cookiebot.com/uc.js"
-      data-cbid="5c013eae-e270-43e0-b4e2-8db75f629c2e"
-      data-blockingmode="auto"
-      type="text/javascript"></script>
-
-    <!-- 2. Google Consent Mode defaults, data-cookieconsent="ignore" so Cookiebot never blocks this -->
-    <script data-cookieconsent="ignore">
+    <!-- Consent: tags below marked type="text/plain" data-category="…" stay inert
+         until the self-hosted consent manager (src/lib/consent.js) enables them. -->
+    <!-- 1. Google Consent Mode defaults (denied until consent) -->
+    <script data-consent-default>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('consent', 'default', {
@@ -74,16 +70,16 @@
       gtag('set', 'url_passthrough', false);
     </script>
 
-    <!-- 3. Google Analytics, blocked by Cookiebot until statistics consent granted -->
+    <!-- 2. Google Analytics, enabled on statistics consent -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-13REH65WX1"
-      type="text/plain" data-cookieconsent="statistics"></script>
-    <script type="text/plain" data-cookieconsent="statistics">
+      type="text/plain" data-category="statistics"></script>
+    <script type="text/plain" data-category="statistics">
       gtag('js', new Date());
       gtag('config', 'G-13REH65WX1');
     </script>
 
-    <!-- 4. Meta Pixel, blocked by Cookiebot until marketing consent granted -->
-    <script type="text/plain" data-cookieconsent="marketing">
+    <!-- 3. Meta Pixel, enabled on marketing consent -->
+    <script type="text/plain" data-category="marketing">
       !function(f,b,e,v,n,t,s)
       {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
       n.callMethod.apply(n,arguments):n.queue.push(arguments)};
@@ -124,10 +120,6 @@
     </script>
   </head>
   <body>
-    <!-- Meta Pixel noscript fallback -->
-    <noscript><img height="1" width="1" style="display:none"
-      src="https://www.facebook.com/tr?id=1866212894055288&ev=PageView&noscript=1"
-    ></noscript>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>

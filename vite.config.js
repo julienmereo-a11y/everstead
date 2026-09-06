@@ -14,10 +14,10 @@ const isCapacitorBuild = process.env.CAP_BUILD === '1'
 const isCapacitorDebug = isCapacitorBuild && process.env.CAP_DEBUG === '1'
 const port = process.env.PORT ? Number(process.env.PORT) : 4173
 
-// In the native (Capacitor) build, strip the web-only marketing/consent/analytics
-// tags from index.html. Cookiebot (auto blocking mode), Google Tag Manager and the
-// Meta Pixel must never run inside the WKWebView — Cookiebot can't verify the
-// capacitor://localhost origin and can defer other scripts, which blanks the app.
+// In the native (Capacitor) build, strip the web-only analytics/marketing tags
+// from index.html. Google Analytics and the Meta Pixel must never run inside the
+// WKWebView: the apps carry no tracking and their store privacy labels say so.
+// (The consent manager itself is only imported on the web, see main.jsx.)
 // SAFE error surface (native only, temporary): shows real uncaught JS exceptions /
 // rejections on screen. Uses NO capture phase, so a mere resource 404 (e.g. a font)
 // will NOT trigger it — only genuine app crashes.
@@ -29,10 +29,9 @@ function stripWebOnlyTagsForNative() {
     transformIndexHtml(html) {
       if (!isCapacitorBuild) return html
       return html
-        .replace(/<script[^>]*data-cbid[^>]*>[\s\S]*?<\/script>/g, '')          // Cookiebot CMP
-        .replace(/<script[^>]*data-cookieconsent[^>]*>[\s\S]*?<\/script>/g, '')  // consent-gated scripts (GA, pixel, consent-mode defaults)
-        .replace(/<script[^>]*googletagmanager[^>]*>[\s\S]*?<\/script>/g, '')    // GA loader
-        .replace(/<noscript>\s*<img[^>]*facebook\.com\/tr[^>]*>\s*<\/noscript>/g, '') // Meta Pixel noscript
+        .replace(/<script[^>]*data-consent-default[^>]*>[\s\S]*?<\/script>/g, '') // Consent Mode defaults
+        .replace(/<script[^>]*data-category[^>]*>[\s\S]*?<\/script>/g, '')        // consent-gated scripts (GA, pixel)
+        .replace(/<script[^>]*googletagmanager[^>]*>[\s\S]*?<\/script>/g, '')     // GA loader
         // Native shell: forbid zoom. iOS auto-zooms on input focus and the zoom
         // STICKS — the whole app ends up cropped and panned under the status bar.
         // Standard for Capacitor apps; the website keeps pinch-zoom (a11y).

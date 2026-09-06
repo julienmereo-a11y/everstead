@@ -111,5 +111,18 @@
     "consent": "Send me the result, plus the occasional Everstead guide. I can unsubscribe at any time. See our",
     "privacyLink": "privacy policy",
     "sending": "Sending…"
+  },
+  "consent": {
+    "title": "Your privacy choices",
+    "manage": "Manage preferences",
+    "preferencesTitle": "Cookie preferences",
+    "preferencesIntro": "Choose which cookies Everstead may use. Essential cookies keep you signed in and cannot be switched off. You can change your mind at any time from the Cookie settings link in the footer.",
+    "save": "Save preferences",
+    "close": "Close",
+    "provider": "Provider",
+    "retention": "Retention",
+    "examples": "Cookies",
+    "moreTitle": "More information",
+    "moreBody": "Full details, including how to delete cookies from your browser, are in our Cookie Policy."
   }
 }

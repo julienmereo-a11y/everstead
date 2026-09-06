@@ -111,5 +111,18 @@
     "consent": "Envoyez-moi le résultat, ainsi que de temps en temps un guide Everstead. Je peux me désinscrire à tout moment. Voir notre",
     "privacyLink": "politique de confidentialité",
     "sending": "Envoi…"
+  },
+  "consent": {
+    "title": "Vos choix de confidentialité",
+    "manage": "Gérer mes préférences",
+    "preferencesTitle": "Préférences de cookies",
+    "preferencesIntro": "Choisissez les cookies qu'Everstead peut utiliser. Les cookies essentiels vous gardent connecté et ne peuvent pas être désactivés. Vous pouvez changer d'avis à tout moment via le lien Paramètres des cookies en pied de page.",
+    "save": "Enregistrer mes préférences",
+    "close": "Fermer",
+    "provider": "Fournisseur",
+    "retention": "Durée de conservation",
+    "examples": "Cookies",
+    "moreTitle": "Plus d'informations",
+    "moreBody": "Tous les détails, y compris la suppression des cookies depuis votre navigateur, figurent dans notre Politique relative aux cookies."
   }
 }

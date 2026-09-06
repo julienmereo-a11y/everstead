@@ -2,9 +2,9 @@
 // ANALYTICS — GA4 custom events
 // ─────────────────────────────────────────────────────────────
 // Thin, safe wrapper around gtag. gtag is defined inline in index.html and is
-// consent-gated by Google Consent Mode (Cookiebot): before the visitor accepts
-// analytics cookies, events are dropped/limited by Consent Mode itself — so it
-// is always safe to call this, and no consent checks are needed at call sites.
+// consent-gated (lib/consent.js + Google Consent Mode): before the visitor
+// accepts statistics cookies the GA tag never loads and Consent Mode stays
+// denied — so it is always safe to call this, no consent checks at call sites.
 //
 // Event vocabulary (keep names stable — renaming breaks GA4 reports):
 //   cta_click            { location, cta }           any marketing CTA
@@ -18,10 +18,10 @@
 //
 // META PIXEL MIRROR. The same calls also reach the Meta Pixel so Ads Manager can
 // optimise campaigns on real conversions (accounts created) instead of clicks.
-// `fbq` exists ONLY after Cookiebot marketing consent (the pixel tag in
-// index.html is type="text/plain" data-cookieconsent="marketing") and never in
-// the native build (vite strips the tag) — so the presence check IS the consent
-// check, and the apps stay Meta-free. Standard events are what Meta can bid on;
+// `fbq` exists ONLY after marketing consent (the pixel tag in index.html is
+// type="text/plain" data-category="marketing", enabled by lib/consent.js) and
+// never in the native build (vite strips the tag) — so the presence check IS the
+// consent check, and the apps stay Meta-free. Standard events are what Meta can bid on;
 // the rest go out as custom events for reporting.
 const META_STANDARD = {
   signup_completed:     'CompleteRegistration',

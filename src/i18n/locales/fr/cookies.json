@@ -21,7 +21,7 @@
     {
       "name": "Cookies essentiels",
       "description": "Ces cookies sont strictement nécessaires au fonctionnement d'Everstead. Ils vous maintiennent connecté en toute sécurité, protègent votre session contre la fraude et garantissent le bon fonctionnement de la plateforme. Ils ne peuvent pas être désactivés, le service ne peut pas fonctionner sans eux. Aucun consentement n'est requis au titre du règlement britannique PECR.",
-      "examples": "Jetons de session d'authentification, jetons de sécurité, cookies de préférences utilisateur.",
+      "examples": "Jetons de session d'authentification, jetons de sécurité, cookies de préférences utilisateur, votre choix de cookies (everstead_consent).",
       "provider": "Everstead Digital Ltd",
       "retention": "Session / jusqu'à 1 an"
     },

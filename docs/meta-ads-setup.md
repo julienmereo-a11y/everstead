@@ -8,8 +8,8 @@ created, and the stores attribute installs from tagged badge links.
 ## What the code does
 
 - `src/lib/analytics.js` mirrors funnel events to the Meta Pixel (id
-  `1866212894055288`, Cookiebot-gated in `index.html`, stripped from native
-  builds by `vite.config`):
+  `1866212894055288`, consent-gated in `index.html` via `src/lib/consent.js`,
+  stripped from native builds by `vite.config`):
 
   | trackEvent               | Meta event           | Use in Ads Manager        |
   |--------------------------|----------------------|---------------------------|

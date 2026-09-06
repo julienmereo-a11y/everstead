@@ -18,7 +18,6 @@ import Footer from './components/Footer'
 // Lazy: ChatWidget pulls in react-markdown — keeping it out of the eager bundle
 // saves ~50 kB+ of the entry chunk. A null fallback is invisible (floating widget).
 const ChatWidget = lazy(() => import('./components/ChatWidget'))
-import CookieBanner from './components/CookieBanner'
 import OfflineBanner from './components/OfflineBanner'
 
 // ── Lazy-loaded pages ─────────────────────────────────────────────────────────
@@ -343,17 +342,12 @@ export default function App() {
           </BiometricGate>
           </Suspense>
         </ErrorBoundary>
-        {/* Web-only overlays. Neither belongs in the native shell: cookie consent
-            is a web concern, and OfflineBanner trusts navigator.onLine, which is
+        {/* Web-only overlay. OfflineBanner trusts navigator.onLine, which is
             unreliable in the Capacitor webview and can report offline forever,
-            permanently covering the UI. The old PWA "add to home screen" prompt is
-            gone: the real apps are in both stores and AppBanner points there. */}
-        {!isNative() && (
-          <>
-            <CookieBanner />
-            <OfflineBanner />
-          </>
-        )}
+            permanently covering the UI. (Cookie consent is mounted from main.jsx,
+            web only. The old PWA "add to home screen" prompt is gone: the real apps
+            are in both stores and AppBanner points there.) */}
+        {!isNative() && <OfflineBanner />}
       </BrowserRouter>
     </AuthProvider>
   )
