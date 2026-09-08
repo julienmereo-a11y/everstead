@@ -859,7 +859,11 @@
       "messageUpdated": "Message modifié",
       "messageReleased": "Message remis",
       "messageDeleted": "Message supprimé",
-      "profileUpdated": "Profil mis à jour"
+      "profileUpdated": "Profil mis à jour",
+      "ownerStatusChanged": "Statut du coffre modifié",
+      "adviserNotified": "Votre conseiller a été prévenu",
+      "adviserEstatePack": "Dossier succession téléchargé par votre conseiller",
+      "adviserDocumentViewed": "Document ouvert par votre conseiller"
     }
   },
   "resources": {
@@ -1312,6 +1316,57 @@
       "Sentimental Items": "Objets sentimentaux",
       "Digital Legacy": "Héritage numérique",
       "Other": "Autre"
+    }
+  },
+  "adviser": {
+    "labelSolicitor": "Votre conseiller juridique",
+    "labelNotaire": "Votre notaire",
+    "labelIfa": "Votre conseiller financier",
+    "labelAccountant": "Votre expert-comptable",
+    "labelWealth": "Votre gestionnaire de patrimoine",
+    "labelOther": "Votre conseiller",
+    "overview": {
+      "sharing": "Partagé avec ce cabinet : {{sections}}.",
+      "sharingNone": "Vous ne partagez rien avec ce cabinet pour le moment.",
+      "notify": "Il sera prévenu si votre coffre est un jour activé.",
+      "manage": "Gérer le partage",
+      "contact": "Contact"
+    },
+    "settings": {
+      "heading": "Votre conseiller",
+      "body": "{{firm}} vous a invité sur Everstead. Choisissez ce que ce cabinet peut consulter. Vous pouvez changer d'avis à tout moment, et il ne peut jamais élargir lui-même son accès.",
+      "sections": {
+        "accounts": {
+          "label": "Comptes et actifs",
+          "desc": "Établissements, types de comptes, quatre derniers chiffres et montants que vous avez saisis."
+        },
+        "documents": {
+          "label": "Documents",
+          "desc": "Vos documents et leurs fichiers : testament, mandat de protection future, contrats."
+        },
+        "instructions": {
+          "label": "Consignes",
+          "desc": "Les consignes que vous avez écrites pour vos proches et votre exécuteur."
+        },
+        "people": {
+          "label": "Personnes de confiance",
+          "desc": "Leurs noms, rôles et adresses e-mail."
+        },
+        "alerts": {
+          "label": "Alertes",
+          "desc": "Les rappels d'expiration et les manques signalés dans votre coffre."
+        }
+      },
+      "notifyTitle": "Prévenir ce cabinet si mon coffre est activé",
+      "notifyBody": "Si Everstead vérifie un signalement de décès ou d'incapacité vous concernant, votre conseiller reçoit un seul e-mail l'en informant, avec les rubriques que vous partagez. Rien n'est envoyé avant.",
+      "save": "Enregistrer mes choix",
+      "saving": "Enregistrement…",
+      "saved": "Enregistré",
+      "failed": "Impossible d'enregistrer. Réessayez.",
+      "demoNote": "En démo, les changements ne sont pas enregistrés.",
+      "lastUpdated": "Dernière modification le {{date}}",
+      "shared": "Partagé",
+      "notShared": "Non partagé"
     }
   }
 }

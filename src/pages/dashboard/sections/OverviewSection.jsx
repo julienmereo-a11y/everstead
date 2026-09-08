@@ -3,6 +3,7 @@
 //
 import React, { useEffect, useState } from 'react'
 import ReferralCard from '../../../components/ReferralCard'
+import { AdviserOverviewCard } from './AdviserSection'
 import { SkeletonStats } from '../../../components/Skeleton'
 import { PLAN_LABELS } from '../../../config/pricing'
 import { SEVERITY_STYLES, STATUS_STYLES } from '../../dashboard/shared'
@@ -17,7 +18,7 @@ export const PLAN_BADGE = {
   advisor:   { label: PLAN_LABELS.advisor,   cls: 'bg-sage-50  text-sage-700  border-sage-200'  },
 }
 
-export function OverviewSection({ profile, accounts, documents, people, instructions, messages, alerts, markRead, onNavigate, planLimits, loading, daysSinceLogin, onCelebrate, onExecutorPreview, aboutMe, onUpgrade, persistScore, scoreInputsLoaded }) {
+export function OverviewSection({ adviser, profile, accounts, documents, people, instructions, messages, alerts, markRead, onNavigate, planLimits, loading, daysSinceLogin, onCelebrate, onExecutorPreview, aboutMe, onUpgrade, persistScore, scoreInputsLoaded }) {
   const { t } = useTranslation('dashboard')
   const criticalAlerts = alerts.filter(a => a.severity === 'critical' && !a.is_read)
   const [staleBannerDismissed, setStaleBannerDismissed] = React.useState(false)
@@ -398,6 +399,9 @@ export function OverviewSection({ profile, accounts, documents, people, instruct
           )}
         </div>
       )}
+
+      {/* The firm that invited this member, if any, and what they see */}
+      <AdviserOverviewCard adviser={adviser} onNavigate={onNavigate} />
 
       {/* Recent documents + alerts */}
       <div className="grid lg:grid-cols-2 gap-6">

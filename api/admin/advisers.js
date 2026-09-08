@@ -197,7 +197,7 @@ async function handler(req, res) {
 // Whitelist the columns an admin can set, so stray keys can't be injected.
 function cleanFirm(firm = {}) {
   const allowed = [
-    'firm_name', 'contact_name', 'contact_email', 'logo_url', 'status', 'plan_type',
+    'firm_name', 'firm_type', 'contact_name', 'contact_email', 'logo_url', 'status', 'plan_type',
     'platform_fee', 'price_per_family', 'max_families', 'pilot_end_date',
     'billing_start_date', 'notes',
   ]
@@ -208,6 +208,9 @@ function cleanFirm(firm = {}) {
     if (out[k] !== undefined && out[k] !== null && out[k] !== '') out[k] = Math.max(0, Math.floor(Number(out[k])) || 0)
   }
   for (const k of ['pilot_end_date', 'billing_start_date']) if (out[k] === '') out[k] = null
+  if (out.firm_type !== undefined) {
+    out.firm_type = ['solicitor', 'notaire', 'ifa', 'accountant', 'wealth', 'other'].includes(out.firm_type) ? out.firm_type : null
+  }
   return out
 }
 

@@ -33,6 +33,7 @@ import { SettingsSection } from './dashboard/sections/SettingsSection'
 import { MessagesSection } from './dashboard/sections/MessagesSection'
 import { DocumentsSection } from './dashboard/sections/DocumentsSection'
 import { OverviewSection } from './dashboard/sections/OverviewSection'
+import { useAdviserLink } from './dashboard/sections/AdviserSection'
 import { InstructionsSection } from './dashboard/sections/InstructionsSection'
 import { AboutMeSection } from './dashboard/sections/AboutMeSection'
 import { PeopleSection } from './dashboard/sections/PeopleSection'
@@ -201,6 +202,8 @@ export default function Dashboard() {
 
   // In demo mode, use seed data; otherwise require a real profile
   const activeProfile = isDemo ? DEMO_PROFILE : profile
+  // The firm this member is linked to (profiles.adviser_id) and what they share with it.
+  const adviserLink = useAdviserLink(activeProfile, isDemo)
 
   // AI features master switch (default on). When off: hide the assistant nav
   // item and block its route. The Edge Function enforces the same flag server-side.
@@ -616,7 +619,7 @@ export default function Dashboard() {
             onAddPayment={() => handleUpgrade()}
           />
         )}
-        {activeSection === 'overview'      && <OverviewSection  profile={activeProfile} accounts={accounts} documents={documents} people={people} instructions={instructions} messages={messages} alerts={alerts} markRead={markRead} onNavigate={setActiveSection} planLimits={planLimits} loading={loadingAccounts || loadingDocs} daysSinceLogin={daysSinceLogin} onCelebrate={celebrate} onExecutorPreview={() => setShowExecutorPreview(true)} aboutMe={aboutMe} onUpgrade={() => handleUpgrade('family', 'yearly')} persistScore={isDemo ? undefined : updateProfile} scoreInputsLoaded={!loadingAccounts && !loadingDocs && !loadingPeople && !loadingInstructions} />}
+        {activeSection === 'overview'      && <OverviewSection  adviser={adviserLink} profile={activeProfile} accounts={accounts} documents={documents} people={people} instructions={instructions} messages={messages} alerts={alerts} markRead={markRead} onNavigate={setActiveSection} planLimits={planLimits} loading={loadingAccounts || loadingDocs} daysSinceLogin={daysSinceLogin} onCelebrate={celebrate} onExecutorPreview={() => setShowExecutorPreview(true)} aboutMe={aboutMe} onUpgrade={() => handleUpgrade('family', 'yearly')} persistScore={isDemo ? undefined : updateProfile} scoreInputsLoaded={!loadingAccounts && !loadingDocs && !loadingPeople && !loadingInstructions} />}
         {activeSection === 'accounts'      && <AccountsSection  accounts={accounts} loading={loadingAccounts} add={addAccount} update={updateAccount} remove={removeAccount} profile={activeProfile} onUpgrade={() => handleUpgrade('family', 'yearly')} onLifeEvent={isDemo ? undefined : setLifeEventPrompt} />}
         {activeSection === 'documents'     && <DocumentsSection documents={documents} loading={loadingDocs} uploadFile={uploadFile} update={updateDocument} remove={removeDocument} planLimits={planLimits} profile={activeProfile} onUpgrade={() => handleUpgrade('family', 'yearly')} updateProfile={isDemo ? undefined : updateProfile} addAlert={isDemo ? undefined : realAlerts.add} onLifeEvent={isDemo ? undefined : setLifeEventPrompt} people={people} />}
         {activeSection === 'people'        && <PeopleSection    people={people} loading={loadingPeople} invite={invite} resendInvite={resendInvite} updatePerson={updatePerson} removePerson={removePerson} planLimits={planLimits} profile={activeProfile} onUpgrade={() => handleUpgrade('family', 'yearly')} />}
@@ -629,7 +632,7 @@ export default function Dashboard() {
         {activeSection === 'activity'      && <ActivitySection  activity={activity} loading={loadingActivity} />}
         {activeSection === 'resources'     && <ResourcesSection />}
         {activeSection === 'family'        && <FamilyWrapper    profile={activeProfile} />}
-        {activeSection === 'settings'      && <SettingsSection  profile={activeProfile} isDemo={isDemo} updateProfile={updateProfile} refreshProfile={refreshProfile} onUpgrade={handleUpgrade} onDeleteAccount={handleDeleteAccount} upgradeError={upgradeError} />}
+        {activeSection === 'settings'      && <SettingsSection  adviser={adviserLink} profile={activeProfile} isDemo={isDemo} updateProfile={updateProfile} refreshProfile={refreshProfile} onUpgrade={handleUpgrade} onDeleteAccount={handleDeleteAccount} upgradeError={upgradeError} />}
       </main>
       </div>
     </div>

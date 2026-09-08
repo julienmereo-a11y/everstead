@@ -1,5 +1,6 @@
 import { createClient } from '@supabase/supabase-js'
 import { withSentry } from '../lib/sentry.js'
+import { notifyFirmOfActivation } from '../_lib/adviser-notify.js'
 
 const supabase = createClient(
   process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL,
@@ -79,6 +80,10 @@ async function handler(req, res) {
           metadata:      { report_id: report.id, report_type: report.type },
         })
       } catch { /* audit logging is best-effort, never block the verification */ }
+      // The owner's firm, if they linked one AND asked to be told. A solicitor
+      // learning of the death the same week is the whole point of the link.
+      const firmNotice = await notifyFirmOfActivation({ ownerId: report.owner_id, report, actorId: admin.id })
+      return res.status(200).json({ report: toUi(report), firmNotice })
     }
     return res.status(200).json({ report: toUi(report) })
   }

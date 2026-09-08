@@ -7,6 +7,7 @@ import { PLAN_LABELS, PRICING, marketPricing, planLabel } from '../../../config/
 import i18n from '../../../i18n'
 import { PLANS, redirectToCustomerPortal } from '../../../lib/stripe'
 import { Field, SectionShell, input, primaryBtn, secondaryBtn } from '../../dashboard/ui'
+import { AdviserSharingCard } from './AdviserSection'
 import { AlertCircle, Bell, Check, Copy, CreditCard, Download, ExternalLink, Gift, Globe, Loader2, Lock, ShieldCheck, Sparkles, Users } from 'lucide-react'
 import { Trans, useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
@@ -95,7 +96,7 @@ export function BiometricLockSetting() {
   return null
 }
 
-export function SettingsSection({ profile, isDemo, updateProfile, refreshProfile, onUpgrade, onDeleteAccount, upgradeError }) {
+export function SettingsSection({ adviser, profile, isDemo, updateProfile, refreshProfile, onUpgrade, onDeleteAccount, upgradeError }) {
   const { t } = useTranslation('dashboard')
   const dateLocale = i18n.language?.startsWith('fr') ? 'fr-FR' : 'en-GB'
   const market = marketPricing(i18n.language)
@@ -480,6 +481,8 @@ export function SettingsSection({ profile, isDemo, updateProfile, refreshProfile
             </p>
           )}
         </div>
+
+        {adviser?.firm && <AdviserSharingCard adviser={adviser} isDemo={isDemo} />}
 
         {/* ── Password ── */}
         <div className="bg-white border border-stone-200 rounded-2xl p-6">

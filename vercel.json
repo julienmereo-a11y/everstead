@@ -44,6 +44,9 @@
     "api/data/export.js": {
       "maxDuration": 60
     },
+    "api/adviser/probate-pack.js": {
+      "maxDuration": 60
+    },
     "api/admin/broadcast-email.js": {
       "maxDuration": 300
     },

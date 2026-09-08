@@ -859,7 +859,11 @@
       "messageUpdated": "Message updated",
       "messageReleased": "Message released",
       "messageDeleted": "Message deleted",
-      "profileUpdated": "Profile updated"
+      "profileUpdated": "Profile updated",
+      "ownerStatusChanged": "Vault status changed",
+      "adviserNotified": "Your adviser was notified",
+      "adviserEstatePack": "Estate pack downloaded by your adviser",
+      "adviserDocumentViewed": "Document opened by your adviser"
     }
   },
   "resources": {
@@ -1312,6 +1316,57 @@
       "Sentimental Items": "Sentimental Items",
       "Digital Legacy": "Digital Legacy",
       "Other": "Other"
+    }
+  },
+  "adviser": {
+    "labelSolicitor": "Your solicitor",
+    "labelNotaire": "Your notaire",
+    "labelIfa": "Your financial adviser",
+    "labelAccountant": "Your accountant",
+    "labelWealth": "Your wealth manager",
+    "labelOther": "Your adviser",
+    "overview": {
+      "sharing": "Sharing with them: {{sections}}.",
+      "sharingNone": "You are not sharing anything with them yet.",
+      "notify": "They will be told if your vault is ever activated.",
+      "manage": "Manage sharing",
+      "contact": "Contact"
+    },
+    "settings": {
+      "heading": "Your adviser",
+      "body": "{{firm}} invited you to Everstead. Choose what they can see. You can change this at any time, and they can never widen their own access.",
+      "sections": {
+        "accounts": {
+          "label": "Accounts and assets",
+          "desc": "Providers, account types, the last four digits and the values you entered."
+        },
+        "documents": {
+          "label": "Documents",
+          "desc": "Your documents and their files: will, powers of attorney, policies."
+        },
+        "instructions": {
+          "label": "Instructions",
+          "desc": "The step-by-step notes you wrote for your executor and family."
+        },
+        "people": {
+          "label": "Trusted people",
+          "desc": "Their names, roles and email addresses."
+        },
+        "alerts": {
+          "label": "Alerts",
+          "desc": "Expiry reminders and the gaps Everstead flags in your vault."
+        }
+      },
+      "notifyTitle": "Tell them when my vault is activated",
+      "notifyBody": "If Everstead verifies a report that you have died or lost capacity, your adviser receives one email saying so, with the sections you share. Nothing is sent before then.",
+      "save": "Save sharing choices",
+      "saving": "Saving…",
+      "saved": "Saved",
+      "failed": "Could not save. Please try again.",
+      "demoNote": "In the demo, changes are not saved.",
+      "lastUpdated": "Last changed {{date}}",
+      "shared": "Shared",
+      "notShared": "Not shared"
     }
   }
 }

@@ -26,6 +26,11 @@ export const ACTIVITY_ACTIONS = [
   { value: 'message.released',     id: 'messageReleased' },
   { value: 'message.deleted',      id: 'messageDeleted' },
   { value: 'profile.updated',      id: 'profileUpdated' },
+  // Written by the server, not the member: what Everstead or their adviser did.
+  { value: 'owner.status_changed',           id: 'ownerStatusChanged' },
+  { value: 'adviser.notified',               id: 'adviserNotified' },
+  { value: 'adviser.estate_pack_downloaded', id: 'adviserEstatePack' },
+  { value: 'adviser.document_viewed',        id: 'adviserDocumentViewed' },
 ]
 
 // Display label for a stored action. Unknown values keep the previous rendering.

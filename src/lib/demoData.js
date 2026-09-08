@@ -521,3 +521,20 @@ export function verifyReport(reportId) {
   updateReportStatus(reportId, 'verified',
     `Report verified — owner status set to "${newOwnerStatus}" and after-death access grants unlocked`)
 }
+
+// ─────────────────────────────────────────────────────────────
+// The demo member's adviser firm (client side of the adviser link).
+// Mirrors the AdminPanel demo firm so the two demos tell one story.
+// ─────────────────────────────────────────────────────────────
+export const DEMO_ADVISER_FIRM = {
+  id: 'demo-firm',
+  firm_name: 'Thornton & Vale Solicitors',
+  firm_type: 'solicitor',
+  logo_url: null,
+  contact_name: 'Rachel Vale',
+  contact_email: 'rachel.vale@thorntonvale.example',
+}
+export const DEMO_ADVISER_CONSENTS = {
+  accounts: true, documents: true, instructions: false, people: false, alerts: true,
+  notify_on_activation: true, updated_at: '2026-04-22T16:30:00Z',
+}

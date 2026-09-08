@@ -98,3 +98,85 @@ export async function sendAdviserAddedNotice({ email, firmName }) {
     console.error('[adviser-email] added-notice failed:', err?.message)
   }
 }
+
+// ─────────────────────────────────────────────────────────────────────────────
+// The firm is told when a linked client's vault is activated after a verified
+// death or incapacity report. Sent ONLY when the client ticked
+// adviser_client_consents.notify_on_activation. One email per recipient, in
+// that recipient's language: a French notaire and an English paralegal at the
+// same firm each read their own.
+// ─────────────────────────────────────────────────────────────────────────────
+const ACTIVATED_COPY = {
+  en: {
+    subjectDeath:   "{{client}}'s Everstead vault has been activated",
+    subjectIncap:   "{{client}}'s Everstead vault has been activated",
+    title:          "A client's vault has been activated",
+    leadDeath:      'Everstead has verified a report that <strong>{{client}}</strong>, a client linked to {{firm}}, has died. We are sorry to be the ones to tell you.',
+    leadIncap:      'Everstead has verified a report that <strong>{{client}}</strong>, a client linked to {{firm}}, is no longer able to manage their own affairs.',
+    activated:      'Their vault was activated on {{date}} for the people they named. {{client}} asked us to let your firm know when this happened.',
+    dod:            'Date of death as recorded by the reporter: <strong>{{date}}</strong>.',
+    reporter:       'Reported by {{reporter}}{{role}}.',
+    sharedTitle:    'What your firm can see',
+    sharedSome:     '{{client}} shared the following sections with your firm: <strong>{{sections}}</strong>. The estate pack in the portal gathers them into one file, with the document files attached.',
+    sharedNone:     '{{client}} had not shared any sections of their plan with your firm. The people they named as trusted contacts can still provide what you need.',
+    button:         'Open the adviser portal',
+    footer:         'This message is confidential and intended for {{firm}}. Everstead is an organisation tool and does not provide legal, tax or financial advice.',
+    roleWord:       ', {{role}}',
+    sections:       { accounts: 'Accounts and assets', documents: 'Documents', instructions: 'Instructions', people: 'Trusted people', alerts: 'Alerts' },
+  },
+  fr: {
+    subjectDeath:   'Le coffre Everstead de {{client}} a été activé',
+    subjectIncap:   'Le coffre Everstead de {{client}} a été activé',
+    title:          "Le coffre d'un client a été activé",
+    leadDeath:      "Everstead a vérifié un signalement du décès de <strong>{{client}}</strong>, client rattaché à {{firm}}. Nous sommes désolés de vous l'apprendre par ce message.",
+    leadIncap:      "Everstead a vérifié un signalement selon lequel <strong>{{client}}</strong>, client rattaché à {{firm}}, n'est plus en mesure de gérer ses affaires.",
+    activated:      "Son coffre a été activé le {{date}} pour les personnes qu'il avait désignées. {{client}} nous avait demandé de prévenir votre cabinet le moment venu.",
+    dod:            'Date du décès indiquée par le déclarant : <strong>{{date}}</strong>.',
+    reporter:       'Signalement effectué par {{reporter}}{{role}}.',
+    sharedTitle:    'Ce que votre cabinet peut consulter',
+    sharedSome:     '{{client}} partageait les rubriques suivantes avec votre cabinet : <strong>{{sections}}</strong>. Le dossier succession, disponible dans le portail, les réunit en un seul fichier avec les documents joints.',
+    sharedNone:     "{{client}} n'avait partagé aucune rubrique de son coffre avec votre cabinet. Ses personnes de confiance pourront vous transmettre ce dont vous avez besoin.",
+    button:         'Ouvrir le portail conseiller',
+    footer:         "Ce message est confidentiel et destiné à {{firm}}. Everstead est un outil d'organisation et ne fournit aucun conseil juridique, fiscal ou financier.",
+    roleWord:       ' ({{role}})',
+    sections:       { accounts: 'Comptes et actifs', documents: 'Documents', instructions: 'Consignes', people: 'Personnes de confiance', alerts: 'Alertes' },
+  },
+}
+
+const fill = (s, vars) => String(s).replace(/\{\{(\w+)\}\}/g, (_, k) => vars[k] ?? '')
+
+export async function sendVaultActivatedNotice({ to, lang = 'en', firmName, clientName, type = 'death', verifiedAt, dateOfDeath, reporterName, reporterRole, sharedSections = [] }) {
+  if (!to) return false
+  const L = lang === 'fr' ? 'fr' : 'en'
+  const C = ACTIVATED_COPY[L]
+  const vars = {
+    client: esc(clientName || (L === 'fr' ? 'votre client' : 'your client')),
+    firm:   esc(firmName || (L === 'fr' ? 'votre cabinet' : 'your firm')),
+    date:   verifiedAt ? new Date(verifiedAt).toLocaleDateString(L === 'fr' ? 'fr-FR' : 'en-GB', { day: 'numeric', month: 'long', year: 'numeric' }) : '',
+  }
+  const sections = sharedSections.map(k => C.sections[k]).filter(Boolean).join(', ')
+  const dodLine  = dateOfDeath ? `<p style="margin:0 0 16px;color:#4a5568;font-size:16px;line-height:1.6;">${fill(C.dod, { date: esc(dateOfDeath) })}</p>` : ''
+  const repLine  = reporterName
+    ? `<p style="margin:0 0 16px;color:#4a5568;font-size:15px;line-height:1.6;">${fill(C.reporter, { reporter: esc(reporterName), role: reporterRole ? fill(C.roleWord, { role: esc(reporterRole) }) : '' })}</p>`
+    : ''
+  const inner = `
+    <h1 style="margin:0 0 16px;color:#0d1628;font-size:24px;font-weight:normal;">${C.title}</h1>
+    <p style="margin:0 0 16px;color:#4a5568;font-size:16px;line-height:1.6;">${fill(type === 'death' ? C.leadDeath : C.leadIncap, vars)}</p>
+    <p style="margin:0 0 16px;color:#4a5568;font-size:16px;line-height:1.6;">${fill(C.activated, vars)}</p>
+    ${dodLine}${repLine}
+    <p style="margin:24px 0 6px;color:#0d1628;font-size:13px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;">${C.sharedTitle}</p>
+    <p style="margin:0 0 28px;color:#4a5568;font-size:16px;line-height:1.6;">${fill(sections ? C.sharedSome : C.sharedNone, { ...vars, sections: esc(sections) })}</p>
+    ${button(`${APP}/advisor-portal`, C.button)}
+    <p style="margin:28px 0 0;color:#9ca3af;font-size:13px;line-height:1.5;">${fill(C.footer, vars)}</p>`
+  try {
+    await resend.emails.send({
+      from: FROM, to,
+      subject: fill(type === 'death' ? C.subjectDeath : C.subjectIncap, { client: clientName || '' }),
+      html: shell(inner),
+    })
+    return true
+  } catch (err) {
+    console.error('[adviser-email] vault-activated notice failed:', err?.message)
+    return false
+  }
+}

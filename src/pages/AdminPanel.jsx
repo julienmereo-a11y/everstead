@@ -1813,7 +1813,7 @@ function AdviserCard({ adviser: a, onOpen }) {
 
 function AdviserForm({ isDemo, initial, onClose, onSaved }) {
   const [f, setF] = useState(() => ({
-    firm_name: initial?.firm_name || '', contact_name: initial?.contact_name || '', contact_email: initial?.contact_email || '',
+    firm_name: initial?.firm_name || '', firm_type: initial?.firm_type || '', contact_name: initial?.contact_name || '', contact_email: initial?.contact_email || '',
     status: initial?.status || 'pilot', plan_type: initial?.plan_type || 'pilot',
     platform_fee_gbp: penceToPounds(initial?.platform_fee || 0), price_per_family_gbp: penceToPounds(initial?.price_per_family || 0),
     max_families: String(initial?.max_families ?? 25),
@@ -1830,7 +1830,7 @@ function AdviserForm({ isDemo, initial, onClose, onSaved }) {
     if (isDemo) { onSaved(); return }
     setSaving(true); setError(null)
     const payload = {
-      firm_name: f.firm_name.trim(), contact_name: f.contact_name.trim(), contact_email: f.contact_email.trim(),
+      firm_name: f.firm_name.trim(), firm_type: f.firm_type || null, contact_name: f.contact_name.trim(), contact_email: f.contact_email.trim(),
       status: f.status, plan_type: f.plan_type,
       platform_fee: poundsToPence(f.platform_fee_gbp), price_per_family: poundsToPence(f.price_per_family_gbp),
       max_families: Math.max(0, parseInt(f.max_families, 10) || 0),
@@ -1861,7 +1861,21 @@ function AdviserForm({ isDemo, initial, onClose, onSaved }) {
     <Modal title={initial ? 'Edit adviser firm' : 'New adviser firm'} onClose={onClose}>
       <div className="space-y-4">
         {error && <div className="text-sm text-red-600">{error}</div>}
-        <Field label="Firm name *"><input className={inputCls} value={f.firm_name} onChange={e => set('firm_name', e.target.value)} /></Field>
+        <div className="grid grid-cols-[1fr_200px] gap-3">
+          <Field label="Firm name *"><input className={inputCls} value={f.firm_name} onChange={e => set('firm_name', e.target.value)} /></Field>
+          {/* Drives the label the client sees in their vault: "Your solicitor", "Votre notaire"... */}
+          <Field label="Firm type">
+            <select className={inputCls} value={f.firm_type} onChange={e => set('firm_type', e.target.value)}>
+              <option value="">Not set (shows "Your adviser")</option>
+              <option value="solicitor">Solicitor</option>
+              <option value="notaire">Notaire</option>
+              <option value="ifa">Financial adviser</option>
+              <option value="accountant">Accountant</option>
+              <option value="wealth">Wealth manager</option>
+              <option value="other">Other</option>
+            </select>
+          </Field>
+        </div>
         <div className="grid grid-cols-2 gap-3">
           <Field label="Contact name"><input className={inputCls} value={f.contact_name} onChange={e => set('contact_name', e.target.value)} /></Field>
           <Field label="Contact email"><input className={inputCls} value={f.contact_email} onChange={e => set('contact_email', e.target.value)} /></Field>

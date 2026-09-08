@@ -205,6 +205,72 @@ ${family.accounts.length===0?'<tr><td colspan="4" style="color:#888">None shared
 // ─────────────────────────────────────────────────────────────
 // FAMILY OVERVIEW (main panel for selected family)
 // ─────────────────────────────────────────────────────────────
+// ── Estate pack: inventory PDF plus the shared document files, one ZIP ───────
+function EstatePackButton({ family, isDemo }) {
+  const [state, setState] = useState('idle') // idle | busy | error
+  const run = async () => {
+    if (state === 'busy') return
+    setState('busy')
+    try {
+      const headers = { 'Content-Type': 'application/json' }
+      let body
+      if (isDemo) {
+        body = { demo: true, lang: 'en' }
+      } else {
+        const { data: { session } } = await supabase.auth.getSession()
+        headers.Authorization = `Bearer ${session?.access_token || ''}`
+        body = { clientId: family.id }
+      }
+      const res = await fetch('/api/adviser/probate-pack', { method: 'POST', headers, body: JSON.stringify(body) })
+      if (!res.ok) throw new Error('pack failed')
+      const blob = await res.blob()
+      const cd = res.headers.get('Content-Disposition') || ''
+      const m  = /filename\*=UTF-8''([^;]+)/.exec(cd)
+      const name = m ? decodeURIComponent(m[1]) : `Estate pack - ${family.owner_name}.zip`
+      const href = URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = href; a.download = name
+      document.body.appendChild(a); a.click(); a.remove()
+      setTimeout(() => URL.revokeObjectURL(href), 5000)
+      setState('idle')
+    } catch {
+      setState('error')
+      setTimeout(() => setState('idle'), 3500)
+    }
+  }
+  return (
+    <button
+      onClick={run}
+      disabled={state === 'busy'}
+      className={secondaryBtn}
+      title="Inventory PDF plus every shared document file, in one ZIP"
+    >
+      {state === 'busy' ? <Loader2 size={14} className="animate-spin" /> : <Download size={14} />}
+      {state === 'busy' ? 'Building pack…' : state === 'error' ? 'Could not build the pack' : 'Estate pack'}
+    </button>
+  )
+}
+
+// ── Shown once Everstead has verified a death or incapacity report ────────────
+function ActivationBanner({ family }) {
+  if (!family.owner_status || !['deceased', 'incapacitated'].includes(family.owner_status)) return null
+  const when = family.activation?.verified_at ? ` on ${fmtDate(family.activation.verified_at)}` : ''
+  return (
+    <div className="rounded-2xl border border-navy-200 bg-navy-50 px-6 py-4 flex items-start gap-3">
+      <Shield size={16} className="text-navy-700 mt-0.5 shrink-0" />
+      <div>
+        <p className="text-sm font-semibold text-navy-900">Vault activated{when}</p>
+        <p className="text-xs text-stone-600 mt-0.5 leading-relaxed">
+          {family.owner_status === 'deceased' ? 'Everstead verified a death report. ' : 'Everstead verified an incapacity report. '}
+          {family.activation?.date_of_death ? `Date of death recorded by the reporter: ${family.activation.date_of_death}. ` : ''}
+          {family.notify_on_activation ? 'Your firm was notified by email.' : 'The client had not asked for your firm to be notified.'}
+          {' '}The estate pack gathers everything they shared with you into one file.
+        </p>
+      </div>
+    </div>
+  )
+}
+
 function FamilyView({ family, isDemo }) {
   const [activeTab, setActiveTab] = useState('overview')
   const [resendState, setResendState] = useState('idle') // idle | sending | sent | error
@@ -271,6 +337,8 @@ function FamilyView({ family, isDemo }) {
 
   return (
     <div className="space-y-5">
+      <ActivationBanner family={family} />
+
       {/* Header strip */}
       <div className="rounded-[2rem] border border-stone-200 bg-white px-7 py-5 flex flex-wrap items-center justify-between gap-4">
         <div>
@@ -288,6 +356,7 @@ function FamilyView({ family, isDemo }) {
           >
             <Printer size={14} /> Print summary
           </button>
+          <EstatePackButton family={family} isDemo={isDemo} />
           <div className="text-right">
             <p className="text-xs text-stone-500 mb-1">Plan readiness</p>
             <div className="flex items-center gap-2">
@@ -325,7 +394,7 @@ function FamilyView({ family, isDemo }) {
       {/* Tab content */}
       {activeTab === 'overview'     && <FamilyOverviewTab family={family} setTab={setActiveTab} permissions={permissions} />}
       {activeTab === 'accounts'     && (!permissions.accounts     ? <LockedTabPanel section="Accounts" />     : <FamilyAccountsTab accounts={family.accounts} />)}
-      {activeTab === 'documents'    && (!permissions.documents    ? <LockedTabPanel section="Documents" />    : <FamilyDocumentsTab documents={family.documents} />)}
+      {activeTab === 'documents'    && (!permissions.documents    ? <LockedTabPanel section="Documents" />    : <FamilyDocumentsTab documents={family.documents} clientId={family.id} isDemo={isDemo} />)}
       {activeTab === 'instructions' && (!permissions.instructions ? <LockedTabPanel section="Instructions" /> : <FamilyInstructionsTab instructions={family.instructions} />)}
       {activeTab === 'people'       && (!permissions.people       ? <LockedTabPanel section="People" />       : <FamilyPeopleTab people={family.trusted_people} />)}
       {activeTab === 'alerts'       && (!permissions.alerts       ? <LockedTabPanel section="Alerts" />       : <FamilyAlertsTab alerts={family.alerts} />)}
@@ -715,22 +784,37 @@ function FamilyAccountsTab({ accounts }) {
 }
 
 // ── Document Viewer Modal ──────────────────────────────────────
-function DocumentViewerModal({ doc, onClose }) {
+function DocumentViewerModal({ doc, onClose, clientId, isDemo }) {
   // Uploaded client files are private (storage_path in the `documents` bucket, no
   // file_url column) — resolve a signed URL to preview/download, falling back to
   // file_url if a row ever carries a public one.
+  const hasFile = !!(doc?.has_file || doc?.storage_path)
   const [url, setUrl]         = useState(doc?.file_url || null)
-  const [loading, setLoading] = useState(!doc?.file_url && !!doc?.storage_path)
+  const [loading, setLoading] = useState(!doc?.file_url && hasFile)
 
   useEffect(() => {
     let active = true
-    if (doc?.file_url)      { setUrl(doc.file_url); setLoading(false); return () => { active = false } }
-    if (!doc?.storage_path) { setUrl(null);         setLoading(false); return () => { active = false } }
+    if (doc?.file_url) { setUrl(doc.file_url); setLoading(false); return () => { active = false } }
+    if (!hasFile)      { setUrl(null);         setLoading(false); return () => { active = false } }
     setLoading(true)
     ;(async () => {
       try {
-        const { getDocumentUrl } = await import('../lib/supabase')
-        const signed = await getDocumentUrl(doc.storage_path)
+        let signed = null
+        if (clientId && !isDemo) {
+          // The documents bucket is owner-read-only, so the server signs the URL
+          // after checking the firm link and the client's documents consent.
+          const { data: { session } } = await supabase.auth.getSession()
+          const res = await fetch('/api/adviser/document-link', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${session?.access_token || ''}` },
+            body: JSON.stringify({ clientId, documentId: doc.id }),
+          })
+          const data = await res.json().catch(() => ({}))
+          signed = res.ok ? data.url : null
+        } else if (doc.storage_path) {
+          const { getDocumentUrl } = await import('../lib/supabase')
+          signed = await getDocumentUrl(doc.storage_path)
+        }
         if (active) setUrl(signed || null)
       } catch {
         if (active) setUrl(null)
@@ -739,7 +823,7 @@ function DocumentViewerModal({ doc, onClose }) {
       }
     })()
     return () => { active = false }
-  }, [doc?.id, doc?.storage_path, doc?.file_url])
+  }, [doc?.id, doc?.storage_path, doc?.has_file, doc?.file_url, clientId, isDemo])
 
   if (!doc) return null
   return (
@@ -811,7 +895,7 @@ function DocumentViewerModal({ doc, onClose }) {
 }
 
 // ── Documents ─────────────────────────────────────────────────
-function FamilyDocumentsTab({ documents }) {
+function FamilyDocumentsTab({ documents, clientId, isDemo }) {
   const [viewingDoc, setViewingDoc] = useState(null)
   if (!documents.length) return <EmptyTab icon={FileText} label="No documents shared with you yet." />
   return (
@@ -839,7 +923,7 @@ function FamilyDocumentsTab({ documents }) {
           </div>
         ))}
       </div>
-      {viewingDoc && <DocumentViewerModal doc={viewingDoc} onClose={() => setViewingDoc(null)} />}
+      {viewingDoc && <DocumentViewerModal doc={viewingDoc} clientId={clientId} isDemo={isDemo} onClose={() => setViewingDoc(null)} />}
     </>
   )
 }
@@ -1758,22 +1842,50 @@ export default function AdvisorPortal() {
     setRealTeam(teamRes.data || [])
     const notesById = {}
     for (const n of notesRes.data || []) notesById[n.client_id] = n
-    // Map client profiles into the portal's family shape. Deep plan data (accounts,
-    // documents, permissions) is the separate next phase — empty for now.
-    const linked = (clientRes.data || []).map(c => ({
-      id: c.id,
-      owner_name: c.full_name || c.email,
-      owner_email: c.email,
-      readiness_score: c.readiness_score ?? 0,
-      invite_status: 'accepted',
-      advisor_role: 'Client',
-      last_updated: c.created_at,
-      advisor_notes: notesById[c.id]?.notes ?? '',
-      next_review_date: notesById[c.id]?.next_review_date ?? '',
-      meeting_notes: notesById[c.id]?.meeting_notes ?? '',
-      accounts: [], documents: [], instructions: [], trusted_people: [], alerts: [],
-      permissions: {},
+    // Each linked client's plan, limited to the sections THEY consented to
+    // (adviser_client_consents). The RPC re-checks the firm link on every call.
+    const plans = {}
+    await Promise.all((clientRes.data || []).map(async (c) => {
+      const { data } = await supabase.rpc('get_adviser_client_plan', { p_client_id: c.id })
+      if (data && typeof data === 'object') plans[c.id] = data
     }))
+    const NO_CONSENT = { accounts: false, documents: false, instructions: false, people: false, alerts: false }
+    const linked = (clientRes.data || []).map(c => {
+      const plan = plans[c.id] || {}
+      const cons = plan.consents || {}
+      const latest = [
+        c.created_at, cons.updated_at,
+        ...(plan.activity || []).map(a => a.created_at),
+        ...(plan.accounts || []).map(a => a.updated_at),
+        ...(plan.documents || []).map(d => d.updated_at),
+      ].filter(Boolean).sort().pop()
+      return {
+        id: c.id,
+        owner_name: c.full_name || c.email,
+        owner_email: c.email,
+        plan: c.plan,
+        readiness_score: c.readiness_score ?? 0,
+        invite_status: 'accepted',
+        advisor_role: 'Client',
+        last_updated: latest || c.created_at,
+        owner_status: c.owner_status || null,
+        activation: plan.activation || null,
+        notify_on_activation: !!cons.notify_on_activation,
+        advisor_notes: notesById[c.id]?.notes ?? '',
+        next_review_date: notesById[c.id]?.next_review_date ?? '',
+        meeting_notes: notesById[c.id]?.meeting_notes ?? '',
+        accounts: plan.accounts || [],
+        documents: plan.documents || [],
+        instructions: (plan.instructions || []).map(i => ({ ...i, steps_count: i.steps?.length ?? 0 })),
+        trusted_people: plan.trusted_people || [],
+        alerts: plan.alerts || [],
+        activity_log: plan.activity || [],
+        advisor_permissions: plan.consents
+          ? { accounts: !!cons.accounts, documents: !!cons.documents, instructions: !!cons.instructions, people: !!cons.people, alerts: !!cons.alerts }
+          : NO_CONSENT,
+        permissions: {},
+      }
+    })
     // Pending client invites appear in the list until the family signs up.
     const linkedEmails = new Set(linked.map(f => (f.owner_email || '').toLowerCase()))
     const pending = (inviteRes.data || [])
