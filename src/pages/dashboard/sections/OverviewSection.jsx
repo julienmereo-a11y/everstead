@@ -242,7 +242,7 @@ export function OverviewSection({ adviser, profile, accounts, documents, people,
           <button
             onClick={() => window.dispatchEvent(new CustomEvent('everstead:coach', { detail: t('aiGuide.quickPrompts.focus') }))}
             className="inline-flex items-center gap-1.5 transition-all"
-            style={{ background: 'linear-gradient(100deg, #2d5082 0%, #6f6bc6 50%, #6e9b6a 100%)', border: 'none', color: '#ffffff', borderRadius: '9999px', padding: '9px 18px', fontSize: '13px', fontWeight: '600', cursor: 'pointer', boxShadow: '0 6px 18px -6px rgba(111,107,198,0.5)' }}
+            style={{ background: '#2d5082', border: 'none', color: '#ffffff', borderRadius: '9999px', padding: '9px 18px', fontSize: '13px', fontWeight: '600', cursor: 'pointer', boxShadow: '0 6px 16px -8px rgba(13, 22, 40, 0.45)' }}
             onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-1px)' }}
             onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)' }}
           >

@@ -111,11 +111,22 @@
   padding: 0 0.1em;
   margin: 0 -0.1em;
 }
-/* Aurora primary button */
+/* Primary button — one flat brand colour.
+   This was the navy -> iris -> sage gradient until 2026-09-09, when Julien
+   asked for a single colour so every button on the site matches. .btn-aurora
+   is kept as an alias because 99 call sites use it; new code should say
+   .btn-primary. No transition here on purpose: several call sites set their
+   own transition-transform, and a shorthand would replace it. */
+.btn-primary,
 .btn-aurora {
-  background: var(--aurora-line); color: #fff;
-  box-shadow: 0 8px 24px -8px rgba(111,107,198,0.6);
+  background: #2d5082;                                /* navy-600 */
+  color: #fff;
+  box-shadow: 0 8px 20px -10px rgba(13, 22, 40, 0.45);
   border-radius: 9999px;
+}
+.btn-primary:hover,
+.btn-aurora:hover {
+  background: #253f67;                                /* navy-700 */
 }
 /* Aurora gradient — smooth diagonal fill for tall panels (e.g. the login side panel),
    darkened through the middle so white text stays readable. */

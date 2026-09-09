@@ -974,7 +974,7 @@ function AdminActions({ u, onTrialExtended }) {
             onClick={applyFounding}
             disabled={foundingState === 'sending'}
             className="w-full flex items-center gap-2 text-xs font-semibold px-3 py-2 rounded-xl text-white transition-opacity disabled:opacity-50"
-            style={{ background: 'linear-gradient(100deg,#2d5082,#6f6bc6,#6e9b6a)' }}
+            style={{ background: '#2d5082' }}
             title="Switch to Family Yearly + FOUNDING50 (first year free, then renews)"
           >
             {foundingState === 'sending' ? <Loader2 size={12} className="animate-spin" /> : <Sparkles size={12} />}
@@ -2763,7 +2763,7 @@ function UsersSection({ isDemo }) {
             className={`inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-2 rounded-xl border transition-colors ${
               foundingOnly ? 'text-white border-transparent shadow-sm' : 'text-navy-700 border-stone-200 bg-white hover:bg-stone-50'
             }`}
-            style={foundingOnly ? { background: 'linear-gradient(100deg,#2d5082,#6f6bc6,#6e9b6a)' } : undefined}
+            style={foundingOnly ? { background: '#2d5082' } : undefined}
           >
             <Sparkles size={13} /> Founding · {foundingCount}
           </button>
@@ -2788,7 +2788,7 @@ function UsersSection({ isDemo }) {
         <button
           onClick={() => setShowInvite(true)}
           className="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-2 rounded-xl text-white transition-opacity hover:opacity-90"
-          style={{ background: 'linear-gradient(100deg,#2d5082,#6f6bc6,#6e9b6a)' }}
+          style={{ background: '#2d5082' }}
         >
           <Send size={13} /> Invite user
         </button>
@@ -2854,7 +2854,7 @@ function InviteUserModal({ isDemo, onClose }) {
           <button onClick={onClose} className="text-sm px-4 py-2 rounded-xl border border-stone-200 hover:bg-stone-50">Cancel</button>
           <button onClick={submit} disabled={state === 'sending' || state === 'sent'}
             className="inline-flex items-center gap-2 text-sm font-semibold px-4 py-2 rounded-xl text-white disabled:opacity-50"
-            style={{ background: 'linear-gradient(100deg,#2d5082,#6f6bc6,#6e9b6a)' }}>
+            style={{ background: '#2d5082' }}>
             {state === 'sending' ? <Loader2 size={14} className="animate-spin" /> : <Send size={14} />}
             {state === 'sent' ? 'Sent ✓' : 'Send invite'}
           </button>

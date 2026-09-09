@@ -724,7 +724,7 @@ export function AdviserAssistant({ isDemo }) {
   return (
     <>
       <button onClick={() => setOpen(v => !v)} className={`fixed bottom-6 right-6 z-40 inline-flex items-center gap-2.5 px-5 py-3 text-white text-sm font-semibold rounded-full shadow-lg transition-all ${open ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}
-        style={{ background: 'linear-gradient(100deg, #2d5082 0%, #6f6bc6 50%, #6e9b6a 100%)', boxShadow: '0 8px 24px -6px rgba(111,107,198,0.5)' }} aria-label="Open adviser assistant">
+        style={{ background: '#2d5082', boxShadow: '0 8px 20px -10px rgba(13, 22, 40, 0.45)' }} aria-label="Open adviser assistant">
         <Sparkles size={16} /> Ask Everstead
       </button>
       {open && (
