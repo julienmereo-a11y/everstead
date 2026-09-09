@@ -220,7 +220,7 @@ export default function HomeEn() {
             style={{ background: 'linear-gradient(180deg, rgba(13,22,40,0.55) 0%, transparent 25%, transparent 70%, rgba(13,22,40,0.85) 100%)' }}
           />
 
-          <div className={`relative flex-1 w-full max-w-[1360px] mx-auto ${SECTION_X} pt-[104px] lg:pt-24 pb-[112px] lg:pb-[116px] grid lg:grid-cols-2 items-end lg:items-center`}>
+          <div className={`relative flex-1 w-full max-w-[1360px] mx-auto ${SECTION_X} pt-[104px] lg:pt-24 pb-16 lg:pb-20 grid lg:grid-cols-2 items-end lg:items-center`}>
             <div className="max-w-[600px] animate-fade-up">
               <h1 className="font-display font-light text-stone-50 text-balance m-0 tracking-[-0.01em] leading-[1.06] text-[clamp(2.5rem,5.4vw,4.875rem)]">
                 {t('hero.title1')}<em className="italic text-sage-300">{t('hero.titleEm')}</em>{t('hero.title2')}
@@ -259,16 +259,12 @@ export default function HomeEn() {
                   {t('hero.trustpilotPre')} <strong className="text-sage-300 font-semibold">{t('hero.trustpilotExcellent')}</strong> {t('hero.trustpilotPost')}
                 </a>
               </div>
+
+              <StoreBadges className="mt-7 lg:mt-8" location="home_hero" />
             </div>
             <div aria-hidden="true" />
           </div>
 
-          {/* Store badges, pinned to the hero's bottom edge */}
-          <div className="absolute inset-x-0 bottom-0 border-t border-white/[0.12] bg-navy-950/55 backdrop-blur-[10px]">
-            <div className={`max-w-[1360px] mx-auto ${SECTION_X} py-3.5 lg:py-4`}>
-              <StoreBadges location="home_hero" />
-            </div>
-          </div>
         </section>
 
         {/* ── FILM ─────────────────────────────────────────────────── */}
@@ -499,43 +495,6 @@ export default function HomeEn() {
                 {t('pricing.fullDetails')}
               </Link>
             </p>
-          </div>
-        </section>
-
-        {/* ── GET THE APP ──────────────────────────────────────────── */}
-        <section className={`py-20 lg:py-24 bg-stone-50 ${SECTION_X}`}>
-          <div className="max-w-[1200px] mx-auto grid lg:grid-cols-2 gap-12 items-center">
-            <div className="reveal">
-              <span className="section-label section-label-light">{t('app.eyebrow')}</span>
-              <h2 className="font-display font-light text-navy-950 text-balance m-0 leading-[1.1] text-[clamp(2rem,3.2vw,2.875rem)]">
-                {t('app.title')}
-              </h2>
-              <p className="mt-5 m-0 text-[17px] leading-[1.6] text-stone-600 max-w-[460px]">{t('app.desc')}</p>
-              <div className="mt-8">
-                <StoreBadges location="home_app_section" />
-              </div>
-            </div>
-
-            {/* Phone mock: the readiness score and two reminders, the app's own idiom */}
-            <div className="reveal reveal-delay-1 justify-self-center lg:justify-self-end">
-              <div className="w-[260px] sm:w-[280px] aspect-[9/19] rounded-[40px] bg-navy-950 p-3 shadow-[0_40px_80px_-30px_rgba(13,22,40,0.55)]">
-                <div className="w-full h-full rounded-[30px] bg-gradient-to-b from-navy-800 to-navy-950 px-5 py-7 flex flex-col gap-4 overflow-hidden">
-                  <p className="m-0 text-[11px] uppercase tracking-[0.14em] font-semibold text-navy-300">{t('app.phone.eyebrow')}</p>
-                  <p className="m-0 font-display text-[26px] leading-[1.15] text-stone-50">{t('app.phone.headline')}</p>
-                  <div className="h-1.5 rounded-full bg-white/10 overflow-hidden">
-                    <div className="h-full rounded-full bg-sage-500" style={{ width: '76%' }} />
-                  </div>
-                  <div className="card-dark p-3.5 mt-2">
-                    <p className="m-0 text-[10.5px] uppercase tracking-[0.12em] font-semibold text-navy-300">{t('app.phone.nextUpLabel')}</p>
-                    <p className="m-0 mt-1 text-[13px] text-stone-100 leading-snug">{t('app.phone.nextUp')}</p>
-                  </div>
-                  <div className="card-dark p-3.5">
-                    <p className="m-0 text-[10.5px] uppercase tracking-[0.12em] font-semibold text-navy-300">{t('app.phone.reminderLabel')}</p>
-                    <p className="m-0 mt-1 text-[13px] text-stone-100 leading-snug">{t('app.phone.reminder')}</p>
-                  </div>
-                </div>
-              </div>
-            </div>
           </div>
         </section>
 

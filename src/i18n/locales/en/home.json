@@ -170,18 +170,5 @@
     },
     "trialNote": "Free forever, no card required. Everstead+ includes a 14-day free trial; your card isn't charged until it ends.",
     "fullDetails": "Full pricing details →"
-  },
-  "app": {
-    "eyebrow": "Everstead on your phone",
-    "title": "Snap a document. It's filed before you've put the kettle on.",
-    "desc": "The same secure vault, in your pocket. Face ID, offline access to your emergency card, and reminders that arrive when you can act on them.",
-    "phone": {
-      "eyebrow": "Plan readiness",
-      "headline": "Your plan is 76% ready.",
-      "nextUpLabel": "Next up",
-      "nextUp": "Add your pension nomination",
-      "reminderLabel": "Reminder",
-      "reminder": "Passport expires in 60 days"
-    }
   }
 }
