@@ -7,60 +7,42 @@
     "jsonLdDescription": "Coffre numérique sécurisé pour organiser sa succession : comptes, contrats d'assurance-vie, documents et dernières volontés, consultables dès aujourd'hui et transmis aux personnes de confiance le moment venu."
   },
   "hero": {
-    "eyebrow": "Comptes, documents, dernières volontés : enfin à leur place.",
     "title1": "Un seul endroit sûr pour ",
     "titleEm": "tout ce qui compte",
     "title2": ", que vos proches sauront trouver.",
-    "subtitle": "Everstead conserve en sécurité tout ce dont vos proches auront besoin. Quelques minutes suffisent pour tout mettre en place, et vous seul décidez qui y a accès.",
+    "subtitle": "Comptes, documents et dernières volontés : réunis aujourd'hui, prêts pour vos proches le moment venu.",
     "ctaPrimary": "Créer mon compte gratuit",
     "ctaSecondary": "Comment ça marche",
-    "trustEncryption": "Chiffrement AES-256, au repos comme en transit",
-    "trustUk": "🛡️ Conforme au RGPD",
+    "trustEncryption": "Chiffrement AES-256",
+    "trustUk": "Conforme au RGPD",
     "trustpilotAria": "Noté « Excellent » sur Trustpilot, lire les avis",
     "trustpilotPre": "Noté",
     "trustpilotExcellent": "Excellent",
     "trustpilotPost": "sur Trustpilot",
-    "aiBadge": "Organisation assistée par l'IA",
-    "mobilePhotoAlt": "Chez eux, une fille et son père organisent ensemble le plan de leur famille"
-  },
-  "trustBar": {
-    "setup": {
-      "label": "15 minutes pour tout mettre en place",
-      "sub": "Commencez par l'essentiel dès ce soir"
-    },
-    "onePlace": {
-      "label": "Tout au même endroit",
-      "sub": "Comptes, documents, dernières volontés"
-    },
-    "share": {
-      "label": "Vous choisissez qui voit quoi",
-      "sub": "Un conjoint, un enfant, un notaire"
-    },
-    "free": {
-      "label": "Rien à payer pour commencer",
-      "sub": "Sans carte ni engagement"
-    }
+    "imageAlt": "Une famille en laine feutrée réunie sur un canapé, regardant le portrait d'une grand-mère posé près d'un coffret ouvert."
   },
   "why": {
     "eyebrow": "Pourquoi Everstead",
-    "title1": "Tout ce qui compte,",
-    "title2": "sous un même toit.",
-    "subtitle": "Fini les identifiants éparpillés, les papiers égarés et les questions restées sans réponse : à leur place, la trace claire et sereine d'une vie bien organisée.",
+    "title": "Tout ce qui compte, sous un même toit.",
+    "intro": "Quand la vie bascule, les proches passent des mois à chercher : un relevé, un contrat, un mot de passe. Everstead réunit tout, et tout le monde, dans un seul endroit calme et sécurisé.",
     "cards": {
       "accounts": {
-        "title": "Comptes et patrimoine",
-        "desc": "Comptes bancaires, contrats d'assurance-vie, abonnements : tout figure dans une liste claire, et rien ne passe entre les mailles du filet.",
+        "num": "01",
+        "title": "Chaque compte, retrouvé",
+        "desc": "Banques, assurance-vie, retraite, abonnements et comptes en ligne : inscrits une fois pour toutes, pour que personne n'ait à partir en quête.",
         "cta": "Voir ce que vous pouvez y ranger"
       },
       "documents": {
-        "title": "Documents et volontés",
-        "desc": "Testaments, actes, lettres et instructions sont conservés en sécurité : faciles à retrouver, impossibles à égarer.",
-        "cta": "Mettre vos documents à l'abri"
+        "num": "02",
+        "title": "Chaque document, à l'abri",
+        "desc": "Testament, mandat de protection future, actes et contrats, conservés avec un chiffrement de niveau bancaire, et la mention de l'endroit où se trouvent les originaux.",
+        "cta": "Comment nous les protégeons"
       },
       "people": {
-        "title": "Personnes de confiance",
-        "desc": "Vous décidez qui voit quoi, et à quel moment. Vos proches savent toujours où chercher, et n'ont jamais à deviner.",
-        "cta": "Désigner vos personnes de confiance"
+        "num": "03",
+        "title": "Chaque proche, prêt",
+        "desc": "Conjoint, enfants, notaire : chacun dispose de sa propre vue, et de consignes claires pour les premiers jours.",
+        "cta": "Comment fonctionne le partage"
       }
     }
   },
@@ -70,46 +52,23 @@
       "title": "À jour, sans y penser.",
       "desc": "Quelques rappels bienveillants, une mise à jour en un geste, et votre Everstead ressemble à votre vie d'aujourd'hui, pas à celle d'il y a cinq ans. Le gros du travail, vous ne le referez jamais deux fois.",
       "bullets": [
-        "Des rappels discrets, seulement quand quelque chose mérite un coup d'œil",
-        "Une vision claire de ce qui est complet et de ce qui reste à faire"
+        "Des rappels avant l'expiration d'un passeport, d'un contrat ou d'un mandat",
+        "Un score de préparation qui montre ce qu'il reste à faire",
+        "Un point annuel, réglé en dix minutes"
       ],
       "imageAlt": "Un résumé mensuel discret dans Everstead : assurance habitation renouvelée, nouveau livret d'épargne ajouté, et rappel qu'un passeport expire dans six mois"
     },
     "share": {
       "eyebrow": "Vous restez maître du partage",
-      "title": "Ne partagez que ce que vous voulez, avec qui vous voulez.",
+      "title": "Chacun voit ce que vous avez choisi, et rien de plus.",
       "desc": "Un accès complet pour votre conjoint, un seul document pour un enfant, une enveloppe scellée pour votre notaire, qui ne s'ouvrira que le moment venu. Vous gardez la main du début à la fin.",
       "bullets": [
-        "Des autorisations par élément, modifiables à tout moment",
-        "Vos personnes de confiance ne sont prévenues qu'en cas de besoin"
+        "Une vue distincte pour le conjoint, les enfants et le notaire",
+        "Rien n'est partagé tant que vous ne l'avez pas décidé",
+        "Un accès modifiable ou révocable à tout moment"
       ],
       "imageAlt": "L'écran des personnes de confiance dans Everstead : un conjoint avec un accès complet, une fille avec un seul document, un notaire dont l'enveloppe reste scellée jusqu'au moment venu"
     }
-  },
-  "steps": {
-    "eyebrow": "Premiers pas",
-    "title": "Plus simple que vous ne l'imaginez, et jamais du temps perdu.",
-    "subtitle": "Quelques minutes aujourd'hui, et ceux que vous aimez n'auront pas à passer des semaines à tout reconstituer.",
-    "items": [
-      {
-        "title": "Réunissez l'essentiel",
-        "desc": "Ajoutez comptes, documents et dernières volontés à votre rythme : quelques minutes de temps en temps suffisent largement."
-      },
-      {
-        "title": "Tenez tout à jour",
-        "desc": "De petits rappels bienveillants suffisent à garder l'ensemble exact et complet, pour que tout soit prêt le jour venu."
-      },
-      {
-        "title": "Transmettez, le moment venu",
-        "desc": "Choisissez qui sera prévenu et ce que chacun pourra voir, le jour où cela deviendra nécessaire."
-      }
-    ],
-    "link": "Voir le fonctionnement en détail"
-  },
-  "reassurance": {
-    "title": "Préparer l'avenir, c'est prendre soin des vôtres.",
-    "desc": "Everstead remplace la confusion par des repères clairs. Quand les décisions s'enchaînent et que l'émotion est vive, vos proches savent quoi faire. C'est un cadeau dont ils vous seront sincèrement reconnaissants.",
-    "imageAlt": "L'application Everstead et votre plan organisé : comptes et patrimoine, documents et volontés, personnes de confiance"
   },
   "security": {
     "eyebrow": "Sécurité et confidentialité",
@@ -126,9 +85,28 @@
       "La confidentialité avant tout"
     ]
   },
+  "pros": {
+    "eyebrow": "Pour les conseillers et les notaires",
+    "title": "Vos clients préparés, votre travail simplifié.",
+    "intro": "Un portail professionnel qui montre ce que vos clients choisissent de partager : leur préparation en un coup d'œil, les documents à relire et les dossiers qui attendent une relance.",
+    "cards": {
+      "advisers": {
+        "eyebrow": "Conseillers en gestion de patrimoine",
+        "title": "Voir toute la situation, pas seulement le portefeuille.",
+        "desc": "Clauses bénéficiaires, prévoyance, testament et mandat de protection future, affichés à côté des contrats que vous suivez déjà, avec une alerte lorsqu'ils datent.",
+        "cta": "Découvrir le portail conseiller"
+      },
+      "solicitors": {
+        "eyebrow": "Notaires",
+        "title": "Projets relus, pièces demandées, dossiers suivis.",
+        "desc": "Une file de relecture pour les testaments et les mandats, des demandes de pièces envoyées directement dans le coffre du client, et l'avancement des successions réuni sur un seul écran.",
+        "cta": "Réserver une démo"
+      }
+    }
+  },
   "pricing": {
     "eyebrow": "Tarifs",
-    "title": "Des tarifs simples et honnêtes.",
+    "title": "Commencez gratuitement. Évoluez quand votre famille grandit.",
     "subtitle": "2 mois offerts en choisissant la facturation annuelle. Tous les prix sont en euros, TTC.",
     "monthly": "Mensuel",
     "yearly": "Annuel",
@@ -185,16 +163,5 @@
     },
     "trialNote": "Le forfait gratuit l'est à vie, sans carte bancaire. Everstead+ comprend 14 jours d'essai : votre carte n'est débitée qu'à la fin de cette période.",
     "fullDetails": "Tous les détails des tarifs →"
-  },
-  "app": {
-    "eyebrow": "L'application Everstead",
-    "title": "Votre plan, dans votre poche.",
-    "desc": "Ajoutez des documents, suivez votre score de préparation et tenez tout à jour depuis votre téléphone. Disponible sur l'App Store et Google Play."
-  },
-  "gift": {
-    "eyebrow": "Un cadeau qui dit : je m'en suis occupé.",
-    "title": "Offrez Everstead à un parent, un conjoint ou quelqu'un que vous aimez.",
-    "desc": "Le genre de cadeau qu'on ne s'offre jamais soi-même, et celui qui, un jour, enlèvera un vrai poids à toute la famille. Il s'envoie sous forme numérique et s'active quand on veut.",
-    "cta": "Offrir Everstead"
   }
 }
