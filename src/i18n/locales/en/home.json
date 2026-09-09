@@ -7,128 +7,157 @@
     "jsonLdDescription": "Secure personal vault for UK families. Organise accounts, documents, and important decisions, accessible today, and ready for your loved ones when it matters."
   },
   "hero": {
-    "eyebrow": "Organise your accounts, documents & final wishes",
+    "eyebrow": "For families in the UK",
     "title1": "Everything that matters, ",
     "titleEm": "gathered",
-    "title2": " in one secure place for your family.",
-    "subtitle": "Everstead is the secure place to keep everything your loved ones will need, set up in minutes and shared only with the people you choose.",
+    "title2": " in one secure place.",
+    "subtitle": "Accounts, documents and final wishes, organised today and ready for the people you love when it matters.",
     "ctaPrimary": "Get started free",
     "ctaSecondary": "See how it works",
-    "trustEncryption": "Bank-level AES-256 encryption",
-    "trustUk": "🇬🇧 UK-based",
+    "trustEncryption": "AES-256 encryption",
+    "trustUk": "UK-based · GDPR",
     "trustpilotAria": "Rated Excellent on Trustpilot, read our reviews",
     "trustpilotPre": "Rated",
     "trustpilotExcellent": "Excellent",
     "trustpilotPost": "on Trustpilot",
-    "aiBadge": "AI-assisted estate planning",
-    "mobilePhotoAlt": "A daughter and her father organising their family's plan together at home"
+    "imageAlt": "A needle-felted family sitting together, looking at a photograph of a grandmother beside an open keepsake box."
   },
   "trustBar": {
     "setup": {
-      "label": "15 minutes to set up",
-      "sub": "Start with the essentials tonight"
+      "label": "Set up in an afternoon",
+      "sub": "Guided, step by step"
     },
     "onePlace": {
       "label": "Everything in one place",
-      "sub": "Accounts, documents, final wishes"
+      "sub": "Accounts, documents, wishes"
     },
     "share": {
-      "label": "Share on your terms",
-      "sub": "A partner, a child, a solicitor, you decide"
+      "label": "Share what you choose",
+      "sub": "Per person, per document"
     },
     "free": {
       "label": "Free to start",
-      "sub": "No card, no commitment"
+      "sub": "No card required"
     }
+  },
+  "film": {
+    "title": "See how Everstead works",
+    "posterEyebrow": "Watch the film",
+    "posterTitle": "How Everstead works",
+    "duration": "0:30",
+    "playAria": "Play: How Everstead works"
   },
   "why": {
     "eyebrow": "Why Everstead",
-    "title1": "One home for the",
-    "title2": "things that matter.",
-    "subtitle": "No more scattered logins, lost paperwork, or guesswork left behind. Just a clear, gentle record of a life well organised.",
+    "title": "The things families wish they'd sorted. Sorted.",
+    "intro": "When something happens, the people we love spend months chasing details. Everstead puts everything, and everyone, in one calm, secure place.",
     "cards": {
       "accounts": {
-        "title": "Accounts & assets",
-        "desc": "Every account, policy and subscription in one clear list, so nothing quietly slips through the cracks.",
+        "num": "01",
+        "title": "Every account, found",
+        "desc": "Banks, pensions, insurance, subscriptions and digital accounts, listed once so nobody has to go looking.",
         "cta": "See what you can add"
       },
       "documents": {
-        "title": "Documents & wishes",
-        "desc": "Wills, deeds, letters and instructions, stored safely, easy to find, and impossible to misplace.",
-        "cta": "Keep documents safe"
+        "num": "02",
+        "title": "Every document, safe",
+        "desc": "Wills, LPAs, deeds and policies stored with bank-level encryption, and a record of where the originals live.",
+        "cta": "How we protect it"
       },
       "people": {
-        "title": "People & access",
-        "desc": "Decide who sees what, and when. Your family is only ever a step away, never a guess.",
-        "cta": "Choose who's trusted"
+        "num": "03",
+        "title": "Every person, ready",
+        "desc": "Executors, partners and advisers each get their own view, and clear instructions for the first 48 hours.",
+        "cta": "How sharing works"
       }
     }
   },
   "rows": {
     "current": {
-      "eyebrow": "Effortless to keep current",
-      "title": "Up to date, without the chore.",
-      "desc": "Gentle reminders and one-tap updates mean your Everstead reflects your life as it is now, not as it was five years ago. The hard part stays done.",
+      "eyebrow": "Up to date, without the chore",
+      "title": "Your plan stays current, quietly.",
+      "desc": "Gentle reminders when documents expire or details go stale. A readiness score shows exactly what's left. Nothing to remember, nothing to chase.",
       "bullets": [
-        "Quiet nudges only when something needs a look",
-        "A clear sense of what's complete and what's left"
+        "Expiry reminders for passports, policies and LPAs",
+        "A readiness score that shows what's left",
+        "Annual check-in, done in ten minutes"
       ],
       "imageAlt": "A quiet monthly summary in Everstead, home insurance renewed, a new ISA added, and a gentle nudge that a passport expires in six months"
     },
     "share": {
-      "eyebrow": "Yours to share, on your terms",
-      "title": "Share exactly what you choose.",
-      "desc": "Give a partner full access, a child a single document, or a solicitor a sealed envelope opened only when the time comes. You stay in control, always.",
+      "eyebrow": "Share exactly what you choose",
+      "title": "The right people see the right things, and nothing more.",
+      "desc": "Give your partner, executor or adviser their own view. You decide what each person can see, and you can change it any time.",
       "bullets": [
-        "Per-item permissions, changeable any time",
-        "Trusted contacts notified only when needed"
+        "Separate views for partner, executor and adviser",
+        "Nothing shared until you say so",
+        "Change or revoke access in one tap"
       ],
       "imageAlt": "People & access in Everstead, a partner with full access, a daughter with a single document, and a solicitor sealed until needed"
     }
   },
   "steps": {
-    "eyebrow": "Getting started",
-    "title": "Easier than you'd think, and never for nothing.",
-    "subtitle": "A few quiet minutes now means the people you love won't spend weeks piecing it together later.",
+    "eyebrow": "How it works",
+    "title": "Set up in an afternoon. Ready for a lifetime.",
     "items": [
       {
-        "title": "Bring it together",
-        "desc": "Add accounts, documents and wishes whenever it suits you, a few minutes at a time is plenty."
+        "title": "Add what you have",
+        "desc": "Start with the essentials: a bank, a will, a person to trust. Photograph documents or connect accounts."
       },
       {
-        "title": "Keep it current",
-        "desc": "Small, gentle nudges keep everything accurate and complete, so it's always ready."
+        "title": "Choose who sees what",
+        "desc": "Invite family, an executor or your adviser. Each person sees only what you've chosen for them."
       },
       {
-        "title": "Pass it on",
-        "desc": "Choose who's notified, and what they can see, if and when the time ever comes."
+        "title": "Keep it ready",
+        "desc": "We'll nudge you when something needs updating. Your plan stays current with almost no effort."
       }
     ],
     "link": "Learn the full workflow"
   },
   "reassurance": {
-    "title": "Planning ahead is an act of care.",
-    "desc": "Everstead turns confusion into clarity. It gives your loved ones practical direction when decisions are time-sensitive and emotions are running high, a gift they will genuinely appreciate.",
-    "imageAlt": "The Everstead app, your plan organised: accounts and assets, documents and wishes, and the people you trust"
+    "eyebrow": "Made with care",
+    "title": "Not about endings. About looking after each other.",
+    "desc": "Everstead was built by people who had to piece a life together from shoeboxes and shared passwords. We wanted something kinder, for the person organising and for the people left holding the box.",
+    "imageAlt": "A needle-felted child resting against a parent, holding the family dog."
   },
   "security": {
     "eyebrow": "Security & privacy",
-    "title": "Built on the highest security standards, and controlled entirely by you.",
-    "desc": "Everstead runs on bank-grade AES-256 encryption and UK-hosted, UK GDPR-compliant infrastructure. Your information stays private by default, visible only to the people you choose, only the parts you choose, and only when you decide. It's your vault, and you decide who ever gets in.",
+    "title": "Protected to the highest standards. Only ever yours.",
+    "desc": "Bank-level encryption, UK data residency and access that you control down to the individual document. We can't read your data, and we never sell it.",
     "linkPractices": "Read our security practices",
     "linkPrivacy": "Our privacy policy",
     "features": [
-      "AES-256 encrypted storage",
-      "Role-based access controls",
-      "Complete audit history",
-      "Private sharing only",
-      "Emergency vault access",
-      "Privacy-first commitments"
+      "AES-256 encryption at rest",
+      "Two-factor authentication",
+      "Zero-knowledge vault",
+      "Per-person access control",
+      "Access alerts & audit log",
+      "UK data residency"
     ]
+  },
+  "pros": {
+    "eyebrow": "For advisers & solicitors",
+    "title": "Your clients, prepared. Your work, faster.",
+    "intro": "A professional portal that shows what clients choose to share: readiness at a glance, documents to review, and matters that need a nudge.",
+    "cards": {
+      "advisers": {
+        "eyebrow": "Financial advisers",
+        "title": "See the whole picture, not just the portfolio.",
+        "desc": "Pension nominations, protection, wills and LPAs, surfaced beside the accounts you already manage, with alerts when they go stale.",
+        "cta": "Explore the adviser portal"
+      },
+      "solicitors": {
+        "eyebrow": "Solicitors",
+        "title": "Drafts reviewed, documents requested, matters tracked.",
+        "desc": "A review queue for wills and LPAs, secure document requests straight into the client's vault, and estate-plan and probate progress in one view.",
+        "cta": "Book a demo"
+      }
+    }
   },
   "pricing": {
     "eyebrow": "Pricing",
-    "title": "Simple, honest pricing.",
+    "title": "Start free. Upgrade when your family grows.",
     "subtitle": "Save 20% with yearly billing, all in pounds.",
     "monthly": "Monthly",
     "yearly": "Yearly",
@@ -187,14 +216,16 @@
     "fullDetails": "Full pricing details →"
   },
   "app": {
-    "eyebrow": "The Everstead app",
-    "title": "Your plan, in your pocket.",
-    "desc": "Add documents, check your readiness score, and keep everything up to date from your phone. Now on the App Store and Google Play."
-  },
-  "gift": {
-    "eyebrow": "A gift that says: I've sorted it.",
-    "title": "Give Everstead to a parent, partner, or someone you love.",
-    "desc": "The kind of present they'd never buy themselves, and the one that genuinely takes weight off their family one day. Sent as a digital gift, redeemable any time.",
-    "cta": "Give as a gift"
+    "eyebrow": "Everstead on your phone",
+    "title": "Snap a document. It's filed before you've put the kettle on.",
+    "desc": "The same secure vault, in your pocket. Face ID, offline access to your emergency card, and reminders that arrive when you can act on them.",
+    "phone": {
+      "eyebrow": "Plan readiness",
+      "headline": "Your plan is 76% ready.",
+      "nextUpLabel": "Next up",
+      "nextUp": "Add your pension nomination",
+      "reminderLabel": "Reminder",
+      "reminder": "Passport expires in 60 days"
+    }
   }
 }

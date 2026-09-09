@@ -25,9 +25,16 @@ const lightBgPages = ['/pricing', '/security', '/features', '/how-it-works', '/u
 // Pages with a dark hero — keep white logo/nav until scrolled past the hero (~400px)
 const darkHeroPages = ['/for-advisers', '/family-vault', '/what-to-do-when-someone-dies', '/compare']
 
+// The English homepage opens on a full-screen dark hero (Homepage v2), so the
+// nav stays transparent over it until the visitor scrolls past. Matched on the
+// real URL rather than the router path: the /fr basename means the French
+// homepage also reports "/", and it keeps its own nav behaviour.
+const isEnglishHome = () => typeof window !== 'undefined' && window.location.pathname === '/'
+
 // Compute the correct dark-style value for a given pathname + scrollY
 // Extracted so we can use it both in the initialiser and in the render
 function computeDarkStyle(pathname, scrollY) {
+  if (isEnglishHome()) return scrollY > 150
   const isDark = darkHeroPages.some(p => pathname.startsWith(p))
   const isLight = lightBgPages.some(p => pathname.startsWith(p))
   if (isDark) return scrollY > 150   // transparent until scrolled on dark-hero pages
