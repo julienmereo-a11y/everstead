@@ -7,7 +7,6 @@
     "jsonLdDescription": "Secure personal vault for UK families. Organise accounts, documents, and important decisions, accessible today, and ready for your loved ones when it matters."
   },
   "hero": {
-    "eyebrow": "For families in the UK",
     "title1": "Everything that matters, ",
     "titleEm": "gathered",
     "title2": " in one secure place.",
@@ -95,31 +94,6 @@
       ],
       "imageAlt": "People & access in Everstead, a partner with full access, a daughter with a single document, and a solicitor sealed until needed"
     }
-  },
-  "steps": {
-    "eyebrow": "How it works",
-    "title": "Set up in an afternoon. Ready for a lifetime.",
-    "items": [
-      {
-        "title": "Add what you have",
-        "desc": "Start with the essentials: a bank, a will, a person to trust. Photograph documents or connect accounts."
-      },
-      {
-        "title": "Choose who sees what",
-        "desc": "Invite family, an executor or your adviser. Each person sees only what you've chosen for them."
-      },
-      {
-        "title": "Keep it ready",
-        "desc": "We'll nudge you when something needs updating. Your plan stays current with almost no effort."
-      }
-    ],
-    "link": "Learn the full workflow"
-  },
-  "reassurance": {
-    "eyebrow": "Made with care",
-    "title": "Not about endings. About looking after each other.",
-    "desc": "Everstead was built by people who had to piece a life together from shoeboxes and shared passwords. We wanted something kinder, for the person organising and for the people left holding the box.",
-    "imageAlt": "A needle-felted child resting against a parent, holding the family dog."
   },
   "security": {
     "eyebrow": "Security & privacy",

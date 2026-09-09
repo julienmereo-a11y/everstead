@@ -3,8 +3,9 @@
 //
 // Built from the "Homepage v2" handoff: an immersive felt-illustration hero
 // with the trust strip pinned to its bottom edge, the film, three pillars, two
-// navy product rows, how it works, reassurance, security, a section for
-// advisers and solicitors, pricing, and the app.
+// navy product rows, security, a section for advisers and solicitors, pricing,
+// and the app. The handoff's "how it works" and "made with care" sections, and
+// the hero eyebrow, were cut afterwards at Julien's request.
 //
 // House rule applied to the handoff copy: no em or en dashes in customer-facing
 // text, so its dashes are commas, colons or full stops in en/home.json.
@@ -109,8 +110,6 @@ export default function HomeEn() {
     { key: 'current', image: '/screenshot-doc.jpg',    imageFirst: false },
     { key: 'share',   image: '/screenshot-access.jpg', imageFirst: true },
   ]
-
-  const steps = t('steps.items', { returnObjects: true })
 
   const securityIcons = [Lock, KeyRound, EyeOff, Users, Bell, Flag]
   const securityFeatures = t('security.features', { returnObjects: true }).map((label, i) => ({
@@ -225,7 +224,6 @@ export default function HomeEn() {
 
           <div className={`relative flex-1 w-full max-w-[1360px] mx-auto ${SECTION_X} pt-[104px] lg:pt-24 pb-[168px] sm:pb-[150px] lg:pb-[132px] grid lg:grid-cols-2 items-end lg:items-center`}>
             <div className="max-w-[600px] animate-fade-up">
-              <span className="section-label section-label-dark !mb-[22px]">{t('hero.eyebrow')}</span>
               <h1 className="font-display font-light text-stone-50 text-balance m-0 tracking-[-0.01em] leading-[1.06] text-[clamp(2.5rem,5.4vw,4.875rem)]">
                 {t('hero.title1')}<em className="italic text-sage-300">{t('hero.titleEm')}</em>{t('hero.title2')}
               </h1>
@@ -344,59 +342,6 @@ export default function HomeEn() {
                 />
               </div>
             ))}
-          </div>
-        </section>
-
-        {/* ── HOW IT WORKS ─────────────────────────────────────────── */}
-        <section className={`py-24 lg:py-[120px] bg-stone-50 ${SECTION_X}`}>
-          <div className="max-w-[1100px] mx-auto">
-            <div className="reveal text-center max-w-[640px] mx-auto mb-14 lg:mb-[72px]">
-              <span className="section-label section-label-light">{t('steps.eyebrow')}</span>
-              <h2 className="font-display font-light text-navy-950 text-balance m-0 leading-[1.1] text-[clamp(2.125rem,3.6vw,3.375rem)]">
-                {t('steps.title')}
-              </h2>
-            </div>
-
-            <div className="grid sm:grid-cols-3 border-t border-stone-300">
-              {steps.map(({ title, desc }, i) => (
-                <div
-                  key={title}
-                  className={`reveal reveal-delay-${i + 1} pt-9 pb-3 sm:pr-8 sm:mr-8 sm:border-r border-stone-200 sm:last:border-r-0 sm:last:mr-0 sm:last:pr-0`}
-                >
-                  <p className="font-display text-5xl font-light text-sage-500 m-0">{String(i + 1).padStart(2, '0')}</p>
-                  <h3 className="font-display font-medium text-2xl text-navy-950 mt-[18px] mb-2.5">{title}</h3>
-                  <p className="m-0 text-[15px] leading-[1.6] text-stone-600">{desc}</p>
-                </div>
-              ))}
-            </div>
-
-            <div className="mt-12 text-center reveal">
-              <Link to="/how-it-works" className="inline-flex items-center gap-2 text-sm font-semibold text-navy-600 hover:text-navy-800 transition-colors">
-                {t('steps.link')} <ArrowRight size={15} />
-              </Link>
-            </div>
-          </div>
-        </section>
-
-        {/* ── REASSURANCE ──────────────────────────────────────────── */}
-        <section className={`pb-24 lg:pb-[120px] bg-stone-50 ${SECTION_X}`}>
-          <div className="reveal max-w-[1200px] mx-auto rounded-[32px] overflow-hidden bg-[#f5f1ea] grid lg:grid-cols-2">
-            <div className="py-14 px-8 sm:px-12 lg:py-[72px] lg:px-16 flex flex-col justify-center">
-              <span className="section-label section-label-light">{t('reassurance.eyebrow')}</span>
-              <h2 className="font-display font-light text-navy-950 text-balance m-0 leading-[1.1] text-[clamp(2.125rem,3.4vw,3.125rem)]">
-                {t('reassurance.title')}
-              </h2>
-              <p className="mt-6 m-0 text-[17px] leading-[1.6] text-stone-600 max-w-[440px]">{t('reassurance.desc')}</p>
-            </div>
-            <img
-              src="/felt-child-dog.jpg"
-              alt={t('reassurance.imageAlt')}
-              width="904"
-              height="953"
-              loading="lazy"
-              className="w-full h-full object-cover min-h-[320px] lg:min-h-[460px]"
-              style={{ objectPosition: '80% 0' }}
-            />
           </div>
         </section>
 
