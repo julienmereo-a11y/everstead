@@ -201,8 +201,12 @@ export default function HomeEn() {
             alt=""
             aria-hidden="true"
             fetchpriority="high"
+            /* No zoom: the handoff scaled the art 1.14x to crop the editor toolbar
+               off the screenshot it was drawn from. The illustration is now a clean
+               full-frame export, and scaling it only cut the keepsake box and its
+               bow, which are the point of the picture. */
             className="hidden sm:block absolute inset-0 w-full h-full object-cover"
-            style={{ objectPosition: '70% 0', transform: 'scale(1.14)', transformOrigin: '70% 0' }}
+            style={{ objectPosition: '70% 0' }}
           />
 
           {/* Veils. Landscape reads left to right, so the copy sits on the dark
