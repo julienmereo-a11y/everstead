@@ -398,7 +398,21 @@
     "upload": "Upload",
     "saving": "Saving…",
     "saveChanges": "Save changes",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "requests": {
+      "title": "Requested by {{firm}}",
+      "body": "Your {{label}} has asked for the documents below. Attach one you have already uploaded, or upload it first.",
+      "requested": "Requested {{date}}",
+      "reminded": "Reminder sent {{date}}",
+      "note": "Their note",
+      "choose": "Choose a document…",
+      "attach": "Attach",
+      "attaching": "Attaching…",
+      "attached": "Attached. {{firm}} has been told.",
+      "failed": "Could not attach it. Please try again.",
+      "noDocs": "Upload the document first, then come back here to attach it.",
+      "demoNote": "In the demo, nothing is sent."
+    }
   },
   "aboutMe": {
     "title": "About Me",
@@ -863,7 +877,8 @@
       "ownerStatusChanged": "Vault status changed",
       "adviserNotified": "Your adviser was notified",
       "adviserEstatePack": "Estate pack downloaded by your adviser",
-      "adviserDocumentViewed": "Document opened by your adviser"
+      "adviserDocumentViewed": "Document opened by your adviser",
+      "adviserDocumentRequested": "Document requested by your adviser"
     }
   },
   "resources": {
@@ -1367,6 +1382,12 @@
       "lastUpdated": "Last changed {{date}}",
       "shared": "Shared",
       "notShared": "Not shared"
-    }
+    },
+    "labelSolicitorLower": "solicitor",
+    "labelNotaireLower": "notaire",
+    "labelIfaLower": "financial adviser",
+    "labelAccountantLower": "accountant",
+    "labelWealthLower": "wealth manager",
+    "labelOtherLower": "adviser"
   }
 }

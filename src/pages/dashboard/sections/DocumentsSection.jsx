@@ -9,6 +9,7 @@ import { PlanLimitNotice, STATUS_STYLES, friendlyLimitError } from '../../dashbo
 import { Checkbox, EmptyState, Field, LoadingSpinner, Modal, SectionShell, input, primaryBtn, secondaryBtn } from '../../dashboard/ui'
 import { BookOpen, CheckCircle2, Download, ExternalLink, Eye, FileText, Loader2, Pencil, Sparkles, Trash2, Upload, X } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
+import { DocumentRequestsCard } from './AdviserSection'
 export function OwnerDocViewerModal({ doc, onClose }) {
   const { t } = useTranslation('dashboard')
   // Uploaded files live in the private `documents` storage bucket, referenced by
@@ -184,7 +185,7 @@ export const PRIORITY_GUIDANCE = {
   fr: { will: '/fr/resources/blog/testament-reserve-hereditaire', lpa: '/fr/resources/blog/mandat-protection-future' },
 }
 
-export function DocumentsSection({ documents, loading, uploadFile, update, remove, planLimits, profile, onUpgrade, updateProfile, addAlert, onLifeEvent, people }) {
+export function DocumentsSection({ documents, loading, uploadFile, update, remove, planLimits, profile, onUpgrade, updateProfile, addAlert, onLifeEvent, people, isDemo, adviser }) {
   const { t, i18n } = useTranslation('dashboard')
   const dateLocale = i18n.language?.startsWith('fr') ? 'fr-FR' : 'en-GB'
   const emptyForm = { name: '', doc_type: 'Legal', status: 'current', expires_at: '', notes: '', access_overrides: {}, release_timing: 'default' }
@@ -412,6 +413,9 @@ export function DocumentsSection({ documents, loading, uploadFile, update, remov
         </button>
       }
     >
+      {/* What the member's firm has asked them to upload */}
+      <DocumentRequestsCard profile={profile} documents={documents} isDemo={isDemo} adviser={adviser} />
+
       {/* Storage usage bar */}
       {planLimits && (() => {
         const limitGB = planLimits.storageGb

@@ -180,3 +180,100 @@ export async function sendVaultActivatedNotice({ to, lang = 'en', firmName, clie
     return false
   }
 }
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Document requests: the firm asks a client for a document; the client is told
+// by email and sees a prompt in their vault. When they attach it, the firm is
+// told. Both in the recipient's own language.
+// ─────────────────────────────────────────────────────────────────────────────
+const REQUEST_COPY = {
+  en: {
+    subject:          '{{firm}} has asked you for a document',
+    subjectReminder:  'Reminder: {{firm}} is still waiting for a document',
+    title:            'A document request from {{firm}}',
+    titleReminder:    'A gentle reminder from {{firm}}',
+    lead:             '<strong>{{firm}}</strong> has asked you to add the following to your Everstead vault:',
+    leadReminder:     '<strong>{{firm}}</strong> asked you for the document below a little while ago and has not received it yet:',
+    noteLabel:        'Their note',
+    how:              'Upload it under Documents, then attach it to the request shown at the top of that page. Nothing is shared with your firm until you choose to share your documents with them.',
+    button:           'Open my documents',
+    footer:           'You are receiving this because your Everstead vault is linked to {{firm}}. You can change what they see at any time in Settings.',
+  },
+  fr: {
+    subject:          '{{firm}} vous demande un document',
+    subjectReminder:  'Rappel : {{firm}} attend toujours un document',
+    title:            'Une demande de document de {{firm}}',
+    titleReminder:    'Un petit rappel de {{firm}}',
+    lead:             '<strong>{{firm}}</strong> vous demande d\'ajouter le document suivant à votre coffre Everstead :',
+    leadReminder:     '<strong>{{firm}}</strong> vous a demandé le document ci-dessous il y a quelque temps et ne l\'a pas encore reçu :',
+    noteLabel:        'Leur message',
+    how:              'Déposez-le dans Documents, puis rattachez-le à la demande affichée en haut de cette page. Rien n\'est transmis à votre cabinet tant que vous n\'avez pas choisi de partager vos documents avec lui.',
+    button:           'Ouvrir mes documents',
+    footer:           'Vous recevez ce message parce que votre coffre Everstead est rattaché à {{firm}}. Vous pouvez modifier ce qu\'il peut consulter à tout moment dans les Réglages.',
+  },
+}
+
+export async function sendDocumentRequestEmail({ to, lang = 'en', firmName, docType, note, reminder = false }) {
+  if (!to) return false
+  const L = lang === 'fr' ? 'fr' : 'en'
+  const C = REQUEST_COPY[L]
+  const vars = { firm: esc(firmName || (L === 'fr' ? 'votre cabinet' : 'your firm')) }
+  const url = `${APP}${L === 'fr' ? '/fr' : ''}/dashboard?tab=documents`
+  const inner = `
+    <h1 style="margin:0 0 16px;color:#0d1628;font-size:24px;font-weight:normal;">${fill(reminder ? C.titleReminder : C.title, vars)}</h1>
+    <p style="margin:0 0 14px;color:#4a5568;font-size:16px;line-height:1.6;">${fill(reminder ? C.leadReminder : C.lead, vars)}</p>
+    <p style="margin:0 0 18px;padding:14px 18px;border-radius:12px;background:#f0f3f9;color:#0d1628;font-size:17px;font-weight:600;">${esc(docType)}</p>
+    ${note ? `<p style="margin:0 0 6px;color:#0d1628;font-size:13px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;">${C.noteLabel}</p><p style="margin:0 0 18px;color:#4a5568;font-size:15px;line-height:1.6;border-left:3px solid #e8e5e0;padding-left:14px;font-style:italic;">${esc(note)}</p>` : ''}
+    <p style="margin:0 0 28px;color:#4a5568;font-size:15px;line-height:1.6;">${C.how}</p>
+    ${button(url, C.button)}
+    <p style="margin:28px 0 0;color:#9ca3af;font-size:13px;line-height:1.5;">${fill(C.footer, vars)}</p>`
+  try {
+    await resend.emails.send({ from: FROM, to, subject: fill(reminder ? C.subjectReminder : C.subject, { firm: firmName || '' }), html: shell(inner) })
+    return true
+  } catch (err) {
+    console.error('[adviser-email] document request failed:', err?.message)
+    return false
+  }
+}
+
+const UPLOADED_COPY = {
+  en: {
+    subject: '{{client}} has attached {{doc}}',
+    title:   'A requested document has arrived',
+    lead:    '<strong>{{client}}</strong> has attached <strong>{{doc}}</strong> to the request from {{firm}}.',
+    file:    'File name: {{name}}',
+    how:     'It is waiting in your review queue. Open the portal to review it and confirm where the original is stored.',
+    button:  'Open the review queue',
+    footer:  'This message is confidential and intended for {{firm}}.',
+  },
+  fr: {
+    subject: '{{client}} a joint {{doc}}',
+    title:   'Un document demandé est arrivé',
+    lead:    '<strong>{{client}}</strong> a rattaché <strong>{{doc}}</strong> à la demande de {{firm}}.',
+    file:    'Nom du fichier : {{name}}',
+    how:     'Il vous attend dans la file de relecture. Ouvrez le portail pour le consulter et confirmer où se trouve l\'original.',
+    button:  'Ouvrir la file de relecture',
+    footer:  'Ce message est confidentiel et destiné à {{firm}}.',
+  },
+}
+
+export async function sendDocumentUploadedNotice({ to, lang = 'en', firmName, clientName, docType, documentName }) {
+  if (!to) return false
+  const L = lang === 'fr' ? 'fr' : 'en'
+  const C = UPLOADED_COPY[L]
+  const vars = { firm: esc(firmName || ''), client: esc(clientName || ''), doc: esc(docType || ''), name: esc(documentName || '') }
+  const inner = `
+    <h1 style="margin:0 0 16px;color:#0d1628;font-size:24px;font-weight:normal;">${C.title}</h1>
+    <p style="margin:0 0 14px;color:#4a5568;font-size:16px;line-height:1.6;">${fill(C.lead, vars)}</p>
+    ${documentName ? `<p style="margin:0 0 14px;color:#4a5568;font-size:14px;">${fill(C.file, vars)}</p>` : ''}
+    <p style="margin:0 0 28px;color:#4a5568;font-size:15px;line-height:1.6;">${C.how}</p>
+    ${button(`${APP}/advisor-portal`, C.button)}
+    <p style="margin:28px 0 0;color:#9ca3af;font-size:13px;line-height:1.5;">${fill(C.footer, vars)}</p>`
+  try {
+    await resend.emails.send({ from: FROM, to, subject: fill(C.subject, { client: clientName || '', doc: docType || '' }), html: shell(inner) })
+    return true
+  } catch (err) {
+    console.error('[adviser-email] document uploaded notice failed:', err?.message)
+    return false
+  }
+}

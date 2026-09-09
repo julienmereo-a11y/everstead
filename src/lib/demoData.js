@@ -538,3 +538,62 @@ export const DEMO_ADVISER_CONSENTS = {
   accounts: true, documents: true, instructions: false, people: false, alerts: true,
   notify_on_activation: true, updated_at: '2026-04-22T16:30:00Z',
 }
+
+// ─────────────────────────────────────────────────────────────
+// Adviser Portal v2 demo: a fourth family and the solicitor
+// workspace (review queue, document requests, matters). Dates
+// are relative so the demo never looks stale.
+// ─────────────────────────────────────────────────────────────
+const daysAgoIso = (n) => new Date(Date.now() - n * 86_400_000).toISOString()
+const daysAheadDate = (n) => new Date(Date.now() + n * 86_400_000).toISOString().slice(0, 10)
+
+export const DEMO_FAMILY_HELEN = {
+  id: 'f4',
+  owner_id: 'demo-helen',
+  owner_name: 'Helen Marsh',
+  owner_email: 'helen.marsh@example.com',
+  plan: 'free',
+  readiness_score: 42,
+  invite_status: 'accepted',
+  advisor_role: 'Client',
+  last_updated: daysAgoIso(9),
+  accounts: [
+    { id: 'a-h1', institution: 'Lloyds', account_type: 'Current Account', category: 'Banking', account_number_hint: '3390', balance_display: '£3,100', updated_at: daysAgoIso(9) },
+  ],
+  documents: [
+    { id: 'd-h1', name: 'Will (unsigned draft)', doc_type: 'Legal', status: 'current', updated_at: daysAgoIso(9), file_url: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf' },
+  ],
+  instructions: [],
+  alerts: [
+    { id: 'al-h1', title: 'No executor assigned', severity: 'critical', is_read: false, created_at: daysAgoIso(1) },
+  ],
+  trusted_people: [
+    { id: 'p-h1', name: 'Peter Marsh', role: 'Family Member', invite_status: 'accepted' },
+  ],
+  advisor_permissions: { accounts: true, documents: true, instructions: true, people: true, alerts: true },
+  activity_log: [
+    { id: 'act-h1', action: 'document.uploaded', resource_type: 'documents', resource_name: 'Will (unsigned draft)', created_at: daysAgoIso(9) },
+  ],
+  advisor_notes: '',
+  next_review_date: '',
+  meeting_notes: '',
+}
+DEMO_ADVISOR_FAMILIES.push(DEMO_FAMILY_HELEN)
+
+// Okafor uploaded a draft, Helen a draft, James a signed LPA: one per lane.
+export const DEMO_ADVISER_WORKSPACE = {
+  requests: [
+    { id: 'rq-1', client_id: 'f4', client_name: 'Helen Marsh', doc_type: 'Letter of wishes', note: 'So we can file it alongside the signed will.', status: 'requested', document_id: null, document_name: null, created_at: daysAgoIso(6), reminded_at: daysAgoIso(3), uploaded_at: null },
+  ],
+  reviews: [
+    { document_id: 'd4',   client_id: 'f2', client_name: 'Margaret & Robert Okafor', document_name: 'Mirror Wills, draft v3', doc_type: 'Legal', document_updated_at: daysAgoIso(2), review_status: 'in_review', note: null, reviewed_at: daysAgoIso(2) },
+    { document_id: 'd-h1', client_id: 'f4', client_name: 'Helen Marsh', document_name: 'Will (unsigned draft)', doc_type: 'Legal', document_updated_at: daysAgoIso(9), review_status: 'draft', note: null, reviewed_at: daysAgoIso(9) },
+    { document_id: 'd2',   client_id: 'f1', client_name: 'James Thornton', document_name: 'LPA Health & Welfare, signed by donor', doc_type: 'Legal', document_updated_at: daysAgoIso(21), review_status: 'signed', note: null, reviewed_at: daysAgoIso(21) },
+  ],
+  matters: [
+    { id: 'm-1', client_id: 'f2', client_name: 'Margaret & Robert Okafor', kind: 'estate_plan', title: 'Okafor: mirror wills and joint LPA', stage: 2, next_step: 'Sign off draft v3, book signing', due_date: daysAheadDate(4), opened_at: daysAgoIso(28).slice(0, 10), closed_at: null },
+    { id: 'm-2', client_id: 'f4', client_name: 'Helen Marsh', kind: 'estate_plan', title: 'Marsh: will', stage: 1, next_step: 'Executor to be named before redraft', due_date: null, opened_at: daysAgoIso(10).slice(0, 10), closed_at: null },
+    { id: 'm-3', client_id: 'f4', client_name: 'Helen Marsh', kind: 'probate', title: 'Estate of Peter Hollis', stage: 3, next_step: 'Grant expected from the Probate Registry', due_date: daysAheadDate(55), opened_at: daysAgoIso(98).slice(0, 10), closed_at: null },
+    { id: 'm-4', client_id: 'f1', client_name: 'James Thornton', kind: 'estate_plan', title: 'Thornton: LPA Health & Welfare', stage: 4, next_step: 'Confirm OPG registration and store', due_date: daysAgoIso(21).slice(0, 10), opened_at: daysAgoIso(67).slice(0, 10), closed_at: null },
+  ],
+}

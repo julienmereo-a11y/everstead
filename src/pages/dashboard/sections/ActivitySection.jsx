@@ -31,6 +31,7 @@ export const ACTIVITY_ACTIONS = [
   { value: 'adviser.notified',               id: 'adviserNotified' },
   { value: 'adviser.estate_pack_downloaded', id: 'adviserEstatePack' },
   { value: 'adviser.document_viewed',        id: 'adviserDocumentViewed' },
+  { value: 'adviser.document_requested',     id: 'adviserDocumentRequested' },
 ]
 
 // Display label for a stored action. Unknown values keep the previous rendering.

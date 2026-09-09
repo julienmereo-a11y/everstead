@@ -398,7 +398,21 @@
     "upload": "Téléverser",
     "saving": "Enregistrement…",
     "saveChanges": "Enregistrer les modifications",
-    "cancel": "Annuler"
+    "cancel": "Annuler",
+    "requests": {
+      "title": "Demandé par {{firm}}",
+      "body": "Votre {{label}} vous demande les documents ci-dessous. Rattachez un document déjà déposé, ou déposez-le d'abord.",
+      "requested": "Demandé le {{date}}",
+      "reminded": "Rappel envoyé le {{date}}",
+      "note": "Leur message",
+      "choose": "Choisir un document…",
+      "attach": "Rattacher",
+      "attaching": "Rattachement…",
+      "attached": "{{firm}} a été prévenu.",
+      "failed": "Impossible de rattacher ce document. Réessayez.",
+      "noDocs": "Déposez d'abord le document, puis revenez ici pour le rattacher.",
+      "demoNote": "En démo, rien n'est envoyé."
+    }
   },
   "aboutMe": {
     "title": "À propos de moi",
@@ -863,7 +877,8 @@
       "ownerStatusChanged": "Statut du coffre modifié",
       "adviserNotified": "Votre conseiller a été prévenu",
       "adviserEstatePack": "Dossier succession téléchargé par votre conseiller",
-      "adviserDocumentViewed": "Document ouvert par votre conseiller"
+      "adviserDocumentViewed": "Document ouvert par votre conseiller",
+      "adviserDocumentRequested": "Document demandé par votre conseiller"
     }
   },
   "resources": {
@@ -1367,6 +1382,12 @@
       "lastUpdated": "Dernière modification le {{date}}",
       "shared": "Partagé",
       "notShared": "Non partagé"
-    }
+    },
+    "labelSolicitorLower": "conseiller juridique",
+    "labelNotaireLower": "notaire",
+    "labelIfaLower": "conseiller financier",
+    "labelAccountantLower": "expert-comptable",
+    "labelWealthLower": "gestionnaire de patrimoine",
+    "labelOtherLower": "conseiller"
   }
 }
