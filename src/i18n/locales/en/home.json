@@ -21,24 +21,6 @@
     "trustpilotPost": "on Trustpilot",
     "imageAlt": "A needle-felted family sitting together, looking at a photograph of a grandmother beside an open keepsake box."
   },
-  "trustBar": {
-    "setup": {
-      "label": "Set up in an afternoon",
-      "sub": "Guided, step by step"
-    },
-    "onePlace": {
-      "label": "Everything in one place",
-      "sub": "Accounts, documents, wishes"
-    },
-    "share": {
-      "label": "Share what you choose",
-      "sub": "Per person, per document"
-    },
-    "free": {
-      "label": "Free to start",
-      "sub": "No card required"
-    }
-  },
   "film": {
     "title": "See how Everstead works",
     "posterEyebrow": "Watch the film",

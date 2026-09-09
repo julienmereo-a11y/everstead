@@ -98,8 +98,6 @@ export default function HomeEn() {
   const { t } = useTranslation('home')
   const [annualPricing, setAnnualPricing] = useState(true)
 
-  const trustItems = ['setup', 'onePlace', 'share', 'free']
-
   const pillars = [
     { key: 'accounts',  to: '/features' },
     { key: 'documents', to: '/security' },
@@ -222,7 +220,7 @@ export default function HomeEn() {
             style={{ background: 'linear-gradient(180deg, rgba(13,22,40,0.55) 0%, transparent 25%, transparent 70%, rgba(13,22,40,0.85) 100%)' }}
           />
 
-          <div className={`relative flex-1 w-full max-w-[1360px] mx-auto ${SECTION_X} pt-[104px] lg:pt-24 pb-[168px] sm:pb-[150px] lg:pb-[132px] grid lg:grid-cols-2 items-end lg:items-center`}>
+          <div className={`relative flex-1 w-full max-w-[1360px] mx-auto ${SECTION_X} pt-[104px] lg:pt-24 pb-[112px] lg:pb-[116px] grid lg:grid-cols-2 items-end lg:items-center`}>
             <div className="max-w-[600px] animate-fade-up">
               <h1 className="font-display font-light text-stone-50 text-balance m-0 tracking-[-0.01em] leading-[1.06] text-[clamp(2.5rem,5.4vw,4.875rem)]">
                 {t('hero.title1')}<em className="italic text-sage-300">{t('hero.titleEm')}</em>{t('hero.title2')}
@@ -231,7 +229,7 @@ export default function HomeEn() {
                 {t('hero.subtitle')}
               </p>
 
-              <div className="mt-7 lg:mt-9 flex flex-wrap gap-3">
+              <div className="mt-8 lg:mt-9 flex flex-wrap gap-3">
                 <Link
                   to="/get-started"
                   onClick={() => trackEvent('cta_click', { location: 'home_hero', cta: 'get_started' })}
@@ -248,7 +246,7 @@ export default function HomeEn() {
                 </Link>
               </div>
 
-              <div className="mt-6 lg:mt-[34px] flex flex-wrap gap-x-[22px] gap-y-2 text-[13px] text-navy-200">
+              <div className="mt-8 lg:mt-[34px] flex flex-wrap gap-x-[22px] gap-y-2 text-[13px] text-navy-200">
                 <span className="flex items-center gap-[7px]"><Lock size={14} className="shrink-0" />{t('hero.trustEncryption')}</span>
                 <span>{t('hero.trustUk')}</span>
                 <a
@@ -265,15 +263,10 @@ export default function HomeEn() {
             <div aria-hidden="true" />
           </div>
 
-          {/* Trust strip, pinned to the hero's bottom edge */}
+          {/* Store badges, pinned to the hero's bottom edge */}
           <div className="absolute inset-x-0 bottom-0 border-t border-white/[0.12] bg-navy-950/55 backdrop-blur-[10px]">
-            <div className={`max-w-[1360px] mx-auto ${SECTION_X} py-4 lg:py-[18px] grid grid-cols-2 lg:grid-cols-4 gap-x-5 gap-y-4`}>
-              {trustItems.map(key => (
-                <div key={key} className="flex flex-col gap-0.5 min-w-0">
-                  <span className="text-[13px] sm:text-sm font-semibold text-stone-50">{t(`trustBar.${key}.label`)}</span>
-                  <span className="text-[12px] sm:text-[12.5px] text-stone-400">{t(`trustBar.${key}.sub`)}</span>
-                </div>
-              ))}
+            <div className={`max-w-[1360px] mx-auto ${SECTION_X} py-3.5 lg:py-4`}>
+              <StoreBadges location="home_hero" />
             </div>
           </div>
         </section>
