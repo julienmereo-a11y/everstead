@@ -1,6 +1,6 @@
 import { requireAdmin, adminDb as db } from '../_lib/admin-auth.js'
 import { SENDERS, AUDIENCES, firstName, resolveAudience, sendToRecipients, sendTestEmail } from '../_lib/broadcast.js'
-import { withSentry, captureException } from '../lib/sentry.js'
+import { withSentry, captureException } from '../_lib/sentry.js'
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Admin-only: broadcast an email to all users or a specific group.

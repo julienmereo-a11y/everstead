@@ -1,6 +1,6 @@
 import { Resend } from 'resend'
 import { requireAdmin, adminNeedsMfa } from '../_lib/admin-auth.js'
-import { withSentry, captureException } from '../lib/sentry.js'
+import { withSentry, captureException } from '../_lib/sentry.js'
 
 // Emails the founder whenever an admin session opens the admin panel, so an
 // unexpected sign-in is visible rather than silent. The panel calls this once

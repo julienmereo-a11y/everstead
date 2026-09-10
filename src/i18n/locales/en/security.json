@@ -38,7 +38,8 @@
         "region": "EU",
         "detail": "Transactional emails (invitations, alerts, confirmations) are sent via Resend. Email content containing sensitive information is never stored beyond delivery."
       }
-    }
+    },
+    "linkLabel": "Open the {{name}} security page (new tab)"
   },
   "pillars": {
     "kicker": "Security controls",

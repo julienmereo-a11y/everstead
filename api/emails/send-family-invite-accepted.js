@@ -1,6 +1,6 @@
 import { Resend } from 'resend'
 import { createClient } from '@supabase/supabase-js'
-import { withSentry, captureException } from '../lib/sentry.js'
+import { withSentry, captureException } from '../_lib/sentry.js'
 import { translator, languageForUser } from '../_lib/email-i18n.js'
 
 const resend = new Resend(process.env.RESEND_API_KEY)

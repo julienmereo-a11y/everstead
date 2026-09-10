@@ -1,4 +1,4 @@
-import { withSentry } from '../lib/sentry.js'
+import { withSentry } from '../_lib/sentry.js'
 import { db, requireAdviser, loadClientForFirm, isUuid, logAdviserActivity } from '../_lib/adviser-access.js'
 
 // Adviser-facing: a short-lived signed URL for ONE document a linked client has

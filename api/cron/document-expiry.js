@@ -1,6 +1,6 @@
 import { createClient } from '@supabase/supabase-js'
 import { Resend } from 'resend'
-import { withSentry, captureException } from '../lib/sentry.js'
+import { withSentry, captureException } from '../_lib/sentry.js'
 import { translator, emailDate } from '../_lib/email-i18n.js'
 
 const supabase = createClient(

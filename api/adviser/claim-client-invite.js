@@ -1,5 +1,5 @@
 import { createClient } from '@supabase/supabase-js'
-import { withSentry, captureException } from '../lib/sentry.js'
+import { withSentry, captureException } from '../_lib/sentry.js'
 
 // Called by a newly signed-up user (from GetStarted) who arrived via an adviser
 // invite link. If a pending adviser_client_invites row matches their verified email,

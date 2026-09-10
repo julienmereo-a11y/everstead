@@ -142,7 +142,9 @@
       "Collaboration en famille",
       "Accompagnement au déploiement pour conseillers",
       "Accueil des partenaires pilotes"
-    ]
+    ],
+    "included": "Inclus",
+    "notIncluded": "Non inclus"
   },
   "disclaimer": {
     "eyebrow": "Avertissement important",

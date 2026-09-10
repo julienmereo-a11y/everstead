@@ -1,6 +1,6 @@
 import { PDFDocument, StandardFonts, rgb } from 'pdf-lib'
 import JSZipPkg from 'jszip'
-import { withSentry, captureException } from '../lib/sentry.js'
+import { withSentry, captureException } from '../_lib/sentry.js'
 import { db, requireAdviser, loadClientForFirm, loadSharedPlan, isUuid, logAdviserActivity } from '../_lib/adviser-access.js'
 import { DEMO_ADVISOR_FAMILIES } from '../../src/lib/demoData.js'
 

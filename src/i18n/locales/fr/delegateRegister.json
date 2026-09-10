@@ -1,0 +1,41 @@
+{
+  "loading": "Chargement de votre invitation…",
+  "invalid": {
+    "title": "Ce lien d'invitation n'est plus valable",
+    "body": "Il a peut-être expiré ou été retiré. Demandez au titulaire du plan de vous le renvoyer."
+  },
+  "header": {
+    "invitedAs": "{{owner}} vous invite en tant que",
+    "register": "Créez un compte gratuit pour accepter.",
+    "login": "Connectez-vous à votre compte pour accepter."
+  },
+  "tabs": {
+    "register": "Créer un compte",
+    "login": "Se connecter"
+  },
+  "fields": {
+    "name": "Nom complet",
+    "namePlaceholder": "Marie Dupont",
+    "email": "Adresse e-mail",
+    "emailHint": "C'est l'adresse à laquelle l'invitation a été envoyée.",
+    "password": "Mot de passe",
+    "passwordNew": "8 caractères minimum",
+    "passwordExisting": "Votre mot de passe",
+    "showPassword": "Afficher le mot de passe",
+    "hidePassword": "Masquer le mot de passe"
+  },
+  "trial": {
+    "title": "Commencer mon propre essai gratuit de 14 jours",
+    "body": "Protégez votre propre famille, comme {{owner}} protège la sienne."
+  },
+  "submit": {
+    "creating": "Création du compte…",
+    "signingIn": "Connexion…",
+    "register": "Créer mon compte et accepter",
+    "login": "Me connecter et accepter"
+  },
+  "freeNote": "Votre compte est <1>gratuit</1>, les délégués ne paient jamais. Vous accédez uniquement au plan de {{owner}}.",
+  "errors": {
+    "generic": "Une erreur est survenue. Veuillez réessayer."
+  }
+}

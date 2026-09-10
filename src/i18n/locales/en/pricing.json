@@ -142,7 +142,9 @@
       "Household collaboration",
       "Adviser rollout support",
       "Pilot partner onboarding"
-    ]
+    ],
+    "included": "Included",
+    "notIncluded": "Not included"
   },
   "disclaimer": {
     "eyebrow": "Important disclaimer",

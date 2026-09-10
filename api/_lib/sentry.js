@@ -7,7 +7,7 @@
 //   3. Add SENTRY_DSN to Vercel environment variables
 //
 // Usage in API handlers:
-//   import { captureException } from '../lib/sentry.js'
+//   import { captureException } from '../_lib/sentry.js'
 //   try { ... } catch (err) { captureException(err, { userId, endpoint: 'webhook' }); throw err }
 
 import * as SentryNode from '@sentry/node'

@@ -299,7 +299,7 @@ function ExecutorChecklistEn() {
       {/* Print-only header */}
       <div className="hidden print:block print-header mb-6 pb-4 border-b border-stone-200">
         <p className="text-sm font-semibold text-navy-800">Everstead, everstead.care</p>
-        <h1 className="text-2xl font-display font-bold text-navy-950 mt-1">Executor Checklist</h1>
+        <p className="text-2xl font-display font-bold text-navy-950 mt-1">Executor Checklist</p>
         <p className="text-xs text-stone-500 mt-1">England &amp; Wales · Printed {new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}</p>
       </div>
 

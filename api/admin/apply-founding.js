@@ -1,6 +1,6 @@
 import Stripe from 'stripe'
 import { requireAdmin, adminDb as db } from '../_lib/admin-auth.js'
-import { withSentry, captureException } from '../lib/sentry.js'
+import { withSentry, captureException } from '../_lib/sentry.js'
 
 // Admin-only: put a user on the founding deal — Family Yearly + the FOUNDING50 coupon
 // (100% off for 12 months) → £0 for the first year, then renews yearly at the normal

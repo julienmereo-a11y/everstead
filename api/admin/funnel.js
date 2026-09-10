@@ -1,5 +1,5 @@
 import { createClient } from '@supabase/supabase-js'
-import { withSentry } from '../lib/sentry.js'
+import { withSentry } from '../_lib/sentry.js'
 import { requireAdmin } from '../_lib/admin-auth.js'
 
 const supabase = createClient(

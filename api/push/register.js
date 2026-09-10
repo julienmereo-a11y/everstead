@@ -1,6 +1,6 @@
 import { createClient } from '@supabase/supabase-js'
-import { withSentry } from '../lib/sentry.js'
-import { registerPushToken, pushConfigured } from '../lib/push.js'
+import { withSentry } from '../_lib/sentry.js'
+import { registerPushToken, pushConfigured } from '../_lib/push.js'
 
 const supabase = createClient(
   process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL,

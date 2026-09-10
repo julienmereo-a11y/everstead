@@ -38,7 +38,8 @@
         "region": "UE",
         "detail": "Les e-mails transactionnels (invitations, alertes, confirmations) partent via Resend. Le contenu d'un e-mail comportant des informations sensibles n'est jamais conservé au-delà de sa remise."
       }
-    }
+    },
+    "linkLabel": "Ouvrir la page sécurité de {{name}} (nouvel onglet)"
   },
   "pillars": {
     "kicker": "Contrôles de sécurité",

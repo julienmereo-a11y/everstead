@@ -3,8 +3,10 @@ import { useSearchParams, useNavigate } from 'react-router-dom'
 import { Shield, CheckCircle2, Loader2, Eye, EyeOff, AlertCircle } from 'lucide-react'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../contexts/AuthContext'
+import { Trans, useTranslation } from 'react-i18next'
 
 export default function DelegateRegister() {
+  const { t } = useTranslation('delegateRegister')
   const [searchParams] = useSearchParams()
   const navigate       = useNavigate()
   const token          = searchParams.get('token')
@@ -102,12 +104,12 @@ export default function DelegateRegister() {
         body:    JSON.stringify({ email: invite.email, password, name, mode, wantsTrial: mode === 'register' && wantsTrial }),
       })
       const data = await res.json()
-      if (!res.ok) throw new Error(data.error || 'Something went wrong. Please try again.')
+      if (!res.ok) throw new Error(data.error || t('errors.generic'))
 
       // Set the session on the client — triggers onAuthStateChange → acceptAndRedirect
       await supabase.auth.setSession({ access_token: data.access_token, refresh_token: data.refresh_token })
     } catch (err) {
-      setError(err.message ?? 'Something went wrong. Please try again.')
+      setError(err.message ?? t('errors.generic'))
     } finally {
       setSubmitting(false)
     }
@@ -118,7 +120,7 @@ export default function DelegateRegister() {
       <Shell>
         <div className="p-10 flex flex-col items-center text-center gap-4">
           <Loader2 size={28} className="text-navy-400 animate-spin" />
-          <p className="text-stone-500 text-sm">Loading your invitation…</p>
+          <p className="text-stone-500 text-sm">{t('loading')}</p>
         </div>
       </Shell>
     )
@@ -127,8 +129,9 @@ export default function DelegateRegister() {
   if (loadState === 'error') {
     return (
       <Shell>
-        <div className="p-10 flex flex-col items-center text-center">
-          <p className="text-stone-500 text-sm">This invitation link is invalid or has expired. Ask the plan owner to re-send it.</p>
+        <div className="p-10 flex flex-col items-center text-center gap-2">
+          <h1 className="font-display text-xl text-navy-950">{t('invalid.title')}</h1>
+          <p className="text-stone-500 text-sm">{t('invalid.body')}</p>
         </div>
       </Shell>
     )
@@ -137,11 +140,11 @@ export default function DelegateRegister() {
   return (
     <Shell>
       <div className="aurora-field aurora-dim px-7 py-6">
-        <p className="font-display text-lg font-light text-white leading-snug">
-          {owner?.full_name} invited you as their <strong className="text-sage-400">{invite?.role}</strong>
-        </p>
+        <h1 className="font-display text-lg font-light text-white leading-snug">
+          {t('header.invitedAs', { owner: owner?.full_name })} <strong className="text-sage-400">{invite?.role}</strong>
+        </h1>
         <p className="text-stone-400 text-xs mt-1">
-          {mode === 'register' ? 'Create a free account to accept.' : 'Sign in to your existing account to accept.'}
+          {mode === 'register' ? t('header.register') : t('header.login')}
         </p>
       </div>
 
@@ -149,8 +152,8 @@ export default function DelegateRegister() {
         {/* Mode toggle */}
         <div className="flex gap-1 bg-stone-100 rounded-xl p-1 mb-6">
           {[
-            { key: 'register', label: 'Create account' },
-            { key: 'login',    label: 'Sign in' },
+            { key: 'register', label: t('tabs.register') },
+            { key: 'login',    label: t('tabs.login') },
           ].map(opt => (
             <button
               key={opt.key}
@@ -178,14 +181,14 @@ export default function DelegateRegister() {
           {mode === 'register' && (
             <div>
               <label className="block text-xs font-semibold text-stone-600 mb-1.5">
-                Full name <span className="text-red-400">*</span>
+                {t('fields.name')} <span className="text-red-400">*</span>
               </label>
               <input
                 type="text"
                 value={name}
                 onChange={e => setName(e.target.value)}
                 required
-                placeholder="Jane Smith"
+                placeholder={t('fields.namePlaceholder')}
                 className={inputCls}
               />
             </div>
@@ -193,20 +196,20 @@ export default function DelegateRegister() {
 
           {/* Email — pre-filled and locked to invite email */}
           <div>
-            <label className="block text-xs font-semibold text-stone-600 mb-1.5">Email address</label>
+            <label className="block text-xs font-semibold text-stone-600 mb-1.5">{t('fields.email')}</label>
             <input
               type="email"
               value={invite?.email ?? ''}
               readOnly
               className={`${inputCls} bg-stone-50 text-stone-500 cursor-not-allowed`}
             />
-            <p className="text-xs text-stone-400 mt-1">This is the email the invitation was sent to.</p>
+            <p className="text-xs text-stone-400 mt-1">{t('fields.emailHint')}</p>
           </div>
 
           {/* Password */}
           <div>
             <label className="block text-xs font-semibold text-stone-600 mb-1.5">
-              Password <span className="text-red-400">*</span>
+              {t('fields.password')} <span className="text-red-400">*</span>
             </label>
             <div className="relative">
               <input
@@ -215,12 +218,13 @@ export default function DelegateRegister() {
                 onChange={e => setPassword(e.target.value)}
                 required
                 minLength={8}
-                placeholder={mode === 'register' ? 'Min. 8 characters' : 'Your password'}
+                placeholder={mode === 'register' ? t('fields.passwordNew') : t('fields.passwordExisting')}
                 className={`${inputCls} pr-10`}
               />
               <button
                 type="button"
                 onClick={() => setShowPw(v => !v)}
+                aria-label={showPw ? t('fields.hidePassword') : t('fields.showPassword')}
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-stone-400 hover:text-stone-600"
               >
                 {showPw ? <EyeOff size={15} /> : <Eye size={15} />}
@@ -241,10 +245,10 @@ export default function DelegateRegister() {
               </div>
               <div>
                 <p className="text-sm font-medium text-navy-900 leading-snug group-hover:text-navy-700 transition-colors">
-                  Start my own 14-day free trial
+                  {t('trial.title')}
                 </p>
                 <p className="text-xs text-stone-500 mt-0.5 leading-relaxed">
-                  Protect your own family the same way {owner?.full_name} is protecting theirs.
+                  {t('trial.body', { owner: owner?.full_name })}
                 </p>
               </div>
             </label>
@@ -256,8 +260,8 @@ export default function DelegateRegister() {
             className="btn-aurora w-full text-white font-semibold text-sm py-3.5 rounded-full transition-colors disabled:opacity-50 flex items-center justify-center gap-2 mt-2"
           >
             {submitting
-              ? <><Loader2 size={15} className="animate-spin" />{mode === 'register' ? 'Creating account…' : 'Signing in…'}</>
-              : mode === 'register' ? 'Create account & accept' : 'Sign in & accept'
+              ? <><Loader2 size={15} className="animate-spin" />{mode === 'register' ? t('submit.creating') : t('submit.signingIn')}</>
+              : mode === 'register' ? t('submit.register') : t('submit.login')
             }
           </button>
         </form>
@@ -266,7 +270,7 @@ export default function DelegateRegister() {
           <div className="mt-5 flex items-start gap-2.5 bg-sage-50 border border-sage-200 rounded-xl px-3.5 py-3">
             <CheckCircle2 size={14} className="text-sage-600 mt-0.5 shrink-0" />
             <p className="text-xs text-sage-800 leading-relaxed">
-              Your account is <strong>free</strong>, delegates never pay. You're only getting access to {owner?.full_name}'s plan.
+              <Trans t={t} i18nKey="freeNote" values={{ owner: owner?.full_name }} components={{ 1: <strong /> }} />
             </p>
           </div>
         )}

@@ -1,6 +1,6 @@
 import { createClient } from '@supabase/supabase-js'
 import { sendClientInvite } from '../_lib/adviser-email.js'
-import { withSentry, captureException } from '../lib/sentry.js'
+import { withSentry, captureException } from '../_lib/sentry.js'
 
 // Adviser-facing: invite a client family to create their Everstead plan.
 // Any accepted adviser on the firm may invite. Enforces the firm's family cap

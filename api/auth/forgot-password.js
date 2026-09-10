@@ -1,6 +1,6 @@
 import { createClient } from '@supabase/supabase-js'
 import { Resend } from 'resend'
-import { withSentry } from '../lib/sentry.js'
+import { withSentry } from '../_lib/sentry.js'
 import { translator, languageForUser } from '../_lib/email-i18n.js'
 
 // Service role bypasses Supabase captcha protection

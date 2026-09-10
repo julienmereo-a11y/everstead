@@ -108,9 +108,10 @@ export default function Security() {
                     href={url}
                     target="_blank"
                     rel="noopener noreferrer"
+                    aria-label={t('infrastructure.linkLabel', { name })}
                     className="text-stone-400 hover:text-navy-600 transition-colors flex-shrink-0 mt-0.5"
                   >
-                    <ExternalLink size={14} />
+                    <ExternalLink size={14} aria-hidden="true" />
                   </a>
                 </div>
                 <div className="flex flex-wrap gap-2 mb-4">

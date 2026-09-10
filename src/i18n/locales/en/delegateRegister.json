@@ -1,0 +1,41 @@
+{
+  "loading": "Loading your invitation…",
+  "invalid": {
+    "title": "This invitation link is no longer valid",
+    "body": "It may have expired or been withdrawn. Ask the plan owner to send it again."
+  },
+  "header": {
+    "invitedAs": "{{owner}} invited you as their",
+    "register": "Create a free account to accept.",
+    "login": "Sign in to your existing account to accept."
+  },
+  "tabs": {
+    "register": "Create account",
+    "login": "Sign in"
+  },
+  "fields": {
+    "name": "Full name",
+    "namePlaceholder": "Jane Smith",
+    "email": "Email address",
+    "emailHint": "This is the email the invitation was sent to.",
+    "password": "Password",
+    "passwordNew": "Min. 8 characters",
+    "passwordExisting": "Your password",
+    "showPassword": "Show password",
+    "hidePassword": "Hide password"
+  },
+  "trial": {
+    "title": "Start my own 14-day free trial",
+    "body": "Protect your own family the same way {{owner}} is protecting theirs."
+  },
+  "submit": {
+    "creating": "Creating account…",
+    "signingIn": "Signing in…",
+    "register": "Create account & accept",
+    "login": "Sign in & accept"
+  },
+  "freeNote": "Your account is <1>free</1>, delegates never pay. You're only getting access to {{owner}}'s plan.",
+  "errors": {
+    "generic": "Something went wrong. Please try again."
+  }
+}

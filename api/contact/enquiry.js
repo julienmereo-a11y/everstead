@@ -1,5 +1,5 @@
 import { Resend } from 'resend'
-import { withSentry, captureException } from '../lib/sentry.js'
+import { withSentry, captureException } from '../_lib/sentry.js'
 import { rateLimited } from '../_lib/rate-limit.js'
 
 const resend = new Resend(process.env.RESEND_API_KEY)

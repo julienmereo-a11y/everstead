@@ -118,7 +118,13 @@ for (const p of translatedPaths()) {
   if (FR_SKIP.has(p)) continue
   entries.push([p === '/' ? '/fr' : `/fr${p}`, freqOf[p] ?? 'monthly', priorityOf[p] ?? '0.6'])
 }
-for (const [p, cf, pr] of FR_EXTRA) entries.push([`/fr${p}`, cf, pr])
+// A French section page only earns a sitemap entry once it has French content;
+// /fr/resources/guides with no French guide is an empty page nobody should index.
+const frSectionsWithPosts = new Set(resourcePosts().filter(p => p.lang === 'fr').map(p => `/resources/${p.section}`))
+for (const [p, cf, pr] of FR_EXTRA) {
+  if (/^\/resources\/(guides|checklists|faqs)$/.test(p) && !frSectionsWithPosts.has(p)) continue
+  entries.push([`/fr${p}`, cf, pr])
+}
 for (const slug of frCompareSlugs()) entries.push([`/fr/compare/${slug}`, 'monthly', '0.7'])
 for (const post of resourcePosts().filter(p => p.lang === 'fr')) entries.push([`/fr/resources/${post.section}/${post.slug}`, 'monthly', '0.6'])
 

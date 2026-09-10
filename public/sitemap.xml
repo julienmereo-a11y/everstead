@@ -491,21 +491,6 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://www.everstead.care/fr/resources/guides</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://www.everstead.care/fr/resources/checklists</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://www.everstead.care/fr/resources/faqs</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
     <loc>https://www.everstead.care/fr/assistant-apres-deces</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>

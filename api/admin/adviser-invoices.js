@@ -1,5 +1,5 @@
 import { requireAdmin, adminDb as db } from '../_lib/admin-auth.js'
-import { withSentry, captureException } from '../lib/sentry.js'
+import { withSentry, captureException } from '../_lib/sentry.js'
 
 // Admin-only invoice management for adviser firms. Amounts are pennies (GBP);
 // a zero-value or 'waived' invoice cleanly records a free pilot.

@@ -2,7 +2,7 @@ import { createClient } from '@supabase/supabase-js'
 
 // JSZip — defensive import to handle ESM/CJS interop in Vercel's bundler
 import JSZipPkg from 'jszip'
-import { withSentry, captureException } from '../lib/sentry.js'
+import { withSentry, captureException } from '../_lib/sentry.js'
 const JSZip = JSZipPkg.default ?? JSZipPkg
 
 const supabase = createClient(

@@ -1,6 +1,6 @@
 import Stripe from 'stripe'
 import { requireAdmin, adminDb as db } from '../_lib/admin-auth.js'
-import { withSentry, captureException } from '../lib/sentry.js'
+import { withSentry, captureException } from '../_lib/sentry.js'
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Admin-only: permanently delete a user. Instant + irreversible.

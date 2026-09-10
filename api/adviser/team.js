@@ -1,6 +1,6 @@
 import { createClient } from '@supabase/supabase-js'
 import { sendAdviserInvite, sendAdviserAddedNotice } from '../_lib/adviser-email.js'
-import { withSentry, captureException } from '../lib/sentry.js'
+import { withSentry, captureException } from '../_lib/sentry.js'
 
 // Adviser-facing: a firm OWNER manages their team seats. Service-role client;
 // the caller is verified to be an accepted owner of exactly one firm, and can only

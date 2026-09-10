@@ -1,4 +1,4 @@
-import { withSentry } from '../lib/sentry.js'
+import { withSentry } from '../_lib/sentry.js'
 import { db, isUuid } from '../_lib/adviser-access.js'
 import { sendDocumentUploadedNotice } from '../_lib/adviser-email.js'
 

@@ -1,5 +1,5 @@
 import { createClient } from '@supabase/supabase-js'
-import { withSentry } from '../lib/sentry.js'
+import { withSentry } from '../_lib/sentry.js'
 import { notifyFirmOfActivation } from '../_lib/adviser-notify.js'
 
 const supabase = createClient(

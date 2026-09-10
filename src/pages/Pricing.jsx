@@ -343,7 +343,9 @@ export default function Pricing() {
                 <div className="px-5 py-4 text-stone-700">{label}</div>
                 {[essential, family, advisor].map((value, index) => (
                   <div key={`${label}-${index}`} className="px-5 py-4 text-center text-stone-600">
-                    {value ? '✓' : '—'}
+                    {value
+                      ? <><span aria-hidden="true">✓</span><span className="sr-only">{t('table.included')}</span></>
+                      : <><span aria-hidden="true" className="text-stone-300">✕</span><span className="sr-only">{t('table.notIncluded')}</span></>}
                   </div>
                 ))}
               </div>

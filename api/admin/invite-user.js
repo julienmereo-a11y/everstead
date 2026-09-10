@@ -1,6 +1,6 @@
 import { Resend } from 'resend'
 import { requireAdmin } from '../_lib/admin-auth.js'
-import { withSentry, captureException } from '../lib/sentry.js'
+import { withSentry, captureException } from '../_lib/sentry.js'
 
 // Admin-only: invite a new person to sign up on Everstead. The admin picks whether
 // they should get the FOUNDING50 offer (Everstead+ free for life, Family Yearly) or

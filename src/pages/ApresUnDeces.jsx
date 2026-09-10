@@ -209,7 +209,7 @@ export default function ApresUnDeces() {
       {/* Print-only header */}
       <div className="hidden print:block print-header mb-6 pb-4 border-b border-stone-200">
         <p className="text-sm font-semibold text-navy-800">{t('print.brand')}</p>
-        <h1 className="text-2xl font-display font-bold text-navy-950 mt-1">{t('print.title')}</h1>
+        <p className="text-2xl font-display font-bold text-navy-950 mt-1">{t('print.title')}</p>
         <p className="text-xs text-stone-500 mt-1">{t('print.meta', { date: printDate })}</p>
       </div>
 

@@ -1,6 +1,6 @@
 import { adminDb as db } from '../_lib/admin-auth.js'
 import { SENDERS, resolveAudience, sendToRecipients } from '../_lib/broadcast.js'
-import { withSentry, captureException } from '../lib/sentry.js'
+import { withSentry, captureException } from '../_lib/sentry.js'
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Delivers admin broadcasts scheduled from the panel (status='scheduled' rows in

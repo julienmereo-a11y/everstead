@@ -1,5 +1,5 @@
 import Anthropic from '@anthropic-ai/sdk'
-import { withSentry, captureException } from './lib/sentry.js'
+import { withSentry, captureException } from './_lib/sentry.js'
 
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
 

@@ -14,6 +14,8 @@ import enFeatures from './locales/en/features.json'
 import frFeatures from './locales/fr/features.json'
 import enSecurity from './locales/en/security.json'
 import frSecurity from './locales/fr/security.json'
+import enDelegateRegister from './locales/en/delegateRegister.json'
+import frDelegateRegister from './locales/fr/delegateRegister.json'
 import enUseCases from './locales/en/useCases.json'
 import frUseCases from './locales/fr/useCases.json'
 import enLogin from './locales/en/login.json'
@@ -96,6 +98,7 @@ i18n
         howItWorks: enHowItWorks,
         features: enFeatures,
         security: enSecurity,
+        delegateRegister: enDelegateRegister,
         useCases: enUseCases,
         login: enLogin,
       },
@@ -106,6 +109,7 @@ i18n
         howItWorks: frHowItWorks,
         features: frFeatures,
         security: frSecurity,
+        delegateRegister: frDelegateRegister,
         useCases: frUseCases,
         login: frLogin,
       },
