@@ -74,11 +74,6 @@
       "cookieSettings": "Cookie settings"
     }
   },
-  "appBanner": {
-    "lead": "The Everstead app is here, on the",
-    "and": "and",
-    "dismiss": "Dismiss announcement"
-  },
   "notFound": {
     "badge": "Page not found",
     "title": "This page doesn't exist.",

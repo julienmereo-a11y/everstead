@@ -74,11 +74,6 @@
       "cookieSettings": "Paramètres des cookies"
     }
   },
-  "appBanner": {
-    "lead": "L'application Everstead est disponible sur l'",
-    "and": "et",
-    "dismiss": "Fermer cette annonce"
-  },
   "notFound": {
     "badge": "Page introuvable",
     "title": "Cette page n'existe pas.",

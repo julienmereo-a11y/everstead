@@ -13,7 +13,6 @@ import AdminProtectedRoute from './components/AdminProtectedRoute'
 import ErrorBoundary from './components/ErrorBoundary'
 import BiometricGate from './components/native/BiometricGate'
 import Nav from './components/Nav'
-import AppBanner, { APP_BANNER_HEIGHT, isAppBannerDismissed } from './components/AppBanner'
 import Footer from './components/Footer'
 // Lazy: ChatWidget pulls in react-markdown — keeping it out of the eager bundle
 // saves ~50 kB+ of the entry chunk. A null fallback is invisible (floating widget).
@@ -102,23 +101,12 @@ function ScrollToTop() {
 // TRANSLATED_PATHS.
 
 function Layout({ children }) {
-  // "App coming soon" bar. Shown on the marketing site only — never inside the native
-  // app (you're already in it) — and hidden once dismissed. When it's visible the
-  // fixed Nav is pushed down and <main> padded by the same height, so pt-24 pages and
-  // full-bleed heroes stay correctly aligned without any per-page changes.
-  const [bannerVisible, setBannerVisible] = React.useState(false)
-  useEffect(() => {
-    if (!isNative() && !isAppBannerDismissed()) setBannerVisible(true)
-  }, [])
-  const topOffset = bannerVisible ? APP_BANNER_HEIGHT : 0
-
+  // The site-wide app-store banner that used to sit above the nav was retired on
+  // 2026-09-10; the hero badges and the footer carry the store links now.
   return (
     <>
-      {bannerVisible && <AppBanner onDismiss={() => setBannerVisible(false)} />}
-      <Nav topOffset={topOffset} />
-      {/* --app-banner-h lets a 100svh hero subtract the banner instead of
-          hanging that many pixels below the fold (see the Home hero). */}
-      <main style={topOffset ? { paddingTop: topOffset, '--app-banner-h': `${topOffset}px` } : undefined}>{children}</main>
+      <Nav />
+      <main>{children}</main>
       <Footer />
       <Suspense fallback={null}><ChatWidget /></Suspense>
     </>
@@ -348,7 +336,7 @@ export default function App() {
             unreliable in the Capacitor webview and can report offline forever,
             permanently covering the UI. (Cookie consent is mounted from main.jsx,
             web only. The old PWA "add to home screen" prompt is gone: the real apps
-            are in both stores and AppBanner points there.) */}
+            are in both stores and the hero badges point there.) */}
         {!isNative() && <OfflineBanner />}
       </BrowserRouter>
     </AuthProvider>

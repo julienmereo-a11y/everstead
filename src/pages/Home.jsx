@@ -199,7 +199,7 @@ export default function Home() {
             (Nav.jsx keeps it transparent until you scroll past). */}
         <section
           className="relative flex flex-col bg-navy-950 grain overflow-hidden"
-          style={{ minHeight: 'calc(100svh - var(--app-banner-h, 0px))' }}
+          style={{ minHeight: '100svh' }}
         >
           <img
             src="/hero-felt-family-mobile.jpg"

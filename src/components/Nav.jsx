@@ -42,8 +42,9 @@ function computeDarkStyle(pathname, scrollY) {
   return scrollY > 24                // standard threshold elsewhere
 }
 
-// `topOffset` (px) shifts the fixed nav down when a banner occupies the very top of
-// the page (see AppBanner). Defaults to 0 — the nav sits flush against the top.
+// `topOffset` (px) shifts the fixed nav down when something occupies the very top of
+// the page. Defaults to 0 — the nav sits flush against the top. Unused since the app
+// banner was retired (2026-09-10), kept for the next announcement bar.
 export default function Nav({ topOffset = 0 }) {
   // Initialise directly from window.location so the very first render is correct
   // even before React Router has had a chance to set location state.
