@@ -25,6 +25,57 @@ const sections = {
     desc: 'Practical guidance on estate planning, family organisation, and digital life management.',
     posts: [
       {
+        slug: 'everstead-at-web-summit-2026',
+        title: 'Everstead is launching at Web Summit 2026 in Lisbon',
+        date: 'September 2026',
+        tag: 'News',
+        desc: 'Everstead joins the startup programme at Web Summit 2026, in Lisbon from 9 to 12 November, and will officially launch there. What we are bringing, who we would like to meet, and how to find our booth.',
+        readTime: '3 min read',
+        ogImage: '/blog/web-summit-2026.jpg',
+        body: [
+          { type: 'image', src: '/blog/web-summit-2026.jpg', alt: 'See you at Web Summit. Lisbon, 9 to 12 November 2026. Web Summit startup programme.' },
+          { type: 'intro', text: 'Everstead will be participating in the startup programme at #WebSummit2026 in Lisbon this November, from 9 to 12 November. If you would like to learn more about our company, be sure to visit our booth during the event 💪' },
+          { type: 'heading', text: 'Our official launch' },
+          { type: 'text', text: 'Web Summit is where we will officially launch Everstead. Until now the product has been in a beta phase, and more than 100 families in the UK and France have already used it to gather their accounts, documents and wishes in one secure place, and to decide who can see what, and when. Their feedback has shaped almost every screen. Lisbon is where we open the doors properly.' },
+          { type: 'text', text: 'The idea behind Everstead is simple. When something happens to you, your family should not have to spend weeks searching for bank accounts, pension providers, policies and passwords. Everstead keeps everything that matters in a private vault, with trusted people who receive access only when it is needed, on the web, iOS and Android.' },
+          { type: 'heading', text: 'What we are bringing to Lisbon' },
+          { type: 'list', items: ['The Everstead vault for families: accounts, documents, instructions and personal messages, with access rules per person and per document', 'Everstead Pro for solicitors, financial advisers and notaires: a portal to invite clients, follow their readiness and receive an estate pack when the time comes', 'Live demos of the apps, available on the App Store and Google Play', 'The team, ready to talk about digital legacy, probate, and what families wish they had sorted earlier'] },
+          { type: 'heading', text: 'Who we would like to meet' },
+          { type: 'text', text: 'Families and founders, of course, but also solicitors, wealth managers, financial advisers, notaires and insurers who see every day what an unprepared estate costs their clients. We are opening a pilot programme for professional firms and would love to compare notes. Investors and partners interested in estate planning and later life are very welcome too.' },
+          { type: 'heading', text: 'Find us at the event' },
+          { type: 'text', text: 'We will be on the startup floor for the four days. We will share our exact booth location and our schedule here and on LinkedIn closer to the event. If you would like to book a slot in advance, write to hello@everstead.care or use the Contact page, and we will find a time in Lisbon.' },
+          { type: 'text', text: 'See you at Web Summit.' },
+          { type: 'related', links: [{ label: 'How to organise your estate in the UK: a complete guide', href: '/resources/blog/how-to-organise-your-estate-uk' }, { label: 'Why a will alone isn\'t enough', href: '/resources/blog/why-a-will-is-not-enough' }, { label: 'What financial advisers can offer beyond the portfolio', href: '/resources/blog/what-advisors-can-offer-beyond-portfolio' }] },
+          { type: 'cta', text: 'Not coming to Lisbon? You can start your Everstead vault today, for free, and be ready before the launch.' },
+        ],
+      },
+      {
+        slug: 'everstead-web-summit-2026-lisbonne',
+        title: 'Everstead se lance officiellement au Web Summit 2026 à Lisbonne',
+        date: 'September 2026',
+        tag: 'Actualités',
+        lang: 'fr',
+        desc: 'Everstead rejoint le programme startups du Web Summit 2026, à Lisbonne du 9 au 12 novembre, et y lancera officiellement son coffre numérique. Ce que nous y présentons, qui nous souhaitons rencontrer et comment nous trouver.',
+        readTime: '3 min de lecture',
+        ogImage: '/blog/web-summit-2026.jpg',
+        body: [
+          { type: 'image', src: '/blog/web-summit-2026.jpg', alt: 'À bientôt au Web Summit. Lisbonne, du 9 au 12 novembre 2026. Programme startups du Web Summit.' },
+          { type: 'intro', text: 'Everstead participera au programme startups du #WebSummit2026 à Lisbonne, du 9 au 12 novembre prochain. Si vous souhaitez en savoir plus sur notre entreprise, passez nous voir sur notre stand pendant l\'événement 💪' },
+          { type: 'heading', text: 'Notre lancement officiel' },
+          { type: 'text', text: 'C\'est au Web Summit que nous lancerons officiellement Everstead. Jusqu\'ici, le produit était en phase bêta, et plus de 100 familles, en France et au Royaume-Uni, l\'utilisent déjà pour réunir leurs comptes, leurs documents et leurs volontés en un seul endroit sûr, et pour décider qui peut voir quoi, et à quel moment. Leurs retours ont façonné presque chaque écran. À Lisbonne, nous ouvrons les portes pour de bon.' },
+          { type: 'text', text: 'L\'idée d\'Everstead est simple. S\'il vous arrive quelque chose, vos proches ne devraient pas passer des semaines à chercher vos comptes bancaires, vos contrats d\'assurance-vie, vos mots de passe ou le nom de votre notaire. Everstead conserve tout ce qui compte dans un coffre privé, avec des personnes de confiance qui n\'y accèdent que lorsque c\'est nécessaire, sur le web, iOS et Android.' },
+          { type: 'heading', text: 'Ce que nous présentons à Lisbonne' },
+          { type: 'list', items: ['Le coffre Everstead pour les familles : comptes, documents, instructions et messages personnels, avec des règles d\'accès par personne et par document', 'Everstead Pro pour les notaires, avocats et conseillers en gestion de patrimoine : un portail pour inviter vos clients, suivre leur niveau de préparation et recevoir une synthèse de succession le moment venu', 'Des démonstrations en direct des applications, disponibles sur l\'App Store et Google Play', 'L\'équipe, disponible pour parler de patrimoine numérique, de succession et de tout ce que les familles regrettent de ne pas avoir organisé plus tôt'] },
+          { type: 'heading', text: 'Qui nous aimerions rencontrer' },
+          { type: 'text', text: 'Des familles et des fondateurs, bien sûr, mais aussi des notaires, des conseillers en gestion de patrimoine, des avocats et des assureurs qui constatent chaque jour ce qu\'une succession mal préparée coûte à leurs clients. Nous ouvrons un programme pilote pour les études et les cabinets, et nous serions ravis d\'échanger. Les investisseurs et partenaires qui s\'intéressent à la transmission et à la préparation de la fin de vie sont également les bienvenus.' },
+          { type: 'heading', text: 'Nous trouver sur place' },
+          { type: 'text', text: 'Nous serons sur l\'espace startups pendant les quatre jours. L\'emplacement exact de notre stand et notre programme seront publiés ici et sur LinkedIn à l\'approche de l\'événement. Pour réserver un créneau à l\'avance, écrivez-nous à hello@everstead.care ou passez par la page Contact, et nous trouverons un moment à Lisbonne.' },
+          { type: 'text', text: 'À bientôt au Web Summit.' },
+          { type: 'related', links: [{ label: 'Que faire après un décès en France : le guide pas à pas', href: '/resources/blog/que-faire-apres-un-deces-france' }, { label: 'Assurance-vie et succession : ce que vos bénéficiaires doivent savoir', href: '/resources/blog/assurance-vie-succession' }, { label: 'Notaires, conseillers : et si vos clients arrivaient préparés ?', href: '/resources/blog/notaires-conseillers-clients-prepares' }] },
+          { type: 'cta', text: 'Vous ne venez pas à Lisbonne ? Vous pouvez créer votre coffre Everstead dès aujourd\'hui, gratuitement, et être prêt avant le lancement.' },
+        ],
+      },
+      {
         slug: 'what-happens-to-your-pension-when-you-die',
         title: 'What happens to your pension when you die in the UK?',
         date: 'July 2026',
@@ -2787,9 +2838,13 @@ function ArticleDetail({ sectionSlug, postSlug }) {
   // Blog posts get a per-article title-card OG image, generated by
   // scripts/gen-blog-og-images.mjs into public/og/blog/ (re-run it after adding a
   // post). Other sections fall back to the site-wide card.
-  const ogImage = sectionSlug === 'blog'
-    ? `https://www.everstead.care/og/blog/${slug}.png`
-    : 'https://www.everstead.care/og-image.png'
+  // A post can bring its own card (post.ogImage, a path under public/), for
+  // announcements that come with artwork; everything else uses the generated one.
+  const ogImage = post.ogImage
+    ? `https://www.everstead.care${post.ogImage}`
+    : sectionSlug === 'blog'
+      ? `https://www.everstead.care/og/blog/${slug}.png`
+      : 'https://www.everstead.care/og-image.png'
 
   return (
     <div className="bg-stone-50 pt-24">
@@ -2860,6 +2915,12 @@ function ArticleDetail({ sectionSlug, postSlug }) {
         <div className="max-w-3xl mx-auto px-6 lg:px-8">
           <div className="space-y-8">
             {body.map((block, i) => {
+              if (block.type === 'image') return (
+                <figure key={i}>
+                  <img src={block.src} alt={block.alt} loading="lazy" className="w-full rounded-2xl border border-stone-200" />
+                  {block.caption && <figcaption className="mt-2 text-xs text-stone-500 text-center">{block.caption}</figcaption>}
+                </figure>
+              )
               if (block.type === 'intro') return (
                 <p key={i} className="text-lg text-stone-700 leading-relaxed font-light border-l-4 border-navy-200 pl-5">{block.text}</p>
               )
