@@ -24,7 +24,7 @@ import { PRICING } from '../config/pricing'
 import { trackEvent } from '../lib/analytics'
 import { ArrowRight, Bell, CheckCircle2, EyeOff, Flag, KeyRound, Lock, Users } from 'lucide-react'
 
-const MUX_PLAYBACK_ID = 'l5z7SNIPLF3iNy1OKyML01Dyy36bjhlxKK6RUVnJgxfU'
+const MUX_PLAYBACK_ID = 'S021WSE5yv396jSCaDQ01BufXsb2IdzD00eHs549Tkmk8g'
 const SECTION_X = 'px-6 sm:px-8 lg:px-12'
 
 // ── Film ─────────────────────────────────────────────────────────────────────
