@@ -21,6 +21,13 @@
     "trustpilotPost": "sur Trustpilot",
     "imageAlt": "Une famille en laine feutrée réunie sur un canapé, regardant le portrait d'une grand-mère posé près d'un coffret ouvert."
   },
+  "film": {
+    "title": "Découvrez comment fonctionne Everstead",
+    "posterEyebrow": "Regarder le film",
+    "posterTitle": "Comment fonctionne Everstead",
+    "duration": "0:31",
+    "playAria": "Lire : Comment fonctionne Everstead"
+  },
   "why": {
     "eyebrow": "Pourquoi Everstead",
     "title": "Tout ce qui compte, sous un même toit.",

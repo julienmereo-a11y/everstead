@@ -3,9 +3,8 @@
 // An immersive felt-illustration hero, the film, three pillars, two navy
 // product rows, security, a section for advisers and solicitors, and pricing.
 //
-// The film is ENGLISH ONLY: the cut is in English and there is no French
-// version yet, so the section is not rendered on /fr rather than shown in a
-// language the visitor may not speak.
+// The film has a cut per language: MUX_PLAYBACK_IDS picks the English or the
+// French asset, and each page shows its own poster, copy and player.
 //
 // French is not a translation of the English. fr/home.json is written for
 // France (assurance-vie, mandat de protection future, notaire) and the copy
@@ -24,13 +23,16 @@ import { PRICING } from '../config/pricing'
 import { trackEvent } from '../lib/analytics'
 import { ArrowRight, Bell, CheckCircle2, EyeOff, Flag, KeyRound, Lock, Users } from 'lucide-react'
 
-const MUX_PLAYBACK_ID = 'S021WSE5yv396jSCaDQ01BufXsb2IdzD00eHs549Tkmk8g'
+const MUX_PLAYBACK_IDS = {
+  en: 'S021WSE5yv396jSCaDQ01BufXsb2IdzD00eHs549Tkmk8g',
+  fr: '8IiYAV012gsQ6x3ggl00TbZJu2aFwUA5m7i7Q1ss3RSDw',
+}
 const SECTION_X = 'px-6 sm:px-8 lg:px-12'
 
 // ── Film ─────────────────────────────────────────────────────────────────────
 // Idle is a poster and a play button; the player is only mounted on click, so
 // nothing from Mux loads for visitors who never press play.
-function FilmSection({ t }) {
+function FilmSection({ t, playbackId }) {
   const [playing, setPlaying] = useState(false)
 
   const play = () => {
@@ -48,7 +50,7 @@ function FilmSection({ t }) {
         <div className="reveal w-full relative aspect-video rounded-[28px] overflow-hidden bg-navy-950 shadow-[0_48px_90px_-30px_rgba(13,22,40,0.45)]">
           {playing ? (
             <iframe
-              src={`https://player.mux.com/${MUX_PLAYBACK_ID}?autoplay=true&accent-color=%232d5082&primary-color=%23fafaf9`}
+              src={`https://player.mux.com/${playbackId}?autoplay=true&accent-color=%232d5082&primary-color=%23fafaf9`}
               title={t('film.posterTitle')}
               allow="autoplay; fullscreen; encrypted-media; picture-in-picture"
               allowFullScreen
@@ -63,7 +65,7 @@ function FilmSection({ t }) {
                 className="absolute inset-0 w-full h-full cursor-pointer bg-transparent border-0 p-0 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-sage-300"
               />
               <img
-                src={`https://image.mux.com/${MUX_PLAYBACK_ID}/thumbnail.jpg?time=2&width=1600`}
+                src={`https://image.mux.com/${playbackId}/thumbnail.jpg?time=2&width=1600`}
                 alt=""
                 aria-hidden="true"
                 loading="lazy"
@@ -280,8 +282,8 @@ export default function Home() {
 
         </section>
 
-        {/* ── FILM (English only: the cut has no French version yet) ── */}
-        {!isFr && <FilmSection t={t} />}
+        {/* ── FILM (one cut per language) ── */}
+        <FilmSection t={t} playbackId={isFr ? MUX_PLAYBACK_IDS.fr : MUX_PLAYBACK_IDS.en} />
 
         {/* ── WHY EVERSTEAD ────────────────────────────────────────── */}
         <section className={`py-24 lg:py-[120px] bg-stone-50 ${SECTION_X}`}>
