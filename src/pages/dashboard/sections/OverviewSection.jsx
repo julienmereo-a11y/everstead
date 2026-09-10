@@ -18,7 +18,7 @@ export const PLAN_BADGE = {
   advisor:   { label: PLAN_LABELS.advisor,   cls: 'bg-sage-50  text-sage-700  border-sage-200'  },
 }
 
-export function OverviewSection({ adviser, profile, accounts, documents, people, instructions, messages, alerts, markRead, onNavigate, planLimits, loading, daysSinceLogin, onCelebrate, onExecutorPreview, aboutMe, onUpgrade, persistScore, scoreInputsLoaded }) {
+export function OverviewSection({ isDemo, adviser, profile, accounts, documents, people, instructions, messages, alerts, markRead, onNavigate, planLimits, loading, daysSinceLogin, onCelebrate, onExecutorPreview, aboutMe, onUpgrade, persistScore, scoreInputsLoaded }) {
   const { t } = useTranslation('dashboard')
   const criticalAlerts = alerts.filter(a => a.severity === 'critical' && !a.is_read)
   const [staleBannerDismissed, setStaleBannerDismissed] = React.useState(false)
@@ -30,7 +30,9 @@ export function OverviewSection({ adviser, profile, accounts, documents, people,
   const [familyLoading, setFamilyLoading] = React.useState(false)
   const isSecondaryUser = profile.family_role === 'secondary'
   React.useEffect(() => {
-    if (profile.plan !== 'family') return
+    // The demo profile is on the family plan but its id is not a uuid, so this
+    // lookup would only earn a 400 from PostgREST. Demo shows the invite card.
+    if (profile.plan !== 'family' || isDemo) return
     setFamilyLoading(true)
     import('../../../lib/supabase').then(({ supabase: sb }) => {
       const query = isSecondaryUser && profile.family_id
@@ -45,7 +47,7 @@ export function OverviewSection({ adviser, profile, accounts, documents, people,
             .maybeSingle()
       query.then(({ data }) => { setFamilyMembership(data || null); setFamilyLoading(false) })
     })
-  }, [profile.id, profile.plan, profile.family_id, isSecondaryUser])
+  }, [profile.id, profile.plan, profile.family_id, isSecondaryUser, isDemo])
 
   const vaultStats = [
     { label: t('overview.stats.accounts'), value: accounts.length, icon: Landmark, target: 5, navSection: 'accounts' },

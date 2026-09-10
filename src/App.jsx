@@ -117,7 +117,7 @@ function Layout({ children }) {
       {bannerVisible && <AppBanner onDismiss={() => setBannerVisible(false)} />}
       <Nav topOffset={topOffset} />
       {/* --app-banner-h lets a 100svh hero subtract the banner instead of
-          hanging that many pixels below the fold (see HomeEn's hero). */}
+          hanging that many pixels below the fold (see the Home hero). */}
       <main style={topOffset ? { paddingTop: topOffset, '--app-banner-h': `${topOffset}px` } : undefined}>{children}</main>
       <Footer />
       <Suspense fallback={null}><ChatWidget /></Suspense>
