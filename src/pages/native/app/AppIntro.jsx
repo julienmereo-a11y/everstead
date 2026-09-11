@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import './i18n'
 import { getPref, setPref } from '../../../lib/prefs'
 import { haptic } from '../../../lib/haptics'
+import { Lockup } from './components/Brand'
 import { HomeIcon, AccountsIcon, DocIcon, FamilyIcon, HeartIcon, SparkIcon, MessageIcon } from './icons'
 
 // First-run tour — 4 short steps on how to use the app and why it matters, shown
@@ -67,7 +68,7 @@ export default function AppIntro({ onDone }) {
 
       <div className="f1 fx col jc posrel">
         {s.logo
-          ? <img src="/logo-v2-white.png" alt="Everstead" style={{ height: 44, width: 'auto', alignSelf: 'flex-start', marginBottom: 26 }} />
+          ? <Lockup style={{ alignSelf: 'flex-start', marginBottom: 26 }} />
           : <div className="eyebrow eyebrow-sage">{t('intro.eyebrow')}</div>}
         <h1 className="obh" style={{ fontSize: 32 }}>{s.title}</h1>
         <p style={{ fontSize: 15, lineHeight: 1.6, color: 'rgba(255,255,255,0.65)', margin: '14px 0 0' }}>{s.sub}</p>
