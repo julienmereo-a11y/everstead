@@ -255,3 +255,53 @@ body.plat-android .evst-app .head { padding-top: calc(var(--safe-area-inset-top,
 body.plat-android .evst-app .ob { padding-top: calc(var(--safe-area-inset-top, 0px) + 26px); padding-bottom: calc(var(--safe-area-inset-bottom, 0px) + 34px); }
 body.plat-android .evst-app .skip { top: calc(var(--safe-area-inset-top, 0px) + 22px); }
 body.plat-android .evst-app .tabbar { padding-bottom: calc(var(--safe-area-inset-bottom, 0px) + 14px); }
+
+/* ── Brand refresh (Sept 2026): lockup, artwork, trust line, film ───────── */
+/* Artwork = felted illustrations from the website (public/app, 1x/2x/3x webp).
+   Always full-bleed, always object-fit cover, always dissolved into navy with a
+   mask so text keeps ≥4.5:1; never in a hard-edged box, never stretched. */
+.evst-app .lockup { display: flex; align-items: center; gap: 9px; flex: none; }
+.evst-app .lockup img { height: 34px; width: auto; display: block; }
+.evst-app .lockup span { font-family: var(--font-display); font-weight: 600; font-size: 27px; line-height: 1; letter-spacing: -.01em; color: #fafaf9; }
+.evst-app .trust { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 3px 6px; margin: 14px 0 0; font-size: 11px; line-height: 1.4; color: rgba(255,255,255,.55); text-align: center; }
+.evst-app .trust svg { flex: none; }
+.evst-app .trust b { font-weight: 600; color: var(--color-sage-400); }
+/* Home hero: family bleeds in from the right behind the greeting, ~50%, masked left→right and top→bottom. */
+.evst-app .art-home { position: absolute; right: -6%; top: 0; width: 70%; height: 100%; object-fit: cover; object-position: 18% 35%; opacity: .5; pointer-events: none; z-index: 0;
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, #000 42%), linear-gradient(to bottom, #000 45%, transparent 92%); -webkit-mask-composite: source-in;
+  mask-image: linear-gradient(to right, transparent 0%, #000 42%), linear-gradient(to bottom, #000 45%, transparent 92%); mask-composite: intersect; }
+/* Sign in: same artwork, radial halo at the top, ~32%. */
+.evst-app .art-auth { position: absolute; left: 0; right: 0; top: 0; width: 100%; height: 46%; object-fit: cover; object-position: 50% 30%; opacity: .32; pointer-events: none; z-index: 0;
+  -webkit-mask-image: radial-gradient(ellipse 85% 80% at 50% 12%, #000 0%, rgba(0,0,0,.55) 45%, transparent 78%);
+  mask-image: radial-gradient(ellipse 85% 80% at 50% 12%, #000 0%, rgba(0,0,0,.55) 45%, transparent 78%); }
+/* Onboarding step 2: cottage banner across the top, dissolving into the navy. */
+.evst-app .ob-art { position: absolute; left: 0; right: 0; top: 0; height: 250px; pointer-events: none; z-index: 0; }
+.evst-app .ob-art img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 22%; display: block;
+  -webkit-mask-image: linear-gradient(to bottom, #000 35%, transparent 100%); mask-image: linear-gradient(to bottom, #000 35%, transparent 100%); }
+.evst-app .ob-art::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(13,22,40,.18) 0%, rgba(13,22,40,.35) 55%, transparent 100%); }
+.evst-app .skip.on-art { background: rgba(13,22,40,.5); padding: 6px 12px; border-radius: 999px; backdrop-filter: blur(6px); }
+/* Family banner: illustrated header with the family name and the serif line. */
+.evst-app .fam-banner { position: relative; height: 236px; overflow: hidden; background: linear-gradient(160deg,#0d1628 0%,#1d3052 100%); color: #fafaf9; }
+.evst-app .fam-banner img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 26%;
+  -webkit-mask-image: linear-gradient(to bottom, #000 40%, rgba(0,0,0,.35) 78%, transparent 100%); mask-image: linear-gradient(to bottom, #000 40%, rgba(0,0,0,.35) 78%, transparent 100%); }
+.evst-app .fam-shade { position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(13,22,40,.1) 0%, rgba(13,22,40,.25) 50%, rgba(13,22,40,.85) 100%); }
+.evst-app .fam-copy { position: absolute; left: 20px; right: 20px; bottom: 18px; }
+.evst-app .fam-name { font-size: 30px; font-weight: 600; line-height: 1.05; margin: 2px 0 0; color: #fafaf9; }
+.evst-app .fam-line { font-family: var(--font-display); font-style: italic; font-size: 17px; line-height: 1.3; color: rgba(255,255,255,.8); margin: 6px 0 0; }
+/* Film card on Home + the full-screen player. */
+.evst-app .film-card { position: relative; margin-top: 18px; height: 196px; border-radius: 16px; overflow: hidden; background: var(--color-navy-950); color: #fafaf9; cursor: pointer; transition: transform .12s; }
+.evst-app .film-card:active { transform: scale(.98); }
+.evst-app .film-card img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 35%; }
+.evst-app .film-shade { position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(13,22,40,.08) 0%, rgba(13,22,40,.3) 45%, rgba(13,22,40,.92) 100%); }
+.evst-app .film-play { position: absolute; left: 50%; top: 40%; width: 42px; height: 42px; margin: -21px 0 0 -21px; border-radius: 999px; background: rgba(250,250,249,.9); color: var(--color-navy-900); display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 24px rgba(0,0,0,.28); }
+.evst-app .film-meta { position: absolute; left: 16px; right: 16px; bottom: 14px; }
+.evst-app .film-title { font-size: 18px; font-weight: 600; line-height: 1.2; margin-top: 3px; }
+.evst-app .film-tag { font-size: 12px; color: rgba(255,255,255,.72); margin-top: 2px; }
+.evst-app .film-dur { position: absolute; top: 12px; right: 12px; font-size: 11px; font-weight: 600; padding: 4px 8px; border-radius: 999px; background: rgba(13,22,40,.55); color: #fafaf9; backdrop-filter: blur(6px); }
+.evst-app .film-player { position: fixed; inset: 0; z-index: 60; background: var(--color-navy-950); color: #fafaf9; display: flex; flex-direction: column; justify-content: center; padding: 20px; padding-top: calc(max(env(safe-area-inset-top), 50px) + 10px); }
+.evst-app .film-close { position: absolute; top: calc(max(env(safe-area-inset-top), 50px) + 6px); left: 16px; width: 40px; height: 40px; border-radius: 999px; background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.18); color: #fafaf9; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+.evst-app .film-frame { position: relative; width: 100%; aspect-ratio: 16 / 9; border-radius: 12px; overflow: hidden; background: #000; }
+.evst-app .film-frame iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+.evst-app .film-copy { margin-top: 22px; }
+.evst-app .film-h { font-size: 26px; font-weight: 600; line-height: 1.1; margin: 4px 0 0; }
+.evst-app .film-p { font-size: 14px; line-height: 1.55; color: rgba(255,255,255,.65); margin: 8px 0 0; }
