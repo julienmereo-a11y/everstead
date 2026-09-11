@@ -7,6 +7,7 @@ import { apiPost, isNative, isIOS } from '../../../lib/platform'
 import { detectDeviceLanguage, detectDeviceCountry } from '../../../lib/deviceLanguage'
 import { countryByCode } from '../../../config/countries'
 import { AccountsIcon, DocIcon, HeartIcon } from './icons'
+import { Lockup, TrustLine, artwork } from './components/Brand'
 
 // Google ships on BOTH platforms now that iOS pairs it with Sign in with Apple
 // (guideline 4.8 — offering third-party login on iOS requires Apple's too).
@@ -174,11 +175,12 @@ export default function MobileAuthFlow() {
     return (
       <div className="ob grain">
         <div className="hero-glow" />
-        {obStep < 2 && <button className="skip" onClick={() => goAuth('signup')}>{t('common.skip')}</button>}
+        {obStep === 1 && <div className="ob-art" aria-hidden="true"><img {...artwork('cottage-top')} alt="" /></div>}
+        {obStep < 2 && <button className={`skip ${obStep === 1 ? 'on-art' : ''}`} onClick={() => goAuth('signup')}>{t('common.skip')}</button>}
 
         {obStep === 0 && (
           <div className="f1 fx col posrel">
-            <img className="oblogo" src="/logo-v2-white.png" alt="Everstead" />
+            <Lockup style={{ alignSelf: 'center', marginTop: 6 }} />
             <div className="f1 fx col jc ac tc">
               <h1 className="obh" style={{ fontSize: 38 }}>
                 {t('auth.heroTitlePre')}<span className="aurora">{t('auth.heroTitleAccent')}</span>{t('auth.heroTitlePost')}
@@ -191,7 +193,8 @@ export default function MobileAuthFlow() {
         )}
 
         {obStep === 1 && (
-          <div className="f1 fx col jc posrel">
+          <div className="f1 fx col posrel" style={{ paddingTop: 150 }}>
+            <div className="eyebrow eyebrow-sage">{t('auth.storyEyebrow')}</div>
             <h1 className="obh">{t('auth.valueTitle')}</h1>
             <div className="fx col gap12" style={{ marginTop: 26 }}>
               {valueProps(t).map(({ Icon, title, sub }) => (
@@ -235,7 +238,10 @@ export default function MobileAuthFlow() {
             </button>
           )}
           {obStep === 0 && (
-            <button className="linkbtn" onClick={() => goAuth('signin')}>{t('auth.haveAccount')}</button>
+            <>
+              <TrustLine />
+              <button className="linkbtn" onClick={() => goAuth('signin')}>{t('auth.haveAccount')}</button>
+            </>
           )}
         </div>
       </div>
@@ -253,10 +259,11 @@ export default function MobileAuthFlow() {
   return (
     <div className="ob grain">
       <div className="hero-glow" />
+      <img className="art-auth" {...artwork('family-wide')} alt="" aria-hidden="true" />
       <button className="skip" onClick={() => { if (authStep === 'code') { setAuthStep('form'); setError(null) } else setMode('onboarding') }}>{t('common.back')}</button>
 
       <div className="f1 fx col jc posrel">
-        <div className="eyebrow eyebrow-sage">Everstead</div>
+        <Lockup style={{ marginBottom: 22 }} />
 
         {/* Sign-in code step */}
         {authMode === 'signin' && authStep === 'code' ? (
