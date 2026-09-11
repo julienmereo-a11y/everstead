@@ -1,10 +1,12 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import '../i18n'
 import { useAuth } from '../../../../contexts/AuthContext'
 import { ChevronIcon, CheckIcon } from '../icons'
 import { planLabel, marketPricing, FREE_LIMITS } from '../../../../config/pricing'
 import { useStorePrices } from '../../../../lib/storePricing'
+import { artwork } from '../components/Brand'
+import FilmPlayer from '../components/FilmPlayer'
 
 // Home — dark hero (greeting + real readiness ring), Up next (real gaps),
 // stat tiles (real counts), upgrade nudge (free plan only), recent activity
@@ -23,6 +25,7 @@ export default function HomeScreen({ app }) {
   const annualPerMonth = storePrices?.yearlyPerMonth || market.family.annual.perMonthDisplay
   const auth = useAuth()
   const profile = app.profile || auth.profile
+  const [film, setFilm] = useState(false) // brand film overlay (presentation only)
   const {
     greeting, dateLabel, firstName, initials, scorePct, ringOff, ringCircumference, scoreTxt,
     upNext, upEmpty, accCount, docCount, memCount, activity,
@@ -41,6 +44,7 @@ export default function HomeScreen({ app }) {
       {/* ── Dark hero ── */}
       <div className="hero grain">
         <div className="hero-glow" />
+        <img className="art-home" {...artwork('family')} alt="" aria-hidden="true" />
         {/* Just the "E" sprout mark — crop the wordmark to its left square so we get
             a clean transparent white E (no navy tile) on the hero. */}
         <div className="posrel" style={{ width: 40, height: 40, overflow: 'hidden', marginBottom: 16 }}>
@@ -103,6 +107,23 @@ export default function HomeScreen({ app }) {
             <ChevronIcon />
           </div>
         </div>
+
+        {/* ── The film (same Mux asset as the website, per language) ── */}
+        <div className="film-card" role="button" tabIndex={0} aria-label={t('home.filmWatch')}
+          onClick={() => setFilm(true)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') setFilm(true) }}>
+          <img {...artwork('cottage-top')} alt="" aria-hidden="true" />
+          <div className="film-shade" />
+          <span className="film-play" aria-hidden="true">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13l11-6.5z" /></svg>
+          </span>
+          <span className="film-dur">{t('home.filmDuration')}</span>
+          <div className="film-meta">
+            <div className="eyebrow eyebrow-sage" style={{ margin: 0 }}>{t('home.filmWatch')}</div>
+            <div className="serif film-title">{t('home.filmTitle')}</div>
+            <div className="film-tag">{t('home.filmTagline')}</div>
+          </div>
+        </div>
+        {film && <FilmPlayer onClose={() => setFilm(false)} />}
 
         {/* ── Stat tiles ── */}
         <div className="fx gap10" style={{ marginTop: 18 }}>
