@@ -45,7 +45,7 @@
   },
   "auth": {
     "heroTitlePre": "Tout ce qui compte, ",
-    "heroTitleAccent": "réuni",
+    "heroTitleAccent": "rassemblé",
     "heroTitlePost": " en un seul endroit sûr.",
     "heroSub": "Comptes, documents, dernières volontés : organisés pour aujourd'hui, prêts pour demain.",
     "valueTitle": "L'essentiel, au même endroit.",
@@ -85,7 +85,14 @@
     "newHere": "Première visite ? Créez votre compte",
     "creatingAccount": "Création du compte…",
     "createAccount": "Créer mon compte",
-    "alreadyAccount": "Déjà un compte ? Connectez-vous"
+    "alreadyAccount": "Déjà un compte ? Connectez-vous",
+    "trustAes": "Chiffrement AES-256",
+    "trustUk": "Hébergé au Royaume-Uni",
+    "trustGdpr": "RGPD",
+    "trustRatedPre": "Noté ",
+    "trustRatedWord": "Excellent",
+    "trustRatedPost": " sur Trustpilot",
+    "storyEyebrow": "Chaque famille a une histoire"
   },
   "security": {
     "eyebrow": "Sécurité renforcée",
@@ -240,7 +247,13 @@
     "startTrial": "Essayer gratuitement pendant 14 jours",
     "priceLine": "{{monthly}} par mois, ou {{annualPerMonth}} par mois en facturation annuelle. Résiliable à tout moment.",
     "recentActivity": "Activité récente",
-    "noActivity": "Aucune activité pour le moment."
+    "noActivity": "Aucune activité pour le moment.",
+    "filmWatch": "Voir le film",
+    "filmTitle": "Comment fonctionne Everstead",
+    "filmTagline": "Chaque famille a une histoire.",
+    "filmDuration": "0:31",
+    "filmEyebrow": "Le film",
+    "filmBody": "Trente secondes sur la raison d'être d'Everstead, et ce qu'il garde en sécurité pour ceux que vous aimez."
   },
   "more": {
     "title": "Plus",
@@ -285,7 +298,11 @@
   "family": {
     "title": "Famille",
     "invite": "Inviter",
-    "note": "Les personnes en accès d'urgence ne voient rien aujourd'hui. S'il vous arrive quelque chose, votre exécuteur peut déverrouiller exactement ce dont il a besoin, rien de plus."
+    "note": "Les personnes en accès d'urgence ne voient rien aujourd'hui. S'il vous arrive quelque chose, votre exécuteur peut déverrouiller exactement ce dont il a besoin, rien de plus.",
+    "bannerName": "Les {{surname}}",
+    "bannerNameS": "Les {{surname}}",
+    "bannerFallback": "Votre famille",
+    "bannerLine": "Prêt pour ceux que vous aimez."
   },
   "sheets": {
     "addTitle": "Ajouter un compte",

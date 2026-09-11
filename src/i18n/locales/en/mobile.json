@@ -85,7 +85,14 @@
     "newHere": "New to Everstead? Create an account",
     "creatingAccount": "Creating account…",
     "createAccount": "Create account",
-    "alreadyAccount": "Already have an account? Sign in"
+    "alreadyAccount": "Already have an account? Sign in",
+    "trustAes": "AES-256",
+    "trustUk": "UK-based",
+    "trustGdpr": "GDPR",
+    "trustRatedPre": "Rated ",
+    "trustRatedWord": "Excellent",
+    "trustRatedPost": " on Trustpilot",
+    "storyEyebrow": "Every family has a story"
   },
   "security": {
     "eyebrow": "Extra security",
@@ -240,7 +247,13 @@
     "startTrial": "Start your 14-day free trial",
     "priceLine": "{{monthly}}/month, or {{annualPerMonth}}/month billed annually. Cancel anytime.",
     "recentActivity": "Recent activity",
-    "noActivity": "No activity yet."
+    "noActivity": "No activity yet.",
+    "filmWatch": "Watch the film",
+    "filmTitle": "How Everstead works",
+    "filmTagline": "Every family has a story.",
+    "filmDuration": "0:31",
+    "filmEyebrow": "The film",
+    "filmBody": "Thirty seconds on why Everstead exists, and what it keeps safe for the people you love."
   },
   "more": {
     "title": "More",
@@ -285,7 +298,11 @@
   "family": {
     "title": "Family",
     "invite": "Invite",
-    "note": "Emergency-only members see nothing today. If something happens to you, your executor can unlock exactly what they need, nothing more."
+    "note": "Emergency-only members see nothing today. If something happens to you, your executor can unlock exactly what they need, nothing more.",
+    "bannerName": "The {{surname}}s",
+    "bannerNameS": "The {{surname}} family",
+    "bannerFallback": "Your family",
+    "bannerLine": "Ready for the people you love."
   },
   "sheets": {
     "addTitle": "Add an account",
