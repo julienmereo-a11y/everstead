@@ -163,7 +163,11 @@
       },
       {
         "q": "Que se passe-t-il si j'annule pendant l'essai ?",
-        "a": "Rien du tout, aucun débit n'est effectué. Votre compte est fermé et vos données sont conservées 30 jours au cas où vous changeriez d'avis, avant d'être supprimées définitivement. Rien à payer, et personne ne vous demandera pourquoi."
+        "a": "Rien ne vous est facturé. À la fin de l'essai, votre coffre repasse au forfait gratuit : tout ce que vous avez ajouté reste, et vous pouvez repasser à Everstead+ quand vous le souhaitez."
+      },
+      {
+        "q": "Que se passe-t-il si je résilie Everstead+ ?",
+        "a": "Vous conservez Everstead+ jusqu'à la fin de la période déjà réglée. Ensuite, votre coffre repasse au forfait gratuit : rien n'est supprimé, tout ce que vous avez ajouté reste, et les limites du forfait gratuit ne s'appliquent qu'aux nouveaux ajouts. Vous pouvez exporter une copie complète de votre coffre, fichiers compris, à tout moment depuis les réglages."
       },
       {
         "q": "Puis-je changer de forfait après l'inscription ?",

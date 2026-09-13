@@ -163,7 +163,11 @@
       },
       {
         "q": "What happens if I cancel during the trial?",
-        "a": "Nothing. You will not be charged. Your account is closed and your data is retained for 30 days in case you change your mind, then permanently deleted. No fees, no questions."
+        "a": "Nothing is charged. When the trial ends your vault moves to the free plan: everything you added stays, and you can upgrade again whenever you like."
+      },
+      {
+        "q": "What happens when I cancel Everstead+?",
+        "a": "You keep Everstead+ until the end of the period you have paid for. Then your vault moves to the free plan: nothing is deleted, everything you added stays, and the free plan's limits apply only to new additions. You can export a complete copy of your vault, files included, at any time from Settings."
       },
       {
         "q": "Can I switch plans after signing up?",

@@ -79,27 +79,61 @@ async function handler(req, res) {
       instructionSteps = steps ?? []
     }
 
-    // ── Generate signed download URLs for document files ─────────────────────
-    // We include these in documents.json so users can download their files.
-    // Signed for 7 days — enough time to download after export.
-    const docsWithUrls = await Promise.all(
-      documents.map(async (doc) => {
-        const base = {
-          id: doc.id, name: doc.name, type: doc.type,
-          notes: doc.notes, expiry_date: doc.expiry_date,
-          created_at: doc.created_at,
+    // ── Document files ────────────────────────────────────────────────────────
+    // The files themselves go INTO the zip, up to a budget that keeps the
+    // function inside its memory and time limits (60 s). Anything over the
+    // budget, or any single file over the per-file cap, is linked instead with
+    // a 7-day signed URL, and documents.json says which is which.
+    const FILE_BUDGET   = 40 * 1024 * 1024  // total bytes packed into the zip
+    const FILE_CAP      = 15 * 1024 * 1024  // largest single file packed
+    let   packedBytes   = 0
+    const packedFiles   = []                 // [{ path, buffer }]
+    const usedNames     = new Set()
+    const safeName = (doc) => {
+      const raw = String(doc.name || doc.storage_path?.split('/').pop() || doc.id).replace(/[\\/:*?"<>|\u0000-\u001f]/g, '_').trim() || String(doc.id)
+      const ext = (doc.storage_path?.match(/\.[a-z0-9]{1,5}$/i) || [''])[0]
+      let name = raw.toLowerCase().endsWith(ext.toLowerCase()) || !ext ? raw : raw + ext
+      let i = 2
+      while (usedNames.has(name.toLowerCase())) { name = name.replace(/(\.[^.]*)?$/, ` (${i++})$1`) }
+      usedNames.add(name.toLowerCase())
+      return name
+    }
+
+    const docsWithUrls = []
+    for (const doc of documents) {
+      const base = {
+        id: doc.id, name: doc.name, type: doc.type,
+        notes: doc.notes, expiry_date: doc.expiry_date,
+        created_at: doc.created_at,
+      }
+      if (!doc.storage_path) { docsWithUrls.push(base); continue }
+      let packed = null
+      try {
+        const { data: blob, error: dlErr } = await supabase.storage.from('documents').download(doc.storage_path)
+        if (!dlErr && blob) {
+          const size = blob.size ?? 0
+          if (size <= FILE_CAP && packedBytes + size <= FILE_BUDGET) {
+            const buffer = Buffer.from(await blob.arrayBuffer())
+            const path = `documents/${safeName(doc)}`
+            packedFiles.push({ path, buffer })
+            packedBytes += buffer.length
+            packed = path
+          }
         }
-        if (!doc.storage_path) return base
-        try {
-          const { data: signed } = await supabase.storage
-            .from('documents')
-            .createSignedUrl(doc.storage_path, 7 * 24 * 60 * 60) // 7 days
-          return { ...base, download_url: signed?.signedUrl ?? null }
-        } catch {
-          return base
-        }
-      })
-    )
+      } catch (err) {
+        console.error('export: could not pack', doc.id, err?.message)
+      }
+      if (packed) { docsWithUrls.push({ ...base, file_in_export: packed }); continue }
+      try {
+        const { data: signed } = await supabase.storage
+          .from('documents')
+          .createSignedUrl(doc.storage_path, 7 * 24 * 60 * 60) // 7 days
+        docsWithUrls.push({ ...base, download_url: signed?.signedUrl ?? null })
+      } catch {
+        docsWithUrls.push(base)
+      }
+    }
+    const linkedCount = docsWithUrls.filter(d => d.download_url).length
 
     // ── Build profile export (strip server-only fields) ───────────────────────
     const profileExport = {
@@ -136,15 +170,17 @@ async function handler(req, res) {
       'Files included:',
       '- profile.json        Your account details',
       '- accounts.json       Your documented financial accounts and assets',
-      '- documents.json      Document details, notes, and 7-day download links',
+      '- documents.json      Document details and notes; file_in_export points at the copy in this zip',
+      '- documents/          Your uploaded files' + (linkedCount ? ` (${linkedCount} larger file${linkedCount === 1 ? '' : 's'} linked instead, see below)` : ''),
       '- trusted-people.json Your trusted contacts and their access permissions',
       '- instructions.json   Your step-by-step instructions',
       '- wishes.json         Your personal messages and final wishes',
       '- subscriptions.json  Your tracked subscriptions',
       '- activity-log.json   A record of all changes made to your plan',
       '',
-      'Document files: Use the download_url in documents.json to download each',
-      'uploaded file. Links are valid for 7 days from the export date.',
+      'Document files: every file up to 15 MB is inside the documents/ folder,',
+      'up to 40 MB in total. Any file beyond that has a download_url in',
+      'documents.json instead, valid for 7 days from the export date.',
       '',
       'Your data belongs to you. If you need help with this export,',
       'contact us at hello@everstead.care',
@@ -165,6 +201,7 @@ async function handler(req, res) {
     folder.file('wishes.json',           JSON.stringify(wishes,             null, 2))
     folder.file('subscriptions.json',    JSON.stringify(subscriptions,      null, 2))
     folder.file('activity-log.json',     JSON.stringify(activityLog,        null, 2))
+    for (const { path, buffer } of packedFiles) folder.file(path, buffer)
 
     const zipBuffer = await zip.generateAsync({
       type: 'nodebuffer',
