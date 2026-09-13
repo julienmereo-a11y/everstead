@@ -22,8 +22,8 @@
   "list": [
     {
       "purpose": "Managed PostgreSQL database, authentication, and encrypted file storage for vault content.",
-      "location": "EU (Ireland), data hosted in Frankfurt region",
-      "transferMechanism": "UK IDTA / EU SCCs"
+      "location": "United Kingdom (London, AWS eu-west-2)",
+      "transferMechanism": "No transfer: hosted in the UK"
     },
     {
       "purpose": "Web hosting and serverless functions (Everstead website and API endpoints).",
@@ -46,7 +46,7 @@
       "transferMechanism": "UK IDTA / EU SCCs"
     },
     {
-      "purpose": "AI-powered assistant, document scanning, and in-product guidance. Processes the messages and any documents or images a member chooses to submit to an AI feature, it is not given blanket access to a member’s vault, and runs only while AI features are switched on.",
+      "purpose": "AI assistant, document scanning and in-product guidance. Receives the messages you type into the assistant and, only when you ask for a scan, the document you choose. Nothing else from your vault is sent.",
       "location": "USA",
       "transferMechanism": "UK IDTA / EU SCCs · processed under Anthropic’s commercial API terms; Anthropic does not train on Everstead traffic"
     }

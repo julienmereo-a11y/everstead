@@ -80,13 +80,13 @@
   "security": {
     "eyebrow": "Security & privacy",
     "title": "Protected to the highest standards. Only ever yours.",
-    "desc": "Bank-level encryption, UK data residency and access that you control down to the individual document. We can't read your data, and we never sell it.",
+    "desc": "Bank-level encryption, a vault hosted in London and access you control down to the individual document. Nobody at Everstead reads your data, and we never sell it.",
     "linkPractices": "Read our security practices",
     "linkPrivacy": "Our privacy policy",
     "features": [
       "AES-256 encryption at rest",
       "Two-factor authentication",
-      "Zero-knowledge vault",
+      "TLS 1.3 in transit",
       "Per-person access control",
       "Access alerts & audit log",
       "UK data residency"

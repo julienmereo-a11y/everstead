@@ -18,7 +18,7 @@
         "role": "Database, authentication & file storage",
         "cert": "SOC 2 Type II certified",
         "region": "London, UK",
-        "detail": "All user data, documents, and account records are stored on Supabase's infrastructure, which holds SOC 2 Type II certification. Data is stored exclusively in the London (UK) region."
+        "detail": "All user data, documents and account records are stored on Supabase's infrastructure, which holds SOC 2 Type II certification, in the London (UK) region."
       },
       "vercel": {
         "role": "Application hosting & delivery",
@@ -81,8 +81,8 @@
   },
   "gdpr": {
     "kicker": "UK GDPR & Data residency",
-    "title": "Your data stays in the UK. Full stop.",
-    "p1": "Everstead is operated by EVERSTEAD DIGITAL LTD (company number 17166825), a UK-registered company, and is compliant with UK GDPR. All personal data is stored and processed exclusively in London, United Kingdom. We never transfer your data outside the UK.",
+    "title": "Your vault lives in London. Here is where everything else goes.",
+    "p1": "Everstead is operated by EVERSTEAD DIGITAL LTD (company number 17166825), a UK-registered company, and complies with UK GDPR. Your vault, meaning your accounts, documents, instructions and the people you name, is stored and processed in London, United Kingdom. A small number of supporting services run elsewhere and see only what they need: Vercel (USA and a global edge network) serves the website and runs our application code, Resend (USA) delivers our emails, Sentry (USA) receives error reports without vault contents, and Anthropic (USA) processes what you type into the AI features and, when you ask for a document scan, that document. Each transfer is covered by the UK International Data Transfer Agreement or EU standard contractual clauses, and Anthropic does not train on Everstead data. The full list is on our Subprocessors page.",
     "p2": "As a data controller, we are responsible for how your data is collected, stored, and used. You have the right to access, correct, export, and permanently delete your data at any time, directly from your dashboard or by contacting us.",
     "points": [
       [
@@ -90,8 +90,8 @@
         "Data processing follows UK GDPR requirements"
       ],
       [
-        "UK (London) data residency",
-        "No data transferred outside the UK"
+        "Vault hosted in London",
+        "Database and files never leave the UK"
       ],
       [
         "Right to access & portability",
@@ -178,11 +178,31 @@
       },
       {
         "q": "Can Everstead employees read my documents?",
-        "a": "No. Documents are encrypted at rest using AES-256. Access to the storage layer requires service-role credentials which are restricted to automated systems only. No Everstead employee has routine access to your documents or personal data."
+        "a": "Not in the course of normal operations. Documents are encrypted at rest with AES-256 and in transit with TLS 1.3, and they are only ever served through your own login or an access you have granted. Our application does hold credentials that can read storage, because it has to deliver your documents to you; those credentials are held by automated systems, not by people, and every access is logged. We do not call this zero-knowledge, because it is not: a zero-knowledge design would also mean nobody could pass your vault to your family, and that is the whole point of Everstead."
       },
       {
         "q": "Where is my data stored?",
-        "a": "All data is stored in London, United Kingdom, on Supabase's infrastructure. We do not transfer your personal data outside the UK. This is compliant with UK GDPR."
+        "a": "Your vault, meaning your accounts, documents, instructions and the people you name, is stored in London, United Kingdom, on Supabase's infrastructure, and does not leave the UK. Some supporting services run in the USA: Vercel serves the site and runs our code, Resend sends our emails, Sentry receives error reports, and Anthropic powers the AI features. Each is bound by a transfer agreement (UK IDTA or EU standard contractual clauses) and sees only what it needs. The full list, with what each one receives, is on our Subprocessors page."
+      },
+      {
+        "q": "What can my trusted people see straight away, and what waits for verification?",
+        "a": "Straight away: anything you opened to them while alive, for example a shared document or your emergency instructions, which you can make available from day one. After verification: everything you set to open on your death, plus any sealed personal messages. That is why we suggest leaving a short emergency pack open to your closest person in advance. The practical first steps (who to call, where the will is, your funeral wishes) should not have to wait for a death certificate."
+      },
+      {
+        "q": "What if the death happens at a weekend, or abroad?",
+        "a": "Every report is reviewed by a person. Two business days is the outside limit: a report made on a Friday evening is normally confirmed by the following Tuesday at the latest. We accept a death certificate from any country; if it is not in English or French, we may ask for a certified translation."
+      },
+      {
+        "q": "What if a report is disputed, or looks wrong?",
+        "a": "A report never opens anything by itself. Our team checks the certificate details against the account, and if anything does not add up, or if the account holder or another trusted person disputes the report, nothing opens until it is resolved. Every report and every decision is recorded in the audit trail."
+      },
+      {
+        "q": "What about incapacity, rather than death?",
+        "a": "The same process applies. A trusted person reports the situation with supporting evidence (for example a medical letter or a registered Lasting Power of Attorney), we verify, and only the access you set for that case opens."
+      },
+      {
+        "q": "What if my trusted person can no longer get in?",
+        "a": "Their access is tied to the email address you invited. If they forget their password they reset it like any member; if their address has changed, they contact support with proof of identity and we reissue the invitation to the address you nominated. It is a good reason to name more than one trusted person."
       },
       {
         "q": "What happens to my data if I cancel?",

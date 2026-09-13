@@ -22,8 +22,8 @@
   "list": [
     {
       "purpose": "Base de données PostgreSQL managée, authentification et stockage chiffré des fichiers du coffre.",
-      "location": "UE (Irlande), données hébergées dans la région de Francfort",
-      "transferMechanism": "IDTA britannique / CCT de l'UE"
+      "location": "Royaume-Uni (Londres, AWS eu-west-2)",
+      "transferMechanism": "Aucun transfert : hébergement au Royaume-Uni"
     },
     {
       "purpose": "Hébergement web et fonctions serverless (site Everstead et points de terminaison de l'API).",
@@ -46,7 +46,7 @@
       "transferMechanism": "IDTA britannique / CCT de l'UE"
     },
     {
-      "purpose": "Assistant propulsé par l'IA, analyse de documents et aide contextuelle dans le produit. Traite les messages ainsi que les documents ou images qu'un membre choisit de soumettre à une fonctionnalité d'IA, il ne dispose d'aucun accès global au coffre du membre et n'intervient que lorsque les fonctionnalités d'IA sont activées.",
+      "purpose": "Assistant, analyse de documents et aide dans le produit. Reçoit les messages que vous saisissez dans l'assistant et, uniquement lorsque vous demandez une analyse, le document que vous choisissez. Rien d'autre de votre coffre n'est transmis.",
       "location": "États-Unis",
       "transferMechanism": "IDTA britannique / CCT de l'UE · traitement régi par les conditions commerciales de l'API d'Anthropic ; Anthropic n'entraîne pas ses modèles sur les données d'Everstead"
     }

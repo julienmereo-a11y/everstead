@@ -18,7 +18,7 @@
         "role": "Base de données, authentification et stockage de fichiers",
         "cert": "Certifié SOC 2 Type II",
         "region": "Londres, Royaume-Uni",
-        "detail": "Les données des utilisateurs, les documents et les informations de compte sont stockés sur l'infrastructure de Supabase, certifiée SOC 2 Type II, et hébergés exclusivement dans la région de Londres. Le Royaume-Uni bénéficie d'une décision d'adéquation de la Commission européenne, qui reconnaît un niveau de protection des données équivalent à celui de l'Union européenne."
+        "detail": "Les données des utilisateurs, les documents et les informations de compte sont stockés sur l'infrastructure de Supabase, certifiée SOC 2 Type II, dans la région de Londres. Le Royaume-Uni bénéficie d'une décision d'adéquation de la Commission européenne, qui reconnaît un niveau de protection des données équivalent à celui de l'Union européenne."
       },
       "vercel": {
         "role": "Hébergement et diffusion de l'application",
@@ -81,8 +81,8 @@
   },
   "gdpr": {
     "kicker": "RGPD et résidence des données",
-    "title": "Vos données restent à Londres, et nulle part ailleurs.",
-    "p1": "Everstead est édité par EVERSTEAD DIGITAL LTD (numéro de société 17166825), une société britannique enregistrée auprès de l'ICO, l'autorité britannique de protection des données, et le service est exploité en conformité avec le RGPD. Vos données personnelles sont stockées et traitées exclusivement à Londres : elles ne partent jamais ailleurs. Le Royaume-Uni bénéficie par ailleurs d'une décision d'adéquation de la Commission européenne, qui reconnaît un niveau de protection des données équivalent à celui de l'Union européenne.",
+    "title": "Votre coffre est hébergé à Londres. Voici où va le reste.",
+    "p1": "Everstead est édité par EVERSTEAD DIGITAL LTD (numéro de société 17166825), une société britannique enregistrée auprès de l'ICO, l'autorité britannique de protection des données, et le service est exploité en conformité avec le RGPD. Votre coffre, c'est-à-dire vos comptes, vos documents, vos consignes et vos personnes de confiance, est stocké et traité à Londres, au Royaume-Uni, qui bénéficie d'une décision d'adéquation de la Commission européenne. Quelques services d'appui fonctionnent ailleurs et ne voient que ce dont ils ont besoin : Vercel (États-Unis et réseau mondial) sert le site et exécute notre code, Resend (États-Unis) achemine nos e-mails, Sentry (États-Unis) reçoit les rapports d'erreur sans le contenu de votre coffre, et Anthropic (États-Unis) traite ce que vous saisissez dans les fonctions d'assistance et, si vous demandez l'analyse d'un document, ce document. Chaque transfert est encadré par des clauses contractuelles types, et Anthropic n'entraîne aucun modèle sur les données d'Everstead. La liste complète figure sur notre page Sous-traitants.",
     "p2": "En qualité de responsable du traitement, nous répondons de la façon dont vos données sont collectées, conservées et utilisées. Vous pouvez y accéder, les corriger, les exporter et les effacer définitivement quand vous le voulez, depuis votre tableau de bord ou sur simple demande.",
     "points": [
       [
@@ -90,8 +90,8 @@
         "Un traitement des données conduit selon les exigences du RGPD"
       ],
       [
-        "Données hébergées à Londres",
-        "Le Royaume-Uni bénéficie d'une décision d'adéquation de l'UE"
+        "Coffre hébergé à Londres",
+        "Base de données et fichiers ne quittent pas le Royaume-Uni"
       ],
       [
         "Droit d'accès et de portabilité",
@@ -178,11 +178,31 @@
       },
       {
         "q": "Les employés d'Everstead peuvent-ils lire mes documents ?",
-        "a": "Non. Les documents sont chiffrés au repos en AES-256, et l'accès à la couche de stockage exige des identifiants de service réservés aux seuls systèmes automatisés. Aucun salarié d'Everstead n'a d'accès courant à vos documents ni à vos données personnelles."
+        "a": "Pas dans le cours normal du service. Les documents sont chiffrés au repos en AES-256 et en transit en TLS 1.3, et ils ne sont servis qu'à travers votre propre connexion ou un accès que vous avez accordé. Notre application détient des identifiants capables de lire le stockage, parce qu'elle doit pouvoir vous remettre vos documents ; ces identifiants sont détenus par des systèmes automatisés, pas par des personnes, et chaque accès est journalisé. Nous ne parlons pas de « zéro connaissance » : ce serait inexact, et un tel système empêcherait aussi de transmettre votre coffre à vos proches, ce qui est précisément la raison d'être d'Everstead."
       },
       {
         "q": "Où mes données sont-elles stockées ?",
-        "a": "Toutes les données sont stockées à Londres, sur l'infrastructure de Supabase, et ne sont jamais transférées ailleurs. Ce fonctionnement est conforme au RGPD, et le Royaume-Uni bénéficie d'une décision d'adéquation de la Commission européenne, qui reconnaît un niveau de protection des données équivalent à celui de l'Union européenne."
+        "a": "Votre coffre, c'est-à-dire vos comptes, vos documents, vos consignes et vos personnes de confiance, est stocké à Londres, au Royaume-Uni, sur l'infrastructure de Supabase, et n'en sort pas. Quelques services d'appui fonctionnent aux États-Unis : Vercel sert le site et exécute notre code, Resend envoie nos e-mails, Sentry reçoit les rapports d'erreur et Anthropic fait fonctionner les fonctions d'assistance. Chacun est lié par des clauses contractuelles types et ne voit que ce dont il a besoin. La liste complète, avec ce que chacun reçoit, figure sur notre page Sous-traitants."
+      },
+      {
+        "q": "Que peuvent voir mes personnes de confiance tout de suite, et qu'est-ce qui attend la vérification ?",
+        "a": "Tout de suite : ce que vous leur avez ouvert de votre vivant, par exemple un document partagé ou vos consignes d'urgence, que vous pouvez rendre accessibles dès le premier jour. Après vérification : tout ce que vous avez réglé pour s'ouvrir à votre décès, ainsi que les messages personnels scellés. C'est pourquoi nous conseillons de laisser ouvert, à l'avance, un petit dossier d'urgence pour votre personne la plus proche : les premières démarches (qui appeler, où se trouve le testament, vos volontés pour les obsèques) ne devraient pas attendre un acte de décès."
+      },
+      {
+        "q": "Et si le décès survient un week-end, ou à l'étranger ?",
+        "a": "Chaque signalement est examiné par une personne. « Deux jours ouvrés » est un délai maximal : un signalement fait un vendredi soir est en général confirmé le mardi suivant au plus tard. Nous acceptons un acte de décès de n'importe quel pays ; s'il n'est ni en anglais ni en français, nous pouvons demander une traduction certifiée."
+      },
+      {
+        "q": "Et si un signalement est contesté, ou semble erroné ?",
+        "a": "Un signalement n'ouvre jamais rien à lui seul. Notre équipe confronte les informations de l'acte aux données du compte ; si quelque chose ne concorde pas, ou si le titulaire du compte ou une autre personne de confiance conteste le signalement, rien ne s'ouvre tant que la situation n'est pas éclaircie. Chaque signalement et chaque décision figurent dans le journal d'audit."
+      },
+      {
+        "q": "Et en cas d'incapacité, plutôt que de décès ?",
+        "a": "Le même processus s'applique. Une personne de confiance signale la situation avec un justificatif (par exemple un certificat médical ou un mandat de protection future activé), nous vérifions, et seul l'accès que vous avez prévu pour ce cas s'ouvre."
+      },
+      {
+        "q": "Et si ma personne de confiance n'arrive plus à se connecter ?",
+        "a": "Son accès est lié à l'adresse e-mail que vous avez invitée. En cas de mot de passe oublié, elle le réinitialise comme n'importe quel membre ; si son adresse a changé, elle contacte le support avec un justificatif d'identité et nous renvoyons l'invitation à l'adresse que vous avez désignée. C'est une bonne raison de nommer plus d'une personne de confiance."
       },
       {
         "q": "Qu'advient-il de mes données si je résilie ?",

@@ -80,7 +80,7 @@
   "security": {
     "eyebrow": "Sécurité et confidentialité",
     "title": "Les normes de sécurité les plus strictes, et vous seul aux commandes.",
-    "desc": "Everstead repose sur un chiffrement AES-256, au repos comme en transit, et sur une infrastructure conforme au RGPD. Vos informations restent privées par défaut : seules les personnes que vous désignez y accèdent, sur les seuls éléments que vous ouvrez, au moment que vous jugez opportun. C'est votre coffre, et vous seul en tenez la clé.",
+    "desc": "Everstead repose sur un chiffrement AES-256, au repos comme en transit, et sur une infrastructure conforme au RGPD. Vos informations restent privées par défaut : seules les personnes que vous désignez y accèdent, sur les seuls éléments que vous ouvrez, au moment que vous jugez opportun. C'est votre coffre, et c'est vous qui décidez qui y entre.",
     "linkPractices": "Découvrir nos pratiques de sécurité",
     "linkPrivacy": "Notre politique de confidentialité",
     "features": [
