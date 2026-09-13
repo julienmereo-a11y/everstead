@@ -91,7 +91,7 @@
       "keep": "Tout ce qu'Anne a ajouté, au même endroit. Chaque élément porte sa propre règle d'accès, fixée par elle.",
       "partner": "Thomas, le mari d'Anne, voit déjà les éléments pratiques. Le reste attend, et Anne peut modifier chaque règle à tout moment.",
       "emergency": "Lorsqu'une personne de confiance signale un décès et qu'Everstead le vérifie, l'accès qu'Anne a choisi s'ouvre, et sa lettre scellée est remise.",
-      "private": "Certaines choses ne s'ouvrent jamais à personne. Et Everstead ne demande jamais de mot de passe : Anne note où se trouve son gestionnaire de mots de passe, pas ce qu'il contient."
+      "private": "Certaines choses ne s'ouvrent jamais à personne. Et Everstead ne demande jamais de mot de passe : Anne note où se trouve son gestionnaire de mots de passe, pas ce qu'il contient."
     },
     "categories": {
       "account": "Compte",
@@ -251,24 +251,24 @@
     "title": "Bon à savoir avant de commencer.",
     "items": [
       {
-        "q": "Que puis-je faire gratuitement ?",
+        "q": "Que puis-je faire gratuitement ?",
         "a": "Beaucoup de choses. Le forfait gratuit comprend le parcours guidé, votre profil « À propos de moi », 5 comptes ou biens, 5 documents, 3 personnes de confiance et un score de préparation. Il n'a pas de limite de durée et ne demande aucune carte bancaire. Everstead+ supprime les limites et ajoute un second coffre pour votre conjoint, les messages personnels et 25 Go de stockage."
       },
       {
-        "q": "Qui peut voir mes informations ?",
-        "a": "Vous seul, tant que vous n'en avez pas décidé autrement. Vous pouvez donner à votre conjoint, à un proche ou à un conseiller accès à certains éléments, personne par personne, et modifier ou retirer cet accès quand vous le souhaitez. Personne chez Everstead ne consulte votre coffre dans le fonctionnement normal du service ; notre page Sécurité explique précisément comment l'accès fonctionne."
+        "q": "Qui peut voir mes informations ?",
+        "a": "Vous seul, tant que vous n'en avez pas décidé autrement. Vous pouvez donner à votre conjoint, à un proche ou à un conseiller accès à certains éléments, personne par personne, et modifier ou retirer cet accès quand vous le souhaitez. Personne chez Everstead ne consulte votre coffre dans le fonctionnement normal du service ; notre page Sécurité explique précisément comment l'accès fonctionne."
       },
       {
-        "q": "Que se passe-t-il quand mes proches ont besoin d'accéder à mon coffre ?",
+        "q": "Que se passe-t-il quand mes proches ont besoin d'accéder à mon coffre ?",
         "a": "Ce que vous avez déjà partagé avec quelqu'un lui reste accessible. Pour tout ce que vous avez réservé à plus tard, une personne de confiance que vous avez désignée signale un décès ou une incapacité avec les justificatifs, une personne chez Everstead vérifie, généralement sous deux jours ouvrés, et c'est seulement alors que l'accès que vous avez choisi s'ouvre. Rien ne s'ouvre tout seul."
       },
       {
-        "q": "Puis-je exporter mes informations ?",
-        "a": "Oui, à tout moment et quel que soit votre forfait. Depuis les réglages, vous téléchargez une copie complète de votre coffre : comptes, documents et leurs fichiers, consignes, volontés et personnes de confiance, dans une seule archive ZIP."
+        "q": "Puis-je exporter mes informations ?",
+        "a": "Oui, à tout moment et quel que soit votre forfait. Depuis les réglages, vous téléchargez une copie complète de votre coffre : comptes, documents et leurs fichiers, consignes, volontés et personnes de confiance, dans une seule archive ZIP."
       },
       {
-        "q": "Everstead remplace-t-il un testament ?",
-        "a": "Non. Un testament est un acte juridique, et Everstead n'en rédige pas et ne donne aucun conseil juridique. Everstead sert à conserver les informations pratiques qui l'entourent : où se trouve l'original, qui appeler, ce que vous possédez et ce que vous souhaitez. Beaucoup l'utilisent en complément de leur notaire."
+        "q": "Everstead remplace-t-il un testament ?",
+        "a": "Non. Un testament est un acte juridique, et Everstead n'en rédige pas et ne donne aucun conseil juridique. Everstead sert à conserver les informations pratiques qui l'entourent : où se trouve l'original, qui appeler, ce que vous possédez et ce que vous souhaitez. Beaucoup l'utilisent en complément de leur notaire."
       }
     ]
   },
