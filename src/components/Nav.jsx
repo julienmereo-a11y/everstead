@@ -12,8 +12,8 @@ import LanguageSwitcher from './LanguageSwitcher'
 const navLinks = [
   { key: 'howItWorks',       href: '/how-it-works' },
   { key: 'pricing',          href: '/pricing' },
-  { key: 'forProfessionals', href: '/for-advisers' },
   { key: 'yourPrivacy',      href: '/security' },
+  { key: 'forProfessionals', href: '/for-advisers' },
 ]
 
 // The URL path is the language signal (/fr/* → French, root → English). The nav
