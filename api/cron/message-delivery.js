@@ -158,7 +158,7 @@ function messageLinkHtml(senderName, recipientName, viewUrl, lang) {
     <div style="background:#fff;border:1px solid #e7e5e4;border-top:0;border-radius:0 0 16px 16px;padding:28px;">
       <p style="margin:0 0 14px;font-size:15px;line-height:1.65;">${hi}</p>
       <p style="margin:0 0 22px;font-size:15px;line-height:1.65;color:#44403c;">${t('body', { name: escapeHtml(senderName) })}</p>
-      <a href="${viewUrl}" style="display:inline-block;background:linear-gradient(100deg,#2d5082 0%,#6f6bc6 50%,#6e9b6a 100%);color:#fff;font-weight:600;font-size:15px;text-decoration:none;padding:13px 26px;border-radius:9999px;">${t('cta')}</a>
+      <a href="${viewUrl}" style="display:inline-block;background:#2d5082;color:#fff;font-weight:600;font-size:15px;text-decoration:none;padding:13px 26px;border-radius:9999px;">${t('cta')}</a>
       <p style="margin:22px 0 0;font-size:12px;line-height:1.6;color:#a8a29e;">${t('note')}</p>
     </div>
   </div></body></html>`

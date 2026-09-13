@@ -161,7 +161,7 @@ function guideHtml(reporterName, ownerName) {
     <div style="background:#f5f8f4;border:1px solid #dfeadd;border-radius:12px;padding:18px 20px;margin:0 0 22px;">
       <p style="margin:0 0 10px;font-size:15px;line-height:1.6;color:#1c1917;"><strong>Your Everstead resources</strong></p>
       <p style="margin:0 0 14px;font-size:14px;line-height:1.6;color:#44403c;">A free step-by-step guide tailored to the UK, and a practical executor checklist:</p>
-      <a href="${BASE_URL}/what-to-do-when-someone-dies" style="display:inline-block;background:#2d5082;background:${AURORA};color:#fff;font-weight:600;font-size:14px;text-decoration:none;padding:11px 22px;border-radius:9999px;">Open the full guide</a>
+      <a href="${BASE_URL}/what-to-do-when-someone-dies" style="display:inline-block;background:#2d5082;color:#fff;font-weight:600;font-size:14px;text-decoration:none;padding:11px 22px;border-radius:9999px;">Open the full guide</a>
       <p style="margin:12px 0 0;font-size:13px;line-height:1.6;color:#78716c;">Or the ${link(`${BASE_URL}/executor-checklist`, 'executor checklist')}.</p>
     </div>
 
@@ -199,7 +199,7 @@ function guideFrHtml(reporterName, ownerName) {
     <div style="background:#f5f8f4;border:1px solid #dfeadd;border-radius:12px;padding:18px 20px;margin:0 0 22px;">
       <p style="margin:0 0 10px;font-size:15px;line-height:1.6;color:#1c1917;"><strong>Votre guide Everstead</strong></p>
       <p style="margin:0 0 14px;font-size:14px;line-height:1.6;color:#44403c;">Un guide gratuit, pas à pas, pensé pour les démarches françaises :</p>
-      <a href="${BASE_URL}/fr/apres-un-deces" style="display:inline-block;background:#2d5082;background:${AURORA};color:#fff;font-weight:600;font-size:14px;text-decoration:none;padding:11px 22px;border-radius:9999px;">Ouvrir le guide complet</a>
+      <a href="${BASE_URL}/fr/apres-un-deces" style="display:inline-block;background:#2d5082;color:#fff;font-weight:600;font-size:14px;text-decoration:none;padding:11px 22px;border-radius:9999px;">Ouvrir le guide complet</a>
     </div>
 
     <p style="margin:0 0 6px;font-size:13px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:#2d5082;">Prendre soin de vous</p>

@@ -3,6 +3,7 @@ import { requireAdmin, adminDb } from '../_lib/admin-auth.js'
 import { withSentry, captureException } from '../_lib/sentry.js'
 import { translator, languageForUser, pickLang, DEFAULT_LANG } from '../_lib/email-i18n.js'
 import { planLabel } from '../_lib/plan-label.js'
+import { sendEmail, APP_URL } from '../_lib/email-send.js'
 
 const resend = new Resend(process.env.RESEND_API_KEY)
 
@@ -101,11 +102,12 @@ async function handler(req, res) {
       // Recipient is the new account holder, so their own profiles.language decides.
       const lang = await languageForUser(adminDb, { email })
       const t = translator(COPY, lang)
-      await resend.emails.send({
-        from:    'Everstead <hello@everstead.care>',
-        to:      email,
-        subject: t('welcomeSubject'),
-        html:    welcomeHtml(name, plan, lang),
+      await sendEmail(resend, {
+        from:      'Everstead <hello@everstead.care>',
+        to:        email,
+        subject:   t('welcomeSubject'),
+        preheader: t('welcomePreheader'),
+        html:      welcomeHtml(name, plan, lang),
       })
 
     } else if (type === 'invite-accepted') {
@@ -238,8 +240,9 @@ const COPY = {
     // welcome
     welcomeSubject:       'Welcome to Everstead',
     welcomeH1:            'Welcome, {{name}}',
-    welcomeIntroFree:     "Thank you for joining Everstead. You're on the <strong>{{plan}}</strong> plan (free forever, with no card required.",
-    welcomeIntroTrial:    "Thank you for joining Everstead. You're on the <strong>{{plan}}</strong> plan) your 14-day free trial starts now.",
+    welcomeIntroFree:     "Thank you for joining Everstead. You're on the <strong>{{plan}}</strong> plan, free forever, with no card required.",
+    welcomeIntroTrial:    "Thank you for joining Everstead. You're on the <strong>{{plan}}</strong> plan. Your 14-day free trial starts now.",
+    welcomePreheader:     'Your vault is ready. The first thing to add takes two minutes.',
     welcomeBody1:         'Everstead helps you organise everything your family needs to know (accounts, documents, contacts, and instructions) all in one secure, private place.',
     welcomeBody2:         'Start by adding your first account or uploading an important document.',
     welcomeCta:           'Go to your dashboard →',
@@ -315,6 +318,7 @@ const COPY = {
     welcomeBody1:         'Everstead vous aide à réunir tout ce que vos proches doivent savoir (comptes, documents, contacts et consignes) en un seul endroit sécurisé et privé.',
     welcomeBody2:         'Commencez par ajouter un premier compte ou déposer un document important.',
     welcomeCta:           'Accéder à mon tableau de bord →',
+    welcomePreheader:     'Votre coffre est prêt. Le premier ajout prend deux minutes.',
 
     // invite accepted (to the vault owner)
     acceptedSubject:      '{{name}} a accepté votre invitation',
@@ -385,7 +389,7 @@ function welcomeHtml(name, plan, lang) {
   <table width="100%" cellpadding="0" cellspacing="0" style="background:#f5f4f0;padding:40px 0;">
     <tr><td align="center">
       <table width="560" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:12px;overflow:hidden;max-width:560px;width:100%;">
-        <tr><td style="background:#2d5082;background:linear-gradient(100deg,#2d5082 0%,#6f6bc6 50%,#6e9b6a 100%);padding:28px 40px;text-align:center;">
+        <tr><td style="background:#0d1628;padding:28px 40px;text-align:center;">
           <img src="https://www.everstead.care/logo-v2-white.png" alt="Everstead" width="160" style="display:block;margin:0 auto;height:auto;max-width:160px;" />
         </td></tr>
         <tr><td style="padding:40px;">
@@ -393,7 +397,7 @@ function welcomeHtml(name, plan, lang) {
           <p style="margin:0 0 16px;color:#4a5568;font-size:16px;line-height:1.6;">${isFree ? t('welcomeIntroFree', { plan: planName }) : t('welcomeIntroTrial', { plan: planName })}</p>
           <p style="margin:0 0 16px;color:#4a5568;font-size:16px;line-height:1.6;">${t('welcomeBody1')}</p>
           <p style="margin:0 0 32px;color:#4a5568;font-size:16px;line-height:1.6;">${t('welcomeBody2')}</p>
-          <a href="${process.env.VITE_APP_URL}/dashboard" style="display:inline-block;background:#2d5082;background:linear-gradient(100deg,#2d5082 0%,#6f6bc6 50%,#6e9b6a 100%);color:#ffffff;text-decoration:none;padding:14px 28px;border-radius:9999px;font-size:15px;">${t('welcomeCta')}</a>
+          <a href="${APP_URL}/dashboard" style="display:inline-block;background:#2d5082;color:#ffffff;text-decoration:none;padding:14px 28px;border-radius:9999px;font-size:15px;">${t('welcomeCta')}</a>
         </td></tr>
         <tr><td style="padding:24px 40px;border-top:1px solid #e8e5e0;">
           <p style="margin:0;color:#9ca3af;font-size:13px;line-height:1.5;">${t('needHelp')} <a href="mailto:support@everstead.care" style="color:#4c7d47;">support@everstead.care</a></p>
@@ -415,7 +419,7 @@ function inviteAcceptedHtml(ownerName, inviteeName, role, lang) {
   <table width="100%" cellpadding="0" cellspacing="0" style="background:#f5f4f0;padding:40px 0;">
     <tr><td align="center">
       <table width="560" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:12px;overflow:hidden;max-width:560px;width:100%;">
-        <tr><td style="background:#2d5082;background:linear-gradient(100deg,#2d5082 0%,#6f6bc6 50%,#6e9b6a 100%);padding:32px 40px;text-align:center;">
+        <tr><td style="background:#0d1628;padding:32px 40px;text-align:center;">
           <img src="https://www.everstead.care/logo-v2-white.png" alt="Everstead" width="160" style="display:block;margin:0 auto;height:auto;max-width:160px;" />
         </td></tr>
         <tr><td style="padding:40px;">
@@ -426,7 +430,7 @@ function inviteAcceptedHtml(ownerName, inviteeName, role, lang) {
             role:    role ? ` (${role})` : '',
           })}</p>
           <p style="margin:0 0 32px;color:#4a5568;font-size:16px;line-height:1.6;">${t('acceptedBody2')}</p>
-          <a href="${process.env.VITE_APP_URL}/dashboard" style="display:inline-block;background:#2d5082;background:linear-gradient(100deg,#2d5082 0%,#6f6bc6 50%,#6e9b6a 100%);color:#ffffff;text-decoration:none;padding:14px 28px;border-radius:9999px;font-size:15px;">${t('acceptedCta')}</a>
+          <a href="${APP_URL}/dashboard" style="display:inline-block;background:#2d5082;color:#ffffff;text-decoration:none;padding:14px 28px;border-radius:9999px;font-size:15px;">${t('acceptedCta')}</a>
         </td></tr>
         <tr><td style="padding:24px 40px;border-top:1px solid #e8e5e0;">
           <p style="margin:0;color:#9ca3af;font-size:13px;line-height:1.5;">${t('questions')} <a href="mailto:support@everstead.care" style="color:#4c7d47;">support@everstead.care</a></p>
@@ -448,7 +452,7 @@ function adminInviteHtml(email, inviteUrl) {
   <table width="100%" cellpadding="0" cellspacing="0" style="background:#0d1628;padding:48px 16px;">
     <tr><td align="center">
       <table width="560" cellpadding="0" cellspacing="0" style="background:#141f38;border:1px solid #1e2d4a;border-radius:12px;overflow:hidden;max-width:560px;width:100%;">
-        <tr><td style="background:#2d5082;background:linear-gradient(100deg,#2d5082 0%,#6f6bc6 50%,#6e9b6a 100%);padding:28px 40px;text-align:center;border-bottom:1px solid #1e2d4a;">
+        <tr><td style="background:#0d1628;padding:28px 40px;text-align:center;border-bottom:1px solid #1e2d4a;">
           <img src="https://www.everstead.care/logo-v2-white.png" alt="Everstead" width="160" style="display:block;margin:0 auto;height:auto;max-width:160px;" />
         </td></tr>
         <tr><td style="padding:44px 40px 36px;">
@@ -456,7 +460,7 @@ function adminInviteHtml(email, inviteUrl) {
           <h1 style="margin:0 0 20px;color:#ffffff;font-size:26px;font-weight:normal;line-height:1.3;">You've been invited to the Everstead admin team</h1>
           <p style="margin:0 0 20px;color:#8a9ab5;font-size:15px;line-height:1.7;">Hi ${email},<br><br>You've been granted admin access to the Everstead internal panel. Click below to set up your account, the link is unique to you and expires after use.</p>
           <table cellpadding="0" cellspacing="0" style="margin:0 0 32px;">
-            <tr><td style="background:#2d5082;background:linear-gradient(100deg,#2d5082 0%,#6f6bc6 50%,#6e9b6a 100%);border-radius:9999px;">
+            <tr><td style="background:#2d5082;border-radius:9999px;">
               <a href="${inviteUrl}" style="display:inline-block;padding:14px 32px;color:#ffffff;text-decoration:none;font-size:15px;">Set up admin account →</a>
             </td></tr>
           </table>
@@ -476,8 +480,8 @@ function inviteHtml(inviteeName, ownerName, role, inviteToken, lang) {
   const t = translator(COPY, lang)
   inviteeName = esc(inviteeName); ownerName = esc(ownerName); role = esc(role)
   const signupUrl = inviteToken
-    ? `${process.env.VITE_APP_URL}/accept-invite?token=${inviteToken}`
-    : `${process.env.VITE_APP_URL}/accept-invite`
+    ? `${APP_URL}/accept-invite?token=${inviteToken}`
+    : `${APP_URL}/accept-invite`
   return `<!DOCTYPE html>
 <html>
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
@@ -485,7 +489,7 @@ function inviteHtml(inviteeName, ownerName, role, inviteToken, lang) {
   <table width="100%" cellpadding="0" cellspacing="0" style="background:#f5f4f0;padding:48px 16px;">
     <tr><td align="center">
       <table width="560" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:12px;overflow:hidden;max-width:560px;width:100%;">
-        <tr><td style="background:#2d5082;background:linear-gradient(100deg,#2d5082 0%,#6f6bc6 50%,#6e9b6a 100%);padding:28px 40px;text-align:center;">
+        <tr><td style="background:#0d1628;padding:28px 40px;text-align:center;">
           <img src="https://www.everstead.care/logo-v2-white.png" alt="Everstead" width="160" style="display:block;margin:0 auto;height:auto;max-width:160px;" />
         </td></tr>
         <tr><td style="padding:44px 40px 36px;">
@@ -498,7 +502,7 @@ function inviteHtml(inviteeName, ownerName, role, inviteToken, lang) {
           </p>
           <p style="margin:0 0 32px;color:#5a6475;font-size:15px;line-height:1.7;">${t('inviteBody2')}</p>
           <table cellpadding="0" cellspacing="0" style="margin:0 0 32px;">
-            <tr><td style="background:#2d5082;background:linear-gradient(100deg,#2d5082 0%,#6f6bc6 50%,#6e9b6a 100%);border-radius:9999px;">
+            <tr><td style="background:#2d5082;border-radius:9999px;">
               <a href="${signupUrl}" style="display:inline-block;padding:14px 32px;color:#ffffff;text-decoration:none;font-size:15px;">${t('inviteCta')}</a>
             </td></tr>
           </table>
@@ -556,7 +560,7 @@ function toolReportHtml(name, score, answers, lang) {
   <table width="100%" cellpadding="0" cellspacing="0" style="background:#f5f4f0;padding:40px 0;">
     <tr><td align="center">
       <table width="560" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:12px;overflow:hidden;max-width:560px;width:100%;">
-        <tr><td style="background:#2d5082;background:linear-gradient(100deg,#2d5082 0%,#6f6bc6 50%,#6e9b6a 100%);padding:28px 40px;text-align:center;">
+        <tr><td style="background:#0d1628;padding:28px 40px;text-align:center;">
           <img src="https://www.everstead.care/logo-v2-white.png" alt="Everstead" width="160" style="display:block;margin:0 auto;height:auto;max-width:160px;" />
         </td></tr>
         <tr><td style="padding:40px;">
@@ -579,7 +583,7 @@ function toolReportHtml(name, score, answers, lang) {
           </div>`}
           <div style="margin:32px 0 0;text-align:center;">
             <p style="margin:0 0 16px;color:#4a5568;font-size:15px;line-height:1.6;">${t('toolOutro')}</p>
-            <a href="${appUrl}/get-started" style="display:inline-block;background:#2d5082;background:linear-gradient(100deg,#2d5082 0%,#6f6bc6 50%,#6e9b6a 100%);color:#ffffff;text-decoration:none;padding:14px 28px;border-radius:9999px;font-size:15px;">${t('toolCta')}</a>
+            <a href="${appUrl}/get-started" style="display:inline-block;background:#2d5082;color:#ffffff;text-decoration:none;padding:14px 28px;border-radius:9999px;font-size:15px;">${t('toolCta')}</a>
           </div>
         </td></tr>
         <tr><td style="padding:24px 40px;border-top:1px solid #e8e5e0;">
@@ -601,7 +605,7 @@ function infoRequestHtml(reporterName, ownerName, message, lang) {
   <table width="100%" cellpadding="0" cellspacing="0" style="background:#f5f4f0;padding:40px 0;">
     <tr><td align="center">
       <table width="560" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:12px;overflow:hidden;max-width:560px;width:100%;">
-        <tr><td style="background:#2d5082;background:linear-gradient(100deg,#2d5082 0%,#6f6bc6 50%,#6e9b6a 100%);padding:28px 40px;text-align:center;">
+        <tr><td style="background:#0d1628;padding:28px 40px;text-align:center;">
           <img src="https://www.everstead.care/logo-v2-white.png" alt="Everstead" width="160" style="display:block;margin:0 auto;height:auto;max-width:160px;" />
         </td></tr>
         <tr><td style="padding:40px;">
@@ -637,7 +641,7 @@ function adminDirectHtml(toName, subject, message, lang) {
   <table width="100%" cellpadding="0" cellspacing="0" style="background:#f5f4f0;padding:40px 0;">
     <tr><td align="center">
       <table width="560" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:12px;overflow:hidden;max-width:560px;width:100%;">
-        <tr><td style="background:#2d5082;background:linear-gradient(100deg,#2d5082 0%,#6f6bc6 50%,#6e9b6a 100%);padding:28px 40px;text-align:center;">
+        <tr><td style="background:#0d1628;padding:28px 40px;text-align:center;">
           <img src="https://www.everstead.care/logo-v2-white.png" alt="Everstead" width="160" style="display:block;margin:0 auto;height:auto;max-width:160px;" />
         </td></tr>
         <tr><td style="padding:40px;">
@@ -674,7 +678,7 @@ function ownerRegistrationHtml({ name, email, plan, billingCycle }) {
   <table width="100%" cellpadding="0" cellspacing="0" style="background:#f5f4f0;padding:40px 0;">
     <tr><td align="center">
       <table width="560" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:12px;overflow:hidden;max-width:560px;width:100%;">
-        <tr><td style="background:#2d5082;background:linear-gradient(100deg,#2d5082 0%,#6f6bc6 50%,#6e9b6a 100%);padding:28px 40px;">
+        <tr><td style="background:#0d1628;padding:28px 40px;">
           <img src="https://www.everstead.care/logo-v2-white.png" alt="Everstead" width="140" style="display:block;height:auto;" />
         </td></tr>
         <tr><td style="padding:36px 40px 28px;">
@@ -691,7 +695,7 @@ function ownerRegistrationHtml({ name, email, plan, billingCycle }) {
             ${row('Registered', signedUpAt)}
           </table>
           <div style="margin-top:28px;">
-            <a href="${process.env.VITE_APP_URL}/admin" style="display:inline-block;background:#2d5082;background:linear-gradient(100deg,#2d5082 0%,#6f6bc6 50%,#6e9b6a 100%);color:#ffffff;text-decoration:none;padding:12px 24px;border-radius:9999px;font-size:14px;">View in admin panel →</a>
+            <a href="${APP_URL}/admin" style="display:inline-block;background:#2d5082;color:#ffffff;text-decoration:none;padding:12px 24px;border-radius:9999px;font-size:14px;">View in admin panel →</a>
           </div>
         </td></tr>
         <tr><td style="padding:20px 40px;border-top:1px solid #e8e5e0;">

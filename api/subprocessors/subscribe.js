@@ -130,7 +130,7 @@ function confirmationHtml(unsubLink, lang) {
 <head><meta charset="utf-8"></head>
 <body style="margin:0;padding:32px;background:#f9fafb;font-family:system-ui,-apple-system,'Segoe UI',sans-serif;color:#1f2937;">
   <table style="max-width:560px;margin:0 auto;background:#ffffff;border-radius:12px;border:1px solid #e5e7eb;overflow:hidden;">
-    <tr><td style="background:#2d5082;background:linear-gradient(100deg,#2d5082 0%,#6f6bc6 50%,#6e9b6a 100%);padding:24px;">
+    <tr><td style="background:#2d5082;padding:24px;">
       <img src="https://www.everstead.care/logo-v2-white.png" alt="Everstead" width="140" style="display:block;height:auto;" /><p style="margin:10px 0 0;color:#ffffff;font-size:13px;opacity:.8;letter-spacing:.04em;">${t('eyebrow')}</p>
     </td></tr>
     <tr><td style="padding:28px 24px;">

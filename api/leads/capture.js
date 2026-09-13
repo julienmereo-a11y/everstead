@@ -1,6 +1,7 @@
 import { createClient } from '@supabase/supabase-js'
 import { Resend } from 'resend'
 import { withSentry, captureException } from '../_lib/sentry.js'
+import { sendEmail } from '../_lib/email-send.js'
 
 const supabase = createClient(
   process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL,
@@ -104,11 +105,12 @@ async function handler(req, res) {
     const unsubLink = unsubscribeToken
       ? `${APP_URL}/api/leads/unsubscribe?token=${unsubscribeToken}`
       : `${APP_URL}/api/leads/unsubscribe`
-    await resend.emails.send({
-      from:    'Everstead <hello@everstead.care>',
-      to:      normalised,
-      subject: lang === 'fr' && subjectFr ? subjectFr : subject,
-      html:    render({ name: cleanName, metadata: metadata || {}, unsubLink, lang }),
+    await sendEmail(resend, {
+      from:     'Everstead <hello@everstead.care>',
+      to:       normalised,
+      subject:  lang === 'fr' && subjectFr ? subjectFr : subject,
+      html:     render({ name: cleanName, metadata: metadata || {}, unsubLink, lang }),
+      unsubUrl: unsubscribeToken ? unsubLink : null,
     })
   } catch (err) {
     console.error('[leads/capture] email send error:', err)
@@ -139,7 +141,7 @@ function shell({ heading, body, footerNote, unsubLink, lang = 'en' }) {
   <table width="100%" cellpadding="0" cellspacing="0" style="background:#f5f4f0;padding:40px 0;">
     <tr><td align="center">
       <table width="600" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:12px;overflow:hidden;max-width:600px;width:100%;">
-        <tr><td style="background:#2d5082;background:linear-gradient(100deg,#2d5082 0%,#6f6bc6 50%,#6e9b6a 100%);padding:28px 40px;text-align:center;">
+        <tr><td style="background:#0d1628;padding:28px 40px;text-align:center;">
           <img src="${APP_URL}/logo-v2-white.png" alt="Everstead" width="160" style="display:block;margin:0 auto;height:auto;max-width:160px;" />
         </td></tr>
         <tr><td style="padding:40px;">
@@ -147,7 +149,7 @@ function shell({ heading, body, footerNote, unsubLink, lang = 'en' }) {
           ${body}
           <div style="margin:36px 0 0;text-align:center;border-top:1px solid #e8e5e0;padding-top:28px;">
             <p style="margin:0 0 16px;color:#4a5568;font-size:15px;line-height:1.6;">${pitch}</p>
-            <a href="${ctaHref}" style="display:inline-block;background:#2d5082;background:linear-gradient(100deg,#2d5082 0%,#6f6bc6 50%,#6e9b6a 100%);color:#ffffff;text-decoration:none;padding:14px 28px;border-radius:9999px;font-size:15px;">${ctaLabel}</a>
+            <a href="${ctaHref}" style="display:inline-block;background:#2d5082;color:#ffffff;text-decoration:none;padding:14px 28px;border-radius:9999px;font-size:15px;">${ctaLabel}</a>
             <p style="margin:14px 0 0;color:#9ca3af;font-size:13px;">${ctaNote}</p>
           </div>
         </td></tr>
@@ -328,7 +330,7 @@ function adviserShell({ heading, body, footerNote, unsubLink }) {
   <table width="100%" cellpadding="0" cellspacing="0" style="background:#f5f4f0;padding:40px 0;">
     <tr><td align="center">
       <table width="640" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:12px;overflow:hidden;max-width:640px;width:100%;">
-        <tr><td style="background:#2d5082;background:linear-gradient(100deg,#2d5082 0%,#6f6bc6 50%,#6e9b6a 100%);padding:28px 40px;text-align:center;">
+        <tr><td style="background:#0d1628;padding:28px 40px;text-align:center;">
           <img src="${APP_URL}/logo-v2-white.png" alt="Everstead" width="160" style="display:block;margin:0 auto;height:auto;max-width:160px;" />
           <p style="margin:14px 0 0;color:#9ca3af;font-size:12px;text-transform:uppercase;letter-spacing:0.15em;">For advisers</p>
         </td></tr>
@@ -338,7 +340,7 @@ function adviserShell({ heading, body, footerNote, unsubLink }) {
           <div style="margin:40px 0 0;background:#f9f8f6;border-radius:12px;padding:24px;border-left:3px solid #4c7d47;">
             <p style="margin:0 0 8px;color:#4c7d47;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;">About Everstead for advisers</p>
             <p style="margin:0 0 14px;color:#4a5568;font-size:14px;line-height:1.7;">A co-branded client vault that turns estate organisation into a structured service offering. Multi-client workspace, readiness tracking, and a portal your clients open between meetings. We're working personally with our first adviser firms, early access.</p>
-            <a href="${APP_URL}/book-demo" style="display:inline-block;background:#2d5082;background:linear-gradient(100deg,#2d5082 0%,#6f6bc6 50%,#6e9b6a 100%);color:#ffffff;text-decoration:none;padding:12px 24px;border-radius:9999px;font-size:14px;">Book a 20-minute call →</a>
+            <a href="${APP_URL}/book-demo" style="display:inline-block;background:#2d5082;color:#ffffff;text-decoration:none;padding:12px 24px;border-radius:9999px;font-size:14px;">Book a 20-minute call →</a>
           </div>
         </td></tr>
         <tr><td style="padding:20px 40px;background:#f9f8f6;border-top:1px solid #e8e5e0;">

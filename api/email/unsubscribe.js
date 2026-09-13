@@ -30,10 +30,13 @@ async function handler(req, res) {
     return res.status(400).send(page('Invalid link', 'This unsubscribe link appears to be malformed.'))
   }
 
-  const { error } = await supabase
+  const { data: row, error } = await supabase
     .from('profiles')
     .update({ marketing_emails_enabled: false })
     .eq('id', userId)
+    .select('language')
+    .maybeSingle()
+  const fr = String(row?.language || '').slice(0, 2).toLowerCase() === 'fr'
 
   if (error) {
     console.error('unsubscribe error:', error)
@@ -41,15 +44,22 @@ async function handler(req, res) {
   }
 
   res.setHeader('Content-Type', 'text/html')
-  return res.status(200).send(page(
-    'You\'ve been unsubscribed',
-    'You won\'t receive marketing emails from Everstead any more. You\'ll still receive emails about your account, such as payment confirmations and trial reminders.'
-  ))
+  return res.status(200).send(fr
+    ? page(
+        'Vous êtes désabonné',
+        "Vous ne recevrez plus d'e-mails marketing d'Everstead. Vous continuerez à recevoir les e-mails liés à votre compte, comme les confirmations de paiement et les rappels de fin d'essai.",
+        'fr'
+      )
+    : page(
+        'You\'ve been unsubscribed',
+        'You won\'t receive marketing emails from Everstead any more. You\'ll still receive emails about your account, such as payment confirmations and trial reminders.'
+      ))
 }
 
-function page(title, message) {
+function page(title, message, lang = 'en') {
+  const fr = lang === 'fr'
   return `<!DOCTYPE html>
-<html lang="en">
+<html lang="${lang}">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -63,11 +73,11 @@ function page(title, message) {
       <p style="margin:0 0 24px;color:#6b7280;font-size:15px;line-height:1.7;">${message}</p>
       <a href="https://www.everstead.care"
          style="display:inline-block;color:#0d1628;font-size:14px;text-decoration:none;border-bottom:1px solid #0d1628;padding-bottom:1px;">
-        Return to Everstead
+        ${fr ? 'Retour sur Everstead' : 'Return to Everstead'}
       </a>
     </div>
     <p style="margin:24px 0 0;color:#9ca3af;font-size:13px;">
-      Questions? <a href="mailto:hello@everstead.care" style="color:#4c7d47;">hello@everstead.care</a>
+      ${fr ? 'Une question\u00A0?' : 'Questions?'} <a href="mailto:hello@everstead.care" style="color:#4c7d47;">hello@everstead.care</a>
     </p>
   </div>
 </body>

@@ -10,7 +10,7 @@ const shell = (inner) => `<!DOCTYPE html>
   <table width="100%" cellpadding="0" cellspacing="0" style="background:#f5f4f0;padding:40px 0;">
     <tr><td align="center">
       <table width="560" cellpadding="0" cellspacing="0" style="background:#fff;border-radius:12px;overflow:hidden;max-width:560px;width:100%;">
-        <tr><td style="background:linear-gradient(100deg,#2d5082 0%,#6f6bc6 50%,#6e9b6a 100%);padding:28px 40px;text-align:center;">
+        <tr><td style="background:#0d1628;padding:28px 40px;text-align:center;">
           <img src="https://www.everstead.care/logo-v2-white.png" alt="Everstead" width="150" style="display:block;margin:0 auto;height:auto;max-width:150px;" />
         </td></tr>
         <tr><td style="padding:40px;">${inner}</td></tr>
@@ -23,7 +23,7 @@ const shell = (inner) => `<!DOCTYPE html>
 </body></html>`
 
 const button = (href, label) =>
-  `<a href="${href}" style="display:inline-block;background:linear-gradient(100deg,#2d5082 0%,#6f6bc6 50%,#6e9b6a 100%);color:#fff;text-decoration:none;padding:14px 28px;border-radius:9999px;font-size:15px;">${label}</a>`
+  `<a href="${href}" style="display:inline-block;background:#2d5082;color:#fff;text-decoration:none;padding:14px 28px;border-radius:9999px;font-size:15px;">${label}</a>`
 
 // Invite a brand-new adviser to set a password and access the portal.
 export async function sendAdviserInvite({ email, firmName, token }) {

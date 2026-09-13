@@ -734,7 +734,7 @@ function paymentConfirmedHtml(name, plan, isTrialing, periodEnd, trialDays = 14,
       ${isTrialing ? greet(t, 'pcH1Trial', name) : greet(t, 'pcH1Active', name)}
     </h1>
     <p style="margin:0 0 32px;color:#4a5568;font-size:16px;line-height:1.6;">${bodyText}</p>
-    <a href="${process.env.VITE_APP_URL}/dashboard" style="display:inline-block;background:#2d5082;background:linear-gradient(100deg,#2d5082 0%,#6f6bc6 50%,#6e9b6a 100%);color:#ffffff;text-decoration:none;padding:14px 28px;border-radius:9999px;font-size:15px;">${t('ctaDashboard')}</a>
+    <a href="${process.env.VITE_APP_URL}/dashboard" style="display:inline-block;background:#2d5082;color:#ffffff;text-decoration:none;padding:14px 28px;border-radius:9999px;font-size:15px;">${t('ctaDashboard')}</a>
   `, lang)
 }
 
@@ -751,7 +751,7 @@ function trialEndingReminderHtml(name, plan, endDate, lang) {
       ${t('trLine2a')}
       ${t('trLine2b')}
     </p>
-    <a href="${process.env.VITE_APP_URL}/dashboard" style="display:inline-block;background:#2d5082;background:linear-gradient(100deg,#2d5082 0%,#6f6bc6 50%,#6e9b6a 100%);color:#ffffff;text-decoration:none;padding:14px 28px;border-radius:9999px;font-size:15px;">${t('ctaDashboard')}</a>
+    <a href="${process.env.VITE_APP_URL}/dashboard" style="display:inline-block;background:#2d5082;color:#ffffff;text-decoration:none;padding:14px 28px;border-radius:9999px;font-size:15px;">${t('ctaDashboard')}</a>
   `, lang)
 }
 
@@ -778,7 +778,7 @@ function emailShell(body, lang) {
   <table width="100%" cellpadding="0" cellspacing="0" style="background:#f5f4f0;padding:40px 0;">
     <tr><td align="center">
       <table width="560" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:12px;overflow:hidden;max-width:560px;width:100%;">
-        <tr><td style="background:#2d5082;background:linear-gradient(100deg,#2d5082 0%,#6f6bc6 50%,#6e9b6a 100%);padding:28px 40px;text-align:center;">
+        <tr><td style="background:#0d1628;padding:28px 40px;text-align:center;">
           <img src="https://www.everstead.care/logo-v2-white.png" alt="Everstead" width="160" style="display:block;margin:0 auto;height:auto;max-width:160px;" />
         </td></tr>
         <tr><td style="padding:40px;">${body}</td></tr>
@@ -815,7 +815,7 @@ function ownerNewSignupHtml({ name, email, plan, billingCycle, isTrialing, trial
   <table width="100%" cellpadding="0" cellspacing="0" style="background:#f5f4f0;padding:40px 0;">
     <tr><td align="center">
       <table width="560" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:12px;overflow:hidden;max-width:560px;width:100%;">
-        <tr><td style="background:#2d5082;background:linear-gradient(100deg,#2d5082 0%,#6f6bc6 50%,#6e9b6a 100%);padding:28px 40px;">
+        <tr><td style="background:#0d1628;padding:28px 40px;">
           <img src="https://www.everstead.care/logo-v2-white.png" alt="Everstead" width="140" style="display:block;height:auto;" />
         </td></tr>
         <tr><td style="padding:36px 40px 28px;">
@@ -837,7 +837,7 @@ function ownerNewSignupHtml({ name, email, plan, billingCycle, isTrialing, trial
             ${row('Subscription', `<a href="https://dashboard.stripe.com/subscriptions/${subscriptionId}" style="color:#4c7d47;font-size:12px;">${subscriptionId}</a>`)}
           </table>
           <div style="margin-top:28px;">
-            <a href="${process.env.VITE_APP_URL}/admin" style="display:inline-block;background:#2d5082;background:linear-gradient(100deg,#2d5082 0%,#6f6bc6 50%,#6e9b6a 100%);color:#ffffff;text-decoration:none;padding:12px 24px;border-radius:9999px;font-size:14px;">View in admin panel →</a>
+            <a href="${process.env.VITE_APP_URL}/admin" style="display:inline-block;background:#2d5082;color:#ffffff;text-decoration:none;padding:12px 24px;border-radius:9999px;font-size:14px;">View in admin panel →</a>
           </div>
         </td></tr>
         <tr><td style="padding:20px 40px;border-top:1px solid #e8e5e0;">
@@ -879,7 +879,7 @@ function upgradeConfirmedHtml(name, lang) {
         <td style="padding:10px 0;color:#1a202c;font-size:14px;line-height:1.6;">${t('upFeature4')}</td>
       </tr>
     </table>
-    <a href="${APP_URL}/dashboard" style="display:inline-block;background:#2d5082;background:linear-gradient(100deg,#2d5082 0%,#6f6bc6 50%,#6e9b6a 100%);color:#ffffff;text-decoration:none;padding:14px 28px;border-radius:9999px;font-size:15px;">${t('ctaVault')}</a>
+    <a href="${APP_URL}/dashboard" style="display:inline-block;background:#2d5082;color:#ffffff;text-decoration:none;padding:14px 28px;border-radius:9999px;font-size:15px;">${t('ctaVault')}</a>
     <p style="margin:32px 0 0;color:#6b7280;font-size:14px;line-height:1.6;">${t('signOff')}</p>
   `, lang)
 }
@@ -898,7 +898,7 @@ function referralConversionHtml(referrerName, newMemberName, lang) {
     <p style="margin:0 0 32px;color:#4a5568;font-size:16px;line-height:1.7;">
       ${t('refLine2')}
     </p>
-    <a href="${APP_URL}/dashboard" style="display:inline-block;background:#2d5082;background:linear-gradient(100deg,#2d5082 0%,#6f6bc6 50%,#6e9b6a 100%);color:#ffffff;text-decoration:none;padding:14px 28px;border-radius:9999px;font-size:15px;">${t('refCta')}</a>
+    <a href="${APP_URL}/dashboard" style="display:inline-block;background:#2d5082;color:#ffffff;text-decoration:none;padding:14px 28px;border-radius:9999px;font-size:15px;">${t('refCta')}</a>
     <p style="margin:32px 0 0;color:#6b7280;font-size:14px;line-height:1.6;">${t('signOff')}</p>
   `, lang)
 }
@@ -932,7 +932,7 @@ function renewalReceiptHtml(name, plan, billingCycle, amountPaid, currency, next
         <td style="padding:16px 20px;color:#0d1628;font-size:14px;font-weight:600;text-align:right;">${nextRenewalDate}</td>
       </tr>` : ''}
     </table>
-    <a href="${APP_URL}/dashboard" style="display:inline-block;background:#2d5082;background:linear-gradient(100deg,#2d5082 0%,#6f6bc6 50%,#6e9b6a 100%);color:#ffffff;text-decoration:none;padding:14px 28px;border-radius:9999px;font-size:15px;">${t('ctaVault')}</a>
+    <a href="${APP_URL}/dashboard" style="display:inline-block;background:#2d5082;color:#ffffff;text-decoration:none;padding:14px 28px;border-radius:9999px;font-size:15px;">${t('ctaVault')}</a>
     <p style="margin:32px 0 0;color:#6b7280;font-size:14px;line-height:1.6;">
       ${t('rrFooter')}
     </p>
@@ -950,7 +950,7 @@ function cancellationWinbackHtml(name, lang) {
   <table width="100%" cellpadding="0" cellspacing="0" style="background:#f5f4f0;padding:40px 0;">
     <tr><td align="center">
       <table width="560" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:12px;overflow:hidden;max-width:560px;width:100%;">
-        <tr><td style="background:#2d5082;background:linear-gradient(100deg,#2d5082 0%,#6f6bc6 50%,#6e9b6a 100%);padding:28px 40px;text-align:center;">
+        <tr><td style="background:#0d1628;padding:28px 40px;text-align:center;">
           <img src="https://www.everstead.care/logo-v2-white.png" alt="Everstead" width="160" style="display:block;margin:0 auto;height:auto;max-width:160px;" />
         </td></tr>
         <tr><td style="padding:40px;">
@@ -983,7 +983,7 @@ function cancellationWinbackHtml(name, lang) {
             ${t('wbLine3')}
           </p>
           <a href="${APP_URL}/get-started"
-             style="display:inline-block;background:#2d5082;background:linear-gradient(100deg,#2d5082 0%,#6f6bc6 50%,#6e9b6a 100%);color:#ffffff;text-decoration:none;padding:14px 28px;border-radius:9999px;font-size:15px;margin-bottom:32px;">
+             style="display:inline-block;background:#2d5082;color:#ffffff;text-decoration:none;padding:14px 28px;border-radius:9999px;font-size:15px;margin-bottom:32px;">
             ${t('wbCta')}
           </a>
           <p style="margin:0;color:#6b7280;font-size:14px;line-height:1.6;">

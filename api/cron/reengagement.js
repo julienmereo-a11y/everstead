@@ -3,6 +3,7 @@ import { Resend } from 'resend'
 import { withSentry, captureException } from '../_lib/sentry.js'
 import { planLabel } from '../_lib/plan-label.js'
 import { translator } from '../_lib/email-i18n.js'
+import { sendEmail, unsubscribeUrl, companyLine } from '../_lib/email-send.js'
 
 const supabase = createClient(
   process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL,
@@ -16,7 +17,8 @@ const APP_URL = process.env.VITE_APP_URL || 'https://www.everstead.care'
 // Fires weekly (Mondays 10:00 UTC via vercel.json cron).
 // Targets users who:
 //   - Completed checkout (have a stripe_subscription_id)
-//   - Are 7+ days into their trial
+//   - Are past the onboarding sequence (16+ days old), so this never lands in
+//     the same week as the day-9 recovery email or the day-15 check-in
 //   - Have a low readiness score: fewer than 2 of the 3 core actions done
 //     (add an account, invite a trusted contact, upload a document)
 //   - Have not yet received a re-engagement nudge (or it was sent 14+ days ago)
@@ -35,7 +37,7 @@ async function handler(req, res) {
   }
 
   const now               = new Date()
-  const sevenDaysAgo      = new Date(now.getTime() - 7  * 86_400_000).toISOString()
+  const sixteenDaysAgo    = new Date(now.getTime() - 16 * 86_400_000).toISOString()
   const fourteenDaysAgo   = new Date(now.getTime() - 14 * 86_400_000).toISOString()
 
   // Fetch candidates: free-tier users (no subscription) plus trialing/active paid
@@ -49,7 +51,7 @@ async function handler(req, res) {
     .or('subscription_status.in.(trialing,active),plan.eq.free')
     .neq('role', 'delegate')
     .not('email', 'is', null)
-    .lte('created_at', sevenDaysAgo)
+    .lte('created_at', sixteenDaysAgo)
     .or(`reengagement_nudge_sent_at.is.null,reengagement_nudge_sent_at.lte.${fourteenDaysAgo}`)
     .neq('notify_reengagement', false)
     .neq('marketing_emails_enabled', false) // respect unsubscribe
@@ -93,11 +95,13 @@ async function handler(req, res) {
         !hasDocuments && 'documents',
       ].filter(Boolean)
 
-      await resend.emails.send({
-        from:    'Everstead <hello@everstead.care>',
-        to:      user.email,
-        subject: nudgeSubject(missing, user.language),
-        html:    nudgeHtml(user.full_name, user.plan, hasAccounts, hasContacts, hasDocuments, user.id, user.language),
+      await sendEmail(resend, {
+        from:      'Everstead <hello@everstead.care>',
+        to:        user.email,
+        subject:   nudgeSubject(missing, user.language),
+        html:      nudgeHtml(user.full_name, user.plan, hasAccounts, hasContacts, hasDocuments, user.id, user.language),
+        preheader: translator(COPY, user.language)('preheader'),
+        unsubUrl:  unsubscribeUrl(user.id),
       })
 
       await supabase
@@ -128,6 +132,7 @@ const COPY = {
     subjectContacts: 'One thing missing from your Everstead plan',
     subjectAccounts: "Your financial accounts aren't in Everstead yet",
     subjectAlmost:   'Your estate plan is almost complete',
+    preheader:       'A short checklist of what is still missing, and one click to finish it.',
 
     fallbackName: 'there',
     h1:           '{{name}}, your plan is almost ready.',
@@ -150,6 +155,7 @@ const COPY = {
     subjectContacts: 'Il manque une chose à votre plan Everstead',
     subjectAccounts: 'Vos comptes financiers ne sont pas encore dans Everstead',
     subjectAlmost:   'Votre plan de succession est presque complet',
+    preheader:       'La courte liste de ce qui manque encore, et un clic pour terminer.',
 
     fallbackName: 'Bonjour',
     h1:           '{{name}}, votre plan est presque prêt.',
@@ -205,7 +211,7 @@ function nudgeHtml(name, plan, hasAccounts, hasContacts, hasDocuments, userId, l
       label: hasAccounts
         ? t('accountsDone')
         : t('accountsTodo'),
-      href:  `${APP_URL}/dashboard`,
+      href:  `${APP_URL}/dashboard?tab=accounts`,
     },
     {
       done:  hasContacts,
@@ -213,7 +219,7 @@ function nudgeHtml(name, plan, hasAccounts, hasContacts, hasDocuments, userId, l
       label: hasContacts
         ? t('contactsDone')
         : t('contactsTodo'),
-      href:  `${APP_URL}/dashboard`,
+      href:  `${APP_URL}/dashboard?tab=people`,
     },
     {
       done:  hasDocuments,
@@ -221,7 +227,7 @@ function nudgeHtml(name, plan, hasAccounts, hasContacts, hasDocuments, userId, l
       label: hasDocuments
         ? t('documentsDone')
         : t('documentsTodo'),
-      href:  `${APP_URL}/dashboard`,
+      href:  `${APP_URL}/dashboard?tab=documents`,
     },
   ]
 
@@ -239,7 +245,7 @@ function nudgeHtml(name, plan, hasAccounts, hasContacts, hasDocuments, userId, l
   <table width="100%" cellpadding="0" cellspacing="0" style="background:#f5f4f0;padding:40px 0;">
     <tr><td align="center">
       <table width="560" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:12px;overflow:hidden;max-width:560px;width:100%;">
-        <tr><td style="background:#2d5082;background:linear-gradient(100deg,#2d5082 0%,#6f6bc6 50%,#6e9b6a 100%);padding:28px 40px;text-align:center;">
+        <tr><td style="background:#0d1628;padding:28px 40px;text-align:center;">
           <img src="https://www.everstead.care/logo-v2-white.png" alt="Everstead" width="160" style="display:block;margin:0 auto;height:auto;max-width:160px;" />
         </td></tr>
         <tr><td style="padding:40px;">
@@ -253,7 +259,7 @@ function nudgeHtml(name, plan, hasAccounts, hasContacts, hasDocuments, userId, l
             ${checklistRows}
           </table>
           <a href="${APP_URL}/dashboard"
-             style="display:inline-block;background:#2d5082;background:linear-gradient(100deg,#2d5082 0%,#6f6bc6 50%,#6e9b6a 100%);color:#ffffff;text-decoration:none;padding:14px 28px;border-radius:9999px;font-size:15px;">
+             style="display:inline-block;background:#2d5082;color:#ffffff;text-decoration:none;padding:14px 28px;border-radius:9999px;font-size:15px;">
             ${t('cta')}
           </a>
           <p style="margin:32px 0 0;color:#6b7280;font-size:14px;line-height:1.6;">
@@ -265,6 +271,7 @@ ${t('signature')}
             ${t('footerQuestions')} <a href="mailto:hello@everstead.care" style="color:#4c7d47;">hello@everstead.care</a>
             · <a href="${unsubUrl}" style="color:#9ca3af;">${t('footerUnsubscribe')}</a>
           </p>
+          <p style="margin:8px 0 0;color:#c2beb8;font-size:11px;line-height:1.5;">${companyLine(lang)}</p>
         </td></tr>
       </table>
     </td></tr>

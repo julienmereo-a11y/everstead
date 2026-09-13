@@ -1,6 +1,7 @@
 import { createClient } from '@supabase/supabase-js'
 import { Resend } from 'resend'
 import { withSentry, captureException } from '../_lib/sentry.js'
+import { sendEmail, unsubscribeUrl, companyLine } from '../_lib/email-send.js'
 import { translator } from '../_lib/email-i18n.js'
 
 const supabase = createClient(
@@ -33,6 +34,7 @@ async function handler(req, res) {
     .not('email', 'is', null)
     .filter('date_of_birth', 'not.is', null)
     .neq('notify_birthday', false)
+    .neq('marketing_emails_enabled', false) // global unsubscribe wins over the per-email toggle
 
   if (error) {
     console.error('birthday query error:', error)
@@ -70,11 +72,13 @@ async function handler(req, res) {
       const t     = translator(COPY, user.language)
       const first = user.full_name?.split(' ')[0]
 
-      await resend.emails.send({
-        from:    'Everstead <hello@everstead.care>',
-        to:      user.email,
-        subject: first ? t('subject', { name: first }) : t('subjectAnon'),
-        html:    birthdayHtml(user.full_name, age, user.language),
+      await sendEmail(resend, {
+        from:      'Everstead <hello@everstead.care>',
+        to:        user.email,
+        subject:   first ? t('subject', { name: first }) : t('subjectAnon'),
+        html:      birthdayHtml(user.full_name, age, user.language, user.id),
+        preheader: t('preheader'),
+        unsubUrl:  unsubscribeUrl(user.id),
       })
 
       await supabase
@@ -101,9 +105,10 @@ async function handler(req, res) {
 const COPY = {
   en: {
     subject:     'Happy birthday, {{name}} 🎂',
-    subjectAnon: 'Happy birthday, there 🎂',
+    subjectAnon: 'Happy birthday from Everstead 🎂',
+    preheader:   'A small wish from us, and a gentle thought for the people you love.',
     h1:          'Happy birthday, {{name}}!',
-    h1Anon:      'Happy birthday, there!',
+    h1Anon:      'Happy birthday!',
     intro:       'Today is a great day to take a moment for yourself, and maybe a few minutes for the people you love.',
     milestone:   "Turning {{age}} is one of those milestone birthdays that often prompts people to think about their finances and estate. If you haven't reviewed your plan recently, today might be the perfect day.",
     wishes:      'Wishing you a wonderful birthday.',
@@ -115,6 +120,7 @@ const COPY = {
   fr: {
     subject:     'Joyeux anniversaire, {{name}} 🎂',
     subjectAnon: 'Joyeux anniversaire 🎂',
+    preheader:   'Un petit mot de notre part, et une pensée pour ceux que vous aimez.',
     h1:          'Joyeux anniversaire, {{name}} !',
     h1Anon:      'Joyeux anniversaire !',
     intro:       'C\'est une belle journée pour prendre un moment pour vous, et peut-être quelques minutes pour ceux que vous aimez.',
@@ -130,7 +136,7 @@ const COPY = {
 // ─────────────────────────────────────────────────────────────────────────────
 // Email template
 // ─────────────────────────────────────────────────────────────────────────────
-function birthdayHtml(name, age, lang) {
+function birthdayHtml(name, age, lang, userId) {
   const t     = translator(COPY, lang)
   const first = name?.split(' ')[0]
 
@@ -147,7 +153,7 @@ function birthdayHtml(name, age, lang) {
   <table width="100%" cellpadding="0" cellspacing="0" style="background:#f5f4f0;padding:40px 0;">
     <tr><td align="center">
       <table width="560" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:12px;overflow:hidden;max-width:560px;width:100%;">
-        <tr><td style="background:#2d5082;background:linear-gradient(100deg,#2d5082 0%,#6f6bc6 50%,#6e9b6a 100%);padding:28px 40px;text-align:center;">
+        <tr><td style="background:#0d1628;padding:28px 40px;text-align:center;">
           <img src="https://www.everstead.care/logo-v2-white.png" alt="Everstead" width="160" style="display:block;margin:0 auto;height:auto;max-width:160px;" />
         </td></tr>
         <tr><td style="padding:40px;">
@@ -162,7 +168,7 @@ function birthdayHtml(name, age, lang) {
             ${t('wishes')}
           </p>
           <a href="${APP_URL}/dashboard"
-             style="display:inline-block;background:#2d5082;background:linear-gradient(100deg,#2d5082 0%,#6f6bc6 50%,#6e9b6a 100%);color:#ffffff;text-decoration:none;padding:14px 28px;border-radius:9999px;font-size:15px;">
+             style="display:inline-block;background:#2d5082;color:#ffffff;text-decoration:none;padding:14px 28px;border-radius:9999px;font-size:15px;">
             ${t('cta')}
           </a>
           <p style="margin:32px 0 0;color:#6b7280;font-size:14px;line-height:1.6;">
@@ -172,8 +178,9 @@ ${t('signoff')}
         <tr><td style="padding:24px 40px;border-top:1px solid #e8e5e0;">
           <p style="margin:0;color:#9ca3af;font-size:13px;line-height:1.5;">
             ${t('footer')} <a href="mailto:hello@everstead.care" style="color:#4c7d47;">hello@everstead.care</a>
-            · <a href="mailto:hello@everstead.care?subject=Unsubscribe" style="color:#9ca3af;">${t('unsubscribe')}</a>
+            · <a href="${unsubscribeUrl(userId)}" style="color:#9ca3af;">${t('unsubscribe')}</a>
           </p>
+          <p style="margin:8px 0 0;color:#c2beb8;font-size:11px;line-height:1.5;">${companyLine(lang)}</p>
         </td></tr>
       </table>
     </td></tr>

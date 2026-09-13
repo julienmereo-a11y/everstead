@@ -1,6 +1,7 @@
 import { createClient } from '@supabase/supabase-js'
 import { Resend } from 'resend'
 import { withSentry, captureException } from '../_lib/sentry.js'
+import { sendEmail, unsubscribeUrl, companyLine } from '../_lib/email-send.js'
 import { planLabel } from '../_lib/plan-label.js'
 import { translator, pickLang } from '../_lib/email-i18n.js'
 
@@ -52,6 +53,7 @@ async function handler(req, res) {
     .lte('created_at', windowEnd)
     .or(`annual_review_sent_at.is.null,annual_review_sent_at.lte.${elevenMonthsAgo}`)
     .neq('notify_annual_review', false)
+    .neq('marketing_emails_enabled', false) // global unsubscribe wins over the per-email toggle
 
   if (error) {
     console.error('annual-review query error:', error)
@@ -80,11 +82,13 @@ async function handler(req, res) {
 
       const t = translator(COPY, user.language)
 
-      await resend.emails.send({
-        from:    'Everstead <hello@everstead.care>',
-        to:      user.email,
-        subject: t('subject'),
-        html:    annualReviewHtml(user.full_name, user.plan, accountCount ?? 0, documentCount ?? 0, contactCount ?? 0, user.language),
+      await sendEmail(resend, {
+        from:      'Everstead <hello@everstead.care>',
+        to:        user.email,
+        subject:   t('subject'),
+        preheader: t('preheader'),
+        unsubUrl:  unsubscribeUrl(user.id),
+        html:      annualReviewHtml(user.full_name, user.plan, accountCount ?? 0, documentCount ?? 0, contactCount ?? 0, user.language, user.id),
       })
 
       await supabase
@@ -112,6 +116,7 @@ async function handler(req, res) {
 const COPY = {
   en: {
     subject:      "It's been a year, is your Everstead plan still accurate?",
+    preheader:    'Twelve months on: three things that commonly change.',
     fallbackName: 'there',
     h1:           "{{name}}, it's been a year.",
     intro:        "You've had your <strong>{{plan}}</strong> plan for about 12 months, with {{accounts}}, {{documents}}, and {{contacts}} in your vault.",
@@ -136,6 +141,7 @@ const COPY = {
   },
   fr: {
     subject:      'Cela fait un an, votre plan Everstead est-il toujours à jour\u00A0?',
+    preheader:    'Douze mois plus tard : trois choses qui changent souvent.',
     fallbackName: 'Bonjour',
     h1:           '{{name}}, cela fait un an.',
     intro:        'Vous avez votre forfait <strong>{{plan}}</strong> depuis environ 12 mois, avec {{accounts}}, {{documents}} et {{contacts}} dans votre coffre.',
@@ -172,7 +178,7 @@ function countPhrase(t, lang, n, oneKey, manyKey) {
 // ─────────────────────────────────────────────────────────────────────────────
 // Email HTML
 // ─────────────────────────────────────────────────────────────────────────────
-function annualReviewHtml(name, plan, accountCount, documentCount, contactCount, lang) {
+function annualReviewHtml(name, plan, accountCount, documentCount, contactCount, lang, userId) {
   const t        = translator(COPY, lang)
   const first    = name?.split(' ')[0] || t('fallbackName')
   const planName = planLabel(plan)
@@ -184,7 +190,7 @@ function annualReviewHtml(name, plan, accountCount, documentCount, contactCount,
   <table width="100%" cellpadding="0" cellspacing="0" style="background:#f5f4f0;padding:40px 0;">
     <tr><td align="center">
       <table width="560" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:12px;overflow:hidden;max-width:560px;width:100%;">
-        <tr><td style="background:#2d5082;background:linear-gradient(100deg,#2d5082 0%,#6f6bc6 50%,#6e9b6a 100%);padding:28px 40px;text-align:center;">
+        <tr><td style="background:#0d1628;padding:28px 40px;text-align:center;">
           <img src="https://www.everstead.care/logo-v2-white.png" alt="Everstead" width="160" style="display:block;margin:0 auto;height:auto;max-width:160px;" />
         </td></tr>
         <tr><td style="padding:40px;">
@@ -221,7 +227,7 @@ function annualReviewHtml(name, plan, accountCount, documentCount, contactCount,
           </table>
 
           <a href="${APP_URL}/dashboard"
-             style="display:inline-block;background:#2d5082;background:linear-gradient(100deg,#2d5082 0%,#6f6bc6 50%,#6e9b6a 100%);color:#ffffff;text-decoration:none;padding:14px 28px;border-radius:9999px;font-size:15px;">
+             style="display:inline-block;background:#2d5082;color:#ffffff;text-decoration:none;padding:14px 28px;border-radius:9999px;font-size:15px;">
             ${t('cta')}
           </a>
 
@@ -232,8 +238,9 @@ ${t('signature')}
         <tr><td style="padding:24px 40px;border-top:1px solid #e8e5e0;">
           <p style="margin:0;color:#9ca3af;font-size:13px;line-height:1.5;">
             ${t('footerQuestions')} <a href="mailto:hello@everstead.care" style="color:#4c7d47;">hello@everstead.care</a>
-            · <a href="mailto:hello@everstead.care?subject=Unsubscribe" style="color:#9ca3af;">${t('footerUnsubscribe')}</a>
+            · <a href="${unsubscribeUrl(userId)}" style="color:#9ca3af;">${t('footerUnsubscribe')}</a>
           </p>
+          <p style="margin:8px 0 0;color:#c2beb8;font-size:11px;line-height:1.5;">${companyLine(lang)}</p>
         </td></tr>
       </table>
     </td></tr>

@@ -1,5 +1,6 @@
 import { Resend } from 'resend'
 import { adminDb as db } from './admin-auth.js'
+import { buildEmail, unsubscribeUrl, companyLine, APP_URL } from './email-send.js'
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Shared broadcast-email machinery, used by BOTH:
@@ -50,7 +51,9 @@ function messageHtml(message) {
     .join('\n')
 }
 
-export function emailHtml({ message, name }) {
+export function emailHtml({ message, name, lang = 'en', userId = null }) {
+  const fr = String(lang || '').slice(0, 2).toLowerCase() === 'fr'
+  const unsub = unsubscribeUrl(userId)
   return `<!DOCTYPE html>
 <html>
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
@@ -58,18 +61,19 @@ export function emailHtml({ message, name }) {
   <table width="100%" cellpadding="0" cellspacing="0" style="background:#f5f4f0;padding:40px 0;">
     <tr><td align="center">
       <table width="560" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:12px;overflow:hidden;max-width:560px;width:100%;">
-        <tr><td style="background:#2d5082;background:linear-gradient(100deg,#2d5082 0%,#6f6bc6 50%,#6e9b6a 100%);padding:28px 40px;text-align:center;">
+        <tr><td style="background:#0d1628;padding:28px 40px;text-align:center;">
           <img src="https://www.everstead.care/logo-v2-white.png" alt="Everstead" width="160" style="display:block;margin:0 auto;height:auto;max-width:160px;" />
         </td></tr>
         <tr><td style="padding:40px;">
           ${messageHtml(personalise(message, name))}
         </td></tr>
         <tr><td style="padding:24px 40px;border-top:1px solid #e8e5e0;">
-          <p style="margin:0 0 6px;color:#9ca3af;font-size:13px;line-height:1.5;">You're receiving this because you have an Everstead account.</p>
+          <p style="margin:0 0 6px;color:#9ca3af;font-size:13px;line-height:1.5;">${fr ? 'Vous recevez ce message parce que vous avez un compte Everstead.' : "You're receiving this because you have an Everstead account."}</p>
           <p style="margin:0;color:#9ca3af;font-size:13px;line-height:1.5;">
-            <a href="${process.env.VITE_APP_URL || 'https://www.everstead.care'}/dashboard?tab=settings" style="color:#4c7d47;">Manage your email preferences</a>
-            · <a href="mailto:support@everstead.care" style="color:#4c7d47;">support@everstead.care</a>
+            <a href="${APP_URL}/dashboard?tab=settings" style="color:#4c7d47;">${fr ? 'Gérer mes préférences e-mail' : 'Manage your email preferences'}</a>
+            · <a href="mailto:support@everstead.care" style="color:#4c7d47;">support@everstead.care</a>${unsub ? ` · <a href="${unsub}" style="color:#9ca3af;">${fr ? 'Se désabonner' : 'Unsubscribe'}</a>` : ''}
           </p>
+          <p style="margin:8px 0 0;color:#c2beb8;font-size:11px;line-height:1.5;">${companyLine(lang)}</p>
         </td></tr>
       </table>
     </td></tr>
@@ -127,12 +131,13 @@ async function sendBatch(chunk, { from, subject, message, idempotencyKey }) {
   try {
     return await resend.batch.send(chunk.map(u => {
       const name = firstName(u.full_name)
-      return {
+      return buildEmail({
         from,
         to: u.email,
         subject: personalise(subject, name),
-        html: emailHtml({ message, name }),
-      }
+        html: emailHtml({ message, name, lang: u.language, userId: u.id }),
+        unsubUrl: unsubscribeUrl(u.id),
+      })
     }), idempotencyKey ? { idempotencyKey } : undefined)
   } catch (err) {
     return { error: err }
@@ -176,12 +181,13 @@ export async function sendToRecipients({ recipients, from, subject, message, onC
       await sleep(600)
       try {
         const name = firstName(u.full_name)
-        const { error } = await resend.emails.send({
+        const { error } = await resend.emails.send(buildEmail({
           from,
           to: u.email,
           subject: personalise(subject, name),
-          html: emailHtml({ message, name }),
-        }, runId ? { idempotencyKey: `broadcast-${runId}-r-${i + chunk.indexOf(u)}` } : undefined)
+          html: emailHtml({ message, name, lang: u.language, userId: u.id }),
+          unsubUrl: unsubscribeUrl(u.id),
+        }), runId ? { idempotencyKey: `broadcast-${runId}-r-${i + chunk.indexOf(u)}` } : undefined)
         if (error) {
           failed += 1
           console.log('broadcast: individual send failed, ', error?.message || error?.name || 'unknown error')

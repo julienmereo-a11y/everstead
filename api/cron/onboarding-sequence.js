@@ -3,6 +3,7 @@ import { Resend } from 'resend'
 import { withSentry, captureException } from '../_lib/sentry.js'
 import { planLabel } from '../_lib/plan-label.js'
 import { translator, pickLang } from '../_lib/email-i18n.js'
+import { sendEmail, unsubscribeUrl, companyLine } from '../_lib/email-send.js'
 
 const supabase = createClient(
   process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL,
@@ -146,26 +147,31 @@ async function handler(req, res) {
         // ── Choose template ──
         // Subject and body both follow the recipient's own profiles.language.
         const t = translator(COPY, user.language)
-        let html, subject
+        let html, subject, preheader
         if (step.n === 3 && progress.total === 0) {
           // Recovery branch: D9 with zero progress → re-engagement
           subject = t('recoverySubject')
+          preheader = t('recoveryPreheader')
           html = recoveryHtml(user.full_name, user.id, user.language, user.plan)
         } else if (step.n === 5) {
           // Personalised day-13 check-in
           html = step.html(user.full_name, user.plan, progress.accounts, progress.documents, progress.contacts, user.id, user.language)
           subject = t(step.subjectKey)
+          preheader = t(`email${step.n}Preheader`)
         } else {
           html = step.html(user.full_name, user.plan, user.id, user.language)
           subject = t(step.subjectKey)
+          preheader = t(`email${step.n}Preheader`)
         }
 
         emailedThisRun.add(user.id)
-        await resend.emails.send({
-          from:    step.from ? step.from(user.language) : 'Everstead <hello@everstead.care>',
-          to:      user.email,
+        await sendEmail(resend, {
+          from:      step.from ? step.from(user.language) : 'Everstead <hello@everstead.care>',
+          to:        user.email,
           subject,
           html,
+          preheader,
+          unsubUrl:  unsubscribeUrl(user.id),
         })
         await supabase
           .from('profiles')
@@ -195,11 +201,20 @@ async function handler(req, res) {
 const COPY = {
   en: {
     // Shared chrome
-    signature:        ': Julien, founder of Everstead',
+    signature:        'Julien, founder of Everstead',
     footerQuestions:  'Questions? Reply to this email or write to',
     footerUnsubscribe:'Unsubscribe',
     fallbackName:     'there',
     fallbackNameLead: 'there',
+
+    // Inbox preview line, one per email
+    email0Preheader:   'A short note from the founder, a day in.',
+    email1Preheader:   'Bank, pension, property: the picture your family would need first.',
+    email2Preheader:   'Name the people who should know where everything is.',
+    email3Preheader:   'Will, passport, pension: one safe place your family can find.',
+    email4Preheader:   'Who to call first, where the spare key is, what you would want.',
+    email5Preheader:   'Two weeks in: where your plan stands, and what would help most.',
+    recoveryPreheader: 'Three common reasons, and the simplest next step.',
 
     // Email 0, Day 1: personal welcome from Julien
     email0Subject: 'A personal welcome to Everstead',
@@ -292,6 +307,15 @@ const COPY = {
     footerUnsubscribe:'Se désabonner',
     fallbackName:     'à vous',
     fallbackNameLead: 'Bonjour',
+
+    // Inbox preview line, one per email
+    email0Preheader:   'Un petit mot du fondateur, au lendemain de votre inscription.',
+    email1Preheader:   'Banque, retraite, immobilier : ce que vos proches devraient retrouver en premier.',
+    email2Preheader:   'Désignez les personnes qui doivent savoir où tout se trouve.',
+    email3Preheader:   'Testament, passeport, retraite : un seul endroit sûr que vos proches retrouveront.',
+    email4Preheader:   'Qui appeler en premier, où est le double des clés, ce que vous souhaiteriez.',
+    email5Preheader:   'Deux semaines plus tard : où en est votre plan, et ce qui aiderait le plus.',
+    recoveryPreheader: "Trois raisons fréquentes, et l'étape la plus simple.",
 
     // Email 0, Day 1: personal welcome from Julien
     email0Subject: 'Un mot de bienvenue, personnellement',
@@ -408,7 +432,7 @@ function layout(body, userId, lang) {
   <table width="100%" cellpadding="0" cellspacing="0" style="background:#f5f4f0;padding:40px 0;">
     <tr><td align="center">
       <table width="560" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:12px;overflow:hidden;max-width:560px;width:100%;">
-        <tr><td style="background:#2d5082;background:linear-gradient(100deg,#2d5082 0%,#6f6bc6 50%,#6e9b6a 100%);padding:28px 40px;text-align:center;">
+        <tr><td style="background:#0d1628;padding:28px 40px;text-align:center;">
           <img src="https://www.everstead.care/logo-v2-white.png" alt="Everstead" width="160" style="display:block;margin:0 auto;height:auto;max-width:160px;" />
         </td></tr>
         <tr><td style="padding:40px;">${body}</td></tr>
@@ -417,6 +441,7 @@ function layout(body, userId, lang) {
             ${t('footerQuestions')} <a href="mailto:hello@everstead.care" style="color:#4c7d47;">hello@everstead.care</a>
             · <a href="${unsubUrl}" style="color:#9ca3af;">${t('footerUnsubscribe')}</a>
           </p>
+          <p style="margin:8px 0 0;color:#c2beb8;font-size:11px;line-height:1.5;">${companyLine(lang)}</p>
         </td></tr>
       </table>
     </td></tr>
@@ -426,7 +451,7 @@ function layout(body, userId, lang) {
 }
 
 function cta(href, label) {
-  return `<a href="${href}" style="display:inline-block;background:#2d5082;background:linear-gradient(100deg,#2d5082 0%,#6f6bc6 50%,#6e9b6a 100%);color:#ffffff;text-decoration:none;padding:14px 28px;border-radius:9999px;font-size:15px;">${label}</a>`
+  return `<a href="${href}" style="display:inline-block;background:#2d5082;color:#ffffff;text-decoration:none;padding:14px 28px;border-radius:9999px;font-size:15px;">${label}</a>`
 }
 
 function tip(icon, text) {
@@ -468,6 +493,7 @@ function email0Html(name, _plan, userId, lang) {
         <p style="margin:0;color:#c2beb8;font-size:12px;line-height:1.5;">
           <a href="${unsubUrl}" style="color:#c2beb8;">${t('footerUnsubscribe')}</a>
         </p>
+        <p style="margin:6px 0 0;color:#c2beb8;font-size:11px;line-height:1.5;">${companyLine(lang)}</p>
       </td></tr>
     </table>
   </td></tr></table>
@@ -497,7 +523,7 @@ function email1Html(name, _plan, userId, lang) {
       ${tip('🏠', t('email1Tip3'))}
       ${tip('🛡️', t('email1Tip4'))}
     </table>
-    ${cta(`${APP_URL}/dashboard`, t('email1Cta'))}
+    ${cta(`${APP_URL}/dashboard?tab=accounts`, t('email1Cta'))}
     <p style="margin:32px 0 0;color:#6b7280;font-size:14px;line-height:1.6;">${t('signature')}</p>
   `, userId, lang)
 }
@@ -521,7 +547,7 @@ function email2Html(name, _plan, userId, lang) {
     <p style="margin:0 0 32px;color:#4a5568;font-size:16px;line-height:1.7;">
       ${t('email2P3')}
     </p>
-    ${cta(`${APP_URL}/dashboard`, t('email2Cta'))}
+    ${cta(`${APP_URL}/dashboard?tab=people`, t('email2Cta'))}
     <p style="margin:32px 0 0;color:#6b7280;font-size:14px;line-height:1.6;">${t('signature')}</p>
   `, userId, lang)
 }
@@ -548,7 +574,7 @@ function email3Html(name, _plan, userId, lang) {
       ${tip('📄', t('email3Tip3'))}
       ${tip('🏡', t('email3Tip4'))}
     </table>
-    ${cta(`${APP_URL}/dashboard`, t('email3Cta'))}
+    ${cta(`${APP_URL}/dashboard?tab=documents`, t('email3Cta'))}
     <p style="margin:32px 0 0;color:#6b7280;font-size:14px;line-height:1.6;">${t('signature')}</p>
   `, userId, lang)
 }
@@ -575,7 +601,7 @@ function email4Html(name, _plan, userId, lang) {
     <p style="margin:0 0 32px;color:#4a5568;font-size:16px;line-height:1.7;">
       ${t('email4P4')}
     </p>
-    ${cta(`${APP_URL}/dashboard`, t('email4Cta'))}
+    ${cta(`${APP_URL}/dashboard?tab=instructions`, t('email4Cta'))}
     <p style="margin:32px 0 0;color:#6b7280;font-size:14px;line-height:1.6;">${t('signature')}</p>
   `, userId, lang)
 }
@@ -705,7 +731,7 @@ function recoveryHtml(name, userId, lang, plan) {
     <p style="margin:0 0 28px;color:#4a5568;font-size:16px;line-height:1.7;">
       ${t('recoveryP5')}
     </p>
-    ${cta(`${APP_URL}/dashboard`, t('recoveryCta'))}
+    ${cta(`${APP_URL}/dashboard?tab=accounts`, t('recoveryCta'))}
     <p style="margin:32px 0 0;color:#6b7280;font-size:14px;line-height:1.6;">${t('signature')}</p>
   `, userId, lang)
 }

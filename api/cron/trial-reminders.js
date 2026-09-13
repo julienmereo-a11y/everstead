@@ -3,6 +3,7 @@ import { Resend } from 'resend'
 import { withSentry, captureException } from '../_lib/sentry.js'
 import { planLabel } from '../_lib/plan-label.js'
 import { translator, emailDate } from '../_lib/email-i18n.js'
+import { sendEmail } from '../_lib/email-send.js'
 
 const supabase = createClient(
   process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL,
@@ -59,7 +60,7 @@ async function handler(req, res) {
       for (const task of tasks) {
         try {
           const t = translator(COPY, p.language)
-          await resend.emails.send({
+          await sendEmail(resend, {
             from:    'Everstead <hello@everstead.care>',
             to:      p.email,
             subject: task.daysLeft === 1
@@ -92,7 +93,7 @@ async function handler(req, res) {
       const deletionDate = emailDate(p.scheduled_deletion_at, p.language)
       const t = translator(COPY, p.language)
       try {
-        await resend.emails.send({
+        await sendEmail(resend, {
           from:    'Everstead <hello@everstead.care>',
           to:      p.email,
           subject: t('deletionSubject'),
@@ -215,7 +216,12 @@ const COPY = {
     deletionH1:              'Your account will be deleted in 7 days.',
     deletionIntro:           'Hi {{name}}, your free trial ended 30 days ago and your account has been inactive since.',
     questions:               'Questions?',
-    unsubscribe:             'Unsubscribe',
+    preferences:             'Email preferences',
+    signature:               'Julien, founder of Everstead',
+    deletionBody:            'On <strong>{{date}}</strong>, your Everstead plan will be permanently deleted, including all your accounts, documents, trusted people and instructions.',
+    deletionKeep:            "If you'd like to keep your plan, it only takes a moment.",
+    deletionCta:             'Keep my plan →',
+    deletionNoAction:        "If you no longer need Everstead, you don't need to do anything. Your account will be removed automatically on {{date}}.",
   },
   fr: {
     reminderSubjectTomorrow: 'Votre essai Everstead se termine demain',
@@ -230,8 +236,13 @@ const COPY = {
     deletionSubject:         'Votre compte Everstead sera supprimé dans 7 jours',
     deletionH1:              'Votre compte sera supprimé dans 7 jours.',
     deletionIntro:           'Bonjour {{name}}, votre essai gratuit s\'est terminé il y a 30 jours et votre compte est inactif depuis.',
-    questions:               'Une question ?',
-    unsubscribe:             'Se désabonner',
+    questions:               'Une question ?',
+    preferences:             'Préférences e-mail',
+    signature:               "Julien, fondateur d'Everstead",
+    deletionBody:            'Le <strong>{{date}}</strong>, votre plan Everstead sera définitivement supprimé, avec tous vos comptes, documents, personnes de confiance et consignes.',
+    deletionKeep:            'Si vous souhaitez conserver votre plan, cela ne prend qu\'un instant.',
+    deletionCta:             'Conserver mon plan →',
+    deletionNoAction:        'Si vous n\'avez plus besoin d\'Everstead, vous n\'avez rien à faire. Votre compte sera supprimé automatiquement le {{date}}.',
   },
 }
 
@@ -244,7 +255,7 @@ function trialReminderHtml(name, plan, trialEndsAt, daysLeft, lang) {
   <table width="100%" cellpadding="0" cellspacing="0" style="background:#f5f4f0;padding:40px 0;">
     <tr><td align="center">
       <table width="560" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:12px;overflow:hidden;max-width:560px;width:100%;">
-        <tr><td style="background:#2d5082;background:linear-gradient(100deg,#2d5082 0%,#6f6bc6 50%,#6e9b6a 100%);padding:32px 40px;text-align:center;">
+        <tr><td style="background:#0d1628;padding:32px 40px;text-align:center;">
           <img src="https://www.everstead.care/logo-v2-white.png" alt="Everstead" width="150" style="display:block;margin:0 auto;height:auto;max-width:150px;" />
         </td></tr>
         <tr><td style="padding:40px;">
@@ -253,10 +264,10 @@ function trialReminderHtml(name, plan, trialEndsAt, daysLeft, lang) {
             ? t('reminderIntroDated', { name: name || t('reminderFallbackName'), plan: planLabel(plan), date: endDate })
             : t('reminderIntroSoon',  { name: name || t('reminderFallbackName'), plan: planLabel(plan) })}</p>
           <p style="margin:0 0 32px;color:#4a5568;font-size:16px;line-height:1.6;">${t('reminderBody')}</p>
-          <a href="${APP_URL}/dashboard" style="display:inline-block;background:#2d5082;background:linear-gradient(100deg,#2d5082 0%,#6f6bc6 50%,#6e9b6a 100%);color:#ffffff;text-decoration:none;padding:14px 28px;border-radius:9999px;font-size:15px;">${t('reminderCta')}</a>
+          <a href="${APP_URL}/dashboard?tab=subscriptions" style="display:inline-block;background:#2d5082;color:#ffffff;text-decoration:none;padding:14px 28px;border-radius:9999px;font-size:15px;">${t('reminderCta')}</a>
         </td></tr>
         <tr><td style="padding:24px 40px;border-top:1px solid #e8e5e0;">
-          <p style="margin:0;color:#9ca3af;font-size:13px;">Questions? <a href="mailto:hello@everstead.care" style="color:#4c7d47;">hello@everstead.care</a> · <a href="mailto:hello@everstead.care?subject=Unsubscribe" style="color:#9ca3af;">Unsubscribe</a></p>
+          <p style="margin:0;color:#9ca3af;font-size:13px;">${t('questions')} <a href="mailto:hello@everstead.care" style="color:#4c7d47;">hello@everstead.care</a> · <a href="${APP_URL}/dashboard?tab=settings" style="color:#9ca3af;">${t('preferences')}</a></p>
         </td></tr>
       </table>
     </td></tr>
@@ -273,19 +284,19 @@ function deletionWarningHtml(name, deletionDate, lang) {
   <table width="100%" cellpadding="0" cellspacing="0" style="background:#f5f4f0;padding:40px 0;">
     <tr><td align="center">
       <table width="560" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:12px;overflow:hidden;max-width:560px;width:100%;">
-        <tr><td style="background:#2d5082;background:linear-gradient(100deg,#2d5082 0%,#6f6bc6 50%,#6e9b6a 100%);padding:32px 40px;text-align:center;">
+        <tr><td style="background:#0d1628;padding:32px 40px;text-align:center;">
           <img src="https://www.everstead.care/logo-v2-white.png" alt="Everstead" width="150" style="display:block;margin:0 auto;height:auto;max-width:150px;" />
         </td></tr>
         <tr><td style="padding:40px;">
           <h1 style="margin:0 0 16px;color:#0d1628;font-size:24px;font-weight:normal;">${t('deletionH1')}</h1>
           <p style="margin:0 0 16px;color:#4a5568;font-size:16px;line-height:1.6;">${t('deletionIntro', { name: firstName })}</p>
-          <p style="margin:0 0 16px;color:#4a5568;font-size:16px;line-height:1.6;">On <strong>${deletionDate}</strong>, your Everstead plan will be permanently deleted, including all your accounts, documents, trusted people, and instructions.</p>
-          <p style="margin:0 0 32px;color:#4a5568;font-size:16px;line-height:1.6;">If you'd like to keep your plan, it only takes a moment.</p>
-          <a href="${APP_URL}/trial-ended" style="display:inline-block;background:#2d5082;background:linear-gradient(100deg,#2d5082 0%,#6f6bc6 50%,#6e9b6a 100%);color:#ffffff;text-decoration:none;padding:14px 28px;border-radius:9999px;font-size:15px;">Continue with Everstead →</a>
-          <p style="margin:32px 0 0;color:#9ca3af;font-size:14px;line-height:1.6;">If you no longer need Everstead, you don't need to do anything. Your account will be removed automatically on ${deletionDate}.</p>
+          <p style="margin:0 0 16px;color:#4a5568;font-size:16px;line-height:1.6;">${t('deletionBody', { date: deletionDate })}</p>
+          <p style="margin:0 0 32px;color:#4a5568;font-size:16px;line-height:1.6;">${t('deletionKeep')}</p>
+          <a href="${APP_URL}/trial-ended" style="display:inline-block;background:#2d5082;color:#ffffff;text-decoration:none;padding:14px 28px;border-radius:9999px;font-size:15px;">${t('deletionCta')}</a>
+          <p style="margin:32px 0 0;color:#9ca3af;font-size:14px;line-height:1.6;">${t('deletionNoAction', { date: deletionDate })}</p>
         </td></tr>
         <tr><td style="padding:24px 40px;border-top:1px solid #e8e5e0;">
-          <p style="margin:0;color:#9ca3af;font-size:13px;">Julien · Founder, Everstead · <a href="mailto:hello@everstead.care" style="color:#4c7d47;">hello@everstead.care</a> · <a href="mailto:hello@everstead.care?subject=Unsubscribe" style="color:#9ca3af;">Unsubscribe</a></p>
+          <p style="margin:0;color:#9ca3af;font-size:13px;">${t('signature')} · <a href="mailto:hello@everstead.care" style="color:#4c7d47;">hello@everstead.care</a> · <a href="${APP_URL}/dashboard?tab=settings" style="color:#9ca3af;">${t('preferences')}</a></p>
         </td></tr>
       </table>
     </td></tr>

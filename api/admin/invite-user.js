@@ -9,7 +9,7 @@ const resend = new Resend(process.env.RESEND_API_KEY)
 const APP = process.env.VITE_APP_URL || 'https://www.everstead.care'
 
 const button = (href, label) =>
-  `<a href="${href}" style="display:inline-block;background:linear-gradient(100deg,#2d5082 0%,#6f6bc6 50%,#6e9b6a 100%);color:#fff;text-decoration:none;padding:14px 28px;border-radius:9999px;font-size:15px;">${label}</a>`
+  `<a href="${href}" style="display:inline-block;background:#2d5082;color:#fff;text-decoration:none;padding:14px 28px;border-radius:9999px;font-size:15px;">${label}</a>`
 
 function inviteHtml({ url, founding }) {
   const line = founding
@@ -19,7 +19,7 @@ function inviteHtml({ url, founding }) {
 <body style="margin:0;padding:0;background:#f5f4f0;font-family:Georgia,serif;">
   <table width="100%" cellpadding="0" cellspacing="0" style="background:#f5f4f0;padding:40px 0;"><tr><td align="center">
     <table width="560" cellpadding="0" cellspacing="0" style="background:#fff;border-radius:12px;overflow:hidden;max-width:560px;width:100%;">
-      <tr><td style="background:linear-gradient(100deg,#2d5082 0%,#6f6bc6 50%,#6e9b6a 100%);padding:28px 40px;text-align:center;">
+      <tr><td style="background:#0d1628;padding:28px 40px;text-align:center;">
         <img src="https://www.everstead.care/logo-v2-white.png" alt="Everstead" width="150" style="display:block;margin:0 auto;height:auto;max-width:150px;" />
       </td></tr>
       <tr><td style="padding:40px;">

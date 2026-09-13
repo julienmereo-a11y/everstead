@@ -127,7 +127,7 @@ function deletionHtml(name, lang) {
   <table width="100%" cellpadding="0" cellspacing="0" style="background:#f5f4f0;padding:40px 0;">
     <tr><td align="center">
       <table width="560" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:12px;overflow:hidden;max-width:560px;width:100%;">
-        <tr><td style="background:#2d5082;background:linear-gradient(100deg,#2d5082 0%,#6f6bc6 50%,#6e9b6a 100%);padding:28px 40px;text-align:center;">
+        <tr><td style="background:#0d1628;padding:28px 40px;text-align:center;">
           <img src="https://www.everstead.care/logo-v2-white.png" alt="Everstead" width="160" style="display:block;margin:0 auto;height:auto;max-width:160px;" />
         </td></tr>
         <tr><td style="padding:40px;">
@@ -142,7 +142,7 @@ function deletionHtml(name, lang) {
           <p style="margin:0 0 24px;color:#4a5568;font-size:16px;line-height:1.6;">
             ${t('exportBody')}
           </p>
-          <a href="https://www.everstead.care/dashboard?tab=settings" style="display:inline-block;background:#2d5082;background:linear-gradient(100deg,#2d5082 0%,#6f6bc6 50%,#6e9b6a 100%);color:#ffffff;text-decoration:none;padding:14px 28px;border-radius:9999px;font-size:15px;margin-bottom:24px;">${t('exportCta')}</a>
+          <a href="https://www.everstead.care/dashboard?tab=settings" style="display:inline-block;background:#2d5082;color:#ffffff;text-decoration:none;padding:14px 28px;border-radius:9999px;font-size:15px;margin-bottom:24px;">${t('exportCta')}</a>
           <p style="margin:0 0 32px;color:#4a5568;font-size:16px;line-height:1.6;">
             ${t('sorry')}
           </p>

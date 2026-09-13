@@ -3,6 +3,7 @@ import { Resend } from 'resend'
 import { withSentry } from '../_lib/sentry.js'
 import { translator, pickLang } from '../_lib/email-i18n.js'
 import { planLabel } from '../_lib/plan-label.js'
+import { sendEmail, unsubscribeUrl, companyLine } from '../_lib/email-send.js'
 
 const supabase = createClient(
   process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL,
@@ -12,22 +13,20 @@ const resend  = new Resend(process.env.RESEND_API_KEY)
 const APP_URL = process.env.VITE_APP_URL || 'https://www.everstead.care'
 
 // Plan display config — mirrors PLAN_OPTIONS in GetStarted.jsx.
-// Labels are brand names and never translated; the price line and the feature
-// bullets live in COPY below because they are prose, not data.
+// Labels are brand names and never translated; the feature bullets live in COPY
+// below because they are prose. Prices are deliberately NOT repeated here: the
+// checkout page shows them live, so the email can never go stale.
 const PLAN_META = {
   essential: {
     label:        planLabel('essential'),
-    priceKey:     'priceEssential',
     featureKeys:  ['essentialFeature1', 'essentialFeature2', 'essentialFeature3'],
   },
   family: {
     label:        planLabel('family'),
-    priceKey:     'priceFamily',
     featureKeys:  ['familyFeature1', 'familyFeature2', 'familyFeature3', 'familyFeature4'],
   },
   advisor: {
     label:        planLabel('advisor'),
-    priceKey:     'priceAdvisor',
     featureKeys:  ['advisorFeature1', 'advisorFeature2', 'advisorFeature3', 'advisorFeature4'],
   },
 }
@@ -79,11 +78,13 @@ async function handler(req, res) {
       const t     = translator(COPY, user.language)
       const first = user.full_name?.split(' ')[0]
 
-      await resend.emails.send({
-        from:    'Julien at Everstead <hello@everstead.care>',
-        to:      user.email,
-        subject: first ? t('subject', { name: first }) : t('subjectAnon'),
-        html:    buildEmail(user),
+      await sendEmail(resend, {
+        from:      pickLang(user.language) === 'fr' ? "Julien d'Everstead <hello@everstead.care>" : 'Julien from Everstead <hello@everstead.care>',
+        to:        user.email,
+        subject:   first ? t('subject', { name: first }) : t('subjectAnon'),
+        html:      buildEmail(user),
+        preheader: t('preheader'),
+        unsubUrl:  unsubscribeUrl(user.id),
       })
 
       await supabase
@@ -116,6 +117,7 @@ const COPY = {
   en: {
     subject:           '{{name}} Everstead trial is ready, one step left',
     subjectAnon:       'Your Everstead trial is ready, one step left',
+    preheader:         'Your account is saved. Add a card and the 14 free days start.',
     title:             'Your Everstead trial is waiting',
     tagline:           'Estate planning, done thoughtfully',
     h1:                '{{name}}, your free trial is still here.',
@@ -130,24 +132,22 @@ const COPY = {
     trust:             '🔒 AES-256 encryption &nbsp;·&nbsp; No charge for 14 days &nbsp;·&nbsp; Cancel any time',
     footerQuestions:   'Questions? Reply to this email or write to',
     unsubscribe:       'Unsubscribe from these emails',
-    priceEssential:    '£3.19/month (billed annually) or £3.99/month',
-    priceFamily:       '£7.99/month (billed annually) or £9.99/month',
-    priceAdvisor:      '£48/month (billed annually) or £60/month',
     essentialFeature1: 'Up to 10 accounts & documents',
     essentialFeature2: '1 trusted contact',
     essentialFeature3: '1 GB storage',
     familyFeature1:    'Two private vaults, one subscription',
-    familyFeature2:    'Share only what you choose',
-    familyFeature3:    '10 trusted contacts',
-    familyFeature4:    '25 GB storage',
-    advisorFeature1:   'Multi-client workspace',
-    advisorFeature2:   'Co-branded portal',
-    advisorFeature3:   'Client dashboards',
-    advisorFeature4:   '100 GB storage',
+    familyFeature2:    'Unlimited accounts & documents',
+    familyFeature3:    'Up to 10 trusted contacts',
+    familyFeature4:    '25 GB secure storage',
+    advisorFeature1:   'Everything in Everstead+',
+    advisorFeature2:   'Multi-client workspace',
+    advisorFeature3:   'Co-branded client portal',
+    advisorFeature4:   'Priority support',
   },
   fr: {
     subject:           'Votre essai Everstead est prêt, {{name}}, il ne manque qu\'une étape',
     subjectAnon:       'Votre essai Everstead est prêt, il ne manque qu\'une étape',
+    preheader:         'Votre compte est enregistré. Ajoutez une carte, et les 14 jours gratuits commencent.',
     title:             'Votre essai Everstead vous attend',
     tagline:           'La succession, préparée avec soin',
     h1:                '{{name}}, votre essai gratuit vous attend toujours.',
@@ -162,20 +162,17 @@ const COPY = {
     trust:             '🔒 Chiffrement AES-256 &nbsp;·&nbsp; Aucun prélèvement pendant 14 jours &nbsp;·&nbsp; Annulation à tout moment',
     footerQuestions:   'Une question ? Répondez à cet e-mail ou écrivez à',
     unsubscribe:       'Me désabonner de ces e-mails',
-    priceEssential:    '3,19 £/mois en facturation annuelle ou 3,99 £/mois',
-    priceFamily:       '7,99 £/mois en facturation annuelle ou 9,99 £/mois',
-    priceAdvisor:      '48 £/mois en facturation annuelle ou 60 £/mois',
     essentialFeature1: 'Jusqu\'à 10 comptes et documents',
     essentialFeature2: '1 personne de confiance',
     essentialFeature3: '1 Go de stockage',
     familyFeature1:    'Deux coffres privés, un seul abonnement',
-    familyFeature2:    'Vous ne partagez que ce que vous choisissez',
-    familyFeature3:    '10 personnes de confiance',
-    familyFeature4:    '25 Go de stockage',
-    advisorFeature1:   'Espace multiclient',
-    advisorFeature2:   'Portail à votre marque',
-    advisorFeature3:   'Tableaux de bord clients',
-    advisorFeature4:   '100 Go de stockage',
+    familyFeature2:    'Comptes et documents illimités',
+    familyFeature3:    'Jusqu\'à 10 personnes de confiance',
+    familyFeature4:    '25 Go de stockage sécurisé',
+    advisorFeature1:   'Tout Everstead+',
+    advisorFeature2:   'Espace multiclient',
+    advisorFeature3:   'Portail client à votre marque',
+    advisorFeature4:   'Assistance prioritaire',
   },
 }
 
@@ -216,7 +213,7 @@ function buildEmail(user) {
 
         <!-- Header -->
         <tr>
-          <td style="background:#2d5082;background:linear-gradient(100deg,#2d5082 0%,#6f6bc6 50%,#6e9b6a 100%);padding:32px 40px;text-align:center;">
+          <td style="background:#0d1628;padding:32px 40px;text-align:center;">
             <img src="https://www.everstead.care/logo-v2-white.png" alt="Everstead" width="150" style="display:block;margin:0 auto;height:auto;max-width:150px;" />
             <p style="margin:6px 0 0;color:#94a3b8;font-size:12px;font-weight:normal;letter-spacing:0.1em;text-transform:uppercase;">${t('tagline')}</p>
           </td>
@@ -244,7 +241,7 @@ function buildEmail(user) {
               <tr>
                 <td style="padding:20px 24px;">
                   <p style="margin:0 0 4px;color:#0d1628;font-size:14px;font-weight:bold;text-transform:uppercase;letter-spacing:0.06em;">${t('planHeading', { plan: plan.label })}</p>
-                  <p style="margin:0 0 14px;color:#9ca3af;font-size:13px;">${t(plan.priceKey)} · ${t('trialIncluded')}</p>
+                  <p style="margin:0 0 14px;color:#9ca3af;font-size:13px;">${t('trialIncluded')}</p>
                   <table width="100%" cellpadding="0" cellspacing="0" role="presentation">
                     ${featureRows}
                   </table>
@@ -255,7 +252,7 @@ function buildEmail(user) {
             <!-- CTA -->
             <table cellpadding="0" cellspacing="0" role="presentation" style="margin-bottom:32px;">
               <tr>
-                <td style="background:#2d5082;background:linear-gradient(100deg,#2d5082 0%,#6f6bc6 50%,#6e9b6a 100%);border-radius:9999px;">
+                <td style="background:#2d5082;border-radius:9999px;">
                   <a href="${resumeUrl}"
                      style="display:inline-block;padding:15px 32px;color:#ffffff;font-family:Georgia,serif;font-size:16px;font-weight:normal;text-decoration:none;border-radius:8px;letter-spacing:0.01em;">
                     ${t('cta')}
@@ -295,7 +292,7 @@ ${t('signoff')}
               ${t('footerQuestions')}
               <a href="mailto:hello@everstead.care" style="color:#4c7d47;text-decoration:none;">hello@everstead.care</a>
               <br>
-              EVERSTEAD DIGITAL LTD · London, England, United Kingdom
+              ${companyLine(lang)}
               <br><br>
               <a href="${unsubUrl}"
                  style="color:#9ca3af;text-decoration:underline;">${t('unsubscribe')}</a>

@@ -1,6 +1,7 @@
 import { createClient } from '@supabase/supabase-js'
 import { Resend } from 'resend'
 import { withSentry, captureException } from '../_lib/sentry.js'
+import { sendEmail, unsubscribeUrl, companyLine } from '../_lib/email-send.js'
 import { translator, pickLang } from '../_lib/email-i18n.js'
 
 const supabase = createClient(
@@ -54,6 +55,7 @@ async function handler(req, res) {
     .neq('role', 'delegate')
     .not('email', 'is', null)
     .neq('notify_plan_checkin', false)
+    .neq('marketing_emails_enabled', false) // global unsubscribe wins over the per-email toggle
     .lte('created_at', fiveHalfMoAgo)
     .or(`plan_checkin_sent_at.is.null,plan_checkin_sent_at.lte.${sixMoAgo}`)
     .or(`annual_review_sent_at.is.null,annual_review_sent_at.lte.${fiveMoAgo}`)
@@ -85,11 +87,13 @@ async function handler(req, res) {
 
       const t = translator(COPY, user.language)
 
-      await resend.emails.send({
-        from:    'Everstead <hello@everstead.care>',
-        to:      user.email,
-        subject: t('subject'),
-        html:    planCheckinHtml(user.full_name, accountCount ?? 0, documentCount ?? 0, contactCount ?? 0, user.language),
+      await sendEmail(resend, {
+        from:      'Everstead <hello@everstead.care>',
+        to:        user.email,
+        subject:   t('subject'),
+        preheader: t('preheader'),
+        unsubUrl:  unsubscribeUrl(user.id),
+        html:      planCheckinHtml(user.full_name, accountCount ?? 0, documentCount ?? 0, contactCount ?? 0, user.language, user.id),
       })
 
       await supabase
@@ -117,6 +121,7 @@ async function handler(req, res) {
 const COPY = {
   en: {
     subject:      'Does your Everstead plan still reflect your life?',
+    preheader:    'A five-minute check that your plan still matches your life.',
     fallbackName: 'there',
     h1:           '{{name}}, a quiet six-month check-in.',
     intro:        "Life moves on between the big moments. A new account opened, a policy renewed, a house move, a change in who you'd trust to act for you, small things that quietly fall out of date.",
@@ -143,6 +148,7 @@ const COPY = {
   },
   fr: {
     subject:      'Votre plan Everstead reflète-t-il encore votre vie\u00A0?',
+    preheader:    'Cinq minutes pour vérifier que votre plan correspond toujours à votre vie.',
     fallbackName: 'Bonjour',
     h1:           '{{name}}, un point tranquille à six mois.',
     intro:        'La vie continue entre les grands moments. Un nouveau compte ouvert, un contrat renouvelé, un déménagement, un changement dans la personne à qui vous confieriez vos affaires, autant de petites choses qui cessent discrètement d\'être à jour.',
@@ -181,7 +187,7 @@ function countPhrase(t, lang, n, oneKey, manyKey) {
 // ─────────────────────────────────────────────────────────────────────────────
 // Email HTML
 // ─────────────────────────────────────────────────────────────────────────────
-function planCheckinHtml(name, accountCount, documentCount, contactCount, lang) {
+function planCheckinHtml(name, accountCount, documentCount, contactCount, lang, userId) {
   const t = translator(COPY, lang)
   const first = name?.split(' ')[0] || t('fallbackName')
   const hasContent = (accountCount + documentCount + contactCount) > 0
@@ -201,7 +207,7 @@ function planCheckinHtml(name, accountCount, documentCount, contactCount, lang) 
   <table width="100%" cellpadding="0" cellspacing="0" style="background:#f5f4f0;padding:40px 0;">
     <tr><td align="center">
       <table width="560" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:12px;overflow:hidden;max-width:560px;width:100%;">
-        <tr><td style="background:#2d5082;background:linear-gradient(100deg,#2d5082 0%,#6f6bc6 50%,#6e9b6a 100%);padding:28px 40px;text-align:center;">
+        <tr><td style="background:#0d1628;padding:28px 40px;text-align:center;">
           <img src="https://www.everstead.care/logo-v2-white.png" alt="Everstead" width="160" style="display:block;margin:0 auto;height:auto;max-width:160px;" />
         </td></tr>
         <tr><td style="padding:40px;">
@@ -233,7 +239,7 @@ function planCheckinHtml(name, accountCount, documentCount, contactCount, lang) 
           </table>
 
           <a href="${APP_URL}/dashboard"
-             style="display:inline-block;background:#2d5082;background:linear-gradient(100deg,#2d5082 0%,#6f6bc6 50%,#6e9b6a 100%);color:#ffffff;text-decoration:none;padding:14px 28px;border-radius:9999px;font-size:15px;">
+             style="display:inline-block;background:#2d5082;color:#ffffff;text-decoration:none;padding:14px 28px;border-radius:9999px;font-size:15px;">
             ${t('cta')}
           </a>
 
@@ -244,8 +250,9 @@ ${t('signature')}
         <tr><td style="padding:24px 40px;border-top:1px solid #e8e5e0;">
           <p style="margin:0;color:#9ca3af;font-size:13px;line-height:1.5;">
             ${t('footerQuestions')} <a href="mailto:hello@everstead.care" style="color:#4c7d47;">hello@everstead.care</a>
-            · <a href="mailto:hello@everstead.care?subject=Unsubscribe%20plan%20check-in" style="color:#9ca3af;">${t('footerUnsubscribe')}</a>
+            · <a href="${unsubscribeUrl(userId)}" style="color:#9ca3af;">${t('footerUnsubscribe')}</a>
           </p>
+          <p style="margin:8px 0 0;color:#c2beb8;font-size:11px;line-height:1.5;">${companyLine(lang)}</p>
         </td></tr>
       </table>
     </td></tr>
