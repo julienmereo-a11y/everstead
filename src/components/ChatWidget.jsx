@@ -33,7 +33,7 @@ export default function ChatWidget() {
   }, [open, messages])
 
   const userContext = user && profile
-    ? `The user is logged in as ${profile.full_name || user.email} on the ${planLabel(profile.plan) || 'Everstead'} plan.`
+    ? `The user is logged in as ${profile.full_name || user.email} on the ${planLabel(profile.plan) || 'Everstead'} plan.${profile.country ? ` Country of residence: ${profile.country}.` : ''}${profile.asset_countries?.length ? ` Also holds assets in: ${profile.asset_countries.join(', ')}.` : ''}`
     : null
 
   const send = async () => {

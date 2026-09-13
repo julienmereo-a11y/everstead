@@ -1,6 +1,7 @@
 import Anthropic from '@anthropic-ai/sdk'
 import { aiGuard } from '../_lib/ai-guard.js'
 import { withSentry, captureException } from '../_lib/sentry.js'
+import { jurisdictionNote } from '../_lib/jurisdiction.js'
 import { planLabel } from '../_lib/plan-label.js'
 
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
@@ -16,7 +17,9 @@ const PUBLIC_TYPES = new Set(['grief-guide'])
 
 function readinessCoachPrompt(context) {
   const { score, accountCount, documentCount, contactCount, instructionCount, plan } = context
-  return `You are the Everstead readiness coach, a warm, practical assistant helping UK families get their estate plan in order. You give specific, actionable advice based on what the user has actually done so far.
+  return `You are the Everstead readiness coach, a warm, practical assistant helping families get their estate plan in order.
+
+${jurisdictionNote(context)} You give specific, actionable advice based on what the user has actually done so far.
 
 The user's current vault status:
 - Readiness score: ${score}%
@@ -65,6 +68,9 @@ Your role:
 - Help them navigate the dashboard (documents are in the Documents tab, accounts in Accounts, etc.)
 - Be empathetic, they may be grieving or under stress
 
+${jurisdictionNote(context)}
+
+The UK notes below apply only when the residence above is the United Kingdom; otherwise rely on the residence note.
 Key UK estate knowledge to draw on:
 - Deaths must be registered within 5 days in England and Wales at a local register office
 - Request at least 10 certified death certificates, institutions need originals
@@ -89,8 +95,10 @@ Rules:
 - Never use em dashes or en dashes; use commas, full stops, colons or parentheses instead`
 }
 
-function instructionsAssistantPrompt() {
+function instructionsAssistantPrompt(context = {}) {
   return `You are a compassionate writing assistant helping someone create clear, practical instructions for their family or executor as part of their Everstead vault.
+
+${jurisdictionNote(context)}
 
 Your role is to help them structure their thoughts into step-by-step instructions their loved ones can actually follow. You ask one or two focused questions at a time, then help them build out the instruction.
 
@@ -140,6 +148,9 @@ Your role:
 - Help them think about who their executor should be, what instructions to write, and what accounts to document
 - Gently encourage action without being preachy
 
+${jurisdictionNote(context)}
+
+The UK notes below apply only when the residence above is the United Kingdom; otherwise rely on the residence note.
 Key UK estate planning knowledge:
 - A will is the foundation, without one, the intestacy rules apply (which may not match wishes)
 - Lasting Powers of Attorney (LPAs) cover property/financial affairs and health/welfare, both should be registered with the OPG while the person has capacity
@@ -359,7 +370,7 @@ async function handler(req, res) {
   } else if (type === 'instructions-assistant') {
     if (!Array.isArray(messages) || messages.length === 0)
       return res.status(400).json({ error: 'Missing messages' })
-    systemPrompt = instructionsAssistantPrompt()
+    systemPrompt = instructionsAssistantPrompt(context || {})
     requestMessages = messages.map(m => ({ role: m.role, content: m.content }))
   } else if (type === 'delegate-guide') {
     if (!context || !Array.isArray(messages) || messages.length === 0)

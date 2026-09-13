@@ -15,7 +15,7 @@ async function handler(req, res) {
 
   if (!answers) return res.status(400).json({ error: 'Missing required field: answers' })
 
-  const systemPrompt = `You are an estate planning assistant for Everstead, a UK family handoff platform.
+  const systemPrompt = `You are an estate planning assistant for Everstead, a family handoff platform for the UK and France.
 
 Based on onboarding answers, extract structured data to pre-populate the user's vault.
 

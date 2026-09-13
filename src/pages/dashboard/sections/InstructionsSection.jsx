@@ -76,6 +76,9 @@ export function InstructionsSection({ instructions, loading, add, update, remove
         body: JSON.stringify({
           ...quickWriteForm,
           userName: profile?.full_name,
+          country: profile?.country,
+          assetCountries: profile?.asset_countries,
+          lang: profile?.language,
         }),
       })
       const data = await res.json()
@@ -119,7 +122,7 @@ export function InstructionsSection({ instructions, loading, add, update, remove
       const res = await fetch('/api/ai/assist', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${session?.access_token}` },
-        body: JSON.stringify({ type: 'instructions-assistant', messages: newMessages }),
+        body: JSON.stringify({ type: 'instructions-assistant', messages: newMessages, context: { country: profile?.country, assetCountries: profile?.asset_countries, lang: profile?.language } }),
       })
       const data = await res.json()
       if (data.error) throw new Error(data.error)

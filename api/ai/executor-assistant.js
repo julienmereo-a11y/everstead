@@ -1,6 +1,8 @@
 import Anthropic from '@anthropic-ai/sdk'
 import { aiGuardForUser } from '../_lib/ai-guard.js'
 import { withSentry, captureException } from '../_lib/sentry.js'
+import { jurisdictionFor } from '../_lib/jurisdiction.js'
+import { adminDb } from '../_lib/admin-auth.js'
 
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
 
@@ -17,6 +19,11 @@ async function handler(req, res) {
   if (blocked) return res.status(blocked.status).json({ error: blocked.error })
 
   const ownerFirstName = ownerName?.split(' ')[0] || 'the plan owner'
+  // Guidance follows the OWNER's country, not the delegate's language.
+  let owner = null
+  try {
+    if (ownerId) ({ data: owner } = await adminDb.from('profiles').select('country, asset_countries, language').eq('id', ownerId).maybeSingle())
+  } catch { owner = null }
 
   const systemPrompt = `You are a calm, knowledgeable, and compassionate assistant helping ${delegateName || 'an executor or family member'} navigate ${ownerFirstName}'s Everstead estate plan.
 
@@ -24,11 +31,14 @@ You have access to the following vault summary:
 ${vaultSummary || 'No vault summary provided.'}
 
 Your role:
-- Guide them through the practical steps of UK estate administration
+- Guide them through the practical steps of estate administration in the owner's country
 - Answer questions about probate, notifying institutions, handling accounts, and working with solicitors
 - Help them understand what's in the vault and what to do next
 - Be empathetic, they may be grieving or under significant stress
 
+${jurisdictionFor(owner)}
+
+The UK notes below apply only when the residence above is the United Kingdom; otherwise rely on the residence note.
 Key UK estate knowledge:
 - Deaths must be registered within 5 days in England and Wales at the local register office
 - Request at least 10 certified death certificates, most institutions need originals

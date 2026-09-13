@@ -1,6 +1,7 @@
 import Anthropic from '@anthropic-ai/sdk'
 import { aiGuard } from '../_lib/ai-guard.js'
 import { withSentry, captureException } from '../_lib/sentry.js'
+import { jurisdictionNote } from '../_lib/jurisdiction.js'
 import { planLabel } from '../_lib/plan-label.js'
 
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
@@ -11,7 +12,7 @@ async function handler(req, res) {
   const blocked = await aiGuard(req)
   if (blocked) return res.status(blocked.status).json({ error: blocked.error })
 
-  const { firstName, plan, stats } = req.body
+  const { firstName, plan, stats, country, assetCountries, lang } = req.body
   // stats: { accountsCount, documentsCount, contactsCount, instructionsCount, wishesCount }
 
   if (!stats) return res.status(400).json({ error: 'Missing required field: stats' })
@@ -28,7 +29,9 @@ async function handler(req, res) {
     (Math.min(wishesCount, maxWishes) / maxWishes * 5)
   )
 
-  const systemPrompt = `You are the Everstead readiness coach, a warm, practical assistant helping UK families get their estate plan in order.
+  const systemPrompt = `You are the Everstead readiness coach, a warm, practical assistant helping families get their estate plan in order.
+
+${jurisdictionNote({ country, assetCountries, lang })}
 
 Return a JSON object with exactly these fields:
 - readinessScore: number (0-100, use the score provided)

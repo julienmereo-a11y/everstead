@@ -3,6 +3,7 @@
 // link, biometric lock) live here because nothing else uses them.
 //
 import React, { useState, useEffect } from 'react'
+import { COUNTRIES } from '../../../config/countries'
 import { PLAN_LABELS, PRICING, marketPricing, planLabel } from '../../../config/pricing'
 import i18n from '../../../i18n'
 import { PLANS, redirectToCustomerPortal } from '../../../lib/stripe'
@@ -300,6 +301,7 @@ export function SettingsSection({ adviser, profile, isDemo, updateProfile, refre
     city:        profile.city        ?? '',
     postcode:    profile.postcode    ?? '',
     country:     profile.country     ?? 'United Kingdom',
+    asset_countries: Array.isArray(profile.asset_countries) ? profile.asset_countries : [],
   })
 
   // Notification preferences
@@ -442,10 +444,34 @@ export function SettingsSection({ adviser, profile, isDemo, updateProfile, refre
                     placeholder={t('settings.profile.postcodePlaceholder')} />
                 </Field>
                 <Field label={t('settings.profile.country')}>
-                  <input className={input} value={profileForm.country}
-                    onChange={e => setProfileForm(p => ({ ...p, country: e.target.value }))}
-                    placeholder={t('settings.profile.countryPlaceholder')} />
+                  <select className={input} value={profileForm.country}
+                    onChange={e => setProfileForm(p => ({ ...p, country: e.target.value }))}>
+                    {!COUNTRIES.some(c => c.name === profileForm.country) && profileForm.country && (
+                      <option value={profileForm.country}>{profileForm.country}</option>
+                    )}
+                    {COUNTRIES.map(c => <option key={c.code} value={c.name}>{c.name}</option>)}
+                  </select>
                 </Field>
+                <div className="sm:col-span-2">
+                  <p className="text-xs font-semibold text-stone-600 mb-1">{t('settings.profile.assetCountries')}</p>
+                  <p className="text-xs text-stone-400 mb-2 leading-relaxed">{t('settings.profile.assetCountriesHint')}</p>
+                  <div className="flex flex-wrap gap-2">
+                    {COUNTRIES.filter(c => c.name !== profileForm.country).map(c => {
+                      const on = profileForm.asset_countries.includes(c.name)
+                      return (
+                        <button
+                          key={c.code}
+                          type="button"
+                          aria-pressed={on}
+                          onClick={() => setProfileForm(p => ({ ...p, asset_countries: on ? p.asset_countries.filter(n => n !== c.name) : [...p.asset_countries, c.name] }))}
+                          className={`text-xs font-medium px-3 py-1.5 rounded-full border transition-colors ${on ? 'bg-navy-950 border-navy-950 text-white' : 'bg-white border-stone-200 text-stone-600 hover:border-navy-300 hover:text-navy-800'}`}
+                        >
+                          {c.name}
+                        </button>
+                      )
+                    })}
+                  </div>
+                </div>
               </div>
             </div>
 

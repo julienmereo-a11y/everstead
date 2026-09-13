@@ -1,6 +1,7 @@
 import Anthropic from '@anthropic-ai/sdk'
 import { aiGuard } from '../_lib/ai-guard.js'
 import { withSentry, captureException } from '../_lib/sentry.js'
+import { jurisdictionNote } from '../_lib/jurisdiction.js'
 
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
 
@@ -10,7 +11,7 @@ async function handler(req, res) {
   const blocked = await aiGuard(req)
   if (blocked) return res.status(blocked.status).json({ error: blocked.error })
 
-  const { purpose, recipient, firstSteps, resources, additional, userName } = req.body
+  const { purpose, recipient, firstSteps, resources, additional, userName, country, assetCountries, lang } = req.body
 
   if (!purpose) return res.status(400).json({ error: 'Missing required field: purpose' })
 
@@ -18,8 +19,10 @@ async function handler(req, res) {
 
 Your job is to write warm, step-by-step instructions that a grieving or stressed loved one can actually follow. The instructions should feel personal, not clinical.
 
+${jurisdictionNote({ country, assetCountries, lang })}
+
 Rules:
-- Write in warm, clear British English
+- Write in the user's language: British English when English, French written for France when French
 - Never use em dashes or en dashes; use commas, full stops, colons or parentheses instead
 - Structure as a short intro paragraph followed by numbered steps
 - Be specific and actionable, not "handle finances" but "contact our bank at the number on the card"

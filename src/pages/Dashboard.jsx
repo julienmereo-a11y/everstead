@@ -742,7 +742,7 @@ function OwnerAIGuide({ userName, plan, accountCount, documentCount, contactCoun
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${session?.access_token}` },
         body: JSON.stringify({
           type: 'owner-guide',
-          context: { userName, plan, accountCount, documentCount, contactCount, instructionCount },
+          context: { userName, plan, accountCount, documentCount, contactCount, instructionCount, country: activeProfile?.country, assetCountries: activeProfile?.asset_countries, lang: activeProfile?.language },
           messages: next,
         }),
       })
