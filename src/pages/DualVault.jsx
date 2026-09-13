@@ -80,9 +80,9 @@ export default function DualVault() {
         <meta property="og:title" content="Family Vault | Two Private Vaults, One Subscription | Everstead" />
         <meta property="og:description" content="Two completely private vaults. One subscription. Each person keeps their own data, shares only what they choose. The only estate planning tool built for couples who value their privacy." />
         <meta property="og:url" content="https://www.everstead.care/family-vault" />
-        <meta property="og:image" content="https://www.everstead.care/og-image.png" />
+        <meta property="og:image" content="https://www.everstead.care/og-image.jpg" />
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:image" content="https://www.everstead.care/og-image.png" />
+        <meta name="twitter:image" content="https://www.everstead.care/og-image.jpg" />
       </Helmet>
 
       <div className="bg-stone-50 pt-24 min-h-screen">

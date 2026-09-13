@@ -302,9 +302,9 @@ export default function DigitalEstateCalculator() {
         <meta property="og:title" content={t('meta.title')} />
         <meta property="og:description" content={t('meta.desc')} />
         <meta property="og:url" content={pageUrl} />
-        <meta property="og:image" content="https://www.everstead.care/og-image.png" />
+        <meta property="og:image" content="https://www.everstead.care/og-image.jpg" />
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:image" content="https://www.everstead.care/og-image.png" />
+        <meta name="twitter:image" content="https://www.everstead.care/og-image.jpg" />
       </Helmet>
       <HreflangLinks path="/digital-estate-worth" />
 

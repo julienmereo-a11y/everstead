@@ -16,7 +16,7 @@ import { fileURLToPath } from 'node:url'
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..')
 const BASE = 'https://www.everstead.care'
-const DEFAULT_IMAGE = `${BASE}/og-image.png?v=2`
+const DEFAULT_IMAGE = `${BASE}/og-image.jpg?v=3`
 
 const source = readFileSync(join(root, 'src/pages/Resources.jsx'), 'utf8')
 

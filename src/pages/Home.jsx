@@ -168,9 +168,9 @@ export default function Home() {
         <meta property="og:title" content={t('meta.ogTitle')} />
         <meta property="og:description" content={t('meta.ogDescription')} />
         <meta property="og:url" content={`https://www.everstead.care${urlPrefix}`} />
-        <meta property="og:image" content="https://www.everstead.care/og-image.png" />
+        <meta property="og:image" content="https://www.everstead.care/og-image.jpg" />
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:image" content="https://www.everstead.care/og-image.png" />
+        <meta name="twitter:image" content="https://www.everstead.care/og-image.jpg" />
         <script type="application/ld+json">{JSON.stringify({
           '@context': 'https://schema.org',
           '@type': 'Organization',

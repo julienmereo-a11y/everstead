@@ -93,9 +93,9 @@ export default function Compare() {
         <meta property="og:title" content={t('detail.metaTitle', { tagline })} />
         <meta property="og:description" content={subhead} />
         <meta property="og:url" content={pageUrl} />
-        <meta property="og:image" content="https://www.everstead.care/og-image.png" />
+        <meta property="og:image" content="https://www.everstead.care/og-image.jpg" />
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:image" content="https://www.everstead.care/og-image.png" />
+        <meta name="twitter:image" content="https://www.everstead.care/og-image.jpg" />
       </Helmet>
       {/* Only country-neutral comparisons exist as a pair across both trees;
           UK-competitor pages must not advertise a French alternate. */}
@@ -277,9 +277,9 @@ function CompareIndex() {
         <meta property="og:title" content={t('index.meta.ogTitle')} />
         <meta property="og:description" content={t('index.meta.ogDescription')} />
         <meta property="og:url" content={pageUrl} />
-        <meta property="og:image" content="https://www.everstead.care/og-image.png" />
+        <meta property="og:image" content="https://www.everstead.care/og-image.jpg" />
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:image" content="https://www.everstead.care/og-image.png" />
+        <meta name="twitter:image" content="https://www.everstead.care/og-image.jpg" />
       </Helmet>
       <HreflangLinks path="/compare" />
 

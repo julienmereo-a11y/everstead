@@ -296,9 +296,9 @@ export default function Changelog() {
         <meta property="og:title" content="Changelog | Everstead" />
         <meta property="og:description" content="What's new and what's improved in Everstead, a running log of product updates, new features, and fixes." />
         <meta property="og:url" content="https://www.everstead.care/changelog" />
-        <meta property="og:image" content="https://www.everstead.care/og-image.png" />
+        <meta property="og:image" content="https://www.everstead.care/og-image.jpg" />
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:image" content="https://www.everstead.care/og-image.png" />
+        <meta name="twitter:image" content="https://www.everstead.care/og-image.jpg" />
       </Helmet>
 
       <div className="bg-stone-50 pt-24 min-h-screen">

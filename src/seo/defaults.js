@@ -26,4 +26,4 @@ export const SEO_DEFAULTS = {
   },
 }
 
-export const SEO_IMAGE = 'https://www.everstead.care/og-image.png?v=2'
+export const SEO_IMAGE = 'https://www.everstead.care/og-image.jpg?v=3'

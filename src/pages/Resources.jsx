@@ -2844,7 +2844,7 @@ function ArticleDetail({ sectionSlug, postSlug }) {
     ? `https://www.everstead.care${post.ogImage}`
     : sectionSlug === 'blog'
       ? `https://www.everstead.care/og/blog/${slug}.png`
-      : 'https://www.everstead.care/og-image.png'
+      : 'https://www.everstead.care/og-image.jpg'
 
   return (
     <div className="bg-stone-50 pt-24">
