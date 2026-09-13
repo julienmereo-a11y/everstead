@@ -77,6 +77,81 @@
       "imageAlt": "L'écran des personnes de confiance dans Everstead : un conjoint avec un accès complet, une fille avec un seul document, un notaire dont l'enveloppe reste scellée jusqu'au moment venu"
     }
   },
+  "demo": {
+    "eyebrow": "En pratique",
+    "title": "Ce que reçoit vraiment votre famille.",
+    "intro": "Un coffre fictif, celui d'Anne, pour montrer qui voit quoi, et à quel moment. Chaque nom et chaque compte sont inventés.",
+    "tabs": {
+      "keep": "Ce qu'Anne conserve",
+      "partner": "Ce que Thomas voit aujourd'hui",
+      "emergency": "Ce qui s'ouvre en cas d'urgence",
+      "private": "Ce qui reste privé"
+    },
+    "captions": {
+      "keep": "Tout ce qu'Anne a ajouté, au même endroit. Chaque élément porte sa propre règle d'accès, fixée par elle.",
+      "partner": "Thomas, le mari d'Anne, voit déjà les éléments pratiques. Le reste attend, et Anne peut modifier chaque règle à tout moment.",
+      "emergency": "Lorsqu'une personne de confiance signale un décès et qu'Everstead le vérifie, l'accès qu'Anne a choisi s'ouvre, et sa lettre scellée est remise.",
+      "private": "Certaines choses ne s'ouvrent jamais à personne. Et Everstead ne demande jamais de mot de passe : Anne note où se trouve son gestionnaire de mots de passe, pas ce qu'il contient."
+    },
+    "categories": {
+      "account": "Compte",
+      "document": "Document",
+      "instruction": "Consignes",
+      "message": "Message personnel",
+      "note": "Note"
+    },
+    "chips": {
+      "now": "Visible dès maintenant",
+      "later": "Après vérification",
+      "sealed": "Scellé",
+      "never": "Jamais partagé",
+      "opens": "S'ouvre",
+      "delivered": "Remis",
+      "closed": "Reste fermé",
+      "private": "Privé",
+      "shared": "Partagé selon les règles d'Anne"
+    },
+    "items": {
+      "current": {
+        "title": "Compte courant, Crédit Agricole",
+        "detail": "Références du compte et agence à contacter"
+      },
+      "pension": {
+        "title": "Plan d'épargne retraite, AXA",
+        "detail": "Numéro de contrat et bénéficiaire désigné"
+      },
+      "will": {
+        "title": "Testament",
+        "detail": "Original conservé chez Maître Durand, notaire à Lyon"
+      },
+      "passport": {
+        "title": "Passeport",
+        "detail": "Numéro et date d'expiration, avec un rappel de renouvellement"
+      },
+      "insurance": {
+        "title": "Assurance habitation",
+        "detail": "Contrat, échéance en mars"
+      },
+      "firstSteps": {
+        "title": "Premières démarches",
+        "detail": "Qui appeler, où se trouve le double des clés, que faire pour le chien"
+      },
+      "funeral": {
+        "title": "Volontés pour les obsèques",
+        "detail": "Inhumation en forêt, pas de fleurs, dons à une association"
+      },
+      "letter": {
+        "title": "Lettre à Emma",
+        "detail": "Un message personnel, scellé jusqu'au moment venu"
+      },
+      "journal": {
+        "title": "Notes personnelles",
+        "detail": "Les pense-bêtes d'Anne, pour personne d'autre"
+      }
+    },
+    "cta": "Explorer le coffre de démonstration",
+    "footnote": "Anne, Thomas, Emma et chaque compte de cette page sont inventés."
+  },
   "security": {
     "eyebrow": "Sécurité et confidentialité",
     "title": "Les normes de sécurité les plus strictes, et vous seul aux commandes.",

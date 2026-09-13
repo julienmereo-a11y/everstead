@@ -77,6 +77,81 @@
       "imageAlt": "People & access in Everstead, a partner with full access, a daughter with a single document, and a solicitor sealed until needed"
     }
   },
+  "demo": {
+    "eyebrow": "See it in practice",
+    "title": "What your family actually gets.",
+    "intro": "A fictional vault, Anne's, to show who sees what, and when. Every name and account here is invented.",
+    "tabs": {
+      "keep": "What Anne keeps",
+      "partner": "What Tom sees today",
+      "emergency": "What opens in an emergency",
+      "private": "What stays private"
+    },
+    "captions": {
+      "keep": "Everything Anne has added, in one place. Each item carries its own access rule, set by her.",
+      "partner": "Tom, Anne's husband, can already see the practical things. The rest waits, and Anne can change any of it at any time.",
+      "emergency": "After a trusted person reports a death and Everstead verifies it, the access Anne chose opens, and her sealed letter is delivered.",
+      "private": "Some things never open to anyone. And Everstead never asks for passwords: Anne notes where her password manager is, not what is in it."
+    },
+    "categories": {
+      "account": "Account",
+      "document": "Document",
+      "instruction": "Instructions",
+      "message": "Personal message",
+      "note": "Note"
+    },
+    "chips": {
+      "now": "Visible now",
+      "later": "After verification",
+      "sealed": "Sealed",
+      "never": "Never shared",
+      "opens": "Opens",
+      "delivered": "Delivered",
+      "closed": "Stays closed",
+      "private": "Private",
+      "shared": "Shared on Anne's terms"
+    },
+    "items": {
+      "current": {
+        "title": "Current account, Barclays",
+        "detail": "Account reference and the branch to call"
+      },
+      "pension": {
+        "title": "Workplace pension, Aviva",
+        "detail": "Policy number and the nominated beneficiary"
+      },
+      "will": {
+        "title": "Will",
+        "detail": "Original held at Whitmore & Co, Bath"
+      },
+      "passport": {
+        "title": "Passport",
+        "detail": "Number and expiry, with a renewal reminder"
+      },
+      "insurance": {
+        "title": "Home insurance",
+        "detail": "Policy document, renews in March"
+      },
+      "firstSteps": {
+        "title": "First steps",
+        "detail": "Who to call, where the spare key is, what to do about the dog"
+      },
+      "funeral": {
+        "title": "Funeral wishes",
+        "detail": "Woodland burial, no flowers, donations to Cruse"
+      },
+      "letter": {
+        "title": "Letter to Emma",
+        "detail": "A personal message, sealed until it is needed"
+      },
+      "journal": {
+        "title": "Private notes",
+        "detail": "Anne's own reminders, for nobody else"
+      }
+    },
+    "cta": "Explore the demo vault",
+    "footnote": "Anne, Tom, Emma and every account on this page are invented."
+  },
   "security": {
     "eyebrow": "Security & privacy",
     "title": "Protected to the highest standards. Only ever yours.",

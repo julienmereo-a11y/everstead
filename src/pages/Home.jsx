@@ -21,7 +21,7 @@ import StoreBadges from '../components/StoreBadges'
 import { useReveal } from '../components/useReveal'
 import { PRICING } from '../config/pricing'
 import { trackEvent } from '../lib/analytics'
-import { ArrowRight, Bell, CheckCircle2, EyeOff, Flag, KeyRound, Lock, Users } from 'lucide-react'
+import { ArrowRight, Bell, BookOpen, CheckCircle2, EyeOff, FileText, Flag, KeyRound, Landmark, Lock, Mail, StickyNote, Users } from 'lucide-react'
 
 // One Mux asset per language. posterTime is the second the idle poster is
 // taken from: a frame where the caption is complete or absent, not mid-animation.
@@ -30,6 +30,124 @@ const MUX_FILMS = {
   fr: { id: '8IiYAV012gsQ6x3ggl00TbZJu2aFwUA5m7i7Q1ss3RSDw', posterTime: 5 },
 }
 const SECTION_X = 'px-6 sm:px-8 lg:px-12'
+
+// ── Demo: who sees what, and when ──────────────────────────────────────────
+// A fictional vault with one access rule per item. The four tabs re-read the
+// same nine rows, so a visitor sees the product's central idea (access is
+// decided per item and per moment) without reading a paragraph about it.
+const DEMO_ITEMS = [
+  { key: 'current',    cat: 'account',     partner: 'now'    },
+  { key: 'pension',    cat: 'account',     partner: 'later'  },
+  { key: 'will',       cat: 'document',    partner: 'now'    },
+  { key: 'passport',   cat: 'document',    partner: 'later'  },
+  { key: 'insurance',  cat: 'document',    partner: 'now'    },
+  { key: 'firstSteps', cat: 'instruction', partner: 'now'    },
+  { key: 'funeral',    cat: 'instruction', partner: 'later'  },
+  { key: 'letter',     cat: 'message',     partner: 'sealed' },
+  { key: 'journal',    cat: 'note',        partner: 'never'  },
+]
+const DEMO_ICONS = { account: Landmark, document: FileText, instruction: BookOpen, message: Mail, note: StickyNote }
+const DEMO_TABS = ['keep', 'partner', 'emergency', 'private']
+
+function demoChip(tab, item) {
+  if (tab === 'keep') return { key: item.cat, tone: 'cat' }
+  if (tab === 'partner') return { key: item.partner, tone: item.partner === 'now' ? 'open' : item.partner === 'never' ? 'closed' : 'wait' }
+  if (tab === 'emergency') {
+    if (item.partner === 'never') return { key: 'closed', tone: 'closed' }
+    if (item.partner === 'sealed') return { key: 'delivered', tone: 'open' }
+    return { key: 'opens', tone: 'open' }
+  }
+  if (item.partner === 'never') return { key: 'private', tone: 'closed' }
+  if (item.partner === 'sealed') return { key: 'sealed', tone: 'wait' }
+  return { key: 'shared', tone: 'muted' }
+}
+const CHIP_TONES = {
+  cat:    'bg-stone-100 text-stone-600',
+  open:   'bg-sage-100 text-sage-700',
+  wait:   'bg-amber-50 text-amber-700',
+  closed: 'bg-navy-50 text-navy-700',
+  muted:  'bg-stone-100 text-stone-500',
+}
+
+function DemoSection({ t, demoHref }) {
+  const [tab, setTab] = useState('partner')
+  const pick = (next) => { setTab(next); trackEvent('demo_tab', { location: 'home_demo', tab: next }) }
+  const categoryLabel = (item) => (tab === 'keep' ? '' : t(`demo.categories.${item.cat}`))
+  return (
+    <section className={`py-24 lg:py-[120px] bg-white ${SECTION_X}`}>
+      <div className="max-w-[1200px] mx-auto">
+        <div className="reveal grid lg:grid-cols-2 gap-8 lg:gap-12 items-end mb-10 lg:mb-12">
+          <div>
+            <span className="section-label section-label-light">{t('demo.eyebrow')}</span>
+            <h2 className="font-display font-light text-navy-950 text-balance m-0 leading-[1.1] text-[clamp(2.25rem,3.6vw,3.375rem)]">
+              {t('demo.title')}
+            </h2>
+          </div>
+          <p className="m-0 text-[17px] leading-[1.6] text-stone-600 max-w-[460px]">{t('demo.intro')}</p>
+        </div>
+
+        <div className="reveal reveal-delay-1 flex flex-wrap gap-2 mb-6" role="tablist" aria-label={t('demo.eyebrow')}>
+          {DEMO_TABS.map(key => (
+            <button
+              key={key}
+              type="button"
+              role="tab"
+              aria-selected={tab === key}
+              onClick={() => pick(key)}
+              className={`px-4 py-2 rounded-full text-sm font-semibold border transition-colors ${
+                tab === key
+                  ? 'bg-navy-950 border-navy-950 text-white'
+                  : 'bg-white border-stone-200 text-stone-600 hover:border-navy-300 hover:text-navy-800'
+              }`}
+            >
+              {t(`demo.tabs.${key}`)}
+            </button>
+          ))}
+        </div>
+
+        <div className="reveal reveal-delay-2 card-light overflow-hidden" role="tabpanel">
+          <p className="m-0 px-6 lg:px-8 py-5 text-[15px] leading-[1.6] text-navy-900 bg-stone-50 border-b border-stone-100">
+            {t(`demo.captions.${tab}`)}
+          </p>
+          <ul className="m-0 p-0 list-none divide-y divide-stone-100">
+            {DEMO_ITEMS.map(item => {
+              const Icon = DEMO_ICONS[item.cat]
+              const chip = demoChip(tab, item)
+              const dim = (tab === 'partner' && item.partner !== 'now') || (tab === 'emergency' && item.partner === 'never') || (tab === 'private' && chip.key === 'shared')
+              return (
+                <li key={item.key} className={`flex items-center gap-4 px-6 lg:px-8 py-4 transition-opacity ${dim ? 'opacity-55' : ''}`}>
+                  <span className="w-9 h-9 rounded-full bg-stone-100 text-navy-700 flex items-center justify-center shrink-0" aria-hidden="true">
+                    <Icon size={16} />
+                  </span>
+                  <span className="min-w-0 flex-1">
+                    <span className="block text-[15px] font-medium text-navy-950 truncate">{t(`demo.items.${item.key}.title`)}</span>
+                    <span className="block text-[13px] text-stone-500 truncate">
+                      {categoryLabel(item) ? `${categoryLabel(item)} · ` : ''}{t(`demo.items.${item.key}.detail`)}
+                    </span>
+                  </span>
+                  <span className={`shrink-0 text-xs font-semibold px-2.5 py-1 rounded-full ${CHIP_TONES[chip.tone]}`}>
+                    {tab === 'keep' ? t(`demo.categories.${item.cat}`) : t(`demo.chips.${chip.key}`)}
+                  </span>
+                </li>
+              )
+            })}
+          </ul>
+        </div>
+
+        <div className="reveal reveal-delay-3 mt-6 flex flex-col sm:flex-row sm:items-center gap-4 sm:justify-between">
+          <p className="m-0 text-[13px] text-stone-500">{t('demo.footnote')}</p>
+          <Link
+            to={demoHref}
+            onClick={() => trackEvent('cta_click', { location: 'home_demo', cta: 'demo_vault' })}
+            className="inline-flex items-center gap-1.5 text-sm font-semibold text-navy-600 hover:text-navy-800 transition-colors"
+          >
+            {t('demo.cta')} <ArrowRight size={14} />
+          </Link>
+        </div>
+      </div>
+    </section>
+  )
+}
 
 // ── Film ─────────────────────────────────────────────────────────────────────
 // Idle is a poster and a play button; the player is only mounted on click, so
@@ -350,6 +468,9 @@ export default function Home() {
             ))}
           </div>
         </section>
+
+        {/* ── DEMO: who sees what, and when ───────────────────────── */}
+        <DemoSection t={t} demoHref="/dashboard?demo=true" />
 
         {/* ── SECURITY ─────────────────────────────────────────────── */}
         <section className={`py-24 lg:py-[120px] bg-white border-y border-stone-200 ${SECTION_X}`}>
