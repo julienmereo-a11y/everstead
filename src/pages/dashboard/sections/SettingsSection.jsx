@@ -53,6 +53,9 @@ export function ReferralLinkBox({ referralCode }) {
     ;(async () => {
       try {
         const { supabase: sb } = await import('../../../lib/supabase')
+        // No session (demo mode) means a guaranteed 401 from the RPC; skip it.
+        const { data: { session } } = await sb.auth.getSession()
+        if (!session) return
         const { data, error } = await sb.rpc('my_referral_count')
         if (on && !error && typeof data === 'number') setJoined(data)
       } catch { /* count is a nicety, never an error state */ }
