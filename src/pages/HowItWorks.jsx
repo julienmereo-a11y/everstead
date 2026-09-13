@@ -4,6 +4,7 @@ import HreflangLinks from '../components/HreflangLinks'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useReveal } from '../components/useReveal'
+import FilmSection from '../components/FilmSection'
 import {
   ArrowRight, CheckCircle2, ChevronDown,
   Folder, Users, ClipboardList, Bell,
@@ -136,6 +137,11 @@ export default function HowItWorks() {
           </div>
         </div>
       </section>
+
+
+      {/* ── THE FILM (one cut per language, shared with the homepage) ── */}
+
+      <FilmSection location="how_it_works_film" className="py-24 lg:py-28" />
 
       {/* ── STEP INDICATOR ────────────────────────────────────────── */}
       <div className="bg-navy-950 border-b border-white/5 sticky top-16 z-10 hidden lg:block">
