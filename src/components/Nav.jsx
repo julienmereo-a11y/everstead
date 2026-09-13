@@ -7,11 +7,13 @@ import { useAuth } from '../contexts/AuthContext'
 import LanguageSwitcher from './LanguageSwitcher'
 
 // Labels are i18n keys under nav.* — resolved with t() at render time.
-// Two links only. Features, Pricing and About live in the footer; the
-// Security page is reached as "Your Privacy".
+// Features and About live in the footer; the Security page is reached as
+// "Your Privacy" and the advisers page as "For professionals".
 const navLinks = [
-  { key: 'howItWorks',  href: '/how-it-works' },
-  { key: 'yourPrivacy', href: '/security' },
+  { key: 'howItWorks',       href: '/how-it-works' },
+  { key: 'pricing',          href: '/pricing' },
+  { key: 'forProfessionals', href: '/for-advisers' },
+  { key: 'yourPrivacy',      href: '/security' },
 ]
 
 // The URL path is the language signal (/fr/* → French, root → English). The nav
