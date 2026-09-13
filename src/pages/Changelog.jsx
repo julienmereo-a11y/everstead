@@ -5,6 +5,55 @@ import { Link } from 'react-router-dom'
 
 const entries = [
   {
+    date: 'September 2026',
+    tag: 'New',
+    tagColor: 'bg-sage-100 text-sage-700',
+    title: 'A new look for Everstead, on the website and in the app',
+    items: [
+      'A new homepage in English and French, built around the felted family illustration, with a short film that explains Everstead in each language.',
+      'A section for advisers and solicitors, so the professionals in your life can see how Everstead works with them.',
+      'The apps (iOS 1.4 and Android) carry the same look: the artwork on Welcome, Sign in and Home, a Family banner named after your household, and the film playable from Home.',
+      'One flat navy button everywhere, on the site, in the apps and in our emails.',
+    ],
+  },
+  {
+    date: 'September 2026',
+    tag: 'New',
+    tagColor: 'bg-sage-100 text-sage-700',
+    title: 'Everstead for solicitors',
+    items: [
+      'You choose exactly what your solicitor or adviser can see: accounts, documents, instructions, people and alerts, each with its own switch.',
+      'Your firm’s name and contact details appear in your vault, and you can ask for them to be told when your vault is activated.',
+      'Firms get a redesigned portal: a review queue for drafts, document requests with reminders, matters, and a printable estate pack when the time comes.',
+      'A document request from your firm shows up in your vault, and uploading the document tells them.',
+    ],
+  },
+  {
+    date: 'September 2026',
+    tag: 'Update',
+    tagColor: 'bg-amber-100 text-amber-700',
+    title: 'See you at Web Summit 2026',
+    items: [
+      'Everstead is part of the startup programme at Web Summit in Lisbon, 9 to 12 November, and launches officially there. Read the announcement in English or French on the blog.',
+    ],
+  },
+  {
+    date: 'September 2026',
+    tag: 'Improvement',
+    tagColor: 'bg-blue-50 text-blue-700',
+    title: 'Lots of little things, made smoother',
+    items: [
+      'Every email now comes with a plain-text version and a one-click unsubscribe, and the unsubscribe page speaks your language.',
+      'French members no longer receive an English deletion warning or trial reminder footer.',
+      'The welcome emails link straight to the right screen: accounts, people, documents or instructions.',
+      'The reminder about an unfinished plan now waits until the welcome series has ended, so two nudges never land in the same week.',
+      'Sharing an article on LinkedIn or WhatsApp now shows the article’s own title and image.',
+      'The invitation page for delegates is available in French.',
+      'Better accessibility on the Security page and in the pricing comparison.',
+      'Cookie consent is now handled by Everstead itself, with a “Cookie settings” link in the footer, and every section of the Privacy page can be linked to directly.',
+    ],
+  },
+  {
     date: 'August 2026',
     tag: 'New',
     tagColor: 'bg-sage-100 text-sage-700',
