@@ -21,7 +21,7 @@ import StoreBadges from '../components/StoreBadges'
 import { useReveal } from '../components/useReveal'
 import { PRICING } from '../config/pricing'
 import { trackEvent } from '../lib/analytics'
-import { ArrowRight, Bell, BookOpen, CheckCircle2, EyeOff, FileText, Flag, KeyRound, Landmark, Lock, Mail, StickyNote, Users } from 'lucide-react'
+import { ArrowRight, Bell, BookOpen, CheckCircle2, Download, FileText, KeyRound, Landmark, Lock, Mail, ShieldCheck, StickyNote, Users } from 'lucide-react'
 
 // One Mux asset per language. posterTime is the second the idle poster is
 // taken from: a frame where the caption is complete or absent, not mid-animation.
@@ -230,9 +230,9 @@ export default function Home() {
   const [annualPricing, setAnnualPricing] = useState(true)
 
   const pillars = [
-    { key: 'accounts',  to: '/features' },
-    { key: 'documents', to: '/security' },
-    { key: 'people',    to: '/how-it-works' },
+    { key: 'gather',  to: '/features' },
+    { key: 'share',   to: '/how-it-works' },
+    { key: 'current', to: '/how-it-works' },
   ]
 
   const productRows = [
@@ -240,7 +240,7 @@ export default function Home() {
     { key: 'share',   image: shot('screenshot-access'), imageFirst: true },
   ]
 
-  const securityIcons = [Lock, KeyRound, EyeOff, Users, Bell, Flag]
+  const securityIcons = [Users, KeyRound, Download, Lock, ShieldCheck, Bell]
   const securityFeatures = t('security.features', { returnObjects: true }).map((label, i) => ({
     label,
     icon: securityIcons[i] ?? Lock,
@@ -359,6 +359,8 @@ export default function Home() {
             <div className="max-w-[600px] animate-fade-up">
               <h1 className="font-display font-light text-stone-50 text-balance m-0 tracking-[-0.01em] leading-[1.06] text-[clamp(2.5rem,5.4vw,4.875rem)]">
                 {t('hero.title1')}<em className="italic text-sage-300">{t('hero.titleEm')}</em>{t('hero.title2')}
+                <br />
+                {t('hero.titleLine2')}
               </h1>
               <p className="mt-6 lg:mt-7 text-[17px] sm:text-[19px] leading-[1.55] text-stone-300 max-w-[480px]">
                 {t('hero.subtitle')}
@@ -366,8 +368,8 @@ export default function Home() {
 
               <div className="mt-8 lg:mt-9 flex flex-wrap gap-3">
                 <Link
-                  to="/get-started"
-                  onClick={() => trackEvent('cta_click', { location: 'home_hero', cta: 'get_started' })}
+                  to="/get-started?plan=free"
+                  onClick={() => trackEvent('cta_click', { location: 'home_hero', cta: 'start_free' })}
                   className="inline-flex items-center gap-2.5 rounded-full bg-navy-600 hover:bg-navy-500 text-white text-base font-semibold px-[30px] py-4 transition-colors"
                 >
                   {t('hero.ctaPrimary')} <ArrowRight size={18} />
@@ -382,8 +384,7 @@ export default function Home() {
               </div>
 
               <div className="mt-8 lg:mt-[34px] flex flex-wrap gap-x-[22px] gap-y-2 text-[13px] text-navy-200">
-                <span className="flex items-center gap-[7px]"><Lock size={14} className="shrink-0" />{t('hero.trustEncryption')}</span>
-                <span>{t('hero.trustUk')}</span>
+                <span className="flex items-center gap-[7px]"><CheckCircle2 size={14} className="shrink-0 text-sage-300" />{t('hero.reassurance')}</span>
                 <a
                   href="https://www.trustpilot.com/review/everstead.care"
                   target="_blank"
@@ -633,6 +634,43 @@ export default function Home() {
                 {t('pricing.fullDetails')}
               </Link>
             </p>
+          </div>
+        </section>
+
+        {/* ── QUESTIONS ────────────────────────────────────────────── */}
+        <section className={`py-24 lg:py-[120px] bg-stone-50 ${SECTION_X}`}>
+          <div className="max-w-[1200px] mx-auto">
+            <div className="reveal max-w-[680px] mb-12 lg:mb-14">
+              <span className="section-label section-label-light">{t('faq.eyebrow')}</span>
+              <h2 className="font-display font-light text-navy-950 text-balance m-0 leading-[1.1] text-[clamp(2.125rem,3.4vw,3.125rem)]">
+                {t('faq.title')}
+              </h2>
+            </div>
+            <dl className="grid md:grid-cols-2 gap-x-10 gap-y-9 m-0">
+              {t('faq.items', { returnObjects: true }).map(({ q, a }, i) => (
+                <div key={q} className={`reveal reveal-delay-${(i % 3) + 1}`}>
+                  <dt className="font-display font-medium text-[22px] text-navy-950 m-0">{q}</dt>
+                  <dd className="mt-2.5 m-0 text-[15px] leading-[1.65] text-stone-600">{a}</dd>
+                </div>
+              ))}
+            </dl>
+          </div>
+        </section>
+
+        {/* ── ONE SMALL STEP ───────────────────────────────────────── */}
+        <section className={`relative py-24 lg:py-[120px] bg-navy-950 grain text-stone-50 overflow-hidden ${SECTION_X}`}>
+          <div className="relative max-w-[680px] mx-auto text-center reveal">
+            <h2 className="font-display font-light text-stone-50 text-balance m-0 leading-[1.1] text-[clamp(2.25rem,3.8vw,3.5rem)]">
+              {t('final.title')}
+            </h2>
+            <p className="mt-5 m-0 text-[17px] sm:text-[19px] leading-[1.55] text-stone-300">{t('final.desc')}</p>
+            <Link
+              to="/get-started?plan=free"
+              onClick={() => trackEvent('cta_click', { location: 'home_final', cta: 'start_free' })}
+              className="mt-9 inline-flex items-center gap-2.5 rounded-full bg-navy-600 hover:bg-navy-500 text-white text-base font-semibold px-[30px] py-4 transition-colors"
+            >
+              {t('final.cta')} <ArrowRight size={18} />
+            </Link>
           </div>
         </section>
 

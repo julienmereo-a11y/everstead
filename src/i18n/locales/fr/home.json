@@ -7,14 +7,14 @@
     "jsonLdDescription": "Coffre numérique sécurisé pour organiser sa succession : comptes, contrats d'assurance-vie, documents et dernières volontés, consultables dès aujourd'hui et transmis aux personnes de confiance le moment venu."
   },
   "hero": {
-    "title1": "Un seul endroit sûr pour ",
-    "titleEm": "tout ce qui compte",
-    "title2": ", que vos proches sauront trouver.",
-    "subtitle": "Comptes, documents et dernières volontés : réunis aujourd'hui, prêts pour vos proches le moment venu.",
-    "ctaPrimary": "Créer mon compte gratuit",
+    "title1": "Votre vie, ",
+    "titleEm": "ensemble",
+    "title2": ".",
+    "titleLine2": "Pour ceux que vous aimez.",
+    "subtitle": "Réunissez vos comptes, vos documents et vos volontés en un seul endroit, pour que vos proches trouvent ce dont ils ont besoin, au moment où ils en ont besoin.",
+    "ctaPrimary": "Commencer gratuitement",
     "ctaSecondary": "Comment ça marche",
-    "trustEncryption": "Chiffrement AES-256",
-    "trustUk": "Conforme au RGPD",
+    "reassurance": "Gratuit pour commencer. Sans carte bancaire. À votre rythme.",
     "trustpilotAria": "Noté « Excellent » sur Trustpilot, lire les avis",
     "trustpilotPre": "Noté",
     "trustpilotExcellent": "Excellent",
@@ -30,26 +30,26 @@
   },
   "why": {
     "eyebrow": "Pourquoi Everstead",
-    "title": "Tout ce qui compte, sous un même toit.",
-    "intro": "Quand la vie bascule, les proches passent des mois à chercher : un relevé, un contrat, un mot de passe. Everstead réunit tout, et tout le monde, dans un seul endroit calme et sécurisé.",
+    "title": "Un endroit pour les détails. Un plan pour vos proches.",
+    "intro": "Everstead, c'est l'endroit où une famille garde les choses pratiques, et décide qui peut les retrouver.",
     "cards": {
-      "accounts": {
+      "gather": {
         "num": "01",
-        "title": "Chaque compte, retrouvé",
-        "desc": "Banques, assurance-vie, retraite, abonnements et comptes en ligne : inscrits une fois pour toutes, pour que personne n'ait à partir en quête.",
-        "cta": "Voir ce que vous pouvez y ranger"
+        "title": "Rassemblez l'essentiel.",
+        "desc": "Réunissez comptes, documents et contacts importants, avec une note indiquant où se trouvent les originaux.",
+        "cta": "Ce que vous pouvez y ranger"
       },
-      "documents": {
+      "share": {
         "num": "02",
-        "title": "Chaque document, à l'abri",
-        "desc": "Testament, mandat de protection future, actes et contrats, conservés avec un chiffrement de niveau bancaire, et la mention de l'endroit où se trouvent les originaux.",
-        "cta": "Comment nous les protégeons"
-      },
-      "people": {
-        "num": "03",
-        "title": "Chaque proche, prêt",
-        "desc": "Conjoint, enfants, notaire : chacun dispose de sa propre vue, et de consignes claires pour les premiers jours.",
+        "title": "Choisissez ce que vous partagez.",
+        "desc": "Donnez à votre conjoint, à un proche ou à un conseiller accès aux informations que vous choisissez. Le reste reste privé.",
         "cta": "Comment fonctionne le partage"
+      },
+      "current": {
+        "num": "03",
+        "title": "Gardez votre plan à jour.",
+        "desc": "Quand la vie change, mettez vos informations à jour. De discrets rappels vous aident à suivre ce qui mérite votre attention.",
+        "cta": "Comment fonctionnent les rappels"
       }
     }
   },
@@ -67,8 +67,8 @@
     },
     "share": {
       "eyebrow": "Vous restez maître du partage",
-      "title": "Chacun voit ce que vous avez choisi, et rien de plus.",
-      "desc": "Un accès complet pour votre conjoint, un seul document pour un enfant, une enveloppe scellée pour votre notaire, qui ne s'ouvrira que le moment venu. Vous gardez la main du début à la fin.",
+      "title": "Organisez-vous ensemble. Gardez votre espace.",
+      "desc": "Votre famille n'a pas besoin de tout voir. Partagez la bonne information avec chaque personne, et modifiez ses accès quand vous le souhaitez.",
       "bullets": [
         "Une vue distincte pour le conjoint, les enfants et le notaire",
         "Rien n'est partagé tant que vous ne l'avez pas décidé",
@@ -153,18 +153,18 @@
     "footnote": "Anne, Thomas, Emma et chaque compte de cette page sont inventés."
   },
   "security": {
-    "eyebrow": "Sécurité et confidentialité",
-    "title": "Les normes de sécurité les plus strictes, et vous seul aux commandes.",
-    "desc": "Everstead repose sur un chiffrement AES-256, au repos comme en transit, et sur une infrastructure conforme au RGPD. Vos informations restent privées par défaut : seules les personnes que vous désignez y accèdent, sur les seuls éléments que vous ouvrez, au moment que vous jugez opportun. C'est votre coffre, et c'est vous qui décidez qui y entre.",
-    "linkPractices": "Découvrir nos pratiques de sécurité",
+    "eyebrow": "Votre vie privée",
+    "title": "Vos informations. Vos décisions.",
+    "desc": "Vous choisissez qui peut voir chaque élément, et vous pouvez modifier ou retirer un accès quand vous le souhaitez. Vous pouvez télécharger une copie complète de votre coffre à tout moment. Votre coffre est hébergé à Londres, chiffré au repos comme en transit, et nous ne vendons jamais vos données. Le détail, y compris les services situés hors du Royaume-Uni, figure sur notre page Sécurité.",
+    "linkPractices": "Comment nous protégeons vos données",
     "linkPrivacy": "Notre politique de confidentialité",
     "features": [
-      "Stockage chiffré AES-256",
-      "Contrôles d'accès par rôles",
-      "Journal d'audit complet",
-      "Partage strictement privé",
-      "Accès d'urgence pour vos proches",
-      "La confidentialité avant tout"
+      "Vous choisissez qui voit quoi",
+      "Un accès modifiable ou révocable à tout moment",
+      "Une copie complète, exportable quand vous voulez",
+      "Chiffrement au repos et en transit",
+      "Authentification à deux facteurs",
+      "Alertes d'accès et journal d'audit"
     ]
   },
   "pros": {
@@ -212,7 +212,7 @@
           "Instructions pas à pas",
           "Score de préparation"
         ],
-        "cta": "Créer un compte gratuit"
+        "cta": "Commencer gratuitement"
       },
       "family": {
         "name": "Everstead+",
@@ -227,7 +227,7 @@
           "25 Go de stockage",
           "Messages personnels, et bien d'autres choses"
         ],
-        "cta": "Passer à Everstead+"
+        "cta": "Essayer 14 jours gratuitement"
       },
       "advisor": {
         "name": "Everstead Pro",
@@ -245,5 +245,36 @@
     },
     "trialNote": "Le forfait gratuit l'est à vie, sans carte bancaire. Everstead+ comprend 14 jours d'essai : votre carte n'est débitée qu'à la fin de cette période.",
     "fullDetails": "Tous les détails des tarifs →"
+  },
+  "faq": {
+    "eyebrow": "Questions",
+    "title": "Bon à savoir avant de commencer.",
+    "items": [
+      {
+        "q": "Que puis-je faire gratuitement ?",
+        "a": "Beaucoup de choses. Le forfait gratuit comprend le parcours guidé, votre profil « À propos de moi », 5 comptes ou biens, 5 documents, 3 personnes de confiance et un score de préparation. Il n'a pas de limite de durée et ne demande aucune carte bancaire. Everstead+ supprime les limites et ajoute un second coffre pour votre conjoint, les messages personnels et 25 Go de stockage."
+      },
+      {
+        "q": "Qui peut voir mes informations ?",
+        "a": "Vous seul, tant que vous n'en avez pas décidé autrement. Vous pouvez donner à votre conjoint, à un proche ou à un conseiller accès à certains éléments, personne par personne, et modifier ou retirer cet accès quand vous le souhaitez. Personne chez Everstead ne consulte votre coffre dans le fonctionnement normal du service ; notre page Sécurité explique précisément comment l'accès fonctionne."
+      },
+      {
+        "q": "Que se passe-t-il quand mes proches ont besoin d'accéder à mon coffre ?",
+        "a": "Ce que vous avez déjà partagé avec quelqu'un lui reste accessible. Pour tout ce que vous avez réservé à plus tard, une personne de confiance que vous avez désignée signale un décès ou une incapacité avec les justificatifs, une personne chez Everstead vérifie, généralement sous deux jours ouvrés, et c'est seulement alors que l'accès que vous avez choisi s'ouvre. Rien ne s'ouvre tout seul."
+      },
+      {
+        "q": "Puis-je exporter mes informations ?",
+        "a": "Oui, à tout moment et quel que soit votre forfait. Depuis les réglages, vous téléchargez une copie complète de votre coffre : comptes, documents et leurs fichiers, consignes, volontés et personnes de confiance, dans une seule archive ZIP."
+      },
+      {
+        "q": "Everstead remplace-t-il un testament ?",
+        "a": "Non. Un testament est un acte juridique, et Everstead n'en rédige pas et ne donne aucun conseil juridique. Everstead sert à conserver les informations pratiques qui l'entourent : où se trouve l'original, qui appeler, ce que vous possédez et ce que vous souhaitez. Beaucoup l'utilisent en complément de leur notaire."
+      }
+    ]
+  },
+  "final": {
+    "title": "Un petit pas. Un peu plus de sérénité.",
+    "desc": "Commencez par une chose importante. Ajoutez le reste quand vous serez prêt.",
+    "cta": "Commencer gratuitement"
   }
 }

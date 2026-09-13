@@ -7,12 +7,11 @@ import { useAuth } from '../contexts/AuthContext'
 import LanguageSwitcher from './LanguageSwitcher'
 
 // Labels are i18n keys under nav.* — resolved with t() at render time.
+// Two links only. Features, Pricing and About live in the footer; the
+// Security page is reached as "Your Privacy".
 const navLinks = [
-  { key: 'howItWorks', href: '/how-it-works' },
-  { key: 'features', href: '/features' },
-  { key: 'security', href: '/security' },
-  { key: 'pricing', href: '/pricing' },
-  { key: 'about', href: '/about' },
+  { key: 'howItWorks',  href: '/how-it-works' },
+  { key: 'yourPrivacy', href: '/security' },
 ]
 
 // The URL path is the language signal (/fr/* → French, root → English). The nav
@@ -231,8 +230,8 @@ export default function Nav({ topOffset = 0 }) {
                   {t('nav.login')}
                 </Link>
                 <Link
-                  to="/get-started"
-                  onClick={() => trackEvent('cta_click', { location: 'nav', cta: 'get_started' })}
+                  to="/get-started?plan=free"
+                  onClick={() => trackEvent('cta_click', { location: 'nav', cta: 'start_free' })}
                   className="btn-aurora text-sm font-semibold px-4 py-2 rounded-full transition-transform hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-navy-400"
                 >
                   {t('nav.getStarted')}
@@ -318,8 +317,8 @@ export default function Nav({ topOffset = 0 }) {
                     {t('nav.login')}
                   </Link>
                   <Link
-                    to="/get-started"
-                    onClick={() => trackEvent('cta_click', { location: 'nav_mobile', cta: 'get_started' })}
+                    to="/get-started?plan=free"
+                    onClick={() => trackEvent('cta_click', { location: 'nav_mobile', cta: 'start_free' })}
                     className="flex items-center justify-center btn-aurora text-sm font-semibold px-4 py-3 rounded-full transition-transform hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-navy-400"
                   >
                     {t('nav.getStarted')}

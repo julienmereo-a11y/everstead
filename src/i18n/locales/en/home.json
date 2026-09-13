@@ -7,14 +7,14 @@
     "jsonLdDescription": "Secure personal vault for UK families. Organise accounts, documents, and important decisions, accessible today, and ready for your loved ones when it matters."
   },
   "hero": {
-    "title1": "Everything that matters, ",
-    "titleEm": "gathered",
-    "title2": " in one secure place.",
-    "subtitle": "Accounts, documents and final wishes, organised today and ready for the people you love when it matters.",
-    "ctaPrimary": "Get started free",
+    "title1": "Your life, ",
+    "titleEm": "together",
+    "title2": ".",
+    "titleLine2": "For the people you love.",
+    "subtitle": "Keep important accounts, documents and wishes in one place, so the people you love can find what they need, when they need it.",
+    "ctaPrimary": "Start free",
     "ctaSecondary": "See how it works",
-    "trustEncryption": "AES-256 encryption",
-    "trustUk": "UK-based · GDPR",
+    "reassurance": "Free to start. No card required. Go at your own pace.",
     "trustpilotAria": "Rated Excellent on Trustpilot, read our reviews",
     "trustpilotPre": "Rated",
     "trustpilotExcellent": "Excellent",
@@ -30,26 +30,26 @@
   },
   "why": {
     "eyebrow": "Why Everstead",
-    "title": "The things families wish they'd sorted. Sorted.",
-    "intro": "When something happens, the people we love spend months chasing details. Everstead puts everything, and everyone, in one calm, secure place.",
+    "title": "A place for the details. A plan for your people.",
+    "intro": "Everstead is where a family keeps the practical things, and decides who can find them.",
     "cards": {
-      "accounts": {
+      "gather": {
         "num": "01",
-        "title": "Every account, found",
-        "desc": "Banks, pensions, insurance, subscriptions and digital accounts, listed once so nobody has to go looking.",
-        "cta": "See what you can add"
+        "title": "Gather the essentials.",
+        "desc": "Keep accounts, documents and important contacts together, with a note of where the originals live.",
+        "cta": "What you can add"
       },
-      "documents": {
+      "share": {
         "num": "02",
-        "title": "Every document, safe",
-        "desc": "Wills, LPAs, deeds and policies stored with bank-level encryption, and a record of where the originals live.",
-        "cta": "How we protect it"
-      },
-      "people": {
-        "num": "03",
-        "title": "Every person, ready",
-        "desc": "Executors, partners and advisers each get their own view, and clear instructions for the first 48 hours.",
+        "title": "Choose what to share.",
+        "desc": "Give your partner, a family member or an adviser access to the information you choose. Keep the rest private.",
         "cta": "How sharing works"
+      },
+      "current": {
+        "num": "03",
+        "title": "Keep your plan current.",
+        "desc": "As life changes, update your details. Gentle reminders help you keep track of what needs attention.",
+        "cta": "How reminders work"
       }
     }
   },
@@ -67,8 +67,8 @@
     },
     "share": {
       "eyebrow": "Share exactly what you choose",
-      "title": "The right people see the right things, and nothing more.",
-      "desc": "Give your partner, executor or adviser their own view. You decide what each person can see, and you can change it any time.",
+      "title": "Organise together. Keep your own space.",
+      "desc": "Your family doesn't need to see everything. Share the right information with each person, and change their access whenever you need to.",
       "bullets": [
         "Separate views for partner, executor and adviser",
         "Nothing shared until you say so",
@@ -153,18 +153,18 @@
     "footnote": "Anne, Tom, Emma and every account on this page are invented."
   },
   "security": {
-    "eyebrow": "Security & privacy",
-    "title": "Protected to the highest standards. Only ever yours.",
-    "desc": "Bank-level encryption, a vault hosted in London and access you control down to the individual document. Nobody at Everstead reads your data, and we never sell it.",
-    "linkPractices": "Read our security practices",
+    "eyebrow": "Your privacy",
+    "title": "Your information. Your decisions.",
+    "desc": "You choose who can see each item, and you can change or remove access whenever you like. You can download a full copy of your vault at any time. Your vault is stored in London and protected with encryption at rest and in transit, and we never sell your data. The details, including the services we rely on outside the UK, are on our Security page.",
+    "linkPractices": "How we protect your data",
     "linkPrivacy": "Our privacy policy",
     "features": [
-      "AES-256 encryption at rest",
+      "You choose who sees what",
+      "Change or remove access any time",
+      "Export a full copy whenever you like",
+      "Encrypted at rest and in transit",
       "Two-factor authentication",
-      "TLS 1.3 in transit",
-      "Per-person access control",
-      "Access alerts & audit log",
-      "UK data residency"
+      "Access alerts and an audit log"
     ]
   },
   "pros": {
@@ -212,7 +212,7 @@
           "Step-by-step instructions",
           "Readiness score"
         ],
-        "cta": "Create free account"
+        "cta": "Start free"
       },
       "family": {
         "name": "Everstead+",
@@ -227,7 +227,7 @@
           "25 GB storage",
           "Personal Messages & more"
         ],
-        "cta": "Start your Everstead+"
+        "cta": "Start a 14-day trial"
       },
       "advisor": {
         "name": "Everstead Pro",
@@ -245,5 +245,36 @@
     },
     "trialNote": "Free forever, no card required. Everstead+ includes a 14-day free trial; your card isn't charged until it ends.",
     "fullDetails": "Full pricing details →"
+  },
+  "faq": {
+    "eyebrow": "Questions",
+    "title": "Good to know before you start.",
+    "items": [
+      {
+        "q": "What can I do for free?",
+        "a": "Quite a lot. The free plan gives you the guided setup, your About Me profile, 5 accounts or assets, 5 documents, 3 trusted people and a readiness score. It has no time limit and needs no card. Everstead+ removes the limits and adds a second vault for your partner, personal messages and 25 GB of storage."
+      },
+      {
+        "q": "Who can see my information?",
+        "a": "Only you, until you decide otherwise. You can give a partner, a family member or an adviser access to specific items, person by person, and change or remove that access whenever you like. No one at Everstead looks at your vault in the normal running of the service; our Security page explains exactly how access works."
+      },
+      {
+        "q": "What happens when my family needs access?",
+        "a": "Whatever you have already shared with someone stays available to them. For everything you set aside for later, a trusted person you named reports a death or incapacity with the supporting details, a person at Everstead verifies it, usually within two business days, and only then does the access you chose open. Nothing opens on its own."
+      },
+      {
+        "q": "Can I export my information?",
+        "a": "Yes, at any time and on any plan. From Settings you can download a complete copy of your vault: accounts, documents and their files, instructions, wishes and people, in a single ZIP."
+      },
+      {
+        "q": "Does Everstead replace a will?",
+        "a": "No. A will is a legal document, and Everstead does not write one or give legal advice. Everstead is where you keep the practical information around it: where the original is, who to call, what you own and what you would like to happen. Many people use it alongside a solicitor."
+      }
+    ]
+  },
+  "final": {
+    "title": "One small step. A little more peace of mind.",
+    "desc": "Start with one important thing. Add more when you're ready.",
+    "cta": "Start free"
   }
 }
