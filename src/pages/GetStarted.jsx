@@ -734,7 +734,8 @@ export default function GetStarted() {
               {[
                 { n: 1, label: t('stepIndicator.choosePlan') },
                 { n: 2, label: isOAuthProfile ? t('stepIndicator.yourDetails') : t('stepIndicator.createAccount') },
-                { n: 3, label: t('stepIndicator.payment') },
+                // The free plan never reaches payment, so it never sees the step either.
+                ...(selectedPlan === 'free' ? [] : [{ n: 3, label: t('stepIndicator.payment') }]),
               ].map(({ n, label }, i, arr) => (
                 <React.Fragment key={n}>
                   <div className={`flex items-center gap-2 ${step >= n ? 'text-navy-800' : 'text-stone-400'}`}>

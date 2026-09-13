@@ -81,3 +81,40 @@ for (const post of posts) {
   written++
 }
 console.log(`[share-shells] ${written} article shells written (${posts.filter(p => p.lang === 'fr').length} French)`)
+
+// ── Marketing pages ────────────────────────────────────────────────────────
+// Same idea for the pages whose title and description live in their i18n
+// namespace (meta.title / meta.description). Both trees, with hreflang
+// alternates, so a shared link and a crawler see the page's own words.
+const PAGES = {
+  '/features': 'features', '/how-it-works': 'howItWorks', '/pricing': 'pricing', '/security': 'security',
+  '/contact': 'contact', '/book-demo': 'bookDemo', '/about': 'about', '/gift': 'gift', '/for-advisers': 'forAdvisers',
+  '/privacy': 'privacy', '/cookies': 'cookies', '/accessibility': 'accessibility', '/data-promise': 'dataPromise',
+  '/subprocessors': 'subprocessors', '/terms': 'terms', '/mentions-legales': 'mentionsLegales', '/resources': 'resources',
+  '/apres-un-deces': 'apresUnDeces', '/estate-readiness-score': 'readinessScore', '/digital-estate-worth': 'estateCalculator',
+}
+let pagesWritten = 0
+for (const [route, ns] of Object.entries(PAGES)) {
+  for (const lang of ['en', 'fr']) {
+    const f = join(root, 'src/i18n/locales', lang, `${ns}.json`)
+    if (!existsSync(f) || !templates[lang]) continue
+    const meta = JSON.parse(readFileSync(f, 'utf8')).meta || {}
+    const title = meta.title, desc = meta.description || meta.desc
+    if (!title || !desc) continue
+    const prefix = lang === 'fr' ? '/fr' : ''
+    const url = `${BASE}${prefix}${route}`
+    let html = templates[lang].replace(/<title>[^<]*<\/title>/, `<title>${esc(title)}</title>`)
+    html = setMeta(html, 'name', 'description', desc)
+    html = setMeta(html, 'property', 'og:url', url)
+    html = setMeta(html, 'property', 'og:title', title)
+    html = setMeta(html, 'property', 'og:description', desc)
+    html = setMeta(html, 'name', 'twitter:title', title)
+    html = setMeta(html, 'name', 'twitter:description', desc)
+    html = html.replace(/(<meta property="og:image"[^>]*>)/, `$1\n    <link rel="canonical" href="${esc(url)}" data-rh="true" />\n    <link rel="alternate" hreflang="en-GB" href="${esc(BASE + route)}" data-rh="true" />\n    <link rel="alternate" hreflang="fr" href="${esc(BASE + '/fr' + route)}" data-rh="true" />\n    <link rel="alternate" hreflang="x-default" href="${esc(BASE + route)}" data-rh="true" />`)
+    const out = join(root, 'dist', ...(prefix + route).split('/').filter(Boolean), 'index.html')
+    mkdirSync(dirname(out), { recursive: true })
+    writeFileSync(out, html)
+    pagesWritten++
+  }
+}
+console.log(`[share-shells] ${pagesWritten} marketing page shells written`)
