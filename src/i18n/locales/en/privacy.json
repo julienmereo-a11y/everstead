@@ -6,12 +6,12 @@
   "header": {
     "eyebrow": "Legal",
     "title": "Privacy Policy",
-    "updated": "Last updated April 24, 2026"
+    "updated": "Last updated 14 September 2026"
   },
   "sections": [
     {
       "title": "Information we collect",
-      "content": "We collect information you provide directly when you create an account, including your name, email address, and password. We also collect the content you add to your plan (account references, document metadata, instructions, and wishes) which is stored encrypted at rest.\n\nWe collect limited usage data (pages visited, features used) to improve the platform. We do not use third-party advertising trackers. We do not sell your data to third parties."
+      "content": "We collect information you provide directly when you create an account, including your name, email address, and password. We also collect the content you add to your plan (account references, document metadata, instructions, and wishes) which is stored encrypted at rest.\n\nWe collect limited usage data (pages visited, features used) to improve the platform.\n\nOn our public website, and only after you accept the relevant cookies, we use three third-party tools: Google Analytics (how the site is used), the Meta Pixel (whether our advertising works) and Artisan, built on Demandbase (which organisation a visitor belongs to, so we can follow up with professional firms). They receive the pages you visit and your IP address, nothing from any vault. None of them runs inside the Everstead apps, and you can withdraw consent at any time from the cookie settings link in the footer. We do not sell your data to third parties."
     },
     {
       "title": "How we use your information",
@@ -23,7 +23,7 @@
     },
     {
       "title": "Sharing and disclosure",
-      "content": "We do not sell, rent, or share your personal information with third parties for marketing or advertising purposes.\n\nWe may share minimal data with service providers (subprocessors) who help us operate the platform, including hosting, database, email delivery, payments, error monitoring, and AI-assisted guidance. Each subprocessor is bound by a written Data Processing Agreement and provides appropriate UK GDPR safeguards. The full, up-to-date list is published at /subprocessors. We may disclose information if required by law or to protect the rights, property, or safety of Everstead, our users, or the public."
+      "content": "We do not sell, rent, or share your personal information with third parties for marketing or advertising purposes, with one exception you control: the consent-based website tools described in our Cookie Policy (Google Analytics, the Meta Pixel and Artisan/Demandbase). Where Artisan identifies the organisation a visitor belongs to, we may contact that organisation about Everstead for professionals, on the basis of our legitimate interest in reaching firms that serve families. You can object at any time at privacy@everstead.care.\n\nWe may share minimal data with service providers (subprocessors) who help us operate the platform, including hosting, database, email delivery, payments, error monitoring, AI-assisted guidance and, with your consent, website measurement and visitor identification. Each subprocessor is bound by a written Data Processing Agreement and provides appropriate UK GDPR safeguards. The full, up-to-date list is published at /subprocessors. We may disclose information if required by law or to protect the rights, property, or safety of Everstead, our users, or the public."
     },
     {
       "title": "AI features (the Everstead Assistant)",
@@ -39,7 +39,7 @@
     },
     {
       "title": "Cookies",
-      "content": "Everstead uses strictly necessary session cookies to keep you logged in. We do not use third-party tracking or advertising cookies. You can disable cookies in your browser settings, though some platform features may not function correctly without them."
+      "content": "Everstead uses strictly necessary cookies to keep you logged in and to remember your cookie choice. With your consent, our public website also uses analytics cookies (Google Analytics) and marketing cookies (the Meta Pixel and Artisan/Demandbase), described in full in our Cookie Policy at /cookies, where you can also change your choice. No optional cookie is set before you consent, and none is used inside the Everstead apps."
     },
     {
       "title": "Children",
@@ -76,7 +76,7 @@
     },
     "notUse": {
       "title": "What we do not use",
-      "body": "Everstead does not use advertising profiling cookies, social media cookies or data broker technologies. The only measurement tools on our website are Google Analytics and the Meta Pixel described in our Cookie Policy, and both load only after you consent. Neither runs inside the Everstead apps. We never sell your data."
+      "body": "Everstead does not use advertising profiling cookies, social media cookies or data broker technologies. The only measurement tools on our website are Google Analytics, the Meta Pixel and Artisan (Demandbase), described in our Cookie Policy, and all three load only after you consent. None runs inside the Everstead apps. We never sell your data."
     },
     "managing": {
       "title": "Managing your cookie preferences",

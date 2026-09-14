@@ -6,12 +6,12 @@
   "header": {
     "eyebrow": "Légal",
     "title": "Politique de confidentialité",
-    "updated": "Dernière mise à jour : 24 avril 2026"
+    "updated": "Dernière mise à jour : 14 septembre 2026"
   },
   "sections": [
     {
       "title": "Les informations que nous collectons",
-      "content": "Nous collectons les informations que vous fournissez directement lors de la création de votre compte, notamment votre nom, votre adresse e-mail et votre mot de passe. Nous collectons également le contenu que vous ajoutez à votre plan (références de comptes, métadonnées de documents, instructions et dernières volontés) qui est stocké chiffré au repos.\n\nNous collectons des données d'utilisation limitées (pages visitées, fonctionnalités utilisées) afin d'améliorer la plateforme. Nous n'utilisons pas de traceurs publicitaires tiers. Nous ne vendons pas vos données à des tiers."
+      "content": "Nous collectons les informations que vous fournissez directement lors de la création de votre compte, notamment votre nom, votre adresse e-mail et votre mot de passe. Nous collectons également le contenu que vous ajoutez à votre plan (références de comptes, métadonnées de documents, instructions et dernières volontés) qui est stocké chiffré au repos.\n\nNous collectons des données d'utilisation limitées (pages visitées, fonctionnalités utilisées) afin d'améliorer la plateforme.\n\nSur notre site public, et uniquement après votre acceptation des cookies concernés, nous utilisons trois outils tiers : Google Analytics (comment le site est utilisé), le pixel Meta (si nos publicités fonctionnent) et Artisan, fondé sur Demandbase (à quelle organisation appartient un visiteur, afin de recontacter les cabinets professionnels). Ils reçoivent les pages consultées et votre adresse IP, rien issu d'un coffre. Aucun ne fonctionne dans les applications Everstead, et vous pouvez retirer votre consentement à tout moment via le lien « Paramètres des cookies » en pied de page. Nous ne vendons pas vos données à des tiers."
     },
     {
       "title": "Comment nous utilisons vos informations",
@@ -23,7 +23,7 @@
     },
     {
       "title": "Partage et divulgation",
-      "content": "Nous ne vendons, ne louons ni ne partageons vos informations personnelles avec des tiers à des fins de marketing ou de publicité.\n\nNous pouvons partager un minimum de données avec des prestataires de services (sous-traitants) qui nous aident à exploiter la plateforme, notamment pour l'hébergement, la base de données, l'envoi d'e-mails, les paiements, la surveillance des erreurs et l'assistance guidée par IA. Chaque sous-traitant est lié par un accord écrit de traitement des données (Data Processing Agreement) et fournit des garanties appropriées au titre du RGPD britannique (UK GDPR). La liste complète et à jour est publiée à l'adresse /subprocessors. Nous pouvons divulguer des informations si la loi l'exige ou pour protéger les droits, les biens ou la sécurité d'Everstead, de nos utilisateurs ou du public."
+      "content": "Nous ne vendons, ne louons ni ne partageons vos informations personnelles avec des tiers à des fins de marketing ou de publicité, à une exception près, que vous contrôlez : les outils soumis à consentement décrits dans notre Politique relative aux cookies (Google Analytics, le pixel Meta et Artisan/Demandbase). Lorsqu'Artisan identifie l'organisation à laquelle appartient un visiteur, nous pouvons contacter cette organisation au sujet d'Everstead pour les professionnels, sur le fondement de notre intérêt légitime à joindre les cabinets qui accompagnent des familles. Vous pouvez vous y opposer à tout moment en écrivant à privacy@everstead.care.\n\nNous pouvons partager un minimum de données avec des prestataires de services (sous-traitants) qui nous aident à exploiter la plateforme, notamment pour l'hébergement, la base de données, l'envoi d'e-mails, les paiements, la surveillance des erreurs, l'assistance guidée par IA et, avec votre consentement, la mesure d'audience et l'identification des visiteurs du site. Chaque sous-traitant est lié par un accord écrit de traitement des données (Data Processing Agreement) et fournit des garanties appropriées au titre du RGPD britannique (UK GDPR). La liste complète et à jour est publiée à l'adresse /subprocessors. Nous pouvons divulguer des informations si la loi l'exige ou pour protéger les droits, les biens ou la sécurité d'Everstead, de nos utilisateurs ou du public."
     },
     {
       "title": "Fonctionnalités d'IA (l'Assistant Everstead)",
@@ -39,7 +39,7 @@
     },
     {
       "title": "Cookies",
-      "content": "Everstead utilise des cookies de session strictement nécessaires pour vous maintenir connecté. Nous n'utilisons pas de cookies tiers de suivi ou de publicité. Vous pouvez désactiver les cookies dans les paramètres de votre navigateur, mais certaines fonctionnalités de la plateforme risquent alors de ne pas fonctionner correctement."
+      "content": "Everstead utilise des cookies strictement nécessaires pour vous maintenir connecté et mémoriser votre choix en matière de cookies. Avec votre consentement, notre site public utilise également des cookies de mesure d'audience (Google Analytics) et des cookies marketing (le pixel Meta et Artisan/Demandbase), décrits en détail dans notre Politique relative aux cookies à l'adresse /cookies, où vous pouvez aussi modifier votre choix. Aucun cookie facultatif n'est déposé avant votre consentement, et aucun n'est utilisé dans les applications Everstead."
     },
     {
       "title": "Mineurs",
@@ -76,7 +76,7 @@
     },
     "notUse": {
       "title": "Ce que nous n'utilisons pas",
-      "body": "Everstead n'utilise pas de cookies de profilage publicitaire, de cookies de réseaux sociaux ni de technologies de courtiers en données. Les seuls outils de mesure de notre site web sont Google Analytics et le pixel Meta décrits dans notre Politique relative aux cookies, et ils ne se chargent qu'après votre consentement. Aucun des deux ne fonctionne dans les applications Everstead. Nous ne vendons jamais vos données."
+      "body": "Everstead n'utilise pas de cookies de profilage publicitaire, de cookies de réseaux sociaux ni de technologies de courtiers en données. Les seuls outils de mesure de notre site web sont Google Analytics, le pixel Meta et Artisan (Demandbase), décrits dans notre Politique relative aux cookies, et ils ne se chargent qu'après votre consentement. Aucun des trois ne fonctionne dans les applications Everstead. Nous ne vendons jamais vos données."
     },
     "managing": {
       "title": "Gérer vos préférences en matière de cookies",
