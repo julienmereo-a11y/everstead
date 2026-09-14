@@ -1,7 +1,7 @@
 import React from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { TRANSLATED_PATHS, rememberLanguage } from '../i18n'
+import { TRANSLATED_PATHS, rememberLanguage, pathInLanguage } from '../i18n'
 import StoreBadges from './StoreBadges'
 import { showCookiePreferences } from '../lib/consent'
 
@@ -115,7 +115,7 @@ function LanguageLink() {
   if (i18n.language === 'fr') {
     return (
       <a
-        href={pathname}
+        href={pathInLanguage(pathname, 'en')}
         hrefLang="en"
         onClick={() => rememberLanguage('en')}
         className="hover:text-stone-400 transition-colors"
@@ -124,9 +124,9 @@ function LanguageLink() {
       </a>
     )
   }
-  const target = TRANSLATED_PATHS.has(pathname)
-    ? `/fr${pathname === '/' ? '' : pathname}`
-    : '/fr'
+  // pathInLanguage knows the French slugs (FR_PATH_ALIASES), the plain
+  // prefix does not.
+  const target = pathInLanguage(pathname, 'fr')
   return (
     <a
       href={target}

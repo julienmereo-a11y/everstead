@@ -11,7 +11,7 @@
 // Answers never leave the browser; localStorage remembers them.
 import React, { useEffect, useMemo, useState } from 'react'
 import { Helmet } from 'react-helmet-async'
-import { Link } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { AlertTriangle, ArrowLeft, ArrowRight, CheckCircle2, Download, Loader2, Plus, ShieldCheck, Trash2 } from 'lucide-react'
 import HreflangLinks from '../components/HreflangLinks'
@@ -24,6 +24,8 @@ i18n.addResourceBundle('en', 'willGenerator', enCopy)
 i18n.addResourceBundle('fr', 'willGenerator', frCopy)
 
 const STORAGE_KEY = 'everstead_will_builder'
+const EN_PATH = '/will-generator'
+const FR_PATH = '/preparer-mon-testament'
 const SECTION_X = 'px-6 sm:px-8 lg:px-12'
 const STEPS = ['about', 'executors', 'family', 'residue', 'review']
 
@@ -188,7 +190,14 @@ function download(bytes, name) {
 export default function WillGenerator() {
   const { t, i18n: inst } = useTranslation('willGenerator')
   const lang = inst.language === 'fr' ? 'fr' : 'en'
-  const pageUrl = `https://www.everstead.care${lang === 'fr' ? '/fr' : ''}/will-generator`
+  const pageUrl = lang === 'fr' ? `https://www.everstead.care/fr${FR_PATH}` : `https://www.everstead.care${EN_PATH}`
+  // Each tree has its own slug; the other one redirects so shared links work.
+  const location = useLocation()
+  const navigate = useNavigate()
+  useEffect(() => {
+    if (lang === 'fr' && location.pathname === EN_PATH) navigate(FR_PATH, { replace: true })
+    if (lang === 'en' && location.pathname === FR_PATH) navigate(EN_PATH, { replace: true })
+  }, [lang, location.pathname, navigate])
   const [d, setD] = useState(loadSaved)
   const [step, setStep] = useState(0)
   const [busy, setBusy] = useState(false)
@@ -243,7 +252,7 @@ export default function WillGenerator() {
         <meta property="og:url" content={pageUrl} />
         <meta property="og:image" content="https://www.everstead.care/og-image.jpg" />
       </Helmet>
-      <HreflangLinks path="/will-generator" />
+      <HreflangLinks path={EN_PATH} frPath={FR_PATH} />
 
       <div className="bg-stone-50 min-h-screen">
         <section className="relative overflow-hidden grain">

@@ -8,10 +8,10 @@ const BASE = 'https://www.everstead.care'
 // block — helmet-async merges it with the page's main one. Only mount this on
 // pages listed in TRANSLATED_PATHS (src/i18n/index.js); advertising a French
 // alternate for an untranslated page would send Google to English content.
-export default function HreflangLinks({ path }) {
+export default function HreflangLinks({ path, frPath = path }) {
   const p = path === '/' ? '' : path
   const en = p ? `${BASE}${p}` : BASE
-  const fr = `${BASE}/fr${p}`
+  const fr = `${BASE}/fr${frPath === '/' ? '' : frPath}`
   return (
     <Helmet>
       <link rel="alternate" hrefLang="en-GB" href={en} />

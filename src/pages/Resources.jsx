@@ -2718,6 +2718,7 @@ const tools = [
   {
     i18nKey: 'willGenerator',
     href: '/will-generator',
+    hrefFr: '/preparer-mon-testament',
     title: 'Simple will builder',
     tag: 'Free tool',
     tagColor: 'bg-sage-50 text-sage-700 border-sage-200',
@@ -3238,7 +3239,7 @@ function ResourcesIndex() {
             {visibleTools.map((tool, i) => (
               <Link
                 key={tool.href}
-                to={tool.href}
+                to={uiLang === 'fr' && tool.hrefFr ? tool.hrefFr : tool.href}
                 className={`reveal reveal-delay-${i + 1} group relative bg-stone-50 border border-stone-200 rounded-2xl p-7 hover:border-navy-300 hover:shadow-md transition-all flex flex-col`}
               >
                 {tool.badge && (

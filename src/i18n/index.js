@@ -61,11 +61,20 @@ export function rememberLanguage(lang) {
  * URL for the same page in the other language tree. useLocation().pathname is
  * basename-relative, so it IS the root-equivalent path in both trees.
  */
+// Routes whose French tree uses a French slug. The English path is the key
+// in TRANSLATED_PATHS, the sitemap and the share shells; the page itself
+// redirects between the two so either URL works in either tree.
+export const FR_PATH_ALIASES = { '/will-generator': '/preparer-mon-testament' }
+const EN_PATH_ALIASES = Object.fromEntries(Object.entries(FR_PATH_ALIASES).map(([en, fr]) => [fr, en]))
+
 export function pathInLanguage(pathname, lang) {
   if (lang === 'fr') {
-    return TRANSLATED_PATHS.has(pathname) ? `/fr${pathname === '/' ? '' : pathname}` : '/fr'
+    const canonical = EN_PATH_ALIASES[pathname] || pathname
+    if (!TRANSLATED_PATHS.has(canonical)) return '/fr'
+    const frPath = FR_PATH_ALIASES[canonical] || canonical
+    return `/fr${frPath === '/' ? '' : frPath}`
   }
-  return pathname || '/'
+  return EN_PATH_ALIASES[pathname] || pathname || '/'
 }
 
 export function languageFromPath(pathname) {

@@ -117,9 +117,12 @@ const freqOf     = Object.fromEntries(EN_PAGES.map(([p, cf]) => [p, cf]))
 const entries = []
 for (const [p, cf, pr] of EN_PAGES) entries.push([p, cf, pr])
 for (const post of resourcePosts().filter(p => p.lang === 'en')) entries.push([`/resources/${post.section}/${post.slug}`, 'monthly', '0.6'])
+// Mirrors FR_PATH_ALIASES in src/i18n/index.js: the French tree uses a French slug.
+const FR_ALIAS = { '/will-generator': '/preparer-mon-testament' }
 for (const p of translatedPaths()) {
   if (FR_SKIP.has(p)) continue
-  entries.push([p === '/' ? '/fr' : `/fr${p}`, freqOf[p] ?? 'monthly', priorityOf[p] ?? '0.6'])
+  const fp = FR_ALIAS[p] || p
+  entries.push([fp === '/' ? '/fr' : `/fr${fp}`, freqOf[p] ?? 'monthly', priorityOf[p] ?? '0.6'])
 }
 // A French section page only earns a sitemap entry once it has French content;
 // /fr/resources/guides with no French guide is an empty page nobody should index.

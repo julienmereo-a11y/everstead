@@ -312,6 +312,7 @@ export default function App() {
               <Route path="/emergency-pack"         element={<Layout><EmergencyPack /></Layout>} />
               <Route path="/professionals"          element={<Layout><Professionals /></Layout>} />
               <Route path="/will-generator"         element={<Layout><WillGenerator /></Layout>} />
+              <Route path="/preparer-mon-testament" element={<Layout><WillGenerator /></Layout>} />
               <Route path="/digital-estate-worth"   element={<Layout><DigitalEstateCalculator /></Layout>} />
               <Route path="/gift"         element={<Layout><Gift /></Layout>} />
               <Route path="/redeem-gift"  element={<Layout><RedeemGift /></Layout>} />

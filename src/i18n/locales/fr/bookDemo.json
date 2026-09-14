@@ -1,41 +1,41 @@
 {
   "meta": {
-    "title": "Réservez un appel de 20 minutes | Everstead pour les conseillers",
-    "description": "Nous accueillons actuellement nos premiers conseillers partenaires. Réservez un appel de 20 minutes avec l'équipe fondatrice, pas de discours commercial, pas de contrat, juste une conversation pour savoir si Everstead convient à votre cabinet.",
-    "ogTitle": "Réservez un appel | Everstead pour les conseillers",
-    "ogDescription": "Nous travaillons directement avec notre première cohorte de conseillers financiers, de notaires et de conseillers patrimoniaux. Réservez un appel de 20 minutes pour voir si Everstead convient à votre cabinet."
+    "title": "Réserver un appel de 20 minutes | Everstead pour les professionnels",
+    "description": "Conseillers, notaires, EHPAD, services RH : réservez un appel de 20 minutes avec l'équipe fondatrice. Pas de discours commercial, pas de contrat, juste une conversation pour savoir si Everstead convient aux familles que vous accompagnez.",
+    "ogTitle": "Réserver un appel | Everstead pour les professionnels",
+    "ogDescription": "Un appel de 20 minutes avec l'équipe fondatrice pour voir si Everstead convient à vos clients, résidents ou salariés."
   },
   "hero": {
-    "eyebrow": "Accès anticipé",
-    "title": "Nous accueillons actuellement nos premiers conseillers partenaires.",
-    "subtitle": "Réservez un appel de 20 minutes avec l'équipe fondatrice. Pas de discours commercial, pas de contrat, juste une conversation pour savoir si Everstead convient à votre cabinet et à vos clients."
+    "eyebrow": "Pour les professionnels",
+    "title": "Dites-nous qui vous accompagnez. Nous vous montrerons ce qui convient.",
+    "subtitle": "Un appel de 20 minutes avec l'équipe fondatrice, pour les conseillers, les notaires, les établissements d'accueil, les services RH et tous ceux dont le métier croise des familles à un moment difficile. Pas de discours commercial, pas de contrat."
   },
   "coverage": {
     "title": "Ce que nous aborderons",
     "benefits": [
-      "Découvrez l'espace client co-brandé et la façon dont vos clients l'utilisent entre deux rendez-vous",
-      "Parcourez le tableau de bord conseiller, indicateurs de préparation, accès aux documents et progression de chaque client en un coup d'œil",
-      "Examinez le modèle de confiance et de protection des données utilisé dans les échanges avec vos clients",
-      "Comprenez comment Everstead s'intègre à vos outils existants sans engager votre responsabilité",
-      "Dites-nous ce qui compte pour votre cabinet, nous adapterons la session à vos priorités"
+      "Ce que vos clients, résidents ou salariés utiliseraient vraiment, de l'offre gratuite au portail conseillers",
+      "Pour les conseillers et les notaires : score de préparation, relecture et demandes de documents, toujours avec le consentement du client",
+      "Pour les établissements et les employeurs : le kit d'urgence et une offre gratuite à remettre, sans rien stocker de votre côté",
+      "Le modèle de confiance et de protection des données que vous pouvez répéter aux personnes que vous accompagnez",
+      "À quoi ressemblerait un pilote avec votre organisation ; c'est vous qui fixez l'ordre du jour"
     ]
   },
   "infoCards": [
     {
       "title": "Une session de 20 minutes",
-      "body": "Nous vous confirmons un créneau sous un jour ouvré. Plus long si vous en avez besoin."
+      "body": "Nous confirmons un créneau sous un jour ouvré. Plus long si nécessaire."
     },
     {
       "title": "Venez avec votre équipe",
-      "body": "Invitez des collègues du juridique, du conseil, des opérations ou de la relation client."
+      "body": "Associez vos collègues du juridique, du conseil, du soin, des RH, des opérations ou de la relation client."
     },
     {
       "title": "Aucune responsabilité engagée",
-      "body": "Everstead est un outil d'organisation, pas un service réglementé. Nous vous expliquerons précisément où se situent les limites."
+      "body": "Everstead est un outil d'organisation, pas un service réglementé. Nous vous expliquerons précisément où sont les limites."
     },
     {
-      "title": "Conseillers financiers, notaires et conseillers patrimoniaux",
-      "body": "Nous travaillons avec une petite cohorte issue de ces trois métiers pour façonner l'évolution du portail conseiller."
+      "title": "Conseillers, notaires, établissements, RH",
+      "body": "Nous travaillons avec un premier petit groupe dans chacun de ces métiers pour façonner ce dont chacun a besoin."
     }
   ],
   "form": {
@@ -45,23 +45,23 @@
     },
     "email": {
       "label": "E-mail professionnel",
-      "placeholder": "vous@cabinet.com"
+      "placeholder": "vous@organisation.fr"
     },
     "firm": {
-      "label": "Nom du cabinet",
-      "placeholder": "Votre cabinet"
+      "label": "Organisation",
+      "placeholder": "Votre cabinet, établissement ou entreprise"
     },
     "role": {
       "label": "Fonction",
-      "placeholder": "Conseiller financier, notaire, gestionnaire de patrimoine…"
+      "placeholder": "CGP, notaire, directeur d'établissement, DRH…"
     },
     "clients": {
-      "label": "Nombre approximatif de clients que vous accompagnez",
+      "label": "Environ combien de clients, résidents ou salariés ?",
       "placeholder": "ex. 75"
     },
     "notes": {
-      "label": "Qu'est-ce qui compte le plus pour vous dans cette conversation ?",
-      "placeholder": "Gestion des données, règlement des successions, expérience client, responsabilité…"
+      "label": "Qu'est-ce qui compte le plus pour vous dans cet échange ?",
+      "placeholder": "Protection des données, succession, communication avec les familles, bien-être des salariés…"
     },
     "submit": "Réserver un appel de 20 minutes",
     "sending": "Envoi…",

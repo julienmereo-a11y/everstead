@@ -99,11 +99,11 @@ const PAGES = {
   '/use-cases/families': { ns: 'useCases', metaPath: 'familiesPage.meta' },
   '/emergency-pack': 'emergencyPack',
   '/professionals': 'professionals',
-  '/will-generator': 'willGenerator',
+  '/will-generator': { ns: 'willGenerator', frRoute: '/preparer-mon-testament' },
 }
 let pagesWritten = 0
 for (const [route, spec] of Object.entries(PAGES)) {
-  const { ns, metaPath } = typeof spec === 'string' ? { ns: spec, metaPath: 'meta' } : spec
+  const { ns, metaPath = 'meta', frRoute = route } = typeof spec === 'string' ? { ns: spec } : spec
   for (const lang of ['en', 'fr']) {
     const f = join(root, 'src/i18n/locales', lang, `${ns}.json`)
     if (!existsSync(f) || !templates[lang]) continue
@@ -111,7 +111,8 @@ for (const [route, spec] of Object.entries(PAGES)) {
     const title = meta.title, desc = meta.description || meta.desc
     if (!title || !desc) continue
     const prefix = lang === 'fr' ? '/fr' : ''
-    const url = `${BASE}${prefix}${route}`
+    const langRoute = lang === 'fr' ? frRoute : route
+    const url = `${BASE}${prefix}${langRoute}`
     let html = templates[lang].replace(/<title>[^<]*<\/title>/, `<title>${esc(title)}</title>`)
     html = setMeta(html, 'name', 'description', desc)
     html = setMeta(html, 'property', 'og:url', url)
@@ -119,8 +120,8 @@ for (const [route, spec] of Object.entries(PAGES)) {
     html = setMeta(html, 'property', 'og:description', desc)
     html = setMeta(html, 'name', 'twitter:title', title)
     html = setMeta(html, 'name', 'twitter:description', desc)
-    html = html.replace(/(<meta property="og:image"[^>]*>)/, `$1\n    <link rel="canonical" href="${esc(url)}" data-rh="true" />\n    <link rel="alternate" hreflang="en-GB" href="${esc(BASE + route)}" data-rh="true" />\n    <link rel="alternate" hreflang="fr" href="${esc(BASE + '/fr' + route)}" data-rh="true" />\n    <link rel="alternate" hreflang="x-default" href="${esc(BASE + route)}" data-rh="true" />`)
-    const out = join(root, 'dist', ...(prefix + route).split('/').filter(Boolean), 'index.html')
+    html = html.replace(/(<meta property="og:image"[^>]*>)/, `$1\n    <link rel="canonical" href="${esc(url)}" data-rh="true" />\n    <link rel="alternate" hreflang="en-GB" href="${esc(BASE + route)}" data-rh="true" />\n    <link rel="alternate" hreflang="fr" href="${esc(BASE + '/fr' + frRoute)}" data-rh="true" />\n    <link rel="alternate" hreflang="x-default" href="${esc(BASE + route)}" data-rh="true" />`)
+    const out = join(root, 'dist', ...(prefix + langRoute).split('/').filter(Boolean), 'index.html')
     mkdirSync(dirname(out), { recursive: true })
     writeFileSync(out, html)
     pagesWritten++

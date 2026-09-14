@@ -36,7 +36,7 @@ function WillCard({ profile, documents, onNavigate, lang }) {
         <p className="text-sm font-semibold text-navy-900 m-0 pr-6">{t('overview.willCard.title')}</p>
         <p className="text-xs text-stone-500 mt-0.5 m-0 leading-relaxed">{t('overview.willCard.body')}</p>
         <div className="mt-3 flex flex-wrap gap-2">
-          <a href={`${lang === 'fr' ? '/fr' : ''}/will-generator`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 text-xs font-semibold text-white bg-navy-600 hover:bg-navy-700 px-3 py-1.5 rounded-full transition-colors">
+          <a href={lang === 'fr' ? '/fr/preparer-mon-testament' : '/will-generator'} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 text-xs font-semibold text-white bg-navy-600 hover:bg-navy-700 px-3 py-1.5 rounded-full transition-colors">
             {t('overview.willCard.build')} <ArrowRight size={12} />
           </a>
           <button onClick={() => onNavigate('documents')} className="text-xs font-semibold text-navy-700 bg-white border border-stone-300 hover:border-navy-400 px-3 py-1.5 rounded-full transition-colors">{t('overview.willCard.record')}</button>
