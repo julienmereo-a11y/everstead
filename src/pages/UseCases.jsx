@@ -4,47 +4,12 @@ import { Helmet } from 'react-helmet-async'
 import HreflangLinks from '../components/HreflangLinks'
 import { useTranslation } from 'react-i18next'
 import { useReveal } from '../components/useReveal'
-import {
-  ArrowRight, Users, Heart, User, BookOpen, Briefcase,
-  CheckCircle2, XCircle, FileText, Bell, Lock, ClipboardList,
-  Shield, Eye, Star, Clock, FolderOpen,
-} from 'lucide-react'
+import { ArrowRight, CheckCircle2, XCircle, Eye, Users, BookOpen, Briefcase } from 'lucide-react'
+import UseCaseFamilies from './UseCaseFamilies'
+import { cases, allCases, OtherUseCases } from './useCasesShared'
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Data (icons, colors, and hrefs only — all visible text lives in the
-// "useCases" i18n namespace)
-// ─────────────────────────────────────────────────────────────────────────────
-
-const cases = {
-  families: {
-    icon: Users,
-    color: 'navy',
-    featureIcons: [FolderOpen, ClipboardList, Bell],
-  },
-  parents: {
-    icon: Heart,
-    color: 'sage',
-    featureIcons: [Heart, Shield, ClipboardList],
-  },
-  'aging-adults': {
-    icon: User,
-    color: 'stone',
-    featureIcons: [Lock, Bell, Eye],
-  },
-  executors: {
-    icon: BookOpen,
-    color: 'amber',
-    featureIcons: [ClipboardList, FolderOpen, Shield],
-  },
-  advisors: {
-    icon: Briefcase,
-    color: 'indigo',
-    featureIcons: [Users, Eye, Briefcase],
-    ctaHref: '/book-demo',
-  },
-}
-
-const allCases = ['families', 'parents', 'aging-adults', 'executors', 'advisors']
+// Icons, colours and hrefs live in useCasesShared.jsx (also used by the
+// families page); all visible text is in the "useCases" i18n namespace.
 
 const roleIcons = [Eye, Users, BookOpen, Briefcase]
 
@@ -67,8 +32,6 @@ function UseCasePage({ slug }) {
   const benefits = t(`personas.${slug}.benefits`, { returnObjects: true })
   const features = t(`personas.${slug}.features`, { returnObjects: true })
     .map((f, i) => ({ ...f, icon: data.featureIcons[i] }))
-  const quote = t(`quotes.${slug}.text`)
-  const quoteAuthor = t(`quotes.${slug}.author`)
   const ctaText = t(`cta.${slug}.text`)
   const ctaNote = t(`cta.${slug}.note`)
 
@@ -86,7 +49,7 @@ function UseCasePage({ slug }) {
       <meta property="og:description" content={tagline} />
       <meta property="og:url" content={`${baseUrl}/use-cases/${slug}`} />
     </Helmet>
-    <HreflangLinks path="/use-cases" />
+    <HreflangLinks path={`/use-cases/${slug}`} />
     <div className="bg-stone-50 pt-24">
 
       {/* Hero */}
@@ -164,19 +127,6 @@ function UseCasePage({ slug }) {
         </div>
       </section>
 
-      {/* Quote */}
-      <section className="py-16 lg:py-20 bg-sage-50 border-y border-sage-100">
-        <div className="max-w-3xl mx-auto px-6 lg:px-8 text-center reveal">
-          <div className="flex justify-center gap-0.5 mb-6">
-            {[...Array(5)].map((_, i) => (
-              <Star key={i} size={16} fill="currentColor" className="text-amber-400" />
-            ))}
-          </div>
-          <p className="font-display text-xl lg:text-2xl font-light text-navy-950 italic leading-relaxed text-balance">{quote}</p>
-          <p className="mt-5 text-stone-500 text-sm">{quoteAuthor}</p>
-        </div>
-      </section>
-
       {/* CTA */}
       <section className="py-20 lg:py-28">
         <div className="max-w-3xl mx-auto px-6 lg:px-8 text-center reveal">
@@ -206,31 +156,7 @@ function UseCasePage({ slug }) {
         </div>
       </section>
 
-      {/* Other use cases */}
-      <section className="py-16 lg:py-20 bg-white border-t border-stone-100">
-        <div className="max-w-5xl mx-auto px-6 lg:px-8">
-          <h2 className="font-display text-xl font-light text-navy-950 mb-7 reveal">{t('sections.exploreOther')}</h2>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {allCases.filter(c => c !== slug).map((c, i) => {
-              const d = cases[c]
-              const CIcon = d.icon
-              return (
-                <Link
-                  key={c}
-                  to={`/use-cases/${c}`}
-                  className={`reveal reveal-delay-${i + 1} group block rounded-xl border border-stone-200 bg-stone-50 p-5 hover:border-navy-300 hover:bg-navy-50 transition-all`}
-                >
-                  <div className="w-8 h-8 rounded-lg bg-white border border-stone-200 flex items-center justify-center mb-3 group-hover:border-navy-200 transition-colors">
-                    <CIcon size={15} className="text-navy-600" />
-                  </div>
-                  <span className="font-semibold text-sm text-navy-900 group-hover:text-navy-700 block mb-1">{t(`personas.${c}.title`)}</span>
-                  <span className="text-xs text-navy-600 font-medium group-hover:gap-2 transition-all">{t('sections.explore')}</span>
-                </Link>
-              )
-            })}
-          </div>
-        </div>
-      </section>
+      <OtherUseCases current={slug} />
     </div>
     </>
   )
@@ -254,6 +180,7 @@ function UseCasesIndex() {
       <meta property="og:description" content={t('meta.index.ogDescription')} />
       <meta property="og:url" content={`${baseUrl}/use-cases`} />
     </Helmet>
+    <HreflangLinks path="/use-cases" />
     <div className="bg-stone-50 pt-24">
 
       {/* Hero */}
@@ -396,6 +323,7 @@ function UseCasesIndex() {
 
 export default function UseCases() {
   const { slug } = useParams()
+  if (slug === 'families') return <UseCaseFamilies />
   if (slug) return <UseCasePage slug={slug} />
   return <UseCasesIndex />
 }

@@ -256,28 +256,6 @@
       ]
     }
   },
-  "quotes": {
-    "families": {
-      "text": "« On ne savait rien. Ni sa banque, ni sa retraite, ni même où était son testament. On a passé six mois à tout reconstituer pour le notaire. Avec Everstead, ça n'aurait rien eu à voir. »",
-      "author": "Fille de la défunte, en charge des démarches de succession"
-    },
-    "parents": {
-      "text": "« Le plus dur, ça n'a pas été le chagrin. Ça a été les dix décisions à prendre sans savoir ce qu'elle aurait voulu. Ça, mes enfants ne l'auront pas à porter. »",
-      "author": "Parent qui prend les devants"
-    },
-    "aging-adults": {
-      "text": "« J'ai enfin l'impression d'avoir réglé quelque chose d'important. Mes enfants ne resteront pas dans le flou. C'est exactement la tranquillité que je cherchais. »",
-      "author": "Utilisatrice d'Everstead, 71 ans"
-    },
-    "executors": {
-      "text": "« Je règle des successions depuis des années : tout se joue sur la préparation. Entre une famille qui arrive avec un plan tenu à jour et une autre avec une chemise de papiers en vrac, l'écart est considérable. »",
-      "author": "Notaire"
-    },
-    "advisors": {
-      "text": "« C'est devenu un vrai plus pour mon cabinet. Mes clients voient que je les aide à se préparer pour de vrai, pas seulement sur le papier. Les échanges y gagnent, et les résultats aussi. »",
-      "author": "Conseiller en gestion de patrimoine"
-    }
-  },
   "cta": {
     "families": {
       "text": "Préparer le plan de votre famille",
@@ -309,6 +287,134 @@
     "bottom": {
       "title": "Quel que soit votre rôle, tout commence ici.",
       "body": "Gratuit pour commencer, sans carte bancaire. Environ 45 minutes de mise en place."
+    }
+  },
+  "familiesPage": {
+    "meta": {
+      "title": "Pour les familles | Everstead",
+      "description": "Everstead réunit les comptes, les documents et les premières démarches de votre famille au même endroit, et ne montre à chacun que ce que vous avez choisi. Gratuit pour commencer, sans carte bancaire."
+    },
+    "hero": {
+      "title": "Que vos proches sachent où tout se trouve, et par quoi commencer.",
+      "subtitle": "Le jour où il faudra agir, votre famille ne devrait pas avoir à chercher. Everstead réunit les comptes, les documents et les premières démarches au même endroit, et ne montre à chacun que ce que vous avez choisi.",
+      "ctaPrimary": "Commencer gratuitement",
+      "ctaSecondary": "Voir comment ça marche",
+      "reassurance": "Gratuit, sans carte bancaire, à votre rythme.",
+      "imageAlt": "Une famille en feutrine sur un canapé, tenant la photo de leur grand-mère au-dessus d'une boîte à souvenirs ouverte"
+    },
+    "week": {
+      "eyebrow": "La première semaine",
+      "title": "À quoi ressemblent les premiers jours, avec ou sans plan.",
+      "intro": "Personne ne prépare la semaine d'après. Voici ce qu'elle réserve souvent à celui qui doit tout gérer, et ce qui change quand le plan existe déjà.",
+      "withoutLabel": "Sans plan",
+      "withLabel": "Avec Everstead",
+      "moments": [
+        {
+          "when": "Jour 1",
+          "title": "L'annonce",
+          "without": "Personne ne sait quelle banque, quel notaire, ni où se trouve le testament.",
+          "withPlan": "Votre conjoint ouvre Everstead et lit les premières démarches que vous avez rédigées."
+        },
+        {
+          "when": "Jour 3",
+          "title": "Les démarches commencent",
+          "without": "Numéros de compte, contrats, caisses de retraite : tout est demandé en même temps.",
+          "withPlan": "Chaque compte et chaque contrat est listé, avec les documents joints."
+        },
+        {
+          "when": "Semaine 2",
+          "title": "Les prélèvements continuent",
+          "without": "Abonnements et prélèvements tournent encore pendant des mois.",
+          "withPlan": "Les dépenses récurrentes sont sur une seule liste, prêtes à être résiliées."
+        },
+        {
+          "when": "Mois 6",
+          "title": "Les désaccords",
+          "without": "Les proches se disputent sur des volontés qui n'ont jamais été écrites.",
+          "withPlan": "Vos volontés et vos messages sont consignés, avec vos propres mots."
+        }
+      ]
+    },
+    "features": {
+      "eyebrow": "Ce que trouve votre famille",
+      "title": "Trois choses dont elle aura besoin. Au même endroit.",
+      "vault": {
+        "eyebrow": "01 · Coffre à documents",
+        "title": "Des documents que l'on retrouve vraiment.",
+        "body": "Testament, contrats d'assurance, titres de propriété, pièces d'identité. Déposez le fichier, ou indiquez simplement où se trouve l'original. Tout est classé, personne ne fouille de classeur.",
+        "mock": {
+          "heading": "Documents",
+          "count": "4 éléments",
+          "items": [
+            {
+              "name": "Testament",
+              "meta": "Original chez Maître Durand, notaire",
+              "chip": "Emplacement noté"
+            },
+            {
+              "name": "Assurance habitation",
+              "meta": "MAIF · échéance en mars",
+              "chip": "PDF"
+            },
+            {
+              "name": "Titre de propriété",
+              "meta": "Appartement de Lyon",
+              "chip": "PDF"
+            },
+            {
+              "name": "Passeport",
+              "meta": "Expire en 2031",
+              "chip": "Rappel activé"
+            }
+          ]
+        }
+      },
+      "firstSteps": {
+        "eyebrow": "02 · Premières démarches",
+        "title": "Les premières démarches, avec vos mots.",
+        "body": "Écrivez ce que votre famille doit faire en premier, en deuxième, en troisième : qui prévenir, quoi apporter, quel document présenter. Sans jargon, comme vous le diriez vous-même.",
+        "mock": {
+          "heading": "Premières démarches",
+          "sub": "4 étapes",
+          "items": [
+            "Déclarer le décès en mairie, sous 24 heures",
+            "Prévenir la banque : les comptes personnels seront bloqués",
+            "Appeler Maître Durand, le testament original est chez lui",
+            "Résilier l'assurance auto, le contrat est dans Documents"
+          ],
+          "footer": "Affiché en premier, avant tout le reste, quand votre famille se connecte."
+        }
+      },
+      "access": {
+        "eyebrow": "03 · Accès de confiance",
+        "title": "Chacun ne voit que ce que vous avez choisi.",
+        "body": "Invitez votre conjoint, un enfant, le notaire. Donnez à chacun sa propre vue : tout, les documents seulement, ou un accès scellé jusqu'au jour où il le faudra. Modifiez-la quand vous voulez.",
+        "imageAlt": "L'écran Proches et accès dans Everstead : Thomas, le conjoint, a un accès complet, Léa, la fille, ne voit que les documents, et l'accès du notaire reste scellé jusqu'au moment venu"
+      }
+    },
+    "benefits": {
+      "intro": "Moins de recherches, moins de coups de fil, plus rien à deviner. La partie pratique est réglée, votre famille peut consacrer son temps à l'essentiel.",
+      "link": "Voir tout ce que fait Everstead"
+    },
+    "start": {
+      "eyebrow": "Pour commencer",
+      "title": "Inutile de tout faire aujourd'hui.",
+      "steps": [
+        {
+          "title": "Ajoutez un compte",
+          "desc": "Votre compte courant suffit pour commencer."
+        },
+        {
+          "title": "Déposez un document",
+          "desc": "Votre testament, ou une note indiquant où il se trouve."
+        },
+        {
+          "title": "Invitez une personne",
+          "desc": "Votre conjoint, ou la personne à qui vous confieriez les clés."
+        }
+      ],
+      "note": "Revenez quand la vie change. Everstead vous fait signe quand quelque chose mérite un coup d'œil.",
+      "imageAlt": "Un enfant en feutrine serrant un petit chien gris, le bras d'un parent autour de lui"
     }
   }
 }

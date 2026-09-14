@@ -92,13 +92,19 @@ const PAGES = {
   '/privacy': 'privacy', '/cookies': 'cookies', '/accessibility': 'accessibility', '/data-promise': 'dataPromise',
   '/subprocessors': 'subprocessors', '/terms': 'terms', '/mentions-legales': 'mentionsLegales', '/resources': 'resources',
   '/apres-un-deces': 'apresUnDeces', '/estate-readiness-score': 'readinessScore', '/digital-estate-worth': 'estateCalculator',
+  // A value can also be { ns, metaPath } when the title/description sit below
+  // the namespace's top-level "meta" (the use-case namespace keeps one block
+  // per page).
+  '/use-cases': { ns: 'useCases', metaPath: 'meta.index' },
+  '/use-cases/families': { ns: 'useCases', metaPath: 'familiesPage.meta' },
 }
 let pagesWritten = 0
-for (const [route, ns] of Object.entries(PAGES)) {
+for (const [route, spec] of Object.entries(PAGES)) {
+  const { ns, metaPath } = typeof spec === 'string' ? { ns: spec, metaPath: 'meta' } : spec
   for (const lang of ['en', 'fr']) {
     const f = join(root, 'src/i18n/locales', lang, `${ns}.json`)
     if (!existsSync(f) || !templates[lang]) continue
-    const meta = JSON.parse(readFileSync(f, 'utf8')).meta || {}
+    const meta = metaPath.split('.').reduce((o, k) => (o && o[k]) || {}, JSON.parse(readFileSync(f, 'utf8')))
     const title = meta.title, desc = meta.description || meta.desc
     if (!title || !desc) continue
     const prefix = lang === 'fr' ? '/fr' : ''

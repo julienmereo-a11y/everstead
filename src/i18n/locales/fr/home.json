@@ -30,7 +30,7 @@
   },
   "why": {
     "eyebrow": "Pourquoi Everstead",
-    "title": "Un endroit pour les détails. Un plan pour vos proches.",
+    "title": "L'essentiel au même endroit. Un plan clair pour vos proches.",
     "intro": "Everstead, c'est l'endroit où une famille garde les choses pratiques, et décide qui peut les retrouver.",
     "cards": {
       "gather": {
@@ -67,7 +67,7 @@
     },
     "share": {
       "eyebrow": "Vous restez maître du partage",
-      "title": "Organisez-vous ensemble. Gardez votre espace.",
+      "title": "Chacun son espace, une seule organisation.",
       "desc": "Votre famille n'a pas besoin de tout voir. Partagez la bonne information avec chaque personne, et modifiez ses accès quand vous le souhaitez.",
       "bullets": [
         "Une vue distincte pour le conjoint, les enfants et le notaire",

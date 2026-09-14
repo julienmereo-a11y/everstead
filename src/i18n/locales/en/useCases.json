@@ -256,28 +256,6 @@
       ]
     }
   },
-  "quotes": {
-    "families": {
-      "text": "\"We had no idea where my mother kept anything, her bank, her pension, even her will. We spent six months piecing it together. Everstead would have changed everything.\"",
-      "author": "Adult child and estate executor"
-    },
-    "parents": {
-      "text": "\"The hardest part wasn't the grief. It was the dozen practical decisions we had to make without knowing what she would have wanted. That's the part I'm determined not to leave for my children.\"",
-      "author": "Parent planning ahead"
-    },
-    "aging-adults": {
-      "text": "\"I finally feel like I've taken care of something important. My children won't be left wondering. That's the peace of mind I was looking for.\"",
-      "author": "Everstead user, age 71"
-    },
-    "executors": {
-      "text": "\"As executor for three estates in my career, I've learned that organisation is everything. The difference between a plan in Everstead and a folder of loose paperwork is enormous.\"",
-      "author": "Estate solicitor"
-    },
-    "advisors": {
-      "text": "\"This has become a genuine value-add for my practice. Clients appreciate that I'm helping them prepare practically, not just on paper. The conversations are better, and the outcomes are too.\"",
-      "author": "Certified Financial Planner"
-    }
-  },
   "cta": {
     "families": {
       "text": "Set up your family plan",
@@ -309,6 +287,134 @@
     "bottom": {
       "title": "Whichever role you're in, start here.",
       "body": "Free to start, no card required. Set up in about 45 minutes."
+    }
+  },
+  "familiesPage": {
+    "meta": {
+      "title": "For Families | Everstead",
+      "description": "Everstead keeps your family's accounts, documents and first steps in one place, and shows each person only what you chose. Free to start, no card required."
+    },
+    "hero": {
+      "title": "Make sure loved ones know where everything is, and what to do first.",
+      "subtitle": "When something happens, your family should not have to search. Everstead keeps the accounts, the documents and the first steps in one place, and shows each person only what you chose.",
+      "ctaPrimary": "Start free",
+      "ctaSecondary": "See how it works",
+      "reassurance": "Free to start. No card required. Go at your own pace.",
+      "imageAlt": "A felt family on a sofa, holding a photo of their grandmother above an open keepsake box"
+    },
+    "week": {
+      "eyebrow": "The first week",
+      "title": "What the first days look like, with and without a plan.",
+      "intro": "Nobody plans for the week after. This is what it tends to look like for the person left holding everything, and how it changes when the plan already exists.",
+      "withoutLabel": "Without a plan",
+      "withLabel": "With Everstead",
+      "moments": [
+        {
+          "when": "Day 1",
+          "title": "The call",
+          "without": "Nobody knows which bank, which solicitor, or where the will is kept.",
+          "withPlan": "Your partner opens Everstead and reads the first steps you wrote."
+        },
+        {
+          "when": "Day 3",
+          "title": "The paperwork starts",
+          "without": "Account numbers, policies and the pension provider, all asked for at once.",
+          "withPlan": "Every account and policy is listed, with the documents attached."
+        },
+        {
+          "when": "Week 2",
+          "title": "The bills keep coming",
+          "without": "Direct debits and subscriptions keep charging for months.",
+          "withPlan": "The recurring costs sit on one list, ready to cancel."
+        },
+        {
+          "when": "Month 6",
+          "title": "The disagreements",
+          "without": "Relatives argue over wishes that were never written down.",
+          "withPlan": "Your wishes and messages are recorded, in your own words."
+        }
+      ]
+    },
+    "features": {
+      "eyebrow": "What your family finds",
+      "title": "Three things they will need. All in one place.",
+      "vault": {
+        "eyebrow": "01 · Document vault",
+        "title": "Documents they can actually find.",
+        "body": "Wills, insurance policies, property deeds, ID. Upload the file, or note where the original is kept. Everything is tagged, so nobody searches through folders.",
+        "mock": {
+          "heading": "Documents",
+          "count": "4 items",
+          "items": [
+            {
+              "name": "Will",
+              "meta": "Original held by Hartley & Co., solicitors",
+              "chip": "Location noted"
+            },
+            {
+              "name": "Home insurance",
+              "meta": "Aviva · renews in March",
+              "chip": "PDF"
+            },
+            {
+              "name": "Property deeds",
+              "meta": "Flat in Bristol",
+              "chip": "PDF"
+            },
+            {
+              "name": "Passport",
+              "meta": "Expires 2031",
+              "chip": "Reminder set"
+            }
+          ]
+        }
+      },
+      "firstSteps": {
+        "eyebrow": "02 · First steps",
+        "title": "The first steps, in your own words.",
+        "body": "Write what your family should do first, second and third: who to call, what to bring, which document to show. No legal language, just what you would tell them yourself.",
+        "mock": {
+          "heading": "First steps",
+          "sub": "4 steps",
+          "items": [
+            "Register the death at the register office",
+            "Tell the bank, the sole accounts will be frozen",
+            "Call Hartley & Co., they hold the original will",
+            "Cancel the car insurance, the policy is in Documents"
+          ],
+          "footer": "Shown first, before anything else, when your family logs in."
+        }
+      },
+      "access": {
+        "eyebrow": "03 · Trusted access",
+        "title": "Each person sees only what you chose.",
+        "body": "Invite your partner, a child, the solicitor. Give each one their own view: everything, documents only, or sealed until it is needed. Change it whenever you like.",
+        "imageAlt": "The People and access screen in Everstead: Tom, the partner, has full access, Maya, the daughter, sees documents only, and the solicitor's access stays sealed until needed"
+      }
+    },
+    "benefits": {
+      "intro": "Less searching, fewer phone calls, no guessing. The practical side is handled, so your family can spend their time on each other.",
+      "link": "See everything Everstead does"
+    },
+    "start": {
+      "eyebrow": "Getting started",
+      "title": "You do not need to do it all today.",
+      "steps": [
+        {
+          "title": "Add one account",
+          "desc": "Your current account is enough to begin."
+        },
+        {
+          "title": "Upload one document",
+          "desc": "Your will, or a note of where it is kept."
+        },
+        {
+          "title": "Invite one person",
+          "desc": "Your partner, or whoever you would want to have the keys."
+        }
+      ],
+      "note": "Come back whenever life changes. Everstead nudges you when something needs a look.",
+      "imageAlt": "A felt child hugging a small grey dog, with a parent's arm around them"
     }
   }
 }
