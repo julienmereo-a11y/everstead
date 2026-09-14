@@ -1,10 +1,11 @@
 import React from 'react'
 import { AlertTriangle, RefreshCw } from 'lucide-react'
+import { isChunkLoadError, reloadOnceForStaleChunk } from '../lib/staleChunk'
 
 export default class ErrorBoundary extends React.Component {
   constructor(props) {
     super(props)
-    this.state = { hasError: false, error: null }
+    this.state = { hasError: false, error: null, reloading: false }
   }
 
   static getDerivedStateFromError(error) {
@@ -12,11 +13,18 @@ export default class ErrorBoundary extends React.Component {
   }
 
   componentDidCatch(error, info) {
+    // A lazy route whose chunk vanished under a deploy: reload once rather than
+    // show an error a visitor (or a crawler) would read as the site being down.
+    if (isChunkLoadError(error) && reloadOnceForStaleChunk()) {
+      this.setState({ reloading: true })
+      return
+    }
     console.error('ErrorBoundary caught:', error, info)
   }
 
   render() {
     if (!this.state.hasError) return this.props.children
+    if (this.state.reloading) return <div className="min-h-screen bg-stone-50" aria-busy="true" />
 
     return (
       <div className="min-h-screen bg-stone-50 flex items-center justify-center p-6">

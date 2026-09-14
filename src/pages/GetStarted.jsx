@@ -380,6 +380,14 @@ export default function GetStarted() {
     } else if (plan && PLAN_OPTIONS.find(p => p.id === plan)) {
       setSelectedPlan(plan)
       setStep(2)
+    } else if (!plan) {
+      // No plan in the link (a footer or article CTA): start on the free plan
+      // at the account step rather than asking someone to pick between Free,
+      // Plus and Pro before they have seen the product. Step 2 keeps its
+      // "starting with the Free plan, change" link back to the chooser, and
+      // pricing-page CTAs still pass ?plan= for the paid routes.
+      setSelectedPlan('free')
+      setStep(2)
     }
     if (!planLocked && billing === 'monthly') setAnnualBilling(false)
     if (!planLocked && billing === 'yearly')  setAnnualBilling(true)
@@ -960,7 +968,8 @@ export default function GetStarted() {
                 >
                   {t('plans.planWithName', { plan: planOptions.find(p => p.id === selectedPlan)?.name })}
                 </button>
-                {' '}· {annualBilling ? t('step2.yearlyBilling') : t('step2.monthlyBilling')}
+                {/* The free plan has no billing cycle to announce. */}
+                {selectedPlan !== 'free' && <>{' '}· {annualBilling ? t('step2.yearlyBilling') : t('step2.monthlyBilling')}</>}
               </p>
 
               {/* Google sign-up */}

@@ -6,8 +6,13 @@ import App from './App.jsx'
 import { isNative } from './lib/platform'
 import { captureCampaign } from './lib/campaign'
 import { initConsent } from './lib/consent'
+import { installStaleChunkRecovery } from './lib/staleChunk'
 import './i18n' // initialise i18next BEFORE the app renders (path-based locale)
 import './index.css'
+
+// A deploy invalidates the chunks an open tab still points at; reload once
+// instead of showing "Something went wrong" (see lib/staleChunk).
+installStaleChunkRecovery()
 
 // Store-link attribution: keep the utm_* the visitor arrived with (see lib/campaign).
 if (!isNative()) {
