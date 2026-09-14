@@ -199,7 +199,7 @@ function UseCasesIndex() {
 
       {/* Stats row */}
       <section className="border-b border-stone-200 bg-white">
-        <div className="max-w-5xl mx-auto px-6 lg:px-8 py-8 grid grid-cols-3 divide-x divide-stone-100">
+        <div className="max-w-5xl mx-auto px-6 lg:px-8 py-8 grid grid-cols-2 divide-x divide-stone-100">
           {t('stats', { returnObjects: true }).map(({ value, label }) => (
             <div key={label} className="text-center px-6 reveal">
               <p className="font-display text-3xl font-light text-navy-950">{value}</p>

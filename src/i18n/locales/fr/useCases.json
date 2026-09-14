@@ -15,10 +15,6 @@
   },
   "stats": [
     {
-      "value": "45 min",
-      "label": "Temps moyen de mise en place"
-    },
-    {
       "value": "5 rôles",
       "label": "Cas d'usage pris en charge"
     },

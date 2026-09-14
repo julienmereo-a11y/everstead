@@ -15,10 +15,6 @@
   },
   "stats": [
     {
-      "value": "45 min",
-      "label": "Average setup time"
-    },
-    {
       "value": "5 roles",
       "label": "Supported use cases"
     },
