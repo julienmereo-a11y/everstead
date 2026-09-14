@@ -275,14 +275,14 @@
     },
     "shared": {
       "readyTitle": "Prêt à mettre de l'ordre dans vos affaires ?",
-      "readyBody": "Comptez environ 45 minutes pour un plan complet. Votre famille aura alors tout ce qu'il lui faut.",
+      "readyBody": "Commencez avec ce que vous avez, et complétez au fil du temps. Votre famille aura tout ce qu'il lui faut, le moment venu.",
       "seeHowItWorks": "Comment ça marche"
     },
     "start": "Créer votre Everstead",
     "bookDemo": "Réserver une démo",
     "bottom": {
       "title": "Quel que soit votre rôle, tout commence ici.",
-      "body": "Gratuit pour commencer, sans carte bancaire. Environ 45 minutes de mise en place."
+      "body": "Gratuit pour commencer, sans carte bancaire. À votre rythme."
     }
   },
   "familiesPage": {

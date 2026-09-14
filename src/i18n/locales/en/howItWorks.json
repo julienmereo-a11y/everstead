@@ -14,12 +14,12 @@
     "subtitle": "Four steps. Under an hour. Everything your family needs to know, organised, encrypted, and ready when they need it.",
     "stats": [
       {
-        "value": "45 min",
-        "label": "Average setup time"
+        "value": "4 steps",
+        "label": "Start to finish"
       },
       {
-        "value": "15 min",
-        "label": "Annual review"
+        "value": "Free",
+        "label": "No card required"
       },
       {
         "value": "14 days",
@@ -207,12 +207,12 @@
     "title": "What a typical setup looks like.",
     "cards": [
       {
-        "time": "45 min",
+        "time": "One sitting",
         "label": "First session",
         "desc": "Add your main accounts, upload or note your key documents, invite one trusted person, write your first instruction."
       },
       {
-        "time": "15 min",
+        "time": "Once a year",
         "label": "Annual review",
         "desc": "We send a reminder once a year. Update anything that's changed, new accounts, new addresses, updated wishes."
       },
@@ -233,7 +233,7 @@
       },
       {
         "q": "How long does it take to set up?",
-        "a": "Most people complete a solid first version in 45-90 minutes. That includes adding their main accounts, uploading or noting key documents, inviting a trusted person, and writing basic instructions. The annual review (updating anything that's changed) typically takes 15-20 minutes."
+        "a": "It depends on how much you want to record. A solid first version is your main accounts added, key documents uploaded or noted, one trusted person invited and a few basic instructions written. Do it in one sitting or spread it over a few evenings, and pick up where you left off. The annual review, updating anything that has changed, is a much smaller job."
       },
       {
         "q": "What does my family actually see when they need it?",

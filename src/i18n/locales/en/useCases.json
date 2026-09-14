@@ -275,14 +275,14 @@
     },
     "shared": {
       "readyTitle": "Ready to get organised?",
-      "readyBody": "It takes about 45 minutes to build a complete plan. Your family will have everything they need.",
+      "readyBody": "Start with what you have and build from there. Your family will have everything they need when it matters.",
       "seeHowItWorks": "See how it works"
     },
     "start": "Start Your Everstead",
     "bookDemo": "Book a demo",
     "bottom": {
       "title": "Whichever role you're in, start here.",
-      "body": "Free to start, no card required. Set up in about 45 minutes."
+      "body": "Free to start, no card required. Go at your own pace."
     }
   },
   "familiesPage": {

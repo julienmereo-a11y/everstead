@@ -14,12 +14,12 @@
     "subtitle": "Quatre étapes, moins d'une heure, et tout ce que votre famille aura besoin de savoir se retrouve rangé, chiffré et prêt pour le jour venu.",
     "stats": [
       {
-        "value": "45 min",
-        "label": "Temps moyen de mise en place"
+        "value": "4 étapes",
+        "label": "Du début à la fin"
       },
       {
-        "value": "15 min",
-        "label": "Révision annuelle"
+        "value": "Gratuit",
+        "label": "Sans carte bancaire"
       },
       {
         "value": "14 jours",
@@ -207,12 +207,12 @@
     "title": "À quoi ressemble une mise en place, concrètement.",
     "cards": [
       {
-        "time": "45 min",
+        "time": "En une fois",
         "label": "Première session",
         "desc": "Ajoutez vos principaux comptes, déposez ou localisez vos documents clés, invitez une personne de confiance et rédigez une première instruction."
       },
       {
-        "time": "15 min",
+        "time": "Une fois par an",
         "label": "Révision annuelle",
         "desc": "Un rappel vous parvient une fois par an. Vous n'avez plus qu'à mettre à jour ce qui a bougé : un nouveau compte, un déménagement, des volontés revues."
       },
@@ -233,7 +233,7 @@
       },
       {
         "q": "Combien de temps faut-il pour tout mettre en place ?",
-        "a": "Comptez 45 à 90 minutes pour une première version solide : les principaux comptes ajoutés, les documents clés déposés ou localisés, une personne de confiance invitée et quelques instructions écrites. La révision annuelle, elle, demande 15 à 20 minutes, le temps de mettre à jour ce qui a changé."
+        "a": "Cela dépend de ce que vous souhaitez consigner. Une première version solide, ce sont vos principaux comptes ajoutés, vos documents clés déposés ou localisés, une personne de confiance invitée et quelques instructions écrites. En une fois ou sur plusieurs soirées, vous reprenez toujours là où vous vous étiez arrêté. La révision annuelle, qui consiste à mettre à jour ce qui a changé, demande bien moins d'effort."
       },
       {
         "q": "Que voit concrètement ma famille le moment venu ?",
