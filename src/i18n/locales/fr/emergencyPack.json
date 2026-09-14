@@ -1,0 +1,79 @@
+{
+  "meta": {
+    "title": "Kit d'urgence | Everstead",
+    "description": "Un kit d'urgence gratuit sur une page : qui appeler, où sont le testament et les documents clés, ce que vous souhaitez. Remplissez-le, téléchargez le PDF, partagez-le avec vos proches. Sans compte."
+  },
+  "hero": {
+    "eyebrow": "Outil gratuit",
+    "title": "La seule page dont vos proches auront besoin en premier.",
+    "sub": "Qui appeler, où sont les choses, ce que vous souhaitez. Remplissez-la ici, téléchargez-la en PDF et donnez-la aux personnes qui en auraient besoin. Rien de ce que vous saisissez ne quitte votre navigateur."
+  },
+  "about": {
+    "title": "Ce kit vient de",
+    "name": "Votre nom",
+    "namePh": "Anne Durand"
+  },
+  "contacts": {
+    "title": "Qui appeler en premier",
+    "intro": "Les trois personnes à prévenir en premier, dans l'ordre.",
+    "name": "Nom",
+    "relation": "Lien",
+    "phone": "Téléphone"
+  },
+  "where": {
+    "title": "Où sont les choses",
+    "will": "Mon testament",
+    "willPh": "ex. original chez Maître Durand, notaire, copie dans le classeur bleu",
+    "solicitor": "Notaire",
+    "solicitorPh": "Nom et téléphone",
+    "bank": "Banque(s) principale(s)",
+    "bankPh": "ex. compte courant Crédit Agricole, livret A à la Poste",
+    "insurance": "Contrats d'assurance",
+    "insurancePh": "ex. assurance-vie chez AXA, contrat dans le coffre",
+    "documents": "Documents clés",
+    "documentsPh": "ex. passeport, titre de propriété et livret de famille dans le tiroir du bureau",
+    "digital": "Accès au téléphone et à l'ordinateur",
+    "digitalPh": "ex. la liste des mots de passe est dans le coffre"
+  },
+  "wishes": {
+    "title": "En une ligne",
+    "funeral": "Volontés pour les obsèques",
+    "funeralPh": "ex. crémation, pas de fleurs, dons à l'association",
+    "pets": "Animaux et personnes à charge",
+    "petsPh": "ex. Biscotte, le chien, va chez ma sœur",
+    "other": "Autre chose",
+    "otherPh": "Ce que vous voudriez qu'ils sachent"
+  },
+  "actions": {
+    "download": "Télécharger mon kit d'urgence (PDF)",
+    "blank": "Télécharger une version vierge",
+    "clear": "Effacer le formulaire",
+    "generating": "Préparation du PDF…",
+    "failed": "Le PDF n'a pas pu être créé. Veuillez réessayer."
+  },
+  "privacy": "Tout reste sur cet appareil. Nous ne conservons rien de ce que vous saisissez ; le formulaire est seulement mémorisé dans ce navigateur pour que vous puissiez y revenir.",
+  "share": {
+    "title": "Envoyez le kit à vos proches",
+    "body": "L'outil est gratuit et sans compte, chacun peut faire le sien.",
+    "text": "J'ai préparé un kit d'urgence d'une page pour notre famille avec Everstead. Voici l'outil gratuit : {{link}}",
+    "subject": "Notre kit d'urgence familial",
+    "whatsapp": "Envoyer sur WhatsApp",
+    "email": "Envoyer par e-mail",
+    "copy": "Copier le lien",
+    "copied": "Copié"
+  },
+  "after": {
+    "eyebrow": "Ensuite",
+    "title": "Gardez-le à jour, sans le réimprimer.",
+    "body": "Un kit papier est périmé le jour où une banque change. Everstead garde les mêmes informations à jour et les partage avec les bonnes personnes, au moment où il le faut. Gratuit pour commencer.",
+    "cta": "Commencer gratuitement"
+  },
+  "pdf": {
+    "title": "Kit d'urgence",
+    "subtitle": "La première page dont ma famille a besoin",
+    "preparedBy": "Préparé par {{name}}",
+    "updated": "Mis à jour le {{date}}",
+    "madeWith": "Réalisé avec Everstead · everstead.care/fr/emergency-pack",
+    "contactsHint": "Appeler dans cet ordre"
+  }
+}

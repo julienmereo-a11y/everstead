@@ -1,0 +1,79 @@
+{
+  "meta": {
+    "title": "Emergency Pack | Everstead",
+    "description": "A free one-page emergency pack: who to call, where the will and key documents are, and what you would want. Fill it in, download the PDF, share it with your family. No account needed."
+  },
+  "hero": {
+    "eyebrow": "Free tool",
+    "title": "The one page your family needs first.",
+    "sub": "Who to call, where things are, what you would want. Fill it in here, download it as a PDF and give it to the people who would need it. Nothing you type leaves your browser."
+  },
+  "about": {
+    "title": "This pack is from",
+    "name": "Your name",
+    "namePh": "Anne Thornton"
+  },
+  "contacts": {
+    "title": "Who to call first",
+    "intro": "The three people who should hear first, in order.",
+    "name": "Name",
+    "relation": "Relationship",
+    "phone": "Phone"
+  },
+  "where": {
+    "title": "Where things are",
+    "will": "My will",
+    "willPh": "e.g. original with Hartley & Co. solicitors, copy in the blue folder",
+    "solicitor": "Solicitor",
+    "solicitorPh": "Name and phone",
+    "bank": "Main bank(s)",
+    "bankPh": "e.g. Barclays current account, NS&I premium bonds",
+    "insurance": "Insurance policies",
+    "insurancePh": "e.g. life insurance with Aviva, policy in the vault",
+    "documents": "Key documents",
+    "documentsPh": "e.g. passport and deeds in the top drawer of the desk",
+    "digital": "Phone and computer access",
+    "digitalPh": "e.g. the password list is in the safe"
+  },
+  "wishes": {
+    "title": "In one line",
+    "funeral": "Funeral wishes",
+    "funeralPh": "e.g. cremation, no flowers, donations to the hospice",
+    "pets": "Pets and dependants",
+    "petsPh": "e.g. Biscuit the dog goes to my sister",
+    "other": "Anything else",
+    "otherPh": "What you would want them to know"
+  },
+  "actions": {
+    "download": "Download my Emergency Pack (PDF)",
+    "blank": "Download a blank copy",
+    "clear": "Clear the form",
+    "generating": "Preparing your PDF…",
+    "failed": "The PDF could not be created. Please try again."
+  },
+  "privacy": "Everything stays on this device. We do not store what you type; the form is only remembered in this browser so you can come back to it.",
+  "share": {
+    "title": "Send the pack to your family",
+    "body": "The tool is free and needs no account, so everyone can make their own.",
+    "text": "I made a one-page emergency pack for our family with Everstead. Here is the free tool: {{link}}",
+    "subject": "Our family emergency pack",
+    "whatsapp": "Send on WhatsApp",
+    "email": "Send by email",
+    "copy": "Copy the link",
+    "copied": "Copied"
+  },
+  "after": {
+    "eyebrow": "Then",
+    "title": "Keep it current, without reprinting it.",
+    "body": "A paper pack goes out of date the day a bank changes. Everstead keeps the same information up to date, and shares it with the right people when it matters. Free to start.",
+    "cta": "Start free"
+  },
+  "pdf": {
+    "title": "Emergency Pack",
+    "subtitle": "The first page my family needs",
+    "preparedBy": "Prepared by {{name}}",
+    "updated": "Updated {{date}}",
+    "madeWith": "Made with Everstead · everstead.care/emergency-pack",
+    "contactsHint": "Call in this order"
+  }
+}

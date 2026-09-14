@@ -3,6 +3,7 @@ import { useSearchParams, useNavigate, Link } from 'react-router-dom'
 import { Shield, CheckCircle2, XCircle, Loader2, ArrowRight } from 'lucide-react'
 import { useTranslation, Trans } from 'react-i18next'
 import { supabase } from '../lib/supabase'
+import { apiPost } from '../lib/platform'
 import { useAuth } from '../contexts/AuthContext'
 import i18n from '../i18n'
 import enAcceptInvite from '../i18n/locales/en/acceptInvite.json'
@@ -23,6 +24,7 @@ export default function AcceptInvite() {
   const [invite, setInvite]     = useState(null)
   const [owner, setOwner]       = useState(null)
   const [errorMsg, setErrorMsg] = useState('')
+  const [exists, setExists]     = useState(false) // an account already uses this email
 
   useEffect(() => {
     if (!token) { setState('error'); setErrorMsg(t('errors.noToken')); return }
@@ -46,11 +48,41 @@ export default function AcceptInvite() {
     setState('found')
   }
 
+  // Tell the owner. The token proves the call comes from a real invitation.
+  const notifyOwner = () => {
+    apiPost('/api/emails/send', {
+      type:        'invite-accepted',
+      ownerName:   owner?.full_name,
+      ownerEmail:  owner?.email,
+      inviteeName: invite.name,
+      role:        invite.role,
+      inviteToken: token,
+    }).catch(console.error)
+  }
+
   const handleAccept = async () => {
     setState('accepting')
 
     if (!user) {
-      // Not logged in — preserve token and send to delegate registration
+      // One tap: the token was emailed to this address, which is the proof of
+      // ownership. The server creates the account (random password, settable
+      // later) and marks the invitation accepted. Anything unexpected falls
+      // back to the password form, so nobody is ever stuck here.
+      const res = await apiPost('/api/auth/delegate-register', {
+        mode: 'accept-invite', token, language: i18n.language === 'fr' ? 'fr' : 'en',
+      }).catch(() => ({ ok: false, status: 0, data: {} }))
+      if (res.ok && res.data?.access_token) {
+        await supabase.auth.setSession({ access_token: res.data.access_token, refresh_token: res.data.refresh_token })
+        notifyOwner()
+        navigate(`/delegate-dashboard?token=${token}&welcome=onetap`)
+        return
+      }
+      if (res.status === 409) {
+        setState('error')
+        setErrorMsg(t('errors.exists'))
+        setExists(true)
+        return
+      }
       navigate(`/delegate-register?token=${token}`)
       return
     }
@@ -69,19 +101,7 @@ export default function AcceptInvite() {
 
     if (error) { setState('error'); setErrorMsg(error.message); return }
 
-    fetch('/api/emails/send', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        type:        'invite-accepted',
-        ownerName:   owner?.full_name,
-        ownerEmail:  owner?.email,
-        inviteeName: invite.name,
-        role:        invite.role,
-        inviteToken: token, // proves this call comes from a real invite
-      }),
-    }).catch(console.error)
-
+    notifyOwner()
     navigate(`/delegate-dashboard?token=${token}`)
   }
 
@@ -128,6 +148,12 @@ export default function AcceptInvite() {
                 </p>
               </div>
               <div className="p-7">
+                {invite.invite_message && (
+                  <blockquote className="mb-6 m-0 rounded-xl border-l-[3px] border-sage-400 bg-sage-50 px-4 py-3">
+                    <p className="text-[11px] font-bold uppercase tracking-[0.12em] text-sage-700 mb-1">{t('found.noteFrom', { name: owner?.full_name })}</p>
+                    <p className="m-0 text-sm text-navy-950 leading-relaxed whitespace-pre-line break-words">{invite.invite_message}</p>
+                  </blockquote>
+                )}
                 <p className="text-stone-600 text-sm leading-relaxed mb-6">
                   <Trans
                     t={t}
@@ -165,8 +191,14 @@ export default function AcceptInvite() {
                   onClick={handleAccept}
                   className="btn-aurora w-full text-white font-semibold text-sm py-3.5 rounded-full transition-colors flex items-center justify-center gap-2 mb-3"
                 >
-                  {t('found.accept')} <ArrowRight size={15} />
+                  {user ? t('found.accept') : t('found.oneTap')} <ArrowRight size={15} />
                 </button>
+                {!user && (
+                  <p className="text-xs text-stone-400 text-center leading-relaxed mb-3">
+                    {t('found.oneTapHint')}{' '}
+                    <Link to={`/delegate-register?token=${token}`} className="text-navy-700 underline underline-offset-2 hover:text-navy-900">{t('found.preferPassword')}</Link>
+                  </p>
+                )}
                 <button
                   onClick={handleDecline}
                   className="w-full text-stone-400 text-sm py-2 hover:text-stone-600 transition-colors"
@@ -238,6 +270,14 @@ export default function AcceptInvite() {
               </div>
               <h2 className="font-display text-2xl font-light text-navy-950 mb-3">{t('error.title')}</h2>
               <p className="text-stone-500 text-sm leading-relaxed">{errorMsg || t('error.fallback')}</p>
+              {exists && (
+                <Link
+                  to={`/delegate-register?token=${token}`}
+                  className="mt-6 inline-flex items-center gap-2 rounded-full bg-navy-800 px-5 py-3 text-sm text-white font-medium hover:bg-navy-700 transition-colors"
+                >
+                  {t('found.accept')} <ArrowRight size={14} />
+                </Link>
+              )}
             </div>
           )}
 

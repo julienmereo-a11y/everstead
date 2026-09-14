@@ -85,6 +85,10 @@
       "firstDocument": {
         "headline": "First document uploaded!",
         "body": "One less thing for your family to hunt for."
+      },
+      "firstPerson": {
+        "headline": "First person invited!",
+        "body": "Now someone knows where to look."
       }
     },
     "limitError": "You've reached your free {{freePlan}} plan limit. Upgrade to {{plusPlan}} to add more.",
@@ -234,6 +238,23 @@
       "freeIntro": "You're on the free {{plan}} plan, which includes {{limit}} {{nounPlural}}.",
       "reachedIntro": "You've reached your {{limit}}-{{nounSingular}} limit on the {{plan}} plan.",
       "upgradeCta": "Upgrade to {{plan}} →"
+    },
+    "inviteOne": {
+      "title": "Invite one person",
+      "body": "A plan only works if someone knows it exists. Start with the person you would want to have the keys.",
+      "name": "Their name",
+      "email": "Their email",
+      "role": "Who are they?",
+      "selectRole": "Choose…",
+      "message": "A note from you (optional)",
+      "messagePlaceholder": "Hi Tom, I have put our important things in one place so you never have to search. This is for you.",
+      "accessNote": "They only see what you choose. A partner starts with full access; everyone else is sealed until it is needed. Change it any time under People.",
+      "send": "Send the invitation",
+      "sending": "Sending…",
+      "sentTitle": "Invitation sent to {{name}}.",
+      "sentBody": "We will tell you when they accept. Adjust what they can see under People.",
+      "manage": "Manage people",
+      "error": "The invitation could not be sent. Please try again."
     }
   },
   "accounts": {
@@ -721,7 +742,10 @@
       "timingHint": "Control whether access is immediate or only unlocked after you pass away or are reported incapacitated.",
       "errorNoArea": "Please select at least one access area.",
       "saving": "Saving…",
-      "cancel": "Cancel"
+      "cancel": "Cancel",
+      "message": "A personal note (optional)",
+      "messagePlaceholder": "Hi Tom, I have put our important things in one place so you never have to search. This is for you.",
+      "messageHint": "Included in the invitation email and shown when they open it."
     },
     "errors": {
       "inviteFailed": "Could not send invite. Please try again.",

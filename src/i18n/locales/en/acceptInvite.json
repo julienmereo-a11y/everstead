@@ -9,7 +9,11 @@
     "bullet3": "You can update your contact details after accepting",
     "wrongAccount": "<bold>Heads up:</bold> This invite is for <bold>{{invited}}</bold>. You're signed in as <bold>{{current}}</bold>. Sign out first if you want to accept with a different account.",
     "accept": "Accept invitation",
-    "decline": "Decline"
+    "decline": "Decline",
+    "noteFrom": "A note from {{name}}",
+    "oneTap": "Accept and open",
+    "oneTapHint": "We will create your free account with this email address. No password needed today; set one whenever you like.",
+    "preferPassword": "Prefer to set a password now?"
   },
   "accepting": "Confirming your role…",
   "accepted": {
@@ -32,6 +36,7 @@
   },
   "errors": {
     "noToken": "No invite token found in the link.",
-    "wrongEmail": "This invitation was sent to {{invited}}. You're logged in as {{current}}. Please sign in with the correct account."
+    "wrongEmail": "This invitation was sent to {{invited}}. You're logged in as {{current}}. Please sign in with the correct account.",
+    "exists": "An account already exists for this email. Sign in to accept the invitation."
   }
 }

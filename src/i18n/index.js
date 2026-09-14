@@ -43,6 +43,7 @@ export const TRANSLATED_PATHS = new Set([
   '/terms', '/mentions-legales', '/resources', '/apres-un-deces', '/press',
   '/estate-readiness-score', '/digital-estate-worth',
   '/use-cases/families', '/use-cases/parents', '/use-cases/aging-adults', '/use-cases/executors', '/use-cases/advisors',
+  '/emergency-pack',
 ])
 
 /**

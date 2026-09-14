@@ -85,6 +85,10 @@
       "firstDocument": {
         "headline": "Premier document téléversé !",
         "body": "Une chose de moins que vos proches auront à chercher."
+      },
+      "firstPerson": {
+        "headline": "Première personne invitée !",
+        "body": "Quelqu'un sait désormais où chercher."
       }
     },
     "limitError": "Vous avez atteint la limite du forfait gratuit {{freePlan}}. Passez à {{plusPlan}} pour en ajouter davantage.",
@@ -234,6 +238,23 @@
       "freeIntro": "Votre forfait gratuit {{plan}} comprend {{limit}} {{nounPlural}}.",
       "reachedIntro": "Vous avez atteint la limite de {{limit}} {{nounPlural}} du forfait {{plan}}.",
       "upgradeCta": "Passez à {{plan}} →"
+    },
+    "inviteOne": {
+      "title": "Invitez une personne",
+      "body": "Un plan ne sert que si quelqu'un sait qu'il existe. Commencez par la personne à qui vous confieriez les clés.",
+      "name": "Son nom",
+      "email": "Son e-mail",
+      "role": "Qui est-ce ?",
+      "selectRole": "Choisir…",
+      "message": "Un mot de vous (facultatif)",
+      "messagePlaceholder": "Bonjour Thomas, j'ai rassemblé nos informations importantes au même endroit pour que tu n'aies jamais à chercher. C'est pour toi.",
+      "accessNote": "Elle ne verra que ce que vous choisissez. Un conjoint a un accès complet dès maintenant ; les autres, un accès scellé jusqu'au moment venu. Modifiable à tout moment dans Personnes.",
+      "send": "Envoyer l'invitation",
+      "sending": "Envoi…",
+      "sentTitle": "Invitation envoyée à {{name}}.",
+      "sentBody": "Nous vous préviendrons quand elle sera acceptée. Ajustez ce qu'elle peut voir dans Personnes.",
+      "manage": "Gérer les personnes",
+      "error": "L'invitation n'a pas pu être envoyée. Veuillez réessayer."
     }
   },
   "accounts": {
@@ -721,7 +742,10 @@
       "timingHint": "Décidez si l'accès est immédiat, ou s'il ne s'ouvre qu'après votre décès ou le signalement de votre incapacité.",
       "errorNoArea": "Veuillez sélectionner au moins un domaine d'accès.",
       "saving": "Enregistrement…",
-      "cancel": "Annuler"
+      "cancel": "Annuler",
+      "message": "Un mot personnel (facultatif)",
+      "messagePlaceholder": "Bonjour Thomas, j'ai rassemblé nos informations importantes au même endroit pour que tu n'aies jamais à chercher. C'est pour toi.",
+      "messageHint": "Ajouté à l'e-mail d'invitation et affiché à l'ouverture."
     },
     "errors": {
       "inviteFailed": "Impossible d'envoyer l'invitation. Veuillez réessayer.",

@@ -41,6 +41,7 @@ const ExecutorChecklist     = lazy(() => import('./pages/ExecutorChecklist'))
 const ApresUnDeces          = lazy(() => import('./pages/ApresUnDeces'))
 const DigitalEstateCalculator = lazy(() => import('./pages/DigitalEstateCalculator'))
 const EstateReadinessScore  = lazy(() => import('./pages/EstateReadinessScore'))
+const EmergencyPack         = lazy(() => import('./pages/EmergencyPack'))
 const NotFound              = lazy(() => import('./pages/NotFound'))
 const ForgotPassword        = lazy(() => import('./pages/ForgotPassword'))
 const ResetPassword         = lazy(() => import('./pages/ResetPassword'))
@@ -306,6 +307,7 @@ export default function App() {
               <Route path="/executor-checklist"     element={<Layout><ExecutorChecklist /></Layout>} />
               <Route path="/apres-un-deces"        element={<Layout><ApresUnDeces /></Layout>} />
               <Route path="/estate-readiness-score" element={<Layout><EstateReadinessScore /></Layout>} />
+              <Route path="/emergency-pack"         element={<Layout><EmergencyPack /></Layout>} />
               <Route path="/digital-estate-worth"   element={<Layout><DigitalEstateCalculator /></Layout>} />
               <Route path="/gift"         element={<Layout><Gift /></Layout>} />
               <Route path="/redeem-gift"  element={<Layout><RedeemGift /></Layout>} />

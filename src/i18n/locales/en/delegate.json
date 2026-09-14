@@ -44,7 +44,14 @@
     "openMessages": "Open messages",
     "incapTitle": "An incapacity report for {{name}} has been verified by Everstead",
     "incapBody": "Your after-death / incapacity access permissions are now active. The plan owner's account has been suspended and is read-only pending further review.",
-    "viewDocuments": "View documents"
+    "viewDocuments": "View documents",
+    "reverseTitle": "Now start yours. Free.",
+    "reverseBody": "Your own private plan, and {{name}} gets an invitation back, so you both know where things are.",
+    "reverseCta": "Start my plan and invite {{name}} back",
+    "reverseWorking": "Setting up your plan…",
+    "reverseError": "That did not work. Please try again.",
+    "onetap": "Your account was created with {{email}}. To sign in next time, set a password under Settings, or use \"Forgot password\" on the login page.",
+    "onetapCta": "Set a password"
   },
   "header": {
     "eyebrow": "Delegate dashboard",

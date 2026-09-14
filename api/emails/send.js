@@ -136,17 +136,21 @@ async function handler(req, res) {
 
     } else if (type === 'invite') {
       const { inviteeName, inviteeEmail, role, ownerName, inviteToken } = body
+      // The owner's own words, typed on the invite form. Free text, escaped in
+      // the template; capped so a pasted essay cannot become the email.
+      const personalNote = typeof body.personalNote === 'string' ? body.personalNote.trim().slice(0, 600) : ''
       if (!inviteeEmail) return res.status(400).json({ error: 'Missing inviteeEmail' })
       // The invited trusted person is often not an Everstead user yet: their own
       // profile language when they have one, otherwise the vault owner's, so a
       // French household sends a French invitation.
       const lang = await langForOutsider(inviteeEmail, await ownerLangForInvite(inviteToken))
       const t = translator(COPY, lang)
-      await resend.emails.send({
-        from:    'Everstead <hello@everstead.care>',
-        to:      inviteeEmail,
-        subject: t('inviteSubject', { name: ownerName || t('someone') }),
-        html:    inviteHtml(inviteeName, ownerName, role, inviteToken, lang),
+      await sendEmail(resend, {
+        from:      'Everstead <hello@everstead.care>',
+        to:        inviteeEmail,
+        subject:   t('inviteSubject', { name: ownerName || t('someone') }),
+        preheader: personalNote || t('invitePreheader', { name: ownerName || t('someone') }),
+        html:      inviteHtml(inviteeName, ownerName, role, inviteToken, lang, personalNote),
       })
 
     } else if (type === 'tool-report') {
@@ -267,6 +271,8 @@ const COPY = {
     inviteBody2:          "Create your free account to accept the invitation and view the sections you've been given access to.",
     inviteCta:            'Accept invitation →',
     inviteIgnore:         "If you weren't expecting this invitation, you can safely ignore this email.",
+    inviteNote:           'A note from {{name}}',
+    invitePreheader:      '{{name}} has put the practical things in one place, and wants you to be able to find them.',
 
     // estate readiness report
     toolSubject:          'Your estate readiness score: {{score}}/100',
@@ -340,6 +346,8 @@ const COPY = {
     inviteBody2:          'Créez votre compte gratuit pour accepter l\'invitation et consulter les sections auxquelles vous avez accès.',
     inviteCta:            'Accepter l\'invitation →',
     inviteIgnore:         'Si vous n\'attendiez pas cette invitation, vous pouvez simplement ignorer cet e-mail.',
+    inviteNote:           'Un mot de {{name}}',
+    invitePreheader:      '{{name}} a rassemblé l\'essentiel au même endroit, pour que vous puissiez le retrouver.',
 
     // estate readiness report
     toolSubject:          'Votre score de préparation successorale : {{score}}/100',
@@ -476,9 +484,15 @@ function adminInviteHtml(email, inviteUrl) {
 </html>`
 }
 
-function inviteHtml(inviteeName, ownerName, role, inviteToken, lang) {
+function inviteHtml(inviteeName, ownerName, role, inviteToken, lang, personalNote = '') {
   const t = translator(COPY, lang)
   inviteeName = esc(inviteeName); ownerName = esc(ownerName); role = esc(role)
+  const noteBlock = personalNote
+    ? `<blockquote style="margin:0 0 24px;padding:14px 18px;border-left:3px solid #4c7d47;background:#f4f7f4;border-radius:0 8px 8px 0;">
+            <p style="margin:0 0 6px;color:#4c7d47;font-size:11px;letter-spacing:.08em;text-transform:uppercase;font-family:Arial,sans-serif;">${t('inviteNote', { name: ownerName || t('someone') })}</p>
+            <p style="margin:0;color:#0d1628;font-size:15px;line-height:1.7;">${esc(personalNote).replace(/\n/g, '<br>')}</p>
+          </blockquote>`
+    : ''
   const signupUrl = inviteToken
     ? `${APP_URL}/accept-invite?token=${inviteToken}`
     : `${APP_URL}/accept-invite`
@@ -500,6 +514,7 @@ function inviteHtml(inviteeName, ownerName, role, inviteToken, lang) {
             ${inviteeName ? t('inviteGreetingNamed', { name: inviteeName }) : t('inviteGreetingAnon')}<br><br>
             ${t('inviteBody', { owner: ownerName || t('someone'), role: role || t('inviteRoleFallback') })}
           </p>
+          ${noteBlock}
           <p style="margin:0 0 32px;color:#5a6475;font-size:15px;line-height:1.7;">${t('inviteBody2')}</p>
           <table cellpadding="0" cellspacing="0" style="margin:0 0 32px;">
             <tr><td style="background:#2d5082;border-radius:9999px;">

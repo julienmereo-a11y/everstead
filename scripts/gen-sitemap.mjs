@@ -36,6 +36,7 @@ const EN_PAGES = [
   ['/executor-checklist', 'monthly', '0.7'],
   ['/estate-readiness-score', 'monthly', '0.7'],
   ['/digital-estate-worth', 'monthly', '0.7'],
+  ['/emergency-pack', 'monthly', '0.7'],
   ['/security', 'monthly', '0.7'],
   ['/family-vault', 'monthly', '0.7'],
   ['/compare', 'monthly', '0.7'],

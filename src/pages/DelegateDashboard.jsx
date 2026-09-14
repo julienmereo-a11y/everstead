@@ -1,5 +1,8 @@
 import React, { useEffect, useMemo, useState } from 'react'
-import { Link, useSearchParams } from 'react-router-dom'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
+import { apiPost } from '../lib/platform'
+import { useAuth } from '../contexts/AuthContext'
+import { ALL_AREA_KEYS } from './dashboard/shared'
 import { DEMO_DELEGATE, DEMO_DOCUMENTS, DEMO_ACCOUNTS, DEMO_INSTRUCTIONS, DEMO_ALERTS, DEMO_ACTIVITY, DEMO_MESSAGES, DEMO_DELEGATE_MESSAGES, submitReport, getOwnerStatus } from '../lib/demoData'
 import { resolveDocumentAccess, accessibleDocumentsFor, accessibleAccountsFor, accessibleInstructionsFor, grantSummary } from '../lib/documentAccess'
 import {
@@ -110,6 +113,35 @@ export default function DelegateDashboard() {
   }
 
   const [activeTab, setActiveTab] = useState('overview')
+  const navigate = useNavigate()
+  const { refreshProfile } = useAuth()
+  const [reverse, setReverse] = useState('idle') // idle | working | error
+  const [onetapDismissed, setOnetapDismissed] = useState(false)
+
+  // "Now start yours, and invite them back." One click: the server makes this
+  // account an owner and adds the inviter to the new plan; the invitation
+  // email then goes out through the normal invite endpoint.
+  const startOwnPlan = async () => {
+    setReverse('working')
+    try {
+      const { data: { session } } = await supabase.auth.getSession()
+      const auth = { Authorization: `Bearer ${session?.access_token || ''}` }
+      const res = await apiPost('/api/invite/reverse', { inviteToken: token, accessAreas: ALL_AREA_KEYS }, auth)
+      if (!res.ok) throw new Error(res.data?.error || 'reverse_failed')
+      const { person, note, existed } = res.data || {}
+      if (person?.invite_token && !existed) {
+        await apiPost('/api/emails/send', {
+          type: 'invite', inviteeName: person.name, inviteeEmail: person.email, role: person.role,
+          ownerName: invite?.name || session?.user?.user_metadata?.full_name || '',
+          inviteToken: person.invite_token, personalNote: note || '',
+        }, auth).catch(() => {})
+      }
+      await refreshProfile?.()
+      navigate('/dashboard?welcome=own')
+    } catch {
+      setReverse('error')
+    }
+  }
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [invite, setInvite] = useState(null)
@@ -428,17 +460,29 @@ export default function DelegateDashboard() {
           <Link to="/get-started" className="underline hover:no-underline">{t('banners.demoCta')}</Link>
         </div>
       )}
+      {!isDemo && searchParams.get('welcome') === 'onetap' && !onetapDismissed && (
+        <div className="bg-sage-50 border-b border-sage-200 px-6 py-3 flex flex-wrap items-center justify-between gap-3">
+          <p className="text-xs text-sage-800 leading-relaxed">{t('banners.onetap', { email: invite?.email })}</p>
+          <div className="flex items-center gap-4">
+            <button onClick={() => setActiveTab('settings')} className="text-xs font-semibold text-sage-800 underline underline-offset-2 hover:text-sage-900 whitespace-nowrap">{t('banners.onetapCta')}</button>
+            <button onClick={() => setOnetapDismissed(true)} aria-label="Close" className="text-sage-700 hover:text-sage-900"><X size={14} /></button>
+          </div>
+        </div>
+      )}
       {!isDemo && myRole === 'delegate' && (
-        <div className="border-b border-navy-900 px-6 py-3 flex flex-wrap items-center justify-between gap-3" style={{ background: 'linear-gradient(100deg, #0d1628 0%, #1d3052 38%, #2a2a55 70%, #18301f 100%)' }}>
-          <p className="text-xs text-stone-400">
-            {t('banners.upsell', { name: owner?.full_name })}
-          </p>
-          <Link
-            to="/get-started"
-            className="text-xs font-semibold text-sage-400 hover:text-sage-300 transition-colors whitespace-nowrap flex items-center gap-1"
+        <div className="px-6 py-4 flex flex-wrap items-center justify-between gap-4 border-b border-navy-900" style={{ background: 'linear-gradient(100deg, #0d1628 0%, #1d3052 38%, #2a2a55 70%, #18301f 100%)' }}>
+          <div className="min-w-0">
+            <p className="text-sm font-semibold text-white m-0">{t('banners.reverseTitle')}</p>
+            <p className="text-xs text-stone-400 mt-0.5 m-0">{t('banners.reverseBody', { name: owner?.full_name })}</p>
+            {reverse === 'error' && <p className="text-xs text-red-300 mt-1 m-0">{t('banners.reverseError')}</p>}
+          </div>
+          <button
+            onClick={startOwnPlan}
+            disabled={reverse === 'working'}
+            className="shrink-0 inline-flex items-center gap-1.5 rounded-full bg-sage-500 hover:bg-sage-600 disabled:opacity-60 text-white text-xs font-semibold px-4 py-2 transition-colors"
           >
-            {t('banners.upsellCta')} <ArrowRight size={12} />
-          </Link>
+            {reverse === 'working' ? t('banners.reverseWorking') : t('banners.reverseCta', { name: owner?.full_name })} <ArrowRight size={12} />
+          </button>
         </div>
       )}
       {ownerDeceased && (

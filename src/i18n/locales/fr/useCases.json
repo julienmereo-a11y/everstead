@@ -411,6 +411,11 @@
       ],
       "note": "Revenez quand la vie change. Everstead vous fait signe quand quelque chose mérite un coup d'œil.",
       "imageAlt": "Un enfant en feutrine serrant un petit chien gris, le bras d'un parent autour de lui"
+    },
+    "parents": {
+      "eyebrow": "Vous êtes l'enfant ?",
+      "title": "Envoyez ceci à vos parents.",
+      "body": "La plupart des parents comptent s'en occuper et ne commencent jamais. Un message de vous, c'est le déclic qui marche. En voici un, prêt à envoyer."
     }
   }
 }

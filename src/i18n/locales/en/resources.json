@@ -89,6 +89,13 @@
         "tag": "Calculator",
         "desc": "Enter your accounts, pensions, property, and assets to get an estimated estate value, with an IHT threshold alert if you're over £325,000.",
         "cta": "Calculate now"
+      },
+      "emergencyPack": {
+        "title": "Emergency Pack",
+        "tag": "Free PDF",
+        "desc": "One page: who to call, where the will and key documents are, what you would want. Fill it in and download it, no account needed.",
+        "cta": "Make my pack",
+        "badge": "Free · No login"
       }
     }
   }

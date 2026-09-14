@@ -122,9 +122,10 @@ export function usePeople() {
   const { user, profile } = useAuth()
   const base = useTable('trusted_people', '*', 'created_at')
 
-  const invite = async ({ name, email, role, accessAreas = [], accountCategories = [], documentTypes = [], accessTiming = 'always' }) => {
+  const invite = async ({ name, email, role, accessAreas = [], accountCategories = [], documentTypes = [], accessTiming = 'always', message = '' }) => {
     const access_grants = { accessAreas, accountCategories, documentTypes, accessTiming }
-    const person = await base.add({ name, email, role, access_grants })
+    const invite_message = (message || '').trim().slice(0, 600) || null
+    const person = await base.add({ name, email, role, access_grants, invite_message })
 
     // MUST go through apiPost, not a relative fetch: on native the bundle is served
     // from capacitor://localhost, which has no server — a relative /api/… call is
@@ -139,6 +140,7 @@ export function usePeople() {
       role,
       ownerName:    profile?.full_name ?? 'Someone',
       inviteToken:  person.invite_token,
+      personalNote: invite_message || '',
     }, { Authorization: `Bearer ${session?.access_token || ''}` }).catch(() => ({ ok: false }))
 
     logActivity(user.id, 'person.invited', 'trusted_people', person.id, name)
@@ -184,6 +186,7 @@ export function usePeople() {
       role:         person.role,
       ownerName:    profile?.full_name ?? 'Someone',
       inviteToken:  newToken,
+      personalNote: person.invite_message || '',
     }, { Authorization: `Bearer ${session?.access_token || ''}` }).catch(() => {})
   }
 

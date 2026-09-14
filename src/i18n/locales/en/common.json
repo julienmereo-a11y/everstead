@@ -122,5 +122,17 @@
     "examples": "Cookies",
     "moreTitle": "More information",
     "moreBody": "Full details, including how to delete cookies from your browser, are in our Cookie Policy."
+  },
+  "sendToParents": {
+    "title": "Send this to your parents",
+    "body": "Most parents mean to do this and never start. A message from you is the nudge that works.",
+    "message": "Hi Mum, hi Dad. I have started using Everstead to keep our family's important details in one place: accounts, documents, who to call, what you would want. It is free to start and you can add one thing at a time. Would you set yours up too? {{link}}",
+    "subject": "Something I set up for us",
+    "whatsapp": "Send on WhatsApp",
+    "email": "Send by email",
+    "copy": "Copy the message",
+    "copied": "Copied",
+    "share": "Share",
+    "dismiss": "Not now"
   }
 }

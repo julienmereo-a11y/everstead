@@ -2716,6 +2716,16 @@ const tools = [
     badge: 'Free · No login',
   },
   {
+    i18nKey: 'emergencyPack',
+    href: '/emergency-pack',
+    title: 'Emergency Pack',
+    tag: 'Free PDF',
+    tagColor: 'bg-navy-50 text-navy-700 border-navy-200',
+    desc: 'One page: who to call, where the will and key documents are, what you would want. Fill it in and download it, no account needed.',
+    cta: 'Make my pack',
+    badge: 'Free · No login',
+  },
+  {
     i18nKey: 'readiness',
     href: '/estate-readiness-score',
     title: 'Estate Readiness Score',

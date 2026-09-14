@@ -101,7 +101,7 @@ export function BiometricLockSetting() {
 }
 
 export function SettingsSection({ adviser, profile, isDemo, updateProfile, refreshProfile, onUpgrade, onDeleteAccount, upgradeError }) {
-  const { t } = useTranslation('dashboard')
+  const { t, i18n } = useTranslation('dashboard')
   const dateLocale = i18n.language?.startsWith('fr') ? 'fr-FR' : 'en-GB'
   const market = marketPricing(i18n.language)
   // Everstead+ is the self-serve upgrade for Free and grandfathered Essential users.
@@ -747,6 +747,14 @@ export function SettingsSection({ adviser, profile, isDemo, updateProfile, refre
             </>
           )}
         </div>
+
+        {/* ── Send this to your parents — every tier, the referral link inside ── */}
+        {!isDemo && (
+          <SendToParentsCard
+            link={`${window.location.origin}${i18n.language === 'fr' ? '/fr' : ''}/get-started?ref=${profile.referral_code || profile.id}`}
+            location="dashboard_settings"
+          />
+        )}
 
         {/* ── Refer a friend — the extended-trial referral only makes sense once you're
                on a paid plan, so it's hidden for free users (who see the upgrade cards

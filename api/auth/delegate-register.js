@@ -78,7 +78,47 @@ async function logRateLimit(ip) {
 async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).end()
 
-  const { email, password, name, mode, wantsTrial, token } = req.body
+  let { email, password } = req.body
+  const { name, mode, wantsTrial, token } = req.body
+
+  // One-tap acceptance of a trusted-person invitation. The invite token was
+  // emailed to this address, which is the proof of ownership the password
+  // form was standing in for. The account is created with a random password;
+  // the person sets their own from the delegate settings or "Forgot password".
+  // Falls through to the sign-in at the bottom with the generated credentials.
+  if (mode === 'accept-invite') {
+    if (!token) return res.status(400).json({ error: 'Missing token' })
+    const ip = (req.headers['x-forwarded-for'] || '').split(',')[0].trim() || 'unknown'
+    if (await checkRateLimit(ip)) return res.status(429).json({ error: 'Too many requests. Please try again in 15 minutes.' })
+    await logRateLimit(ip)
+    const { data: rows } = await supabase.rpc('get_invite_details', { p_token: String(token) })
+    const inv = rows?.[0]
+    if (!inv || inv.invite_status !== 'pending') return res.status(410).json({ error: 'invite_unavailable' })
+    if (Date.now() - new Date(inv.invited_at).getTime() > 7 * 86400000) return res.status(410).json({ error: 'invite_expired' })
+    const inviteEmail = String(inv.email || '').trim().toLowerCase()
+    if (!inviteEmail) return res.status(410).json({ error: 'invite_unavailable' })
+    const language  = ['en', 'fr'].includes(req.body.language) ? req.body.language : 'en'
+    const generated = crypto.randomUUID() + crypto.randomUUID()
+    const { data: created, error: createErr } = await supabase.auth.admin.createUser({
+      email: inviteEmail,
+      password: generated,
+      user_metadata: { full_name: inv.name || inviteEmail, role: 'delegate', language, plan: 'free', signup_platform: 'web' },
+      email_confirm: true,
+    })
+    if (createErr) {
+      if (/already|exists|registered/i.test(createErr.message || '')) return res.status(409).json({ error: 'account_exists' })
+      return res.status(400).json({ error: createErr.message })
+    }
+    if (created?.user?.id) {
+      await supabase.from('profiles').update({ role: 'delegate', subscription_status: null, trial_ends_at: null }).eq('id', created.user.id)
+    }
+    await supabase.from('trusted_people')
+      .update({ invite_status: 'accepted', accepted_at: new Date().toISOString() })
+      .eq('invite_token', String(token))
+    email = inviteEmail
+    password = generated
+  }
+
   if (!email || !password) return res.status(400).json({ error: 'Missing fields' })
 
   // Rate limit — only applies to new account registration, not sign-in

@@ -9,7 +9,11 @@
     "bullet3": "Vous pourrez mettre à jour vos coordonnées après avoir accepté",
     "wrongAccount": "<bold>Attention :</bold> cette invitation est destinée à <bold>{{invited}}</bold>. Vous êtes connecté en tant que <bold>{{current}}</bold>. Déconnectez-vous d'abord si vous souhaitez accepter avec un autre compte.",
     "accept": "Accepter l'invitation",
-    "decline": "Refuser"
+    "decline": "Refuser",
+    "noteFrom": "Un mot de {{name}}",
+    "oneTap": "Accepter et ouvrir",
+    "oneTapHint": "Nous créons votre compte gratuit avec cette adresse e-mail. Pas de mot de passe aujourd'hui, vous pourrez en définir un à tout moment.",
+    "preferPassword": "Vous préférez définir un mot de passe maintenant ?"
   },
   "accepting": "Confirmation de votre rôle…",
   "accepted": {
@@ -32,6 +36,7 @@
   },
   "errors": {
     "noToken": "Aucun jeton d'invitation trouvé dans le lien.",
-    "wrongEmail": "Cette invitation a été envoyée à {{invited}}. Vous êtes connecté en tant que {{current}}. Veuillez vous connecter avec le bon compte."
+    "wrongEmail": "Cette invitation a été envoyée à {{invited}}. Vous êtes connecté en tant que {{current}}. Veuillez vous connecter avec le bon compte.",
+    "exists": "Un compte existe déjà pour cette adresse. Connectez-vous pour accepter l'invitation."
   }
 }

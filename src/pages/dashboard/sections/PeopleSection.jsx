@@ -15,6 +15,7 @@ export function PersonAccessForm({ initial, onSave, onCancel, saving, submitLabe
     accountCategories: [],
     documentTypes: [],
     accessTiming: 'always', // 'always' | 'after_death'
+    message: '',            // the owner's own words, sent with the invitation
   }
   const [form, setForm] = useState(initial ?? emptyForm)
   const [accessError, setAccessError] = useState(null)
@@ -67,6 +68,10 @@ export function PersonAccessForm({ initial, onSave, onCancel, saving, submitLabe
           </Field>
           <Field label={t('people.form.email')} required>
             <input type="email" className={input} value={form.email} onChange={e => setForm(p => ({...p, email: e.target.value}))} placeholder={t('people.form.emailPlaceholder')} required />
+          </Field>
+          <Field label={t('people.form.message')}>
+            <textarea className={input} rows={3} maxLength={600} value={form.message || ''} onChange={e => setForm(p => ({...p, message: e.target.value}))} placeholder={t('people.form.messagePlaceholder')} />
+            <p className="text-xs text-stone-400 mt-1">{t('people.form.messageHint')}</p>
           </Field>
         </>
       )}

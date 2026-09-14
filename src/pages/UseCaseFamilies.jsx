@@ -15,6 +15,7 @@ import HreflangLinks from '../components/HreflangLinks'
 import { useReveal } from '../components/useReveal'
 import { trackEvent } from '../lib/analytics'
 import { OtherUseCases } from './useCasesShared'
+import SendToParentsCard from '../components/SendToParentsCard'
 import {
   ArrowRight, BookOpen, Check, CheckCircle2, ClipboardList, CreditCard,
   FileText, FolderOpen, Heart, Home, KeyRound, LifeBuoy, ShieldCheck, XCircle,
@@ -315,6 +316,19 @@ export default function UseCaseFamilies() {
               </ol>
               <p className="mt-8 m-0 text-[15px] text-stone-500 leading-relaxed border-l-2 border-sage-300 pl-4">{p('start.note')}</p>
             </div>
+          </div>
+        </section>
+
+        {/* ── SEND THIS TO YOUR PARENTS ── */}
+        <section className={`py-20 lg:py-28 bg-stone-50 ${SECTION_X}`}>
+          <div className="max-w-[760px] mx-auto reveal">
+            <SendToParentsCard
+              link={`https://www.everstead.care${isFr ? '/fr' : ''}/get-started?utm_source=site&utm_medium=send_to_parents`}
+              location="usecase_families"
+              eyebrow={p('parents.eyebrow')}
+              title={p('parents.title')}
+              body={p('parents.body')}
+            />
           </div>
         </section>
 

@@ -43,7 +43,7 @@ export default function PrintView() {
     Promise.all([
       supabase.from('accounts')     .select('*').eq('user_id', id).order('created_at'),
       supabase.from('documents')    .select('*').eq('user_id', id).order('created_at'),
-      supabase.from('trusted_people').select('*').eq('owner_id', id).order('created_at'),
+      supabase.from('trusted_people').select('*').eq('user_id', id).order('created_at'),
       supabase.from('instructions') .select('*').eq('user_id', id).order('created_at'),
       supabase.from('wishes')       .select('*').eq('user_id', id).order('created_at'),
     ]).then(([a, d, p, i, w]) => {

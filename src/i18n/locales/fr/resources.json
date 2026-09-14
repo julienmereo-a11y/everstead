@@ -89,6 +89,13 @@
         "tag": "Calculateur",
         "desc": "Renseignez vos comptes, votre épargne, vos biens et vos placements pour une estimation de votre patrimoine, avec un repère sur les droits de succession en France.",
         "cta": "Calculer"
+      },
+      "emergencyPack": {
+        "title": "Kit d'urgence",
+        "tag": "PDF gratuit",
+        "desc": "Une page : qui appeler, où sont le testament et les documents clés, ce que vous souhaitez. Remplissez et téléchargez, sans compte.",
+        "cta": "Créer mon kit",
+        "badge": "Gratuit · Sans compte"
       }
     }
   }

@@ -411,6 +411,11 @@
       ],
       "note": "Come back whenever life changes. Everstead nudges you when something needs a look.",
       "imageAlt": "A felt child hugging a small grey dog, with a parent's arm around them"
+    },
+    "parents": {
+      "eyebrow": "Are you the child?",
+      "title": "Send this to your parents.",
+      "body": "Most parents mean to do this and never start. A message from you is the nudge that works. Here is one you can send as it is."
     }
   }
 }

@@ -122,5 +122,17 @@
     "examples": "Cookies",
     "moreTitle": "Plus d'informations",
     "moreBody": "Tous les détails, y compris la suppression des cookies depuis votre navigateur, figurent dans notre Politique relative aux cookies."
+  },
+  "sendToParents": {
+    "title": "Envoyez ceci à vos parents",
+    "body": "La plupart des parents comptent s'en occuper et ne commencent jamais. Un message de vous, c'est le déclic qui marche.",
+    "message": "Papa, Maman, j'utilise Everstead pour garder au même endroit ce qui compte pour la famille : comptes, papiers, qui appeler, ce que vous souhaitez. C'est gratuit pour commencer, et on peut ajouter une chose à la fois. Vous voulez bien faire le vôtre ? {{link}}",
+    "subject": "Quelque chose que j'ai préparé pour nous",
+    "whatsapp": "Envoyer sur WhatsApp",
+    "email": "Envoyer par e-mail",
+    "copy": "Copier le message",
+    "copied": "Copié",
+    "share": "Partager",
+    "dismiss": "Pas maintenant"
   }
 }

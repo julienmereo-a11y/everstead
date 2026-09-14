@@ -44,7 +44,14 @@
     "openMessages": "Ouvrir les messages",
     "incapTitle": "Un signalement d'incapacité concernant {{name}} a été vérifié par Everstead",
     "incapBody": "Vos autorisations d'accès en cas de décès ou d'incapacité sont désormais actives. Le compte du titulaire du plan a été suspendu et reste en lecture seule dans l'attente d'un examen complémentaire.",
-    "viewDocuments": "Voir les documents"
+    "viewDocuments": "Voir les documents",
+    "reverseTitle": "À votre tour. Gratuitement.",
+    "reverseBody": "Votre propre plan privé, et {{name}} reçoit une invitation en retour : vous saurez chacun où sont les choses.",
+    "reverseCta": "Créer mon plan et inviter {{name}} en retour",
+    "reverseWorking": "Création de votre plan…",
+    "reverseError": "Cela n'a pas fonctionné. Veuillez réessayer.",
+    "onetap": "Votre compte a été créé avec {{email}}. Pour vous reconnecter, définissez un mot de passe dans Réglages, ou utilisez « Mot de passe oublié » à la connexion.",
+    "onetapCta": "Définir un mot de passe"
   },
   "header": {
     "eyebrow": "Espace délégué",

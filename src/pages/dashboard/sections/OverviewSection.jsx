@@ -3,12 +3,13 @@
 //
 import React, { useEffect, useState } from 'react'
 import ReferralCard from '../../../components/ReferralCard'
+import SendToParentsCard from '../../../components/SendToParentsCard'
 import { AdviserOverviewCard } from './AdviserSection'
 import { SkeletonStats } from '../../../components/Skeleton'
 import { PLAN_LABELS } from '../../../config/pricing'
-import { SEVERITY_STYLES, STATUS_STYLES } from '../../dashboard/shared'
+import { ALL_AREA_KEYS, FULL_ACCESS_ROLE, PERSON_ROLES, ROLE_GROUP_KEYS, SEVERITY_STYLES, STATUS_STYLES } from '../../dashboard/shared'
 import { EmptyState } from '../../dashboard/ui'
-import { AlertCircle, ArrowRight, Bell, BookOpen, Eye, FileText, Heart, Landmark, MessageSquare, RefreshCw, Sparkles, UserCircle, Users, X } from 'lucide-react'
+import { AlertCircle, ArrowRight, Bell, BookOpen, Eye, FileText, Heart, Landmark, MessageSquare, RefreshCw, Send, Sparkles, UserCircle, Users, X } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 export const PLAN_BADGE = {
@@ -18,8 +19,86 @@ export const PLAN_BADGE = {
   advisor:   { label: PLAN_LABELS.advisor,   cls: 'bg-sage-50  text-sage-700  border-sage-200'  },
 }
 
-export function OverviewSection({ isDemo, adviser, profile, accounts, documents, people, instructions, messages, alerts, markRead, onNavigate, planLimits, loading, daysSinceLogin, onCelebrate, onExecutorPreview, aboutMe, onUpgrade, persistScore, scoreInputsLoaded }) {
+// First session: the plan only works once someone knows it exists, so the
+// overview asks for one person before anything else. A partner starts with
+// full access; anyone else is sealed until needed; both can be changed under
+// People. Disappears the moment the member has a trusted person.
+function InviteOneCard({ invite, onCelebrate, onNavigate }) {
   const { t } = useTranslation('dashboard')
+  const [form, setForm] = useState({ name: '', email: '', role: '', message: '' })
+  const [state, setState] = useState('idle') // idle | sending | sent | error
+  const [sentName, setSentName] = useState('')
+  const input = 'w-full rounded-xl border border-stone-200 bg-white px-3.5 py-2.5 text-sm text-navy-950 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-navy-200 focus:border-navy-300'
+
+  const submit = async (e) => {
+    e.preventDefault()
+    if (!form.name.trim() || !form.email.trim() || !form.role) return
+    setState('sending')
+    try {
+      const partner = form.role === FULL_ACCESS_ROLE
+      await invite({
+        name: form.name.trim(), email: form.email.trim(), role: form.role, message: form.message.trim(),
+        accessAreas: ALL_AREA_KEYS, accountCategories: [], documentTypes: [],
+        accessTiming: partner ? 'always' : 'after_death',
+      })
+      setSentName(form.name.trim())
+      setState('sent')
+      onCelebrate?.('first_person', '💌', t('shell.milestones.firstPerson.headline'), t('shell.milestones.firstPerson.body'))
+    } catch {
+      setState('error')
+    }
+  }
+
+  if (state === 'sent') {
+    return (
+      <div className="bg-sage-50 border border-sage-200 rounded-2xl p-5 flex items-center gap-4">
+        <div className="w-10 h-10 rounded-full bg-sage-100 flex items-center justify-center shrink-0"><Send size={17} className="text-sage-700" /></div>
+        <div className="flex-1 min-w-0">
+          <p className="text-sm font-semibold text-navy-900">{t('overview.inviteOne.sentTitle', { name: sentName })}</p>
+          <p className="text-xs text-stone-500 mt-0.5">{t('overview.inviteOne.sentBody')}</p>
+        </div>
+        <button onClick={() => onNavigate('people')} className="shrink-0 text-xs font-semibold text-sage-700 bg-white border border-sage-300 px-3 py-1.5 rounded-full hover:bg-sage-50 transition-colors">
+          {t('overview.inviteOne.manage')}
+        </button>
+      </div>
+    )
+  }
+
+  return (
+    <form onSubmit={submit} className="bg-white border border-navy-200 rounded-2xl p-6 lg:p-7">
+      <div className="flex items-start gap-3 mb-5">
+        <div className="w-10 h-10 rounded-xl bg-navy-50 text-navy-700 flex items-center justify-center shrink-0"><Users size={18} /></div>
+        <div>
+          <h3 className="font-display text-2xl font-light text-navy-950 leading-tight m-0">{t('overview.inviteOne.title')}</h3>
+          <p className="mt-1 m-0 text-sm text-stone-600 leading-relaxed">{t('overview.inviteOne.body')}</p>
+        </div>
+      </div>
+      <div className="grid sm:grid-cols-3 gap-3">
+        <input className={input} value={form.name} onChange={e => setForm(p => ({ ...p, name: e.target.value }))} placeholder={t('overview.inviteOne.name')} required />
+        <input type="email" className={input} value={form.email} onChange={e => setForm(p => ({ ...p, email: e.target.value }))} placeholder={t('overview.inviteOne.email')} required />
+        <select className={input} value={form.role} onChange={e => setForm(p => ({ ...p, role: e.target.value }))} required aria-label={t('overview.inviteOne.role')}>
+          <option value="">{t('overview.inviteOne.selectRole')}</option>
+          {ROLE_GROUP_KEYS.map(group => (
+            <optgroup key={group} label={t(`people.roleGroup.${group}`)}>
+              {PERSON_ROLES.filter(r => r.group === group).map(r => (
+                <option key={r.value} value={r.value}>{t(`people.role.${r.id}`)}</option>
+              ))}
+            </optgroup>
+          ))}
+        </select>
+      </div>
+      <textarea className={`${input} mt-3`} rows={2} maxLength={600} value={form.message} onChange={e => setForm(p => ({ ...p, message: e.target.value }))} placeholder={t('overview.inviteOne.messagePlaceholder')} aria-label={t('overview.inviteOne.message')} />
+      <p className="mt-2 mb-4 m-0 text-xs text-stone-400 leading-relaxed">{t('overview.inviteOne.accessNote')}</p>
+      {state === 'error' && <p className="text-xs text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2 mb-3">{t('overview.inviteOne.error')}</p>}
+      <button type="submit" disabled={state === 'sending'} className="inline-flex items-center gap-2 rounded-full bg-navy-600 hover:bg-navy-700 disabled:opacity-60 text-white text-sm font-semibold px-5 py-2.5 transition-colors">
+        <Send size={14} /> {state === 'sending' ? t('overview.inviteOne.sending') : t('overview.inviteOne.send')}
+      </button>
+    </form>
+  )
+}
+
+export function OverviewSection({ isDemo, adviser, profile, accounts, documents, people, instructions, messages, alerts, markRead, onNavigate, planLimits, loading, daysSinceLogin, onCelebrate, onExecutorPreview, aboutMe, onUpgrade, persistScore, scoreInputsLoaded, invite }) {
+  const { t, i18n } = useTranslation('dashboard')
   const criticalAlerts = alerts.filter(a => a.severity === 'critical' && !a.is_read)
   const [staleBannerDismissed, setStaleBannerDismissed] = React.useState(false)
   const showStaleBanner = !staleBannerDismissed && daysSinceLogin !== null && daysSinceLogin >= 180
@@ -341,6 +420,24 @@ export function OverviewSection({ isDemo, adviser, profile, accounts, documents,
               </button>
             </div>
           )}
+        </div>
+      )}
+
+      {/* First session: invite one person (until there is one) */}
+      {!isDemo && scoreInputsLoaded && people.length === 0 && typeof invite === 'function' && (
+        <div className="mb-6">
+          <InviteOneCard invite={invite} onCelebrate={onCelebrate} onNavigate={onNavigate} />
+        </div>
+      )}
+
+      {/* Send this to your parents: the member's referral link, dismissible */}
+      {!isDemo && (
+        <div className="mb-6">
+          <SendToParentsCard
+            link={`${window.location.origin}${i18n.language === 'fr' ? '/fr' : ''}/get-started?ref=${profile.referral_code || profile.id}`}
+            location="dashboard_overview"
+            dismissKey={`everstead_send_parents_${profile.id}`}
+          />
         </div>
       )}
 
