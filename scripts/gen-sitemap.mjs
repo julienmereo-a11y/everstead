@@ -26,6 +26,7 @@ const EN_PAGES = [
   ['/use-cases/executors', 'monthly', '0.7'],
   ['/gift', 'monthly', '0.8'],
   ['/for-advisers', 'monthly', '0.8'],
+  ['/professionals', 'monthly', '0.8'],
   ['/what-to-do-when-someone-dies', 'monthly', '0.8'],
   ['/book-demo', 'monthly', '0.7'],
   ['/resources', 'weekly', '0.7'],
