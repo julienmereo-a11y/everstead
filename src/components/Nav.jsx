@@ -11,9 +11,9 @@ import LanguageSwitcher from './LanguageSwitcher'
 // "Your Privacy" and the advisers page as "For professionals".
 const navLinks = [
   { key: 'howItWorks',       href: '/how-it-works' },
-  { key: 'pricing',          href: '/pricing' },
-  { key: 'yourPrivacy',      href: '/security' },
+  { key: 'forFamilies',      href: '/use-cases/families' },
   { key: 'forProfessionals', href: '/for-advisers' },
+  { key: 'yourPrivacy',      href: '/security' },
 ]
 
 // The URL path is the language signal (/fr/* → French, root → English). The nav
