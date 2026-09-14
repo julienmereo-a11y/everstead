@@ -34,9 +34,9 @@
     },
     {
       "name": "Marketing cookies",
-      "description": "We use Meta Pixel to measure the effectiveness of our advertising on Facebook and Instagram. This cookie is only placed after you consent to marketing cookies. We do not use it to build advertising profiles or sell your data.",
-      "examples": "_fbp, _fbc",
-      "provider": "Meta Platforms Ireland Ltd",
+      "description": "We use Meta Pixel to measure the effectiveness of our advertising on Facebook and Instagram, and Artisan (built on Demandbase) to recognise which organisations visit our website so we can follow up with professional firms. These are only placed after you consent to marketing cookies. We do not use them to build advertising profiles or sell your data.",
+      "examples": "_fbp, _fbc; Demandbase visitor identifiers",
+      "provider": "Meta Platforms Ireland Ltd; Artisan AI Inc. / Demandbase Inc. (USA)",
       "retention": "Up to 3 months"
     }
   ],

@@ -49,6 +49,11 @@
       "purpose": "AI assistant, document scanning and in-product guidance. Receives the messages you type into the assistant and, only when you ask for a scan, the document you choose. Nothing else from your vault is sent.",
       "location": "USA",
       "transferMechanism": "UK IDTA / EU SCCs · processed under Anthropic’s commercial API terms; Anthropic does not train on Everstead traffic"
+    },
+    {
+      "purpose": "Website visitor identification on the marketing site, only after marketing consent: recognises the organisation a visitor belongs to so we can follow up with professional firms. Receives page views and the visitor’s IP address; nothing from any vault.",
+      "location": "USA",
+      "transferMechanism": "UK IDTA / EU SCCs"
     }
   ],
   "changes": {

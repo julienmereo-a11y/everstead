@@ -26,6 +26,7 @@ const SUBPROCESSOR_META = [
   { name: 'Resend Inc.', website: 'https://resend.com/legal/privacy-policy' },
   { name: 'Functional Software, Inc. (Sentry)', website: 'https://sentry.io/privacy/' },
   { name: 'Anthropic, PBC', website: 'https://www.anthropic.com/legal/privacy' },
+  { name: 'Artisan AI, Inc. (Demandbase)', website: 'https://www.artisan.co/privacy-policy' },
 ]
 
 const policyLinkClass = 'text-sage-700 underline hover:text-sage-800'

@@ -49,6 +49,11 @@
       "purpose": "Assistant, analyse de documents et aide dans le produit. Reçoit les messages que vous saisissez dans l'assistant et, uniquement lorsque vous demandez une analyse, le document que vous choisissez. Rien d'autre de votre coffre n'est transmis.",
       "location": "États-Unis",
       "transferMechanism": "IDTA britannique / CCT de l'UE · traitement régi par les conditions commerciales de l'API d'Anthropic ; Anthropic n'entraîne pas ses modèles sur les données d'Everstead"
+    },
+    {
+      "purpose": "Identification des organisations visitant le site marketing, uniquement après consentement aux cookies marketing : permet de recontacter les cabinets professionnels. Reçoit les pages consultées et l'adresse IP du visiteur ; rien issu d'un coffre.",
+      "location": "États-Unis",
+      "transferMechanism": "UK IDTA / CCT UE"
     }
   ],
   "changes": {
