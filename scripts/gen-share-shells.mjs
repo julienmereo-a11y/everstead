@@ -99,6 +99,7 @@ const PAGES = {
   '/use-cases/families': { ns: 'useCases', metaPath: 'familiesPage.meta' },
   '/emergency-pack': 'emergencyPack',
   '/professionals': 'professionals',
+  '/will-generator': 'willGenerator',
 }
 let pagesWritten = 0
 for (const [route, spec] of Object.entries(PAGES)) {

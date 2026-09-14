@@ -1,0 +1,136 @@
+{
+  "meta": {
+    "title": "Préparer mon testament olographe (modèle gratuit) | Everstead",
+    "description": "Répondez à quelques questions et téléchargez le texte d'un testament olographe à recopier à la main, avec les règles qui le rendent valable. Gratuit, sans compte, rien ne quitte votre navigateur. Ce n'est pas un conseil juridique ; les situations complexes relèvent du notaire."
+  },
+  "hero": {
+    "eyebrow": "Outil gratuit · Droit français",
+    "title": "Un testament simple, rédigé dans les règles.",
+    "sub": "Pour les situations simples : désigner un exécuteur testamentaire, un tuteur pour des enfants mineurs, quelques legs et qui reçoit le reste. Vous téléchargez le texte, vous le recopiez intégralement à la main, vous le datez et le signez : c'est un testament olographe valable. Rien de ce que vous saisissez ne quitte votre navigateur."
+  },
+  "notice": {
+    "title": "À lire avant de commencer",
+    "body": "Everstead n'est pas un office notarial et cet outil n'est pas un conseil juridique. Il assemble des formulations usuelles à partir de vos réponses. En France, un testament olographe n'est valable que s'il est entièrement écrit à la main, daté et signé par vous : le document imprimé ne vaut rien tel quel. La réserve héréditaire s'applique quoi que vous écriviez : vos enfants (et à défaut votre conjoint) gardent leur part réservée. Consultez un notaire si l'un de ces cas vous concerne :",
+    "reasons": [
+      "Des biens hors de France, notamment au Royaume-Uni",
+      "Une entreprise, une exploitation ou des parts de société",
+      "Une famille recomposée, un enfant d'une autre union, ou une personne que vous souhaitez écarter",
+      "Un bénéficiaire en situation de handicap ou sous protection",
+      "Un patrimoine important, une donation entre époux ou une assurance-vie à coordonner",
+      "Un doute sur votre capacité, ou une pression de qui que ce soit sur vos choix"
+    ],
+    "accept": "Je comprends qu'il s'agit d'un modèle, pas d'un conseil juridique, et que ma situation est simple."
+  },
+  "steps": {
+    "about": "Vous",
+    "executors": "Exécuteur",
+    "family": "Enfants et legs",
+    "residue": "Le reste de vos biens",
+    "review": "Vérifier et télécharger"
+  },
+  "about": {
+    "title": "Vous",
+    "fullName": "Vos nom et prénoms",
+    "fullNamePh": "Anne Marie Durand",
+    "address": "Votre adresse",
+    "addressPh": "12 rue des Lilas, 69003 Lyon",
+    "dob": "Date de naissance",
+    "birthplace": "Lieu de naissance",
+    "birthplacePh": "Lyon"
+  },
+  "executors": {
+    "title": "Qui veillera à l'exécution de vos volontés ?",
+    "intro": "L'exécuteur testamentaire veille à ce que vos volontés soient respectées. Facultatif mais utile. Choisissez un ou deux adultes de confiance.",
+    "name": "Nom et prénoms",
+    "address": "Adresse",
+    "relation": "Lien avec vous",
+    "relationPh": "ex. mon époux, ma fille, mon ami",
+    "first": "Exécuteur testamentaire",
+    "second": "Second exécuteur (facultatif)",
+    "jointNote": "Si vous en nommez deux, ils agissent ensemble, et l'un peut agir seul si l'autre ne le peut pas."
+  },
+  "family": {
+    "title": "Enfants et legs particuliers",
+    "guardianIntro": "Si vous avez des enfants mineurs, vous pouvez désigner la personne qui en aura la charge. Cela ne s'applique que si l'autre parent n'est plus en mesure d'exercer l'autorité parentale.",
+    "hasMinor": "J'ai des enfants mineurs",
+    "guardian": "Nom et prénoms du tuteur",
+    "guardianAddress": "Adresse du tuteur",
+    "giftsIntro": "Les legs particuliers sont facultatifs : une somme, un objet précis, un bien. Tout ce qui n'est pas listé ici va dans le reste de vos biens, ci-dessous, dans la limite de la réserve héréditaire.",
+    "giftWhat": "Quoi",
+    "giftWhatPh": "ex. 5 000 €, ma bague de mariage, ma voiture",
+    "giftTo": "À qui (nom et prénoms)",
+    "giftRelation": "Lien",
+    "addGift": "Ajouter un legs",
+    "removeGift": "Retirer"
+  },
+  "residue": {
+    "title": "Qui reçoit le reste ?",
+    "intro": "Le reste de vos biens, c'est tout ce qui demeure après les dettes, les frais d'obsèques, les droits et les legs ci-dessus, dans la limite de la quotité disponible si vous avez des héritiers réservataires.",
+    "mode": "Je laisse le reste à",
+    "modePerson": "Une personne (légataire universel)",
+    "modeChildren": "Mes enfants, à parts égales",
+    "person": "Nom et prénoms",
+    "personRelation": "Lien",
+    "substituteIntro": "Si cette personne décède avant vous, qui doit recevoir le reste à sa place ?",
+    "substitute": "Nom et prénoms du remplaçant",
+    "substituteRelation": "Lien",
+    "childrenNote": "À parts égales entre vos enfants vivants. Si un enfant décède avant vous en laissant des enfants, ceux-ci prennent sa part.",
+    "funeral": "Volontés pour les obsèques (facultatif)",
+    "funeralPh": "ex. crémation, cérémonie simple, dons plutôt que fleurs"
+  },
+  "review": {
+    "title": "Votre texte est prêt",
+    "body": "Vérifiez le résumé, puis téléchargez le PDF. Il contient le texte à recopier à la main, mot pour mot, et une page de règles pour qu'il soit valable et retrouvé.",
+    "summaryExecutors": "Exécuteur testamentaire",
+    "summaryGuardian": "Tuteur",
+    "summaryGifts": "Legs particuliers",
+    "summaryResidue": "Le reste des biens",
+    "summaryFuneral": "Obsèques",
+    "none": "Aucun",
+    "download": "Télécharger le texte à recopier (PDF)",
+    "generating": "Préparation du PDF…",
+    "failed": "Le PDF n'a pas pu être créé. Veuillez réessayer.",
+    "missing": "Merci de compléter : {{fields}}",
+    "edit": "Modifier mes réponses",
+    "clear": "Recommencer"
+  },
+  "after": {
+    "title": "Ensuite, faites en sorte qu'on le retrouve.",
+    "body": "Un testament que personne ne trouve ne sert à rien. Notez où l'original manuscrit est conservé, ou déposez-le chez un notaire qui l'inscrira au fichier central des dispositions de dernières volontés, et désignez vos exécuteurs comme personnes de confiance.",
+    "cta": "L'ajouter à mon Everstead, gratuitement",
+    "privacy": "Tout reste sur cet appareil. Nous ne voyons ni ne conservons vos réponses ; le formulaire est seulement mémorisé dans ce navigateur."
+  },
+  "nav": {
+    "back": "Retour",
+    "next": "Continuer"
+  },
+  "pdf": {
+    "title": "Testament",
+    "subtitle": "Texte à recopier intégralement à la main",
+    "warning": "NE SIGNEZ PAS CE DOCUMENT IMPRIMÉ. Un testament olographe doit être entièrement écrit de votre main, daté et signé. Recopiez le texte ci-dessous sur une feuille blanche, sans rature, puis datez et signez.",
+    "opening": "Ceci est mon testament.",
+    "identity": "Je soussigné(e) {{name}}, né(e) le {{dob}} à {{birthplace}}, demeurant {{address}}, sain(e) d'esprit, exprime ici mes dernières volontés.",
+    "revoke": "Je révoque toutes dispositions testamentaires antérieures.",
+    "executorsOne": "Je désigne {{name}}, demeurant {{address}}, comme exécuteur testamentaire.",
+    "executorsTwo": "Je désigne {{name1}}, demeurant {{address1}}, et {{name2}}, demeurant {{address2}}, comme exécuteurs testamentaires. Si l'un d'eux ne peut ou ne veut accomplir cette mission, l'autre l'accomplira seul.",
+    "guardian": "Si mes enfants sont encore mineurs à mon décès et que nul n'exerce alors l'autorité parentale, je désigne {{name}}, demeurant {{address}}, comme tuteur.",
+    "giftsHead": "Je lègue à titre particulier :",
+    "giftLine": "{{what}} à {{to}}{{relation}} ;",
+    "residuePerson": "J'institue {{name}}{{relation}} légataire universel de tous les biens que je laisserai à mon décès, dans la limite de la quotité disponible. Si {{name}} décède avant moi, j'institue à sa place {{substitute}}{{subRelation}}.",
+    "residuePersonNoSub": "J'institue {{name}}{{relation}} légataire universel de tous les biens que je laisserai à mon décès, dans la limite de la quotité disponible.",
+    "residueChildren": "Je lègue le reste de mes biens à mes enfants vivants à mon décès, à parts égales. Si l'un de mes enfants décède avant moi en laissant des descendants, ceux-ci recueilleront sa part à parts égales.",
+    "funeral": "Pour mes obsèques, je souhaite {{wishes}}.",
+    "closing": "Fait à ____________________, le ____________________.",
+    "signature": "Signature :",
+    "guideTitle": "Pour que ce testament soit valable et retrouvé",
+    "guide": [
+      "Recopiez tout le texte à la main, sur papier libre, sans rien taper ni faire écrire par quelqu'un d'autre. Un texte imprimé ou dicté n'est pas un testament olographe.",
+      "Écrivez la date complète (jour, mois, année) et le lieu, puis signez. Sans date ni signature de votre main, le testament est nul.",
+      "Aucun témoin n'est nécessaire. Évitez les ratures ; si vous vous trompez, recommencez sur une nouvelle feuille.",
+      "La réserve héréditaire s'impose : un enfant ne peut pas être privé de sa part réservée. Les legs qui la dépassent seront réduits.",
+      "Déposez l'original chez un notaire : il l'inscrira au fichier central des dispositions de dernières volontés (FCDDV), ce qui garantit qu'il sera retrouvé. Sinon, indiquez clairement où il est conservé dans Everstead.",
+      "Relisez-le après un mariage, un divorce, une naissance, un décès ou un déménagement à l'étranger. Un nouveau testament daté et signé remplace le précédent."
+    ],
+    "footer": "Préparé avec l'outil gratuit d'Everstead · everstead.care/fr/will-generator · Ce n'est pas un conseil juridique."
+  }
+}

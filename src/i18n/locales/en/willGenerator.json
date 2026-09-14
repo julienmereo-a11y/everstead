@@ -1,0 +1,141 @@
+{
+  "meta": {
+    "title": "Free Simple Will Builder (England and Wales) | Everstead",
+    "description": "Answer a few questions and download a simple will for England and Wales, with the signing steps that make it valid. Free, no account, nothing leaves your browser. Not legal advice; complex estates need a solicitor."
+  },
+  "hero": {
+    "eyebrow": "Free tool · England and Wales",
+    "title": "A simple will, written properly.",
+    "sub": "For straightforward situations: name your executors, guardians for young children, a few gifts and who gets the rest. Download it, sign it before two witnesses, and it is a valid will. Nothing you type leaves your browser."
+  },
+  "notice": {
+    "title": "Read this first",
+    "body": "Everstead is not a law firm and this tool is not legal advice. It assembles standard clauses from your answers for England and Wales only (Scotland and Northern Ireland have different rules). A will is only valid once signed and witnessed correctly, and a simple will is wrong for some situations. If any of these apply, see a solicitor instead:",
+    "reasons": [
+      "Property or assets outside England and Wales, including in France",
+      "A business, a farm or a partnership",
+      "A second marriage, step-children, or someone you want to leave out who might claim",
+      "A beneficiary who is disabled, receives means-tested benefits, or cannot manage money",
+      "An estate likely to pay inheritance tax, or a wish to set up a trust",
+      "Any doubt about your capacity or pressure from anyone about your choices"
+    ],
+    "accept": "I understand this is a template, not legal advice, and that my situation is straightforward."
+  },
+  "steps": {
+    "about": "About you",
+    "executors": "Executors",
+    "family": "Children and gifts",
+    "residue": "The rest of your estate",
+    "review": "Review and download"
+  },
+  "about": {
+    "title": "About you",
+    "fullName": "Your full legal name",
+    "fullNamePh": "Anne Elizabeth Thornton",
+    "address": "Your address",
+    "addressPh": "12 Orchard Lane, Bristol BS1 2AB",
+    "dob": "Date of birth"
+  },
+  "executors": {
+    "title": "Who will carry out your will?",
+    "intro": "Executors gather your estate, pay what is owed and distribute the rest. Choose one or two adults you trust; they can also be beneficiaries. A second executor can act if the first cannot.",
+    "name": "Full name",
+    "address": "Address",
+    "relation": "Relationship to you",
+    "relationPh": "e.g. my husband, my daughter, my friend",
+    "first": "First executor",
+    "second": "Second executor (optional)",
+    "jointNote": "If you name two, they act together, and either can act alone if the other cannot or will not."
+  },
+  "family": {
+    "title": "Children and specific gifts",
+    "guardianIntro": "If you have children under 18, you can name who should look after them. This only takes effect if no one else has parental responsibility when you die.",
+    "hasMinor": "I have children under 18",
+    "guardian": "Guardian full name",
+    "guardianAddress": "Guardian address",
+    "giftsIntro": "Specific gifts are optional: a sum of money, a named item, or a percentage. Everything you do not list goes into the rest of your estate below.",
+    "giftWhat": "What",
+    "giftWhatPh": "e.g. £5,000, my wedding ring, my car",
+    "giftTo": "To whom (full name)",
+    "giftRelation": "Relationship",
+    "addGift": "Add a gift",
+    "removeGift": "Remove"
+  },
+  "residue": {
+    "title": "Who gets the rest?",
+    "intro": "The rest of your estate is everything left after debts, funeral costs, tax and the gifts above. This is usually the main part of a will.",
+    "mode": "Leave the rest to",
+    "modePerson": "One person",
+    "modeChildren": "My children, in equal shares",
+    "person": "Full name",
+    "personRelation": "Relationship",
+    "substituteIntro": "If that person dies before you (or within 30 days of you), who should receive it instead?",
+    "substitute": "Substitute full name",
+    "substituteRelation": "Relationship",
+    "childrenNote": "Equal shares between the children who survive you. If a child dies before you, that child's own children take their share.",
+    "funeral": "Funeral wishes (optional, not binding)",
+    "funeralPh": "e.g. cremation, a simple service, donations rather than flowers"
+  },
+  "review": {
+    "title": "Your will is ready to download",
+    "body": "Check the summary, then download the PDF. It comes with a signing page and a one-page guide to signing, storing and updating it.",
+    "summaryExecutors": "Executors",
+    "summaryGuardian": "Guardian",
+    "summaryGifts": "Specific gifts",
+    "summaryResidue": "Rest of the estate",
+    "summaryFuneral": "Funeral wishes",
+    "none": "None",
+    "download": "Download my will (PDF)",
+    "generating": "Preparing your PDF…",
+    "failed": "The PDF could not be created. Please try again.",
+    "missing": "Please complete: {{fields}}",
+    "edit": "Edit answers",
+    "clear": "Start again"
+  },
+  "after": {
+    "title": "Now make it findable.",
+    "body": "A will nobody can find is no will at all. Record where the signed original is kept, name your executors as trusted people, and they will know where to look.",
+    "cta": "Add it to my Everstead, free",
+    "privacy": "Everything stays on this device. We do not see or store your answers; the form is remembered in this browser only."
+  },
+  "nav": {
+    "back": "Back",
+    "next": "Continue"
+  },
+  "pdf": {
+    "title": "Last Will and Testament",
+    "of": "of",
+    "made": "Made on {{date}}",
+    "opening": "This is the last will and testament of me, {{name}}, of {{address}}.",
+    "revoke": "1. I revoke all earlier wills and codicils.",
+    "executorsOne": "2. I appoint {{name}} of {{address}} to be the executor and trustee of my will.",
+    "executorsTwo": "2. I appoint {{name1}} of {{address1}} and {{name2}} of {{address2}} to be the executors and trustees of my will. If either of them is unable or unwilling to act, or dies before me, the other may act alone.",
+    "guardian": "3. If any of my children are under 18 when I die and no other person then has parental responsibility for them, I appoint {{name}} of {{address}} to be their guardian.",
+    "giftsHead": "{{n}}. I give the following gifts, free of inheritance tax:",
+    "giftLine": "{{what}} to {{to}}{{relation}}.",
+    "residuePerson": "{{n}}. I give the rest of my estate, after payment of my debts, funeral and administration expenses and any tax, to {{name}}{{relation}}. If {{name}} dies before me or within 30 days of my death, I give it instead to {{substitute}}{{subRelation}}.",
+    "residuePersonNoSub": "{{n}}. I give the rest of my estate, after payment of my debts, funeral and administration expenses and any tax, to {{name}}{{relation}}.",
+    "residueChildren": "{{n}}. I give the rest of my estate, after payment of my debts, funeral and administration expenses and any tax, to those of my children who survive me, in equal shares. If any child of mine dies before me leaving children of their own who survive me, those grandchildren take, in equal shares, the share their parent would have taken.",
+    "funeral": "{{n}}. I would like {{wishes}}. These wishes are an expression of my preferences and are not binding on my executors.",
+    "powers": "{{n}}. My executors may sell, keep or invest any part of my estate as they think fit, and may pay any beneficiary under 18 through a parent or guardian, whose receipt shall discharge them.",
+    "signingHead": "Signing",
+    "attestation": "Signed by the above-named {{name}} as their last will, in our joint presence and then by us in theirs.",
+    "testatorSignature": "Signature of {{name}}",
+    "date": "Date",
+    "witness": "Witness {{n}}",
+    "wName": "Full name",
+    "wAddress": "Address",
+    "wOccupation": "Occupation",
+    "wSignature": "Signature",
+    "guideTitle": "How to make this will valid",
+    "guide": [
+      "Print it single-sided and read it through. Do not sign yet.",
+      "Find two adult witnesses who are not beneficiaries, and not married to or in a civil partnership with a beneficiary. Executors can witness only if they receive nothing under the will.",
+      "Sign and date the signing page while both witnesses watch you. Then each witness signs while you and the other witness watch. All three of you stay together for the whole thing.",
+      "Do not staple anything to it, do not alter it afterwards, and never write on it. Changes need a new will or a codicil signed the same way.",
+      "Keep the signed original somewhere safe and tell your executors where it is. Record the location in Everstead so your family can find it.",
+      "Review it after a marriage (which cancels a will), a divorce, a birth, a death, or a move abroad."
+    ],
+    "footer": "Prepared with Everstead's free will builder · everstead.care/will-generator · Not legal advice. England and Wales only."
+  }
+}

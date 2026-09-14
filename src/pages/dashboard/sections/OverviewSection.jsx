@@ -9,7 +9,7 @@ import { SkeletonStats } from '../../../components/Skeleton'
 import { PLAN_LABELS } from '../../../config/pricing'
 import { ALL_AREA_KEYS, FULL_ACCESS_ROLE, PERSON_ROLES, ROLE_GROUP_KEYS, SEVERITY_STYLES, STATUS_STYLES } from '../../dashboard/shared'
 import { EmptyState } from '../../dashboard/ui'
-import { AlertCircle, ArrowRight, Bell, BookOpen, Eye, FileText, Heart, Landmark, MessageSquare, RefreshCw, Send, Sparkles, UserCircle, Users, X } from 'lucide-react'
+import { AlertCircle, ArrowRight, Bell, BookOpen, Eye, FileText, Heart, Landmark, MessageSquare, RefreshCw, ScrollText, Send, Sparkles, UserCircle, Users, X } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 export const PLAN_BADGE = {
@@ -17,6 +17,34 @@ export const PLAN_BADGE = {
   essential: { label: PLAN_LABELS.essential, cls: 'bg-stone-100 text-stone-600 border-stone-200' },
   family:    { label: PLAN_LABELS.family,    cls: 'bg-navy-50  text-navy-700  border-navy-200'  },
   advisor:   { label: PLAN_LABELS.advisor,   cls: 'bg-sage-50  text-sage-700  border-sage-200'  },
+}
+
+// No will on file: neither a document typed as a will nor a recorded location.
+// Points at the free builder (public route, opens in a new tab so the
+// dashboard stays put) or at Documents to record where an existing one is.
+function WillCard({ profile, documents, onNavigate, lang }) {
+  const { t } = useTranslation('dashboard')
+  const key = `everstead_will_card_${profile.id}`
+  const [dismissed, setDismissed] = useState(() => { try { return localStorage.getItem(key) === '1' } catch { return false } })
+  const hasWill = !!profile.will_location || documents.some(d => (d.doc_type || '').toLowerCase().includes('will') || (d.name || '').toLowerCase().includes('will'))
+  if (hasWill || dismissed) return null
+  const dismiss = () => { try { localStorage.setItem(key, '1') } catch { /* ignore */ } setDismissed(true) }
+  return (
+    <div className="relative bg-white border border-stone-200 rounded-2xl p-5 flex items-start gap-4">
+      <div className="w-10 h-10 rounded-full bg-amber-50 flex items-center justify-center shrink-0"><ScrollText size={18} className="text-amber-600" /></div>
+      <div className="flex-1 min-w-0">
+        <p className="text-sm font-semibold text-navy-900 m-0 pr-6">{t('overview.willCard.title')}</p>
+        <p className="text-xs text-stone-500 mt-0.5 m-0 leading-relaxed">{t('overview.willCard.body')}</p>
+        <div className="mt-3 flex flex-wrap gap-2">
+          <a href={`${lang === 'fr' ? '/fr' : ''}/will-generator`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 text-xs font-semibold text-white bg-navy-600 hover:bg-navy-700 px-3 py-1.5 rounded-full transition-colors">
+            {t('overview.willCard.build')} <ArrowRight size={12} />
+          </a>
+          <button onClick={() => onNavigate('documents')} className="text-xs font-semibold text-navy-700 bg-white border border-stone-300 hover:border-navy-400 px-3 py-1.5 rounded-full transition-colors">{t('overview.willCard.record')}</button>
+        </div>
+      </div>
+      <button onClick={dismiss} aria-label={t('overview.willCard.dismiss')} className="absolute top-4 right-4 text-stone-400 hover:text-stone-600"><X size={14} /></button>
+    </div>
+  )
 }
 
 // First session: the plan only works once someone knows it exists, so the
@@ -428,6 +456,11 @@ export function OverviewSection({ isDemo, adviser, profile, accounts, documents,
         <div className="mb-6">
           <InviteOneCard invite={invite} onCelebrate={onCelebrate} onNavigate={onNavigate} />
         </div>
+      )}
+
+      {/* No will yet: the free builder, or record where the existing one is */}
+      {!isDemo && scoreInputsLoaded && (
+        <div className="mb-6"><WillCard profile={profile} documents={documents} onNavigate={onNavigate} lang={i18n.language} /></div>
       )}
 
       {/* Send this to your parents: the member's referral link, dismissible */}

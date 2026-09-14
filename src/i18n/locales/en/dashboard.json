@@ -255,6 +255,13 @@
       "sentBody": "We will tell you when they accept. Adjust what they can see under People.",
       "manage": "Manage people",
       "error": "The invitation could not be sent. Please try again."
+    },
+    "willCard": {
+      "title": "No will on file yet?",
+      "body": "If you have one, note where it is kept so your executor can find it. If you do not, our free tool builds a simple will step by step, with the signing rules that make it valid.",
+      "build": "Build a simple will",
+      "record": "I have one, record where it is",
+      "dismiss": "Not now"
     }
   },
   "accounts": {

@@ -2716,6 +2716,16 @@ const tools = [
     badge: 'Free · No login',
   },
   {
+    i18nKey: 'willGenerator',
+    href: '/will-generator',
+    title: 'Simple will builder',
+    tag: 'Free tool',
+    tagColor: 'bg-sage-50 text-sage-700 border-sage-200',
+    desc: 'Answer a few questions and download a simple will for England and Wales, with the signing steps that make it valid. Not legal advice; complex estates need a solicitor.',
+    cta: 'Build my will',
+    badge: 'Free · No login',
+  },
+  {
     i18nKey: 'emergencyPack',
     href: '/emergency-pack',
     title: 'Emergency Pack',

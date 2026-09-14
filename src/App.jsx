@@ -43,6 +43,7 @@ const DigitalEstateCalculator = lazy(() => import('./pages/DigitalEstateCalculat
 const EstateReadinessScore  = lazy(() => import('./pages/EstateReadinessScore'))
 const EmergencyPack         = lazy(() => import('./pages/EmergencyPack'))
 const Professionals         = lazy(() => import('./pages/Professionals'))
+const WillGenerator         = lazy(() => import('./pages/WillGenerator'))
 const NotFound              = lazy(() => import('./pages/NotFound'))
 const ForgotPassword        = lazy(() => import('./pages/ForgotPassword'))
 const ResetPassword         = lazy(() => import('./pages/ResetPassword'))
@@ -310,6 +311,7 @@ export default function App() {
               <Route path="/estate-readiness-score" element={<Layout><EstateReadinessScore /></Layout>} />
               <Route path="/emergency-pack"         element={<Layout><EmergencyPack /></Layout>} />
               <Route path="/professionals"          element={<Layout><Professionals /></Layout>} />
+              <Route path="/will-generator"         element={<Layout><WillGenerator /></Layout>} />
               <Route path="/digital-estate-worth"   element={<Layout><DigitalEstateCalculator /></Layout>} />
               <Route path="/gift"         element={<Layout><Gift /></Layout>} />
               <Route path="/redeem-gift"  element={<Layout><RedeemGift /></Layout>} />

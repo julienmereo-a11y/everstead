@@ -96,6 +96,13 @@
         "desc": "One page: who to call, where the will and key documents are, what you would want. Fill it in and download it, no account needed.",
         "cta": "Make my pack",
         "badge": "Free · No login"
+      },
+      "willGenerator": {
+        "title": "Simple will builder",
+        "tag": "Free tool",
+        "desc": "Answer a few questions and download a simple will for England and Wales, with the signing steps that make it valid. Not legal advice; complex estates need a solicitor.",
+        "cta": "Build my will",
+        "badge": "Free · No login"
       }
     }
   }

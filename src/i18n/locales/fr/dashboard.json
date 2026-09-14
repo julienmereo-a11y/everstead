@@ -255,6 +255,13 @@
       "sentBody": "Nous vous préviendrons quand elle sera acceptée. Ajustez ce qu'elle peut voir dans Personnes.",
       "manage": "Gérer les personnes",
       "error": "L'invitation n'a pas pu être envoyée. Veuillez réessayer."
+    },
+    "willCard": {
+      "title": "Pas encore de testament ?",
+      "body": "Si vous en avez un, notez où il est conservé pour que votre exécuteur le trouve. Sinon, notre outil gratuit vous guide pour préparer un testament olographe, à recopier à la main.",
+      "build": "Préparer mon testament",
+      "record": "J'en ai un, noter où il est",
+      "dismiss": "Pas maintenant"
     }
   },
   "accounts": {

@@ -96,6 +96,13 @@
         "desc": "Une page : qui appeler, où sont le testament et les documents clés, ce que vous souhaitez. Remplissez et téléchargez, sans compte.",
         "cta": "Créer mon kit",
         "badge": "Gratuit · Sans compte"
+      },
+      "willGenerator": {
+        "title": "Préparer mon testament",
+        "tag": "Outil gratuit",
+        "desc": "Répondez à quelques questions et téléchargez le texte d'un testament olographe à recopier à la main, avec les règles à respecter. Ce n'est pas un conseil juridique ; les situations complexes relèvent du notaire.",
+        "cta": "Préparer mon testament",
+        "badge": "Gratuit · Sans compte"
       }
     }
   }

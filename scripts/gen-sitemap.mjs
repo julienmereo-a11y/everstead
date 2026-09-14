@@ -38,6 +38,7 @@ const EN_PAGES = [
   ['/estate-readiness-score', 'monthly', '0.7'],
   ['/digital-estate-worth', 'monthly', '0.7'],
   ['/emergency-pack', 'monthly', '0.7'],
+  ['/will-generator', 'monthly', '0.7'],
   ['/security', 'monthly', '0.7'],
   ['/family-vault', 'monthly', '0.7'],
   ['/compare', 'monthly', '0.7'],
