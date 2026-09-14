@@ -10,7 +10,7 @@ import { trackEvent } from '../lib/analytics'
 // taken from: a frame where the caption is complete or absent, not mid-animation.
 const MUX_FILMS = {
   en: { id: 'S021WSE5yv396jSCaDQ01BufXsb2IdzD00eHs549Tkmk8g', posterTime: 2 },
-  fr: { id: '8IiYAV012gsQ6x3ggl00TbZJu2aFwUA5m7i7Q1ss3RSDw', posterTime: 5 },
+  fr: { id: 'pgoI022VLjVyKTGkZ5iwe3C2se1SW9BI00JiAuWmDeeY4', posterTime: 5 },
 }
 
 export default function FilmSection({ location = 'home_film', className = 'pt-24 lg:pt-28' }) {
