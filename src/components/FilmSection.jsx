@@ -9,8 +9,8 @@ import { trackEvent } from '../lib/analytics'
 // One Mux asset per language. posterTime is the second the idle poster is
 // taken from: a frame where the caption is complete or absent, not mid-animation.
 const MUX_FILMS = {
-  en: { id: 'S021WSE5yv396jSCaDQ01BufXsb2IdzD00eHs549Tkmk8g', posterTime: 2 },
-  fr: { id: 'pgoI022VLjVyKTGkZ5iwe3C2se1SW9BI00JiAuWmDeeY4', posterTime: 5 },
+  en: { id: 'v4tV01rS02YxRhGb3c01ZNmDr102EQP2wXJ1HxZy1NvllxQ', posterTime: 5 },
+  fr: { id: 'h8sCrh01jP65HdFNidtdE01BNZRb00jsaMTRVx3F4rvpQc', posterTime: 5 },
 }
 
 export default function FilmSection({ location = 'home_film', className = 'pt-24 lg:pt-28' }) {
