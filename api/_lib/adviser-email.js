@@ -319,7 +319,7 @@ export async function sendDeliveryEmail({ to, lang = 'en', firmName, title, note
   const prefix = L === 'fr' ? '/fr' : ''
   const url = claimToken
     ? `${APP}${prefix}/accept-delivery?token=${encodeURIComponent(claimToken)}`
-    : `${APP}${prefix}/dashboard?tab=documents&inbox=1`
+    : `${APP}${prefix}/dashboard?tab=access`
   const vars = { firm: esc(firmName || (L === 'fr' ? 'une organisation' : 'an organisation')) }
   const inner = `
     <h1 style="margin:0 0 16px;color:#0d1628;font-size:24px;font-weight:normal;">${C.title}</h1>
@@ -341,6 +341,76 @@ export async function sendDeliveryEmail({ to, lang = 'en', firmName, title, note
     return true
   } catch (err) {
     console.error('[adviser-email] delivery notice failed:', err?.message)
+    return false
+  }
+}
+
+// ── Requests from an organisation ───────────────────────────────────────────
+// "Please share X with us, for Y days." Same restraint as the delivery notice:
+// the link goes to Everstead, never to a form that collects anything, and the
+// email says plainly that sharing one item opens nothing else.
+const ORG_REQUEST_COPY = {
+  en: {
+    subject:  '{{firm}} has asked for a document',
+    preheader:'You choose what to share, and it stops on its own.',
+    title:    '{{firm}} has asked for something',
+    lead:     'They would like to see one document in your Everstead vault. Nothing is shared until you choose it, they see only what you pick, and nothing else in your vault is opened.',
+    forLabel: 'What they asked for',
+    noteLabel:'Their note',
+    windowFor:'They asked for {{days}} days of access. It stops on its own after that, and you can stop it sooner.',
+    windowOpen:'They asked for access until you stop it. You can stop it at any time.',
+    button:   'Open Everstead',
+    buttonNew:'See what they asked for',
+    newAccount:'You do not have an Everstead account yet. The link opens a free one, and the request will be waiting in it.',
+    safety:   'Everstead never asks for a document by email and never attaches one. If you were not expecting this, decline it in your vault and tell us at hello@everstead.care.',
+    footer:   'Sent through Everstead because {{firm}} has your address. They cannot see anything in your vault unless you share it.',
+  },
+  fr: {
+    subject:  '{{firm}} vous demande un document',
+    preheader:"Vous choisissez ce que vous partagez, et l'accès s'arrête tout seul.",
+    title:    '{{firm}} vous demande quelque chose',
+    lead:     "Cette organisation souhaite consulter un document de votre coffre Everstead. Rien n'est partagé tant que vous ne l'avez pas choisi, elle ne voit que ce que vous désignez, et rien d'autre dans votre coffre ne s'ouvre.",
+    forLabel: 'Ce qui est demandé',
+    noteLabel:'Leur message',
+    windowFor:"Elle demande un accès de {{days}} jours. Il s'arrête tout seul ensuite, et vous pouvez y mettre fin plus tôt.",
+    windowOpen:"Elle demande un accès jusqu'à ce que vous l'arrêtiez. Vous pouvez le faire à tout moment.",
+    button:   'Ouvrir Everstead',
+    buttonNew:'Voir ce qui est demandé',
+    newAccount:"Vous n'avez pas encore de compte Everstead. Le lien en ouvre un gratuitement, et la demande vous y attendra.",
+    safety:   "Everstead ne demande jamais un document par e-mail et n'en joint jamais. Si vous n'attendiez pas cette demande, refusez-la depuis votre coffre et écrivez-nous à hello@everstead.care.",
+    footer:   "Envoyé via Everstead parce que {{firm}} dispose de votre adresse. Elle ne peut rien voir dans votre coffre tant que vous ne partagez rien.",
+  },
+}
+
+export async function sendOrgRequestEmail({ to, lang = 'en', firmName, docType, note, expiresDays, hasAccount = true, reminder = false }) {
+  if (!to) return false
+  const L = lang === 'fr' ? 'fr' : 'en'
+  const C = ORG_REQUEST_COPY[L]
+  const prefix = L === 'fr' ? '/fr' : ''
+  const url = `${APP}${prefix}/dashboard?tab=documents`
+  const vars = { firm: esc(firmName || (L === 'fr' ? 'une organisation' : 'an organisation')) }
+  const inner = `
+    <h1 style="margin:0 0 16px;color:#0d1628;font-size:24px;font-weight:normal;">${fill(C.title, vars)}</h1>
+    <p style="margin:0 0 14px;color:#4a5568;font-size:16px;line-height:1.6;">${fill(C.lead, vars)}</p>
+    <p style="margin:0 0 6px;color:#0d1628;font-size:13px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;">${C.forLabel}</p>
+    <p style="margin:0 0 18px;padding:14px 18px;border-radius:12px;background:#f0f3f9;color:#0d1628;font-size:17px;font-weight:600;">${esc(docType)}</p>
+    ${note ? `<p style="margin:0 0 6px;color:#0d1628;font-size:13px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;">${C.noteLabel}</p><p style="margin:0 0 18px;color:#4a5568;font-size:15px;line-height:1.6;border-left:3px solid #e8e5e0;padding-left:14px;font-style:italic;">${esc(note)}</p>` : ''}
+    <p style="margin:0 0 22px;color:#4a5568;font-size:15px;line-height:1.6;">${expiresDays ? fill(C.windowFor, { days: String(expiresDays) }) : C.windowOpen}</p>
+    ${hasAccount ? '' : `<p style="margin:0 0 22px;color:#4a5568;font-size:15px;line-height:1.6;">${C.newAccount}</p>`}
+    ${button(url, hasAccount ? C.button : C.buttonNew)}
+    <p style="margin:26px 0 0;color:#4a5568;font-size:14px;line-height:1.6;">${C.safety}</p>
+    <p style="margin:18px 0 0;color:#9ca3af;font-size:13px;line-height:1.5;">${fill(C.footer, vars)}</p>`
+  try {
+    await sendEmail(resend, {
+      from: FROM,
+      to,
+      subject: fill(C.subject, { firm: firmName || '' }) + (reminder ? (L === 'fr' ? ' (rappel)' : ' (reminder)') : ''),
+      html: shell(inner),
+      preheader: C.preheader,
+    })
+    return true
+  } catch (err) {
+    console.error('[adviser-email] org request failed:', err?.message)
     return false
   }
 }

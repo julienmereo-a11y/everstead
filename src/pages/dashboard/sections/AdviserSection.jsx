@@ -219,57 +219,81 @@ export function AdviserSharingCard({ adviser, isDemo }) {
 // Documents section. The member attaches a document they have already
 // uploaded; the firm sees it in its review queue and is emailed.
 const DEMO_REQUESTS = [
-  { id: 'demo-req-1', doc_type: 'Letter of wishes', note: 'So we can file it alongside the signed will.', created_at: '2026-09-02T10:00:00Z', reminded_at: '2026-09-05T10:00:00Z', status: 'requested' },
+  { id: 'demo-req-1', org_id: 'demo-firm', sender_name: 'Thornton & Vale Solicitors', org_kind: 'professional', doc_type: 'Letter of wishes', note: 'So we can file it alongside the signed will.', expires_days: null, created_at: '2026-09-02T10:00:00Z', reminded_at: '2026-09-05T10:00:00Z' },
+  { id: 'demo-req-2', org_id: 'demo-employer', sender_name: 'Marlow & Finch', org_kind: 'employer', doc_type: 'Proof of address', note: 'For your onboarding file. We delete our copy once you start.', expires_days: 30, created_at: '2026-09-11T09:00:00Z', reminded_at: null },
 ]
 
-export function DocumentRequestsCard({ profile, documents, isDemo, adviser }) {
+/**
+ * What organisations have asked this member for.
+ *
+ * Answering is the moment access is granted: picking a document calls
+ * fulfil_document_request, which writes the member_shares row with the
+ * lifetime the request asked for and connects the organisation so it shows up
+ * on Who has access. Declining is a real answer, not silence.
+ *
+ * Reads get_my_org_requests, so it covers employers (who are never linked
+ * through profiles.adviser_id) as well as professional firms.
+ */
+export function DocumentRequestsCard({ profile, documents, isDemo }) {
   const { t, i18n } = useTranslation('dashboard')
   const [requests, setRequests] = useState(isDemo ? DEMO_REQUESTS : [])
   const [choice, setChoice]     = useState({})
   const [busy, setBusy]         = useState(null)
   const [done, setDone]         = useState({})
   const [failed, setFailed]     = useState(null)
-  const firm = adviser?.firm
 
   useEffect(() => {
-    if (isDemo || !profile?.adviser_id) return
+    if (isDemo || !profile?.id) return
     let active = true
     import('../../../lib/supabase').then(async ({ supabase: sb }) => {
-      const { data } = await sb.from('adviser_document_requests')
-        .select('id, doc_type, note, status, created_at, reminded_at')
-        .eq('client_id', profile.id).eq('status', 'requested').order('created_at', { ascending: false })
-      if (active) setRequests(data || [])
+      const { data, error } = await sb.rpc('get_my_org_requests')
+      if (!active) return
+      if (!error && Array.isArray(data)) { setRequests(data); return }
+      // Older database, before requests could be addressed by email: read the
+      // table directly so a linked client keeps seeing their firm's asks. The
+      // deploy and the migration do not have to land in the same minute.
+      if (!profile?.adviser_id) { setRequests([]); return }
+      const { data: legacy } = await sb.from('adviser_document_requests')
+        .select('id, doc_type, note, created_at, reminded_at')
+        .eq('client_id', profile.id).eq('status', 'requested')
+        .order('created_at', { ascending: false })
+      if (active) setRequests((legacy || []).map(r => ({ ...r, org_id: profile.adviser_id, sender_name: null, expires_days: null })))
     }).catch(() => {})
     return () => { active = false }
   }, [profile?.id, profile?.adviser_id, isDemo])
 
-  const open = requests.filter(r => r.status === 'requested' && !done[r.id])
-  if (!firm || (!open.length && !Object.keys(done).length)) return null
+  const open = requests.filter(r => !done[r.id])
+  if (!open.length && !Object.keys(done).length) return null
 
   const fmt = (iso) => new Intl.DateTimeFormat(i18n.language === 'fr' ? 'fr-FR' : 'en-GB', { dateStyle: 'medium' }).format(new Date(iso))
-  const lower = t(`adviser.${(FIRM_LABEL_KEY[firm.firm_type] || 'labelOther')}Lower`)
   const attachable = (documents || []).filter(d => d.storage_path || d.file_url)
 
-  const attach = async (req) => {
+  const answer = async (req, mode) => {
     const docId = choice[req.id]
-    if (!docId || busy) return
+    if (busy) return
+    if (mode === 'share' && !docId) return
     setBusy(req.id); setFailed(null)
     try {
       if (!isDemo) {
         const { supabase: sb } = await import('../../../lib/supabase')
-        const { error } = await sb.rpc('fulfil_document_request', { p_request_id: req.id, p_document_id: docId })
-        if (error) throw error
-        // Tell the firm. Best-effort: the attachment already stands.
-        try {
-          const { data: { session } } = await sb.auth.getSession()
-          await fetch('/api/adviser/request-fulfilled', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${session?.access_token || ''}` },
-            body: JSON.stringify({ requestId: req.id }),
-          })
-        } catch { /* the email is a courtesy, the queue shows it regardless */ }
+        if (mode === 'share') {
+          const { error } = await sb.rpc('fulfil_document_request', { p_request_id: req.id, p_document_id: docId })
+          if (error) throw error
+          // Tell the organisation. Best-effort: the share already stands.
+          try {
+            const { data: { session } } = await sb.auth.getSession()
+            await fetch('/api/adviser/request-fulfilled', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${session?.access_token || ''}` },
+              body: JSON.stringify({ requestId: req.id }),
+            })
+          } catch { /* the queue shows it regardless */ }
+        } else {
+          const { error } = await sb.rpc('decline_document_request', { p_request_id: req.id })
+          if (error) throw error
+        }
       }
-      setDone(d => ({ ...d, [req.id]: true }))
+      setDone(d => ({ ...d, [req.id]: mode }))
     } catch {
       setFailed(req.id)
     } finally {
@@ -284,19 +308,26 @@ export function DocumentRequestsCard({ profile, documents, isDemo, adviser }) {
           <Briefcase size={16} className="text-navy-700" />
         </div>
         <div className="flex-1 min-w-0">
-          <p className="text-sm font-semibold text-navy-950">{t('documents.requests.title', { firm: firm.firm_name })}</p>
-          <p className="text-xs text-stone-600 mt-0.5 leading-relaxed">{t('documents.requests.body', { label: lower })}</p>
+          <p className="text-sm font-semibold text-navy-950">{t('documents.requests.titleAny')}</p>
+          <p className="text-xs text-stone-600 mt-0.5 leading-relaxed">{t('documents.requests.bodyAny')}</p>
         </div>
       </div>
       <div className="mt-4 space-y-3">
-        {requests.filter(r => r.status === 'requested').map(req => (
+        {requests.map(req => (
           <div key={req.id} className="rounded-xl bg-white border border-stone-200 px-4 py-3">
             <div className="flex flex-wrap items-start justify-between gap-2">
               <div className="min-w-0">
-                <p className="text-sm font-semibold text-navy-900">{req.doc_type}</p>
+                <p className="text-[11px] font-semibold uppercase tracking-wide text-stone-400 m-0">
+                  {t('documents.requests.from', { name: req.sender_name || t('documents.requests.anOrganisation') })}
+                </p>
+                <p className="text-sm font-semibold text-navy-900 mt-0.5">{req.doc_type}</p>
                 <p className="text-xs text-stone-500 mt-0.5">
                   {t('documents.requests.requested', { date: fmt(req.created_at) })}
                   {req.reminded_at ? ` · ${t('documents.requests.reminded', { date: fmt(req.reminded_at) })}` : ''}
+                  {' · '}
+                  {req.expires_days
+                    ? t('documents.requests.window', { count: req.expires_days })
+                    : t('documents.requests.windowOpen')}
                 </p>
                 {req.note && (
                   <p className="text-xs text-stone-600 mt-1.5 italic border-l-2 border-stone-200 pl-2.5">
@@ -304,14 +335,18 @@ export function DocumentRequestsCard({ profile, documents, isDemo, adviser }) {
                   </p>
                 )}
               </div>
-              {done[req.id] ? (
+              {done[req.id] === 'share' ? (
                 <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-sage-700 bg-sage-50 border border-sage-200 rounded-full px-3 py-1">
-                  <Check size={12} /> {t('documents.requests.attached', { firm: firm.firm_name })}
+                  <Check size={12} /> {t('documents.requests.shared', { firm: req.sender_name })}
+                </span>
+              ) : done[req.id] === 'decline' ? (
+                <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-stone-600 bg-stone-100 border border-stone-200 rounded-full px-3 py-1">
+                  {t('documents.requests.declined')}
                 </span>
               ) : attachable.length === 0 ? (
                 <p className="text-xs text-stone-500 max-w-[220px]">{t('documents.requests.noDocs')}</p>
               ) : (
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 flex-wrap justify-end">
                   <select
                     value={choice[req.id] || ''}
                     onChange={e => setChoice(c => ({ ...c, [req.id]: e.target.value }))}
@@ -322,11 +357,19 @@ export function DocumentRequestsCard({ profile, documents, isDemo, adviser }) {
                   </select>
                   <button
                     type="button"
-                    onClick={() => attach(req)}
+                    onClick={() => answer(req, 'share')}
                     disabled={!choice[req.id] || busy === req.id}
                     className="inline-flex items-center gap-1.5 text-xs font-semibold text-white btn-aurora px-3.5 py-2 rounded-full disabled:opacity-40"
                   >
-                    {busy === req.id ? <><Loader2 size={12} className="animate-spin" /> {t('documents.requests.attaching')}</> : t('documents.requests.attach')}
+                    {busy === req.id ? <><Loader2 size={12} className="animate-spin" /> {t('documents.requests.sharing')}</> : t('documents.requests.shareIt')}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => answer(req, 'decline')}
+                    disabled={busy === req.id}
+                    className="text-xs font-semibold text-stone-500 hover:text-red-600 transition-colors disabled:opacity-40"
+                  >
+                    {t('documents.requests.decline')}
                   </button>
                 </div>
               )}
@@ -335,7 +378,7 @@ export function DocumentRequestsCard({ profile, documents, isDemo, adviser }) {
           </div>
         ))}
       </div>
-      {isDemo && <p className="text-[11px] text-stone-400 mt-3">{t('documents.requests.demoNote')}</p>}
+      <p className="text-[11px] text-stone-400 mt-3">{t('documents.requests.footnote')}</p>
     </div>
   )
 }

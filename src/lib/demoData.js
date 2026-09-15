@@ -571,6 +571,20 @@ export const DEMO_DELIVERIES = [
   },
 ]
 
+export const DEMO_ACCESS_REQUESTS = [
+  {
+    id: 'demo-req-2',
+    org_id: 'demo-employer',
+    sender_name: 'Marlow & Finch',
+    org_kind: 'employer',
+    doc_type: 'Proof of address',
+    note: 'For your onboarding file. We delete our copy once you start.',
+    expires_days: 30,
+    created_at: '2026-09-11T09:00:00Z',
+    reminded_at: null,
+  },
+]
+
 export const DEMO_SHARES = [
   {
     id: 'demo-share-1',

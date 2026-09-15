@@ -16,7 +16,7 @@ import { DEMO_ADVISER_WORKSPACE, DEMO_ADVISOR, DEMO_ADVISOR_FAMILIES } from '../
 import { supabase } from '../lib/supabase'
 import { AdviserAssistant, InviteFamilyModal, initialOf } from './adviser/shared'
 import { AlertsScreen, ClientDetailScreen, ClientsScreen, GuidesScreen, OverviewScreen, SettingsScreen, deriveOverview } from './adviser/screens'
-import { SendScreen } from './adviser/send'
+import { ExchangeScreen } from './adviser/exchange'
 import { MattersScreen, ReviewQueueScreen } from './adviser/solicitor'
 
 const roleFromType = (t) => (t === 'solicitor' || t === 'notaire') ? 'solicitor' : 'adviser'
@@ -127,8 +127,8 @@ export default function AdvisorPortal() {
 
   const overview = useMemo(() => deriveOverview({ families, workspace, role, readIds }), [families, workspace, role, readIds])
   const nav = role === 'solicitor'
-    ? [['overview', 'Overview', LayoutDashboard], ['clients', 'Clients', Users], ['send', 'Send a document', Send], ['review', 'Review queue', FileText, overview.awaiting, 'sage'], ['matters', 'Matters', Scale], ['alerts', 'Alerts', Bell, overview.unread.length, 'red'], ['guides', 'Guides', BookOpen], ['settings', 'Settings', Settings]]
-    : [['overview', 'Overview', LayoutDashboard], ['clients', 'Clients', Users], ['send', 'Send a document', Send], ['alerts', 'Alerts', Bell, overview.unread.length, 'red'], ['guides', 'Guides', BookOpen], ['settings', 'Settings', Settings]]
+    ? [['overview', 'Overview', LayoutDashboard], ['clients', 'Clients', Users], ['send', 'Documents', Send], ['review', 'Review queue', FileText, overview.awaiting, 'sage'], ['matters', 'Matters', Scale], ['alerts', 'Alerts', Bell, overview.unread.length, 'red'], ['guides', 'Guides', BookOpen], ['settings', 'Settings', Settings]]
+    : [['overview', 'Overview', LayoutDashboard], ['clients', 'Clients', Users], ['send', 'Documents', Send], ['alerts', 'Alerts', Bell, overview.unread.length, 'red'], ['guides', 'Guides', BookOpen], ['settings', 'Settings', Settings]]
   useEffect(() => { if (role !== 'solicitor' && (tab === 'review' || tab === 'matters')) setTab('overview') }, [role, tab])
 
   // ── Writes ───────────────────────────────────────────────────
@@ -262,7 +262,7 @@ export default function AdvisorPortal() {
         )}
         {tab === 'review'   && role === 'solicitor' && <ReviewQueueScreen families={families} workspace={workspace} requestOpen={requestOpen} setRequestOpen={setRequestOpen} requestBusy={requestBusy} requestError={requestError} onCreateRequest={createRequest} onRemind={remindRequest} onRequestStatus={setRequestStatus} onSetReview={setReview} openClient={openClient} isDemo={isDemo} />}
         {tab === 'matters'  && role === 'solicitor' && <MattersScreen families={families} workspace={workspace} onSaveMatter={saveMatter} onDeleteMatter={deleteMatter} busy={matterBusy} isDemo={isDemo} />}
-        {tab === 'send'     && <SendScreen firm={firm} isDemo={isDemo} />}
+        {tab === 'send'     && <ExchangeScreen firm={firm} isDemo={isDemo} />}
         {tab === 'alerts'   && <AlertsScreen families={families} readIds={readIds} markRead={markRead} markAllRead={markAllRead} openClient={openClient} />}
         {tab === 'guides'   && <GuidesScreen role={role} />}
         {tab === 'settings' && <SettingsScreen advisor={advisor} firm={firm} role={role} canSetRole={isDemo || !!advisor?.isOwner} onSetRole={setRole} roleBusy={roleBusy} team={team} isDemo={isDemo} onReload={isDemo ? undefined : loadPortal} firmId={realFirm?.id} families={families} />}

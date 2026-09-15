@@ -12,7 +12,7 @@
 // member shares a specific item, so its card says exactly that.
 import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { AlertTriangle, Briefcase, Building2, Check, Clock, Download, FileText, Inbox, Loader2, Settings as SettingsIcon, ShieldCheck, X } from 'lucide-react'
+import { AlertTriangle, ArrowRight, Briefcase, Building2, Check, Clock, Download, FileText, HelpCircle, Inbox, Loader2, Settings as SettingsIcon, ShieldCheck, X } from 'lucide-react'
 import { SectionShell, EmptyState, LoadingSpinner, primaryBtn, secondaryBtn } from '../ui'
 import { firmLabel } from './AdviserSection'
 
@@ -36,7 +36,7 @@ const daysLeft = (iso) => {
 export function AccessSection({ access, onNavigate, isDemo }) {
   const { t, i18n } = useTranslation('dashboard')
   const lang = i18n.language === 'fr' ? 'fr' : 'en'
-  const { connections = [], deliveries = [], shares = [], loading, busyId, respond, disconnect, revokeShare } = access || {}
+  const { connections = [], deliveries = [], shares = [], requests = [], loading, busyId, respond, disconnect, revokeShare } = access || {}
   const [error, setError] = useState(null)
   const [confirming, setConfirming] = useState(null)
 
@@ -47,7 +47,7 @@ export function AccessSection({ access, onNavigate, isDemo }) {
 
   if (loading) return <SectionShell title={t('access.title')} subtitle={t('access.subtitle')}><LoadingSpinner /></SectionShell>
 
-  const nothing = !deliveries.length && !connections.length
+  const nothing = !deliveries.length && !connections.length && !requests.length
 
   return (
     <SectionShell title={t('access.title')} subtitle={t('access.subtitle')}>
@@ -103,6 +103,29 @@ export function AccessSection({ access, onNavigate, isDemo }) {
             })}
           </div>
         </div>
+      )}
+
+      {/* An organisation has asked for something. The answer control lives in
+          Documents, where the member's own documents are, so this points there
+          rather than repeating it. */}
+      {requests.length > 0 && (
+        <button
+          onClick={() => onNavigate?.('documents')}
+          className="w-full text-left mb-8 rounded-2xl border border-amber-200 bg-amber-50 p-5 flex items-start gap-3.5 hover:border-amber-300 transition-colors"
+        >
+          <span className="w-10 h-10 rounded-xl bg-white border border-amber-200 text-amber-700 flex items-center justify-center shrink-0"><HelpCircle size={18} /></span>
+          <span className="min-w-0 flex-1">
+            <span className="block text-[15px] font-semibold text-navy-950">{t('access.requests.title', { count: requests.length })}</span>
+            <span className="block mt-1 text-sm leading-relaxed text-stone-600">
+              {requests.length === 1
+                ? t('access.requests.body_one', { name: requests[0].sender_name, what: requests[0].doc_type })
+                : t('access.requests.body_other', { count: requests.length })}
+            </span>
+            <span className="mt-2.5 inline-flex items-center gap-1.5 text-sm font-semibold text-navy-700">
+              {t('access.requests.cta')} <ArrowRight size={14} />
+            </span>
+          </span>
+        </button>
       )}
 
       {/* ── Connected organisations ── */}

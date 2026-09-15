@@ -440,7 +440,21 @@
       "attached": "{{firm}} a été prévenu.",
       "failed": "Impossible de rattacher ce document. Réessayez.",
       "noDocs": "Déposez d'abord le document, puis revenez ici pour le rattacher.",
-      "demoNote": "En démo, rien n'est envoyé."
+      "demoNote": "En démo, rien n'est envoyé.",
+      "titleAny": "Une organisation vous demande un document",
+      "bodyAny": "Elle ne voit que ce que vous désignez, pour la durée demandée, et rien d'autre ne s'ouvre dans votre coffre.",
+      "from": "Demandé par {{name}}",
+      "anOrganisation": "une organisation",
+      "window_one": "{{count}} jour d'accès",
+      "window_many": "{{count}} jours d'accès",
+      "window_other": "{{count}} jours d'accès",
+      "windowOpen": "accès jusqu'à ce que vous l'arrêtiez",
+      "shareIt": "Partager",
+      "sharing": "Partage…",
+      "shared": "Partagé avec {{firm}}",
+      "decline": "Refuser",
+      "declined": "Refusé",
+      "footnote": "Partager un document n'ouvre jamais le reste de votre coffre. Vous pouvez l'arrêter à tout moment depuis Qui a accès."
     },
     "share": {
       "title": "Partager « {{name}} »",
@@ -1491,6 +1505,14 @@
       "stop": "Arrêter le partage",
       "daysLeft_many": "encore {{count}} jours",
       "title_many": "Partagés avec elle en ce moment ({{count}})"
+    },
+    "requests": {
+      "title_one": "Une organisation vous demande quelque chose",
+      "title_many": "{{count}} organisations vous demandent quelque chose",
+      "title_other": "{{count}} organisations vous demandent quelque chose",
+      "body_one": "{{name}} demande : {{what}}. Vous choisissez lequel de vos documents y répond, et elle ne voit que celui-là.",
+      "body_other": "Vous choisissez lequel de vos documents répond à chaque demande, et elles ne voient que ce que vous désignez.",
+      "cta": "Répondre dans Documents"
     }
   }
 }

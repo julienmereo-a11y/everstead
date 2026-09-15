@@ -7,10 +7,10 @@
 // go through service-role endpoints that re-check ownership.
 import { useCallback, useEffect, useState } from 'react'
 import { apiPost } from '../lib/platform'
-import { DEMO_CONNECTIONS, DEMO_DELIVERIES, DEMO_SHARES } from '../lib/demoData'
+import { DEMO_ACCESS_REQUESTS, DEMO_CONNECTIONS, DEMO_DELIVERIES, DEMO_SHARES } from '../lib/demoData'
 
-const EMPTY = { connections: [], deliveries: [], shares: [] }
-const DEMO  = { connections: DEMO_CONNECTIONS, deliveries: DEMO_DELIVERIES, shares: DEMO_SHARES }
+const EMPTY = { connections: [], deliveries: [], shares: [], requests: [] }
+const DEMO  = { connections: DEMO_CONNECTIONS, deliveries: DEMO_DELIVERIES, shares: DEMO_SHARES, requests: DEMO_ACCESS_REQUESTS }
 
 export function useAccess(profile, isDemo) {
   const [data, setData] = useState(isDemo ? DEMO : EMPTY)
@@ -21,18 +21,21 @@ export function useAccess(profile, isDemo) {
     if (isDemo) { setData(DEMO); setLoading(false); return }
     if (!profile?.id) { setData(EMPTY); setLoading(false); return }
     const { supabase: sb } = await import('../lib/supabase')
-    const [connRes, delRes, shareRes] = await Promise.all([
+    const [connRes, delRes, shareRes, reqRes] = await Promise.all([
       sb.rpc('get_my_connections'),
       sb.from('inbound_deliveries')
         .select('id, org_id, title, doc_type, note, sender_name, mime_type, file_size, sent_at, expires_at, status')
         .eq('status', 'sent')
         .order('sent_at', { ascending: false }),
       sb.rpc('get_my_shares'),
+      sb.rpc('get_my_org_requests'),
     ])
     setData({
       connections: Array.isArray(connRes.data) ? connRes.data : [],
       deliveries: Array.isArray(delRes.data) ? delRes.data : [],
       shares: Array.isArray(shareRes.data) ? shareRes.data : [],
+      // Absent before the requests migration; an empty list is the right answer then.
+      requests: Array.isArray(reqRes.data) ? reqRes.data : [],
     })
     setLoading(false)
   }, [profile?.id, isDemo])

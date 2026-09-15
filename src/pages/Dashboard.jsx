@@ -110,7 +110,7 @@ export default function Dashboard() {
 
   // Honour ?tab= param so /settings and other deep-links open the right section
   const tabParam = searchParams.get('tab')
-  const DASHBOARD_TABS = ['overview','aboutme','assistant','accounts','documents','people','family','messages','instructions','subscriptions','alerts','activity','resources','settings']
+  const DASHBOARD_TABS = ['overview','aboutme','assistant','accounts','documents','people','family','messages','instructions','subscriptions','access','alerts','activity','resources','settings']
   const [activeSection, setActiveSection] = useState(
     tabParam && DASHBOARD_TABS.includes(tabParam) ? tabParam : 'overview'
   )

@@ -492,7 +492,7 @@ export function DocumentsSection({ documents, loading, uploadFile, update, remov
       }
     >
       {/* What the member's firm has asked them to upload */}
-      <DocumentRequestsCard profile={profile} documents={documents} isDemo={isDemo} adviser={adviser} />
+      <DocumentRequestsCard profile={profile} documents={documents} isDemo={isDemo} />
 
       {/* Storage usage bar */}
       {planLimits && (() => {

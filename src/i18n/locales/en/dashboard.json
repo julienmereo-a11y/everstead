@@ -440,7 +440,20 @@
       "attached": "Attached. {{firm}} has been told.",
       "failed": "Could not attach it. Please try again.",
       "noDocs": "Upload the document first, then come back here to attach it.",
-      "demoNote": "In the demo, nothing is sent."
+      "demoNote": "In the demo, nothing is sent.",
+      "titleAny": "Someone has asked you for a document",
+      "bodyAny": "They see only what you pick, for the time they asked for, and nothing else in your vault opens.",
+      "from": "Asked by {{name}}",
+      "anOrganisation": "an organisation",
+      "window_one": "{{count}} day of access",
+      "window_other": "{{count}} days of access",
+      "windowOpen": "access until you stop it",
+      "shareIt": "Share it",
+      "sharing": "Sharing…",
+      "shared": "Shared with {{firm}}",
+      "decline": "Decline",
+      "declined": "Declined",
+      "footnote": "Sharing one document never opens the rest of your vault. You can stop it at any time from Who has access."
     },
     "share": {
       "title": "Share \"{{name}}\"",
@@ -1487,6 +1500,13 @@
       "daysLeft_one": "{{count}} day left",
       "daysLeft_other": "{{count}} days left",
       "stop": "Stop sharing"
+    },
+    "requests": {
+      "title_one": "An organisation has asked you for something",
+      "title_other": "{{count}} organisations have asked you for something",
+      "body_one": "{{name}} asked for {{what}}. You pick which of your own documents answers it, and they see only that one.",
+      "body_other": "You pick which of your own documents answers each one, and they see only what you pick.",
+      "cta": "Answer in Documents"
     }
   }
 }

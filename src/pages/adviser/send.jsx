@@ -24,7 +24,7 @@ const STATUS_STYLE = {
 
 const fmt = (iso) => { try { return new Date(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) } catch { return '' } }
 
-export function SendScreen({ firm, isDemo }) {
+export function SendPanel({ firm, isDemo }) {
   const [form, setForm] = useState({ email: '', title: '', docType: 'Other', note: '' })
   const [file, setFile] = useState(null)
   const [busy, setBusy] = useState(false)
@@ -100,9 +100,8 @@ export function SendScreen({ firm, isDemo }) {
   const input = 'w-full border border-stone-200 rounded-lg px-3 py-2 text-sm text-navy-900 focus:outline-none focus:ring-2 focus:ring-navy-300 focus:border-navy-400 transition-colors'
 
   return (
-    <div className="max-w-3xl">
-      <h1 className="font-display text-2xl font-light text-navy-950 m-0">Send a document</h1>
-      <p className="text-stone-500 text-sm mt-1 mb-7">
+    <div>
+      <p className="text-stone-500 text-sm mb-6 max-w-2xl">
         Into the person's own Everstead vault. They accept it before anything is stored, and it stays theirs afterwards, including if they leave you.
       </p>
 
