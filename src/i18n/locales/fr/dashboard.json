@@ -55,6 +55,7 @@
       "family": "Famille",
       "messages": "Messages personnels",
       "instructions": "Consignes",
+      "access": "Qui a accès",
       "alerts": "Alertes",
       "activity": "Activité",
       "resources": "Aide et ressources"
@@ -1422,5 +1423,41 @@
     "labelAccountantLower": "expert-comptable",
     "labelWealthLower": "gestionnaire de patrimoine",
     "labelOtherLower": "conseiller"
+  },
+  "access": {
+    "title": "Qui a accès",
+    "subtitle": "Toutes les organisations qui vous sont liées, et ce qu'elles vous ont envoyé.",
+    "empty": "Aucune organisation n'est liée à votre coffre.",
+    "footnote": "Everstead n'accorde jamais à une organisation un accès que vous n'avez pas donné, et ne vend ni ne partage jamais le contenu de votre coffre. Un employeur ou un établissement ne détient absolument rien : il peut vous envoyer quelque chose, et c'est vous qui décidez de le garder.",
+    "inbox": {
+      "title": "En attente de votre réponse",
+      "lead": "Rien ici n'est encore dans votre coffre. En acceptant, le document devient le vôtre, y compris si vous quittez plus tard l'organisation qui vous l'a envoyé.",
+      "from": "Envoyé par {{name}}",
+      "anOrganisation": "une organisation",
+      "sent": "envoyé le {{date}}",
+      "accept": "Accepter dans mon coffre",
+      "decline": "Refuser",
+      "safety": "Everstead ne joint jamais de fichier à un e-mail. Si vous n'attendiez pas cet envoi, refusez-le et écrivez-nous à hello@everstead.care."
+    },
+    "orgs": {
+      "title": "Organisations liées",
+      "none": "Aucune organisation ne vous est liée.",
+      "employerLabel": "Employeur",
+      "since": "liée depuis le {{date}}",
+      "employerReads": "Ne lit rien dans votre coffre. Elle peut vous envoyer un document, et rien d'autre.",
+      "professionalReads": "Ne lit que les rubriques que vous avez choisi de partager. Vous pouvez le modifier à tout moment.",
+      "manageSharing": "Modifier ce qu'elle voit",
+      "end": "Mettre fin au lien",
+      "confirmEnd": "Oui, y mettre fin",
+      "keep": "Conserver",
+      "endWarnProfessional": "Elle perd immédiatement tout accès, et ce qu'elle vous avait envoyé sans réponse de votre part est retiré. Les documents déjà acceptés restent les vôtres.",
+      "endWarnEmployer": "Ce qu'elle vous avait envoyé sans réponse de votre part est retiré. Les documents déjà acceptés restent les vôtres."
+    },
+    "card": {
+      "title": "Quelque chose vous attend",
+      "body_one": "{{name}} vous a envoyé un document. Rien n'entre dans votre coffre tant que vous ne l'avez pas accepté.",
+      "body_other": "{{count}} documents vous attendent de la part d'organisations qui vous sont liées.",
+      "cta": "Voir ce qui a été envoyé"
+    }
   }
 }

@@ -55,6 +55,7 @@
       "family": "Family",
       "messages": "Personal Messages",
       "instructions": "Instructions",
+      "access": "Who has access",
       "alerts": "Alerts",
       "activity": "Activity",
       "resources": "Help & Resources"
@@ -1422,5 +1423,41 @@
     "labelAccountantLower": "accountant",
     "labelWealthLower": "wealth manager",
     "labelOtherLower": "adviser"
+  },
+  "access": {
+    "title": "Who has access",
+    "subtitle": "Every organisation connected to you, and anything they have sent.",
+    "empty": "No organisation is connected to your vault.",
+    "footnote": "Everstead never gives an organisation access you have not granted, and never sells or shares what is in your vault. An employer or a care provider holds nothing at all: they can send you something, and you decide whether to keep it.",
+    "inbox": {
+      "title": "Waiting for you",
+      "lead": "Nothing here is in your vault yet. Accept it and it becomes yours, including if you later leave the organisation that sent it.",
+      "from": "Sent by {{name}}",
+      "anOrganisation": "an organisation",
+      "sent": "sent {{date}}",
+      "accept": "Accept into my vault",
+      "decline": "Decline",
+      "safety": "Everstead never attaches files to emails. If you were not expecting this, decline it and tell us at hello@everstead.care."
+    },
+    "orgs": {
+      "title": "Connected organisations",
+      "none": "No organisation is connected to you.",
+      "employerLabel": "Employer",
+      "since": "connected since {{date}}",
+      "employerReads": "Reads nothing in your vault. They can send you a document, and nothing else.",
+      "professionalReads": "Reads only the sections you have chosen to share. You can change that at any time.",
+      "manageSharing": "Change what they see",
+      "end": "End this connection",
+      "confirmEnd": "Yes, end it",
+      "keep": "Keep it",
+      "endWarnProfessional": "They lose access to everything immediately, and anything they had sent but you had not answered is withdrawn. Documents you already accepted stay yours.",
+      "endWarnEmployer": "Anything they had sent but you had not answered is withdrawn. Documents you already accepted stay yours."
+    },
+    "card": {
+      "title": "Something is waiting for you",
+      "body_one": "{{name}} has sent you a document. Nothing is in your vault until you accept it.",
+      "body_other": "{{count}} documents are waiting from organisations connected to you.",
+      "cta": "See what was sent"
+    }
   }
 }

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Helmet } from 'react-helmet-async'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
-import { FileText, Users, Bell, Settings, LogOut, Lock, HeartCrack, CreditCard, Heart, BookOpen, Home, X, Landmark, Activity, MessageSquare, Send, Menu, Loader2, Sparkles, ChevronUp, UserCircle } from 'lucide-react'
+import { FileText, Users, Bell, Settings, LogOut, Lock, HeartCrack, CreditCard, Heart, BookOpen, Home, X, Landmark, Activity, MessageSquare, Send, Menu, Loader2, Sparkles, ChevronUp, UserCircle, ShieldCheck } from 'lucide-react'
 import { useAuth } from '../contexts/AuthContext'
 import Markdown            from '../components/Markdown'
 import ReferralCard         from '../components/ReferralCard'
@@ -34,6 +34,8 @@ import { MessagesSection } from './dashboard/sections/MessagesSection'
 import { DocumentsSection } from './dashboard/sections/DocumentsSection'
 import { OverviewSection } from './dashboard/sections/OverviewSection'
 import { useAdviserLink } from './dashboard/sections/AdviserSection'
+import { AccessSection } from './dashboard/sections/AccessSection'
+import { useAccess } from '../hooks/useAccess'
 import { InstructionsSection } from './dashboard/sections/InstructionsSection'
 import { AboutMeSection } from './dashboard/sections/AboutMeSection'
 import { PeopleSection } from './dashboard/sections/PeopleSection'
@@ -65,6 +67,7 @@ const NAV_ITEMS = [
   { id: 'family',         label: 'Family',           icon: Heart,        group: 'People & wishes', familyOnly: true },
   { id: 'messages',       label: 'Personal Messages',icon: MessageSquare,group: 'People & wishes' },
   { id: 'instructions',   label: 'Instructions',     icon: BookOpen,     group: 'People & wishes' },
+  { id: 'access',         label: 'Who has access',   icon: ShieldCheck,  group: 'People & wishes' },
 
   { id: 'alerts',         label: 'Alerts',           icon: Bell,         group: 'More' },
   { id: 'activity',       label: 'Activity',         icon: Activity,     group: 'More' },
@@ -204,6 +207,10 @@ export default function Dashboard() {
   const activeProfile = isDemo ? DEMO_PROFILE : profile
   // The firm this member is linked to (profiles.adviser_id) and what they share with it.
   const adviserLink = useAdviserLink(activeProfile, isDemo)
+  // Organisations connected to this member, and anything they have sent that is
+  // still waiting for an answer. One hook so the sidebar badge, the Overview
+  // card and the section never disagree.
+  const access = useAccess(activeProfile, isDemo)
 
   // AI features master switch (default on). When off: hide the assistant nav
   // item and block its route. The Edge Function enforces the same flag server-side.
@@ -494,7 +501,7 @@ export default function Dashboard() {
               (!familyOnly || activeProfile.plan === 'family') && (!aiOnly || aiEnabled))
             return items.map(({ id, label, icon: Icon, group }, idx) => {
             const isActive = activeSection === id
-            const badge    = id === 'alerts' ? unreadCount : 0
+            const badge    = id === 'alerts' ? unreadCount : id === 'access' ? access.deliveries.length : 0
             const locked   = id === 'messages' && !planLimits.personalMessages
             const showHeader = group && group !== (idx > 0 ? items[idx - 1].group : undefined)
             return (
@@ -619,7 +626,7 @@ export default function Dashboard() {
             onAddPayment={() => handleUpgrade()}
           />
         )}
-        {activeSection === 'overview'      && <OverviewSection  isDemo={isDemo} adviser={adviserLink} profile={activeProfile} accounts={accounts} documents={documents} people={people} instructions={instructions} messages={messages} alerts={alerts} markRead={markRead} onNavigate={setActiveSection} planLimits={planLimits} loading={loadingAccounts || loadingDocs} daysSinceLogin={daysSinceLogin} onCelebrate={celebrate} onExecutorPreview={() => setShowExecutorPreview(true)} aboutMe={aboutMe} onUpgrade={() => handleUpgrade('family', 'yearly')} persistScore={isDemo ? undefined : updateProfile} scoreInputsLoaded={!loadingAccounts && !loadingDocs && !loadingPeople && !loadingInstructions} invite={isDemo ? undefined : invite} />}
+        {activeSection === 'overview'      && <OverviewSection  isDemo={isDemo} adviser={adviserLink} access={access} profile={activeProfile} accounts={accounts} documents={documents} people={people} instructions={instructions} messages={messages} alerts={alerts} markRead={markRead} onNavigate={setActiveSection} planLimits={planLimits} loading={loadingAccounts || loadingDocs} daysSinceLogin={daysSinceLogin} onCelebrate={celebrate} onExecutorPreview={() => setShowExecutorPreview(true)} aboutMe={aboutMe} onUpgrade={() => handleUpgrade('family', 'yearly')} persistScore={isDemo ? undefined : updateProfile} scoreInputsLoaded={!loadingAccounts && !loadingDocs && !loadingPeople && !loadingInstructions} invite={isDemo ? undefined : invite} />}
         {activeSection === 'accounts'      && <AccountsSection  accounts={accounts} loading={loadingAccounts} add={addAccount} update={updateAccount} remove={removeAccount} profile={activeProfile} onUpgrade={() => handleUpgrade('family', 'yearly')} onLifeEvent={isDemo ? undefined : setLifeEventPrompt} />}
         {activeSection === 'documents'     && <DocumentsSection isDemo={isDemo} adviser={adviserLink} documents={documents} loading={loadingDocs} uploadFile={uploadFile} update={updateDocument} remove={removeDocument} planLimits={planLimits} profile={activeProfile} onUpgrade={() => handleUpgrade('family', 'yearly')} updateProfile={isDemo ? undefined : updateProfile} addAlert={isDemo ? undefined : realAlerts.add} onLifeEvent={isDemo ? undefined : setLifeEventPrompt} people={people} />}
         {activeSection === 'people'        && <PeopleSection    people={people} loading={loadingPeople} invite={invite} resendInvite={resendInvite} updatePerson={updatePerson} removePerson={removePerson} planLimits={planLimits} profile={activeProfile} onUpgrade={() => handleUpgrade('family', 'yearly')} />}
@@ -632,6 +639,7 @@ export default function Dashboard() {
         {activeSection === 'activity'      && <ActivitySection  activity={activity} loading={loadingActivity} />}
         {activeSection === 'resources'     && <ResourcesSection />}
         {activeSection === 'family'        && <FamilyWrapper    profile={activeProfile} />}
+        {activeSection === 'access'        && <AccessSection   access={access} isDemo={isDemo} onNavigate={setActiveSection} />}
         {activeSection === 'settings'      && <SettingsSection  adviser={adviserLink} profile={activeProfile} isDemo={isDemo} updateProfile={updateProfile} refreshProfile={refreshProfile} onUpgrade={handleUpgrade} onDeleteAccount={handleDeleteAccount} upgradeError={upgradeError} />}
       </main>
       </div>

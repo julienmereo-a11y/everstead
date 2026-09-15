@@ -1,4 +1,5 @@
 import { Resend } from 'resend'
+import { sendEmail } from './email-send.js'
 
 const resend = new Resend(process.env.RESEND_API_KEY)
 const APP = process.env.VITE_APP_URL || 'https://www.everstead.care'
@@ -274,6 +275,72 @@ export async function sendDocumentUploadedNotice({ to, lang = 'en', firmName, cl
     return true
   } catch (err) {
     console.error('[adviser-email] document uploaded notice failed:', err?.message)
+    return false
+  }
+}
+
+// ── Deliveries ──────────────────────────────────────────────────────────────
+// An organisation has sent a document to someone's vault. Two rules shape this
+// template: the file is NEVER attached and the link NEVER points at a file, it
+// points at Everstead. "Someone has sent you a document, click here" is the
+// exact shape of a phishing email, so the only thing the recipient can click
+// is their own vault, where they see who sent it before anything is accepted.
+const DELIVERY_COPY = {
+  en: {
+    subject:  '{{firm}} has sent you a document',
+    preheader:'Nothing has been added to your vault yet. You decide whether to accept it.',
+    title:    'A document is waiting for you',
+    lead:     '{{firm}} has sent you a document to keep in your own Everstead vault. Nothing has been added yet: it is yours only once you accept it, and it stays yours if you ever leave them.',
+    noteLabel:'Their note',
+    button:   'Open Everstead',
+    buttonNew:'See what was sent',
+    newAccount:'You do not have an Everstead account yet. The link opens a free one, and the document lands in it. No card, and you can delete it all at any time.',
+    safety:   'We never attach a file to an email, and this link only ever opens Everstead. If you were not expecting this, decline it in your vault and tell us at hello@everstead.care.',
+    footer:   'Sent through Everstead because {{firm}} has your work address. Everstead never shows {{firm}} anything in your vault.',
+  },
+  fr: {
+    subject:  '{{firm}} vous a envoyé un document',
+    preheader:'Rien n’a encore été ajouté à votre coffre. Vous décidez de l’accepter ou non.',
+    title:    'Un document vous attend',
+    lead:     '{{firm}} vous a envoyé un document à conserver dans votre propre coffre Everstead. Rien n’a encore été ajouté : il ne vous appartient qu’une fois accepté, et il reste le vôtre même si vous partez un jour.',
+    noteLabel:'Leur message',
+    button:   'Ouvrir Everstead',
+    buttonNew:'Voir ce qui vous a été envoyé',
+    newAccount:'Vous n’avez pas encore de compte Everstead. Le lien en ouvre un gratuitement, et le document y sera déposé. Sans carte bancaire, et vous pouvez tout supprimer à tout moment.',
+    safety:   'Nous ne joignons jamais de fichier à un e-mail, et ce lien n’ouvre qu’Everstead. Si vous n’attendiez pas cet envoi, refusez-le depuis votre coffre et écrivez-nous à hello@everstead.care.',
+    footer:   'Envoyé via Everstead parce que {{firm}} dispose de votre adresse professionnelle. Everstead ne montre jamais à {{firm}} le contenu de votre coffre.',
+  },
+}
+
+export async function sendDeliveryEmail({ to, lang = 'en', firmName, title, note, claimToken }) {
+  if (!to) return false
+  const L = lang === 'fr' ? 'fr' : 'en'
+  const C = DELIVERY_COPY[L]
+  const prefix = L === 'fr' ? '/fr' : ''
+  const url = claimToken
+    ? `${APP}${prefix}/accept-delivery?token=${encodeURIComponent(claimToken)}`
+    : `${APP}${prefix}/dashboard?tab=documents&inbox=1`
+  const vars = { firm: esc(firmName || (L === 'fr' ? 'une organisation' : 'an organisation')) }
+  const inner = `
+    <h1 style="margin:0 0 16px;color:#0d1628;font-size:24px;font-weight:normal;">${C.title}</h1>
+    <p style="margin:0 0 14px;color:#4a5568;font-size:16px;line-height:1.6;">${fill(C.lead, vars)}</p>
+    <p style="margin:0 0 18px;padding:14px 18px;border-radius:12px;background:#f0f3f9;color:#0d1628;font-size:17px;font-weight:600;">${esc(title)}</p>
+    ${note ? `<p style="margin:0 0 6px;color:#0d1628;font-size:13px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;">${C.noteLabel}</p><p style="margin:0 0 18px;color:#4a5568;font-size:15px;line-height:1.6;border-left:3px solid #e8e5e0;padding-left:14px;font-style:italic;">${esc(note)}</p>` : ''}
+    ${claimToken ? `<p style="margin:0 0 22px;color:#4a5568;font-size:15px;line-height:1.6;">${C.newAccount}</p>` : ''}
+    ${button(url, claimToken ? C.buttonNew : C.button)}
+    <p style="margin:26px 0 0;color:#4a5568;font-size:14px;line-height:1.6;">${C.safety}</p>
+    <p style="margin:18px 0 0;color:#9ca3af;font-size:13px;line-height:1.5;">${fill(C.footer, vars)}</p>`
+  try {
+    await sendEmail(resend, {
+      from: FROM,
+      to,
+      subject: fill(C.subject, { firm: firmName || '' }),
+      html: shell(inner),
+      preheader: C.preheader,
+    })
+    return true
+  } catch (err) {
+    console.error('[adviser-email] delivery notice failed:', err?.message)
     return false
   }
 }

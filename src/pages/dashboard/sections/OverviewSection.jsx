@@ -9,7 +9,7 @@ import { SkeletonStats } from '../../../components/Skeleton'
 import { PLAN_LABELS } from '../../../config/pricing'
 import { ALL_AREA_KEYS, FULL_ACCESS_ROLE, PERSON_ROLES, ROLE_GROUP_KEYS, SEVERITY_STYLES, STATUS_STYLES } from '../../dashboard/shared'
 import { EmptyState } from '../../dashboard/ui'
-import { AlertCircle, ArrowRight, Bell, BookOpen, Eye, FileText, Heart, Landmark, MessageSquare, RefreshCw, ScrollText, Send, Sparkles, UserCircle, Users, X } from 'lucide-react'
+import { AlertCircle, ArrowRight, Bell, BookOpen, Eye, FileText, Heart, Inbox, Landmark, MessageSquare, RefreshCw, ScrollText, Send, Sparkles, UserCircle, Users, X } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 export const PLAN_BADGE = {
@@ -51,6 +51,32 @@ function WillCard({ profile, documents, onNavigate, lang }) {
 // overview asks for one person before anything else. A partner starts with
 // full access; anyone else is sealed until needed; both can be changed under
 // People. Disappears the moment the member has a trusted person.
+// Something an organisation has sent and the member has not answered. Top of
+// Overview, because an unanswered delivery is the one thing on this page with
+// someone else waiting on the other end. Nothing is in the vault until Accept.
+function DeliveryInboxCard({ deliveries, onNavigate, t }) {
+  const one = deliveries.length === 1
+  return (
+    <button
+      onClick={() => onNavigate?.('access')}
+      className="w-full text-left rounded-2xl border border-navy-200 bg-navy-50/60 p-5 flex items-start gap-3.5 hover:border-navy-300 transition-colors"
+    >
+      <span className="w-10 h-10 rounded-xl bg-navy-800 text-white flex items-center justify-center shrink-0"><Inbox size={18} /></span>
+      <span className="min-w-0 flex-1">
+        <span className="block text-[15px] font-semibold text-navy-950">{t('access.card.title')}</span>
+        <span className="block mt-1 text-sm leading-relaxed text-stone-600">
+          {one
+            ? t('access.card.body_one', { name: deliveries[0].sender_name || t('access.inbox.anOrganisation') })
+            : t('access.card.body_other', { count: deliveries.length })}
+        </span>
+        <span className="mt-2.5 inline-flex items-center gap-1.5 text-sm font-semibold text-navy-700">
+          {t('access.card.cta')} <ArrowRight size={14} />
+        </span>
+      </span>
+    </button>
+  )
+}
+
 function InviteOneCard({ invite, onCelebrate, onNavigate }) {
   const { t } = useTranslation('dashboard')
   const [form, setForm] = useState({ name: '', email: '', role: '', message: '' })
@@ -125,7 +151,7 @@ function InviteOneCard({ invite, onCelebrate, onNavigate }) {
   )
 }
 
-export function OverviewSection({ isDemo, adviser, profile, accounts, documents, people, instructions, messages, alerts, markRead, onNavigate, planLimits, loading, daysSinceLogin, onCelebrate, onExecutorPreview, aboutMe, onUpgrade, persistScore, scoreInputsLoaded, invite }) {
+export function OverviewSection({ isDemo, adviser, access, profile, accounts, documents, people, instructions, messages, alerts, markRead, onNavigate, planLimits, loading, daysSinceLogin, onCelebrate, onExecutorPreview, aboutMe, onUpgrade, persistScore, scoreInputsLoaded, invite }) {
   const { t, i18n } = useTranslation('dashboard')
   const criticalAlerts = alerts.filter(a => a.severity === 'critical' && !a.is_read)
   const [staleBannerDismissed, setStaleBannerDismissed] = React.useState(false)
@@ -448,6 +474,13 @@ export function OverviewSection({ isDemo, adviser, profile, accounts, documents,
               </button>
             </div>
           )}
+        </div>
+      )}
+
+      {/* An organisation has sent something and is waiting on an answer */}
+      {!isDemo && access?.deliveries?.length > 0 && (
+        <div className="mb-6">
+          <DeliveryInboxCard deliveries={access.deliveries} onNavigate={onNavigate} t={t} />
         </div>
       )}
 

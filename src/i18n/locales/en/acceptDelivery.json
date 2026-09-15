@@ -1,0 +1,30 @@
+{
+  "meta": { "title": "A document is waiting for you | Everstead" },
+  "from": "Sent by {{name}}",
+  "anOrganisation": "an organisation",
+  "title": "A document is waiting for you.",
+  "signedIn": "Accept it and it goes into your own vault. It stays yours, including if you later leave the organisation that sent it.",
+  "signedOut": "Open a free Everstead account with the address this was sent to, and it will be waiting for you. No card, and you can delete everything at any time.",
+  "createAccount": "Open a free account",
+  "logIn": "I already have an account",
+  "accept": "Accept into my vault",
+  "decline": "Decline",
+  "expired": "This one has expired or has already been answered. Ask whoever sent it to send it again.",
+  "safety": "Everstead never attaches a file to an email, and this page never opens one. Nothing enters your vault until you accept it. If you were not expecting this, decline it and tell us at hello@everstead.care.",
+  "footer": "Everstead, the place your family can find everything.",
+  "error": "Something went wrong. Please try again.",
+  "accepted": {
+    "title": "It is in your vault.",
+    "body": "You own this document now. Taking you to your documents.",
+    "cta": "Go to my documents"
+  },
+  "declined": {
+    "title": "Declined.",
+    "body": "Nothing was added to your vault, and the file has been deleted."
+  },
+  "missing": {
+    "title": "This link is no longer valid.",
+    "body": "It may have already been used, or the organisation may have withdrawn it. Ask them to send it again.",
+    "cta": "Go to Everstead"
+  }
+}

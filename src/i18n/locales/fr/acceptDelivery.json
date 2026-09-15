@@ -1,0 +1,32 @@
+{
+  "meta": {
+    "title": "Un document vous attend | Everstead"
+  },
+  "from": "Envoyé par {{name}}",
+  "anOrganisation": "une organisation",
+  "title": "Un document vous attend.",
+  "signedIn": "En l'acceptant, il rejoint votre propre coffre. Il reste le vôtre, y compris si vous quittez plus tard l'organisation qui vous l'a envoyé.",
+  "signedOut": "Ouvrez un compte Everstead gratuit avec l'adresse à laquelle cet envoi a été fait, et le document vous y attendra. Sans carte bancaire, et vous pouvez tout supprimer à tout moment.",
+  "createAccount": "Ouvrir un compte gratuit",
+  "logIn": "J'ai déjà un compte",
+  "accept": "Accepter dans mon coffre",
+  "decline": "Refuser",
+  "expired": "Cet envoi a expiré ou a déjà reçu une réponse. Demandez à son expéditeur de le renvoyer.",
+  "safety": "Everstead ne joint jamais de fichier à un e-mail, et cette page n'en ouvre aucun. Rien n'entre dans votre coffre tant que vous ne l'avez pas accepté. Si vous n'attendiez pas cet envoi, refusez-le et écrivez-nous à hello@everstead.care.",
+  "footer": "Everstead, l'endroit où votre famille retrouve tout.",
+  "error": "Une erreur est survenue. Merci de réessayer.",
+  "accepted": {
+    "title": "Il est dans votre coffre.",
+    "body": "Ce document vous appartient désormais. Redirection vers vos documents.",
+    "cta": "Voir mes documents"
+  },
+  "declined": {
+    "title": "Refusé.",
+    "body": "Rien n'a été ajouté à votre coffre, et le fichier a été supprimé."
+  },
+  "missing": {
+    "title": "Ce lien n'est plus valable.",
+    "body": "Il a peut-être déjà été utilisé, ou l'organisation l'a retiré. Demandez-lui de le renvoyer.",
+    "cta": "Aller sur Everstead"
+  }
+}

@@ -526,6 +526,51 @@ export function verifyReport(reportId) {
 // The demo member's adviser firm (client side of the adviser link).
 // Mirrors the AdminPanel demo firm so the two demos tell one story.
 // ─────────────────────────────────────────────────────────────
+// "Who has access" in the demo dashboard: the firm above, an employer that can
+// read nothing at all, and one document waiting to be accepted. The demo is a
+// sales tool, so this is the screen that shows a prospect the shape of the
+// promise: an organisation can send you something, and nothing else.
+export const DEMO_CONNECTIONS = [
+  {
+    connection_id: 'demo-conn-firm',
+    org_id: 'demo-firm',
+    firm_name: 'Thornton & Vale Solicitors',
+    firm_type: 'solicitor',
+    org_kind: 'professional',
+    logo_url: null,
+    contact_email: 'rachel.vale@thorntonvale.example',
+    status: 'active',
+    started_at: '2026-03-04T10:00:00Z',
+  },
+  {
+    connection_id: 'demo-conn-employer',
+    org_id: 'demo-employer',
+    firm_name: 'Marlow & Finch',
+    firm_type: 'other',
+    org_kind: 'employer',
+    logo_url: null,
+    contact_email: 'people@marlowfinch.example',
+    status: 'active',
+    started_at: '2026-06-18T09:30:00Z',
+  },
+]
+
+export const DEMO_DELIVERIES = [
+  {
+    id: 'demo-delivery-1',
+    org_id: 'demo-employer',
+    sender_name: 'Marlow & Finch',
+    title: 'Employment contract, 2026 revision',
+    doc_type: 'Legal',
+    note: 'Signed copy for your records. Keep it wherever suits you, it is yours.',
+    mime_type: 'application/pdf',
+    file_size: 284_000,
+    sent_at: '2026-09-12T08:15:00Z',
+    expires_at: '2026-11-11T08:15:00Z',
+    status: 'sent',
+  },
+]
+
 export const DEMO_ADVISER_FIRM = {
   id: 'demo-firm',
   firm_name: 'Thornton & Vale Solicitors',
