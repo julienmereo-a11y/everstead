@@ -10,12 +10,13 @@
 //
 import React, { useEffect, useMemo, useState } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
-import { Bell, BookOpen, FileText, LayoutDashboard, LogOut, Scale, Settings, Users } from 'lucide-react'
+import { Bell, BookOpen, FileText, LayoutDashboard, LogOut, Scale, Send, Settings, Users } from 'lucide-react'
 import { useAuth } from '../contexts/AuthContext'
 import { DEMO_ADVISER_WORKSPACE, DEMO_ADVISOR, DEMO_ADVISOR_FAMILIES } from '../lib/demoData'
 import { supabase } from '../lib/supabase'
 import { AdviserAssistant, InviteFamilyModal, initialOf } from './adviser/shared'
 import { AlertsScreen, ClientDetailScreen, ClientsScreen, GuidesScreen, OverviewScreen, SettingsScreen, deriveOverview } from './adviser/screens'
+import { SendScreen } from './adviser/send'
 import { MattersScreen, ReviewQueueScreen } from './adviser/solicitor'
 
 const roleFromType = (t) => (t === 'solicitor' || t === 'notaire') ? 'solicitor' : 'adviser'
@@ -95,7 +96,7 @@ export default function AdvisorPortal() {
 
   const families  = isDemo ? demoFamilies : realFamilies
   const workspace = isDemo ? demoWs : realWs
-  const firm      = isDemo ? { id: 'demo-firm', firm_name: demoRole === 'solicitor' ? 'Carter & Vale Solicitors' : DEMO_ADVISOR.firm, firm_type: demoRole === 'solicitor' ? 'solicitor' : 'ifa', plan_type: 'pilot', max_families: 5, role: 'owner', pilot_end_date: '2027-06-01' } : realFirm
+  const firm      = isDemo ? { id: 'demo-firm', firm_name: demoRole === 'solicitor' ? 'Carter & Vale Solicitors' : DEMO_ADVISOR.firm, firm_type: demoRole === 'solicitor' ? 'solicitor' : 'ifa', plan_type: 'pilot', max_families: 5, role: 'owner', pilot_end_date: '2027-06-01', org_kind: 'professional', can_deliver: true } : realFirm
   const role      = isDemo ? demoRole : roleFromType(realFirm?.firm_type)
   const team      = isDemo
     ? [{ id: 't1', email: DEMO_ADVISOR.email, role: 'owner', invite_status: 'accepted', full_name: DEMO_ADVISOR.full_name }, { id: 't2', email: 'james@carterwealth.example', role: 'member', invite_status: 'accepted', full_name: 'James Reid' }]
@@ -126,8 +127,8 @@ export default function AdvisorPortal() {
 
   const overview = useMemo(() => deriveOverview({ families, workspace, role, readIds }), [families, workspace, role, readIds])
   const nav = role === 'solicitor'
-    ? [['overview', 'Overview', LayoutDashboard], ['clients', 'Clients', Users], ['review', 'Review queue', FileText, overview.awaiting, 'sage'], ['matters', 'Matters', Scale], ['alerts', 'Alerts', Bell, overview.unread.length, 'red'], ['guides', 'Guides', BookOpen], ['settings', 'Settings', Settings]]
-    : [['overview', 'Overview', LayoutDashboard], ['clients', 'Clients', Users], ['alerts', 'Alerts', Bell, overview.unread.length, 'red'], ['guides', 'Guides', BookOpen], ['settings', 'Settings', Settings]]
+    ? [['overview', 'Overview', LayoutDashboard], ['clients', 'Clients', Users], ['send', 'Send a document', Send], ['review', 'Review queue', FileText, overview.awaiting, 'sage'], ['matters', 'Matters', Scale], ['alerts', 'Alerts', Bell, overview.unread.length, 'red'], ['guides', 'Guides', BookOpen], ['settings', 'Settings', Settings]]
+    : [['overview', 'Overview', LayoutDashboard], ['clients', 'Clients', Users], ['send', 'Send a document', Send], ['alerts', 'Alerts', Bell, overview.unread.length, 'red'], ['guides', 'Guides', BookOpen], ['settings', 'Settings', Settings]]
   useEffect(() => { if (role !== 'solicitor' && (tab === 'review' || tab === 'matters')) setTab('overview') }, [role, tab])
 
   // ── Writes ───────────────────────────────────────────────────
@@ -261,6 +262,7 @@ export default function AdvisorPortal() {
         )}
         {tab === 'review'   && role === 'solicitor' && <ReviewQueueScreen families={families} workspace={workspace} requestOpen={requestOpen} setRequestOpen={setRequestOpen} requestBusy={requestBusy} requestError={requestError} onCreateRequest={createRequest} onRemind={remindRequest} onRequestStatus={setRequestStatus} onSetReview={setReview} openClient={openClient} isDemo={isDemo} />}
         {tab === 'matters'  && role === 'solicitor' && <MattersScreen families={families} workspace={workspace} onSaveMatter={saveMatter} onDeleteMatter={deleteMatter} busy={matterBusy} isDemo={isDemo} />}
+        {tab === 'send'     && <SendScreen firm={firm} isDemo={isDemo} />}
         {tab === 'alerts'   && <AlertsScreen families={families} readIds={readIds} markRead={markRead} markAllRead={markAllRead} openClient={openClient} />}
         {tab === 'guides'   && <GuidesScreen role={role} />}
         {tab === 'settings' && <SettingsScreen advisor={advisor} firm={firm} role={role} canSetRole={isDemo || !!advisor?.isOwner} onSetRole={setRole} roleBusy={roleBusy} team={team} isDemo={isDemo} onReload={isDemo ? undefined : loadPortal} firmId={realFirm?.id} families={families} />}
