@@ -342,7 +342,10 @@ export default function App() {
               <Route path="/assistant-apres-deces" element={<WhenSomeoneDies />} />
               <Route path="/m/:token" element={<MessageView />} />
               <Route path="/data-promise"  element={<Layout><DataPromise /></Layout>} />
-              <Route path="/for-advisers" element={<Layout><ForAdvisors /></Layout>} />
+              {/* Retired URLs. Vercel 301s these at the edge; these routes only
+                  catch a client-side link or a bookmark opened inside the SPA. */}
+              <Route path="/for-advisers" element={<Navigate to="/business/advisers" replace />} />
+              <Route path="/professionals" element={<Navigate to="/business" replace />} />
               <Route path="/family-vault" element={<Layout><DualVault /></Layout>} />
               <Route path="*"           element={<Layout><NotFound /></Layout>} />
             </Routes>

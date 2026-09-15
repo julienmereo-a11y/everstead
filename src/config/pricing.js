@@ -51,7 +51,7 @@
 //                                 grandfathered and keep their exact plan, price and
 //                                 features. Do NOT remove this key or its Stripe prices.
 //   family    → "Everstead+"      rename only — price/features unchanged
-//   advisor   → "Everstead Pro"   rename only — sold via demo on /for-advisers,
+//   advisor   → "Everstead Pro"   rename only — sold via demo on /business/advisers,
 //                                 not shown in the consumer pricing table
 // ─────────────────────────────────────────────────────────────────────────────
 export const PLAN_KEYS = {
