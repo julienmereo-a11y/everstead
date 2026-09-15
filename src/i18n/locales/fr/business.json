@@ -1,0 +1,435 @@
+{
+  "nav": {
+    "brand": "Entreprises",
+    "home": "Everstead pour les entreprises",
+    "forFamilies": "Pour les familles",
+    "bookDemo": "Réserver une démo",
+    "openMenu": "Ouvrir le menu",
+    "closeMenu": "Fermer le menu",
+    "sections": "Avec qui nous travaillons",
+    "verticals": {
+      "advisers": "Conseillers",
+      "solicitors": "Notaires",
+      "care": "Établissements",
+      "employers": "Employeurs"
+    }
+  },
+  "hub": {
+    "meta": {
+      "title": "Everstead pour les entreprises | Conseillers, notaires, EHPAD, employeurs",
+      "description": "Everstead pour les entreprises : comment les conseillers en gestion de patrimoine, les notaires, les EHPAD et les employeurs offrent aux familles qu'ils accompagnent un plan que l'on retrouve vraiment. Gratuit pour la famille au départ, et rien à conserver de votre côté."
+    },
+    "hero": {
+      "eyebrow": "Everstead pour les entreprises",
+      "title": "Les papiers d'une vie, en ordre avant que quiconque en ait besoin.",
+      "sub": "Conseillers, notaires, établissements et employeurs butent tous sur le même mur : une famille qui ne retrouve rien le jour le plus difficile. Everstead est la couche pratique sous votre travail. Gratuit pour la famille au départ, avec un portail pour les cabinets qui en ont besoin.",
+      "ctaPrimary": "Réserver une démo",
+      "ctaSecondary": "Voir les quatre métiers"
+    },
+    "audiences": {
+      "eyebrow": "Avec qui nous travaillons",
+      "title": "Quatre façons dont Everstead s'intègre à votre activité.",
+      "items": [
+        {
+          "key": "advisers",
+          "title": "Conseillers en gestion de patrimoine",
+          "body": "Voyez où en est réellement la famille de chaque client : score de préparation, file de relecture des documents, demandes de pièces, avec le consentement du client. La conversation passe de « l'avez-vous fait ? » à « votre famille saura le retrouver ».",
+          "cta": "Everstead pour les conseillers"
+        },
+        {
+          "key": "solicitors",
+          "title": "Notaires et avocats",
+          "body": "Le testament règle le droit. Everstead, c'est là où la famille apprend où il se trouve, qui appeler et par quoi commencer. Des héritiers organisés rendent la succession plus rapide, et c'est votre étude qui leur a donné l'outil.",
+          "cta": "Everstead pour les notaires"
+        },
+        {
+          "key": "care",
+          "title": "EHPAD et résidences services",
+          "body": "Les familles arrivent à l'admission sans les informations dont votre équipe a besoin, et le personnel porte les questions quand un résident décède. Remettez à chaque famille un plan gratuit et un kit d'urgence d'une page. Rien à acheter, rien de stocké par l'établissement.",
+          "cta": "Everstead pour les établissements"
+        },
+        {
+          "key": "employers",
+          "title": "Employeurs, DRH et avantages sociaux",
+          "body": "Un deuil ou un rôle d'aidant éloigne un salarié pendant des mois, pas des jours. Proposez un avantage qui met la partie pratique en ordre avant qu'elle ne s'impose, gratuit pour le salarié, sans aucune donnée détenue par l'employeur.",
+          "cta": "Everstead pour les employeurs"
+        }
+      ]
+    },
+    "why": {
+      "eyebrow": "Pourquoi les organisations nous font entrer",
+      "title": "Trois raisons pour lesquelles cela fonctionne.",
+      "items": [
+        {
+          "title": "La famille s'en sert vraiment",
+          "body": "Dans ce domaine, presque tout se résume à un document que l'on signe et que l'on classe. Everstead est un plan vivant : rappels quand une pièce expire, point annuel, partage familial avec des espaces privés. Il est encore là dans cinq ans."
+        },
+        {
+          "title": "Vous ne détenez pas les données",
+          "body": "Le coffre appartient à la personne, pas à votre organisation. Conseillers et notaires ne voient que ce que le client a partagé. Un établissement ou un employeur ne voit rien du tout, donc aucune nouvelle obligation ne pèse sur vous."
+        },
+        {
+          "title": "Cela commence gratuitement",
+          "body": "Sans carte bancaire et sans engagement pour la famille. Vous pouvez le remettre à chaque client, résident ou salarié le jour du rendez-vous, le seul moment où l'on agit vraiment."
+        }
+      ]
+    },
+    "how": {
+      "eyebrow": "Comment se passe un partenariat",
+      "title": "Trois étapes, et la famille garde la main.",
+      "steps": [
+        {
+          "title": "Vous en parlez",
+          "body": "Un lien, une carte dans le dossier, un QR code sur le livret d'accueil, ou un mot au bon moment. La famille commence gratuitement et ajoute une chose à la fois."
+        },
+        {
+          "title": "Elle décide de ce que vous voyez",
+          "body": "Rien ne parvient à une organisation tant que la personne ne l'a pas choisi. Conseillers et notaires disposent d'un portail. Établissements et employeurs ne détiennent jamais les données."
+        },
+        {
+          "title": "Nous le maintenons vivant",
+          "body": "Rappels d'expiration, point annuel, relance quand une pièce importante manque. Le plan est encore à jour longtemps après le rendez-vous."
+        }
+      ]
+    },
+    "trust": {
+      "eyebrow": "Conçu pour la confiance",
+      "title": "Ce que chaque partenaire peut dire aux personnes qu'il accompagne.",
+      "cta": "Nos pratiques de sécurité",
+      "points": [
+        "Offre gratuite sans carte bancaire, export et suppression à tout moment",
+        "L'accès d'urgence ne s'ouvre qu'après vérification humaine",
+        "Web, iOS et Android",
+        "Aucun profil publicitaire, aucune vente de données"
+      ]
+    },
+    "next": {
+      "badge": "En développement",
+      "eyebrow": "Là où nous allons",
+      "title": "D'un plan pour un seul jour à un outil utilisé chaque mois.",
+      "body": "Everstead conserve déjà les documents dont une famille aura besoin. L'étape suivante, ce sont ceux qui arrivent alors que tout le monde est bien vivant : une organisation qui dépose un contrat ou une attestation directement dans le coffre d'une personne, et une personne qui accorde un accès limité dans le temps à une pièce d'identité ou à un justificatif de domicile plutôt que d'envoyer un scan par e-mail. Même coffre, même logique de consentement.",
+      "items": [
+        {
+          "title": "Déposer un document dans le coffre d'une personne",
+          "body": "Votre organisation dépose un document à partir d'une adresse e-mail. La personne accepte une fois, et le document arrive dans un coffre qui lui appartient et qu'elle garde en partant."
+        },
+        {
+          "title": "Le partage limité dans le temps, dans l'autre sens",
+          "body": "Une personne accorde un accès en lecture aux seules pièces dont vous avez besoin, pour la durée qu'il faut, et l'accès expire de lui-même."
+        }
+      ],
+      "note": "Rien de tout cela n'est encore en ligne. Nous choisissons en ce moment les premières organisations partenaires pour le construire avec elles."
+    },
+    "final": {
+      "title": "Dites-nous qui vous accompagnez.",
+      "body": "Vingt minutes avec l'équipe fondatrice suffisent pour voir si Everstead convient à vos clients, résidents ou salariés, et à quoi ressemblerait un pilote.",
+      "ctaPrimary": "Réserver une démo",
+      "ctaSecondary": "Écrire à hello@everstead.care",
+      "note": "Nous travaillons en direct avec nos premières organisations partenaires."
+    }
+  },
+  "verticals": {
+    "solicitors": {
+      "meta": {
+        "title": "Everstead pour les notaires et les avocats | Un plan que la famille peut suivre",
+        "description": "Le testament est déposé. Everstead, c'est là où la famille apprend où il se trouve, qui appeler et par quoi commencer. Gratuit pour vos clients, et rien à conserver par l'étude."
+      },
+      "hero": {
+        "eyebrow": "Pour les notaires et les avocats",
+        "title": "Le testament est déposé. La famille ne sait toujours pas où se trouve le reste.",
+        "sub": "Vous rédigez et conservez l'acte qui règle une succession. Everstead réunit tout ce qui gravite autour : les comptes, les contrats d'assurance vie, les personnes à prévenir, et la ligne qui indique quelle étude détient l'original. Vos clients commencent gratuitement, et votre étude ne conserve rien de plus."
+      },
+      "problem": {
+        "eyebrow": "Ce qui manque après la signature",
+        "title": "Ce que la plupart des clients laissent, c'est un acte, pas un plan.",
+        "items": [
+          {
+            "title": "Personne ne sait ce qui a été prévu",
+            "body": "Le fichier central des dispositions de dernières volontés vous dira qu'un testament existe. Il ne dira pas à la famille où sont les comptes, les contrats et les mots de passe."
+          },
+          {
+            "title": "Des actifs disparaissent",
+            "body": "Un compte dormant, un contrat d'assurance vie oublié, un portefeuille de cryptomonnaies, un abonnement qui continue de prélever. La succession que vous réglez ne vaut que ce que la famille retrouve."
+          },
+          {
+            "title": "Le règlement prend plus de temps qu'il ne devrait",
+            "body": "Chaque pièce manquante, c'est un courrier, une attente, et des heures que la famille vit mal."
+          }
+        ]
+      },
+      "offer": {
+        "eyebrow": "Ce que l'étude y gagne",
+        "title": "Quelque chose à remettre au moment de la signature.",
+        "items": [
+          {
+            "title": "Un endroit où noter qui détient l'acte",
+            "body": "L'étude, la référence et le lieu de conservation, pour que les héritiers partent de vos coordonnées plutôt que d'une recherche."
+          },
+          {
+            "title": "Une vue complète du patrimoine",
+            "body": "Comptes, biens, contrats, retraite, actifs numériques et abonnements, tenus à jour par le client plutôt que reconstitués après le décès."
+          },
+          {
+            "title": "Des héritiers qui savent quoi faire",
+            "body": "Le client désigne ses personnes de confiance dans Everstead. Le moment venu, elles reçoivent une marche à suivre au lieu d'une boîte à chaussures.",
+            "cta": "Voir le parcours après un décès",
+            "href": "/apres-un-deces"
+          },
+          {
+            "title": "Votre étude reste le premier appel",
+            "body": "Vous pouvez figurer comme le contact professionnel de la famille, donc l'appel vous revient. Rien n'est stocké de votre côté et aucune nouvelle obligation ne pèse sur l'étude."
+          }
+        ]
+      },
+      "how": {
+        "eyebrow": "Comment ça se passe avec vous",
+        "title": "Trois étapes, et le client garde la main.",
+        "steps": [
+          {
+            "title": "Vous le remettez à la signature",
+            "body": "Un lien ou une carte dans le dossier. Le client commence gratuitement, sans carte bancaire."
+          },
+          {
+            "title": "Il le complète avec le temps",
+            "body": "Une chose à la fois, avec des rappels. La plupart des gens saisissent l'essentiel en une seule séance."
+          },
+          {
+            "title": "La famille est guidée",
+            "body": "L'accès d'urgence ne s'ouvre qu'après une vérification humaine, et la personne de confiance reçoit une liste d'étapes qui commence par votre étude."
+          }
+        ]
+      },
+      "faq": {
+        "eyebrow": "Les questions que l'on nous pose",
+        "title": "Les trois questions de chaque étude.",
+        "items": [
+          {
+            "q": "Est-ce que cela remplace le testament ?",
+            "a": "Non. Everstead est un outil d'organisation, pas un service juridique. Il note où se trouve l'acte et tout ce qui l'entoure. L'acte que vous recevez reste la seule chose qui règle la succession."
+          },
+          {
+            "q": "Vous publiez un modèle de testament gratuit. Cela ne vous met-il pas en concurrence avec moi ?",
+            "a": "C'est un modèle olographe simple, pour des personnes qui, sinon, laisseraient une succession sans aucune disposition. Chaque page rappelle qu'au-delà du cas le plus simple, il faut un notaire, et invite à faire enregistrer l'acte. Celles et ceux qui découvrent que leur situation n'est pas simple sont envoyés chez vous."
+          },
+          {
+            "q": "Que doit conserver mon étude ?",
+            "a": "Rien. Aucune intégration, aucun contrat de sous-traitance, aucun dossier client de votre côté, sauf si vous prenez le portail professionnel, qui fait l'objet d'un accord distinct."
+          }
+        ]
+      },
+      "final": {
+        "title": "Regardons-le avec un de vos dossiers en tête.",
+        "body": "Vingt minutes avec l'équipe fondatrice. Nous vous montrons ce que voit le client, ce que voit la famille, et exactement ce que votre étude conserverait ou non."
+      }
+    },
+    "care": {
+      "meta": {
+        "title": "Everstead pour les EHPAD et les résidences services | Gratuit pour chaque famille",
+        "description": "Remettez à chaque famille un plan gratuit et un kit d'urgence d'une page. Les informations pratiques que votre équipe réclame sans cesse, réunies par la famille, sans rien de stocké par l'établissement."
+      },
+      "hero": {
+        "eyebrow": "Pour les EHPAD et les résidences services",
+        "title": "Votre équipe ne devrait pas servir de classeur à la famille.",
+        "sub": "Les familles arrivent à l'admission sans les informations dont le personnel a besoin, et quand un résident décède votre équipe porte les questions auxquelles personne d'autre ne peut répondre. Everstead donne à chaque famille un plan gratuit et un kit d'urgence d'une page, sans rien de stocké par l'établissement."
+      },
+      "problem": {
+        "eyebrow": "Ce qui se passe dans vos couloirs",
+        "title": "Trois moments où les papiers retombent sur le personnel.",
+        "items": [
+          {
+            "title": "L'admission",
+            "body": "Personne à prévenir, médecin traitant, mandat de protection future, directives anticipées, pharmacie, notaire. La moitié arrive en retard et le reste arrive par téléphone."
+          },
+          {
+            "title": "Une dégradation soudaine",
+            "body": "La famille qui doit décider vite est celle qui ne sait pas s'il existe des directives anticipées, ni où elles sont rangées."
+          },
+          {
+            "title": "Après un décès",
+            "body": "Le personnel reçoit pendant des semaines des questions sur les comptes, les abonnements et les effets personnels, sans aucune légitimité pour y répondre."
+          }
+        ]
+      },
+      "offer": {
+        "eyebrow": "Ce que vous pouvez remettre",
+        "title": "Deux choses à donner à chaque famille, les deux gratuites.",
+        "items": [
+          {
+            "title": "Le kit d'urgence d'une page",
+            "body": "Une page à imprimer avec les numéros, les noms et les volontés qui comptent. La famille la remplit, en garde un exemplaire dans la chambre et un autre sur elle.",
+            "cta": "Voir le kit d'urgence",
+            "href": "/emergency-pack"
+          },
+          {
+            "title": "Un plan familial gratuit",
+            "body": "Tout le reste vit dans le coffre de la famille : documents, comptes, volontés, personnes de confiance. Rien à acheter, sans carte bancaire."
+          },
+          {
+            "title": "Rien de détenu par l'établissement",
+            "body": "Vous ne stockez rien, ne traitez rien et n'êtes responsable de rien. Aucune intégration, aucun contrat à signer."
+          },
+          {
+            "title": "Une réponse au moment le plus dur",
+            "body": "Quand une famille demande à votre équipe ce qu'elle devrait faire, il y a quelque chose de calme et de concret à répondre, au lieu d'une excuse."
+          }
+        ]
+      },
+      "how": {
+        "eyebrow": "Comment le déployer",
+        "title": "Une semaine, pas un projet.",
+        "steps": [
+          {
+            "title": "Glissez-le dans le livret d'accueil",
+            "body": "Une carte avec un lien et un QR code, remise à l'admission avec le reste du dossier."
+          },
+          {
+            "title": "Les familles s'en occupent elles-mêmes",
+            "body": "À leur rythme, depuis leur téléphone. Votre équipe n'administre rien."
+          },
+          {
+            "title": "Servez-vous-en quand cela compte",
+            "body": "Lors d'un point de suivi, pendant une dégradation ou après un décès, la famille a déjà les réponses au même endroit."
+          }
+        ]
+      },
+      "faq": {
+        "eyebrow": "Les questions que l'on nous pose",
+        "title": "Les trois questions de chaque établissement.",
+        "items": [
+          {
+            "q": "L'établissement détient-il des données du résident ?",
+            "a": "Non. Le coffre appartient à la famille. Nous vous fournissons des supports imprimés et un lien, et rien ne remonte vers l'établissement."
+          },
+          {
+            "q": "Combien cela coûte-t-il à l'établissement ?",
+            "a": "Rien pour le remettre aux familles. Si vous souhaitez des supports à vos couleurs, une présentation pour le personnel ou un accord de groupe sur plusieurs établissements, nous en parlons."
+          },
+          {
+            "q": "Est-ce adapté aux résidents atteints de troubles cognitifs ?",
+            "a": "C'est le plus souvent la famille ou la personne de confiance qui le remplit, c'est-à-dire exactement celles qui en ont besoin. Le kit d'urgence fonctionne sur papier pour qui préfère le papier."
+          }
+        ]
+      },
+      "final": {
+        "title": "Demandez le kit d'urgence.",
+        "body": "Nous vous envoyons le kit à imprimer et une courte présentation pour votre équipe, et nous vous montrons ce que voit une famille. Sans frais et sans engagement."
+      }
+    },
+    "employers": {
+      "meta": {
+        "title": "Everstead pour les employeurs, DRH et avantages sociaux | Un avantage utilisé",
+        "description": "Un deuil ou un rôle d'aidant éloigne un salarié pendant des mois, pas des jours. Proposez un avantage concret qui agit avant le jour difficile, gratuit pour le salarié, sans aucune donnée détenue par l'employeur."
+      },
+      "hero": {
+        "eyebrow": "Pour les employeurs, DRH et avantages sociaux",
+        "title": "Un deuil ou un rôle d'aidant éloigne un salarié pendant des mois, pas des jours.",
+        "sub": "L'accompagnement du deuil se résume le plus souvent à une ligne dans un accord et à un numéro d'écoute. Everstead est l'autre moitié, la moitié pratique : le salarié a son propre coffre, sa famille sait quoi faire, et votre organisation ne détient rien. Gratuit pour le salarié au départ."
+      },
+      "problem": {
+        "eyebrow": "Ce que cela vous coûte aujourd'hui",
+        "title": "L'absence n'est que la partie visible.",
+        "items": [
+          {
+            "title": "Le congé est la plus petite partie",
+            "body": "Le congé de décès se compte en jours. Les démarches qui suivent un décès se comptent en mois, sur le temps de travail et depuis un téléphone professionnel."
+          },
+          {
+            "title": "Les aidants partent sans le dire",
+            "body": "Les salariés qui s'occupent d'un parent le disent rarement. Ils réduisent leurs horaires, refusent les déplacements, puis démissionnent, et la vraie raison ne remonte jamais aux RH."
+          },
+          {
+            "title": "Vos dispositifs n'atteignent pas la famille",
+            "body": "Une ligne d'écoute aide le salarié à parler. Elle ne dit pas à son conjoint où se trouve la retraite complémentaire, ni qui appeler en premier."
+          }
+        ]
+      },
+      "offer": {
+        "eyebrow": "Ce que vous pouvez proposer",
+        "title": "Un avantage qui agit avant le jour difficile.",
+        "items": [
+          {
+            "title": "Une offre gratuite pour tout le monde",
+            "body": "Toute l'équipe peut commencer sans carte bancaire, à son rythme, depuis son téléphone. Vous n'achetez pas des licences pour découvrir ensuite si quelqu'un s'en sert."
+          },
+          {
+            "title": "Aucune donnée salarié de votre côté",
+            "body": "Le coffre appartient au salarié. Vous ne voyez, ne stockez et ne traitez rien de son contenu, ce qui garde un avantage sensible hors de votre registre de traitements."
+          },
+          {
+            "title": "Pour les aidants, pas seulement pour le deuil",
+            "body": "Mandat de protection future, informations de santé, traitements, numéros importants. Celles et ceux qui tiennent discrètement une famille à bout de bras ont enfin où le ranger."
+          },
+          {
+            "title": "Des supports que vous pouvez vraiment envoyer",
+            "body": "Un e-mail de lancement, une page d'intranet et une courte session pour les équipes, écrits pour vos salariés plutôt que pour nous."
+          }
+        ]
+      },
+      "how": {
+        "eyebrow": "Comment se passe un déploiement",
+        "title": "Un e-mail, puis cela tourne tout seul.",
+        "steps": [
+          {
+            "title": "Nous vous donnons les supports",
+            "body": "Le texte d'un e-mail ou d'un article d'intranet, et un lien. Vous l'envoyez."
+          },
+          {
+            "title": "Les salariés commencent gratuitement",
+            "body": "Aucun compte à gérer, aucune licence à attribuer, aucune procédure de sortie."
+          },
+          {
+            "title": "Vous voyez l'adoption, jamais le contenu",
+            "body": "Si vous souhaitez une offre payante pour toute l'équipe, nous vous indiquons combien de personnes ont commencé, et rien d'autre."
+          }
+        ]
+      },
+      "next": {
+        "badge": "En développement",
+        "eyebrow": "Là où nous allons",
+        "title": "Les documents qui arrivent chaque mois, pas seulement ceux d'un jour.",
+        "body": "Le coffre d'un salarié est l'endroit naturel pour les papiers qui circulent entre vous : un contrat, une attestation, un certificat. Et ce même coffre peut répondre aux questions que vous posez à l'embauche, sans qu'un scan reste indéfiniment dans une boîte de réception.",
+        "items": [
+          {
+            "title": "Déposer un document dans le coffre d'un salarié",
+            "body": "Vous déposez un document à partir d'une adresse e-mail. Le salarié accepte une fois, et le document arrive dans un coffre qui lui appartient et qu'il garde en partant."
+          },
+          {
+            "title": "L'embauche, dans l'autre sens",
+            "body": "Le salarié accorde un accès en lecture aux seules pièces dont vous avez besoin, pièce d'identité, justificatif de domicile, personne à prévenir, pour la durée qu'il faut. Puis l'accès expire de lui-même."
+          }
+        ],
+        "note": "Rien de tout cela n'est encore en ligne, et le bulletin de paie électronique, très encadré en France, viendra plus tard et avec un partenaire certifié. Nous choisissons en ce moment les premiers employeurs pour construire le reste avec eux."
+      },
+      "faq": {
+        "eyebrow": "Les questions que l'on nous pose",
+        "title": "Les trois questions de chaque équipe RH.",
+        "items": [
+          {
+            "q": "En quoi est-ce différent d'une ligne d'écoute ou d'un service social ?",
+            "a": "Une ligne d'écoute apporte du soutien et des conseils. Ici, c'est la couche pratique : où sont les documents, qui appeler, ce que la famille doit faire. La plupart des employeurs qui adoptent Everstead gardent les deux."
+          },
+          {
+            "q": "Que paie-t-on ?",
+            "a": "Rien, si vous souhaitez seulement diffuser l'offre gratuite. Un accord payant couvre toute l'équipe et les supports autour d'un lancement. Nous le calibrons par organisation lors de l'échange."
+          },
+          {
+            "q": "Devenons-nous responsables des données ?",
+            "a": "Non. La relation sur les données se noue entre le salarié et Everstead. Votre organisation n'est ni responsable de traitement ni sous-traitant de ce qui se trouve dans le coffre."
+          }
+        ]
+      },
+      "final": {
+        "title": "Voyons à quoi ressemblerait un lancement.",
+        "body": "Vingt minutes avec l'équipe fondatrice, avec les supports que nous donnerions à vos salariés et une vision honnête du taux d'adoption."
+      }
+    },
+    "shared": {
+      "ctaPrimary": "Réserver une démo",
+      "ctaSecondary": "Nous écrire",
+      "finalPrimary": "Réserver une démo",
+      "finalSecondary": "Écrire à hello@everstead.care",
+      "backToHub": "Tout Everstead pour les entreprises",
+      "otherTitle": "Aussi dans Everstead pour les entreprises"
+    }
+  }
+}

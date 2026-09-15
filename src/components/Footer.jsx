@@ -64,7 +64,7 @@ const cols = [
       { key: 'forFamilies', href: '/use-cases/families' },
       { key: 'forParents', href: '/use-cases/parents' },
       { key: 'forExecutors', href: '/use-cases/executors' },
-      { key: 'forAdvisers', href: '/for-advisers' },
+      { key: 'forAdvisers', href: '/business/advisers' },
       { key: 'familyVault', href: '/family-vault' },
     ],
   },
@@ -83,6 +83,7 @@ const cols = [
     headingKey: 'company',
     links: [
       { key: 'about', href: '/about' },
+      { key: 'forBusiness', href: '/business' },
       { key: 'contact', href: '/contact' },
       { key: 'press', href: '/press' },
       { key: 'bookDemo', href: '/book-demo' },

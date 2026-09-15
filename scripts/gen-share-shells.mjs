@@ -88,7 +88,7 @@ console.log(`[share-shells] ${written} article shells written (${posts.filter(p 
 // alternates, so a shared link and a crawler see the page's own words.
 const PAGES = {
   '/features': 'features', '/how-it-works': 'howItWorks', '/pricing': 'pricing', '/security': 'security',
-  '/contact': 'contact', '/book-demo': 'bookDemo', '/about': 'about', '/gift': 'gift', '/for-advisers': 'forAdvisers',
+  '/contact': 'contact', '/book-demo': 'bookDemo', '/about': 'about', '/gift': 'gift',
   '/privacy': 'privacy', '/cookies': 'cookies', '/accessibility': 'accessibility', '/data-promise': 'dataPromise',
   '/subprocessors': 'subprocessors', '/terms': 'terms', '/mentions-legales': 'mentionsLegales', '/resources': 'resources',
   '/apres-un-deces': 'apresUnDeces', '/estate-readiness-score': 'readinessScore', '/digital-estate-worth': 'estateCalculator',
@@ -98,7 +98,12 @@ const PAGES = {
   '/use-cases': { ns: 'useCases', metaPath: 'meta.index' },
   '/use-cases/families': { ns: 'useCases', metaPath: 'familiesPage.meta' },
   '/emergency-pack': 'emergencyPack',
-  '/professionals': 'professionals',
+  // Everstead for Business: hub plus four verticals, each with a French slug.
+  '/business': { ns: 'business', metaPath: 'hub.meta', frRoute: '/entreprises' },
+  '/business/advisers': { ns: 'forAdvisers', frRoute: '/entreprises/conseillers' },
+  '/business/solicitors': { ns: 'business', metaPath: 'verticals.solicitors.meta', frRoute: '/entreprises/notaires' },
+  '/business/care': { ns: 'business', metaPath: 'verticals.care.meta', frRoute: '/entreprises/etablissements' },
+  '/business/employers': { ns: 'business', metaPath: 'verticals.employers.meta', frRoute: '/entreprises/employeurs' },
   '/will-generator': { ns: 'willGenerator', frRoute: '/preparer-mon-testament' },
 }
 let pagesWritten = 0

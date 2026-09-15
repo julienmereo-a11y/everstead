@@ -42,7 +42,8 @@ const ApresUnDeces          = lazy(() => import('./pages/ApresUnDeces'))
 const DigitalEstateCalculator = lazy(() => import('./pages/DigitalEstateCalculator'))
 const EstateReadinessScore  = lazy(() => import('./pages/EstateReadinessScore'))
 const EmergencyPack         = lazy(() => import('./pages/EmergencyPack'))
-const Professionals         = lazy(() => import('./pages/Professionals'))
+const Business              = lazy(() => import('./pages/Business'))
+const BusinessVertical      = lazy(() => import('./pages/BusinessVertical'))
 const WillGenerator         = lazy(() => import('./pages/WillGenerator'))
 const NotFound              = lazy(() => import('./pages/NotFound'))
 const ForgotPassword        = lazy(() => import('./pages/ForgotPassword'))
@@ -80,6 +81,9 @@ const DualVault             = lazy(() => import('./pages/DualVault'))
 // paywall in its own state. (The pre-redesign entry screens it replaced were
 // deleted 2026-08-26; they still carried the retired Essential pricing.)
 const MobileApp             = lazy(() => import('./pages/native/app/MobileApp'))
+// Everstead for Business has its own header (BusinessNav); lazy so the business
+// copy never lands in the family bundle.
+const BusinessLayout        = lazy(() => import('./components/BusinessLayout'))
 
 // ── Page loading fallback ─────────────────────────────────────────────────────
 function PageLoader() {
@@ -310,7 +314,13 @@ export default function App() {
               <Route path="/apres-un-deces"        element={<Layout><ApresUnDeces /></Layout>} />
               <Route path="/estate-readiness-score" element={<Layout><EstateReadinessScore /></Layout>} />
               <Route path="/emergency-pack"         element={<Layout><EmergencyPack /></Layout>} />
-              <Route path="/professionals"          element={<Layout><Professionals /></Layout>} />
+              {/* ── Everstead for Business (/business, /fr/entreprises) ── */}
+              <Route path="/business"      element={<BusinessLayout><Business /></BusinessLayout>} />
+              <Route path="/entreprises"   element={<BusinessLayout><Business /></BusinessLayout>} />
+              <Route path="/business/advisers"            element={<BusinessLayout><ForAdvisors /></BusinessLayout>} />
+              <Route path="/entreprises/conseillers"      element={<BusinessLayout><ForAdvisors /></BusinessLayout>} />
+              <Route path="/business/:slug"      element={<BusinessLayout><BusinessVertical /></BusinessLayout>} />
+              <Route path="/entreprises/:slug"   element={<BusinessLayout><BusinessVertical /></BusinessLayout>} />
               <Route path="/will-generator"         element={<Layout><WillGenerator /></Layout>} />
               <Route path="/preparer-mon-testament" element={<Layout><WillGenerator /></Layout>} />
               <Route path="/digital-estate-worth"   element={<Layout><DigitalEstateCalculator /></Layout>} />

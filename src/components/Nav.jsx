@@ -8,11 +8,11 @@ import LanguageSwitcher from './LanguageSwitcher'
 
 // Labels are i18n keys under nav.* — resolved with t() at render time.
 // Features and About live in the footer; the Security page is reached as
-// "Your Privacy" and the advisers page as "For professionals".
+// "Your Privacy" and Everstead for Business as "For professionals".
 const navLinks = [
   { key: 'howItWorks',       href: '/how-it-works' },
   { key: 'forFamilies',      href: '/use-cases/families' },
-  { key: 'forProfessionals', href: '/professionals' },
+  { key: 'forProfessionals', href: '/business' },
   { key: 'yourPrivacy',      href: '/security' },
 ]
 
@@ -24,7 +24,7 @@ const navLinks = [
 const lightBgPages = ['/pricing', '/security', '/features', '/how-it-works', '/use-cases', '/login', '/get-started', '/resources', '/about', '/contact', '/book-demo', '/privacy', '/terms', '/forgot-password', '/reset-password']
 
 // Pages with a dark hero — keep white logo/nav until scrolled past the hero (~400px)
-const darkHeroPages = ['/professionals', '/for-advisers', '/family-vault', '/what-to-do-when-someone-dies', '/compare']
+const darkHeroPages = ['/for-advisers', '/family-vault', '/what-to-do-when-someone-dies', '/compare']
 
 // The English homepage opens on a full-screen dark hero (Homepage v2), so the
 // nav stays transparent over it until the visitor scrolls past. Matched on the

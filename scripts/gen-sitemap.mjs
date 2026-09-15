@@ -25,8 +25,11 @@ const EN_PAGES = [
   ['/use-cases/parents', 'monthly', '0.7'],
   ['/use-cases/executors', 'monthly', '0.7'],
   ['/gift', 'monthly', '0.8'],
-  ['/for-advisers', 'monthly', '0.8'],
-  ['/professionals', 'monthly', '0.8'],
+  ['/business', 'monthly', '0.9'],
+  ['/business/advisers', 'monthly', '0.8'],
+  ['/business/solicitors', 'monthly', '0.8'],
+  ['/business/care', 'monthly', '0.8'],
+  ['/business/employers', 'monthly', '0.8'],
   ['/what-to-do-when-someone-dies', 'monthly', '0.8'],
   ['/book-demo', 'monthly', '0.7'],
   ['/resources', 'weekly', '0.7'],
@@ -118,7 +121,14 @@ const entries = []
 for (const [p, cf, pr] of EN_PAGES) entries.push([p, cf, pr])
 for (const post of resourcePosts().filter(p => p.lang === 'en')) entries.push([`/resources/${post.section}/${post.slug}`, 'monthly', '0.6'])
 // Mirrors FR_PATH_ALIASES in src/i18n/index.js: the French tree uses a French slug.
-const FR_ALIAS = { '/will-generator': '/preparer-mon-testament' }
+const FR_ALIAS = {
+  '/will-generator': '/preparer-mon-testament',
+  '/business': '/entreprises',
+  '/business/advisers': '/entreprises/conseillers',
+  '/business/solicitors': '/entreprises/notaires',
+  '/business/care': '/entreprises/etablissements',
+  '/business/employers': '/entreprises/employeurs',
+}
 for (const p of translatedPaths()) {
   if (FR_SKIP.has(p)) continue
   const fp = FR_ALIAS[p] || p

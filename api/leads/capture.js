@@ -344,7 +344,7 @@ function adviserShell({ heading, body, footerNote, unsubLink }) {
           </div>
         </td></tr>
         <tr><td style="padding:20px 40px;background:#f9f8f6;border-top:1px solid #e8e5e0;">
-          <p style="margin:0 0 6px;color:#9ca3af;font-size:12px;line-height:1.5;">${footerNote || 'You requested this from everstead.care/for-advisers.'}</p>
+          <p style="margin:0 0 6px;color:#9ca3af;font-size:12px;line-height:1.5;">${footerNote || 'You requested this from everstead.care/business/advisers.'}</p>
           <p style="margin:0;color:#9ca3af;font-size:12px;line-height:1.5;"><a href="${unsubLink}" style="color:#6b7280;">Unsubscribe from this list</a> · Everstead Digital Ltd · UK</p>
         </td></tr>
       </table>
@@ -383,7 +383,7 @@ function inheritanceConversationsHtml({ name, unsubLink }) {
   return adviserShell({
     heading: "The Adviser's Guide to Inheritance Conversations",
     body,
-    footerNote: 'You requested this guide from everstead.care/for-advisers.',
+    footerNote: 'You requested this guide from everstead.care/business/advisers.',
     unsubLink,
   })
 }
@@ -458,7 +458,7 @@ function preBereavementChecklistHtml({ name, unsubLink }) {
   return adviserShell({
     heading: 'Pre-bereavement client checklist (template)',
     body,
-    footerNote: 'You requested this checklist from everstead.care/for-advisers.',
+    footerNote: 'You requested this checklist from everstead.care/business/advisers.',
     unsubLink,
   })
 }
@@ -508,7 +508,7 @@ function positioningPlaybookHtml({ name, unsubLink }) {
   return adviserShell({
     heading: 'Estate organisation as a value-add: pricing & positioning playbook',
     body,
-    footerNote: 'You requested this playbook from everstead.care/for-advisers.',
+    footerNote: 'You requested this playbook from everstead.care/business/advisers.',
     unsubLink,
   })
 }

@@ -893,7 +893,7 @@ export default function GetStarted() {
                     </p>
                   </div>
                   <div className="mt-4 sm:mt-0 flex flex-col sm:flex-row gap-3 shrink-0">
-                    <Link to="/for-advisers" className="inline-flex items-center justify-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold border border-white/25 text-white hover:bg-white/10 transition-colors">
+                    <Link to="/business/advisers" className="inline-flex items-center justify-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold border border-white/25 text-white hover:bg-white/10 transition-colors">
                       {t('step1.pro.learnMore')}
                     </Link>
                     <Link to="/book-demo" className="btn-aurora inline-flex items-center justify-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold">

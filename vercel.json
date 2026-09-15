@@ -2,7 +2,27 @@
   "redirects": [
     {
       "source": "/for-advisors",
-      "destination": "/for-advisers",
+      "destination": "/business/advisers",
+      "permanent": true
+    },
+    {
+      "source": "/for-advisers",
+      "destination": "/business/advisers",
+      "permanent": true
+    },
+    {
+      "source": "/fr/for-advisers",
+      "destination": "/fr/entreprises/conseillers",
+      "permanent": true
+    },
+    {
+      "source": "/professionals",
+      "destination": "/business",
+      "permanent": true
+    },
+    {
+      "source": "/fr/professionals",
+      "destination": "/fr/entreprises",
       "permanent": true
     },
     {

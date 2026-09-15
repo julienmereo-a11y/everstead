@@ -1,7 +1,7 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Helmet } from 'react-helmet-async'
 import HreflangLinks from '../components/HreflangLinks'
-import { Link } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import i18n from '../i18n'
 import { useReveal } from '../components/useReveal'
@@ -25,6 +25,9 @@ if (!i18n.hasResourceBundle('en', 'forAdvisers')) {
 // "forAdvisers" i18n namespace, in the same array order as these)
 // ─────────────────────────────────────────────────────────────────────────────
 
+const EN_PATH = '/business/advisers'
+const FR_PATH = '/entreprises/conseillers'
+
 const LEAD_MAGNET_META = [
   { source: 'adviser-inheritance-conversations', icon: Users },
   { source: 'adviser-pre-bereavement-checklist', icon: FileText },
@@ -42,8 +45,18 @@ export default function ForAdvisors() {
   const [tab, setTab] = useState('ifa')
   const { t, i18n: i18nInstance } = useTranslation('forAdvisers')
 
-  const localePrefix = i18nInstance.language === 'fr' ? '/fr' : ''
-  const pageUrl = `https://www.everstead.care${localePrefix}/for-advisers`
+  // The adviser deep dive is the first vertical of Everstead for Business;
+  // /for-advisers 301s here (vercel.json). Each tree has its own slug.
+  const isFr = i18nInstance.language === 'fr'
+  const pageUrl = `https://www.everstead.care${isFr ? '/fr' + FR_PATH : EN_PATH}`
+  const location = useLocation()
+  const navigate = useNavigate()
+  useEffect(() => {
+    const wanted = isFr ? FR_PATH : EN_PATH
+    if (location.pathname === EN_PATH || location.pathname === FR_PATH) {
+      if (location.pathname !== wanted) navigate(wanted, { replace: true })
+    }
+  }, [isFr, location.pathname, navigate])
 
   const trustSignals = t('trustSignals', { returnObjects: true })
     .map((label, i) => ({ icon: TRUST_ICONS[i], label }))
@@ -81,7 +94,7 @@ export default function ForAdvisors() {
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:image" content="https://www.everstead.care/og-image.jpg" />
       </Helmet>
-      <HreflangLinks path="/for-advisers" />
+      <HreflangLinks path={EN_PATH} frPath={FR_PATH} />
 
       <div className="bg-stone-50 min-h-screen">
 

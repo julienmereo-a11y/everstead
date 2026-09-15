@@ -51,7 +51,27 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.everstead.care/for-advisers</loc>
+    <loc>https://www.everstead.care/business</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://www.everstead.care/business/advisers</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.everstead.care/business/solicitors</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.everstead.care/business/care</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.everstead.care/business/employers</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -102,6 +122,16 @@
   </url>
   <url>
     <loc>https://www.everstead.care/digital-estate-worth</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.everstead.care/emergency-pack</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.everstead.care/will-generator</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -406,11 +436,6 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://www.everstead.care/fr/for-advisers</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
     <loc>https://www.everstead.care/fr/privacy</loc>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
@@ -481,9 +506,54 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://www.everstead.care/fr/use-cases/aging-adults</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://www.everstead.care/fr/use-cases/executors</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.everstead.care/fr/use-cases/advisors</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.everstead.care/fr/emergency-pack</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.everstead.care/fr/preparer-mon-testament</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.everstead.care/fr/entreprises</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://www.everstead.care/fr/entreprises/conseillers</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.everstead.care/fr/entreprises/notaires</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.everstead.care/fr/entreprises/etablissements</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.everstead.care/fr/entreprises/employeurs</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.everstead.care/fr/resources/blog</loc>

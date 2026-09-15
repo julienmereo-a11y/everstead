@@ -174,7 +174,7 @@ export default function Home() {
   }))
 
   const proCards = [
-    { key: 'advisers',   to: '/for-advisers' },
+    { key: 'advisers',   to: '/business/advisers' },
     { key: 'solicitors', to: '/book-demo' },
   ]
 

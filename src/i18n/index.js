@@ -38,12 +38,14 @@ export const SUPPORTED_LANGUAGES = ['en', 'fr']
 export const TRANSLATED_PATHS = new Set([
   '/', '/features', '/how-it-works', '/pricing', '/security', '/use-cases', '/login',
   '/get-started', '/forgot-password', '/reset-password', '/contact', '/book-demo',
-  '/about', '/gift', '/compare', '/for-advisers',
+  '/about', '/gift', '/compare',
   '/privacy', '/cookies', '/accessibility', '/data-promise', '/subprocessors',
   '/terms', '/mentions-legales', '/resources', '/apres-un-deces', '/press',
   '/estate-readiness-score', '/digital-estate-worth',
   '/use-cases/families', '/use-cases/parents', '/use-cases/aging-adults', '/use-cases/executors', '/use-cases/advisors',
-  '/emergency-pack', '/professionals', '/will-generator',
+  '/emergency-pack', '/will-generator',
+  // Everstead for Business. The French tree uses French slugs (FR_PATH_ALIASES).
+  '/business', '/business/advisers', '/business/solicitors', '/business/care', '/business/employers',
 ])
 
 /**
@@ -64,7 +66,14 @@ export function rememberLanguage(lang) {
 // Routes whose French tree uses a French slug. The English path is the key
 // in TRANSLATED_PATHS, the sitemap and the share shells; the page itself
 // redirects between the two so either URL works in either tree.
-export const FR_PATH_ALIASES = { '/will-generator': '/preparer-mon-testament' }
+export const FR_PATH_ALIASES = {
+  '/will-generator': '/preparer-mon-testament',
+  '/business': '/entreprises',
+  '/business/advisers': '/entreprises/conseillers',
+  '/business/solicitors': '/entreprises/notaires',
+  '/business/care': '/entreprises/etablissements',
+  '/business/employers': '/entreprises/employeurs',
+}
 const EN_PATH_ALIASES = Object.fromEntries(Object.entries(FR_PATH_ALIASES).map(([en, fr]) => [fr, en]))
 
 export function pathInLanguage(pathname, lang) {
