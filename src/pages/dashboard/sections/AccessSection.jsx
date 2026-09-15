@@ -12,7 +12,7 @@
 // member shares a specific item, so its card says exactly that.
 import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { AlertTriangle, Briefcase, Building2, Check, Download, FileText, Inbox, Loader2, Settings as SettingsIcon, ShieldCheck, X } from 'lucide-react'
+import { AlertTriangle, Briefcase, Building2, Check, Clock, Download, FileText, Inbox, Loader2, Settings as SettingsIcon, ShieldCheck, X } from 'lucide-react'
 import { SectionShell, EmptyState, LoadingSpinner, primaryBtn, secondaryBtn } from '../ui'
 import { firmLabel } from './AdviserSection'
 
@@ -27,10 +27,16 @@ const fmtSize = (bytes) => {
   return mb >= 1 ? `${mb.toFixed(1)} MB` : `${Math.max(1, Math.round(bytes / 1024))} KB`
 }
 
+const daysLeft = (iso) => {
+  if (!iso) return null
+  const d = Math.ceil((new Date(iso) - Date.now()) / 86400000)
+  return d > 0 ? d : 0
+}
+
 export function AccessSection({ access, onNavigate, isDemo }) {
   const { t, i18n } = useTranslation('dashboard')
   const lang = i18n.language === 'fr' ? 'fr' : 'en'
-  const { connections = [], deliveries = [], loading, busyId, respond, disconnect } = access || {}
+  const { connections = [], deliveries = [], shares = [], loading, busyId, respond, disconnect, revokeShare } = access || {}
   const [error, setError] = useState(null)
   const [confirming, setConfirming] = useState(null)
 
@@ -115,6 +121,7 @@ export function AccessSection({ access, onNavigate, isDemo }) {
             const employer = c.org_kind === 'employer'
             const Icon = employer ? Building2 : Briefcase
             const busy = busyId === c.connection_id
+            const orgShares = shares.filter(sh => sh.org_id === c.org_id)
             return (
               <div key={c.connection_id} className="rounded-2xl border border-stone-200 bg-white p-5">
                 <div className="flex items-start gap-3">
@@ -125,10 +132,45 @@ export function AccessSection({ access, onNavigate, isDemo }) {
                       {employer ? t('access.orgs.employerLabel') : firmLabel(t, c)} · {t('access.orgs.since', { date: fmtDate(c.started_at, lang) })}
                     </p>
                     <p className="mt-2.5 text-sm text-stone-600 m-0">
-                      {employer ? t('access.orgs.employerReads') : t('access.orgs.professionalReads')}
+                      {employer
+                        ? (orgShares.length ? t('access.orgs.employerReadsShared', { count: orgShares.length }) : t('access.orgs.employerReads'))
+                        : t('access.orgs.professionalReads')}
                     </p>
                   </div>
                 </div>
+                {orgShares.length > 0 && (
+                  <div className="mt-4 rounded-xl border border-stone-200 bg-stone-50 p-4">
+                    <p className="text-[11px] font-semibold uppercase tracking-wide text-stone-500 m-0 mb-2.5">
+                      {t('access.shares.title', { count: orgShares.length })}
+                    </p>
+                    <ul className="list-none m-0 p-0 space-y-2">
+                      {orgShares.map(sh => {
+                        const left = daysLeft(sh.expires_at)
+                        const shBusy = busyId === sh.id
+                        return (
+                          <li key={sh.id} className="flex items-center gap-2.5 flex-wrap">
+                            <FileText size={14} className="text-stone-400 shrink-0" />
+                            <span className="text-sm text-navy-950 font-medium min-w-0 break-words">{sh.resource_name || t('access.shares.aDocument')}</span>
+                            <span className="inline-flex items-center gap-1 text-xs text-stone-500">
+                              <Clock size={12} />
+                              {left === null
+                                ? t('access.shares.untilRevoked')
+                                : left === 0 ? t('access.shares.endsToday') : t('access.shares.daysLeft', { count: left })}
+                            </span>
+                            <button
+                              disabled={shBusy || isDemo}
+                              onClick={() => act(() => revokeShare(sh.id))}
+                              className="ml-auto text-xs font-semibold text-stone-500 hover:text-red-600 transition-colors disabled:opacity-50"
+                            >
+                              {shBusy ? <Loader2 size={12} className="animate-spin" /> : t('access.shares.stop')}
+                            </button>
+                          </li>
+                        )
+                      })}
+                    </ul>
+                  </div>
+                )}
+
                 <div className="mt-4 flex flex-wrap gap-2">
                   {!employer && (
                     <button onClick={() => onNavigate?.('settings')} className={secondaryBtn}>

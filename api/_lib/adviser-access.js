@@ -133,3 +133,44 @@ export async function logAdviserActivity({ clientId, actorId, action, resourceTy
     })
   } catch { /* the audit trail must never break the action itself */ }
 }
+
+/**
+ * The connection between a member and one of the caller's organisations.
+ *
+ * loadClientForFirm above is the professional-firm path and keys off
+ * profiles.adviser_id, which an employer never sets. This is the general one:
+ * it reads member_connections, so it answers for employers and firms alike.
+ * Returns { profile, orgId, kind } or null when no active connection exists.
+ */
+export async function loadConnectedMember(memberId, firmIds) {
+  if (!isUuid(memberId) || !firmIds?.length) return null
+  const { data: conn } = await db
+    .from('member_connections')
+    .select('org_id, kind, status')
+    .eq('member_id', memberId)
+    .eq('status', 'active')
+    .in('org_id', firmIds)
+    .maybeSingle()
+  if (!conn) return null
+  const { data: profile } = await db
+    .from('profiles')
+    .select('id, full_name, email, language')
+    .eq('id', memberId)
+    .maybeSingle()
+  if (!profile) return null
+  return { profile, orgId: conn.org_id, kind: conn.kind }
+}
+
+/**
+ * May this organisation open this one document? Either the member consented to
+ * the whole documents section (professional firms only) or there is a live,
+ * unexpired share for that document. The rule lives in the database so every
+ * caller gets the same answer, including the expiry.
+ */
+export async function orgCanReadDocument(orgId, memberId, documentId) {
+  const { data, error } = await db.rpc('org_can_read_document', {
+    p_org_id: orgId, p_member_id: memberId, p_document_id: documentId,
+  })
+  if (error) { console.error('[adviser-access] org_can_read_document failed:', error); return false }
+  return data === true
+}

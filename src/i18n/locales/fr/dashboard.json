@@ -441,6 +441,24 @@
       "failed": "Impossible de rattacher ce document. Réessayez.",
       "noDocs": "Déposez d'abord le document, puis revenez ici pour le rattacher.",
       "demoNote": "En démo, rien n'est envoyé."
+    },
+    "share": {
+      "title": "Partager « {{name}} »",
+      "lead": "Choisissez une organisation et la durée pendant laquelle elle pourra l'ouvrir. Elle voit ce document et rien d'autre, et l'accès s'arrête tout seul à l'échéance.",
+      "noOrgs": "Aucune organisation ne vous est encore liée, il n'y a donc personne avec qui partager.",
+      "forHowLong": "Pour combien de temps ?",
+      "days_one": "{{count}} jour",
+      "days_many": "{{count}} jours",
+      "days_other": "{{count}} jours",
+      "untilStopped": "Jusqu'à ce que je l'arrête",
+      "notShared": "Non partagé",
+      "sharedUntil": "Partagé jusqu'au {{date}}",
+      "sharedUntilStopped": "Partagé jusqu'à ce que vous l'arrêtiez",
+      "share": "Partager",
+      "stop": "Arrêter",
+      "aria": "Partager {{name}} avec une organisation",
+      "buttonTitle": "Partager avec une organisation",
+      "footnote": "Partager un document n'ouvre jamais le reste de votre coffre, et vous pouvez l'arrêter à tout moment depuis Qui a accès."
     }
   },
   "aboutMe": {
@@ -1451,13 +1469,28 @@
       "confirmEnd": "Oui, y mettre fin",
       "keep": "Conserver",
       "endWarnProfessional": "Elle perd immédiatement tout accès, et ce qu'elle vous avait envoyé sans réponse de votre part est retiré. Les documents déjà acceptés restent les vôtres.",
-      "endWarnEmployer": "Ce qu'elle vous avait envoyé sans réponse de votre part est retiré. Les documents déjà acceptés restent les vôtres."
+      "endWarnEmployer": "Ce qu'elle vous avait envoyé sans réponse de votre part est retiré. Les documents déjà acceptés restent les vôtres.",
+      "employerReadsShared_one": "Ne lit rien, sauf l'élément que vous avez partagé, et seulement jusqu'à son expiration.",
+      "employerReadsShared_other": "Ne lit rien, sauf les {{count}} éléments que vous avez partagés, et seulement jusqu'à leur expiration.",
+      "employerReadsShared_many": "Ne lit rien, sauf les {{count}} éléments que vous avez partagés, et seulement jusqu'à leur expiration."
     },
     "card": {
       "title": "Quelque chose vous attend",
       "body_one": "{{name}} vous a envoyé un document. Rien n'entre dans votre coffre tant que vous ne l'avez pas accepté.",
       "body_other": "{{count}} documents vous attendent de la part d'organisations qui vous sont liées.",
       "cta": "Voir ce qui a été envoyé"
+    },
+    "shares": {
+      "title_one": "Partagé avec elle en ce moment",
+      "title_other": "Partagés avec elle en ce moment ({{count}})",
+      "aDocument": "Un document",
+      "untilRevoked": "jusqu'à ce que vous l'arrêtiez",
+      "endsToday": "se termine aujourd'hui",
+      "daysLeft_one": "encore {{count}} jour",
+      "daysLeft_other": "encore {{count}} jours",
+      "stop": "Arrêter le partage",
+      "daysLeft_many": "encore {{count}} jours",
+      "title_many": "Partagés avec elle en ce moment ({{count}})"
     }
   }
 }

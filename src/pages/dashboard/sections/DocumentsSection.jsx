@@ -7,7 +7,7 @@ import { baseDocumentAccess } from '../../../lib/documentAccess'
 import { getLimit, isAtLimit } from '../../../lib/planLimits'
 import { PlanLimitNotice, STATUS_STYLES, friendlyLimitError } from '../../dashboard/shared'
 import { Checkbox, EmptyState, Field, LoadingSpinner, Modal, SectionShell, input, primaryBtn, secondaryBtn } from '../../dashboard/ui'
-import { BookOpen, CheckCircle2, Download, ExternalLink, Eye, FileText, Loader2, Pencil, Sparkles, Trash2, Upload, X } from 'lucide-react'
+import { BookOpen, CheckCircle2, Download, ExternalLink, Eye, FileText, Loader2, Pencil, Share2, Sparkles, Trash2, Upload, X } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { DocumentRequestsCard } from './AdviserSection'
 export function OwnerDocViewerModal({ doc, onClose }) {
@@ -185,13 +185,91 @@ export const PRIORITY_GUIDANCE = {
   fr: { will: '/fr/resources/blog/testament-reserve-hereditaire', lpa: '/fr/resources/blog/mandat-protection-future' },
 }
 
-export function DocumentsSection({ documents, loading, uploadFile, update, remove, planLimits, profile, onUpgrade, updateProfile, addAlert, onLifeEvent, people, isDemo, adviser }) {
+// Share ONE document with a connected organisation, for a set time.
+//
+// This is the member's half of the scoped-share model: not "my solicitor can
+// see my documents" but "this deed, with this firm, for thirty days". The
+// insert policy pins the row to an active connection and a document they own,
+// so the list below is the whole of the trust boundary.
+function ShareDocModal({ doc, access, onClose, t, lang }) {
+  const [days, setDays] = useState(30)
+  const [error, setError] = useState(null)
+  const orgs = access?.connections || []
+  const shareFor = (orgId) => (access?.shares || []).find(x => x.org_id === orgId && x.resource_id === doc.id)
+
+  const run = async (fn) => {
+    setError(null)
+    try { await fn() } catch (err) { setError(err.message) }
+  }
+
+  return (
+    <Modal title={t('documents.share.title', { name: doc.name })} onClose={onClose}>
+      <div className="space-y-4">
+        <p className="text-sm leading-relaxed text-stone-600 m-0">{t('documents.share.lead')}</p>
+
+        {orgs.length === 0 ? (
+          <p className="text-sm text-stone-500 m-0">{t('documents.share.noOrgs')}</p>
+        ) : (
+          <>
+            <label className="block">
+              <span className="block text-xs font-semibold text-stone-600 mb-1.5">{t('documents.share.forHowLong')}</span>
+              <select value={days} onChange={e => setDays(e.target.value === 'none' ? 'none' : Number(e.target.value))} className={input}>
+                <option value={7}>{t('documents.share.days', { count: 7 })}</option>
+                <option value={30}>{t('documents.share.days', { count: 30 })}</option>
+                <option value={90}>{t('documents.share.days', { count: 90 })}</option>
+                <option value="none">{t('documents.share.untilStopped')}</option>
+              </select>
+            </label>
+
+            <ul className="list-none m-0 p-0 space-y-2">
+              {orgs.map(o => {
+                const live = shareFor(o.org_id)
+                const busy = access.busyId === doc.id || access.busyId === live?.id
+                return (
+                  <li key={o.org_id} className="flex items-center gap-3 rounded-xl border border-stone-200 bg-white px-4 py-3">
+                    <span className="min-w-0 flex-1">
+                      <span className="block text-sm font-semibold text-navy-950 break-words">{o.firm_name}</span>
+                      <span className="block text-xs text-stone-500">
+                        {live
+                          ? (live.expires_at
+                              ? t('documents.share.sharedUntil', { date: new Date(live.expires_at).toLocaleDateString(lang === 'fr' ? 'fr-FR' : 'en-GB', { day: 'numeric', month: 'long', year: 'numeric' }) })
+                              : t('documents.share.sharedUntilStopped'))
+                          : t('documents.share.notShared')}
+                      </span>
+                    </span>
+                    {live ? (
+                      <button disabled={busy} onClick={() => run(() => access.revokeShare(live.id))}
+                        className="text-xs font-semibold text-stone-500 hover:text-red-600 transition-colors disabled:opacity-50 shrink-0">
+                        {busy ? <Loader2 size={12} className="animate-spin" /> : t('documents.share.stop')}
+                      </button>
+                    ) : (
+                      <button disabled={busy} onClick={() => run(() => access.grantShare(o.org_id, doc.id, days === 'none' ? null : days))}
+                        className="text-xs font-semibold text-navy-700 hover:text-navy-900 transition-colors disabled:opacity-50 shrink-0">
+                        {busy ? <Loader2 size={12} className="animate-spin" /> : t('documents.share.share')}
+                      </button>
+                    )}
+                  </li>
+                )
+              })}
+            </ul>
+          </>
+        )}
+
+        {error && <p className="text-sm text-red-600 m-0">{error}</p>}
+        <p className="text-xs leading-relaxed text-stone-400 m-0">{t('documents.share.footnote')}</p>
+      </div>
+    </Modal>
+  )
+}
+
+export function DocumentsSection({ documents, loading, uploadFile, update, remove, planLimits, profile, onUpgrade, updateProfile, addAlert, onLifeEvent, people, isDemo, adviser, access }) {
   const { t, i18n } = useTranslation('dashboard')
   const dateLocale = i18n.language?.startsWith('fr') ? 'fr-FR' : 'en-GB'
   const emptyForm = { name: '', doc_type: 'Legal', status: 'current', expires_at: '', notes: '', access_overrides: {}, release_timing: 'default' }
   const [showUpload, setShowUpload] = useState(false)
   const [editingDocument, setEditingDocument] = useState(null)
   const [viewingDoc, setViewingDoc] = useState(null)
+  const [sharingDoc, setSharingDoc] = useState(null)
   const [file, setFile] = useState(null)
   const [form, setForm] = useState(emptyForm)
   const [saving, setSaving] = useState(false)
@@ -592,6 +670,16 @@ export function DocumentsSection({ documents, loading, uploadFile, update, remov
                       >
                         <Eye size={14} />
                       </button>
+                      {(access?.connections?.length > 0) && (doc.file_url || doc.storage_path || isDemo) && (
+                        <button
+                          onClick={() => setSharingDoc(doc)}
+                          className={`p-1.5 transition-colors rounded hover:bg-navy-50 ${(access.shares || []).some(x => x.resource_id === doc.id) ? 'text-sage-600' : 'text-stone-400 hover:text-navy-600'}`}
+                          aria-label={t('documents.share.aria', { name: doc.name })}
+                          title={t('documents.share.buttonTitle')}
+                        >
+                          <Share2 size={14} />
+                        </button>
+                      )}
                       {doc.file_url && (
                         <a
                           href={doc.file_url}
@@ -619,6 +707,7 @@ export function DocumentsSection({ documents, loading, uploadFile, update, remov
       )}
 
       {viewingDoc && <OwnerDocViewerModal doc={viewingDoc} onClose={() => setViewingDoc(null)} />}
+      {sharingDoc && <ShareDocModal doc={sharingDoc} access={access} onClose={() => setSharingDoc(null)} t={t} lang={i18n.language} />}
 
       {showUpload && (
         <Modal title={t('documents.uploadDocument')} onClose={closeModal}>

@@ -1,10 +1,17 @@
 import { withSentry } from '../_lib/sentry.js'
-import { db, requireAdviser, loadClientForFirm, isUuid, logAdviserActivity } from '../_lib/adviser-access.js'
+import { db, requireAdviser, loadConnectedMember, orgCanReadDocument, isUuid, logAdviserActivity } from '../_lib/adviser-access.js'
 
-// Adviser-facing: a short-lived signed URL for ONE document a linked client has
+// Organisation-facing: a short-lived signed URL for ONE document the member has
 // chosen to share. The `documents` bucket is owner-read-only under RLS, so the
 // portal cannot sign URLs itself; this endpoint does it with the service role
-// after checking the firm link and the client's documents consent.
+// after two checks.
+//
+// The link check now reads member_connections rather than profiles.adviser_id,
+// so it answers for employers too. The access check is org_can_read_document:
+// either the member consented to the whole documents section (professional
+// firms only) or there is a live, unexpired share for this one document. An
+// employer can only ever satisfy the second, and a share that has lapsed stops
+// working here without anything having to be cleaned up.
 async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).end()
 
@@ -14,9 +21,11 @@ async function handler(req, res) {
   const { clientId, documentId } = req.body || {}
   if (!isUuid(clientId) || !isUuid(documentId)) return res.status(400).json({ error: 'Missing client or document id.' })
 
-  const client = await loadClientForFirm(clientId, ctx.firmIds)
-  if (!client) return res.status(403).json({ error: 'This client is not linked to your firm.' })
-  if (!client.consents.documents) return res.status(403).json({ error: 'This client has not shared their documents with your firm.' })
+  const link = await loadConnectedMember(clientId, ctx.firmIds)
+  if (!link) return res.status(403).json({ error: 'This person is not connected to your organisation.' })
+  if (!(await orgCanReadDocument(link.orgId, clientId, documentId))) {
+    return res.status(403).json({ error: 'This document is not shared with your organisation, or the share has expired.' })
+  }
 
   const { data: doc } = await db
     .from('documents')
@@ -34,7 +43,7 @@ async function handler(req, res) {
     clientId, actorId: ctx.user.id,
     action: 'adviser.document_viewed', resourceType: 'documents',
     resourceId: doc.id, resourceName: doc.name,
-    metadata: { firm_id: client.firm?.id, firm_name: client.firm?.firm_name },
+    metadata: { firm_id: link.orgId, org_kind: link.kind },
   })
 
   return res.status(200).json({ url: signed.signedUrl, expiresIn: 300, mimeType: doc.mime_type || null })

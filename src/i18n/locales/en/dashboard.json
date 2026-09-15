@@ -441,6 +441,23 @@
       "failed": "Could not attach it. Please try again.",
       "noDocs": "Upload the document first, then come back here to attach it.",
       "demoNote": "In the demo, nothing is sent."
+    },
+    "share": {
+      "title": "Share \"{{name}}\"",
+      "lead": "Pick an organisation and how long they should be able to open it. They see this one document and nothing else, and it stops on its own when the time is up.",
+      "noOrgs": "No organisation is connected to you yet, so there is nobody to share with.",
+      "forHowLong": "For how long?",
+      "days_one": "{{count}} day",
+      "days_other": "{{count}} days",
+      "untilStopped": "Until I stop it",
+      "notShared": "Not shared",
+      "sharedUntil": "Shared until {{date}}",
+      "sharedUntilStopped": "Shared until you stop it",
+      "share": "Share",
+      "stop": "Stop",
+      "aria": "Share {{name}} with an organisation",
+      "buttonTitle": "Share with an organisation",
+      "footnote": "Sharing one document never opens the rest of your vault, and you can stop it at any time from Who has access."
     }
   },
   "aboutMe": {
@@ -1451,13 +1468,25 @@
       "confirmEnd": "Yes, end it",
       "keep": "Keep it",
       "endWarnProfessional": "They lose access to everything immediately, and anything they had sent but you had not answered is withdrawn. Documents you already accepted stay yours.",
-      "endWarnEmployer": "Anything they had sent but you had not answered is withdrawn. Documents you already accepted stay yours."
+      "endWarnEmployer": "Anything they had sent but you had not answered is withdrawn. Documents you already accepted stay yours.",
+      "employerReadsShared_one": "Reads nothing except the one item you shared, and only until it expires.",
+      "employerReadsShared_other": "Reads nothing except the {{count}} items you shared, and only until they expire."
     },
     "card": {
       "title": "Something is waiting for you",
       "body_one": "{{name}} has sent you a document. Nothing is in your vault until you accept it.",
       "body_other": "{{count}} documents are waiting from organisations connected to you.",
       "cta": "See what was sent"
+    },
+    "shares": {
+      "title_one": "Shared with them right now",
+      "title_other": "Shared with them right now ({{count}})",
+      "aDocument": "A document",
+      "untilRevoked": "until you stop it",
+      "endsToday": "ends today",
+      "daysLeft_one": "{{count}} day left",
+      "daysLeft_other": "{{count}} days left",
+      "stop": "Stop sharing"
     }
   }
 }

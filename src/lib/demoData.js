@@ -571,6 +571,29 @@ export const DEMO_DELIVERIES = [
   },
 ]
 
+export const DEMO_SHARES = [
+  {
+    id: 'demo-share-1',
+    org_id: 'demo-employer',
+    firm_name: 'Marlow & Finch',
+    resource_type: 'document',
+    resource_id: 'demo-doc-passport',
+    resource_name: 'Passport',
+    granted_at: '2026-09-02T09:00:00Z',
+    expires_at: '2026-10-02T09:00:00Z',
+  },
+  {
+    id: 'demo-share-2',
+    org_id: 'demo-firm',
+    firm_name: 'Thornton & Vale Solicitors',
+    resource_type: 'document',
+    resource_id: 'demo-doc-deed',
+    resource_name: 'Deed of trust, Ashcombe Road',
+    granted_at: '2026-08-21T14:20:00Z',
+    expires_at: null,
+  },
+]
+
 export const DEMO_ADVISER_FIRM = {
   id: 'demo-firm',
   firm_name: 'Thornton & Vale Solicitors',
