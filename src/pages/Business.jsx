@@ -51,10 +51,50 @@ export default function Business() {
       <HreflangLinks path={HUB.en} frPath={HUB.fr} />
 
       <div className="bg-stone-50">
-        {/* ── HERO ── */}
-        <section className="relative overflow-hidden grain">
+        {/* ── HERO ──
+            The felt handover sits on top of the aurora rather than instead of
+            it, so a missing image degrades to the gradient this hero shipped
+            with. The picture is composed with its left half already in shadow,
+            so the desktop veil only deepens what is dark instead of blanketing
+            the frame the way the homepage does.
+
+            Phones get the SAME composition as a band along the bottom, not a
+            portrait crop: the two different cuffs are the whole point of the
+            picture and any 9:16 crop cuts one of them off.
+
+            objectPosition X is low on purpose. Between 1024 and ~1400 the image
+            is height-bound, and a higher value drags the exchange left until
+            the cream shirt cuff, the one thing that says "professional", sits
+            behind the headline. Trading the edge of the lamp for that cuff is
+            the right way round. */}
+        <section className="relative overflow-hidden grain bg-navy-950">
           <div className="absolute inset-0 aurora-bg" />
-          <div className={`relative max-w-[1200px] mx-auto ${SECTION_X} pt-36 pb-20 lg:pt-44 lg:pb-28`}>
+          <img
+            src="/hero-felt-handover.jpg"
+            alt=""
+            aria-hidden="true"
+            fetchPriority="high"
+            className="hidden lg:block absolute inset-0 w-full h-full object-cover"
+            style={{ objectPosition: '15% 42%' }}
+          />
+          <div
+            className="hidden lg:block absolute inset-0 pointer-events-none"
+            style={{ background: 'linear-gradient(90deg, rgba(13,22,40,0.95) 0%, rgba(13,22,40,0.88) 32%, rgba(13,22,40,0.42) 60%, rgba(13,22,40,0.05) 100%)' }}
+          />
+          <img
+            src="/hero-felt-handover-mobile.jpg"
+            srcSet="/hero-felt-handover-mobile.jpg 820w, /hero-felt-handover.jpg 1672w"
+            sizes="100vw"
+            alt=""
+            aria-hidden="true"
+            fetchPriority="high"
+            className="lg:hidden absolute bottom-0 left-0 w-full h-auto"
+          />
+          <div
+            className="lg:hidden absolute inset-x-0 bottom-0 h-[70vw] pointer-events-none"
+            style={{ background: 'linear-gradient(180deg, rgba(13,22,40,1) 0%, rgba(13,22,40,0.55) 30%, rgba(13,22,40,0) 70%)' }}
+          />
+          <div className={`relative max-w-[1200px] mx-auto ${SECTION_X} pt-36 pb-[62vw] lg:pt-44 lg:pb-28`}>
             <div className="max-w-[760px]">
               <span className="section-label section-label-dark">{t('hub.hero.eyebrow')}</span>
               <h1 className="font-display font-light text-white text-balance m-0 leading-[1.06] text-[clamp(2.5rem,5vw,4.5rem)]">{t('hub.hero.title')}</h1>
