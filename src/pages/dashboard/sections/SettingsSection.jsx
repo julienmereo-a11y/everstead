@@ -7,7 +7,6 @@ import { COUNTRIES } from '../../../config/countries'
 import { PLAN_LABELS, PRICING, marketPricing, planLabel } from '../../../config/pricing'
 import i18n, { pathInLanguage } from '../../../i18n'
 import { PLANS, redirectToCustomerPortal } from '../../../lib/stripe'
-import { isNative } from '../../../lib/platform'
 import { Field, SectionShell, input, primaryBtn, secondaryBtn } from '../../dashboard/ui'
 import { AdviserSharingCard } from './AdviserSection'
 import { AddressesCard } from './AddressesCard'
@@ -52,11 +51,13 @@ export function ReferralLinkBox({ referralCode }) {
   // Friends who joined through this link. Null (line hidden) until the RPC
   // answers; in demo mode there is no session so it stays hidden, which is fine.
   const [joined, setJoined] = useState(null)
-  // Two things the old one-liner got wrong. A French member's link sent their
-  // friend to the English signup, and in the native app window.location.origin
-  // is capacitor://localhost, which is not a link anyone can open.
-  const origin = isNative() ? 'https://www.everstead.care' : window.location.origin
-  const link = `${origin}${pathInLanguage('/get-started', i18n.language)}?ref=${referralCode}`
+  // The old one-liner always pointed at /get-started, so a French member's
+  // link sent their friend to the English signup.
+  //
+  // It does not need a native branch: App.jsx renders MobileApp for the whole
+  // native shell, so this card only ever runs in a browser and
+  // window.location.origin is always a real origin here.
+  const link = `${window.location.origin}${pathInLanguage('/get-started', i18n.language)}?ref=${referralCode}`
 
   useEffect(() => {
     let on = true
