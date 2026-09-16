@@ -209,7 +209,10 @@
       "manage": "Manage →",
       "addTitle": "Add your partner or spouse",
       "addBody": "Your plan includes a second private vault, invite them to set up theirs.",
-      "invite": "Invite →"
+      "invite": "Invite →",
+      "errorTitle": "We could not check your family plan",
+      "errorBody": "Nothing has changed. The check did not go through just now.",
+      "errorRetry": "Try again"
     },
     "recentDocuments": "Recent documents",
     "totalCount": "{{count}} total",

@@ -209,7 +209,10 @@
       "manage": "Gérer →",
       "addTitle": "Ajoutez votre partenaire ou conjoint",
       "addBody": "Votre forfait comprend un second coffre privé : invitez votre partenaire à créer le sien.",
-      "invite": "Inviter →"
+      "invite": "Inviter →",
+      "errorTitle": "Nous n'avons pas pu vérifier votre formule Famille",
+      "errorBody": "Rien n'a changé. La vérification n'a pas abouti à l'instant.",
+      "errorRetry": "Réessayer"
     },
     "recentDocuments": "Documents récents",
     "totalCount": "{{count}} au total",

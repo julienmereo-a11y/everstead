@@ -5,6 +5,7 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import { ChevronRight, Loader2, Lock, Search, Upload } from 'lucide-react'
 import { supabase } from '../../lib/supabase'
+import { useAuth } from '../../contexts/AuthContext'
 import {
   ActivationBanner, AdviserInvoicesCard, AdviserTeamCard, AdvisorAccessTab, Avatar, Card, CardTitle, Dot, EstatePackButton,
   FamilyAccountsTab, FamilyActivityTab, FamilyAlertsTab, FamilyDocumentsTab, FamilyInstructionsTab, FamilyPeopleTab,
@@ -485,6 +486,7 @@ export function GuidesScreen({ role }) {
 
 // ── Settings ─────────────────────────────────────────────────────────────────
 export function SettingsScreen({ advisor, firm, role, canSetRole, onSetRole, roleBusy, team, isDemo, onReload, firmId, families }) {
+  const { updateProfile } = useAuth()
   const [logoUploading, setLogoUploading] = useState(false)
   const [logoError, setLogoError] = useState(null)
   const [profile, setProfile] = useState({ full_name: advisor?.full_name || '', phone: advisor?.phone || '' })
@@ -514,7 +516,10 @@ export function SettingsScreen({ advisor, firm, role, canSetRole, onSetRole, rol
     e.preventDefault()
     setProfileState('saving')
     try {
-      if (!isDemo) { const { error } = await supabase.from('profiles').update({ full_name: profile.full_name, phone: profile.phone }).eq('id', advisor.id); if (error) throw error }
+      // updateProfile, not a bare PostgREST write: it puts the new row back
+      // into AuthContext, so the adviser's own name stops being stale in the
+      // header and anywhere else reading it until the next full reload.
+      if (!isDemo) await updateProfile({ full_name: profile.full_name, phone: profile.phone }, advisor.id)
       setProfileState('saved'); setTimeout(() => setProfileState('idle'), 2500)
     } catch { setProfileState('error') }
   }

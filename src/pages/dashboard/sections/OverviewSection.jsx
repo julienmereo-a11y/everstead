@@ -160,13 +160,20 @@ export function OverviewSection({ isDemo, adviser, access, profile, accounts, do
 
   // Family member status (Family plan only)
   const [familyMembership, setFamilyMembership] = React.useState(null)
-  const [familyLoading, setFamilyLoading] = React.useState(false)
+  // Starts true whenever the lookup is actually going to run. Starting false
+  // meant the first paint had no membership and no reason to wait, so someone
+  // with a partner already on their plan was shown "add your partner" for a
+  // frame before it corrected itself.
+  const [familyLoading, setFamilyLoading] = React.useState(profile.plan === 'family' && !isDemo)
+  const [familyError, setFamilyError] = React.useState(false)
   const isSecondaryUser = profile.family_role === 'secondary'
-  React.useEffect(() => {
+  const loadFamily = React.useCallback(() => {
     // The demo profile is on the family plan but its id is not a uuid, so this
     // lookup would only earn a 400 from PostgREST. Demo shows the invite card.
     if (profile.plan !== 'family' || isDemo) return
     setFamilyLoading(true)
+    setFamilyError(false)
+    const fail = () => { setFamilyError(true); setFamilyLoading(false) }
     import('../../../lib/supabase').then(({ supabase: sb }) => {
       const query = isSecondaryUser && profile.family_id
         // Secondary: look up the membership row by family_id
@@ -178,9 +185,17 @@ export function OverviewSection({ isDemo, adviser, access, profile, accounts, do
             .order('created_at', { ascending: false })
             .limit(1)
             .maybeSingle()
-      query.then(({ data }) => { setFamilyMembership(data || null); setFamilyLoading(false) })
-    })
+      // The error was thrown away and a rejection escaped entirely, leaving
+      // familyLoading stuck true. Either way the card silently claimed there
+      // was no partner on a plan that might well have one.
+      query.then(({ data, error }) => {
+        if (error) { fail(); return }
+        setFamilyMembership(data || null)
+        setFamilyLoading(false)
+      }, fail)
+    }, fail)
   }, [profile.id, profile.plan, profile.family_id, isSecondaryUser, isDemo])
+  React.useEffect(loadFamily, [loadFamily])
 
   const vaultStats = [
     { label: t('overview.stats.accounts'), value: accounts.length, icon: Landmark, target: 5, navSection: 'accounts' },
@@ -508,7 +523,22 @@ export function OverviewSection({ isDemo, adviser, access, profile, accounts, do
       )}
 
       {/* Family member card — Family plan only */}
-      {profile.plan === 'family' && !familyLoading && (
+      {profile.plan === 'family' && !familyLoading && familyError && (
+        <div className="mb-6 bg-white border border-stone-200 rounded-2xl p-5 flex items-center gap-4">
+          <div className="flex-1 min-w-0">
+            <p className="text-sm font-semibold text-navy-900">{t('overview.family.errorTitle')}</p>
+            <p className="text-xs text-stone-500 mt-0.5">{t('overview.family.errorBody')}</p>
+          </div>
+          <button
+            onClick={loadFamily}
+            className="shrink-0 text-xs font-semibold text-navy-800 border border-stone-200 px-3 py-1.5 rounded-full hover:bg-stone-50 transition-colors"
+          >
+            {t('overview.family.errorRetry')}
+          </button>
+        </div>
+      )}
+
+      {profile.plan === 'family' && !familyLoading && !familyError && (
         <div className="mb-6">
           {familyMembership?.invite_status === 'accepted' ? (
             <div className="bg-white border border-stone-200 rounded-2xl p-5 flex items-center gap-4">

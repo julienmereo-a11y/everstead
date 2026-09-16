@@ -550,7 +550,11 @@ export function InviteFamilyModal({ onClose, isDemo, familiesCount, familiesLimi
       })
       const data = await res.json().catch(() => ({}))
       if (!res.ok) { setError(data.error || 'Could not send the invitation. Please try again.'); return }
-      setSent(true); onInvited?.()
+      // Not onInvited() here. It reloads the portal, which flips it back to
+      // its loading screen and unmounts this modal, so the adviser never saw
+      // the confirmation and could not tell whether the invitation went out.
+      // The reload happens on Done instead.
+      setSent(true)
     } catch { setError('Network error. Please try again.') }
     finally { setSaving(false) }
   }
@@ -566,11 +570,11 @@ export function InviteFamilyModal({ onClose, isDemo, familiesCount, familiesLimi
     </Modal>
   )
   if (sent) return (
-    <Modal title="Invitation sent" onClose={onClose}>
+    <Modal title="Invitation sent" onClose={() => { onInvited?.(); onClose() }}>
       <div className="text-center space-y-4 py-2">
         <div className="w-14 h-14 rounded-full bg-sage-50 text-sage-700 flex items-center justify-center mx-auto"><CheckCircle2 size={26} /></div>
         <p className="text-[13.5px] text-stone-700 leading-relaxed m-0">An invitation has been sent to <strong>{form.owner_email}</strong>. Once they accept and set up their Everstead plan, they will appear in your portal.</p>
-        <button onClick={onClose} className={primaryBtn}>Done</button>
+        <button onClick={() => { onInvited?.(); onClose() }} className={primaryBtn}>Done</button>
       </div>
     </Modal>
   )

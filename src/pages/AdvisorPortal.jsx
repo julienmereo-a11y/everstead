@@ -49,9 +49,25 @@ export default function AdvisorPortal() {
   // ?demo=true&org=employer previews the employer portal.
   const demoEmployer = isDemo && searchParams.get('org') === 'employer'
   const [dataLoading, setDataLoading]   = useState(!isDemo)
+  // Six RPCs in a Promise.all. supabase-js resolves a Postgres error, but a
+  // dropped connection rejects, and the throw used to escape the effect with
+  // setDataLoading(false) unreached: the portal spun forever on an unhandled
+  // rejection nobody saw.
+  const [loadError, setLoadError]       = useState(null)
 
   const loadPortal = async () => {
     setDataLoading(true)
+    setLoadError(null)
+    try {
+      await loadPortalInner()
+    } catch (err) {
+      setLoadError(err?.message || 'Could not load your portal.')
+    } finally {
+      setDataLoading(false)
+    }
+  }
+
+  const loadPortalInner = async () => {
     await supabase.rpc('claim_adviser_invites').then(() => {}, () => {})
     const [firmRes, clientRes, teamRes, inviteRes, notesRes, wsRes] = await Promise.all([
       supabase.rpc('get_adviser_firm'),
@@ -94,7 +110,6 @@ export default function AdvisorPortal() {
       last_updated: i.created_at, accounts: [], documents: [], instructions: [], trusted_people: [], alerts: [], activity_log: [],
     }))
     setRealFamilies([...linked, ...pending])
-    setDataLoading(false)
   }
   useEffect(() => { if (isDemo || !user) return; loadPortal() }, [user, isDemo]) // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -215,6 +230,23 @@ export default function AdvisorPortal() {
 
   if (!isDemo && dataLoading) {
     return <div className="min-h-screen bg-stone-50 flex items-center justify-center"><div className="flex flex-col items-center gap-4"><div className="w-10 h-10 border-2 border-navy-200 border-t-navy-700 rounded-full animate-spin" /><p className="text-sm text-stone-500">Loading your portal…</p></div></div>
+  }
+
+  if (!isDemo && loadError) {
+    return (
+      <div className="min-h-screen bg-stone-50 flex items-center justify-center px-6">
+        <div className="max-w-md w-full bg-white border border-stone-200 rounded-2xl px-6 py-7 text-center">
+          <h1 className="text-lg font-semibold text-navy-900">We could not load your portal</h1>
+          <p className="text-sm text-stone-600 mt-2 leading-relaxed">
+            Nothing has changed for your clients. The connection dropped while we were reading your firm's data. Try again, and if it keeps happening write to us at hello@everstead.care.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-3 mt-6">
+            <button onClick={loadPortal} className="flex-1 text-sm font-semibold text-white bg-navy-800 px-4 py-2.5 rounded-full hover:bg-navy-900 transition-colors">Try again</button>
+            <button onClick={handleSignOut} className="flex-1 text-sm font-semibold text-navy-800 border border-stone-200 px-4 py-2.5 rounded-full hover:bg-stone-50 transition-colors">Sign out</button>
+          </div>
+        </div>
+      </div>
+    )
   }
 
   const familiesUsed = families.length
