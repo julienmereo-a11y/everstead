@@ -326,51 +326,51 @@
     },
     "employers": {
       "meta": {
-        "title": "Everstead pour les employeurs, DRH et avantages sociaux | Un avantage utilisé",
-        "description": "Un deuil ou un rôle d'aidant éloigne un salarié pendant des mois, pas des jours. Proposez un avantage concret qui agit avant le jour difficile, gratuit pour le salarié, sans aucune donnée détenue par l'employeur."
+        "title": "Everstead pour les employeurs, DRH et avantages sociaux | Des documents que vous n'avez plus à conserver",
+        "description": "Déposez un contrat dans le coffre sécurisé du salarié. Demandez un justificatif de domicile et ne consultez que cette pièce, le temps qu'il vous faut. Rien dans une boîte mail, rien sur votre serveur."
       },
       "hero": {
         "eyebrow": "Pour les employeurs, DRH et avantages sociaux",
-        "title": "Un deuil ou un rôle d'aidant éloigne un salarié pendant des mois, pas des jours.",
-        "sub": "L'accompagnement du deuil se résume le plus souvent à une ligne dans un accord et à un numéro d'écoute. Everstead est l'autre moitié, la moitié pratique : le salarié a son propre coffre, sa famille sait quoi faire, et votre organisation ne détient rien. Gratuit pour le salarié au départ."
+        "title": "Les documents de vos salariés, sans avoir à les conserver.",
+        "sub": "Déposez un contrat directement dans le coffre sécurisé de la personne. Demandez un justificatif de domicile et ne consultez que cette pièce, le temps qu'il vous faut. Rien ne traîne dans une boîte mail, rien ne reste sur votre serveur, et ce que vous envoyez reste à la personne après son départ."
       },
       "problem": {
-        "eyebrow": "Ce que cela vous coûte aujourd'hui",
-        "title": "L'absence n'est que la partie visible.",
+        "eyebrow": "Là où ça dérape aujourd'hui",
+        "title": "La plupart des documents salariés finissent là où personne ne l'a décidé.",
         "items": [
           {
-            "title": "Le congé est la plus petite partie",
-            "body": "Le congé de décès se compte en jours. Les démarches qui suivent un décès se comptent en mois, sur le temps de travail et depuis un téléphone professionnel."
+            "title": "Des scans dans les boîtes mail",
+            "body": "La photo d'une pièce d'identité envoyée par e-mail y est encore des années plus tard : dans ses messages envoyés, dans les vôtres, et dans toutes les sauvegardes qui ont suivi. Personne ne l'a décidé. C'est arrivé tout seul."
           },
           {
-            "title": "Les aidants partent sans le dire",
-            "body": "Les salariés qui s'occupent d'un parent le disent rarement. Ils réduisent leurs horaires, refusent les déplacements, puis démissionnent, et la vraie raison ne remonte jamais aux RH."
+            "title": "Des serveurs que personne ne nettoie",
+            "body": "Les dossiers d'embauche conservent des justificatifs et des RIB longtemps après que la raison de les détenir a disparu. Ce n'est pas une habitude de classement, c'est une violation qui attend d'être découverte."
           },
           {
-            "title": "Vos dispositifs n'atteignent pas la famille",
-            "body": "Une ligne d'écoute aide le salarié à parler. Elle ne dit pas à son conjoint où se trouve la retraite complémentaire, ni qui appeler en premier."
+            "title": "Et ce que vous envoyez se perd",
+            "body": "Contrats, relevés de retraite, attestations. Envoyés une fois, perdus avec un ordinateur, puis redemandés trois ans plus tard au pire moment."
           }
         ]
       },
       "offer": {
-        "eyebrow": "Ce que vous pouvez proposer",
-        "title": "Un avantage qui agit avant le jour difficile.",
+        "eyebrow": "Ce que vous pouvez proposer à la place",
+        "title": "Un endroit pour les deux sens, que vous ne détenez pas.",
         "items": [
           {
-            "title": "Une offre gratuite pour tout le monde",
-            "body": "Toute l'équipe peut commencer sans carte bancaire, à son rythme, depuis son téléphone. Vous n'achetez pas des licences pour découvrir ensuite si quelqu'un s'en sert."
+            "title": "Déposer dans un coffre qui lui appartient",
+            "body": "Le document arrive dans son propre espace sécurisé, pas en pièce jointe. La personne le garde en partant, et c'est aussi pour cela qu'elle prend la peine de le garder."
           },
           {
-            "title": "Aucune donnée salarié de votre côté",
-            "body": "Le coffre appartient au salarié. Vous ne voyez, ne stockez et ne traitez rien de son contenu, ce qui garde un avantage sensible hors de votre registre de traitements."
+            "title": "Demander une seule pièce, pour un temps donné",
+            "body": "Elle vous donne accès exactement au document demandé, pour la durée demandée. L'accès s'arrête tout seul, donc rien ne traîne parce que quelqu'un a oublié de faire le ménage."
           },
           {
-            "title": "Pour les aidants, pas seulement pour le deuil",
-            "body": "Mandat de protection future, informations de santé, traitements, numéros importants. Celles et ceux qui tiennent discrètement une famille à bout de bras ont enfin où le ranger."
+            "title": "N'en détenir aucun",
+            "body": "Vous ne voyez, ne stockez et ne traitez rien du contenu d'un coffre. Une catégorie de données sensibles quitte vos systèmes, et avec elle des obligations que vous portez aujourd'hui."
           },
           {
-            "title": "Des supports que vous pouvez vraiment envoyer",
-            "body": "Un e-mail de lancement, une page d'intranet et une courte session pour les équipes, écrits pour vos salariés plutôt que pour nous."
+            "title": "Et le jour difficile aussi",
+            "body": "Le même coffre contient ce dont une famille a besoin si un salarié décède ou doit s'occuper d'un proche. C'est là qu'Everstead a commencé, et c'est encore ce qui fait qu'on le garde."
           }
         ]
       },
@@ -383,19 +383,19 @@
             "body": "Le texte d'un e-mail ou d'un article d'intranet, et un lien. Vous l'envoyez."
           },
           {
-            "title": "Les salariés commencent gratuitement",
-            "body": "Aucun compte à gérer, aucune licence à attribuer, aucune procédure de sortie."
+            "title": "On accepte une seule fois",
+            "body": "Le premier document que vous envoyez est accepté par la personne, et c'est ce qui vous relie. Tout ce que vous envoyez ensuite se dépose tout seul."
           },
           {
-            "title": "Vous voyez l'adoption, jamais le contenu",
-            "body": "Si vous souhaitez une offre payante pour toute l'équipe, nous vous indiquons combien de personnes ont commencé, et rien d'autre."
+            "title": "Vous voyez la remise, jamais le contenu",
+            "body": "Chaque échange laisse une attestation horodatée que vous pouvez classer. Elle indique ce qui a été envoyé, à qui et quand la réponse est arrivée, et rien du contenu du coffre."
           }
         ]
       },
       "next": {
         "badge": "En développement",
         "eyebrow": "Là où nous allons",
-        "title": "Les documents qui arrivent chaque mois, pas seulement ceux d'un jour.",
+        "title": "Tous les documents qui circulent entre vous, pas seulement le premier.",
         "body": "Le coffre d'un salarié est l'endroit naturel pour les papiers qui circulent entre vous : un contrat, une attestation, un certificat. Et ce même coffre peut répondre aux questions que vous posez à l'embauche, sans qu'un scan reste indéfiniment dans une boîte de réception.",
         "items": [
           {
@@ -414,16 +414,20 @@
         "title": "Ce que les équipes RH nous demandent.",
         "items": [
           {
-            "q": "En quoi est-ce différent d'une ligne d'écoute ou d'un service social ?",
-            "a": "Une ligne d'écoute apporte du soutien et des conseils. Ici, c'est la couche pratique : où sont les documents, qui appeler, ce que la famille doit faire. La plupart des employeurs qui adoptent Everstead gardent les deux."
+            "q": "Que cessons-nous de conserver ?",
+            "a": "Les copies. Justificatifs de domicile, pièces d'identité, RIB, attestations : vous les consultez quand vous en avez besoin et vous ne les gardez pas ensuite. L'original reste chez la personne à qui il appartient."
+          },
+          {
+            "q": "Devenons-nous responsables des données ?",
+            "a": "Non. La relation sur les données se noue entre le salarié et Everstead. Votre organisation n'est ni responsable de traitement ni sous-traitant de ce qui se trouve dans le coffre."
           },
           {
             "q": "Que paie-t-on ?",
             "a": "Rien, si vous souhaitez seulement diffuser l'offre gratuite. Un accord payant couvre toute l'équipe et les supports autour d'un lancement. Nous le calibrons par organisation lors de l'échange."
           },
           {
-            "q": "Devenons-nous responsables des données ?",
-            "a": "Non. La relation sur les données se noue entre le salarié et Everstead. Votre organisation n'est ni responsable de traitement ni sous-traitant de ce qui se trouve dans le coffre."
+            "q": "En quoi est-ce différent d'une ligne d'écoute ou d'un service social ?",
+            "a": "Une ligne d'écoute apporte du soutien et des conseils. Ici, c'est la couche pratique : les documents qui circulent entre vous, et ceux dont une famille a besoin si le pire arrive. La plupart des employeurs qui adoptent Everstead gardent les deux."
           },
           {
             "q": "Où les données sont-elles hébergées ?",

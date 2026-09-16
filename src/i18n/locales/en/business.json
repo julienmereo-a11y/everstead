@@ -326,51 +326,51 @@
     },
     "employers": {
       "meta": {
-        "title": "Everstead for Employers, HR and Benefits Teams | A benefit people use",
-        "description": "Bereavement and caring take people out for months, not days. Offer a practical benefit that works before the bad day, free for the employee, with no employee data held by the employer."
+        "title": "Everstead for Employers, HR and Benefits Teams | Documents you never have to hold",
+        "description": "Send a contract into an employee's own secure vault. Ask for a proof of address and see that one item, for as long as you need it. Nothing in an inbox, nothing on your drive."
       },
       "hero": {
         "eyebrow": "For employers, HR and benefits teams",
-        "title": "Bereavement and caring take people out for months, not days.",
-        "sub": "Most bereavement support is a policy line and a helpline number. Everstead is the practical half: the employee gets their own vault, their family knows what to do, and your organisation holds none of it. Free for the employee to start."
+        "title": "Your people's documents, without you having to hold them.",
+        "sub": "Send a contract straight into someone's own secure vault. Ask for a proof of address and see that one item, for as long as you need it. Nothing sits in an inbox, nothing sits on your drive, and what you send stays theirs after they leave."
       },
       "problem": {
-        "eyebrow": "What it costs you now",
-        "title": "The absence is only the visible part.",
+        "eyebrow": "Where it goes wrong today",
+        "title": "Most employee documents end up somewhere nobody chose.",
         "items": [
           {
-            "title": "Leave is the smallest piece",
-            "body": "Statutory bereavement leave is measured in days. The administration that follows a death runs for months, in work hours, on a work phone."
+            "title": "Scans in inboxes",
+            "body": "A photograph of a passport sent by email is still there years later: in their sent folder, in yours, and in whatever was backed up along the way. Nobody decided that. It just happened."
           },
           {
-            "title": "Carers leave quietly",
-            "body": "Employees looking after a parent rarely say so. They drop hours, refuse travel, and eventually resign, and the real reason never reaches HR."
+            "title": "Drives nobody prunes",
+            "body": "Onboarding folders keep right to work documents and bank details long after the reason for holding them has gone. That is not a filing habit, it is a breach waiting to be found."
           },
           {
-            "title": "Your benefits do not reach the family",
-            "body": "An assistance programme helps the employee talk. It does not tell their partner where the pension is, or who to ring first."
+            "title": "And what you send goes missing",
+            "body": "Contracts, pension summaries, certificates. Sent once, lost with a laptop, and asked for again three years later at the worst possible moment."
           }
         ]
       },
       "offer": {
-        "eyebrow": "What you can offer",
-        "title": "A benefit that works before the bad day.",
+        "eyebrow": "What you can offer instead",
+        "title": "A place for both directions, that you do not own.",
         "items": [
           {
-            "title": "A free plan for everyone",
-            "body": "The whole team can start with no card, in their own time, on their own phone. You are not buying seats to find out whether anyone uses them."
+            "title": "Send it into a vault they own",
+            "body": "The document lands in their own secure place rather than an attachment. They keep it when they leave you, which is also why they bother to keep it at all."
           },
           {
-            "title": "No employee data on your side",
-            "body": "The vault belongs to the employee. You never see, store or process what is in it, which keeps a sensitive benefit out of your data map."
+            "title": "Ask for one item, for a while",
+            "body": "They grant you sight of exactly the document you asked for, for the days you asked for. It stops on its own, so nothing lingers because somebody forgot to tidy up."
           },
           {
-            "title": "Something for carers, not only for death",
-            "body": "Power of attorney, care details, medication, the important numbers. The people quietly holding a family together get somewhere to put it."
+            "title": "Hold none of it",
+            "body": "You never see, store or process what is in anyone's vault. A sensitive category of data leaves your systems, and with it a set of obligations you carry today."
           },
           {
-            "title": "Material you can actually send",
-            "body": "A launch email, an intranet page and a short session for the team, written for your people rather than for us."
+            "title": "And it is there on the worst day too",
+            "body": "The same vault holds what a family needs if an employee dies or has to care for someone. That is where Everstead started, and it is still why people keep it once they have it."
           }
         ]
       },
@@ -383,19 +383,19 @@
             "body": "Copy for an email or an intranet post, and a link. You send it."
           },
           {
-            "title": "Employees start free",
-            "body": "No account for you to manage, no seats to allocate, no leaver process."
+            "title": "People accept once",
+            "body": "The first document you send is accepted by the person, and that is what connects you. Everything you send after that files itself."
           },
           {
-            "title": "You see take up, never content",
-            "body": "If you want a paid tier for the whole team, we report how many people started and nothing else."
+            "title": "You see delivery, never content",
+            "body": "Every exchange leaves a timestamped receipt you can file. It shows what was sent, to whom, and when it was answered, and nothing at all about what is in their vault."
           }
         ]
       },
       "next": {
         "badge": "In development",
         "eyebrow": "Where this is going",
-        "title": "The documents that arrive every month, not just the ones for one day.",
+        "title": "Every document that passes between you, not only the first one.",
         "body": "An employee's vault is the natural place for the paperwork that passes between you: a contract, a certificate, an attestation. And the same vault can answer the questions you ask at onboarding, without a scan sitting in an inbox forever.",
         "items": [
           {
@@ -414,16 +414,20 @@
         "title": "What HR teams ask us.",
         "items": [
           {
-            "q": "How is this different from an employee assistance programme?",
-            "a": "An assistance programme is counselling and advice. This is the practical layer: where the documents are, who to call, what the family has to do. Most employers who take this run both."
+            "q": "What do we stop holding?",
+            "a": "The copies. Right to work documents, proof of address, bank details, certificates: you see them when you need them and you do not keep them afterwards. The original stays with the person it belongs to."
+          },
+          {
+            "q": "Do we become responsible for the data?",
+            "a": "No. The relationship over the data is between the employee and Everstead. Your organisation is neither a controller nor a processor of anything in the vault."
           },
           {
             "q": "What do we pay for?",
             "a": "Nothing, if you only want to hand out the free plan. A paid arrangement covers the whole team and the material around a launch. We work that out per organisation on the call."
           },
           {
-            "q": "Do we become responsible for the data?",
-            "a": "No. The relationship over the data is between the employee and Everstead. Your organisation is neither a controller nor a processor of anything in the vault."
+            "q": "How is this different from an employee assistance programme?",
+            "a": "An assistance programme is counselling and advice. This is the practical layer: the documents that pass between you, and the ones a family needs if the worst happens. Most employers who take this run both."
           },
           {
             "q": "Where is the data actually held?",
