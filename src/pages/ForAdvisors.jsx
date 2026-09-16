@@ -100,8 +100,30 @@ export default function ForAdvisors() {
 
         {/* Hero — extends under the fixed nav (no top padding on wrapper);
             internal pt-44 lifts the content below the 96px nav strip */}
-        <section className="pt-44 pb-20 lg:pt-52 lg:pb-28 grain relative overflow-hidden">
+        {/* Hero image: the felt desk sits along the BOTTOM of the frame and the
+            top half is empty navy, because this headline is centred rather than
+            left-aligned like the rest of the business tree. So the veil runs
+            vertically here, not left to right, and objectPosition anchors the
+            bottom so the crop only ever eats empty sky.
+
+            It lies on top of the aurora, so a missing file degrades to the
+            gradient this page shipped with. */}
+        <section className="pt-44 pb-20 lg:pt-52 lg:pb-28 grain relative overflow-hidden bg-navy-950">
           <div className="absolute inset-0 aurora-bg" />
+          <img
+            src="/hero-felt-advisers.jpg"
+            srcSet="/hero-felt-advisers-mobile.jpg 820w, /hero-felt-advisers.jpg 1672w"
+            sizes="100vw"
+            alt=""
+            aria-hidden="true"
+            fetchPriority="high"
+            className="absolute inset-0 w-full h-full object-cover"
+            style={{ objectPosition: '50% 100%' }}
+          />
+          <div
+            className="absolute inset-0 pointer-events-none"
+            style={{ background: 'linear-gradient(180deg, rgba(13,22,40,0.34) 0%, rgba(13,22,40,0.40) 35%, rgba(13,22,40,0.68) 58%, rgba(13,22,40,0.80) 80%, rgba(13,22,40,0.88) 100%)' }}
+          />
           <div className="relative max-w-4xl mx-auto px-6 lg:px-8 text-center reveal">
             <p className="text-xs font-semibold uppercase tracking-[0.22em] text-sage-300 mb-5">{t('hero.eyebrow')}</p>
             <h1 className="font-display text-4xl lg:text-6xl font-light text-white leading-tight text-balance">
