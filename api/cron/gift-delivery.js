@@ -3,6 +3,7 @@ import { Resend } from 'resend'
 import { withSentry, captureException } from '../_lib/sentry.js'
 import { translator, languageForUser, emailDate, pickLang } from '../_lib/email-i18n.js'
 import { planLabel } from '../_lib/plan-label.js'
+import { bearerMatches } from '../_lib/bearer-secret.js'
 
 const supabase = createClient(
   process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL,
@@ -18,7 +19,7 @@ async function handler(req, res) {
   }
 
   const authHeader = req.headers['authorization']
-  if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+  if (!bearerMatches(authHeader, process.env.CRON_SECRET)) {
     return res.status(401).json({ error: 'Unauthorized' })
   }
 

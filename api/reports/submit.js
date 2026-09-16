@@ -1,6 +1,7 @@
 import { createClient } from '@supabase/supabase-js'
 import { Resend } from 'resend'
 import { withSentry, captureException } from '../_lib/sentry.js'
+import { rateLimited } from '../_lib/rate-limit.js'
 
 const supabase = createClient(
   process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL,
@@ -22,11 +23,17 @@ async function handler(req, res) {
   const type = b.type === 'incident' ? 'incident' : 'death'
   if (!inviteToken) return res.status(400).json({ error: 'Missing invite token' })
 
+  // Each report emails the team and the reporter. Someone holding one valid
+  // token could otherwise file them without limit.
+  if (await rateLimited(req, 'reports/submit', { max: 5, windowMinutes: 60 })) {
+    return res.status(429).json({ error: 'Too many reports. Please contact us directly.' })
+  }
+
   // Verify the reporter is a genuine delegate (and get an authoritative email —
   // never email an arbitrary client-supplied address).
   const { data: tp, error: tpErr } = await supabase
     .from('trusted_people')
-    .select('id, user_id, name, email, role')
+    .select('id, user_id, name, email, role, invite_status')
     .eq('invite_token', inviteToken)
     .maybeSingle()
   if (tpErr || !tp || !tp.email) return res.status(403).json({ error: 'Invalid or expired link' })
@@ -104,7 +111,7 @@ async function handler(req, res) {
       from:    'Everstead <hello@everstead.care>',
       to:      TEAM_TO,
       subject: `${type === 'death' ? '🕊️ Death' : '⚠️ Incapacity'} report to verify, ${ownerName}`,
-      html:    teamHtml(type, { reporterName, reporterEmail, owner, ...b }),
+      html:    teamHtml(type, { reporterName, reporterEmail, owner, inviteStatus: tp.invite_status, ...b }),
     })
   } catch (err) {
     // CRITICAL: if this notification silently fails, a death/incapacity report
@@ -225,6 +232,7 @@ function teamHtml(type, p) {
       ${row('Plan owner', p.owner?.full_name)}${row('Owner email', p.owner?.email)}${row('Plan', p.owner?.plan)}
       <tr><td colspan="2" style="padding:8px 0;"><hr style="border:0;border-top:1px solid #e7e5e4;"></td></tr>
       ${row('Reporter', p.reporterName)}${row('Reporter email', p.reporterEmail)}${row('Phone', p.reporter_phone)}${row('Role', p.reporter_role)}${row('Relationship', p.relationship)}
+      ${p.inviteStatus !== 'accepted' ? `<tr><td style="padding:6px 14px 6px 0;color:#b45309;font-size:13px;white-space:nowrap;">Invite status</td><td style="padding:6px 0;font-size:13px;color:#b45309;font-weight:600;">${escapeHtml(String(p.inviteStatus || 'unknown'))} — this person never accepted their invitation. Verify who they are before acting on this.</td></tr>` : ''}
       ${rows}
       ${row('Notes', p.additional_notes || p.description)}
     </table>

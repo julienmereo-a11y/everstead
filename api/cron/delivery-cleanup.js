@@ -1,5 +1,6 @@
 import { createClient } from '@supabase/supabase-js'
 import { withSentry, captureException } from '../_lib/sentry.js'
+import { bearerMatches } from '../_lib/bearer-secret.js'
 
 // Staged deliveries do not get to sit there forever.
 //
@@ -21,7 +22,7 @@ const db = createClient(
 )
 
 async function handler(req, res) {
-  if (req.headers['authorization'] !== `Bearer ${process.env.CRON_SECRET}`) {
+  if (!bearerMatches(req.headers['authorization'], process.env.CRON_SECRET)) {
     return res.status(401).json({ error: 'Unauthorised' })
   }
 

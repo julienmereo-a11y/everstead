@@ -4,6 +4,7 @@ import { withSentry, captureException } from '../_lib/sentry.js'
 import { translator, languageForUser, pickLang, DEFAULT_LANG } from '../_lib/email-i18n.js'
 import { planLabel } from '../_lib/plan-label.js'
 import { sendEmail, APP_URL } from '../_lib/email-send.js'
+import { rateLimited } from '../_lib/rate-limit.js'
 
 const resend = new Resend(process.env.RESEND_API_KEY)
 
@@ -93,7 +94,12 @@ async function handler(req, res) {
     const ok = (await verifyUser(req)) || (await verifyInviteToken(body.inviteToken))
     if (!ok) return res.status(401).json({ error: 'Unauthorized' })
   }
-  // 'tool-report' stays public — the Estate Readiness Score lead tool.
+  // 'tool-report' stays public — the Estate Readiness Score lead tool. Public
+  // and mailing any address handed to it means it needs a ceiling of its own,
+  // since there is no account behind it to hold responsible.
+  if (type === 'tool-report' && await rateLimited(req, 'emails/tool-report', { max: 10, windowMinutes: 15 })) {
+    return res.status(429).json({ error: 'Too many requests. Please try again shortly.' })
+  }
 
   try {
     if (type === 'welcome') {
@@ -155,12 +161,17 @@ async function handler(req, res) {
 
     } else if (type === 'tool-report') {
       // Estate Readiness Score — full report email (no auth required, public tool)
-      const { name, email, score, answers } = body
+      const { name, email, answers } = body
       if (!email) return res.status(400).json({ error: 'Missing email' })
       // Basic email validation — prevent abuse
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
         return res.status(400).json({ error: 'Invalid email' })
       }
+      // `name` was escaped; `score` went straight into the subject line and the
+      // markup. On a public endpoint that will mail any address given to it,
+      // that is attacker-authored HTML arriving from a sender with our DKIM.
+      // It is a number out of a hundred or it is nothing.
+      const score = Math.max(0, Math.min(100, Math.round(Number(body.score)) || 0))
       // The quiz exists in both languages and sends the one it was taken in;
       // an existing member's profile language is the fallback, then English.
       const lang = body.lang === 'fr' ? 'fr' : await languageForUser(adminDb, { email })

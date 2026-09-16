@@ -1,13 +1,24 @@
 import { createClient } from '@supabase/supabase-js'
 import { withSentry } from '../_lib/sentry.js'
+import { rateLimited } from '../_lib/rate-limit.js'
 
 const supabase = createClient(
   process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL,
   process.env.SUPABASE_SERVICE_ROLE_KEY
 )
 
-// One-click marketing email unsubscribe.
-// Token = base64url-encoded userId (UUID — 122 bits of entropy, effectively unguessable).
+// One-click marketing email unsubscribe (RFC 8058: mail clients POST this with
+// no session, so it cannot require authentication).
+//
+// Token = base64url-encoded userId. Note what that is and is not: a UUID is
+// unguessable, but it is not a secret. It travels in client payloads and API
+// responses, so anyone who learns another member's id can unsubscribe them.
+// The blast radius is one marketing preference and nothing else, which is why
+// this is accepted rather than signed; the rate limit below is what stops it
+// being used to unsubscribe people in bulk. Signing the token is the real fix
+// and needs a migration window, since every unsubscribe link already in
+// someone's inbox carries the unsigned form.
+//
 // Only disables marketing emails — transactional emails (payment, trial, deletion) still send.
 //
 // Link format used in marketing emails:
@@ -16,6 +27,12 @@ const supabase = createClient(
 async function handler(req, res) {
   if (req.method !== 'GET' && req.method !== 'POST') {
     return res.status(405).end()
+  }
+
+  // Generous: a corporate mail gateway may legitimately POST several of these
+  // from one address. It only has to stop someone walking a list of ids.
+  if (await rateLimited(req, 'email/unsubscribe', { max: 60, windowMinutes: 60 })) {
+    return res.status(429).send(page('Please try again shortly', 'Too many requests from this address. Email hello@everstead.care and we will unsubscribe you manually.'))
   }
 
   const { token } = req.query

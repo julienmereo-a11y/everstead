@@ -1,6 +1,7 @@
 import { adminDb as db } from '../_lib/admin-auth.js'
 import { SENDERS, resolveAudience, sendToRecipients } from '../_lib/broadcast.js'
 import { withSentry, captureException } from '../_lib/sentry.js'
+import { bearerMatches } from '../_lib/bearer-secret.js'
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Delivers admin broadcasts scheduled from the panel (status='scheduled' rows in
@@ -16,7 +17,7 @@ import { withSentry, captureException } from '../_lib/sentry.js'
 
 async function handler(req, res) {
   const authHeader = req.headers['authorization']
-  if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+  if (!bearerMatches(authHeader, process.env.CRON_SECRET)) {
     // A 401 on a genuine Vercel cron invocation means CRON_SECRET is misconfigured
     // (missing, stale, or drifted) — exactly what silently killed EVERY cron until
     // 2026-08-05. Make it loud in Sentry instead of an invisible 401. Diagnostics

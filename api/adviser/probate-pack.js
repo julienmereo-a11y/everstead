@@ -2,7 +2,6 @@ import { PDFDocument, StandardFonts, rgb } from 'pdf-lib'
 import JSZipPkg from 'jszip'
 import { withSentry, captureException } from '../_lib/sentry.js'
 import { db, requireAdviser, loadClientForFirm, loadSharedPlan, isUuid, logAdviserActivity } from '../_lib/adviser-access.js'
-import { DEMO_ADVISOR_FAMILIES } from '../../src/lib/demoData.js'
 
 const JSZip = JSZipPkg.default ?? JSZipPkg
 
@@ -407,6 +406,10 @@ async function handler(req, res) {
 
   if (isDemo) {
     lang = body.lang === 'fr' ? 'fr' : 'en'
+    // Imported here rather than at the top: demoData.js is a 35 KB frontend
+    // module, and a static import made every real adviser's estate pack parse
+    // it on a cold start for the sake of one sample family.
+    const { DEMO_ADVISOR_FAMILIES } = await import('../../src/lib/demoData.js')
     const fam = DEMO_ADVISOR_FAMILIES[0]
     client = { full_name: fam.owner_name, email: fam.owner_email }
     firm   = { firm_name: lang === 'fr' ? 'Cabinet de démonstration' : 'Demonstration firm' }

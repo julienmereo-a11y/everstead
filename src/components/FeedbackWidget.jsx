@@ -40,11 +40,19 @@ export default function FeedbackWidget({ profile }) {
     if (!message.trim()) { setStatus('error'); setErrorMsg('Add a short message first.'); return }
     setStatus('submitting'); setErrorMsg('')
     try {
+      // The server attributes feedback from this token, not from an id in the
+      // body: anyone could type someone else's there. Signed out it is absent,
+      // and the feedback is simply unattributed, which is fine.
+      let authHeader = {}
+      try {
+        const { supabase } = await import('../lib/supabase')
+        const { data: { session } } = await supabase.auth.getSession()
+        if (session?.access_token) authHeader = { Authorization: `Bearer ${session.access_token}` }
+      } catch { /* signed out, or storage unavailable */ }
       const res = await fetch('/api/feedback', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', ...authHeader },
         body: JSON.stringify({
-          userId:   profile?.id || null,
           email:    profile?.email || null,
           name:     profile?.full_name || null,
           plan:     profile?.plan || null,

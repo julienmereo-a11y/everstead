@@ -22,7 +22,26 @@ async function handler(req, res) {
   const { data: { user }, error: authError } = await supabase.auth.getUser(token)
   if (authError || !user) return res.status(401).json({ error: 'Unauthorized' })
 
-  const { secondaryEmail, secondaryName } = req.body
+  // "Your Everstead+ access has ended" is an alarming thing to receive. The
+  // body used to choose who received it, so any signed-in account could send
+  // it to anyone. It goes to the member on the caller's own membership row.
+  const { membershipId } = req.body
+  if (!membershipId) return res.status(400).json({ error: 'Missing membershipId' })
+
+  const { data: membership } = await supabase
+    .from('family_memberships')
+    .select('primary_user_id, secondary_user_id, secondary_email')
+    .eq('id', membershipId)
+    .maybeSingle()
+  if (!membership || membership.primary_user_id !== user.id) {
+    return res.status(403).json({ error: 'Forbidden' })
+  }
+
+  const { data: secondary } = membership.secondary_user_id
+    ? await supabase.from('profiles').select('full_name, email').eq('id', membership.secondary_user_id).maybeSingle()
+    : { data: null }
+  const secondaryEmail = secondary?.email || membership.secondary_email
+  const secondaryName  = secondary?.full_name || null
   if (!secondaryEmail) return res.status(400).json({ error: 'Missing secondaryEmail' })
 
   try {
@@ -42,7 +61,7 @@ async function handler(req, res) {
   } catch (err) {
     console.error('send-family-access-revoked error:', err)
     captureException(err, { endpoint: 'emails/send-family-access-revoked' })
-    res.status(500).json({ error: err.message })
+    res.status(500).json({ error: 'Could not send the notification.' })
   }
 }
 

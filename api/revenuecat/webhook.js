@@ -1,5 +1,6 @@
 import { createClient } from '@supabase/supabase-js'
 import { withSentry } from '../_lib/sentry.js'
+import { bearerMatches } from '../_lib/bearer-secret.js'
 
 const supabase = createClient(
   process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL,
@@ -44,7 +45,7 @@ async function handler(req, res) {
   // dashboard (Project Settings > Integrations > Webhooks), not an HMAC
   // signature like Stripe — a normal parsed JSON body is fine here.
   const authHeader = req.headers['authorization']
-  if (authHeader !== `Bearer ${process.env.REVENUECAT_WEBHOOK_AUTH_TOKEN}`) {
+  if (!bearerMatches(authHeader, process.env.REVENUECAT_WEBHOOK_AUTH_TOKEN)) {
     return res.status(401).end()
   }
 

@@ -97,7 +97,8 @@ export default function AcceptFamilyInvite() {
         fetch('/api/emails/send-family-invite-accepted', {
           method:  'POST',
           headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${session.access_token}` },
-          body:    JSON.stringify({ primaryEmail: data.primaryEmail, primaryName: data.primaryName, secondaryName: user.email }),
+          // The server reads who to notify off the membership this token names.
+          body:    JSON.stringify({ inviteToken: token }),
         }).catch(console.error)
       }
 
@@ -157,7 +158,7 @@ export default function AcceptFamilyInvite() {
         fetch('/api/emails/send-family-invite-accepted', {
           method:  'POST',
           headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${session.access_token}` },
-          body:    JSON.stringify({ primaryEmail: data.primaryEmail, primaryName: data.primaryName, secondaryName: form.fullName }),
+          body:    JSON.stringify({ inviteToken: token }),
         }).catch(console.error)
       }
 

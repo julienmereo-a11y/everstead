@@ -1,3 +1,4 @@
+import { randomInt } from 'node:crypto'
 import { createClient } from '@supabase/supabase-js'
 import { Resend } from 'resend'
 import { withSentry } from '../_lib/sentry.js'
@@ -13,6 +14,16 @@ async function handler(req, res) {
 
   const { email, password } = req.body
   if (!email || !password) return res.status(400).json({ error: 'Missing fields' })
+
+  // A separate, looser ceiling in FRONT of the password check. The tighter
+  // limit below deliberately sits after it so a wrong password does not eat
+  // the code-send budget, but that left the password check itself unthrottled
+  // here: an unlimited credential-stuffing surface, with only whatever GoTrue
+  // applies behind it. Thirty attempts an hour is far beyond anyone who has
+  // simply forgotten which password they used.
+  if (await rateLimited(req, 'mfa-password-attempt', { max: 30, windowMinutes: 60 })) {
+    return res.status(429).json({ error: 'Too many sign-in attempts. Please wait a few minutes and try again.' })
+  }
 
   // Verify password via Supabase REST — does NOT persist a client session
   const authRes = await fetch(
@@ -51,10 +62,13 @@ async function handler(req, res) {
     return res.status(429).json({ error: 'Too many code requests. Please wait a few minutes and try again.' })
   }
 
-  // Generate 6-digit code (fixed, no email, for the review account)
+  // Generate 6-digit code (fixed, no email, for the review account).
+  // randomInt, not Math.random: this is the second factor on a sign-in, and
+  // V8's generator is a predictable PRNG whose state can be recovered from
+  // enough observed outputs.
   const code = isReviewAccount
     ? String(process.env.APP_REVIEW_CODE)
-    : String(Math.floor(100000 + Math.random() * 900000))
+    : String(randomInt(100000, 1000000))
 
   // Sweep rows whose window has passed. Without this they were never deleted:
   // an abandoned sign-in left a usable session sitting in the table indefinitely

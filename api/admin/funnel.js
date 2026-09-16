@@ -26,18 +26,21 @@ const supabase = createClient(
 //   curl -H "Authorization: Bearer $ADMIN_TOKEN" \
 //        https://www.everstead.care/api/admin/funnel?days=90
 //
-//   Browser (nicely formatted HTML):
-//   https://www.everstead.care/api/admin/funnel?token=YOUR_ADMIN_TOKEN&format=html
+//   Formatted HTML (same header, the admin panel calls it with a session):
+//   curl -H "Authorization: Bearer $ADMIN_TOKEN" \
+//        'https://www.everstead.care/api/admin/funnel?days=90&format=html' > funnel.html
 // ─────────────────────────────────────────────────────────────────────────────
 
 async function handler(req, res) {
   // ── Auth ────────────────────────────────────────────────────────────────
+  // Header only. ?token=ADMIN_TOKEN used to work for a browser visit, which put
+  // a long-lived admin secret into request logs, browser history and the
+  // Referer of anything this page links to. The admin panel already calls this
+  // with a session, and curl can send the header.
   const bearerToken  = (req.headers.authorization || '').replace(/^Bearer\s+/i, '')
-  const queryToken   = (req.query.token || '').toString()
   const headerSecrets = [process.env.ADMIN_TOKEN, process.env.CRON_SECRET].filter(Boolean)
 
-  const bySecret = (bearerToken && headerSecrets.includes(bearerToken))
-    || (queryToken && !!process.env.ADMIN_TOKEN && queryToken === process.env.ADMIN_TOKEN)
+  const bySecret = !!bearerToken && headerSecrets.includes(bearerToken)
 
   if (!bySecret) {
     // Falls back to a real admin session, which carries the authenticator

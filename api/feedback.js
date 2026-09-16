@@ -18,20 +18,33 @@ async function handler(req, res) {
     return res.status(429).json({ error: 'Too many requests. Please try again shortly.' })
   }
 
-  const { userId, email, name, rating, category, message, page, plan } = req.body || {}
+  const { email, name, rating, category, message, page, plan } = req.body || {}
   if (!message || typeof message !== 'string' || !message.trim()) {
     return res.status(400).json({ error: 'Please add a short message.' })
   }
 
+  // The body used to name its own user_id, so any caller could file feedback
+  // under someone else's account. The only trustworthy source is the token, and
+  // this endpoint stays usable signed out: no token simply means no attribution.
+  let userId = null
+  const token = (req.headers.authorization || '').replace(/^Bearer\s+/i, '')
+  if (token) {
+    try {
+      const { data: { user } } = await supabase.auth.getUser(token)
+      userId = user?.id ?? null
+    } catch { userId = null }
+  }
+
+  const cap = (v, n) => (v == null || v === '' ? null : String(v).slice(0, n))
   const clean = {
-    user_id:  userId || null,
-    email:    email || null,
-    name:     name || null,
+    user_id:  userId,
+    email:    cap(email, 320),
+    name:     cap(name, 120),
     rating:   typeof rating === 'number' ? rating : null,
-    category: category || null,
+    category: cap(category, 60),
     message:  message.trim().slice(0, 4000),
-    page:     page || null,
-    plan:     plan || null,
+    page:     cap(page, 500),
+    plan:     cap(plan, 40),
   }
 
   // Store (best-effort — don't block the email on a DB hiccup)

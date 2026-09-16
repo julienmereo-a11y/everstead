@@ -18,6 +18,25 @@ async function handler(req, res) {
   const blocked = await aiGuardForUser(req, ownerId)
   if (blocked) return res.status(blocked.status).json({ error: blocked.error })
 
+  // aiGuardForUser proves the caller is signed in and that this owner allows
+  // AI. It does not prove the two have anything to do with each other: any
+  // account could name any ownerId and have the model reason about that
+  // person's estate, on their AI budget. Authorization mirrors
+  // get_delegate_messages — an accepted trusted_people row linking the caller's
+  // own email to this owner.
+  const callerToken = (req.headers.authorization || '').replace(/^Bearer\s+/i, '')
+  const { data: { user: caller } } = await adminDb.auth.getUser(callerToken)
+  if (!caller?.email) return res.status(401).json({ error: 'Unauthorized' })
+
+  const { data: link } = await adminDb
+    .from('trusted_people')
+    .select('name, invite_status')
+    .eq('user_id', ownerId)
+    .ilike('email', caller.email)
+    .eq('invite_status', 'accepted')
+    .maybeSingle()
+  if (!link) return res.status(403).json({ error: 'Forbidden' })
+
   const ownerFirstName = ownerName?.split(' ')[0] || 'the plan owner'
   // Guidance follows the OWNER's country, not the delegate's language.
   let owner = null
@@ -25,7 +44,7 @@ async function handler(req, res) {
     if (ownerId) ({ data: owner } = await adminDb.from('profiles').select('country, asset_countries, language').eq('id', ownerId).maybeSingle())
   } catch { owner = null }
 
-  const systemPrompt = `You are a calm, knowledgeable, and compassionate assistant helping ${delegateName || 'an executor or family member'} navigate ${ownerFirstName}'s Everstead estate plan.
+  const systemPrompt = `You are a calm, knowledgeable, and compassionate assistant helping ${link.name || delegateName || 'an executor or family member'} navigate ${ownerFirstName}'s Everstead estate plan.
 
 You have access to the following vault summary:
 ${vaultSummary || 'No vault summary provided.'}

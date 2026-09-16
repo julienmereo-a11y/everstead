@@ -4,6 +4,7 @@ import { withSentry, captureException } from '../_lib/sentry.js'
 import { planLabel } from '../_lib/plan-label.js'
 import { translator, emailDate } from '../_lib/email-i18n.js'
 import { sendEmail } from '../_lib/email-send.js'
+import { bearerMatches } from '../_lib/bearer-secret.js'
 
 const supabase = createClient(
   process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL,
@@ -14,7 +15,7 @@ const APP_URL = process.env.VITE_APP_URL || 'https://www.everstead.care'
 
 async function handler(req, res) {
   const authHeader = req.headers['authorization']
-  if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+  if (!bearerMatches(authHeader, process.env.CRON_SECRET)) {
     return res.status(401).json({ error: 'Unauthorized' })
   }
 
@@ -143,7 +144,11 @@ async function handler(req, res) {
         deleted_at:      new Date().toISOString(),
         deletion_reason: fresh.subscription_status,
       })
-      console.log(`daily-jobs: deleted user ${p.id} (${p.email}) reason=${fresh.subscription_status}`)
+      // The id is enough to trace this. The email was a customer's personal
+      // address written into a log that is retained far longer than the
+      // account it belonged to, in the one job whose whole purpose is erasing
+      // that person's data.
+      console.log(`daily-jobs: deleted user ${p.id} reason=${fresh.subscription_status}`)
       results.deleted++
     } catch (err) {
       console.error(`daily-jobs: delete failed for ${p.id}:`, err.message)

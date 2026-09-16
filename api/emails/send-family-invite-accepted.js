@@ -22,7 +22,30 @@ async function handler(req, res) {
   const { data: { user }, error: authError } = await supabase.auth.getUser(token)
   if (authError || !user) return res.status(401).json({ error: 'Unauthorized' })
 
-  const { primaryEmail, primaryName, secondaryName } = req.body
+  // Recipient and both names come from the membership, not the body: otherwise
+  // any signed-in account could mail anyone "X has joined your plan" under any
+  // name it liked, from a sender people trust.
+  const { inviteToken } = req.body
+  if (!inviteToken) return res.status(400).json({ error: 'Missing inviteToken' })
+
+  const { data: membership } = await supabase
+    .from('family_memberships')
+    .select('primary_user_id, secondary_user_id, secondary_email')
+    .eq('invite_token', inviteToken)
+    .maybeSingle()
+  const isSecondary = membership && (
+    membership.secondary_user_id === user.id ||
+    membership.secondary_email?.toLowerCase() === user.email?.toLowerCase()
+  )
+  if (!isSecondary) return res.status(403).json({ error: 'Forbidden' })
+
+  const { data: primary } = await supabase
+    .from('profiles').select('full_name, email').eq('id', membership.primary_user_id).maybeSingle()
+  const { data: secondary } = await supabase
+    .from('profiles').select('full_name').eq('id', user.id).maybeSingle()
+  const primaryEmail  = primary?.email
+  const primaryName   = primary?.full_name || null
+  const secondaryName = secondary?.full_name || user.email || null
   if (!primaryEmail) return res.status(400).json({ error: 'Missing primaryEmail' })
 
   try {
@@ -41,7 +64,7 @@ async function handler(req, res) {
   } catch (err) {
     console.error('send-family-invite-accepted error:', err)
     captureException(err, { endpoint: 'emails/send-family-invite-accepted' })
-    res.status(500).json({ error: err.message })
+    res.status(500).json({ error: 'Could not send the notification.' })
   }
 }
 

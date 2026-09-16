@@ -2,6 +2,7 @@ import { createClient } from '@supabase/supabase-js'
 import { Resend } from 'resend'
 import { withSentry, captureException } from '../_lib/sentry.js'
 import { sendEmail } from '../_lib/email-send.js'
+import { rateLimited } from '../_lib/rate-limit.js'
 
 const supabase = createClient(
   process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL,
@@ -25,6 +26,14 @@ const SOURCES = {
 
 async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' })
+
+  // Open endpoint that sends Everstead-branded mail to whatever address it is
+  // handed. Without a limit one caller could mail-bomb arbitrary people from a
+  // domain that passes our DKIM. Ten in a quarter of an hour is far more than
+  // anyone downloading a guide will ever need.
+  if (await rateLimited(req, 'leads/capture', { max: 10, windowMinutes: 15 })) {
+    return res.status(429).json({ error: 'Too many requests. Please try again shortly.' })
+  }
 
   const { email, name, source, metadata } = req.body || {}
   // Interface language the tool was used in; only the calculator has a French edition.
@@ -164,7 +173,7 @@ function shell({ heading, body, footerNote, unsubLink, lang = 'en' }) {
 }
 
 function executorChecklistHtml({ name, unsubLink }) {
-  const firstName = name?.split(' ')[0] || 'there'
+  const firstName = escapeHtml(name?.split(' ')[0] || 'there')
   const sections = [
     { title: '1. In the first 24-48 hours', items: [
       'Obtain the medical certificate of cause of death from the GP or hospital',
@@ -228,7 +237,7 @@ function executorChecklistHtml({ name, unsubLink }) {
 
 function digitalEstateHtml({ name, metadata, unsubLink, lang = 'en' }) {
   const fr        = lang === 'fr'
-  const firstName = name?.split(' ')[0] || (fr ? '' : 'there')
+  const firstName = escapeHtml(name?.split(' ')[0] || (fr ? '' : 'there'))
   const total     = metadata?.total ?? null
   const breakdown = Array.isArray(metadata?.breakdown) ? metadata.breakdown : []
   const currency  = metadata?.currency === 'EUR' ? 'EUR' : 'GBP'
@@ -283,7 +292,7 @@ function digitalEstateHtml({ name, metadata, unsubLink, lang = 'en' }) {
 }
 
 function whenSomeoneDiesHtml({ name, unsubLink }) {
-  const firstName = name?.split(' ')[0] || 'there'
+  const firstName = escapeHtml(name?.split(' ')[0] || 'there')
   const phases = [
     { title: 'Phase 1: The first few hours', text: 'If the death was expected and at home, call the GP. If unexpected or at night, call 111. The GP issues the Medical Certificate of Cause of Death (MCCD). You cannot register the death without it. Tell close family before social media gets there first.' },
     { title: 'Phase 2: Within 5 days', text: 'Register the death at the register office (8 days in Scotland). Take the MCCD plus the deceased\'s NHS number, full name, date and place of birth, address, and occupation. You\'ll get the death certificate and the green form for the funeral director, buy 6-10 certified copies, you\'ll need them.' },
@@ -354,7 +363,7 @@ function adviserShell({ heading, body, footerNote, unsubLink }) {
 }
 
 function inheritanceConversationsHtml({ name, unsubLink }) {
-  const firstName = name?.split(' ')[0] || 'there'
+  const firstName = escapeHtml(name?.split(' ')[0] || 'there')
   const sections = [
     { title: '1. Open with permission, not assumptions', body: 'Most clients haven\'t been asked to talk about death by a professional. Frame the conversation as part of holistic planning, not a sales motion. A line that works: <em>"We tend to cover the harder topics (health, capacity, what happens to the family if something changes) once a year. Are you OK if we touch on that today?"</em> Most people say yes; some defer; a few say no. All three responses are useful data.' },
     { title: '2. Separate the legal from the practical', body: 'Clients often conflate "I have a will" with "I\'m organised". Make the distinction early. A will tells the court what happens to assets. Practical estate organisation tells the family <em>where everything is, who to call, and what to do first</em>. Most families have one and not the other. Surface that gap explicitly, it\'s where you add the most value.' },
@@ -389,7 +398,7 @@ function inheritanceConversationsHtml({ name, unsubLink }) {
 }
 
 function preBereavementChecklistHtml({ name, unsubLink }) {
-  const firstName = name?.split(' ')[0] || 'there'
+  const firstName = escapeHtml(name?.split(' ')[0] || 'there')
   const sections = [
     { title: 'A. Identity, capacity, and authority', items: [
       'Up-to-date will, original location confirmed (solicitor, home safe, bank)',
@@ -464,7 +473,7 @@ function preBereavementChecklistHtml({ name, unsubLink }) {
 }
 
 function positioningPlaybookHtml({ name, unsubLink }) {
-  const firstName = name?.split(' ')[0] || 'there'
+  const firstName = escapeHtml(name?.split(' ')[0] || 'there')
   const body = `
     <p style="margin:0 0 22px;color:#4a5568;font-size:15px;line-height:1.7;">Hi ${firstName},</p>
     <p style="margin:0 0 22px;color:#4a5568;font-size:15px;line-height:1.7;">If you\'re considering offering estate organisation as a structured service alongside your existing practice (to deepen client relationships, differentiate, and inherit the next generation of clients) this is the playbook. It covers the three live decisions: <strong>how to position it</strong>, <strong>how to price it</strong>, and <strong>how to deliver it</strong> without it becoming a time sink.</p>

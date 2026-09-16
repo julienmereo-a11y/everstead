@@ -145,12 +145,8 @@ export function FamilySection({ profile, session }) {
           'Content-Type':  'application/json',
           'Authorization': `Bearer ${session.access_token}`,
         },
-        body: JSON.stringify({
-          primaryUserId: profile.id,
-          primaryName:   profile.full_name,
-          secondaryEmail: inviteEmail,
-          inviteToken:    newMembership.invite_token,
-        }),
+        // Recipient and inviter name are read from the membership server-side.
+        body: JSON.stringify({ inviteToken: newMembership.invite_token }),
       })
 
       setInviteSent(true)
@@ -188,12 +184,7 @@ export function FamilySection({ profile, session }) {
           'Content-Type':  'application/json',
           'Authorization': `Bearer ${session.access_token}`,
         },
-        body: JSON.stringify({
-          primaryUserId:  profile.id,
-          primaryName:    profile.full_name,
-          secondaryEmail: updated.secondary_email,
-          inviteToken:    updated.invite_token,
-        }),
+        body: JSON.stringify({ inviteToken: updated.invite_token }),
       })
 
       await loadMembership()
@@ -260,10 +251,9 @@ export function FamilySection({ profile, session }) {
             'Content-Type':  'application/json',
             'Authorization': `Bearer ${session.access_token}`,
           },
-          body: JSON.stringify({
-            secondaryEmail: secondaryProfile.email,
-            secondaryName:  secondaryProfile.full_name,
-          }),
+          // The server reads the recipient off this membership after checking
+          // it is ours, rather than trusting an address from the browser.
+          body: JSON.stringify({ membershipId: membership.id }),
         })
       }
 

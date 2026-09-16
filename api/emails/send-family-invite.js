@@ -37,10 +37,27 @@ async function handler(req, res) {
   const { data: { user }, error: authError } = await supabase.auth.getUser(token)
   if (authError || !user) return res.status(401).json({ error: 'Unauthorized' })
 
-  const { primaryUserId, primaryName, secondaryEmail, inviteToken } = req.body
-  if (!primaryUserId || !secondaryEmail || !inviteToken) {
-    return res.status(400).json({ error: 'Missing required fields' })
+  // The body used to name its own recipient and its own "from" name. Any
+  // signed-in account could therefore send "X has invited you to their plan",
+  // in Everstead's livery and from a domain that passes our DKIM, to any
+  // address, under any name. Both now come from the membership row, and the
+  // caller has to own it.
+  const { inviteToken } = req.body
+  if (!inviteToken) return res.status(400).json({ error: 'Missing required fields' })
+
+  const { data: membership } = await supabase
+    .from('family_memberships')
+    .select('primary_user_id, secondary_email')
+    .eq('invite_token', inviteToken)
+    .maybeSingle()
+  if (!membership || membership.primary_user_id !== user.id || !membership.secondary_email) {
+    return res.status(403).json({ error: 'Forbidden' })
   }
+
+  const secondaryEmail = membership.secondary_email
+  const { data: inviter } = await supabase
+    .from('profiles').select('full_name').eq('id', user.id).maybeSingle()
+  const primaryName = inviter?.full_name || null
 
   const inviteUrl = `${APP_URL}/accept-family-invite?token=${inviteToken}`
 
@@ -61,7 +78,7 @@ async function handler(req, res) {
   } catch (err) {
     console.error('send-family-invite error:', err)
     captureException(err, { endpoint: 'emails/send-family-invite' })
-    res.status(500).json({ error: err.message })
+    res.status(500).json({ error: 'Could not send the invitation.' })
   }
 }
 
