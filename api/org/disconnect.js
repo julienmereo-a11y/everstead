@@ -52,6 +52,16 @@ async function handler(req, res) {
     await db.from('adviser_client_consents').delete().eq('client_id', user.id).eq('adviser_id', conn.org_id)
   }
 
+  // Every share this member had granted that organisation, closed for good.
+  // Ending the connection is already enough to shut access off today, because
+  // org_can_read_document wants an active connection as well as a live share.
+  // Leaving the rows behind would matter later: reconnecting to the same
+  // employer would silently reopen a document shared a year ago. Ending a
+  // relationship should not leave a door that reopens by itself.
+  await db.from('member_shares')
+    .update({ revoked_at: new Date().toISOString() })
+    .eq('member_id', user.id).eq('org_id', conn.org_id).is('revoked_at', null)
+
   // Anything the organisation had already sent and the member had not answered
   // is withdrawn with the link.
   const { data: pending } = await db.from('inbound_deliveries')
