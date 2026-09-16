@@ -592,7 +592,13 @@
     "addrAdded": "Adresse confirmée.",
     "addrAlreadyYours": "Cette adresse figure déjà sur votre compte.",
     "addrSendFailed": "Impossible d'envoyer le code. Vérifiez l'adresse et réessayez.",
-    "addrVerifyFailed": "Ce code ne correspond pas. Veuillez réessayer."
+    "addrVerifyFailed": "Ce code ne correspond pas. Veuillez réessayer.",
+    "yourData": "Vos données",
+    "exportBody": "Une copie de tout ce que contient votre coffre, sous forme de fichiers lisibles sans Everstead. Nous l'envoyons à l'adresse de votre compte.",
+    "exportSend": "Recevoir mes données par e-mail",
+    "exportPreparing": "Préparation de l'archive…",
+    "exportSent": "Envoyé à {{email}}. L'arrivée peut prendre une minute.",
+    "exportFailed": "Impossible de préparer l'export. Veuillez réessayer."
   },
   "aboutMe": {
     "title": "À propos de moi",

@@ -2,7 +2,10 @@ import { createClient } from '@supabase/supabase-js'
 
 // JSZip — defensive import to handle ESM/CJS interop in Vercel's bundler
 import JSZipPkg from 'jszip'
+import { Resend } from 'resend'
 import { withSentry, captureException } from '../_lib/sentry.js'
+import { sendEmail } from '../_lib/email-send.js'
+import { languageForUser, translator } from '../_lib/email-i18n.js'
 const JSZip = JSZipPkg.default ?? JSZipPkg
 
 const supabase = createClient(
@@ -11,11 +14,19 @@ const supabase = createClient(
 )
 
 const APP_URL = process.env.VITE_APP_URL || 'https://www.everstead.care'
+const resend = new Resend(process.env.RESEND_API_KEY)
 
 // ─────────────────────────────────────────────────────────────────────────────
 // POST /api/data/export
 // Requires: Authorization: Bearer <access_token>
-// Returns:  application/zip binary stream
+// Body:     { deliver: 'email' } to receive it instead of downloading it
+// Returns:  application/zip binary stream, or { ok, emailedTo } for 'email'
+//
+// The apps have no download. A Capacitor webview cannot save a file without
+// the Filesystem and Share plugins, and a token in a URL is not an option, so
+// the phone asks us to send the archive to the address on the account. That is
+// also the safer of the two: it is "send my data to me", not "show my data to
+// whoever is holding this phone", and the export lands somewhere durable.
 // ─────────────────────────────────────────────────────────────────────────────
 
 async function handler(req, res) {
@@ -32,6 +43,7 @@ async function handler(req, res) {
   }
 
   const userId = user.id
+  const byEmail = req.body?.deliver === 'email'
   const exportDate = new Date().toISOString().split('T')[0]
   const exportTs   = new Date().toISOString()
 
@@ -84,8 +96,13 @@ async function handler(req, res) {
     // function inside its memory and time limits (60 s). Anything over the
     // budget, or any single file over the per-file cap, is linked instead with
     // a 7-day signed URL, and documents.json says which is which.
-    const FILE_BUDGET   = 40 * 1024 * 1024  // total bytes packed into the zip
-    const FILE_CAP      = 15 * 1024 * 1024  // largest single file packed
+    // Emailing needs a far smaller archive: base64 inflates an attachment by
+    // about a third and mail servers start refusing well below the download
+    // budget. Nothing is lost by shrinking it, because the overflow path
+    // already exists: anything not packed is listed with a 7-day signed link,
+    // and documents.json says which is which.
+    const FILE_BUDGET   = byEmail ? 6 * 1024 * 1024 : 40 * 1024 * 1024
+    const FILE_CAP      = byEmail ? 4 * 1024 * 1024 : 15 * 1024 * 1024
     let   packedBytes   = 0
     const packedFiles   = []                 // [{ path, buffer }]
     const usedNames     = new Set()
@@ -221,7 +238,27 @@ async function handler(req, res) {
     })
     if (logErr) console.error('export: activity log failed', logErr.message)
 
-    // ── Stream ZIP back ───────────────────────────────────────────────────────
+    // ── Email it, or stream it back ───────────────────────────────────────────
+    if (byEmail) {
+      // The recipient is the address on the account, never one from the body.
+      // An export is everything the vault holds; the only address that may
+      // receive it is the one that signs in.
+      const to = user.email
+      if (!to) return res.status(400).json({ error: 'This account has no email address to send to.' })
+      const lang = await languageForUser(supabase, { userId })
+      const t = translator(COPY, lang)
+      const filename = `everstead-export-${exportDate}.zip`
+      await sendEmail(resend, {
+        from:      'Everstead <hello@everstead.care>',
+        to,
+        subject:   t('subject'),
+        preheader: t('preheader'),
+        html:      exportEmailHtml(t, filename),
+        attachments: [{ filename, content: zipBuffer }],
+      })
+      return res.status(200).json({ ok: true, emailedTo: to })
+    }
+
     res.setHeader('Content-Type', 'application/zip')
     res.setHeader('Content-Disposition', `attachment; filename="everstead-export-${exportDate}.zip"`)
     res.setHeader('Cache-Control', 'no-store')
@@ -236,3 +273,41 @@ async function handler(req, res) {
 
 // Errors are reported to Sentry (no-op until SENTRY_DSN is set) and return a clean 500.
 export default withSentry(handler)
+
+// Customer-facing copy for the emailed export. Both languages: a French member
+// asking for their data should not be handed an English envelope.
+const COPY = {
+  en: {
+    subject:    'Your Everstead data',
+    preheader:  'The archive is attached.',
+    h1:         'Your data, as you asked',
+    body:       'Everything your vault holds is in the attached archive: your accounts, documents, instructions, wishes, trusted people and messages, as files you can open without Everstead.',
+    readme:     'Open <strong>README.txt</strong> first. It explains what each file contains, and lists anything too large to attach, with a link that works for seven days.',
+    keepSafe:   'This archive is not encrypted and it contains everything. Keep it somewhere you would keep a passport.',
+    didntAsk:   'If you did not ask for this, someone has access to your account. Change your password and write to us at hello@everstead.care.',
+  },
+  fr: {
+    subject:    'Vos données Everstead',
+    preheader:  "L'archive est en pièce jointe.",
+    h1:         'Vos données, comme demandé',
+    body:       "Tout ce que contient votre coffre se trouve dans l'archive jointe : vos comptes, documents, consignes, volontés, personnes de confiance et messages, sous forme de fichiers lisibles sans Everstead.",
+    readme:     "Ouvrez d'abord <strong>README.txt</strong>. Il explique ce que contient chaque fichier et répertorie ce qui était trop volumineux pour être joint, avec un lien valable sept jours.",
+    keepSafe:   "Cette archive n'est pas chiffrée et elle contient tout. Conservez-la où vous conserveriez un passeport.",
+    didntAsk:   "Si vous n'êtes pas à l'origine de cette demande, quelqu'un a accès à votre compte. Changez votre mot de passe et écrivez-nous à hello@everstead.care.",
+  },
+}
+
+function exportEmailHtml(t, filename) {
+  return `
+  <div style="background:#f5f4f0;padding:32px 0;font-family:Georgia,serif;">
+    <div style="max-width:560px;margin:0 auto;background:#fff;border-radius:16px;padding:32px;">
+      <p style="margin:0 0 24px;color:#0d1628;font-size:18px;letter-spacing:0.3px;">Everstead</p>
+      <h1 style="margin:0 0 16px;color:#0d1628;font-size:22px;font-weight:normal;">${t('h1')}</h1>
+      <p style="margin:0 0 16px;color:#44403c;font-size:15px;line-height:1.65;">${t('body')}</p>
+      <p style="margin:0 0 16px;color:#44403c;font-size:15px;line-height:1.65;">${t('readme')}</p>
+      <p style="margin:0 0 16px;padding:14px 16px;background:#fff7ed;border-radius:10px;color:#9a3412;font-size:14px;line-height:1.6;">${t('keepSafe')}</p>
+      <p style="margin:0;color:#78716c;font-size:13px;line-height:1.6;">${t('didntAsk')}</p>
+      <p style="margin:24px 0 0;color:#a8a29e;font-size:12px;">${filename}</p>
+    </div>
+  </div>`
+}

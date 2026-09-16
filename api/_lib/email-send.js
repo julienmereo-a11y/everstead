@@ -78,11 +78,13 @@ function escapeText(s) {
 }
 
 /** Build the Resend payload: HTML with preheader, derived text, and marketing headers when unsubUrl is given. */
-export function buildEmail({ from, to, subject, html, preheader, unsubUrl, headers, replyTo }) {
+export function buildEmail({ from, to, subject, html, preheader, unsubUrl, headers, replyTo, attachments }) {
   const finalHtml = withPreheader(html, preheader)
   const allHeaders = { ...(marketingHeaders(unsubUrl) || {}), ...(headers || {}) }
   const payload = { from, to, subject, html: finalHtml, text: textFromHtml(finalHtml) }
   if (replyTo) payload.replyTo = replyTo
+  // Resend takes [{ filename, content }] with content as a Buffer or base64.
+  if (attachments?.length) payload.attachments = attachments
   if (Object.keys(allHeaders).length) payload.headers = allHeaders
   return payload
 }

@@ -69,6 +69,7 @@ export default function SettingsScreen({ app }) {
   const [addrCode, setAddrCode] = useState('')
   const [addrBusy, setAddrBusy] = useState(false)
   const [addrError, setAddrError] = useState(null)
+  const [exporting, setExporting] = useState(false)
   const [aiOn, setAiOn] = useState(true)
   const [lock, setLock] = useState({ hasPin: false, biometric: false })
   // Friends who joined through the referral link. Demo shows a canned number;
@@ -238,6 +239,24 @@ export default function SettingsScreen({ app }) {
       await loadAddrs()
       app.say(t('settings.addrAdded'))
     } catch (e) { setAddrError(e.message || t('settings.addrVerifyFailed')) } finally { setAddrBusy(false) }
+  }
+
+  // The apps have no download: a Capacitor webview cannot save a file without
+  // plugins this build does not carry, and putting a token in a URL to open it
+  // in a browser is not a trade worth making. So the archive is emailed to the
+  // address on the account, which is also the safer shape — it is "send my
+  // data to me", not "show my data to whoever is holding this phone".
+  const exportData = async () => {
+    if (app.demo) { app.say(t('settings.notInDemo'), 'error'); return }
+    setExporting(true)
+    try {
+      const { data: { session } } = await supabase.auth.getSession()
+      const res = await apiPost('/api/data/export', { deliver: 'email' },
+        { Authorization: `Bearer ${session?.access_token || ''}` })
+      if (!res.ok) throw new Error(res.data?.error || t('settings.exportFailed'))
+      app.say(t('settings.exportSent', { email: res.data?.emailedTo || profile?.email }))
+    } catch (e) { app.say(e.message || t('settings.exportFailed'), 'error') }
+    finally { setExporting(false) }
   }
 
   const removeAddr = async (email) => {
@@ -488,6 +507,21 @@ export default function SettingsScreen({ app }) {
       >
         {confirmAction === 'signout' ? t('settings.confirmSignOut') : t('settings.signOut')}
       </button>
+
+      {/* Sits directly above deleting the account on purpose: the two belong to
+          the same conversation, and nobody should reach "delete everything"
+          without having passed "take a copy first". */}
+      <Card title={t('settings.yourData')}>
+        <p className="rdet" style={{ margin: '0 0 12px' }}>{t('settings.exportBody')}</p>
+        <button
+          className={`btn w100 ${exporting ? 'dis' : ''}`}
+          style={{ background: '#fff', color: 'var(--color-navy-800)', border: '1px solid var(--color-stone-200)' }}
+          onClick={exportData}
+          disabled={exporting}
+        >
+          {exporting ? t('settings.exportPreparing') : t('settings.exportSend')}
+        </button>
+      </Card>
 
       {!delOpen ? (
         <button

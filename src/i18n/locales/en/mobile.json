@@ -592,7 +592,13 @@
     "addrAdded": "Address confirmed.",
     "addrAlreadyYours": "That address is already on your account.",
     "addrSendFailed": "Could not send the code. Please check the address and try again.",
-    "addrVerifyFailed": "That code did not match. Please try again."
+    "addrVerifyFailed": "That code did not match. Please try again.",
+    "yourData": "Your data",
+    "exportBody": "A copy of everything in your vault, as files you can open without Everstead. We email it to the address on your account.",
+    "exportSend": "Email me my data",
+    "exportPreparing": "Preparing your archive…",
+    "exportSent": "Sent to {{email}}. It can take a minute to arrive.",
+    "exportFailed": "Could not prepare your export. Please try again."
   },
   "aboutMe": {
     "title": "About Me",

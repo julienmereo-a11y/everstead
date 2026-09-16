@@ -18,7 +18,7 @@
 import crypto from 'crypto'
 import { createClient } from '@supabase/supabase-js'
 import { withSentry, captureException } from '../_lib/sentry.js'
-import { rateLimited } from '../_lib/rate-limit.js'
+import { rateLimited, emailKey } from '../_lib/rate-limit.js'
 import { hashCode, codeMatches } from '../_lib/mfa-crypto.js'
 import { sendAddressCodeEmail } from '../_lib/adviser-email.js'
 
@@ -62,12 +62,16 @@ async function handler(req, res) {
   const action = req.body?.action
   if (!['send-code', 'verify'].includes(action)) return res.status(400).json({ error: 'Unknown action.' })
 
-  if (await rateLimited(req, `link-address-${action}`, { max: action === 'send-code' ? 8 : 20, windowMinutes: 15 })) {
-    return res.status(429).json({ error: 'Too many attempts. Please try again in a few minutes.' })
-  }
-
   const found = await addressFor(req.body)
   if (found.error) return res.status(400).json({ error: found.error })
+
+  // Keyed on the caller, not their IP. This is reachable from the apps now, and
+  // phones share a carrier NAT: eight code sends per quarter-hour pooled across
+  // everyone on one mobile network is a limit that would start refusing people
+  // who had done nothing. One account asking eight times is the real signal.
+  if (await rateLimited(req, `link-address-${action}`, { key: emailKey(user.email || user.id), max: action === 'send-code' ? 8 : 20, windowMinutes: 15 })) {
+    return res.status(429).json({ error: 'Too many attempts. Please try again in a few minutes.' })
+  }
   const { email, firmName } = found
 
   if (email === String(user.email || '').toLowerCase()) {
