@@ -1290,6 +1290,22 @@
       "body": "Utilisée dans votre espace et dans les e-mails qu'Everstead vous envoie.",
       "saved": "Langue mise à jour.",
       "failed": "Impossible de changer la langue. Veuillez réessayer."
+    },
+    "addresses": {
+      "heading": "Vos adresses e-mail",
+      "intro": "Les organisations écrivent à une adresse. Ajoutez celles que l'on utilise pour vous joindre, et leurs envois arrivent dans ce compte, quelle que soit votre adresse de connexion.",
+      "signIn": "connexion",
+      "confirmed": "confirmée",
+      "remove": "Retirer cette adresse",
+      "add": "Ajouter une adresse",
+      "placeholder": "vous@entreprise.com",
+      "why": "Nous y envoyons un code. Le lire, c'est prouver que la boîte est la vôtre.",
+      "sendCode": "Envoyez-moi un code",
+      "codeSent": "Nous avons envoyé un code à six chiffres à {{email}}. Il expire dans dix minutes.",
+      "confirm": "Confirmer",
+      "cancel": "Annuler",
+      "added": "Adresse confirmée. Ce qui y est envoyé parvient désormais à ce compte.",
+      "alreadyYours": "C'est déjà votre adresse de connexion."
     }
   },
   "modals": {

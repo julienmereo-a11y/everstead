@@ -1,0 +1,56 @@
+{
+  "meta": {
+    "title": "Confirm an address | Everstead"
+  },
+  "loading": "Checking that link",
+  "invalid": {
+    "title": "That link is not valid",
+    "body": "It may have been mistyped, or the request may have been withdrawn. Ask whoever contacted you to send it again.",
+    "cta": "Go to Everstead"
+  },
+  "signedOut": {
+    "title": "{{firm}} has asked you for documents",
+    "body": "They sent this to {{hint}}. To answer, you need an Everstead account, and it does not have to use that address.",
+    "advice": "Sign up with a personal address you will keep. You can confirm your work address here afterwards, and everything you are sent stays yours if you leave.",
+    "signUp": "Create a free account",
+    "signIn": "I already have an account",
+    "after": "Once you are signed in, open this link again from the same email."
+  },
+  "confirm": {
+    "eyebrow": "Confirm an address",
+    "title": "Is {{hint}} yours?",
+    "body": "{{firm}} has been in touch at that address. Confirm it and their request appears in your account, along with anything else they send there.",
+    "bodyPlain": "Confirm this address and anything an organisation sends there reaches your account.",
+    "asked": "What they asked for",
+    "send": "Send me a code",
+    "sending": "Sending",
+    "why": "We send a code to that address. Reading it is how you prove the inbox is yours. Nothing is added to your account without it."
+  },
+  "code": {
+    "title": "Enter the code",
+    "body": "We sent a six digit code to {{hint}}. It expires in ten minutes.",
+    "label": "Your code",
+    "submit": "Confirm the address",
+    "checking": "Checking",
+    "resend": "Send another code"
+  },
+  "done": {
+    "title": "Address confirmed",
+    "body": "{{email}} now belongs to your account. Anything sent there reaches you here, whichever address you sign in with.",
+    "cta": "See what was asked for"
+  },
+  "already": {
+    "title": "That is already your address",
+    "body": "You are signed in with it, so there is nothing to confirm. Whatever was sent there is already in your account.",
+    "cta": "Go to your documents"
+  },
+  "manual": {
+    "label": "Email address",
+    "placeholder": "you@work.com"
+  },
+  "noLink": {
+    "title": "Sign in to confirm an address",
+    "body": "Adding an address to your account needs you signed in first, so we know which account it belongs to.",
+    "advice": "If an organisation contacted you at an address you do not sign in with, open the link in their email once you are signed in and it will bring you back here."
+  }
+}

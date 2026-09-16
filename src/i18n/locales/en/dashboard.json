@@ -1288,6 +1288,22 @@
       "body": "Used across your dashboard and in the emails Everstead sends you.",
       "saved": "Language updated.",
       "failed": "Could not update your language. Please try again."
+    },
+    "addresses": {
+      "heading": "Your email addresses",
+      "intro": "Organisations send to an address. Add any address people use to reach you, and what they send arrives in this account, whichever address you sign in with.",
+      "signIn": "sign in",
+      "confirmed": "confirmed",
+      "remove": "Remove this address",
+      "add": "Add an address",
+      "placeholder": "you@work.com",
+      "why": "We send a code there. Reading it is how you prove the inbox is yours.",
+      "sendCode": "Send me a code",
+      "codeSent": "We sent a six digit code to {{email}}. It expires in ten minutes.",
+      "confirm": "Confirm",
+      "cancel": "Cancel",
+      "added": "Address confirmed. Anything sent there now reaches this account.",
+      "alreadyYours": "That is already the address you sign in with."
     }
   },
   "modals": {

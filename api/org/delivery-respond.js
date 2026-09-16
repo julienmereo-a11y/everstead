@@ -87,6 +87,24 @@ async function handler(req, res) {
     // file themselves, which is the whole point of accepting once.
     await ensureConnection(db, user.id, delivery.org_id)
 
+    // If this arrived at an address that is not the one on the account, and the
+    // person proved they read that inbox to get here, record the address. That
+    // is what makes "accept once" true rather than "accept every time": without
+    // it the next delivery to the same work address resolves to nobody and the
+    // claim link dance starts again.
+    //
+    // The verified code is the condition, not the claim token. Holding the link
+    // shows the email was forwarded; answering the code shows the inbox is
+    // yours, and an address on an account silently receives everything sent to
+    // it afterwards.
+    const sentTo = (delivery.recipient_email || '').toLowerCase()
+    if (sentTo && sentTo !== email && delivery.claim_verified_at) {
+      const { error: regErr } = await db.rpc('register_verified_email', {
+        p_user_id: user.id, p_email: sentTo, p_source: 'delivery_claim',
+      })
+      if (regErr) console.error('[delivery-respond] could not record the address:', regErr)
+    }
+
     await db.from('activity_log').insert({
       user_id: user.id, actor_id: user.id,
       action: 'document.delivered_accepted', resource_type: 'documents',

@@ -52,6 +52,7 @@ const Dashboard             = lazy(() => import('./pages/Dashboard'))
 const DelegateDashboard     = lazy(() => import('./pages/DelegateDashboard'))
 const AcceptInvite          = lazy(() => import('./pages/AcceptInvite'))
 const AcceptDelivery        = lazy(() => import('./pages/AcceptDelivery'))
+const ConnectAddress        = lazy(() => import('./pages/ConnectAddress'))
 const AdvisorPortal         = lazy(() => import('./pages/AdvisorPortal'))
 const AdminPanel            = lazy(() => import('./pages/AdminPanel'))
 const AdminLogin            = lazy(() => import('./pages/AdminLogin'))
@@ -268,6 +269,7 @@ export default function App() {
               <Route path="/accept-invite" element={<AcceptInvite />} />
               {/* A document an organisation sent, for someone with no account yet. */}
               <Route path="/accept-delivery" element={<AcceptDelivery />} />
+              <Route path="/connect-address" element={<ConnectAddress />} />
               <Route path="/delegate-register" element={<DelegateRegister />} />
               <Route path="/choose-account" element={<ChooseAccount />} />
               <Route

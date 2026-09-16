@@ -9,6 +9,7 @@ import i18n from '../../../i18n'
 import { PLANS, redirectToCustomerPortal } from '../../../lib/stripe'
 import { Field, SectionShell, input, primaryBtn, secondaryBtn } from '../../dashboard/ui'
 import { AdviserSharingCard } from './AdviserSection'
+import { AddressesCard } from './AddressesCard'
 import { AlertCircle, Bell, Check, Copy, CreditCard, Download, ExternalLink, Gift, Globe, Loader2, Lock, ShieldCheck, Sparkles, Users } from 'lucide-react'
 import { Trans, useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
@@ -510,6 +511,8 @@ export function SettingsSection({ adviser, profile, isDemo, updateProfile, refre
             </p>
           )}
         </div>
+
+        <AddressesCard isDemo={isDemo} />
 
         {adviser?.firm && <AdviserSharingCard adviser={adviser} isDemo={isDemo} />}
 

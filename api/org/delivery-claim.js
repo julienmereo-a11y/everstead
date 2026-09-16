@@ -68,7 +68,10 @@ async function handler(req, res) {
     }).eq('id', d.id)
     if (error) return res.status(500).json({ error: 'Could not send a code. Please try again.' })
 
-    const { data: profile } = await db.from('profiles').select('language').ilike('email', d.recipient_email).maybeSingle()
+    const { data: claimantId } = await db.rpc('resolve_member_by_email', { p_email: d.recipient_email })
+    const { data: profile } = claimantId
+      ? await db.from('profiles').select('language').eq('id', claimantId).maybeSingle()
+      : { data: null }
     const sent = await sendClaimCodeEmail({
       to: d.recipient_email,
       lang: profile?.language === 'fr' ? 'fr' : 'en',

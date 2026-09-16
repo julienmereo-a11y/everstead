@@ -1,0 +1,56 @@
+{
+  "meta": {
+    "title": "Confirmer une adresse | Everstead"
+  },
+  "loading": "Vérification du lien",
+  "invalid": {
+    "title": "Ce lien n'est pas valide",
+    "body": "Il a peut-être été mal recopié, ou la demande a été retirée. Demandez à votre interlocuteur de vous l'envoyer à nouveau.",
+    "cta": "Aller sur Everstead"
+  },
+  "signedOut": {
+    "title": "{{firm}} vous demande des documents",
+    "body": "L'envoi a été fait à {{hint}}. Pour répondre, il vous faut un compte Everstead, et il n'est pas obligé d'utiliser cette adresse.",
+    "advice": "Inscrivez-vous avec une adresse personnelle que vous garderez. Vous pourrez confirmer votre adresse professionnelle ensuite, et tout ce qui vous est envoyé reste à vous si vous partez.",
+    "signUp": "Créer un compte gratuit",
+    "signIn": "J'ai déjà un compte",
+    "after": "Une fois connecté, ouvrez de nouveau ce lien depuis le même e-mail."
+  },
+  "confirm": {
+    "eyebrow": "Confirmer une adresse",
+    "title": "L'adresse {{hint}} est-elle la vôtre ?",
+    "body": "{{firm}} vous a contacté à cette adresse. Confirmez-la et sa demande apparaîtra dans votre compte, ainsi que tout ce qu'elle y enverra ensuite.",
+    "bodyPlain": "Confirmez cette adresse et tout ce qu'une organisation y envoie parviendra à votre compte.",
+    "asked": "Ce qui est demandé",
+    "send": "Envoyez-moi un code",
+    "sending": "Envoi en cours",
+    "why": "Nous envoyons un code à cette adresse. Le lire, c'est prouver que la boîte est la vôtre. Rien n'est ajouté à votre compte sans cela."
+  },
+  "code": {
+    "title": "Saisissez le code",
+    "body": "Nous avons envoyé un code à six chiffres à {{hint}}. Il expire dans dix minutes.",
+    "label": "Votre code",
+    "submit": "Confirmer l'adresse",
+    "checking": "Vérification",
+    "resend": "Envoyer un autre code"
+  },
+  "done": {
+    "title": "Adresse confirmée",
+    "body": "L'adresse {{email}} appartient désormais à votre compte. Tout ce qui y est envoyé vous parvient ici, quelle que soit votre adresse de connexion.",
+    "cta": "Voir ce qui est demandé"
+  },
+  "already": {
+    "title": "C'est déjà votre adresse",
+    "body": "Vous y êtes connecté, il n'y a donc rien à confirmer. Ce qui y a été envoyé se trouve déjà dans votre compte.",
+    "cta": "Voir mes documents"
+  },
+  "manual": {
+    "label": "Adresse e-mail",
+    "placeholder": "vous@entreprise.com"
+  },
+  "noLink": {
+    "title": "Connectez-vous pour confirmer une adresse",
+    "body": "Pour ajouter une adresse à votre compte, il faut d'abord être connecté, afin que nous sachions à quel compte elle appartient.",
+    "advice": "Si une organisation vous a écrit à une adresse qui n'est pas celle de votre connexion, ouvrez le lien de son e-mail une fois connecté et il vous ramènera ici."
+  }
+}

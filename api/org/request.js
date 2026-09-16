@@ -71,7 +71,14 @@ async function handler(req, res) {
     for (const recipientEmail of recipients) {
       if (!EMAIL_RE.test(recipientEmail)) { results.push({ email: recipientEmail, ok: false, reason: 'not an email address' }); continue }
       try {
-        const { data: recipient } = await db.from('profiles').select('id, language').ilike('email', recipientEmail).maybeSingle()
+        // Who this address resolves to, which includes an address somebody has
+        // proved is theirs even though they sign in with another one. An
+        // employer holds work addresses and people sign up with personal ones,
+        // so a plain profiles lookup answers "no account" for most employees.
+        const { data: recipientId } = await db.rpc('resolve_member_by_email', { p_email: recipientEmail })
+        const { data: recipient } = recipientId
+          ? await db.from('profiles').select('id, language').eq('id', recipientId).maybeSingle()
+          : { data: null }
 
         // One open ask per person per thing, so re-sending is a reminder rather
         // than a second card in their dashboard.
@@ -94,7 +101,8 @@ async function handler(req, res) {
           pack_id: packId,
           pack_name: packId ? (packName || 'Documents we need') : null,
         }))
-        const { error } = await db.from('adviser_document_requests').insert(rows)
+        const { data: inserted, error } = await db.from('adviser_document_requests')
+          .insert(rows).select('claim_token')
         if (error) {
           console.error('[org/request] insert failed:', error)
           results.push({ email: recipientEmail, ok: false, reason: 'could not save it' })
@@ -109,6 +117,7 @@ async function handler(req, res) {
           docTypes: toAsk, note, expiresDays,
           hasAccount: !!recipient,
           packName: packId ? (packName || null) : null,
+          claimToken: inserted?.[0]?.claim_token || null,
         })
         results.push({ email: recipientEmail, ok: true, asked: toAsk.length, skipped: items.length - toAsk.length, emailed })
       } catch (err) {
@@ -138,13 +147,17 @@ async function handler(req, res) {
   }
 
   if (action === 'remind') {
-    const { data: recipient } = await db.from('profiles').select('language').ilike('email', row.recipient_email || '').maybeSingle()
+    const { data: remindId } = await db.rpc('resolve_member_by_email', { p_email: row.recipient_email || '' })
+    const { data: recipient } = remindId
+      ? await db.from('profiles').select('language').eq('id', remindId).maybeSingle()
+      : { data: null }
     const { data: org } = await db.from('advisers').select('firm_name').eq('id', row.adviser_id).maybeSingle()
     const emailed = await sendOrgRequestEmail({
       to: row.recipient_email,
       lang: recipient?.language === 'fr' ? 'fr' : 'en',
       firmName: org?.firm_name || row.sender_name, docType: row.doc_type, note: row.note,
       expiresDays: row.expires_days, hasAccount: !!recipient, reminder: true,
+      claimToken: row.claim_token || null,
     })
     const { data: updated } = await db.from('adviser_document_requests')
       .update({

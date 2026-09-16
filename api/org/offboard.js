@@ -57,7 +57,13 @@ async function handler(req, res) {
   const summary = { sharesRevoked: 0, deliveriesWithdrawn: 0, requestsWithdrawn: 0, connectionEnded: false }
 
   try {
-    const { data: profile } = await db.from('profiles').select('id').ilike('email', email).maybeSingle()
+    // Who this address belongs to, including an address the person has proved
+    // is theirs while signing in with another one. A plain profiles lookup
+    // returns nothing for most employees, and because the statement below is
+    // built from these counts, it would have declared "we hold nothing" while a
+    // share was still live. An attestation that can be wrong is worse than none.
+    const { data: memberId } = await db.rpc('resolve_member_by_email', { p_email: email })
+    const profile = memberId ? { id: memberId } : null
 
     // 1. Every live share of theirs that this organisation could still open.
     if (profile?.id) {

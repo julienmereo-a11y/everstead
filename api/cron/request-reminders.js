@@ -30,7 +30,7 @@ async function handler(req, res) {
   let nudged = 0, skipped = 0
   try {
     const { data: due } = await db.from('adviser_document_requests')
-      .select('id, adviser_id, recipient_email, doc_type, note, expires_days, sender_name, reminded_at, reminder_count, pack_id, pack_name')
+      .select('id, adviser_id, recipient_email, doc_type, note, expires_days, sender_name, reminded_at, reminder_count, pack_id, pack_name, claim_token')
       .eq('status', 'requested')
       .lt('created_at', DAYS(3))
       .or(`reminded_at.is.null,reminded_at.lt.${DAYS(7)}`)
@@ -46,7 +46,10 @@ async function handler(req, res) {
     }
 
     for (const { rows, head } of groups.values()) {
-      const { data: profile } = await db.from('profiles').select('language').ilike('email', head.recipient_email).maybeSingle()
+      const { data: nudgeeId } = await db.rpc('resolve_member_by_email', { p_email: head.recipient_email })
+      const { data: profile } = nudgeeId
+        ? await db.from('profiles').select('language').eq('id', nudgeeId).maybeSingle()
+        : { data: null }
       const ok = await sendOrgRequestEmail({
         to: head.recipient_email,
         lang: profile?.language === 'fr' ? 'fr' : 'en',
@@ -57,6 +60,7 @@ async function handler(req, res) {
         hasAccount: !!profile,
         packName: head.pack_name,
         reminder: true,
+        claimToken: head.claim_token || null,
       })
       if (!ok) continue
       await db.from('adviser_document_requests').update({

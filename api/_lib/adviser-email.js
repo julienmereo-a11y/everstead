@@ -367,6 +367,8 @@ const ORG_REQUEST_COPY = {
     button:   'Open Everstead',
     buttonNew:'See what they asked for',
     newAccount:'You do not have an Everstead account yet. The link opens a free one, and the request will be waiting in it.',
+    otherAddress:'Signed in to Everstead with a different address?',
+    otherAddressLink:'Add this one to your account',
     safety:   'Everstead never asks for a document by email and never attaches one. If you were not expecting this, decline it in your vault and tell us at hello@everstead.care.',
     footer:   'Sent through Everstead because {{firm}} has your address. They cannot see anything in your vault unless you share it.',
   },
@@ -382,17 +384,23 @@ const ORG_REQUEST_COPY = {
     button:   'Ouvrir Everstead',
     buttonNew:'Voir ce qui est demandé',
     newAccount:"Vous n'avez pas encore de compte Everstead. Le lien en ouvre un gratuitement, et la demande vous y attendra.",
+    otherAddress:"Vous êtes inscrit sur Everstead avec une autre adresse\u00a0?",
+    otherAddressLink:"Ajoutez celle-ci à votre compte",
     safety:   "Everstead ne demande jamais un document par e-mail et n'en joint jamais. Si vous n'attendiez pas cette demande, refusez-la depuis votre coffre et écrivez-nous à hello@everstead.care.",
     footer:   "Envoyé via Everstead parce que {{firm}} dispose de votre adresse. Elle ne peut rien voir dans votre coffre tant que vous ne partagez rien.",
   },
 }
 
-export async function sendOrgRequestEmail({ to, lang = 'en', firmName, docType, docTypes, note, expiresDays, hasAccount = true, reminder = false, packName }) {
+export async function sendOrgRequestEmail({ to, lang = 'en', firmName, docType, docTypes, note, expiresDays, hasAccount = true, reminder = false, packName, claimToken }) {
   if (!to) return false
   const L = lang === 'fr' ? 'fr' : 'en'
   const C = ORG_REQUEST_COPY[L]
   const prefix = L === 'fr' ? '/fr' : ''
   const url = `${APP}${prefix}/dashboard?tab=documents`
+  // The way back for someone whose Everstead account uses a different address
+  // from the one their employer holds, which is most people. Without this the
+  // ask is invisible to them and there is nothing on the page to explain why.
+  const connectUrl = claimToken ? `${APP}${prefix}/connect-address?t=${encodeURIComponent(claimToken)}` : null
   const vars = { firm: esc(firmName || (L === 'fr' ? 'une organisation' : 'an organisation')) }
   const items = (Array.isArray(docTypes) && docTypes.length ? docTypes : [docType]).filter(Boolean)
   const inner = `
@@ -406,6 +414,7 @@ export async function sendOrgRequestEmail({ to, lang = 'en', firmName, docType, 
     <p style="margin:0 0 22px;color:#4a5568;font-size:15px;line-height:1.6;">${expiresDays ? fill(C.windowFor, { days: String(expiresDays) }) : C.windowOpen}</p>
     ${hasAccount ? '' : `<p style="margin:0 0 22px;color:#4a5568;font-size:15px;line-height:1.6;">${C.newAccount}</p>`}
     ${button(url, hasAccount ? C.button : C.buttonNew)}
+    ${connectUrl ? `<p style="margin:22px 0 0;color:#4a5568;font-size:14px;line-height:1.6;">${C.otherAddress} <a href="${connectUrl}" style="color:#1e3a5f;">${C.otherAddressLink}</a></p>` : ''}
     <p style="margin:26px 0 0;color:#4a5568;font-size:14px;line-height:1.6;">${C.safety}</p>
     <p style="margin:18px 0 0;color:#9ca3af;font-size:13px;line-height:1.5;">${fill(C.footer, vars)}</p>`
   try {
@@ -427,6 +436,52 @@ export async function sendOrgRequestEmail({ to, lang = 'en', firmName, docType, 
 // The link alone used to be the whole capability. This is the second factor,
 // and it only ever goes to the address the organisation addressed the delivery
 // to, so forwarding the link does not carry the code with it.
+// Confirming that an address belongs to you. Deliberately not the delivery
+// claim code: this one grants nothing on its own, it attaches an address to an
+// account, and the copy has to say so plainly because the consequence lasts.
+const ADDRESS_CODE_COPY = {
+  en: {
+    subject:  'Confirm this address: {{code}}',
+    preheader:'It expires in ten minutes.',
+    title:    'Confirm this address',
+    lead:     'Enter this code in Everstead to add this address to your account. Anything sent here by an organisation will then reach your account, wherever you sign in from.',
+    leadFirm: '{{firm}} has been in touch at this address. Enter this code in Everstead to add it to your account, so what they send reaches you wherever you sign in from.',
+    safety:   'If you did not ask for this code, ignore this email. No address is added without it, and nothing about your account has changed. Tell us at hello@everstead.care if it keeps arriving.',
+  },
+  fr: {
+    subject:  'Confirmez cette adresse\u00a0: {{code}}',
+    preheader:'Il expire dans dix minutes.',
+    title:    'Confirmez cette adresse',
+    lead:     "Saisissez ce code dans Everstead pour ajouter cette adresse à votre compte. Ce qu'une organisation envoie ici parviendra alors à votre compte, quelle que soit l'adresse de connexion.",
+    leadFirm: "{{firm}} vous a contacté à cette adresse. Saisissez ce code dans Everstead pour l'ajouter à votre compte, afin que leurs envois vous parviennent quelle que soit votre adresse de connexion.",
+    safety:   "Si vous n'avez pas demandé ce code, ignorez cet e-mail. Aucune adresse n'est ajoutée sans lui, et rien n'a changé sur votre compte. Écrivez-nous à hello@everstead.care s'il continue d'arriver.",
+  },
+}
+
+export async function sendAddressCodeEmail({ to, lang = 'en', firmName, code }) {
+  if (!to || !code) return false
+  const L = lang === 'fr' ? 'fr' : 'en'
+  const C = ADDRESS_CODE_COPY[L]
+  const lead = firmName ? fill(C.leadFirm, { firm: esc(firmName) }) : C.lead
+  const inner = `
+    <h1 style="margin:0 0 16px;color:#0d1628;font-size:24px;font-weight:normal;">${C.title}</h1>
+    <p style="margin:0 0 20px;color:#4a5568;font-size:16px;line-height:1.6;">${lead}</p>
+    <p style="margin:0 0 22px;padding:18px 24px;border-radius:12px;background:#f0f3f9;color:#0d1628;font-size:34px;font-weight:700;letter-spacing:.24em;text-align:center;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;">${esc(code)}</p>
+    <p style="margin:0;color:#9ca3af;font-size:13px;line-height:1.6;">${C.safety}</p>`
+  try {
+    await sendEmail(resend, {
+      from: FROM, to,
+      subject: fill(C.subject, { code }),
+      html: shell(inner),
+      preheader: C.preheader,
+    })
+    return true
+  } catch (err) {
+    console.error('[adviser-email] address code failed:', err?.message)
+    return false
+  }
+}
+
 const CLAIM_CODE_COPY = {
   en: {
     subject:  'Your Everstead code: {{code}}',

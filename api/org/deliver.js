@@ -84,8 +84,16 @@ async function handler(req, res) {
     try {
       // A recipient who already has an account gets it in their dashboard; one
       // who does not gets a claim link that opens a free account first.
-      const { data: recipient } = await db
-        .from('profiles').select('id, language').ilike('email', recipientEmail).maybeSingle()
+      //
+      // "Has an account" cannot mean "signed up with this address". An employer
+      // holds work addresses and people sign up with personal ones, so the
+      // lookup asks who this address resolves to, which includes an address
+      // somebody has since proved is theirs. Without that, auto-filing would
+      // never start for the very people it was built for.
+      const { data: recipientId } = await db.rpc('resolve_member_by_email', { p_email: recipientEmail })
+      const { data: recipient } = recipientId
+        ? await db.from('profiles').select('id, language').eq('id', recipientId).maybeSingle()
+        : { data: null }
 
       let path = storagePath
       if (recipients.length > 1) {
