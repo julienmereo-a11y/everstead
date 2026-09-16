@@ -49,6 +49,9 @@ export function InstructionsSection({ instructions, loading, add, update, remove
   const [editingInstruction, setEditingInstruction] = useState(null)
   const [form, setForm] = useState(emptyForm)
   const [saving, setSaving] = useState(false)
+  // add() and update() both throw. Without a catch the modal stayed open with
+  // no message, and pressing Save again created a duplicate instruction.
+  const [saveError, setSaveError] = useState(null)
 
   // ── AI writing assistant (conversational) ──
   const openingThread = () => [{ role: 'assistant', content: t('instructions.assistant.greeting') }]
@@ -206,6 +209,7 @@ export function InstructionsSection({ instructions, loading, add, update, remove
   const handleSubmit = async (e) => {
     e.preventDefault()
     setSaving(true)
+    setSaveError(null)
     try {
       const payload = {
         title: form.title,
@@ -217,6 +221,8 @@ export function InstructionsSection({ instructions, loading, add, update, remove
       if (editingInstruction) await update(editingInstruction.id, payload)
       else await add(payload)
       closeModal()
+    } catch (err) {
+      setSaveError(err?.message || t('instructions.saveFailed'))
     } finally {
       setSaving(false)
     }
@@ -460,6 +466,7 @@ export function InstructionsSection({ instructions, loading, add, update, remove
             <Field label={t('instructions.fields.steps')}>
               <textarea className={input} rows={6} value={form.stepsText} onChange={e => setForm(p => ({ ...p, stepsText: e.target.value }))} placeholder={t('instructions.fields.stepsPlaceholder')} />
             </Field>
+            {saveError && <p className="text-sm text-red-600 mb-3">{saveError}</p>}
             <div className="flex gap-3 pt-2">
               <button type="submit" disabled={saving} className={`${primaryBtn} flex-1`}>
                 {saving ? t('instructions.saving') : editingInstruction ? t('instructions.saveChanges') : t('instructions.add')}

@@ -153,6 +153,10 @@ export default function DelegateDashboard() {
   const [alerts, setAlerts] = useState([])
   const [activity, setActivity] = useState([])
   const [downloadingId, setDownloadingId] = useState(null)
+  // Kept apart from `error`, which the fatal guard below treats as "this
+  // workspace is unavailable". A single document that will not open must not
+  // replace the executor's entire session with an empty state.
+  const [docError, setDocError] = useState('')
   const [expandedDoc, setExpandedDoc] = useState(null)
   const [expandedAccount, setExpandedAccount] = useState(null)
   const [expandedAlert, setExpandedAlert] = useState(null)
@@ -420,7 +424,8 @@ export default function DelegateDashboard() {
       const signedUrl = await getDocumentUrl(documentRecord.storage_path)
       window.open(signedUrl, '_blank', 'noopener,noreferrer')
     } catch {
-      setError(t('errors.openDoc'))
+      setDocError(t('errors.openDoc'))
+      setTimeout(() => setDocError(''), 6000)
     } finally {
       setDownloadingId(null)
     }
@@ -923,6 +928,9 @@ export default function DelegateDashboard() {
 
           {!searchResults && activeTab === 'documents' && (
             <Panel title={t('documents.title')} icon={FileText} count={accessibleDocuments.length}>
+              {docError && (
+                <p className="mb-4 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">{docError}</p>
+              )}
               {accessibleDocuments.length > 0 ? (
                 <div className="space-y-2">
                   {accessibleDocuments.map(item => {

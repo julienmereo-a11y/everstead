@@ -659,7 +659,8 @@
       "saveFailed": "Could not save the message. Please try again."
     },
     "saving": "Saving…",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "releaseFailed": "That did not send. Please try again, or contact us if it keeps failing."
   },
   "people": {
     "title": "Trusted People",
@@ -862,7 +863,8 @@
     },
     "saving": "Saving…",
     "saveChanges": "Save changes",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "saveFailed": "That did not save. Please try again."
   },
   "subscriptions": {
     "title": "Subscriptions",

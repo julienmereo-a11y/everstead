@@ -356,7 +356,12 @@ export function SettingsSection({ adviser, profile, isDemo, updateProfile, refre
     e.preventDefault()
     if (isDemo) { setProfileSaved(true); setTimeout(() => setProfileSaved(false), 2000); return }
     setProfileSaving(true)
-    try { await updateProfile(profileForm); setProfileSaved(true); setProfileError(null); setTimeout(() => setProfileSaved(false), 2500) }
+    // date_of_birth is a Postgres `date`. An untouched field is '', which fails
+    // the cast and 400s the whole UPDATE, so none of the other edits save
+    // either. Empty means "not set", the same guard useData.js applies.
+    const payload = { ...profileForm }
+    if (payload.date_of_birth === '') payload.date_of_birth = null
+    try { await updateProfile(payload); setProfileSaved(true); setProfileError(null); setTimeout(() => setProfileSaved(false), 2500) }
     catch (err) { setProfileError(err.message ?? t('settings.profile.saveFailed')) }
     finally { setProfileSaving(false) }
   }

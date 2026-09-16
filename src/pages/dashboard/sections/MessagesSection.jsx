@@ -135,6 +135,10 @@ export function MessagesSection({ messages: initialMessages, loading, people, is
   const [showCompose, setShowCompose]   = useState(false)
   const [expanded, setExpanded]         = useState(null)
   const [confirmRelease, setConfirmRelease] = useState(null)  // message id to confirm
+  // Releasing can fail: releaseExternal and updateMessage both throw. Without
+  // a catch the finally still closed the strip, so the row simply did not move
+  // and nothing said why. A partial release-all read as a complete one.
+  const [releaseError, setReleaseError] = useState(null)
   const [confirmReleaseAll, setConfirmReleaseAll] = useState(false)
   const [releasing, setReleasing]       = useState(null)  // id or 'all'
   const [releasedIds, setReleasedIds]   = useState(
@@ -202,6 +206,7 @@ export function MessagesSection({ messages: initialMessages, loading, people, is
 
   const doRelease = async (id) => {
     setReleasing(id)
+    setReleaseError(null)
     try {
       if (!isDemo) {
         const m = messages.find(x => x.id === id)
@@ -212,28 +217,44 @@ export function MessagesSection({ messages: initialMessages, loading, people, is
         }
       }
       setReleasedIds(prev => new Set([...prev, id]))
+      setConfirmRelease(null)
+    } catch (err) {
+      setReleaseError(err?.message || t('messages.releaseFailed'))
     } finally {
       setReleasing(null)
-      setConfirmRelease(null)
     }
   }
 
   const doReleaseAll = async () => {
     setReleasing('all')
+    setReleaseError(null)
+    const pending = messages.filter(m => !m.released)
     try {
-      if (!isDemo) {
-        await Promise.all(
-          messages.filter(m => !m.released).map(m =>
-            m.recipient_email
-              ? releaseExternal(m.id)
-              : updateMessage(m.id, { released: true, released_at: new Date().toISOString() })
-          )
-        )
+      if (isDemo) {
+        setReleasedIds(new Set(messages.map(m => m.id)))
+        setConfirmReleaseAll(false)
+        return
       }
-      setReleasedIds(new Set(messages.map(m => m.id)))
+      // allSettled, not all. A rejection from Promise.all abandons the other
+      // sends while they are still in flight, so nothing records that they
+      // went out and a retry delivers them twice. Record every one that
+      // succeeded, then report only what is genuinely still unsent.
+      const results = await Promise.allSettled(
+        pending.map(m =>
+          m.recipient_email
+            ? releaseExternal(m.id)
+            : updateMessage(m.id, { released: true, released_at: new Date().toISOString() })
+        )
+      )
+      const sent = pending.filter((_, i) => results[i].status === 'fulfilled').map(m => m.id)
+      if (sent.length) setReleasedIds(prev => new Set([...prev, ...sent]))
+      const failed = results.find(r => r.status === 'rejected')
+      if (failed) setReleaseError(failed.reason?.message || t('messages.releaseFailed'))
+      else setConfirmReleaseAll(false)
+    } catch (err) {
+      setReleaseError(err?.message || t('messages.releaseFailed'))
     } finally {
       setReleasing(null)
-      setConfirmReleaseAll(false)
     }
   }
 
@@ -408,6 +429,7 @@ export function MessagesSection({ messages: initialMessages, loading, people, is
                   <div className="border-t border-amber-200 bg-amber-50 px-5 py-4 flex items-center gap-4 flex-wrap">
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-semibold text-amber-900">{t('messages.confirm.title')}</p>
+                      {releaseError && <p className="text-xs text-red-700 mt-1">{releaseError}</p>}
                       <p className="text-xs text-amber-700 mt-0.5">
                         {msg.recipient_email
                           ? <Trans t={t} i18nKey="messages.confirm.bodyEmail" values={{ email: msg.recipient_email }} components={{ b: <strong /> }} />
@@ -589,6 +611,9 @@ export function MessagesSection({ messages: initialMessages, loading, people, is
             <p className="text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded-xl px-4 py-3">
               {t('messages.releaseAllModal.warning')}
             </p>
+            {releaseError && (
+              <p className="text-xs text-red-700 bg-red-50 border border-red-200 rounded-xl px-4 py-3">{releaseError}</p>
+            )}
             <div className="flex gap-3 pt-1">
               <button
                 onClick={doReleaseAll}

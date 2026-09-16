@@ -661,7 +661,8 @@
       "saveFailed": "Impossible d'enregistrer le message. Veuillez réessayer."
     },
     "saving": "Enregistrement…",
-    "cancel": "Annuler"
+    "cancel": "Annuler",
+    "releaseFailed": "L'envoi n'a pas abouti. Réessayez, ou écrivez-nous si cela persiste."
   },
   "people": {
     "title": "Personnes de confiance",
@@ -864,7 +865,8 @@
     },
     "saving": "Enregistrement…",
     "saveChanges": "Enregistrer les modifications",
-    "cancel": "Annuler"
+    "cancel": "Annuler",
+    "saveFailed": "L'enregistrement n'a pas abouti. Veuillez réessayer."
   },
   "subscriptions": {
     "title": "Abonnements",
