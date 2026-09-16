@@ -4,6 +4,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { Send, Loader2, ArrowLeft, Heart, Mail } from 'lucide-react'
 import EmailCaptureCard from '../components/EmailCaptureCard'
 import Markdown from '../components/Markdown'
+import { pageMeta } from '../i18n/pageMeta'
 
 // ─────────────────────────────────────────────────────────────────────────────
 // WHEN SOMEONE DIES — Free public AI guide
@@ -16,8 +17,6 @@ import Markdown from '../components/Markdown'
 // procedure, because gov.uk has no mairie and France has no Tell Us Once.
 const COPY = {
   en: {
-    metaTitle: 'What to do when someone dies | Free UK guide | Everstead',
-    metaDesc: 'A free, compassionate AI guide to help you navigate the practical steps after a death in the UK, from registering the death to sorting the estate.',
     headerLabel: 'What to do when someone dies',
     back: 'Back to Everstead',
     h1: 'What to do when someone dies',
@@ -38,8 +37,6 @@ const COPY = {
     ],
   },
   fr: {
-    metaTitle: 'Que faire après un décès ? | Guide gratuit France | Everstead',
-    metaDesc: "Un guide gratuit et bienveillant pour vous accompagner dans les démarches après un décès en France : déclaration, obsèques, banques, organismes et succession.",
     headerLabel: 'Que faire après un décès',
     back: "Retour sur Everstead",
     h1: 'Que faire après un décès',
@@ -69,6 +66,7 @@ const FAQ_FR = [
 ]
 
 export default function WhenSomeoneDies() {
+  const meta = pageMeta('whenSomeoneDies')
   const lang = typeof window !== 'undefined' && (window.location.pathname.startsWith('/fr/') || window.location.pathname === '/fr' || window.location.pathname.startsWith('/assistant-apres-deces')) ? 'fr' : 'en'
   const C = COPY[lang]
   const [messages, setMessages] = useState([
@@ -138,17 +136,17 @@ export default function WhenSomeoneDies() {
   return (
     <>
       <Helmet>
-        <title>{C.metaTitle}</title>
+        <title>{meta.title}</title>
         <meta
           name="description"
-          content={C.metaDesc}
+          content={meta.description}
         />
         <link rel="canonical" href={pageUrl} />
         <link rel="alternate" hrefLang="en-GB" href="https://www.everstead.care/what-to-do-when-someone-dies" />
         <link rel="alternate" hrefLang="fr" href="https://www.everstead.care/fr/assistant-apres-deces" />
         <meta property="og:type" content="website" />
-        <meta property="og:title" content={C.metaTitle} />
-        <meta property="og:description" content={C.metaDesc} />
+        <meta property="og:title" content={meta.title} />
+        <meta property="og:description" content={meta.description} />
         <meta property="og:url" content={pageUrl} />
         <meta property="og:image" content="https://www.everstead.care/og-image.jpg" />
         <meta name="twitter:card" content="summary_large_image" />

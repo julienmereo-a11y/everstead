@@ -4,6 +4,7 @@ import { Link, Navigate } from 'react-router-dom'
 import i18n from '../i18n'
 import { Printer, RotateCcw, CheckCircle2, Circle } from 'lucide-react'
 import EmailCaptureCard from '../components/EmailCaptureCard'
+import { pageMeta } from '../i18n/pageMeta'
 
 // ─── Checklist data ───────────────────────────────────────────────────────────
 
@@ -214,6 +215,7 @@ function DontSection({ section }) {
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
 function ExecutorChecklistEn() {
+  const meta = pageMeta('executorChecklist')
   const [checkedMap, setCheckedMap] = useState({})
   const [showResetConfirm, setShowResetConfirm] = useState(false)
   const [loaded, setLoaded] = useState(false)
@@ -272,16 +274,16 @@ function ExecutorChecklistEn() {
   return (
     <>
       <Helmet>
-        <title>Executor Checklist: What to Do After Someone Dies | Everstead</title>
+        <title>{meta.title}</title>
         <meta
           name="description"
-          content="A free, complete executor checklist for England & Wales. Step-by-step tasks for the first 72 hours, first week, first month, and beyond."
+          content={meta.description}
         />
         <link rel="canonical" href="https://www.everstead.care/executor-checklist" />
-        <meta property="og:title" content="Executor Checklist: What to Do After Someone Dies | Everstead" />
+        <meta property="og:title" content={meta.title} />
         <meta
           property="og:description"
-          content="A free, complete executor checklist for England & Wales. Step-by-step tasks for the first 72 hours, first week, first month, and beyond."
+          content={meta.description}
         />
         <meta property="og:url" content="https://www.everstead.care/executor-checklist" />
         <meta property="og:type" content="website" />

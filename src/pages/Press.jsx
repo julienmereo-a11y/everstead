@@ -4,14 +4,13 @@ import { useReveal } from '../components/useReveal'
 import HreflangLinks from '../components/HreflangLinks'
 import i18n from '../i18n'
 import { ArrowRight, Mail } from 'lucide-react'
+import { pageMeta } from '../i18n/pageMeta'
 
 // Bilingual page: /press (EN) and /fr/press (FR, canonical), plus the vanity
 // alias /presse which also renders French. The two kits are siblings, not
 // translations: facts, pricing and story angles differ by market.
 const COPY = {
   en: {
-    metaTitle: 'Press & Media | Everstead',
-    metaDesc: 'Press kit, company facts, and media enquiries for Everstead, the secure personal vault for families in the UK and France.',
     eyebrow: 'Press & Media',
     h1: 'Everything that matters, in one place.',
     heroSub: 'For press enquiries, interview requests, or to request our press kit, contact us below. We typically respond within one business day.',
@@ -62,8 +61,6 @@ const COPY = {
     interviewSubject: 'Interview%20request',
   },
   fr: {
-    metaTitle: 'Presse et médias | Everstead',
-    metaDesc: "Dossier de presse, fiche d'identité et contact médias d'Everstead, le coffre-fort personnel sécurisé des familles, au Royaume-Uni et en France.",
     eyebrow: 'Presse et médias',
     h1: 'Tout ce qui compte, au même endroit.',
     heroSub: "Pour toute demande presse, interview ou dossier de presse, contactez-nous ci-dessous. Nous répondons généralement sous un jour ouvré.",
@@ -114,6 +111,7 @@ const COPY = {
 }
 
 export default function Press() {
+  const meta = pageMeta('press')
   useReveal()
   const lang = i18n.language === 'fr' || window.location.pathname.startsWith('/presse') ? 'fr' : 'en'
   const C = COPY[lang]
@@ -122,12 +120,12 @@ export default function Press() {
   return (
     <>
       <Helmet>
-        <title>{C.metaTitle}</title>
-        <meta name="description" content={C.metaDesc} />
+        <title>{meta.title}</title>
+        <meta name="description" content={meta.description} />
         <link rel="canonical" href={pageUrl} />
         <meta property="og:type" content="website" />
-        <meta property="og:title" content={C.metaTitle} />
-        <meta property="og:description" content={C.metaDesc} />
+        <meta property="og:title" content={meta.title} />
+        <meta property="og:description" content={meta.description} />
         <meta property="og:url" content={pageUrl} />
         <meta property="og:image" content="https://www.everstead.care/og-image.jpg" />
         <meta name="twitter:card" content="summary_large_image" />

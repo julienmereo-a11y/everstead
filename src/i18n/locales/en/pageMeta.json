@@ -1,0 +1,26 @@
+{
+  "whenSomeoneDies": {
+    "title": "What to do when someone dies | Free UK guide | Everstead",
+    "description": "A free, compassionate AI guide to help you navigate the practical steps after a death in the UK, from registering the death to sorting the estate."
+  },
+  "press": {
+    "title": "Press & Media | Everstead",
+    "description": "Press kit, company facts, and media enquiries for Everstead, the secure personal vault for families in the UK and France."
+  },
+  "executorChecklist": {
+    "title": "Executor Checklist: What to Do After Someone Dies | Everstead",
+    "description": "A free, complete executor checklist for England & Wales. Step-by-step tasks for the first 72 hours, first week, first month, and beyond."
+  },
+  "familyVault": {
+    "title": "Family Vault | Two Private Vaults, One Subscription | Everstead",
+    "description": "Everstead+ gives couples two completely private vaults under one subscription. Each person keeps their own data. Share only what you choose. No competitor offers this."
+  },
+  "changelog": {
+    "title": "Changelog | Everstead",
+    "description": "What's new and what's improved in Everstead, a running log of product updates, new features, and fixes."
+  },
+  "adviserDpa": {
+    "title": "Data Processing Agreement | Everstead Advisers",
+    "description": "Everstead's Data Processing Agreement for Adviser accounts: UK GDPR Article 28 compliant terms governing how Everstead processes client family data on behalf of advisers."
+  }
+}

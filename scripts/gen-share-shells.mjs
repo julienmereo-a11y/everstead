@@ -108,6 +108,16 @@ const PAGES = {
   '/will-generator': { ns: 'willGenerator', frRoute: '/preparer-mon-testament' },
   '/compare': { ns: 'compare', metaPath: 'index.meta' },
   '/get-started': 'getStarted',
+  // Pages with no namespace of their own: their meta lives in the shared
+  // pageMeta namespace, which the page itself also reads, so the two cannot
+  // drift. `langs: ['en']` marks a page that exists only in the English tree,
+  // so no French shell and no French hreflang are written for it.
+  '/what-to-do-when-someone-dies': { ns: 'pageMeta', metaPath: 'whenSomeoneDies', frRoute: '/assistant-apres-deces' },
+  '/press':              { ns: 'pageMeta', metaPath: 'press', frRoute: '/presse' },
+  '/executor-checklist': { ns: 'pageMeta', metaPath: 'executorChecklist', langs: ['en'] },
+  '/family-vault':       { ns: 'pageMeta', metaPath: 'familyVault',       langs: ['en'] },
+  '/changelog':          { ns: 'pageMeta', metaPath: 'changelog',         langs: ['en'] },
+  '/adviser-dpa':        { ns: 'pageMeta', metaPath: 'adviserDpa',        langs: ['en'] },
 }
 // The six comparison pages build their meta from the competitor block rather
 // than a fixed path (title from detail.metaTitle with that competitor's
@@ -127,9 +137,30 @@ for (const slug of Object.keys(JSON.parse(readFileSync(join(root, 'src/i18n/loca
   }
 }
 
+// Persona pages build their meta out of the persona block, exactly as
+// UseCases.jsx renders it: personaTitle carrying that persona's title, and the
+// tagline followed by the opening of the body. /use-cases/families is a page of
+// its own with its own meta block, so it keeps the entry above.
+for (const slug of ['parents', 'aging-adults', 'executors', 'advisors']) {
+  PAGES[`/use-cases/${slug}`] = { ns: 'useCases', personaSlug: slug }
+}
+
+// Resource section indexes take the label and description the page shows. A
+// French section only earns a shell once it has a French article, mirroring the
+// rule the sitemap applies: an empty /fr/resources/guides should not be indexed
+// and should not be advertised as a French alternate either.
+const FR_SECTIONS = new Set(posts.filter(p => p.lang === 'fr').map(p => p.section))
+for (const sec of SECTIONS) {
+  PAGES[`/resources/${sec}`] = {
+    ns: 'resources',
+    sectionSlug: sec,
+    langs: FR_SECTIONS.has(sec) ? ['en', 'fr'] : ['en'],
+  }
+}
+
 let pagesWritten = 0
 for (const [route, spec] of Object.entries(PAGES)) {
-  const { ns, metaPath = 'meta', frRoute = route, compareSlug, langs = ['en', 'fr'] } =
+  const { ns, metaPath = 'meta', frRoute = route, compareSlug, personaSlug, sectionSlug, langs = ['en', 'fr'] } =
     typeof spec === 'string' ? { ns: spec } : spec
   for (const lang of langs) {
     const f = join(root, 'src/i18n/locales', lang, `${ns}.json`)
@@ -141,6 +172,16 @@ for (const [route, spec] of Object.entries(PAGES)) {
       if (!c) continue
       title = (json.detail?.metaTitle || '').replace('{{tagline}}', c.tagline || c.name || '')
       desc  = c.subhead || c.headline
+    } else if (personaSlug) {
+      const persona = json.personas?.[personaSlug]
+      if (!persona) continue
+      title = (json.meta?.personaTitle || '').replace('{{title}}', persona.title || '')
+      desc  = `${persona.tagline || ''} ${(persona.body || '').slice(0, 120)}`.trim()
+    } else if (sectionSlug) {
+      const sec = json.sections?.[sectionSlug]
+      if (!sec) continue
+      title = sec.label ? `${sec.label} | Everstead` : null
+      desc  = sec.desc
     } else {
       const meta = metaPath.split('.').reduce((o, k) => (o && o[k]) || {}, json)
       title = meta.title

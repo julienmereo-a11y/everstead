@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { Helmet } from 'react-helmet-async'
 import { useReveal } from '../components/useReveal'
 import { ChevronDown } from 'lucide-react'
+import { pageMeta } from '../i18n/pageMeta'
 
 const EFFECTIVE_DATE = '1 May 2026'
 const COMPANY        = 'Everstead Digital Ltd'
@@ -165,12 +166,13 @@ function Clause({ title, body }) {
 }
 
 export default function AdviserDPA() {
+  const meta = pageMeta('adviserDpa')
   useReveal()
   return (
     <>
       <Helmet>
-        <title>Data Processing Agreement | Everstead Advisers</title>
-        <meta name="description" content="Everstead's Data Processing Agreement for Adviser accounts: UK GDPR Article 28 compliant terms governing how Everstead processes client family data on behalf of advisers." />
+        <title>{meta.title}</title>
+        <meta name="description" content={meta.description} />
         <link rel="canonical" href="https://www.everstead.care/adviser-dpa" />
       </Helmet>
 

@@ -2,6 +2,7 @@ import React from 'react'
 import { Helmet } from 'react-helmet-async'
 import { useReveal } from '../components/useReveal'
 import { Link } from 'react-router-dom'
+import { pageMeta } from '../i18n/pageMeta'
 
 const entries = [
   {
@@ -285,16 +286,17 @@ const entries = [
 ]
 
 export default function Changelog() {
+  const meta = pageMeta('changelog')
   useReveal()
   return (
     <>
       <Helmet>
-        <title>Changelog | Everstead</title>
-        <meta name="description" content="What's new and what's improved in Everstead, a running log of product updates, new features, and fixes." />
+        <title>{meta.title}</title>
+        <meta name="description" content={meta.description} />
         <link rel="canonical" href="https://www.everstead.care/changelog" />
         <meta property="og:type" content="website" />
-        <meta property="og:title" content="Changelog | Everstead" />
-        <meta property="og:description" content="What's new and what's improved in Everstead, a running log of product updates, new features, and fixes." />
+        <meta property="og:title" content={meta.title} />
+        <meta property="og:description" content={meta.description} />
         <meta property="og:url" content="https://www.everstead.care/changelog" />
         <meta property="og:image" content="https://www.everstead.care/og-image.jpg" />
         <meta name="twitter:card" content="summary_large_image" />

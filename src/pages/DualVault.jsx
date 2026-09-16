@@ -1,4 +1,5 @@
 import React from 'react'
+import { pageMeta } from '../i18n/pageMeta'
 import { Helmet } from 'react-helmet-async'
 import { Link } from 'react-router-dom'
 import { useReveal } from '../components/useReveal'
@@ -68,16 +69,17 @@ const testimonials = [
 ]
 
 export default function DualVault() {
+  const meta = pageMeta('familyVault')
   useReveal()
 
   return (
     <>
       <Helmet>
-        <title>Family Vault | Two Private Vaults, One Subscription | Everstead</title>
-        <meta name="description" content="Everstead+ gives couples two completely private vaults under one subscription. Each person keeps their own data. Share only what you choose. No competitor offers this." />
+        <title>{meta.title}</title>
+        <meta name="description" content={meta.description} />
         <link rel="canonical" href="https://www.everstead.care/family-vault" />
         <meta property="og:type" content="website" />
-        <meta property="og:title" content="Family Vault | Two Private Vaults, One Subscription | Everstead" />
+        <meta property="og:title" content={meta.title} />
         <meta property="og:description" content="Two completely private vaults. One subscription. Each person keeps their own data, shares only what they choose. The only estate planning tool built for couples who value their privacy." />
         <meta property="og:url" content="https://www.everstead.care/family-vault" />
         <meta property="og:image" content="https://www.everstead.care/og-image.jpg" />
