@@ -201,5 +201,30 @@
     "stillQuestion": "Encore une question ?",
     "writeToUs": "Écrivez-nous",
     "replyTime": "et nous vous répondrons sous un jour ouvré."
+  },
+  "business": {
+    "eyebrow": "Pour les organisations",
+    "title": "Deux offres, selon la relation.",
+    "sub": "Deux façons de travailler avec des personnes qui ne sont pas encore vos clients. Les deux se décident lors d'un échange et se facturent à l'année, pas par carte bancaire.",
+    "learnMore": "En savoir plus",
+    "cta": "Réserver une démo",
+    "exchange": {
+      "name": "Everstead pour les entreprises",
+      "blurb": "Déposez un document dans le coffre de la personne. Demandez un seul justificatif et ne voyez que celui-là, le temps qu'il vous faut. Sans limite, au tarif de la taille de votre organisation et non de ce que vous envoyez.",
+      "perYear": "par an",
+      "talk": "Parlons-en",
+      "bands": {
+        "small": "Jusqu'à 50 personnes touchées",
+        "mid": "De 50 à 250",
+        "large": "De 250 à 1 000",
+        "above": "Plus de 1 000"
+      },
+      "note": "Facturation annuelle. Une organisation vérifiée peut envoyer quelques documents par mois sans frais, car chaque document accepté offre à quelqu'un son propre coffre gratuit."
+    },
+    "pro": {
+      "blurb": "Tout ce qui précède, plus l'espace client : le suivi, la file de relecture, les dossiers, et le nom de votre étude dans le coffre du client.",
+      "unit": "par famille cliente et par an, en plus d'un abonnement convenu avec vous",
+      "note": "Conseillers, notaires et avocats. Nous accompagnons personnellement les premières études, l'abonnement se fixe donc lors de l'échange plutôt qu'en ligne."
+    }
   }
 }

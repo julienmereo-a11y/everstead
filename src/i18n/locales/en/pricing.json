@@ -201,5 +201,30 @@
     "stillQuestion": "Still have a question?",
     "writeToUs": "Write to us",
     "replyTime": "and we'll reply within one business day."
+  },
+  "business": {
+    "eyebrow": "For organisations",
+    "title": "Two products, depending on the relationship.",
+    "sub": "Two ways to work with people who are not your customers yet. Both are sold on a call and invoiced yearly, not bought with a card.",
+    "learnMore": "Learn more",
+    "cta": "Book a demo",
+    "exchange": {
+      "name": "Everstead for Business",
+      "blurb": "Send a document into someone's own vault. Ask for one item and see that item alone, for as long as you need it. Unlimited, priced by the size of your organisation rather than by what you send.",
+      "perYear": "a year",
+      "talk": "Talk to us",
+      "bands": {
+        "small": "Up to 50 people reached",
+        "mid": "50 to 250",
+        "large": "250 to 1,000",
+        "above": "More than 1,000"
+      },
+      "note": "Billed yearly. Verified organisations can send a small number of documents a month at no cost, because every document accepted gives someone a free vault of their own."
+    },
+    "pro": {
+      "blurb": "Everything above, plus the client workspace: readiness, the review queue, matters, and your firm's name inside the client's vault.",
+      "unit": "per client family, per year, alongside a platform fee we agree with you",
+      "note": "Advisers, solicitors and notaires. We are working personally with the first firms, so the platform fee is set on the call rather than published."
+    }
   }
 }

@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useReveal } from '../components/useReveal'
 import { ArrowRight, Briefcase, CheckCircle2, ShieldCheck, ChevronDown } from 'lucide-react'
-import { PRICING } from '../config/pricing'
+import { PRICING, businessPricing } from '../config/pricing'
 
 function FaqAccordion({ faqs }) {
   const [open, setOpen] = useState(null)
@@ -39,6 +39,7 @@ export default function Pricing() {
   const urlPrefix = isFr ? '/fr' : ''
 
   const faqs = t('faq.items', { returnObjects: true })
+  const business = businessPricing(i18n.language)
 
   const faqSchema = {
     '@context': 'https://schema.org',
@@ -237,22 +238,74 @@ export default function Pricing() {
           })}
         </div>
 
-        {/* ── EVERSTEAD PRO — advisers (separate sales motion, not a consumer card) ── */}
-        <div className="max-w-4xl mx-auto px-6 lg:px-8 mt-8">
-          <div className="reveal rounded-[2rem] border border-navy-200 bg-navy-950 text-white p-8 sm:flex sm:items-center sm:justify-between gap-8">
-            <div className="max-w-lg">
-              <p className="text-sm font-semibold text-sage-300">{t('plans.adviser.name')}</p>
-              <p className="mt-2 text-stone-300 text-sm leading-relaxed">
-                {t('plans.adviser.blurb')} {t('plans.adviser.priceNote')}
-              </p>
+        {/* ── FOR ORGANISATIONS ──────────────────────────────────────────────
+            Two products, not one. Everstead for Business is the exchange, which
+            is what an employer or a care provider buys. Everstead Pro adds the
+            client workspace on top, which is what an adviser or a notaire buys.
+            Both sit apart from the consumer table because the sales motion is a
+            demo and an invoice, not a card. */}
+        <div className="max-w-5xl mx-auto px-6 lg:px-8 mt-16">
+          <div className="reveal text-center mb-8">
+            <p className="text-xs font-semibold tracking-[.12em] uppercase text-stone-400 m-0">{t('business.eyebrow')}</p>
+            <h2 className="font-display text-2xl sm:text-3xl font-light text-navy-950 mt-2 mb-2">{t('business.title')}</h2>
+            <p className="text-stone-600 text-sm max-w-xl mx-auto m-0">{t('business.sub')}</p>
+          </div>
+
+          <div className="grid lg:grid-cols-2 gap-5">
+            {/* Everstead for Business: the exchange, banded by size */}
+            <div className="reveal rounded-[2rem] border border-navy-200 bg-navy-950 text-white p-8 flex flex-col">
+              <p className="text-sm font-semibold text-sage-300 m-0">{t('business.exchange.name')}</p>
+              <p className="mt-2 text-stone-300 text-sm leading-relaxed m-0">{t('business.exchange.blurb')}</p>
+
+              <ul className="mt-6 space-y-2.5 list-none p-0 m-0">
+                {business.bands.map(b => (
+                  <li key={b.key} className="flex items-baseline justify-between gap-4 border-b border-white/10 pb-2.5 last:border-0">
+                    <span className="text-sm text-stone-300">{t(`business.exchange.bands.${b.key}`)}</span>
+                    <span className="text-sm font-semibold whitespace-nowrap">
+                      {b.display ? `${b.display} ${t('business.exchange.perYear')}` : t('business.exchange.talk')}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+              <p className="mt-4 text-xs text-stone-400 leading-relaxed m-0">{t('business.exchange.note')}</p>
+
+              <div className="mt-7 flex flex-col sm:flex-row gap-3">
+                <Link to={`${urlPrefix}/business`} className="inline-flex items-center justify-center gap-2 rounded-full px-5 py-3 text-sm font-semibold border border-white/25 text-white hover:bg-white/10 transition-colors">
+                  {t('business.learnMore')}
+                </Link>
+                <Link to={`${urlPrefix}/book-demo`} className="btn-aurora inline-flex items-center justify-center gap-2 rounded-full px-5 py-3 text-sm font-semibold">
+                  {t('business.cta')} <ArrowRight size={15} />
+                </Link>
+              </div>
             </div>
-            <div className="mt-5 sm:mt-0 flex flex-col sm:flex-row gap-3 shrink-0">
-              <Link to="/business/advisers" className="inline-flex items-center justify-center gap-2 rounded-full px-5 py-3 text-sm font-semibold border border-white/25 text-white hover:bg-white/10 transition-colors">
-                {t('plans.adviser.learnMore')}
-              </Link>
-              <Link to="/book-demo" className="btn-aurora inline-flex items-center justify-center gap-2 rounded-full px-5 py-3 text-sm font-semibold">
-                {t('plans.adviser.cta')} <ArrowRight size={15} />
-              </Link>
+
+            {/* Everstead Pro: the adviser workspace, priced per client family */}
+            <div className="reveal reveal-delay-1 rounded-[2rem] border border-stone-200 bg-white p-8 flex flex-col">
+              <p className="text-sm font-semibold text-navy-700 m-0">{t('plans.adviser.name')}</p>
+              <p className="mt-2 text-stone-600 text-sm leading-relaxed m-0">{t('business.pro.blurb')}</p>
+
+              <p className="mt-6 font-display text-3xl font-light text-navy-950 m-0 leading-none">
+                {business.perFamily}
+              </p>
+              <p className="text-sm text-stone-500 mt-1.5 m-0">{t('business.pro.unit')}</p>
+
+              <ul className="mt-5 space-y-2 list-none p-0 m-0">
+                {t('plans.adviser.features', { returnObjects: true }).map((f, n) => (
+                  <li key={n} className="flex items-start gap-2 text-sm text-stone-600">
+                    <CheckCircle2 size={15} className="text-sage-600 mt-0.5 shrink-0" /> {f}
+                  </li>
+                ))}
+              </ul>
+              <p className="mt-4 text-xs text-stone-400 leading-relaxed m-0">{t('business.pro.note')}</p>
+
+              <div className="mt-7 flex flex-col sm:flex-row gap-3">
+                <Link to={`${urlPrefix}/business/advisers`} className="inline-flex items-center justify-center gap-2 rounded-full px-5 py-3 text-sm font-semibold border border-stone-200 text-navy-800 hover:bg-stone-50 transition-colors">
+                  {t('business.learnMore')}
+                </Link>
+                <Link to={`${urlPrefix}/book-demo`} className="inline-flex items-center justify-center gap-2 rounded-full px-5 py-3 text-sm font-semibold bg-navy-800 text-white hover:bg-navy-700 transition-colors">
+                  {t('business.cta')} <ArrowRight size={15} />
+                </Link>
+              </div>
             </div>
           </div>
         </div>
