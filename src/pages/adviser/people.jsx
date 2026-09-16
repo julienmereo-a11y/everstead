@@ -11,7 +11,8 @@
 // learns how many people started and nothing else, and a per-person account
 // flag would quietly break it.
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
-import { ArrowDownLeft, ArrowUpRight, Clock, Loader2, Search, ShieldCheck } from 'lucide-react'
+import { ArrowDownLeft, ArrowUpRight, Clock, Loader2, LogOut, Search, ShieldCheck } from 'lucide-react'
+import { apiPost } from '../../lib/platform'
 
 const fmt = (iso) => { try { return new Date(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) } catch { return '' } }
 
@@ -28,6 +29,9 @@ export function PeopleScreen({ firm, isDemo, go }) {
   const [rows, setRows] = useState(isDemo ? DEMO : [])
   const [loading, setLoading] = useState(!isDemo)
   const [q, setQ] = useState('')
+  const [leaving, setLeaving] = useState(null)   // email awaiting confirmation
+  const [busy, setBusy] = useState(null)
+  const [error, setError] = useState(null)
 
   const load = useCallback(async () => {
     if (isDemo) { setRows(DEMO); setLoading(false); return }
@@ -69,6 +73,33 @@ export function PeopleScreen({ firm, isDemo, go }) {
     return needle ? rows.filter(r => r.email.includes(needle)) : rows
   }, [rows, q])
 
+  /**
+   * Somebody has left. One call gives up everything still visible of theirs and
+   * downloads the statement that says so.
+   *
+   * This is the thing no competitor can offer, and not because it is clever:
+   * everyone else HOLDS the documents, so the best they can say is that they
+   * deleted their copy. Here there was never a copy to delete, so the statement
+   * is a fact rather than a promise.
+   */
+  const offboard = async (email) => {
+    setBusy(email); setError(null)
+    try {
+      const { supabase } = await import('../../lib/supabase')
+      const { data: { session } } = await supabase.auth.getSession()
+      const res = await apiPost('/api/org/offboard', { orgId: firm.id, email },
+        { Authorization: `Bearer ${session?.access_token || ''}` })
+      if (!res.ok) throw new Error(res.data?.error || 'Could not do that.')
+
+      const { buildAttestation, downloadPdf } = await import('../../lib/attestation')
+      const bytes = await buildAttestation('offboard', { id: crypto.randomUUID(), ...res.data }, { orgName: firm?.firm_name })
+      downloadPdf(bytes, `everstead-no-access-${email.split('@')[0]}.pdf`)
+
+      setLeaving(null)
+      await load()
+    } catch (err) { setError(err.message) } finally { setBusy(null) }
+  }
+
   if (loading) return <div className="flex justify-center py-16"><Loader2 size={20} className="animate-spin text-stone-300" /></div>
 
   const waiting = rows.reduce((n, r) => n + (r.waiting > 0 ? 1 : 0), 0)
@@ -80,6 +111,18 @@ export function PeopleScreen({ firm, isDemo, go }) {
         Everyone you have sent something to or asked something of.
         {waiting > 0 ? ` ${waiting} ${waiting === 1 ? 'person has' : 'people have'} something still waiting on them.` : ' Nothing is waiting on anyone.'}
       </p>
+
+      {error && <p className="mb-3 text-sm text-red-600">{error}</p>}
+      {leaving && (
+        <div className="mb-4 rounded-2xl border border-amber-200 bg-amber-50 p-4">
+          <p className="text-sm font-semibold text-amber-900 m-0">Give up all access to {leaving}?</p>
+          <p className="text-sm text-amber-800 mt-1 m-0">
+            Every document of theirs you can currently open closes, anything sent and unanswered is withdrawn, and
+            outstanding requests are cancelled. You will get a dated statement saying you hold nothing of theirs.
+            Documents they already accepted stay with them. This cannot be undone, but you can always ask again.
+          </p>
+        </div>
+      )}
 
       <div className="flex items-center justify-between gap-3 mb-4">
         <p className="text-xs text-stone-400 m-0">{rows.length} {rows.length === 1 ? 'person' : 'people'}</p>
@@ -95,8 +138,8 @@ export function PeopleScreen({ firm, isDemo, go }) {
           Nobody yet. <button onClick={() => go?.('send')} className="font-semibold text-navy-700 hover:text-navy-900">Send a document</button> to start.
         </p>
       ) : (
-        <div className="rounded-2xl border border-stone-200 bg-white overflow-hidden">
-          <table className="w-full text-sm">
+        <div className="rounded-2xl border border-stone-200 bg-white overflow-x-auto">
+          <table className="w-full text-sm min-w-[42rem]">
             <thead className="bg-stone-50 border-b border-stone-200">
               <tr className="text-left text-xs font-semibold text-stone-500">
                 <th className="px-4 py-2.5">Person</th>
@@ -104,6 +147,7 @@ export function PeopleScreen({ firm, isDemo, go }) {
                 <th className="px-4 py-2.5">Asked of them</th>
                 <th className="px-4 py-2.5">Waiting</th>
                 <th className="px-4 py-2.5">Last contact</th>
+                <th className="px-4 py-2.5"></th>
               </tr>
             </thead>
             <tbody>
@@ -122,6 +166,24 @@ export function PeopleScreen({ firm, isDemo, go }) {
                       : <span className="text-xs text-stone-400">—</span>}
                   </td>
                   <td className="px-4 py-3 text-stone-400 text-xs whitespace-nowrap">{fmt(r.last)}</td>
+                  <td className="px-4 py-3 text-right whitespace-nowrap">
+                    {leaving === r.email ? (
+                      <span className="inline-flex items-center gap-3">
+                        <button disabled={busy === r.email || isDemo} onClick={() => offboard(r.email)}
+                          className="inline-flex items-center gap-1.5 text-xs font-semibold text-red-700 hover:text-red-800 disabled:opacity-50">
+                          {busy === r.email ? <Loader2 size={11} className="animate-spin" /> : null}
+                          Give up all access
+                        </button>
+                        <button onClick={() => setLeaving(null)} className="text-xs font-medium text-stone-400 hover:text-navy-800">Cancel</button>
+                      </span>
+                    ) : (
+                      <button onClick={() => { setLeaving(r.email); setError(null) }}
+                        title="Revoke everything and download the statement"
+                        className="inline-flex items-center gap-1.5 text-xs font-semibold text-stone-500 hover:text-navy-800 transition-colors">
+                        <LogOut size={12} /> They have left
+                      </button>
+                    )}
+                  </td>
                 </tr>
               ))}
             </tbody>

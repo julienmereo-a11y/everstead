@@ -9,15 +9,16 @@
 // email carries a claim link; once they open a free account on that address the
 // delivery is simply there.
 import React, { useState } from 'react'
+import { RecipientsField } from './recipients'
 import { AlertTriangle, CheckCircle2, FileText, Loader2, Send, ShieldCheck, Upload, X } from 'lucide-react'
 
 const DOC_TYPES = ['Legal', 'Finance', 'Insurance', 'Property', 'Personal', 'Medical', 'Other']
 const MAX_BYTES = 25 * 1024 * 1024
-const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
 
 export function SendPanel({ firm, isDemo }) {
-  const [form, setForm] = useState({ email: '', title: '', docType: 'Other', note: '' })
+  const [form, setForm] = useState({ title: '', docType: 'Other', note: '' })
+  const [recipients, setRecipients] = useState([])
   const [file, setFile] = useState(null)
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState(null)
@@ -36,10 +37,11 @@ export function SendPanel({ firm, isDemo }) {
   const send = async (e) => {
     e.preventDefault()
     setError(null); setSentTo(null)
-    if (!EMAIL_RE.test(form.email.trim())) { setError('Enter a valid email address for the recipient.'); return }
+    if (!recipients.length) { setError('Add at least one email address.'); return }
+    if (recipients.length > 250) { setError('That is more than 250 addresses. Split it into smaller batches.'); return }
     if (!file) { setError('Choose the file to send.'); return }
     if (!form.title.trim()) { setError('Give the document a name the recipient will recognise.'); return }
-    if (isDemo) { setSentTo(form.email.trim()); setFile(null); setForm({ email: '', title: '', docType: 'Other', note: '' }); return }
+    if (isDemo) { setSentTo({ sent: recipients.length, failed: 0 }); setFile(null); setForm({ title: '', docType: 'Other', note: '' }); setRecipients([]); return }
 
     setBusy(true)
     try {
@@ -53,7 +55,7 @@ export function SendPanel({ firm, isDemo }) {
       const { apiPost } = await import('../../lib/platform')
       const res = await apiPost('/api/org/deliver', {
         orgId: firm.id,
-        recipientEmail: form.email.trim(),
+        recipientEmails: recipients,
         title: form.title.trim(),
         docType: form.docType,
         note: form.note.trim() || null,
@@ -65,9 +67,10 @@ export function SendPanel({ firm, isDemo }) {
         await supabase.storage.from('deliveries').remove([path]).catch(() => {})
         throw new Error(res.data?.error || 'Could not send that document.')
       }
-      setSentTo(form.email.trim())
+      setSentTo({ sent: res.data.sent, failed: res.data.failed, results: res.data.results })
       setFile(null)
-      setForm({ email: '', title: '', docType: 'Other', note: '' })
+      setForm({ title: '', docType: 'Other', note: '' })
+      setRecipients([])
     } catch (err) { setError(err.message) } finally { setBusy(false) }
   }
 
@@ -94,11 +97,10 @@ export function SendPanel({ firm, isDemo }) {
       )}
 
       <form onSubmit={send} className="rounded-2xl border border-stone-200 bg-white p-6 space-y-4">
-        <div className="grid sm:grid-cols-2 gap-4">
-          <label className="block">
-            <span className={label}>Recipient's email</span>
-            <input type="email" value={form.email} onChange={e => set('email', e.target.value)} placeholder="person@company.com" className={input} disabled={blocked} />
-          </label>
+        <div className="grid sm:grid-cols-[1fr_200px] gap-4 items-start">
+          <div className={blocked ? 'opacity-50 pointer-events-none' : ''}>
+            <RecipientsField value={recipients} onChange={setRecipients} />
+          </div>
           <label className="block">
             <span className={label}>Type</span>
             <select value={form.docType} onChange={e => set('docType', e.target.value)} className={input} disabled={blocked}>
@@ -142,7 +144,10 @@ export function SendPanel({ firm, isDemo }) {
         {sentTo && (
           <div className="flex items-start gap-2.5 rounded-lg border border-sage-200 bg-sage-50 px-3.5 py-2.5">
             <CheckCircle2 size={15} className="text-sage-600 shrink-0 mt-0.5" />
-            <p className="text-sm text-sage-800 m-0">Sent to {sentTo}. They decide whether to keep it, and you will see the answer below.</p>
+            <p className="text-sm text-sage-800 m-0">
+              Sent to {sentTo.sent} {sentTo.sent === 1 ? 'person' : 'people'}
+              {sentTo.failed ? `, ${sentTo.failed} could not be sent` : ''}. Each of them decides whether to keep it, and the answers land in History.
+            </p>
           </div>
         )}
 

@@ -36,14 +36,16 @@ const OUTCOME = {
 }
 
 /**
- * @param {'delivery'|'share'} kind
+ * @param {'delivery'|'share'|'offboard'} kind
  * @param {object} row  the inbound_deliveries or adviser_document_requests row
  * @param {object} ctx  { orgName }
  */
 export async function buildAttestation(kind, row, ctx = {}) {
   const { PDFDocument, StandardFonts, rgb } = await import('pdf-lib')
   const pdf = await PDFDocument.create()
-  const title = kind === 'delivery' ? 'Attestation of exchange' : 'Attestation of access'
+  const title = kind === 'delivery' ? 'Attestation of exchange'
+    : kind === 'offboard' ? 'Statement of no access'
+    : 'Attestation of access'
   pdf.setTitle(title)
   pdf.setProducer('Everstead')
   pdf.setCreator('Everstead')
@@ -91,7 +93,23 @@ export async function buildAttestation(kind, row, ctx = {}) {
   row2('Reference', ref ? `${ref} · full id ${row.id}` : '—', { size: 10 })
   rule()
 
-  if (kind === 'delivery') {
+  if (kind === 'offboard') {
+    // The statement an employer files when somebody leaves. Everything on it is
+    // a fact the platform can check, which is the point: the claim is not "we
+    // deleted our copy, trust us" but "we can no longer open any of it".
+    row2('Organisation', ctx.orgName || '—', { f: bold })
+    row2('Person', row.email || '—')
+    rule()
+    row2('Access given up on', stamp(row.at))
+    row2('Shared items closed', String(row.sharesRevoked ?? 0))
+    row2('Unanswered deliveries withdrawn', String(row.deliveriesWithdrawn ?? 0))
+    row2('Open requests withdrawn', String(row.requestsWithdrawn ?? 0))
+    row2('Connection', row.connectionEnded ? 'Ended' : 'Was not active')
+    rule()
+    row2('Statement', row.holdsNothing
+      ? `As of the date above, ${ctx.orgName || 'this organisation'} can no longer open any document belonging to this person through Everstead, and holds no copy of one here.`
+      : 'Some access could not be closed. Do not file this; contact hello@everstead.care.', { size: 10, width: 470 })
+  } else if (kind === 'delivery') {
     row2('Sent by', ctx.orgName || row.sender_name || '—', { f: bold })
     row2('Sent to', row.recipient_email || '—')
     row2('Document', row.title || '—')
@@ -122,9 +140,11 @@ export async function buildAttestation(kind, row, ctx = {}) {
   }
 
   rule()
-  const note = kind === 'delivery'
-    ? 'Everstead never attaches a file to an email. The recipient opened this through Everstead after confirming they control the address above. The document itself is not reproduced here.'
-    : 'Access is to the single document the recipient chose. Nothing else in their vault was opened, and they can stop the access at any time.'
+  const note = kind === 'offboard'
+    ? 'Everstead never held these documents on the organisation\'s behalf. They belong to the person named above and remain with them; what ended here is the organisation\'s ability to see any of them.'
+    : kind === 'delivery'
+      ? 'Everstead never attaches a file to an email. The recipient opened this through Everstead after confirming they control the address above. The document itself is not reproduced here.'
+      : 'Access is to the single document the recipient chose. Nothing else in their vault was opened, and they can stop the access at any time.'
   for (const l of wrap(note, PW - M * 2, 9.5, font)) { draw(l, { y, size: 9.5, color: GREY }); y -= 13 }
   y -= 8
 

@@ -13,6 +13,7 @@
 // all: the row carries the address, and the member reads it by auth.email()
 // once they sign up. Answering it (fulfil_document_request) is what creates the
 // scoped share, so nothing here grants anybody anything.
+import crypto from 'node:crypto'
 import { withSentry } from '../_lib/sentry.js'
 import { rateLimited } from '../_lib/rate-limit.js'
 import { db, requireAdviser, isUuid } from '../_lib/adviser-access.js'
@@ -20,6 +21,8 @@ import { sendOrgRequestEmail } from '../_lib/adviser-email.js'
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 const ALLOWED_DAYS = [7, 14, 30, 60, 90]
+const MAX_RECIPIENTS = 250
+const MAX_ITEMS = 8
 
 async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' })
@@ -34,18 +37,29 @@ async function handler(req, res) {
   const action = req.body?.action || 'create'
 
   // ── Create ────────────────────────────────────────────────────────────────
+  // One or many people, one or many items. Several items asked together share a
+  // pack_id and arrive as one email, because four separate emails for one new
+  // joiner is how a reasonable ask starts to feel like harassment. They stay
+  // four independent requests underneath: answered, declined and expired one at
+  // a time, each granting its own scoped share.
   if (action === 'create') {
-    const orgId          = String(req.body?.orgId || '').trim()
-    const recipientEmail = String(req.body?.recipientEmail || '').trim().toLowerCase()
-    const docType        = String(req.body?.docType || '').trim().slice(0, 120)
-    const note           = String(req.body?.note || '').trim().slice(0, 500) || null
-    const raw            = req.body?.expiresDays
-    const expiresDays    = raw === null || raw === undefined || raw === '' ? null
-                           : (ALLOWED_DAYS.includes(Number(raw)) ? Number(raw) : null)
+    const orgId = String(req.body?.orgId || '').trim()
+    const rawList = Array.isArray(req.body?.recipientEmails) ? req.body.recipientEmails : [req.body?.recipientEmail]
+    const recipients = [...new Set(rawList.map(x => String(x || '').trim().toLowerCase()).filter(Boolean))]
+    const rawItems = Array.isArray(req.body?.docTypes) ? req.body.docTypes : [req.body?.docType]
+    const items = [...new Set(rawItems.map(x => String(x || '').trim().slice(0, 120)).filter(Boolean))]
+    const packName = String(req.body?.packName || '').trim().slice(0, 80) || null
+    const note = String(req.body?.note || '').trim().slice(0, 500) || null
+    const raw = req.body?.expiresDays
+    const expiresDays = raw === null || raw === undefined || raw === ''
+      ? null
+      : (ALLOWED_DAYS.includes(Number(raw)) ? Number(raw) : null)
 
     if (!isUuid(orgId) || !ctx.firmIds.includes(orgId)) return res.status(403).json({ error: 'You are not a member of that organisation.' })
-    if (!EMAIL_RE.test(recipientEmail)) return res.status(400).json({ error: 'A valid email address is required.' })
-    if (!docType) return res.status(400).json({ error: 'Say what you are asking for.' })
+    if (!recipients.length) return res.status(400).json({ error: 'A valid email address is required.' })
+    if (recipients.length > MAX_RECIPIENTS) return res.status(400).json({ error: `That is more than ${MAX_RECIPIENTS} addresses. Split it into smaller batches.` })
+    if (!items.length) return res.status(400).json({ error: 'Say what you are asking for.' })
+    if (items.length > MAX_ITEMS) return res.status(400).json({ error: `A pack can hold up to ${MAX_ITEMS} items.` })
     if (raw !== null && raw !== undefined && raw !== '' && expiresDays === null) {
       return res.status(400).json({ error: 'Choose one of the offered lengths of access.' })
     }
@@ -53,35 +67,59 @@ async function handler(req, res) {
     const { data: org } = await db.from('advisers').select('id, firm_name').eq('id', orgId).maybeSingle()
     if (!org) return res.status(404).json({ error: 'Organisation not found.' })
 
-    const { data: recipient } = await db.from('profiles').select('id, language').ilike('email', recipientEmail).maybeSingle()
+    const results = []
+    for (const recipientEmail of recipients) {
+      if (!EMAIL_RE.test(recipientEmail)) { results.push({ email: recipientEmail, ok: false, reason: 'not an email address' }); continue }
+      try {
+        const { data: recipient } = await db.from('profiles').select('id, language').ilike('email', recipientEmail).maybeSingle()
 
-    // One open ask per person per thing, so a re-send is a reminder.
-    const { data: existing } = await db.from('adviser_document_requests')
-      .select('id').eq('adviser_id', orgId).eq('recipient_email', recipientEmail)
-      .eq('doc_type', docType).eq('status', 'requested').maybeSingle()
-    if (existing) return res.status(409).json({ error: 'You already have an open request to that person for that document.', requestId: existing.id })
+        // One open ask per person per thing, so re-sending is a reminder rather
+        // than a second card in their dashboard.
+        const { data: existing } = await db.from('adviser_document_requests')
+          .select('doc_type').eq('adviser_id', orgId).eq('recipient_email', recipientEmail)
+          .eq('status', 'requested').in('doc_type', items)
+        const already = new Set((existing || []).map(x => x.doc_type))
+        const toAsk = items.filter(i => !already.has(i))
+        if (!toAsk.length) { results.push({ email: recipientEmail, ok: false, reason: 'already asked for all of that' }); continue }
 
-    const { data: row, error } = await db.from('adviser_document_requests').insert({
-      adviser_id: orgId,
-      client_id: recipient?.id ?? null,
-      recipient_email: recipientEmail,
-      requested_by: ctx.user.id,
-      sender_name: org.firm_name,
-      doc_type: docType,
-      note,
-      expires_days: expiresDays,
-    }).select('*').single()
-    if (error || !row) {
-      console.error('[org/request] insert failed:', error)
-      return res.status(500).json({ error: 'Could not save the request.' })
+        const packId = toAsk.length > 1 ? crypto.randomUUID() : null
+        const rows = toAsk.map(docType => ({
+          adviser_id: orgId,
+          client_id: recipient?.id ?? null,
+          recipient_email: recipientEmail,
+          requested_by: ctx.user.id,
+          sender_name: org.firm_name,
+          doc_type: docType,
+          note, expires_days: expiresDays,
+          pack_id: packId,
+          pack_name: packId ? (packName || 'Documents we need') : null,
+        }))
+        const { error } = await db.from('adviser_document_requests').insert(rows)
+        if (error) {
+          console.error('[org/request] insert failed:', error)
+          results.push({ email: recipientEmail, ok: false, reason: 'could not save it' })
+          continue
+        }
+
+        // One email per person, listing everything asked of them.
+        const emailed = await sendOrgRequestEmail({
+          to: recipientEmail,
+          lang: recipient?.language === 'fr' ? 'fr' : 'en',
+          firmName: org.firm_name,
+          docTypes: toAsk, note, expiresDays,
+          hasAccount: !!recipient,
+          packName: packId ? (packName || null) : null,
+        })
+        results.push({ email: recipientEmail, ok: true, asked: toAsk.length, skipped: items.length - toAsk.length, emailed })
+      } catch (err) {
+        console.error('[org/request] recipient failed:', recipientEmail, err?.message)
+        results.push({ email: recipientEmail, ok: false, reason: 'something went wrong' })
+      }
     }
 
-    const emailed = await sendOrgRequestEmail({
-      to: recipientEmail,
-      lang: recipient?.language === 'fr' ? 'fr' : 'en',
-      firmName: org.firm_name, docType, note, expiresDays, hasAccount: !!recipient,
-    })
-    return res.status(200).json({ request: row, emailed, hasAccount: !!recipient })
+    const sent = results.filter(r => r.ok).length
+    if (!sent) return res.status(409).json({ error: 'Nothing was asked. They may already have an open request for all of it.', results })
+    return res.status(200).json({ sent, failed: results.length - sent, results })
   }
 
   // ── Remind / cancel ───────────────────────────────────────────────────────
@@ -109,7 +147,13 @@ async function handler(req, res) {
       expiresDays: row.expires_days, hasAccount: !!recipient, reminder: true,
     })
     const { data: updated } = await db.from('adviser_document_requests')
-      .update({ reminded_at: new Date().toISOString(), updated_at: new Date().toISOString() })
+      .update({
+        reminded_at: new Date().toISOString(),
+        // Counts towards the automatic ceiling: a nudge is a nudge whether a
+        // person pressed the button or the cron did.
+        reminder_count: (row.reminder_count || 0) + 1,
+        updated_at: new Date().toISOString(),
+      })
       .eq('id', requestId).select('*').single()
     return res.status(200).json({ request: updated || row, emailed })
   }

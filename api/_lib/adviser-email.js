@@ -387,18 +387,21 @@ const ORG_REQUEST_COPY = {
   },
 }
 
-export async function sendOrgRequestEmail({ to, lang = 'en', firmName, docType, note, expiresDays, hasAccount = true, reminder = false }) {
+export async function sendOrgRequestEmail({ to, lang = 'en', firmName, docType, docTypes, note, expiresDays, hasAccount = true, reminder = false, packName }) {
   if (!to) return false
   const L = lang === 'fr' ? 'fr' : 'en'
   const C = ORG_REQUEST_COPY[L]
   const prefix = L === 'fr' ? '/fr' : ''
   const url = `${APP}${prefix}/dashboard?tab=documents`
   const vars = { firm: esc(firmName || (L === 'fr' ? 'une organisation' : 'an organisation')) }
+  const items = (Array.isArray(docTypes) && docTypes.length ? docTypes : [docType]).filter(Boolean)
   const inner = `
     <h1 style="margin:0 0 16px;color:#0d1628;font-size:24px;font-weight:normal;">${fill(C.title, vars)}</h1>
     <p style="margin:0 0 14px;color:#4a5568;font-size:16px;line-height:1.6;">${fill(C.lead, vars)}</p>
-    <p style="margin:0 0 6px;color:#0d1628;font-size:13px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;">${C.forLabel}</p>
-    <p style="margin:0 0 18px;padding:14px 18px;border-radius:12px;background:#f0f3f9;color:#0d1628;font-size:17px;font-weight:600;">${esc(docType)}</p>
+    <p style="margin:0 0 6px;color:#0d1628;font-size:13px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;">${packName ? esc(packName) : C.forLabel}</p>
+    ${items.length > 1
+      ? `<ul style="margin:0 0 18px;padding:14px 18px 14px 34px;border-radius:12px;background:#f0f3f9;color:#0d1628;font-size:16px;font-weight:600;">${items.map(d => `<li style="margin:4px 0;">${esc(d)}</li>`).join('')}</ul>`
+      : `<p style="margin:0 0 18px;padding:14px 18px;border-radius:12px;background:#f0f3f9;color:#0d1628;font-size:17px;font-weight:600;">${esc(items[0] || '')}</p>`}
     ${note ? `<p style="margin:0 0 6px;color:#0d1628;font-size:13px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;">${C.noteLabel}</p><p style="margin:0 0 18px;color:#4a5568;font-size:15px;line-height:1.6;border-left:3px solid #e8e5e0;padding-left:14px;font-style:italic;">${esc(note)}</p>` : ''}
     <p style="margin:0 0 22px;color:#4a5568;font-size:15px;line-height:1.6;">${expiresDays ? fill(C.windowFor, { days: String(expiresDays) }) : C.windowOpen}</p>
     ${hasAccount ? '' : `<p style="margin:0 0 22px;color:#4a5568;font-size:15px;line-height:1.6;">${C.newAccount}</p>`}
@@ -409,7 +412,7 @@ export async function sendOrgRequestEmail({ to, lang = 'en', firmName, docType, 
     await sendEmail(resend, {
       from: FROM,
       to,
-      subject: fill(C.subject, { firm: firmName || '' }) + (reminder ? (L === 'fr' ? ' (rappel)' : ' (reminder)') : ''),
+      subject: fill(items.length > 1 ? (L === 'fr' ? '{{firm}} vous demande quelques documents' : '{{firm}} has asked for a few documents') : C.subject, { firm: firmName || '' }) + (reminder ? (L === 'fr' ? ' (rappel)' : ' (reminder)') : ''),
       html: shell(inner),
       preheader: C.preheader,
     })

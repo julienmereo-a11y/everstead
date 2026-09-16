@@ -112,8 +112,8 @@ export function HistoryPanel({ firm, isDemo }) {
       {shown.length === 0 ? (
         <p className="text-sm text-stone-400 py-8">Nothing here yet.</p>
       ) : (
-        <div className="rounded-2xl border border-stone-200 bg-white overflow-hidden">
-          <table className="w-full text-sm">
+        <div className="rounded-2xl border border-stone-200 bg-white overflow-x-auto">
+          <table className="w-full text-sm min-w-[42rem]">
             <thead className="bg-stone-50 border-b border-stone-200">
               <tr className="text-left text-xs font-semibold text-stone-500">
                 <th className="px-4 py-2.5">Direction</th>

@@ -6,9 +6,9 @@
 // creates the share. Which is why the form asks for a plain description of what
 // is needed rather than pointing at anything.
 import React, { useState } from 'react'
-import { AlertTriangle, CheckCircle2, Loader2, Send } from 'lucide-react'
+import { RecipientsField } from './recipients'
+import { AlertTriangle, CheckCircle2, Loader2, Send, X } from 'lucide-react'
 
-const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 const WINDOWS = [
   { value: 7,  label: '7 days' },
   { value: 14, label: '14 days' },
@@ -20,10 +20,21 @@ const WINDOWS = [
 // Starting points, not a fixed list: the field stays free text because what an
 // employer needs at onboarding is not the same in London and in Lyon.
 const COMMON = ['Proof of address', 'Photo ID', 'Right to work document', 'Bank details', 'Next of kin', 'Professional certificate']
+// A named set asked as one thing. Onboarding is where an employer feels this,
+// and four separate emails for one new joiner is how a reasonable ask starts to
+// feel like harassment.
+const PACKS = [
+  { name: 'New joiner', items: ['Photo ID', 'Right to work document', 'Proof of address', 'Bank details', 'Next of kin'] },
+  { name: 'Right to work check', items: ['Photo ID', 'Right to work document'] },
+  { name: 'Payroll setup', items: ['Bank details', 'Proof of address'] },
+]
 
 
 export function RequestPanel({ firm, isDemo }) {
-  const [form, setForm] = useState({ email: '', docType: '', note: '', days: 30 })
+  const [form, setForm] = useState({ note: '', days: 30, packName: '' })
+  const [recipients, setRecipients] = useState([])
+  const [items, setItems] = useState([])
+  const [draft, setDraft] = useState('')
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState(null)
   const [sentTo, setSentTo] = useState(null)
@@ -37,23 +48,35 @@ export function RequestPanel({ firm, isDemo }) {
     return apiPost('/api/org/request', body, { Authorization: `Bearer ${session?.access_token || ''}` })
   }
 
+  const addItem = (label) => {
+    const v = String(label || '').trim()
+    if (!v || items.includes(v)) return
+    setItems(list => [...list, v].slice(0, 8))
+    setDraft('')
+  }
+  const usePack = (pack) => { setItems(pack.items.slice(0, 8)); setForm(f => ({ ...f, packName: pack.name })) }
+  const reset = () => { setForm({ note: '', days: 30, packName: '' }); setItems([]); setDraft(''); setRecipients([]) }
+
   const ask = async (e) => {
     e.preventDefault()
     setError(null); setSentTo(null)
-    if (!EMAIL_RE.test(form.email.trim())) { setError('Enter a valid email address.'); return }
-    if (!form.docType.trim()) { setError('Say what you are asking for.'); return }
-    if (isDemo) { setSentTo(form.email.trim()); setForm({ email: '', docType: '', note: '', days: 30 }); return }
+    const all = draft.trim() && !items.includes(draft.trim()) ? [...items, draft.trim()] : items
+    if (!recipients.length) { setError('Add at least one email address.'); return }
+    if (!all.length) { setError('Say what you are asking for.'); return }
+    if (isDemo) { setSentTo({ sent: recipients.length, failed: 0, items: all.length }); reset(); return }
 
     setBusy(true)
     try {
       const res = await authed({
         action: 'create', orgId: firm.id,
-        recipientEmail: form.email.trim(), docType: form.docType.trim(),
+        recipientEmails: recipients,
+        docTypes: all,
+        packName: all.length > 1 ? (form.packName.trim() || null) : null,
         note: form.note.trim() || null, expiresDays: form.days === '' ? null : form.days,
       })
       if (!res.ok) throw new Error(res.data?.error || 'Could not send that request.')
-      setSentTo(form.email.trim())
-      setForm({ email: '', docType: '', note: '', days: 30 })
+      setSentTo({ sent: res.data.sent, failed: res.data.failed, items: all.length })
+      reset()
     } catch (err) { setError(err.message) } finally { setBusy(false) }
   }
 
@@ -67,11 +90,8 @@ export function RequestPanel({ firm, isDemo }) {
       </p>
 
       <form onSubmit={ask} className="rounded-2xl border border-stone-200 bg-white p-6 space-y-4">
-        <div className="grid sm:grid-cols-2 gap-4">
-          <label className="block">
-            <span className={label}>Who you are asking</span>
-            <input type="email" value={form.email} onChange={e => set('email', e.target.value)} placeholder="person@company.com" className={input} />
-          </label>
+        <div className="grid sm:grid-cols-[1fr_200px] gap-4 items-start">
+          <RecipientsField value={recipients} onChange={setRecipients} label="Who you are asking" />
           <label className="block">
             <span className={label}>How long you need it for</span>
             <select value={form.days} onChange={e => set('days', e.target.value === '' ? '' : Number(e.target.value))} className={input}>
@@ -80,18 +100,60 @@ export function RequestPanel({ firm, isDemo }) {
           </label>
         </div>
 
-        <label className="block">
-          <span className={label}>What you are asking for</span>
-          <input value={form.docType} onChange={e => set('docType', e.target.value)} placeholder="Proof of address" className={input} />
-        </label>
-        <div className="flex flex-wrap gap-1.5">
-          {COMMON.map(c => (
-            <button key={c} type="button" onClick={() => set('docType', c)}
-              className="text-[11px] font-medium text-stone-600 bg-stone-100 hover:bg-stone-200 rounded-full px-2.5 py-1 transition-colors">
-              {c}
-            </button>
-          ))}
+        <div>
+          <div className="flex items-end justify-between gap-3 mb-1.5">
+            <span className="block text-xs font-semibold text-stone-600">What you are asking for</span>
+            <span className="flex flex-wrap gap-1.5">
+              {PACKS.map(p => (
+                <button key={p.name} type="button" onClick={() => usePack(p)}
+                  className="text-[11px] font-semibold text-navy-700 bg-navy-50 hover:bg-navy-100 border border-navy-200 rounded-full px-2.5 py-1 transition-colors">
+                  {p.name}
+                </button>
+              ))}
+            </span>
+          </div>
+
+          {items.length > 0 && (
+            <ul className="flex flex-wrap gap-1.5 mb-2 list-none m-0 p-0">
+              {items.map(it => (
+                <li key={it}>
+                  <span className="inline-flex items-center gap-1.5 text-xs font-medium text-navy-900 bg-white border border-stone-200 rounded-full pl-3 pr-1.5 py-1">
+                    {it}
+                    <button type="button" onClick={() => setItems(list => list.filter(x => x !== it))}
+                      className="text-stone-400 hover:text-red-600 transition-colors"><X size={12} /></button>
+                  </span>
+                </li>
+              ))}
+            </ul>
+          )}
+
+          <input
+            value={draft}
+            onChange={e => setDraft(e.target.value)}
+            onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); addItem(draft) } }}
+            onBlur={() => addItem(draft)}
+            placeholder={items.length ? 'Add another, then Enter' : 'Proof of address, then Enter'}
+            className={input}
+          />
+          <div className="flex flex-wrap gap-1.5 mt-2">
+            {COMMON.filter(c => !items.includes(c)).map(c => (
+              <button key={c} type="button" onClick={() => addItem(c)}
+                className="text-[11px] font-medium text-stone-600 bg-stone-100 hover:bg-stone-200 rounded-full px-2.5 py-1 transition-colors">
+                {c}
+              </button>
+            ))}
+          </div>
         </div>
+
+        {items.length > 1 && (
+          <label className="block">
+            <span className={label}>Call the pack something, optional</span>
+            <input value={form.packName} onChange={e => set('packName', e.target.value)} placeholder="New joiner" className={input} />
+            <span className="block text-[11px] text-stone-400 mt-1">
+              They get one email listing all {items.length}, and can answer or decline each one separately.
+            </span>
+          </label>
+        )}
 
         <label className="block">
           <span className={label}>Why, optional</span>
@@ -107,7 +169,10 @@ export function RequestPanel({ firm, isDemo }) {
         {sentTo && (
           <div className="flex items-start gap-2.5 rounded-lg border border-sage-200 bg-sage-50 px-3.5 py-2.5">
             <CheckCircle2 size={15} className="text-sage-600 shrink-0 mt-0.5" />
-            <p className="text-sm text-sage-800 m-0">Asked {sentTo}. You will see their answer below. They can decline, and that is a real answer.</p>
+            <p className="text-sm text-sage-800 m-0">
+              Asked {sentTo.sent} {sentTo.sent === 1 ? 'person' : 'people'} for {sentTo.items} {sentTo.items === 1 ? 'thing' : 'things'}
+              {sentTo.failed ? `, ${sentTo.failed} could not be asked` : ''}. Answers land in History, and declining is a real answer.
+            </p>
           </div>
         )}
 

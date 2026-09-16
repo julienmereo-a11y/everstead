@@ -3,15 +3,17 @@
 // sight of one of theirs. They sit together because they are the same
 // relationship seen from either end.
 import React, { useState } from 'react'
-import { Download, History, Upload } from 'lucide-react'
+import { Download, Eye, History, Upload } from 'lucide-react'
 import { SendPanel } from './send'
 import { RequestPanel } from './request'
 import { HistoryPanel } from './history'
+import { VisiblePanel } from './visible'
 
 const TABS = [
   { id: 'send',    label: 'Send a document', Icon: Upload },
   { id: 'ask',     label: 'Ask for a document', Icon: Download },
   { id: 'history', label: 'History', Icon: History },
+  { id: 'visible', label: 'What you can see', Icon: Eye },
 ]
 
 export function ExchangeScreen({ firm, isDemo, initialTab = 'send' }) {
@@ -32,7 +34,8 @@ export function ExchangeScreen({ firm, isDemo, initialTab = 'send' }) {
       </div>
       {tab === 'send' ? <SendPanel firm={firm} isDemo={isDemo} />
         : tab === 'ask' ? <RequestPanel firm={firm} isDemo={isDemo} />
-        : <HistoryPanel firm={firm} isDemo={isDemo} />}
+        : tab === 'history' ? <HistoryPanel firm={firm} isDemo={isDemo} />
+        : <VisiblePanel firm={firm} isDemo={isDemo} />}
     </div>
   )
 }
