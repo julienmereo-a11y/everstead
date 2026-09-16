@@ -202,7 +202,7 @@
       },
       "faq": {
         "eyebrow": "Questions we get",
-        "title": "The three every firm asks.",
+        "title": "What firms ask us.",
         "items": [
           {
             "q": "Does this replace the will?",
@@ -215,6 +215,10 @@
           {
             "q": "What does my firm have to hold?",
             "a": "Nothing. No integration, no data processing agreement, no client record on your side, unless you take the adviser portal, which is a separate arrangement."
+          },
+          {
+            "q": "Where is the data actually held?",
+            "a": "In London, on Amazon Web Services, under UK GDPR. Everstead is a UK-registered company and the contents of a vault do not leave the UK. The site itself is served from a global network, and every supporting service we use is named on our subprocessors page."
           }
         ]
       },
@@ -295,7 +299,7 @@
       },
       "faq": {
         "eyebrow": "Questions we get",
-        "title": "The three every home asks.",
+        "title": "What homes ask us.",
         "items": [
           {
             "q": "Does the home hold any resident data?",
@@ -308,6 +312,10 @@
           {
             "q": "Is it suitable for residents living with dementia?",
             "a": "It is usually the family or the attorney who fills it in, which is exactly who needs it. The Emergency Pack works on paper for anyone who prefers paper."
+          },
+          {
+            "q": "Where is the data actually held?",
+            "a": "In London, on Amazon Web Services, under UK GDPR. Everstead is a UK-registered company and the contents of a vault do not leave the UK. The site itself is served from a global network, and every supporting service we use is named on our subprocessors page."
           }
         ]
       },
@@ -403,7 +411,7 @@
       },
       "faq": {
         "eyebrow": "Questions we get",
-        "title": "The three every HR team asks.",
+        "title": "What HR teams ask us.",
         "items": [
           {
             "q": "How is this different from an employee assistance programme?",
@@ -416,6 +424,10 @@
           {
             "q": "Do we become responsible for the data?",
             "a": "No. The relationship over the data is between the employee and Everstead. Your organisation is neither a controller nor a processor of anything in the vault."
+          },
+          {
+            "q": "Where is the data actually held?",
+            "a": "In London, on Amazon Web Services, under UK GDPR. Everstead is a UK-registered company and the contents of a vault do not leave the UK. The site itself is served from a global network, and every supporting service we use is named on our subprocessors page."
           }
         ]
       },

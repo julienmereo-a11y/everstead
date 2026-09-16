@@ -100,7 +100,8 @@
         "Offre gratuite sans carte bancaire, export et suppression à tout moment",
         "L'accès d'urgence ne s'ouvre qu'après vérification humaine",
         "Web, iOS et Android",
-        "Aucun profil publicitaire, aucune vente de données"
+        "Aucun profil publicitaire, aucune vente de données",
+        "Données hébergées à Londres chez AWS, sous le UK GDPR"
       ]
     },
     "next": {
@@ -201,7 +202,7 @@
       },
       "faq": {
         "eyebrow": "Les questions que l'on nous pose",
-        "title": "Les trois questions de chaque étude.",
+        "title": "Ce que les études nous demandent.",
         "items": [
           {
             "q": "Est-ce que cela remplace le testament ?",
@@ -214,6 +215,10 @@
           {
             "q": "Que doit conserver mon étude ?",
             "a": "Rien. Aucune intégration, aucun contrat de sous-traitance, aucun dossier client de votre côté, sauf si vous prenez le portail professionnel, qui fait l'objet d'un accord distinct."
+          },
+          {
+            "q": "Où les données sont-elles hébergées ?",
+            "a": "À Londres, chez Amazon Web Services, sous le UK GDPR. Everstead est une société immatriculée au Royaume-Uni et le contenu d'un coffre ne quitte pas le Royaume-Uni. Nous préférons le dire clairement plutôt que de le passer sous silence : si un hébergement en France est une exigence de votre organisation, dites-le nous lors de l'échange. Chaque sous-traitant que nous utilisons est nommé sur notre page dédiée."
           }
         ]
       },
@@ -294,7 +299,7 @@
       },
       "faq": {
         "eyebrow": "Les questions que l'on nous pose",
-        "title": "Les trois questions de chaque établissement.",
+        "title": "Ce que les établissements nous demandent.",
         "items": [
           {
             "q": "L'établissement détient-il des données du résident ?",
@@ -307,6 +312,10 @@
           {
             "q": "Est-ce adapté aux résidents atteints de troubles cognitifs ?",
             "a": "C'est le plus souvent la famille ou la personne de confiance qui le remplit, c'est-à-dire exactement celles qui en ont besoin. Le kit d'urgence fonctionne sur papier pour qui préfère le papier."
+          },
+          {
+            "q": "Où les données sont-elles hébergées ?",
+            "a": "À Londres, chez Amazon Web Services, sous le UK GDPR. Everstead est une société immatriculée au Royaume-Uni et le contenu d'un coffre ne quitte pas le Royaume-Uni. Nous préférons le dire clairement plutôt que de le passer sous silence : si un hébergement en France est une exigence de votre organisation, dites-le nous lors de l'échange. Chaque sous-traitant que nous utilisons est nommé sur notre page dédiée."
           }
         ]
       },
@@ -402,7 +411,7 @@
       },
       "faq": {
         "eyebrow": "Les questions que l'on nous pose",
-        "title": "Les trois questions de chaque équipe RH.",
+        "title": "Ce que les équipes RH nous demandent.",
         "items": [
           {
             "q": "En quoi est-ce différent d'une ligne d'écoute ou d'un service social ?",
@@ -415,6 +424,10 @@
           {
             "q": "Devenons-nous responsables des données ?",
             "a": "Non. La relation sur les données se noue entre le salarié et Everstead. Votre organisation n'est ni responsable de traitement ni sous-traitant de ce qui se trouve dans le coffre."
+          },
+          {
+            "q": "Où les données sont-elles hébergées ?",
+            "a": "À Londres, chez Amazon Web Services, sous le UK GDPR. Everstead est une société immatriculée au Royaume-Uni et le contenu d'un coffre ne quitte pas le Royaume-Uni. Nous préférons le dire clairement plutôt que de le passer sous silence : si un hébergement en France est une exigence de votre organisation, dites-le nous lors de l'échange. Chaque sous-traitant que nous utilisons est nommé sur notre page dédiée."
           }
         ]
       },
