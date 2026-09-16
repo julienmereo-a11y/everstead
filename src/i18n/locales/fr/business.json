@@ -217,6 +217,10 @@
             "a": "Rien. Aucune intégration, aucun contrat de sous-traitance, aucun dossier client de votre côté, sauf si vous prenez le portail professionnel, qui fait l'objet d'un accord distinct."
           },
           {
+            "q": "Quelle adresse e-mail utilisons-nous pour un client ?",
+            "a": "Celle dont vous disposez. Le compte Everstead de votre client repose souvent sur une autre adresse, le plus souvent personnelle, et la première fois que vous utilisez la vôtre, il confirme qu'elle est bien la sienne. Ensuite, ce que vous envoyez lui parvient à l'adresse figurant à votre dossier, sans que son coffre en dépende. Sur la durée d'un testament, cela compte : un compte survit à un emploi et à un fournisseur d'accès, ce que ne fait pas une adresse notée au dossier il y a des années."
+          },
+          {
             "q": "Où les données sont-elles hébergées ?",
             "a": "À Londres, chez Amazon Web Services, sous le UK GDPR. Everstead est une société immatriculée au Royaume-Uni et le contenu d'un coffre ne quitte pas le Royaume-Uni. Nous préférons le dire clairement plutôt que de le passer sous silence : si un hébergement en France est une exigence de votre organisation, dites-le nous lors de l'échange. Chaque sous-traitant que nous utilisons est nommé sur notre page dédiée."
           }
@@ -312,6 +316,10 @@
           {
             "q": "Est-ce adapté aux résidents atteints de troubles cognitifs ?",
             "a": "C'est le plus souvent la famille ou la personne de confiance qui le remplit, c'est-à-dire exactement celles qui en ont besoin. Le kit d'urgence fonctionne sur papier pour qui préfère le papier."
+          },
+          {
+            "q": "Quelle adresse e-mail une famille doit-elle utiliser ?",
+            "a": "Une adresse personnelle qu'elle gardera. Les familles s'inscrivent souvent avec une adresse professionnelle, parce que c'est celle qui figure sur votre dossier d'admission, et c'est la première qu'elles perdent. Un compte Everstead peut réunir plusieurs adresses, chacune après confirmation : si vous ou quelqu'un d'autre écrivez à celle dont vous disposez, cela leur parvient quand même. Le coffre, lui, reste sur l'adresse qu'elles ont choisie."
           },
           {
             "q": "Où les données sont-elles hébergées ?",

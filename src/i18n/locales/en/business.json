@@ -217,6 +217,10 @@
             "a": "Nothing. No integration, no data processing agreement, no client record on your side, unless you take the adviser portal, which is a separate arrangement."
           },
           {
+            "q": "Which email address do we use for a client?",
+            "a": "Whichever one you hold. Your client's Everstead account may well be on a different address, usually a personal one, and the first time you use yours they confirm it belongs to them. After that what you send reaches them at the address on your file, without their vault depending on it. Over the life of a will that matters: an account outlasts a job and an internet provider, which an address written on a file years ago does not."
+          },
+          {
             "q": "Where is the data actually held?",
             "a": "In London, on Amazon Web Services, under UK GDPR. Everstead is a UK-registered company and the contents of a vault do not leave the UK. The site itself is served from a global network, and every supporting service we use is named on our subprocessors page."
           }
@@ -312,6 +316,10 @@
           {
             "q": "Is it suitable for residents living with dementia?",
             "a": "It is usually the family or the attorney who fills it in, which is exactly who needs it. The Emergency Pack works on paper for anyone who prefers paper."
+          },
+          {
+            "q": "Which email address should a family use?",
+            "a": "A personal one they will keep. Families often sign up with a work address, because that is the one on your admissions form, and it is the first address they lose. An Everstead account can hold more than one address once each has been confirmed, so if you or anyone else writes to the one you hold, it still reaches them. The vault itself stays on the address they chose."
           },
           {
             "q": "Where is the data actually held?",
