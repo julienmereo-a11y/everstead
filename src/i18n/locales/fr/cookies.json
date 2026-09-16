@@ -35,8 +35,8 @@
     {
       "name": "Cookies marketing",
       "description": "Nous utilisons le pixel Meta (Meta Pixel) pour mesurer l'efficacité de nos publicités sur Facebook et Instagram, et Artisan (fondé sur Demandbase) pour reconnaître les organisations qui visitent notre site afin de recontacter les cabinets professionnels. Ils ne sont déposés qu'après votre consentement aux cookies marketing. Nous ne les utilisons pas pour établir des profils publicitaires ni pour vendre vos données.",
-      "examples": "_fbp, _fbc ; identifiants de visite Demandbase",
-      "provider": "Meta Platforms Ireland Ltd ; Artisan AI Inc. / Demandbase Inc. (États-Unis)",
+      "examples": "_fbp, _fbc ; identifiants de visite Demandbase",
+      "provider": "Meta Platforms Ireland Ltd ; Artisan AI Inc. / Demandbase Inc. (États-Unis)",
       "retention": "Jusqu'à 3 mois"
     }
   ],

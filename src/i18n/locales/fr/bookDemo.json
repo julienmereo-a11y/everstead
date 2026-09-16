@@ -1,7 +1,7 @@
 {
   "meta": {
     "title": "Réserver un appel de 20 minutes | Everstead pour les professionnels",
-    "description": "Conseillers, notaires, EHPAD, services RH : réservez un appel de 20 minutes avec l'équipe fondatrice. Pas de discours commercial, pas de contrat, juste une conversation pour savoir si Everstead convient aux familles que vous accompagnez.",
+    "description": "Conseillers, notaires, EHPAD, services RH : réservez un appel de 20 minutes avec l'équipe fondatrice. Pas de discours commercial, pas de contrat, juste une conversation pour savoir si Everstead convient aux familles que vous accompagnez.",
     "ogTitle": "Réserver un appel | Everstead pour les professionnels",
     "ogDescription": "Un appel de 20 minutes avec l'équipe fondatrice pour voir si Everstead convient à vos clients, résidents ou salariés."
   },
@@ -14,10 +14,10 @@
     "title": "Ce que nous aborderons",
     "benefits": [
       "Ce que vos clients, résidents ou salariés utiliseraient vraiment, de l'offre gratuite au portail conseillers",
-      "Pour les conseillers et les notaires : score de préparation, relecture et demandes de documents, toujours avec le consentement du client",
-      "Pour les établissements et les employeurs : le kit d'urgence et une offre gratuite à remettre, sans rien stocker de votre côté",
+      "Pour les conseillers et les notaires : score de préparation, relecture et demandes de documents, toujours avec le consentement du client",
+      "Pour les établissements et les employeurs : le kit d'urgence et une offre gratuite à remettre, sans rien stocker de votre côté",
       "Le modèle de confiance et de protection des données que vous pouvez répéter aux personnes que vous accompagnez",
-      "À quoi ressemblerait un pilote avec votre organisation ; c'est vous qui fixez l'ordre du jour"
+      "À quoi ressemblerait un pilote avec votre organisation ; c'est vous qui fixez l'ordre du jour"
     ]
   },
   "infoCards": [
@@ -56,11 +56,11 @@
       "placeholder": "CGP, notaire, directeur d'établissement, DRH…"
     },
     "clients": {
-      "label": "Environ combien de clients, résidents ou salariés ?",
+      "label": "Environ combien de clients, résidents ou salariés ?",
       "placeholder": "ex. 75"
     },
     "notes": {
-      "label": "Qu'est-ce qui compte le plus pour vous dans cet échange ?",
+      "label": "Qu'est-ce qui compte le plus pour vous dans cet échange ?",
       "placeholder": "Protection des données, succession, communication avec les familles, bien-être des salariés…"
     },
     "submit": "Réserver un appel de 20 minutes",

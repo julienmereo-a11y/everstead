@@ -460,7 +460,7 @@
       "title": "Partager « {{name}} »",
       "lead": "Choisissez une organisation et la durée pendant laquelle elle pourra l'ouvrir. Elle voit ce document et rien d'autre, et l'accès s'arrête tout seul à l'échéance.",
       "noOrgs": "Aucune organisation ne vous est encore liée, il n'y a donc personne avec qui partager.",
-      "forHowLong": "Pour combien de temps ?",
+      "forHowLong": "Pour combien de temps ?",
       "days_one": "{{count}} jour",
       "days_many": "{{count}} jours",
       "days_other": "{{count}} jours",
@@ -1529,7 +1529,7 @@
       "title_one": "Une organisation vous demande quelque chose",
       "title_many": "{{count}} organisations vous demandent quelque chose",
       "title_other": "{{count}} organisations vous demandent quelque chose",
-      "body_one": "{{name}} demande : {{what}}. Vous choisissez lequel de vos documents y répond, et elle ne voit que celui-là.",
+      "body_one": "{{name}} demande : {{what}}. Vous choisissez lequel de vos documents y répond, et elle ne voit que celui-là.",
       "body_other": "Vous choisissez lequel de vos documents répond à chaque demande, et elles ne voient que ce que vous désignez.",
       "cta": "Répondre dans Documents"
     }

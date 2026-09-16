@@ -470,7 +470,7 @@
     "hero": {
       "eyebrow": "Tarifs",
       "title": "Le tarif suit la taille de votre organisation, pas ce que vous envoyez.",
-      "sub": "Aucune des deux offres ne s'achète par carte. Nous définissons le palier avec vous lors d'un échange de vingt minutes, avec une facturation annuelle : aucun compteur à surveiller, aucune raison d'envoyer moins."
+      "sub": "Aucune des deux offres ne s'achète par carte. Nous définissons le palier avec vous lors d'un échange de vingt minutes, avec une facturation annuelle : aucun compteur à surveiller, aucune raison d'envoyer moins."
     },
     "exchange": {
       "name": "Everstead pour les entreprises",
@@ -524,23 +524,23 @@
       "title": "Avant que vous ne posiez la question.",
       "items": [
         {
-          "q": "Pourquoi aucun tarif sur cette page ?",
+          "q": "Pourquoi aucun tarif sur cette page ?",
           "a": "Parce que nous préférons vous faire une proposition plutôt que de deviner. Nous accompagnons personnellement les premières organisations, et le palier dépend du nombre de personnes que vous touchez. Vous aurez un chiffre pendant l'échange, pas au terme d'un appel d'offres."
         },
         {
-          "q": "Facturez-vous au document ?",
+          "q": "Facturez-vous au document ?",
           "a": "Non, et nous ne le ferons pas. Un compteur vous pousse à envoyer moins, alors que chaque document accepté offre à quelqu'un un coffre qu'il garde. Nous vous facturerions ce qui nous rend service."
         },
         {
-          "q": "Facturez-vous au siège ?",
-          "a": "Non. Une équipe RH compte trois personnes que l'entreprise en emploie deux cents ou cinq mille : le siège ne mesure rien d'utile ici."
+          "q": "Facturez-vous au siège ?",
+          "a": "Non. Une équipe RH compte trois personnes que l'entreprise en emploie deux cents ou cinq mille : le siège ne mesure rien d'utile ici."
         },
         {
-          "q": "Que deviennent nos collaborateurs si nous arrêtons de payer ?",
+          "q": "Que deviennent nos collaborateurs si nous arrêtons de payer ?",
           "a": "Rien. Les documents n'ont jamais été ni les nôtres ni les vôtres, ils sont les leurs. Ils gardent leur coffre et tout ce qu'il contient. Vous perdez la possibilité d'envoyer et de demander."
         },
         {
-          "q": "Est-ce différent en France ?",
+          "q": "Est-ce différent en France ?",
           "a": "Les mêmes montants en euros. Nous ne sommes pas moins chers en France, et les coffres sont hébergés à Londres sous le UK GDPR dans les deux cas, ce que nous préférons dire d'emblée plutôt qu'à la fin d'un processus d'achat."
         }
       ]
