@@ -1,4 +1,4 @@
-import React, { useEffect, Suspense, lazy } from 'react'
+import React, { useEffect, useState, Suspense, lazy } from 'react'
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import i18n, { languageFromPath, rememberLanguage } from './i18n'
 import { Helmet } from 'react-helmet-async'
@@ -87,10 +87,36 @@ const MobileApp             = lazy(() => import('./pages/native/app/MobileApp'))
 const BusinessLayout        = lazy(() => import('./components/BusinessLayout'))
 
 // ── Page loading fallback ─────────────────────────────────────────────────────
+// Routes whose first paint is dark. A light loader in front of one of these is
+// the "blinking" you see moving around the business tree: dark page, full white
+// panel for 100ms while the next chunk arrives, dark page again.
+const DARK_ROUTES = ['/business', '/entreprises', '/family-vault', '/compare',
+  '/what-to-do-when-someone-dies', '/assistant-apres-deces']
+const routeIsDark = (path) => path === '/' || path === '/fr' || DARK_ROUTES.some(p => path.startsWith(p) || path.startsWith(`/fr${p}`))
+
+/**
+ * The Suspense fallback between lazy routes.
+ *
+ * Two things stop it flashing. It takes the background of the route it is
+ * loading, so a dark-to-dark navigation stays dark. And the spinner waits a
+ * third of a second before appearing, because a spinner that shows for 100ms
+ * and vanishes IS the blink, not a cure for it. A chunk that arrives quickly
+ * now shows nothing at all.
+ */
 function PageLoader() {
+  const dark = typeof window !== 'undefined' && routeIsDark(window.location.pathname)
+  const [showSpinner, setShowSpinner] = useState(false)
+  useEffect(() => {
+    const t = setTimeout(() => setShowSpinner(true), 350)
+    return () => clearTimeout(t)
+  }, [])
   return (
-    <div className="min-h-screen bg-stone-50 flex items-center justify-center">
-      <div className="w-7 h-7 rounded-full border-2 border-stone-200 border-t-navy-800 animate-spin" />
+    <div className={`min-h-screen flex items-center justify-center ${dark ? 'bg-navy-950' : 'bg-stone-50'}`}>
+      <div
+        className={`w-7 h-7 rounded-full border-2 animate-spin transition-opacity duration-200 ${
+          showSpinner ? 'opacity-100' : 'opacity-0'
+        } ${dark ? 'border-white/15 border-t-white/70' : 'border-stone-200 border-t-navy-800'}`}
+      />
     </div>
   )
 }

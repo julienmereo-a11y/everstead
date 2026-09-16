@@ -22,6 +22,21 @@ export default function BusinessNav() {
 
   useEffect(() => { setOpen(false) }, [location.pathname])
 
+  // Warm the sibling route chunks once the page is idle. Every page in this
+  // tree is dark, so a Suspense fallback between two of them is the most
+  // visible flash on the site; fetching three small chunks in the background
+  // means the navigation simply never suspends.
+  useEffect(() => {
+    const warm = () => {
+      import('../pages/BusinessVertical').catch(() => {})
+      import('../pages/ForAdvisors').catch(() => {})
+      import('../pages/Business').catch(() => {})
+    }
+    const idle = window.requestIdleCallback
+    const id = idle ? idle(warm, { timeout: 2500 }) : setTimeout(warm, 1200)
+    return () => { if (idle && window.cancelIdleCallback) window.cancelIdleCallback(id); else clearTimeout(id) }
+  }, [])
+
   useEffect(() => {
     if (!open) return
     const handler = (e) => { if (menuRef.current && !menuRef.current.contains(e.target)) setOpen(false) }
