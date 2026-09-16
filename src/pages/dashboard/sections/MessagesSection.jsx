@@ -296,7 +296,13 @@ export function MessagesSection({ messages: initialMessages, loading, people, is
     setDeleting(true)
     setDeleteError(null)
     try {
-      if (!isDemo) await deleteMessage?.(confirmDelete.id)
+      // Not deleteMessage?.(): a missing prop would make the modal close on a
+      // delete that never happened, which is the failure mode this whole
+      // confirmation exists to avoid.
+      if (!isDemo) {
+        if (!deleteMessage) throw new Error(t('messages.errors.deleteFailed'))
+        await deleteMessage(confirmDelete.id)
+      }
       setConfirmDelete(null)
       setExpanded(null)
     } catch (err) {
