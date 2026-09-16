@@ -6,6 +6,7 @@
 // creates the share. Which is why the form asks for a plain description of what
 // is needed rather than pointing at anything.
 import React, { useCallback, useEffect, useState } from 'react'
+import { ReceiptButton } from './receipt'
 import { AlertTriangle, Ban, Bell, CheckCircle2, Clock, Loader2, Search, Send } from 'lucide-react'
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
@@ -195,6 +196,7 @@ export function RequestPanel({ firm, isDemo }) {
                         </span>
                       </td>
                       <td className="px-4 py-3 text-right whitespace-nowrap">
+                        {!open && <ReceiptButton kind="share" row={r} orgName={firm?.firm_name} />}
                         {open && (
                           <span className="inline-flex items-center gap-3">
                             <button disabled={rowBusy === r.id} onClick={() => rowAction(r.id, 'remind')}

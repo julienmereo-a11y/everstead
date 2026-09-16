@@ -9,6 +9,7 @@
 // email carries a claim link; once they open a free account on that address the
 // delivery is simply there.
 import React, { useCallback, useEffect, useState } from 'react'
+import { ReceiptButton } from './receipt'
 import { AlertTriangle, CheckCircle2, Clock, FileText, Loader2, Send, ShieldCheck, Upload, X } from 'lucide-react'
 
 const DOC_TYPES = ['Legal', 'Finance', 'Insurance', 'Property', 'Personal', 'Medical', 'Other']
@@ -191,6 +192,7 @@ export function SendPanel({ firm, isDemo }) {
                   <th className="px-4 py-2.5">To</th>
                   <th className="px-4 py-2.5">Sent</th>
                   <th className="px-4 py-2.5">Status</th>
+                  <th className="px-4 py-2.5"></th>
                 </tr>
               </thead>
               <tbody>
@@ -205,6 +207,9 @@ export function SendPanel({ firm, isDemo }) {
                         <span className={`inline-flex items-center gap-1.5 text-[11px] font-semibold px-2 py-1 rounded-full border ${s.cls}`}>
                           <s.Icon size={11} />{s.label}
                         </span>
+                      </td>
+                      <td className="px-4 py-3 text-right">
+                        <ReceiptButton kind="delivery" row={d} orgName={firm?.firm_name} />
                       </td>
                     </tr>
                   )
