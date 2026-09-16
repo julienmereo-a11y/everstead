@@ -17,6 +17,7 @@ import { supabase } from '../lib/supabase'
 import { AdviserAssistant, InviteFamilyModal, initialOf } from './adviser/shared'
 import { AlertsScreen, ClientDetailScreen, ClientsScreen, GuidesScreen, OverviewScreen, SettingsScreen, deriveOverview } from './adviser/screens'
 import { ExchangeScreen } from './adviser/exchange'
+import { EmployerOverview } from './adviser/employer'
 import { MattersScreen, ReviewQueueScreen } from './adviser/solicitor'
 
 const roleFromType = (t) => (t === 'solicitor' || t === 'notaire') ? 'solicitor' : 'adviser'
@@ -44,6 +45,8 @@ export default function AdvisorPortal() {
   const [demoWs, setDemoWs]             = useState(() => JSON.parse(JSON.stringify(DEMO_ADVISER_WORKSPACE)))
   const [demoFamilies, setDemoFamilies] = useState(() => DEMO_ADVISOR_FAMILIES.map(f => ({ ...f })))
   const [demoRole, setDemoRole]         = useState('solicitor')
+  // ?demo=true&org=employer previews the employer portal.
+  const demoEmployer = isDemo && searchParams.get('org') === 'employer'
   const [dataLoading, setDataLoading]   = useState(!isDemo)
 
   const loadPortal = async () => {
@@ -96,7 +99,7 @@ export default function AdvisorPortal() {
 
   const families  = isDemo ? demoFamilies : realFamilies
   const workspace = isDemo ? demoWs : realWs
-  const firm      = isDemo ? { id: 'demo-firm', firm_name: demoRole === 'solicitor' ? 'Carter & Vale Solicitors' : DEMO_ADVISOR.firm, firm_type: demoRole === 'solicitor' ? 'solicitor' : 'ifa', plan_type: 'pilot', max_families: 5, role: 'owner', pilot_end_date: '2027-06-01', org_kind: 'professional', can_deliver: true } : realFirm
+  const firm      = isDemo ? { id: 'demo-firm', firm_name: demoEmployer ? 'Marlow & Finch' : demoRole === 'solicitor' ? 'Carter & Vale Solicitors' : DEMO_ADVISOR.firm, firm_type: demoEmployer ? 'other' : demoRole === 'solicitor' ? 'solicitor' : 'ifa', plan_type: 'pilot', max_families: 5, role: 'owner', pilot_end_date: '2027-06-01', org_kind: demoEmployer ? 'employer' : 'professional', can_deliver: true } : realFirm
   const role      = isDemo ? demoRole : roleFromType(realFirm?.firm_type)
   const team      = isDemo
     ? [{ id: 't1', email: DEMO_ADVISOR.email, role: 'owner', invite_status: 'accepted', full_name: DEMO_ADVISOR.full_name }, { id: 't2', email: 'james@carterwealth.example', role: 'member', invite_status: 'accepted', full_name: 'James Reid' }]
@@ -126,10 +129,17 @@ export default function AdvisorPortal() {
   useEffect(() => { if (tab === 'client' && !selected) setTab('clients') }, [tab, selected])
 
   const overview = useMemo(() => deriveOverview({ families, workspace, role, readIds }), [families, workspace, role, readIds])
-  const nav = role === 'solicitor'
+  // An employer has no client families, no review queue and no matters; the
+  // adviser guides are written for a different job. Showing them empty is worse
+  // than not showing them.
+  const isEmployer = firm?.org_kind === 'employer'
+  const nav = isEmployer
+    ? [['overview', 'Overview', LayoutDashboard], ['send', 'Documents', Send], ['settings', 'Settings', Settings]]
+    : role === 'solicitor'
     ? [['overview', 'Overview', LayoutDashboard], ['clients', 'Clients', Users], ['send', 'Documents', Send], ['review', 'Review queue', FileText, overview.awaiting, 'sage'], ['matters', 'Matters', Scale], ['alerts', 'Alerts', Bell, overview.unread.length, 'red'], ['guides', 'Guides', BookOpen], ['settings', 'Settings', Settings]]
     : [['overview', 'Overview', LayoutDashboard], ['clients', 'Clients', Users], ['send', 'Documents', Send], ['alerts', 'Alerts', Bell, overview.unread.length, 'red'], ['guides', 'Guides', BookOpen], ['settings', 'Settings', Settings]]
   useEffect(() => { if (role !== 'solicitor' && (tab === 'review' || tab === 'matters')) setTab('overview') }, [role, tab])
+  useEffect(() => { if (isEmployer && !['overview', 'send', 'settings'].includes(tab)) setTab('overview') }, [isEmployer, tab])
 
   // ── Writes ───────────────────────────────────────────────────
   const patchFamily = (id, patch) => (isDemo ? setDemoFamilies : setRealFamilies)(fs => fs.map(f => f.id === id ? { ...f, ...patch } : f))
@@ -228,7 +238,7 @@ export default function AdvisorPortal() {
         <div className="flex items-center justify-between lg:justify-start gap-2.5 px-2 lg:pb-[22px]">
           <Link to="/" className="flex items-center gap-2.5">
             <span className="w-[30px] h-[30px] rounded-full bg-white/[0.08] border border-white/[0.14] inline-flex items-center justify-center font-display text-[20px] font-medium text-sage-300">E</span>
-            <span className="flex flex-col"><span className="font-display text-[21px] leading-none font-medium">Everstead</span><span className="text-[9.5px] tracking-[0.16em] uppercase text-navy-300 mt-[3px]">Adviser portal</span></span>
+            <span className="flex flex-col"><span className="font-display text-[21px] leading-none font-medium">Everstead</span><span className="text-[9.5px] tracking-[0.16em] uppercase text-navy-300 mt-[3px]">{isEmployer ? 'Employer portal' : 'Adviser portal'}</span></span>
           </Link>
           <button onClick={isDemo ? () => navigate('/') : handleSignOut} title="Sign out" aria-label="Sign out" className="lg:hidden text-navy-200 hover:text-white p-1.5"><LogOut size={16} /></button>
         </div>
@@ -236,11 +246,11 @@ export default function AdvisorPortal() {
           {nav.map(([id, label, Icon, badge, tone]) => <NavButton key={id} id={id} label={label} Icon={Icon} badge={badge} tone={tone} compact={false} />)}
         </nav>
         <div className="hidden lg:flex mt-auto flex-col gap-3">
-          <div className="card-dark px-3.5 py-3">
+          {!isEmployer && <div className="card-dark px-3.5 py-3">
             <div className="flex justify-between text-[11px] text-navy-200"><span>Families</span><span className="text-stone-50 font-semibold">{familiesUsed} / {familiesLimit}</span></div>
             <div className="h-1 rounded-full bg-white/10 overflow-hidden mt-2"><div className="h-full rounded-full bg-sage-500" style={{ width: `${Math.min(100, (familiesUsed / (familiesLimit || 1)) * 100)}%` }} /></div>
             <div className="flex items-center gap-1.5 mt-2 text-[10.5px] text-navy-200"><span className="w-1.5 h-1.5 rounded-full bg-sage-400" />{role === 'solicitor' ? 'Solicitor' : 'Financial adviser'} · {firm?.plan_type === 'paid' ? 'paid' : 'pilot'}</div>
-          </div>
+          </div>}
           <div className="flex items-center gap-2.5 px-1">
             <button onClick={() => go('settings')} className="flex items-center gap-2.5 flex-1 min-w-0 text-left rounded-xl px-2 py-1.5 hover:bg-white/[0.07] transition-colors">
               <span className="w-8 h-8 rounded-full bg-navy-600 inline-flex items-center justify-center text-[12px] font-bold shrink-0">{initialOf(advisor?.full_name)}{(advisor?.full_name || '').split(' ')[1]?.[0]?.toUpperCase() || ''}</span>
@@ -254,7 +264,8 @@ export default function AdvisorPortal() {
 
       {/* ── Main ── */}
       <main className="flex-1 min-w-0 px-5 sm:px-8 lg:px-10 pt-7 lg:pt-8 pb-28">
-        {tab === 'overview' && <OverviewScreen advisor={advisor} role={role} families={families} workspace={workspace} readIds={readIds} go={go} openClient={openClient} onInvite={() => setShowInvite(true)} onRequest={() => { setTab('review'); setRequestOpen(true) }} />}
+        {tab === 'overview' && isEmployer && <EmployerOverview firm={firm} advisor={advisor} go={go} isDemo={isDemo} />}
+        {tab === 'overview' && !isEmployer && <OverviewScreen advisor={advisor} role={role} families={families} workspace={workspace} readIds={readIds} go={go} openClient={openClient} onInvite={() => setShowInvite(true)} onRequest={() => { setTab('review'); setRequestOpen(true) }} />}
         {tab === 'clients'  && <ClientsScreen role={role} families={families} workspace={workspace} query={query} setQuery={setQuery} openClient={openClient} onInvite={() => setShowInvite(true)} />}
         {tab === 'client' && selected && (
           <ClientDetailScreen family={selected} role={role} isDemo={isDemo} workspace={workspace} detailTab={detailTab} setDetailTab={setDetailTab}

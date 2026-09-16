@@ -8,22 +8,13 @@
 // The recipient does not need an Everstead account. If they have none the
 // email carries a claim link; once they open a free account on that address the
 // delivery is simply there.
-import React, { useCallback, useEffect, useState } from 'react'
-import { ReceiptButton } from './receipt'
-import { AlertTriangle, CheckCircle2, Clock, FileText, Loader2, Send, ShieldCheck, Upload, X } from 'lucide-react'
+import React, { useState } from 'react'
+import { AlertTriangle, CheckCircle2, FileText, Loader2, Send, ShieldCheck, Upload, X } from 'lucide-react'
 
 const DOC_TYPES = ['Legal', 'Finance', 'Insurance', 'Property', 'Personal', 'Medical', 'Other']
 const MAX_BYTES = 25 * 1024 * 1024
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
-const STATUS_STYLE = {
-  sent:     { label: 'Waiting',  cls: 'bg-amber-50 text-amber-800 border-amber-200', Icon: Clock },
-  accepted: { label: 'Accepted', cls: 'bg-sage-50 text-sage-700 border-sage-200',    Icon: CheckCircle2 },
-  declined: { label: 'Declined', cls: 'bg-stone-100 text-stone-600 border-stone-200', Icon: X },
-  expired:  { label: 'Expired',  cls: 'bg-stone-100 text-stone-500 border-stone-200', Icon: Clock },
-}
-
-const fmt = (iso) => { try { return new Date(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) } catch { return '' } }
 
 export function SendPanel({ firm, isDemo }) {
   const [form, setForm] = useState({ email: '', title: '', docType: 'Other', note: '' })
@@ -31,21 +22,6 @@ export function SendPanel({ firm, isDemo }) {
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState(null)
   const [sentTo, setSentTo] = useState(null)
-  const [history, setHistory] = useState([])
-
-  const load = useCallback(async () => {
-    if (isDemo || !firm?.id) return
-    const { supabase } = await import('../../lib/supabase')
-    const { data } = await supabase
-      .from('inbound_deliveries')
-      .select('id, recipient_email, title, doc_type, status, sent_at, responded_at')
-      .eq('org_id', firm.id)
-      .order('sent_at', { ascending: false })
-      .limit(40)
-    setHistory(data || [])
-  }, [firm?.id, isDemo])
-
-  useEffect(() => { load() }, [load])
 
   const set = (k, v) => setForm(f => ({ ...f, [k]: v }))
 
@@ -92,7 +68,6 @@ export function SendPanel({ firm, isDemo }) {
       setSentTo(form.email.trim())
       setFile(null)
       setForm({ email: '', title: '', docType: 'Other', note: '' })
-      await load()
     } catch (err) { setError(err.message) } finally { setBusy(false) }
   }
 
@@ -181,47 +156,6 @@ export function SendPanel({ firm, isDemo }) {
         </p>
       </form>
 
-      {history.length > 0 && (
-        <div className="mt-8">
-          <h2 className="text-sm font-semibold text-navy-950 m-0 mb-3">Sent</h2>
-          <div className="rounded-2xl border border-stone-200 bg-white overflow-hidden">
-            <table className="w-full text-sm">
-              <thead className="bg-stone-50 border-b border-stone-200">
-                <tr className="text-left text-xs font-semibold text-stone-500">
-                  <th className="px-4 py-2.5">Document</th>
-                  <th className="px-4 py-2.5">To</th>
-                  <th className="px-4 py-2.5">Sent</th>
-                  <th className="px-4 py-2.5">Status</th>
-                  <th className="px-4 py-2.5"></th>
-                </tr>
-              </thead>
-              <tbody>
-                {history.map(d => {
-                  const s = STATUS_STYLE[d.status] || STATUS_STYLE.sent
-                  return (
-                    <tr key={d.id} className="border-b border-stone-100 last:border-0">
-                      <td className="px-4 py-3 text-navy-950">{d.title}</td>
-                      <td className="px-4 py-3 text-stone-500">{d.recipient_email}</td>
-                      <td className="px-4 py-3 text-stone-400 text-xs">{fmt(d.sent_at)}</td>
-                      <td className="px-4 py-3">
-                        <span className={`inline-flex items-center gap-1.5 text-[11px] font-semibold px-2 py-1 rounded-full border ${s.cls}`}>
-                          <s.Icon size={11} />{s.label}
-                        </span>
-                      </td>
-                      <td className="px-4 py-3 text-right">
-                        <ReceiptButton kind="delivery" row={d} orgName={firm?.firm_name} />
-                      </td>
-                    </tr>
-                  )
-                })}
-              </tbody>
-            </table>
-          </div>
-          <p className="mt-3 text-xs text-stone-400">
-            You see whether it was accepted, never the document afterwards. Once it is in their vault it is theirs.
-          </p>
-        </div>
-      )}
     </div>
   )
 }

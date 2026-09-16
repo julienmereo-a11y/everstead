@@ -3,19 +3,21 @@
 // sight of one of theirs. They sit together because they are the same
 // relationship seen from either end.
 import React, { useState } from 'react'
-import { Download, Upload } from 'lucide-react'
+import { Download, History, Upload } from 'lucide-react'
 import { SendPanel } from './send'
 import { RequestPanel } from './request'
+import { HistoryPanel } from './history'
 
 const TABS = [
-  { id: 'send', label: 'Send a document', Icon: Upload },
-  { id: 'ask',  label: 'Ask for a document', Icon: Download },
+  { id: 'send',    label: 'Send a document', Icon: Upload },
+  { id: 'ask',     label: 'Ask for a document', Icon: Download },
+  { id: 'history', label: 'History', Icon: History },
 ]
 
 export function ExchangeScreen({ firm, isDemo, initialTab = 'send' }) {
   const [tab, setTab] = useState(initialTab)
   return (
-    <div className="max-w-3xl">
+    <div className="max-w-4xl">
       <h1 className="font-display text-2xl font-light text-navy-950 m-0 mb-5">Documents</h1>
       <div className="flex gap-1 mb-6 border-b border-stone-200">
         {TABS.map(({ id, label, Icon }) => (
@@ -28,7 +30,9 @@ export function ExchangeScreen({ firm, isDemo, initialTab = 'send' }) {
           </button>
         ))}
       </div>
-      {tab === 'send' ? <SendPanel firm={firm} isDemo={isDemo} /> : <RequestPanel firm={firm} isDemo={isDemo} />}
+      {tab === 'send' ? <SendPanel firm={firm} isDemo={isDemo} />
+        : tab === 'ask' ? <RequestPanel firm={firm} isDemo={isDemo} />
+        : <HistoryPanel firm={firm} isDemo={isDemo} />}
     </div>
   )
 }
