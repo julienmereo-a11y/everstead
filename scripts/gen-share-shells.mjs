@@ -106,15 +106,46 @@ const PAGES = {
   '/business/employers': { ns: 'business', metaPath: 'verticals.employers.meta', frRoute: '/entreprises/employeurs' },
   '/business/pricing': { ns: 'business', metaPath: 'pricing.meta', frRoute: '/entreprises/tarifs' },
   '/will-generator': { ns: 'willGenerator', frRoute: '/preparer-mon-testament' },
+  '/compare': { ns: 'compare', metaPath: 'index.meta' },
+  '/get-started': 'getStarted',
 }
+// The six comparison pages build their meta from the competitor block rather
+// than a fixed path (title from detail.metaTitle with that competitor's
+// tagline, description from their subhead), so they are expanded here into the
+// same shape the loop below understands. Only the country-neutral comparison
+// exists in the French tree, matching the sitemap.
+const FR_COMPARE = new Set(
+  (readFileSync(join(root, 'src/pages/Compare.jsx'), 'utf8')
+    .match(/FR_SLUGS = new Set\(\[([\s\S]*?)\]\)/)?.[1].match(/'([^']+)'/g) || [])
+    .map(m => m.replace(/'/g, ''))
+)
+for (const slug of Object.keys(JSON.parse(readFileSync(join(root, 'src/i18n/locales/en/compare.json'), 'utf8')).competitors)) {
+  PAGES[`/compare/${slug}`] = {
+    ns: 'compare',
+    compareSlug: slug,
+    langs: FR_COMPARE.has(slug) ? ['en', 'fr'] : ['en'],
+  }
+}
+
 let pagesWritten = 0
 for (const [route, spec] of Object.entries(PAGES)) {
-  const { ns, metaPath = 'meta', frRoute = route } = typeof spec === 'string' ? { ns: spec } : spec
-  for (const lang of ['en', 'fr']) {
+  const { ns, metaPath = 'meta', frRoute = route, compareSlug, langs = ['en', 'fr'] } =
+    typeof spec === 'string' ? { ns: spec } : spec
+  for (const lang of langs) {
     const f = join(root, 'src/i18n/locales', lang, `${ns}.json`)
     if (!existsSync(f) || !templates[lang]) continue
-    const meta = metaPath.split('.').reduce((o, k) => (o && o[k]) || {}, JSON.parse(readFileSync(f, 'utf8')))
-    const title = meta.title, desc = meta.description || meta.desc
+    const json = JSON.parse(readFileSync(f, 'utf8'))
+    let title, desc
+    if (compareSlug) {
+      const c = json.competitors?.[compareSlug]
+      if (!c) continue
+      title = (json.detail?.metaTitle || '').replace('{{tagline}}', c.tagline || c.name || '')
+      desc  = c.subhead || c.headline
+    } else {
+      const meta = metaPath.split('.').reduce((o, k) => (o && o[k]) || {}, json)
+      title = meta.title
+      desc  = meta.description || meta.desc
+    }
     if (!title || !desc) continue
     const prefix = lang === 'fr' ? '/fr' : ''
     const langRoute = lang === 'fr' ? frRoute : route
@@ -126,7 +157,12 @@ for (const [route, spec] of Object.entries(PAGES)) {
     html = setMeta(html, 'property', 'og:description', desc)
     html = setMeta(html, 'name', 'twitter:title', title)
     html = setMeta(html, 'name', 'twitter:description', desc)
-    html = html.replace(/(<meta property="og:image"[^>]*>)/, `$1\n    <link rel="canonical" href="${esc(url)}" data-rh="true" />\n    <link rel="alternate" hreflang="en-GB" href="${esc(BASE + route)}" data-rh="true" />\n    <link rel="alternate" hreflang="fr" href="${esc(BASE + '/fr' + frRoute)}" data-rh="true" />\n    <link rel="alternate" hreflang="x-default" href="${esc(BASE + route)}" data-rh="true" />`)
+    // Only advertise the French alternate when the page actually exists in the
+    // French tree: five of the six comparisons are UK-only.
+    const frAlternate = langs.includes('fr')
+      ? `\n    <link rel="alternate" hreflang="fr" href="${esc(BASE + '/fr' + frRoute)}" data-rh="true" />`
+      : ''
+    html = html.replace(/(<meta property="og:image"[^>]*>)/, `$1\n    <link rel="canonical" href="${esc(url)}" data-rh="true" />\n    <link rel="alternate" hreflang="en-GB" href="${esc(BASE + route)}" data-rh="true" />${frAlternate}\n    <link rel="alternate" hreflang="x-default" href="${esc(BASE + route)}" data-rh="true" />`)
     const out = join(root, 'dist', ...(prefix + langRoute).split('/').filter(Boolean), 'index.html')
     mkdirSync(dirname(out), { recursive: true })
     writeFileSync(out, html)
