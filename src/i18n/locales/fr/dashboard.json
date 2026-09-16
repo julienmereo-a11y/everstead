@@ -11,9 +11,8 @@
       "body": "Votre essai gratuit de 14 jours est arrivé à son terme. Choisissez un forfait pour conserver le coffre, les personnes de confiance et tout ce que vous avez mis en place. Rien n'est perdu : vos données restent en sécurité.",
       "plusPrice": "{{monthly}}/mois",
       "plusNote": "ou {{annualPerMonth}}/mois en paiement annuel ({{annual}}/an, soit 2 mois offerts), deux coffres privés",
-      "proPrice": "60 £/mois",
-      "proNote": "ou 48 £/mois en paiement annuel · Pour les conseillers patrimoniaux",
-      "questions": "Des questions ? Écrivez-nous à"
+      "questions": "Des questions ? Écrivez-nous à",
+      "proLine": "Vous êtes sur Everstead Pro, que nous mettons en place directement avec vous plutôt que par carte bancaire. Écrivez-nous et nous reprenons le fil."
     },
     "advisorCancelled": {
       "titleNamed": "{{name}} a annulé son forfait conseiller.",

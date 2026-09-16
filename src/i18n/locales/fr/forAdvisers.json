@@ -13,11 +13,11 @@
     "seeHow": "Voir comment ça marche"
   },
   "trustSignals": [
-    "Données hébergées au Royaume-Uni (adéquation UE)",
+    "Données hébergées au Royaume-Uni",
     "Chiffrement AES-256",
     "Conforme au RGPD",
     "Aucun conseil financier",
-    "Infrastructure SOC 2"
+    "Prestataires certifiés SOC 2"
   ],
   "problem": {
     "eyebrow": "Le problème",
@@ -67,7 +67,7 @@
       },
       {
         "title": "Un traitement des données conforme",
-        "desc": "Chiffrement AES-256, conformité totale au RGPD et hébergement au Royaume-Uni, couvert par une décision d'adéquation de la Commission européenne. Les données de vos clients sont traitées selon le niveau d'exigence que vous attendez de tout outil professionnel."
+        "desc": "Chiffrement AES-256, conformité au RGPD et hébergement au Royaume-Uni. Les données de vos clients sont traitées selon le niveau d'exigence que vous attendez de tout outil professionnel."
       }
     ],
     "ongoing": {

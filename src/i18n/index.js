@@ -75,6 +75,7 @@ export const FR_PATH_ALIASES = {
   '/business/care': '/entreprises/etablissements',
   '/business/employers': '/entreprises/employeurs',
   '/business/pricing': '/entreprises/tarifs',
+  '/press': '/presse',
 }
 const EN_PATH_ALIASES = Object.fromEntries(Object.entries(FR_PATH_ALIASES).map(([en, fr]) => [fr, en]))
 
@@ -86,6 +87,18 @@ export function pathInLanguage(pathname, lang) {
     return `/fr${frPath === '/' ? '' : frPath}`
   }
   return EN_PATH_ALIASES[pathname] || pathname || '/'
+}
+
+/**
+ * The slug a path uses in the given language, WITHOUT the /fr prefix.
+ *
+ * This is the form <Link to> needs, because the router carries basename '/fr'
+ * and repeating the prefix resolves to /fr/fr/... . pathInLanguage returns the
+ * absolute form instead, for the language switcher, hreflang and canonicals.
+ */
+export function slugInLanguage(pathname, lang) {
+  if (lang === 'fr') return FR_PATH_ALIASES[pathname] || pathname
+  return EN_PATH_ALIASES[pathname] || pathname
 }
 
 export function languageFromPath(pathname) {

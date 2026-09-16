@@ -34,7 +34,10 @@ export default function Business() {
   const why = t('hub.why.items', { returnObjects: true })
   const steps = t('hub.how.steps', { returnObjects: true })
   const points = t('hub.trust.points', { returnObjects: true })
-  const nextItems = t('hub.next.items', { returnObjects: true })
+  // Guarded the way the vertical pages guard theirs: when there is nothing
+  // genuinely ahead, the section is absent rather than describing shipped work.
+  const nextItems = t('hub.next.items', { returnObjects: true, defaultValue: [] })
+  const hasNext = Array.isArray(nextItems) && nextItems.length > 0
 
   return (
     <>
@@ -202,6 +205,7 @@ export default function Business() {
         </section>
 
         {/* ── WHERE THIS IS GOING ── */}
+        {hasNext && (
         <section className={`py-20 lg:py-28 ${SECTION_X}`}>
           <div className="max-w-[1200px] mx-auto reveal rounded-[28px] border border-stone-200 bg-white p-8 sm:p-10 lg:p-14">
             <div className="max-w-[720px]">
@@ -222,6 +226,7 @@ export default function Business() {
             <p className="mt-6 m-0 text-[13px] leading-[1.6] text-stone-500">{t('hub.next.note')}</p>
           </div>
         </section>
+        )}
 
         {/* ── FINAL CTA ── */}
         <section className={`relative py-24 lg:py-[120px] text-stone-50 overflow-hidden grain bg-gradient-to-br from-navy-950 to-navy-800 ${SECTION_X}`}>

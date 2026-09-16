@@ -2708,6 +2708,7 @@ const tools = [
   {
     i18nKey: 'afterDeath',
     href: '/what-to-do-when-someone-dies',
+    hrefFr: '/assistant-apres-deces',
     title: 'What to do when someone dies',
     tag: 'AI guide',
     tagColor: 'bg-stone-100 text-stone-700 border-stone-200',

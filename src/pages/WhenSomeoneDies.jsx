@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { Helmet } from 'react-helmet-async'
-import { Link } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { Send, Loader2, ArrowLeft, Heart, Mail } from 'lucide-react'
 import EmailCaptureCard from '../components/EmailCaptureCard'
 import Markdown from '../components/Markdown'
@@ -115,6 +115,20 @@ export default function WhenSomeoneDies() {
       inputRef.current?.focus()
     }
   }
+
+  // The French tree has its own slug and the canonical tag names only that one.
+  // A visitor who reaches /fr/what-to-do-when-someone-dies (the resources card
+  // used to send them there) would otherwise sit on a URL this page disowns.
+  // Only this direction is wrong: /assistant-apres-deces without the prefix is
+  // deliberate, it serves the French page from the English tree.
+  const location = useLocation()
+  const navigate = useNavigate()
+  useEffect(() => {
+    const inFrenchTree = typeof window !== 'undefined' && window.location.pathname.startsWith('/fr/')
+    if (inFrenchTree && location.pathname === '/what-to-do-when-someone-dies') {
+      navigate('/assistant-apres-deces', { replace: true })
+    }
+  }, [location.pathname, navigate])
 
   const hasStarted = messages.some(m => m.role === 'user')
   const pageUrl = lang === 'fr'

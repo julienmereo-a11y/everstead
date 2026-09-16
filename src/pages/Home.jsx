@@ -16,6 +16,7 @@ import React, { useState } from 'react'
 import { Helmet } from 'react-helmet-async'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import { slugInLanguage } from '../i18n'
 import HreflangLinks from '../components/HreflangLinks'
 import StoreBadges from '../components/StoreBadges'
 import FilmSection from '../components/FilmSection'
@@ -174,7 +175,7 @@ export default function Home() {
   }))
 
   const proCards = [
-    { key: 'advisers',   to: '/business/advisers' },
+    { key: 'advisers',   to: slugInLanguage('/business/advisers', isFr ? 'fr' : 'en') },
     { key: 'solicitors', to: '/book-demo' },
   ]
 

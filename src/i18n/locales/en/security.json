@@ -11,7 +11,7 @@
   },
   "infrastructure": {
     "kicker": "Infrastructure",
-    "title": "Built on SOC 2 certified infrastructure, top to bottom.",
+    "title": "Built on infrastructure that is SOC 2 certified, top to bottom.",
     "subtitle": "Everstead does not operate its own data centres. Every layer of our stack is handled by providers that hold independent security certifications, so your data is protected at every point in the chain.",
     "items": {
       "supabase": {
@@ -222,7 +222,7 @@
       },
       {
         "q": "Are you SOC 2 certified?",
-        "a": "Everstead is SOC 2 compliant. Every infrastructure provider we rely on (Supabase, Vercel, Stripe, and Resend) holds SOC 2 Type II certification, and our controls are built to the same standard. Certification documents are available on request."
+        "a": "Not as an audited certification, and we would rather say so than let the badge imply one. Everstead is built to the SOC 2 control framework, and every infrastructure provider we rely on (Supabase, Vercel, Stripe and Resend) holds SOC 2 Type II certification. Their certification documents are available on request. If your procurement process needs Everstead's own audit report, we do not have one yet, and you should ask us where that sits."
       }
     ]
   },

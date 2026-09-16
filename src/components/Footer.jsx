@@ -1,6 +1,7 @@
 import React from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import { slugInLanguage } from '../i18n'
 import { TRANSLATED_PATHS, rememberLanguage, pathInLanguage } from '../i18n'
 import StoreBadges from './StoreBadges'
 import { showCookiePreferences } from '../lib/consent'
@@ -184,7 +185,7 @@ export default function Footer() {
               <ul className="space-y-2.5">
                 {col.links.filter(l => !isFr || frHasPage(l.href)).map(l => (
                   <li key={l.href}>
-                    <Link to={l.href} className="text-sm text-stone-400 hover:text-white transition-colors">
+                    <Link to={slugInLanguage(l.href, isFr ? 'fr' : 'en')} className="text-sm text-stone-400 hover:text-white transition-colors">
                       {t(`footer.links.${l.key}`)}
                     </Link>
                   </li>

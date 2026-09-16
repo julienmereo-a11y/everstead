@@ -133,7 +133,7 @@ export default function Press() {
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:image" content="https://www.everstead.care/og-image.jpg" />
       </Helmet>
-      <HreflangLinks path="/press" />
+      <HreflangLinks path="/press" frPath="/presse" />
 
       <div className="min-h-screen">
         {/* Hero */}

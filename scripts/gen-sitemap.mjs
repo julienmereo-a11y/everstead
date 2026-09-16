@@ -130,6 +130,7 @@ const FR_ALIAS = {
   '/business/care': '/entreprises/etablissements',
   '/business/employers': '/entreprises/employeurs',
   '/business/pricing': '/entreprises/tarifs',
+  '/press': '/presse',
 }
 for (const p of translatedPaths()) {
   if (FR_SKIP.has(p)) continue

@@ -46,7 +46,13 @@ export default class ErrorBoundary extends React.Component {
               <RefreshCw size={14} /> Refresh page
             </button>
             <button
-              onClick={() => { window.location.href = '/' }}
+              // A crash on /fr/* must not deposit the visitor in English. The edge
+              // middleware only redirects an uncookied French IP, so a French
+              // speaker elsewhere would have been stranded.
+              onClick={() => {
+                const p = window.location.pathname
+                window.location.href = (p === '/fr' || p.startsWith('/fr/')) ? '/fr' : '/'
+              }}
               className="inline-flex items-center gap-2 border border-stone-200 text-stone-600 text-sm font-medium px-5 py-2.5 rounded-xl hover:border-navy-300 hover:text-navy-800 transition-colors"
             >
               Go to homepage

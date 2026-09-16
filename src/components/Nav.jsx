@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { trackEvent } from '../lib/analytics'
 import { Menu, X, ChevronDown, Users } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
+import { slugInLanguage } from '../i18n'
 import { useAuth } from '../contexts/AuthContext'
 import LanguageSwitcher from './LanguageSwitcher'
 
@@ -53,7 +54,10 @@ export default function Nav({ topOffset = 0 }) {
     () => computeDarkStyle(window.location.pathname, 0)
   )
   const [open, setOpen] = useState(false)
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
+  // Business pages use a French slug; link straight to it rather than letting
+  // the destination page redirect the visitor across.
+  const href = (p) => slugInLanguage(p, i18n.language === 'fr' ? 'fr' : 'en')
   const location = useLocation()
   const navigate  = useNavigate()
   const menuRef = useRef(null)
@@ -152,8 +156,8 @@ export default function Nav({ topOffset = 0 }) {
             {navLinks.map(link => (
               <Link
                 key={link.href}
-                to={link.href}
-                aria-current={location.pathname === link.href ? 'page' : undefined}
+                to={href(link.href)}
+                aria-current={location.pathname === href(link.href) ? 'page' : undefined}
                 className={`px-3.5 py-1.5 text-sm font-medium rounded-md transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy-400 ${
                   useDarkStyle
                     ? location.pathname === link.href
@@ -270,8 +274,8 @@ export default function Nav({ topOffset = 0 }) {
             {navLinks.map(link => (
               <Link
                 key={link.href}
-                to={link.href}
-                aria-current={location.pathname === link.href ? 'page' : undefined}
+                to={href(link.href)}
+                aria-current={location.pathname === href(link.href) ? 'page' : undefined}
                 className={`flex items-center px-4 py-3 text-sm font-medium rounded-xl transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy-400 ${
                   location.pathname === link.href
                     ? 'text-navy-800 bg-navy-50'

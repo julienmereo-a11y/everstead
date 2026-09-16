@@ -67,7 +67,7 @@
         },
         {
           "title": "Vous ne détenez pas les données",
-          "body": "Le coffre appartient à la personne, pas à votre organisation. Conseillers et notaires ne voient que ce que le client a partagé. Un établissement ou un employeur ne voit rien du tout, donc aucune nouvelle obligation ne pèse sur vous."
+          "body": "Le coffre appartient à la personne, pas à votre organisation. Vous voyez les documents qu'elle a choisi de partager, pour la durée qu'elle a fixée, et rien d'autre de ce qu'elle conserve. Rien n'est recopié dans vos systèmes, aucune nouvelle obligation ne pèse donc sur vous."
         },
         {
           "title": "Cela commence gratuitement",
@@ -104,23 +104,6 @@
         "Aucun profil publicitaire, aucune vente de données",
         "Données hébergées à Londres chez AWS, sous le UK GDPR"
       ]
-    },
-    "next": {
-      "badge": "En développement",
-      "eyebrow": "Là où nous allons",
-      "title": "D'un plan pour un seul jour à un outil utilisé chaque mois.",
-      "body": "Everstead conserve déjà les documents dont une famille aura besoin. L'étape suivante, ce sont ceux qui arrivent alors que tout le monde est bien vivant : une organisation qui dépose un contrat ou une attestation directement dans le coffre d'une personne, et une personne qui accorde un accès limité dans le temps à une pièce d'identité ou à un justificatif de domicile plutôt que d'envoyer un scan par e-mail. Même coffre, même logique de consentement.",
-      "items": [
-        {
-          "title": "Déposer un document dans le coffre d'une personne",
-          "body": "Votre organisation dépose un document à partir d'une adresse e-mail. La personne accepte une fois, et le document arrive dans un coffre qui lui appartient et qu'elle garde en partant."
-        },
-        {
-          "title": "Le partage limité dans le temps, dans l'autre sens",
-          "body": "Une personne accorde un accès en lecture aux seules pièces dont vous avez besoin, pour la durée qu'il faut, et l'accès expire de lui-même."
-        }
-      ],
-      "note": "Rien de tout cela n'est encore en ligne. Nous choisissons en ce moment les premières organisations partenaires pour le construire avec elles."
     },
     "final": {
       "title": "Dites-nous qui vous accompagnez.",
@@ -400,23 +383,6 @@
             "body": "Chaque échange laisse une attestation horodatée que vous pouvez classer. Elle indique ce qui a été envoyé, à qui et quand la réponse est arrivée, et rien du contenu du coffre."
           }
         ]
-      },
-      "next": {
-        "badge": "En développement",
-        "eyebrow": "Là où nous allons",
-        "title": "Tous les documents qui circulent entre vous, pas seulement le premier.",
-        "body": "Le coffre d'un salarié est l'endroit naturel pour les papiers qui circulent entre vous : un contrat, une attestation, un certificat. Et ce même coffre peut répondre aux questions que vous posez à l'embauche, sans qu'un scan reste indéfiniment dans une boîte de réception.",
-        "items": [
-          {
-            "title": "Déposer un document dans le coffre d'un salarié",
-            "body": "Vous déposez un document à partir d'une adresse e-mail. Le salarié accepte une fois, et le document arrive dans un coffre qui lui appartient et qu'il garde en partant."
-          },
-          {
-            "title": "L'embauche, dans l'autre sens",
-            "body": "Le salarié accorde un accès en lecture aux seules pièces dont vous avez besoin, pièce d'identité, justificatif de domicile, personne à prévenir, pour la durée qu'il faut. Puis l'accès expire de lui-même."
-          }
-        ],
-        "note": "Rien de tout cela n'est encore en ligne, et le bulletin de paie électronique, très encadré en France, viendra plus tard et avec un partenaire certifié. Nous choisissons en ce moment les premiers employeurs pour construire le reste avec eux."
       },
       "faq": {
         "eyebrow": "Les questions que l'on nous pose",

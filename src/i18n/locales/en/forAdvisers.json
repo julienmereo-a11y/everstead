@@ -17,7 +17,7 @@
     "AES-256 encryption",
     "GDPR compliant",
     "No financial advice given",
-    "SOC 2 infrastructure"
+    "SOC 2 certified providers"
   ],
   "problem": {
     "eyebrow": "The problem",
@@ -141,7 +141,7 @@
       {
         "label": "Playbook",
         "title": "Estate organisation as a value-add: pricing & positioning playbook",
-        "summary": "How UK practices are positioning, pricing (£300-£1,500), and delivering estate organisation as a structured service, including the retention math at the generational transition.",
+        "summary": "How UK practices are positioning, pricing, and delivering estate organisation as a structured service, including the retention math at the generational transition.",
         "buttonLabel": "Email me the playbook"
       }
     ]

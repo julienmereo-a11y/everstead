@@ -67,7 +67,7 @@
         },
         {
           "title": "You are not holding the data",
-          "body": "The vault belongs to the person, not to your organisation. Advisers and solicitors see only what a client has shared. A care home or an employer sees nothing at all, so no new data duty lands on you."
+          "body": "The vault belongs to the person, not to your organisation. You see the documents someone has chosen to share with you, for as long as they chose, and nothing else they hold. Nothing is copied onto your systems, so no new data duty lands on you."
         },
         {
           "title": "It starts free",
@@ -104,23 +104,6 @@
         "Web, iOS and Android",
         "No advertising profiles, no selling of data"
       ]
-    },
-    "next": {
-      "badge": "In development",
-      "eyebrow": "Where this is going",
-      "title": "From a plan for one day to a place people use every month.",
-      "body": "Everstead already holds the documents a family will need. The next step is the ones that arrive while everyone is very much alive: an organisation sending a contract or a certificate straight into someone's vault, and a person granting time limited access to an ID or a proof of address instead of emailing a scan. Same vault, same consent model.",
-      "items": [
-        {
-          "title": "Send a document to a member's vault",
-          "body": "Your organisation pushes a document to someone by email address. They accept once, and it lands in a vault they own and keep when they leave."
-        },
-        {
-          "title": "Time limited sharing, the other way",
-          "body": "A person grants read access to exactly the items you need, for as long as you need them, and it expires on its own."
-        }
-      ],
-      "note": "Neither is live yet. We are choosing the first partner organisations to build them with."
     },
     "final": {
       "title": "Tell us who you serve.",
@@ -400,23 +383,6 @@
             "body": "Every exchange leaves a timestamped receipt you can file. It shows what was sent, to whom, and when it was answered, and nothing at all about what is in their vault."
           }
         ]
-      },
-      "next": {
-        "badge": "In development",
-        "eyebrow": "Where this is going",
-        "title": "Every document that passes between you, not only the first one.",
-        "body": "An employee's vault is the natural place for the paperwork that passes between you: a contract, a certificate, an attestation. And the same vault can answer the questions you ask at onboarding, without a scan sitting in an inbox forever.",
-        "items": [
-          {
-            "title": "Send a document to an employee's vault",
-            "body": "You push a document by email address. The employee accepts once, and it lands in a vault they own and keep after they leave."
-          },
-          {
-            "title": "Onboarding, the other way round",
-            "body": "An employee grants read access to exactly the items you need, an ID, a proof of address, a next of kin, for as long as you need them. Then it expires on its own."
-          }
-        ],
-        "note": "Neither is live yet. We are choosing the first employers to build them with, so say so on the call if that is the part you want."
       },
       "faq": {
         "eyebrow": "Questions we get",

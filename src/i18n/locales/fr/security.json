@@ -11,7 +11,7 @@
   },
   "infrastructure": {
     "kicker": "Infrastructure",
-    "title": "Une infrastructure certifiée SOC 2, de bout en bout.",
+    "title": "Bâti sur une infrastructure certifiée SOC 2, de bout en bout.",
     "subtitle": "Everstead n'exploite aucun centre de données en propre. Chaque couche de notre infrastructure est confiée à des prestataires qui détiennent des certifications de sécurité indépendantes : vos données sont donc protégées à chaque maillon de la chaîne.",
     "items": {
       "supabase": {
@@ -222,7 +222,7 @@
       },
       {
         "q": "Êtes-vous certifiés SOC 2 ?",
-        "a": "Everstead applique les exigences du référentiel SOC 2. Chacun des prestataires d'infrastructure sur lesquels nous nous appuyons (Supabase, Vercel, Stripe et Resend) détient la certification SOC 2 Type II, et nos propres contrôles sont bâtis sur la même norme. Les documents de certification sont disponibles sur demande."
+        "a": "Pas sous la forme d'une certification auditée, et nous préférons le dire plutôt que de laisser le badge le suggérer. Everstead applique le référentiel de contrôles SOC 2, et chacun de nos prestataires d'infrastructure (Supabase, Vercel, Stripe et Resend) détient la certification SOC 2 Type II. Leurs attestations sont disponibles sur demande. Si votre processus d'achat exige le rapport d'audit d'Everstead, nous n'en avons pas encore, et il faut nous interroger sur ce point."
       }
     ]
   },

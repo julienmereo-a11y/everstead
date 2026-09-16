@@ -93,7 +93,7 @@ export function TrialExpiredModal({ profile, onUpgrade }) {
         <div className="space-y-3 mb-8">
           {[
             { name: planLabel('family'), price: t('banners.trialExpired.plusPrice', figures), note: t('banners.trialExpired.plusNote', figures), id: 'family', highlight: profile.plan !== 'advisor' },
-            ...(profile.plan === 'advisor' ? [{ name: planLabel('advisor'), price: t('banners.trialExpired.proPrice'), note: t('banners.trialExpired.proNote'), id: 'advisor', highlight: true }] : []),
+
           ].map(plan => (
             <button
               key={plan.id}
@@ -108,6 +108,13 @@ export function TrialExpiredModal({ profile, onUpgrade }) {
             </button>
           ))}
         </div>
+        {/* Everstead Pro has no self-serve price and no Stripe product: it is
+            arranged on a call. The row that used to sit here quoted a figure
+            that no longer exists and pressed a button that would have looked up
+            a price that never did. */}
+        {profile.plan === 'advisor' && (
+          <p className="text-stone-500 text-sm leading-relaxed mb-6">{t('banners.trialExpired.proLine')}</p>
+        )}
         <p className="text-stone-400 text-xs">
           {t('banners.trialExpired.questions')}{' '}
           <a href="mailto:support@everstead.care" className="underline hover:text-navy-700">support@everstead.care</a>
