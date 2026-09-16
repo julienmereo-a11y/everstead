@@ -1483,7 +1483,10 @@
       "endWarnProfessional": "They lose access to everything immediately, and anything they had sent but you had not answered is withdrawn. Documents you already accepted stay yours.",
       "endWarnEmployer": "Anything they had sent but you had not answered is withdrawn. Documents you already accepted stay yours.",
       "employerReadsShared_one": "Reads nothing except the one item you shared, and only until it expires.",
-      "employerReadsShared_other": "Reads nothing except the {{count}} items you shared, and only until they expire."
+      "employerReadsShared_other": "Reads nothing except the {{count}} items you shared, and only until they expire.",
+      "autoFile": "File their documents automatically",
+      "autoFileOn": "Anything they send goes straight into your documents. You accepted them once, so they are not asked again.",
+      "autoFileOff": "Everything they send waits here for you to accept it."
     },
     "card": {
       "title": "Something is waiting for you",

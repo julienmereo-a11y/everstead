@@ -113,5 +113,20 @@ export function useAccess(profile, isDemo) {
       setData(d => ({ ...d, shares: d.shares.filter(s => s.id !== shareId) }))
     } finally { setBusyId(null) }
   }, [])
-  return { ...data, loading, busyId, respond, disconnect, grantShare, revokeShare, reload: load }
+  /**
+   * Automatic filing, per organisation. On once the member has accepted that
+   * organisation a first time; this is how they take it back without ending
+   * the connection entirely.
+   */
+  const setAutoFile = useCallback(async (connectionId, on) => {
+    setData(d => ({ ...d, connections: d.connections.map(c => c.connection_id === connectionId ? { ...c, auto_file: on } : c) }))
+    if (isDemo) return
+    setBusyId(connectionId)
+    try {
+      const { supabase: sb } = await import('../lib/supabase')
+      const { error } = await sb.rpc('set_connection_auto_file', { p_connection_id: connectionId, p_auto_file: on })
+      if (error) { await load(); throw new Error(error.message) }
+    } finally { setBusyId(null) }
+  }, [isDemo, load])
+  return { ...data, loading, busyId, respond, disconnect, grantShare, revokeShare, setAutoFile, reload: load }
 }

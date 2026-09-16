@@ -297,6 +297,11 @@ const DELIVERY_COPY = {
     newAccount:'You do not have an Everstead account yet. The link opens a free one, and the document lands in it. No card, and you can delete it all at any time.',
     safety:   'We never attach a file to an email, and this link only ever opens Everstead. If you were not expecting this, decline it in your vault and tell us at hello@everstead.care.',
     footer:   'Sent through Everstead because {{firm}} has your work address. Everstead never shows {{firm}} anything in your vault.',
+    filedTitle:'{{firm}} has added a document to your vault',
+    filedSubject:'{{firm}} has added a document to your vault',
+    filedLead: 'You accepted {{firm}} once, so their documents now go straight into your Everstead vault instead of waiting for you. It is yours to keep, including if you leave them.',
+    filedButton:'See it in your vault',
+    filedOff:  'If you would rather approve each one, turn off automatic filing for {{firm}} under Who has access.',
   },
   fr: {
     subject:  '{{firm}} vous a envoyé un document',
@@ -312,31 +317,31 @@ const DELIVERY_COPY = {
   },
 }
 
-export async function sendDeliveryEmail({ to, lang = 'en', firmName, title, note, claimToken }) {
+export async function sendDeliveryEmail({ to, lang = 'en', firmName, title, note, claimToken, filed = false }) {
   if (!to) return false
   const L = lang === 'fr' ? 'fr' : 'en'
   const C = DELIVERY_COPY[L]
   const prefix = L === 'fr' ? '/fr' : ''
   const url = claimToken
     ? `${APP}${prefix}/accept-delivery?token=${encodeURIComponent(claimToken)}`
-    : `${APP}${prefix}/dashboard?tab=access`
+    : `${APP}${prefix}/dashboard?tab=${filed ? 'documents' : 'access'}`
   const vars = { firm: esc(firmName || (L === 'fr' ? 'une organisation' : 'an organisation')) }
   const inner = `
-    <h1 style="margin:0 0 16px;color:#0d1628;font-size:24px;font-weight:normal;">${C.title}</h1>
-    <p style="margin:0 0 14px;color:#4a5568;font-size:16px;line-height:1.6;">${fill(C.lead, vars)}</p>
+    <h1 style="margin:0 0 16px;color:#0d1628;font-size:24px;font-weight:normal;">${fill(filed ? C.filedTitle : C.title, vars)}</h1>
+    <p style="margin:0 0 14px;color:#4a5568;font-size:16px;line-height:1.6;">${fill(filed ? C.filedLead : C.lead, vars)}</p>
     <p style="margin:0 0 18px;padding:14px 18px;border-radius:12px;background:#f0f3f9;color:#0d1628;font-size:17px;font-weight:600;">${esc(title)}</p>
     ${note ? `<p style="margin:0 0 6px;color:#0d1628;font-size:13px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;">${C.noteLabel}</p><p style="margin:0 0 18px;color:#4a5568;font-size:15px;line-height:1.6;border-left:3px solid #e8e5e0;padding-left:14px;font-style:italic;">${esc(note)}</p>` : ''}
     ${claimToken ? `<p style="margin:0 0 22px;color:#4a5568;font-size:15px;line-height:1.6;">${C.newAccount}</p>` : ''}
-    ${button(url, claimToken ? C.buttonNew : C.button)}
-    <p style="margin:26px 0 0;color:#4a5568;font-size:14px;line-height:1.6;">${C.safety}</p>
+    ${button(url, filed ? C.filedButton : claimToken ? C.buttonNew : C.button)}
+    <p style="margin:26px 0 0;color:#4a5568;font-size:14px;line-height:1.6;">${filed ? fill(C.filedOff, vars) : C.safety}</p>
     <p style="margin:18px 0 0;color:#9ca3af;font-size:13px;line-height:1.5;">${fill(C.footer, vars)}</p>`
   try {
     await sendEmail(resend, {
       from: FROM,
       to,
-      subject: fill(C.subject, { firm: firmName || '' }),
+      subject: fill(filed ? C.filedSubject : C.subject, { firm: firmName || '' }),
       html: shell(inner),
-      preheader: C.preheader,
+      preheader: filed ? undefined : C.preheader,
     })
     return true
   } catch (err) {

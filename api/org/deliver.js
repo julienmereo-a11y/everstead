@@ -3,6 +3,7 @@ import { withSentry } from '../_lib/sentry.js'
 import { rateLimited } from '../_lib/rate-limit.js'
 import { db, requireAdviser, isUuid, logAdviserActivity } from '../_lib/adviser-access.js'
 import { sendDeliveryEmail } from '../_lib/adviser-email.js'
+import { autoFileAllowed, fileDeliveryIntoVault } from '../_lib/deliveries.js'
 
 // Organisation-facing: send one document to a person's own vault.
 //
@@ -96,6 +97,27 @@ async function handler(req, res) {
     return res.status(500).json({ error: 'Could not record the delivery.' })
   }
 
+  // One accept per organisation, ever. Someone who accepted this organisation
+  // before is not asked again: the document goes straight in, the way a payslip
+  // lands in a coffre-fort. The first one still waits for them, because that
+  // accept is the consent, and without it any verified organisation could drop
+  // files into a stranger's vault.
+  let filed = false
+  if (recipient?.id && await autoFileAllowed(db, recipient.id, orgId)) {
+    const { error: fileErr, documentId } = await fileDeliveryIntoVault(db, row, recipient.id)
+    if (fileErr) {
+      console.error('[org/deliver] auto-file failed, leaving it to be accepted:', fileErr)
+    } else {
+      filed = true
+      await db.from('activity_log').insert({
+        user_id: recipient.id, actor_id: recipient.id,
+        action: 'document.delivered_filed', resource_type: 'documents',
+        resource_id: documentId, resource_name: title,
+        metadata: { org_id: orgId, delivery_id: row.id, automatic: true },
+      })
+    }
+  }
+
   const emailed = await sendDeliveryEmail({
     to: recipientEmail,
     lang: recipient?.language === 'fr' ? 'fr' : 'en',
@@ -103,6 +125,7 @@ async function handler(req, res) {
     title,
     note,
     claimToken,
+    filed,
   })
 
   if (recipient?.id) {
@@ -120,7 +143,7 @@ async function handler(req, res) {
   // claim_token never leaves the server: it is the capability that binds the
   // delivery to whoever opens the link.
   const { claim_token: _omit, ...safe } = row
-  return res.status(200).json({ delivery: safe, emailed, hasAccount: !!recipient })
+  return res.status(200).json({ delivery: { ...safe, status: filed ? 'accepted' : safe.status }, emailed, hasAccount: !!recipient, filed })
 }
 
 export default withSentry(handler)

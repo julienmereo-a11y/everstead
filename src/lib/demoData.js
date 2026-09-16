@@ -541,6 +541,7 @@ export const DEMO_CONNECTIONS = [
     contact_email: 'rachel.vale@thorntonvale.example',
     status: 'active',
     started_at: '2026-03-04T10:00:00Z',
+    auto_file: false,
   },
   {
     connection_id: 'demo-conn-employer',
@@ -552,6 +553,7 @@ export const DEMO_CONNECTIONS = [
     contact_email: 'people@marlowfinch.example',
     status: 'active',
     started_at: '2026-06-18T09:30:00Z',
+    auto_file: true,
   },
 ]
 

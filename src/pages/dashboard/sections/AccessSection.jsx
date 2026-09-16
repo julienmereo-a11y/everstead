@@ -36,7 +36,7 @@ const daysLeft = (iso) => {
 export function AccessSection({ access, onNavigate, isDemo }) {
   const { t, i18n } = useTranslation('dashboard')
   const lang = i18n.language === 'fr' ? 'fr' : 'en'
-  const { connections = [], deliveries = [], shares = [], requests = [], loading, busyId, respond, disconnect, revokeShare } = access || {}
+  const { connections = [], deliveries = [], shares = [], requests = [], loading, busyId, respond, disconnect, revokeShare, setAutoFile } = access || {}
   const [error, setError] = useState(null)
   const [confirming, setConfirming] = useState(null)
 
@@ -161,6 +161,25 @@ export function AccessSection({ access, onNavigate, isDemo }) {
                     </p>
                   </div>
                 </div>
+                {/* One accept per organisation: after the first, their documents
+                    file themselves. This is how the member takes that back
+                    without ending the connection. */}
+                <label className="mt-4 flex items-start gap-3 rounded-xl border border-stone-200 bg-stone-50 px-4 py-3 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={c.auto_file !== false}
+                    disabled={busy || isDemo}
+                    onChange={(e) => act(() => setAutoFile(c.connection_id, e.target.checked))}
+                    className="mt-0.5 w-4 h-4 accent-navy-700 shrink-0"
+                  />
+                  <span className="min-w-0">
+                    <span className="block text-sm font-medium text-navy-950">{t('access.orgs.autoFile')}</span>
+                    <span className="block text-xs text-stone-500 mt-0.5">
+                      {c.auto_file !== false ? t('access.orgs.autoFileOn') : t('access.orgs.autoFileOff')}
+                    </span>
+                  </span>
+                </label>
+
                 {orgShares.length > 0 && (
                   <div className="mt-4 rounded-xl border border-stone-200 bg-stone-50 p-4">
                     <p className="text-[11px] font-semibold uppercase tracking-wide text-stone-500 m-0 mb-2.5">

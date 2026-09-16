@@ -18,6 +18,7 @@
 import { createClient } from '@supabase/supabase-js'
 import { withSentry, captureException } from '../_lib/sentry.js'
 import { rateLimited } from '../_lib/rate-limit.js'
+import { ensureConnection, fileDeliveryIntoVault } from '../_lib/deliveries.js'
 
 const db = createClient(
   process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL,
@@ -79,54 +80,21 @@ async function handler(req, res) {
 
   // ── Accept ────────────────────────────────────────────────────────────────
   try {
-    const { data: blob, error: dlErr } = await db.storage.from('deliveries').download(delivery.storage_path)
-    if (dlErr || !blob) return res.status(502).json({ error: 'The file could not be read. Ask the sender to send it again.' })
-    const bytes = Buffer.from(await blob.arrayBuffer())
+    const { error: fileErr, documentId } = await fileDeliveryIntoVault(db, delivery, user.id)
+    if (fileErr) return res.status(502).json({ error: `${fileErr} Ask the sender to send it again.` })
 
-    // The document row comes first, so the storage path can follow the same
-    // <user>/<document>/<timestamp> convention every other document uses.
-    const { data: doc, error: docErr } = await db.from('documents').insert({
-      user_id:   user.id,
-      name:      delivery.title,
-      doc_type:  delivery.doc_type || 'Other',
-      status:    'current',
-      source:    'delivery',
-      notes:     delivery.note || null,
-      mime_type: delivery.mime_type || blob.type || null,
-      file_size: delivery.file_size ?? bytes.length,
-    }).select('id').single()
-    if (docErr || !doc) {
-      console.error('[org/delivery-respond] document insert failed:', docErr)
-      return res.status(500).json({ error: 'Could not add the document to your vault.' })
-    }
-
-    const ext  = (delivery.storage_path.split('.').pop() || 'bin').slice(0, 10)
-    const path = `${user.id}/${doc.id}/${Date.now()}.${ext}`
-    const { error: upErr } = await db.storage.from('documents').upload(path, bytes, {
-      contentType: delivery.mime_type || blob.type || 'application/octet-stream',
-      upsert: true,
-    })
-    if (upErr) {
-      await db.from('documents').delete().eq('id', doc.id)
-      console.error('[org/delivery-respond] upload failed:', upErr)
-      return res.status(502).json({ error: 'Could not save the file to your vault. Please try again.' })
-    }
-
-    await db.from('documents').update({ storage_path: path }).eq('id', doc.id)
-    const { data: updated } = await db.from('inbound_deliveries').update({
-      status: 'accepted', responded_at: now, member_id: user.id, document_id: doc.id, claim_token: null,
-    }).eq('id', delivery.id).select('id, status, document_id').single()
-
-    await clearStaging(delivery.storage_path)
+    // Accepting IS the consent to the organisation. From here their deliveries
+    // file themselves, which is the whole point of accepting once.
+    await ensureConnection(db, user.id, delivery.org_id)
 
     await db.from('activity_log').insert({
       user_id: user.id, actor_id: user.id,
       action: 'document.delivered_accepted', resource_type: 'documents',
-      resource_id: doc.id, resource_name: delivery.title,
+      resource_id: documentId, resource_name: delivery.title,
       metadata: { org_id: delivery.org_id, delivery_id: delivery.id },
     })
 
-    return res.status(200).json({ delivery: updated, documentId: doc.id })
+    return res.status(200).json({ delivery: { id: delivery.id, status: 'accepted', document_id: documentId }, documentId })
   } catch (err) {
     console.error('[org/delivery-respond] accept failed:', err)
     captureException(err, { endpoint: 'org/delivery-respond', stage: 'accept' })
