@@ -146,6 +146,9 @@ export default function MobileAppDemo() {
   const demoUpdate = useCallback((key, id, changes) => {
     setD(prev => ({ ...prev, [key]: prev[key].map(x => x.id === id ? { ...x, ...changes } : x) }))
   }, [])
+  const demoRemove = useCallback((key, id) => {
+    setD(prev => ({ ...prev, [key]: (prev[key] || []).filter(x => x.id !== id) }))
+  }, [])
   const demoSetAboutMe = useCallback((v) => setD(prev => ({ ...prev, aboutMe: { ...prev.aboutMe, ...v } })), [])
 
   const logActivity = useCallback((action, resource_name) => {
@@ -191,7 +194,7 @@ export default function MobileAppDemo() {
     const freeCapped = (key, count) => DEMO_PROFILE.plan === 'free' && isAtLimit('free', key, count)
 
     return {
-      demo: true, profile: DEMO_PROFILE, demoData: d, demoAppend, demoUpdate, demoSetAboutMe, onSignOut,
+      demo: true, profile: DEMO_PROFILE, demoData: d, demoAppend, demoUpdate, demoRemove, demoSetAboutMe, onSignOut,
       go, say, score,
       firstName: DEMO_PROFILE.full_name.split(' ')[0], initials: initialsOf(DEMO_PROFILE.full_name),
       greeting: hour < 12 ? i18n.t('mobile:shell.morning') : hour < 18 ? i18n.t('mobile:shell.afternoon') : i18n.t('mobile:shell.evening'),
@@ -223,7 +226,7 @@ export default function MobileAppDemo() {
       closeSheet, sheetPrefill,
       addAccount, uploadDocument, invitePerson, onTapAccount,
     }
-  }, [d, go, say, closeSheet, sheetPrefill, demoAppend, demoUpdate, demoSetAboutMe, onSignOut, addAccount, uploadDocument, invitePerson, onTapAccount, i18nLive.language])
+  }, [d, go, say, closeSheet, sheetPrefill, demoAppend, demoUpdate, demoRemove, demoSetAboutMe, onSignOut, addAccount, uploadDocument, invitePerson, onTapAccount, i18nLive.language])
 
   // Milestone moments — same as the live shell: celebrate crossing 25/50/75/100%
   // readiness during the session (first computed score only primes the baseline).

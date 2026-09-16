@@ -75,6 +75,7 @@ export default function MessagesScreen({ app }) {
   const loading = app.demo ? false : live.loading
   const add = app.demo ? (row => app.demoAppend('messages', row)) : live.add
   const update = app.demo ? ((id, changes) => app.demoUpdate('messages', id, changes)) : live.update
+  const remove = app.demo ? (id => app.demoRemove('messages', id)) : live.remove
   // Media upload only works against real storage — skipped in the demo sandbox.
   const uploadMedia = app.demo ? null : live.uploadMedia
 
@@ -94,6 +95,13 @@ export default function MessagesScreen({ app }) {
   // Two-step confirm for "Release now" — the highest-stakes, least reversible
   // tap in the app (for email recipients it immediately sends the link).
   const [confirmId, setConfirmId] = useState(null)
+  // Editing reuses the compose sheet: same fields, same validation, one place
+  // to keep right. Holds the whole row, not just an id, so the save can tell
+  // whether the media already attached still applies.
+  const [editing, setEditing] = useState(null)
+  // Deleting is permanent and takes any photo or video with it, so it asks
+  // first — the same two-step shape as Release now, on the same card.
+  const [deleteId, setDeleteId] = useState(null)
   // Android in-webview capture (RecorderSheet): 'video' | 'photo' | false.
   // Declared HERE, with the other hooks — this once sat below the
   // `if (!entitled)` early return, which is a hook-order violation that threw
@@ -126,7 +134,7 @@ export default function MessagesScreen({ app }) {
     if (draftStash && !fresh(draftStash)) draftStash = null
     if (fileStash && !fresh(fileStash)) fileStash = null
     if (draftStash) {
-      setForm(draftStash.form); setMsgType(draftStash.msgType); setSheet(true)
+      setForm(draftStash.form); setMsgType(draftStash.msgType); setEditing(draftStash.editing || null); setSheet(true)
     }
     if (fileStash) {
       console.log('[upload] restored picked file after remount')
@@ -162,11 +170,43 @@ export default function MessagesScreen({ app }) {
   const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.recipient_email.trim())
   const recipientOk = isEmail ? emailOk : !!form.recipient_name.trim()
   const timingOk = form.release_timing !== 'on_date' || !!form.release_at
-  const canSubmit = recipientOk && form.title.trim() && (!isMedia || mediaFile) && timingOk && !busy
+  // An edit that leaves the type alone keeps the media already attached, so
+  // only a new media message, or one changing type, has to carry a file.
+  const keepsMedia = !!editing && editing.type === msgType && !!(editing.media_url || editing.video_url)
+  const canSubmit = recipientOk && form.title.trim() && (!isMedia || mediaFile || keepsMedia) && timingOk && !busy
 
   const resetSheet = () => {
     draftStash = null; fileStash = null // deliberate close, nothing to rescue
-    setSheet(false); setMsgType('note'); setMediaFile(null); setForm(EMPTY_FORM)
+    setSheet(false); setMsgType('note'); setMediaFile(null); setForm(EMPTY_FORM); setEditing(null)
+  }
+
+  // A stored release_at is noon UTC on the chosen day. Read it back in UTC so
+  // the date field shows the day that was picked, not the day before it for
+  // anyone west of Greenwich.
+  const openEdit = (m) => {
+    setConfirmId(null); setDeleteId(null); setEditTiming(null)
+    setMediaFile(null)
+    setEditing(m)
+    setMsgType(m.type || 'note')
+    setForm({
+      recipient_kind:  m.recipient_email ? 'email' : 'person',
+      recipient_name:  m.recipient_name || '',
+      recipient_role:  m.recipient_role || '',
+      recipient_email: m.recipient_email || '',
+      title:           m.title || '',
+      content:         m.content || '',
+      release_timing:  m.release_timing || 'after_death',
+      release_at:      m.release_at ? String(m.release_at).slice(0, 10) : '',
+    })
+    setSheet(true)
+  }
+
+  const doDelete = async (m) => {
+    try {
+      await remove(m.id)
+      setDeleteId(null)
+      app.say(t('messages.deleted'))
+    } catch { app.say(t('messages.deleteFailed'), 'error') }
   }
 
   const pickFrom = (ref) => () => { if (ref.current) { ref.current.value = ''; ref.current.click() } }
@@ -178,7 +218,7 @@ export default function MessagesScreen({ app }) {
   // mid-pick can't swallow it. iOS/web keep the plain input below.
   const uploadFromGallery = async () => {
     const kind = msgType === 'video' ? 'video' : 'photo'
-    draftStash = { form, msgType, at: Date.now() }
+    draftStash = { form, msgType, editing, at: Date.now() }
     try {
       const f = await pickMedia(kind)
       if (!f) { draftStash = null; return } // cancelled
@@ -201,7 +241,7 @@ export default function MessagesScreen({ app }) {
       // appends a phantom media-less message to the demo list.
       if (isMedia && !uploadMedia) throw new Error('demo')
       // Payload mirrors the web composer (Dashboard.jsx MessagesSection).
-      const row = await add({
+      const payload = {
         recipient_name:  isEmail ? (form.recipient_name.trim() || form.recipient_email.trim()) : form.recipient_name,
         recipient_role:  isEmail ? '' : form.recipient_role,
         recipient_email: isEmail ? form.recipient_email.trim() : null,
@@ -211,10 +251,13 @@ export default function MessagesScreen({ app }) {
         release_timing: form.release_timing,
         // Noon UTC on the chosen day — humane delivery hour in nearby timezones.
         release_at: form.release_timing === 'on_date' ? new Date(`${form.release_at}T12:00:00Z`).toISOString() : null,
-        released: false,
-      })
-      if (isMedia && mediaFile && row?.id) {
-        try { await uploadMedia(row.id, mediaFile) }
+      }
+      // `released` is set only on create: an edit must never quietly unseal a
+      // message, and update() would write whatever it was handed.
+      const row = editing ? await update(editing.id, payload) : await add({ ...payload, released: false })
+      const savedId = row?.id ?? editing?.id
+      if (isMedia && mediaFile && savedId) {
+        try { await uploadMedia(savedId, mediaFile) }
         catch {
           // The message row exists but its media didn't upload — say so
           // honestly rather than a generic failure (the row IS saved).
@@ -223,8 +266,11 @@ export default function MessagesScreen({ app }) {
           return
         }
       }
+      const wasEdit = !!editing
       resetSheet()
-      app.say(msgType === 'note' ? t('messages.sealed') : msgType === 'video' ? t('messages.videoSealed') : t('messages.photoSealed'))
+      app.say(wasEdit
+        ? t('messages.changesSaved')
+        : msgType === 'note' ? t('messages.sealed') : msgType === 'video' ? t('messages.videoSealed') : t('messages.photoSealed'))
     } catch (e) {
       app.say(e?.message === 'demo' ? t('messages.demoNoMedia') : t('messages.saveFailed'), 'error')
     } finally { setBusy(false) }
@@ -291,9 +337,9 @@ export default function MessagesScreen({ app }) {
                 {(m.type === 'photo' || m.type === 'video') && <SignedMedia m={m} />}
 
                 {m.content && <p className="rdet" style={{ marginTop: 8, lineHeight: 1.5, color: 'var(--color-stone-600)' }}>{m.content}</p>}
-                {!m.released && confirmId !== m.id && (
-                  <div className="fx" style={{ gap: 8, marginTop: 12 }}>
-                    <button className="btn btn-sm" onClick={() => { haptic.warning(); setConfirmId(m.id); setEditTiming(null) }}>{t('messages.releaseNow')}</button>
+                {!m.released && confirmId !== m.id && deleteId !== m.id && (
+                  <div className="fx" style={{ gap: 8, marginTop: 12, flexWrap: 'wrap' }}>
+                    <button className="btn btn-sm" onClick={() => { haptic.warning(); setConfirmId(m.id); setEditTiming(null); setDeleteId(null) }}>{t('messages.releaseNow')}</button>
                     <button
                       className="btn btn-sm"
                       style={{ background: '#fff', color: 'var(--color-navy-800)', border: '1px solid var(--color-stone-200)' }}
@@ -305,6 +351,23 @@ export default function MessagesScreen({ app }) {
                     >
                       {m.release_timing === 'on_date' && m.release_at ? t('messages.changeDate') : t('messages.schedule')}
                     </button>
+                    <button className="btn btn-sm" style={{ background: '#fff', color: 'var(--color-navy-800)', border: '1px solid var(--color-stone-200)' }} onClick={() => openEdit(m)}>{t('messages.edit')}</button>
+                    <button
+                      className="btn btn-sm"
+                      style={{ background: '#fff', color: '#b91c1c', border: '1px solid #fecaca' }}
+                      onClick={() => { haptic.warning(); setDeleteId(m.id); setConfirmId(null); setEditTiming(null) }}
+                    >
+                      {t('messages.delete')}
+                    </button>
+                  </div>
+                )}
+                {!m.released && deleteId === m.id && (
+                  <div style={{ marginTop: 12 }}>
+                    <p className="rdet" style={{ margin: '0 0 8px', color: 'var(--color-stone-600)' }}>{t('messages.confirmDelete')}</p>
+                    <div className="fx" style={{ gap: 8 }}>
+                      <button className="btn btn-sm f1" style={{ background: '#b91c1c' }} onClick={() => doDelete(m)}>{t('messages.yesDelete')}</button>
+                      <button className="btn btn-sm f1" style={{ background: '#fff', color: 'var(--color-navy-800)', border: '1px solid var(--color-stone-200)' }} onClick={() => setDeleteId(null)}>{t('messages.keepIt')}</button>
+                    </div>
                   </div>
                 )}
                 {!m.released && confirmId === m.id && (
@@ -363,7 +426,7 @@ export default function MessagesScreen({ app }) {
           <div className="scrim" onClick={resetSheet} />
           <div className="sheet" style={{ maxHeight: '88vh', overflowY: 'auto' }}>
             <button className="grab" aria-label="Close" onClick={resetSheet} style={{ display: 'block', border: 0, cursor: 'pointer', padding: 10, margin: '-10px auto 4px', background: 'none' }}><span style={{ display: 'block', width: 36, height: 4, borderRadius: 99, background: 'var(--color-stone-300)' }} /></button>
-            <h3 className="sh-title">{t('messages.sheetTitle')}</h3>
+            <h3 className="sh-title">{editing ? t('messages.sheetEditTitle') : t('messages.sheetTitle')}</h3>
 
             {/* Type selector */}
             <div className="fx" style={{ gap: 8, marginBottom: 4 }}>
@@ -537,7 +600,7 @@ export default function MessagesScreen({ app }) {
             />
 
             <button className={`btn w100 ${canSubmit ? '' : 'dis'}`} style={{ marginTop: 18 }} onClick={submit} disabled={!canSubmit}>
-              {busy ? t('common.saving') : t('messages.sealMessage')}
+              {busy ? t('common.saving') : editing ? t('messages.saveChanges') : t('messages.sealMessage')}
             </button>
           </div>
         </div>

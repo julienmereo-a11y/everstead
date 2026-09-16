@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react'
+import React, { useCallback, useEffect, useState, useRef } from 'react'
 import { useAuth } from '../../../../contexts/AuthContext'
 import { supabase } from '../../../../lib/supabase'
 import { isNative, apiPost } from '../../../../lib/platform'
@@ -7,7 +7,7 @@ import { getLockState, setBiometricEnabled, clearPasscode, biometricAvailable } 
 import { clearReminders, notificationsGranted, requestNotificationPermission, registerForPush, notificationStatus } from '../../../../lib/notifications'
 import { haptic } from '../../../../lib/haptics'
 import { useTranslation } from 'react-i18next'
-import SecScreen from '../components/SecScreen'
+import SecScreen, { Busy } from '../components/SecScreen'
 import i18n from '../../../../i18n'
 import { COUNTRIES, countryDisplayName } from '../../../../config/countries'
 
@@ -57,6 +57,18 @@ export default function SettingsScreen({ app }) {
   const [pw, setPw] = useState({ next: '', confirm: '' })
   const [pwMsg, setPwMsg] = useState(null)
   const [notifs, setNotifs] = useState({})
+  // The addresses that are you. An organisation writes to whatever address it
+  // holds, and for an employer that is almost never the one you signed up
+  // with, so an account can carry more than one once each has been proved.
+  // Adding is never just a typed field: a claim to an address is not evidence
+  // of holding it, and whatever arrives there afterwards would be yours.
+  const [addrs, setAddrs] = useState([])
+  const [addrLoading, setAddrLoading] = useState(!app.demo)
+  const [addrStage, setAddrStage] = useState('idle')   // idle | typing | code
+  const [addrEmail, setAddrEmail] = useState('')
+  const [addrCode, setAddrCode] = useState('')
+  const [addrBusy, setAddrBusy] = useState(false)
+  const [addrError, setAddrError] = useState(null)
   const [aiOn, setAiOn] = useState(true)
   const [lock, setLock] = useState({ hasPin: false, biometric: false })
   // Friends who joined through the referral link. Demo shows a canned number;
@@ -186,6 +198,57 @@ export default function SettingsScreen({ app }) {
       .catch(() => app.say('Could not copy, long-press the link instead.', 'error'))
   }
 
+  const DEMO_ADDRS = [
+    { email: profile?.email || 'you@example.com', is_primary: true },
+    { email: 'you@work.example', is_primary: false },
+  ]
+
+  const loadAddrs = useCallback(async () => {
+    if (app.demo) { setAddrs(DEMO_ADDRS); setAddrLoading(false); return }
+    try {
+      const { data } = await supabase.rpc('get_my_emails')
+      setAddrs(data || [])
+    } catch { /* leave the list as it was; the card just shows what it has */ }
+    setAddrLoading(false)
+  }, [app.demo, profile?.email])
+  useEffect(() => { loadAddrs() }, [loadAddrs])
+
+  const callAddr = async (action, extra = {}) => {
+    const { data: { session } } = await supabase.auth.getSession()
+    return apiPost('/api/account/link-address', { action, email: addrEmail.trim(), ...extra },
+      { Authorization: `Bearer ${session?.access_token || ''}` })
+  }
+
+  const sendAddrCode = async () => {
+    setAddrBusy(true); setAddrError(null)
+    try {
+      const res = await callAddr('send-code')
+      if (res.data?.alreadyYours) { setAddrStage('idle'); setAddrEmail(''); app.say(t('settings.addrAlreadyYours')); return }
+      if (!res.ok) throw new Error(res.data?.error || t('settings.addrSendFailed'))
+      setAddrStage('code')
+    } catch (e) { setAddrError(e.message || t('settings.addrSendFailed')) } finally { setAddrBusy(false) }
+  }
+
+  const verifyAddr = async () => {
+    setAddrBusy(true); setAddrError(null)
+    try {
+      const res = await callAddr('verify', { code: addrCode })
+      if (!res.ok) throw new Error(res.data?.error || t('settings.addrVerifyFailed'))
+      setAddrStage('idle'); setAddrEmail(''); setAddrCode('')
+      await loadAddrs()
+      app.say(t('settings.addrAdded'))
+    } catch (e) { setAddrError(e.message || t('settings.addrVerifyFailed')) } finally { setAddrBusy(false) }
+  }
+
+  const removeAddr = async (email) => {
+    if (app.demo) { app.say(t('settings.notInDemo'), 'error'); return }
+    try {
+      await supabase.rpc('remove_my_email', { p_email: email })
+      await loadAddrs()
+      app.say(t('settings.addrRemoved'))
+    } catch { app.say(t('settings.addrRemoveFailed'), 'error') }
+  }
+
   return (
     <SecScreen title={t('settings.title')} subtitle={profile?.email} onBack={() => app.go('more')}>
       <Card title={t('settings.personalDetails')}>
@@ -202,6 +265,74 @@ export default function SettingsScreen({ app }) {
           {COUNTRIES.map(c => <option key={c.code} value={c.name}>{countryDisplayName(c.name, i18nLive.language)}</option>)}
         </select>
         <button className={`btn w100 ${savingDetails ? 'dis' : ''}`} style={{ marginTop: 16 }} onClick={saveDetails} disabled={savingDetails}>{savingDetails ? t('common.saving') : t('settings.saveDetails')}</button>
+      </Card>
+
+      <Card title={t('settings.addresses')}>
+        <p className="rdet" style={{ margin: '0 0 12px' }}>{t('settings.addressesIntro')}</p>
+        {addrLoading ? (
+          <Busy />
+        ) : (
+          addrs.map((r, i) => (
+            <div key={r.email} className={`fx jb ac ${i ? 'bt' : ''}`} style={i ? { paddingTop: 12, marginTop: 12 } : undefined}>
+              <div className="f1" style={{ minWidth: 0 }}>
+                <div className="rname" style={{ overflowWrap: 'anywhere' }}>{r.email}</div>
+                <div className="rdet">{r.is_primary ? t('settings.addrSignIn') : t('settings.addrConfirmed')}</div>
+              </div>
+              {!r.is_primary && (
+                <button
+                  className="btn btn-sm"
+                  style={{ background: '#fff', color: '#b91c1c', border: '1px solid #fecaca', flex: 'none' }}
+                  onClick={() => removeAddr(r.email)}
+                >
+                  {t('settings.addrRemove')}
+                </button>
+              )}
+            </div>
+          ))
+        )}
+
+        {addrStage === 'idle' && (
+          <button className="btn w100" style={{ marginTop: 14, background: '#fff', color: 'var(--color-navy-800)', border: '1px solid var(--color-stone-200)' }} onClick={() => { setAddrError(null); setAddrStage('typing') }}>
+            {t('settings.addrAdd')}
+          </button>
+        )}
+
+        {addrStage !== 'idle' && (
+          <div style={{ marginTop: 14, padding: 12, background: 'var(--color-stone-50)', borderRadius: 12 }}>
+            {addrStage === 'typing' ? (
+              <>
+                <input
+                  className="inp" type="email" inputMode="email" autoCapitalize="none" autoCorrect="off"
+                  value={addrEmail} onChange={e => setAddrEmail(e.target.value)}
+                  placeholder={t('settings.addrPlaceholder')}
+                />
+                <p className="rdet" style={{ margin: '8px 0 0' }}>{t('settings.addrWhy')}</p>
+              </>
+            ) : (
+              <>
+                <input
+                  className="inp" inputMode="numeric" autoComplete="one-time-code"
+                  value={addrCode} onChange={e => setAddrCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
+                  placeholder="000000"
+                />
+                <p className="rdet" style={{ margin: '8px 0 0' }}>{t('settings.addrCodeSent', { email: addrEmail })}</p>
+              </>
+            )}
+            {addrError && <p style={{ fontSize: 12.5, marginTop: 10, color: '#b91c1c' }}>{addrError}</p>}
+            <div className="fx" style={{ gap: 8, marginTop: 12 }}>
+              <button
+                className={`btn btn-sm f1 ${addrBusy || (addrStage === 'typing' ? !addrEmail.trim() : addrCode.length < 6) ? 'dis' : ''}`}
+                disabled={addrBusy || (addrStage === 'typing' ? !addrEmail.trim() : addrCode.length < 6)}
+                onClick={addrStage === 'typing' ? sendAddrCode : verifyAddr}
+              >
+                {addrBusy ? t('common.saving') : addrStage === 'typing' ? t('settings.addrSendCode') : t('settings.addrConfirmCode')}
+              </button>
+              <button className="btn btn-sm f1" style={{ background: '#fff', color: 'var(--color-navy-800)', border: '1px solid var(--color-stone-200)' }} onClick={() => { setAddrStage('idle'); setAddrCode(''); setAddrError(null) }}>
+                {t('common.cancel')}
+              </button>
+            </div>
+          </div>
+        )}
       </Card>
 
       {/* The app picks a language from the phone on first launch (see
