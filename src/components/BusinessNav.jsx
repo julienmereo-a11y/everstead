@@ -48,7 +48,7 @@ export default function BusinessNav() {
         <nav className="max-w-7xl mx-auto px-6 lg:px-8 h-24 flex items-center justify-between" role="navigation" aria-label={t('nav.home')}>
           <Link to={hub} className="flex items-center gap-2.5" aria-label={t('nav.home')}>
             <img src="/everstead-logo-dark.png" alt="Everstead" className="h-10 w-auto" />
-            <span className="inline-block text-[12px] sm:text-[13px] font-medium text-stone-500 border-l border-stone-300 pl-2 sm:pl-2.5 leading-none whitespace-nowrap">
+            <span className="inline-block lg:hidden xl:inline-block text-[12px] sm:text-[13px] font-medium text-stone-500 border-l border-stone-300 pl-2 sm:pl-2.5 leading-none whitespace-nowrap">
               {t('nav.brand')}
             </span>
           </Link>
@@ -59,7 +59,7 @@ export default function BusinessNav() {
                 key={l.key}
                 to={l.href}
                 aria-current={location.pathname === l.href ? 'page' : undefined}
-                className={`px-3.5 py-1.5 text-sm font-medium rounded-md transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy-400 ${
+                className={`px-3 xl:px-3.5 py-1.5 text-sm font-medium rounded-md whitespace-nowrap transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy-400 ${
                   location.pathname === l.href ? 'text-navy-800 bg-navy-50' : 'text-stone-600 hover:text-navy-800 hover:bg-stone-100'
                 }`}
               >
@@ -69,13 +69,13 @@ export default function BusinessNav() {
           </div>
 
           <div className="hidden lg:flex items-center gap-3">
-            <Link to="/" className="text-sm font-medium text-stone-500 hover:text-navy-800 px-3 py-1.5 rounded-md transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy-400">
+            <Link to="/" className="text-sm font-medium text-stone-500 hover:text-navy-800 px-2.5 xl:px-3 py-1.5 rounded-md whitespace-nowrap transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy-400">
               {t('nav.forFamilies')}
             </Link>
             <Link
               to="/book-demo"
               onClick={demo}
-              className="inline-flex items-center gap-2 rounded-full bg-navy-800 hover:bg-navy-700 text-white text-sm font-semibold px-5 py-2.5 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-navy-400"
+              className="inline-flex items-center gap-2 rounded-full bg-navy-800 hover:bg-navy-700 text-white text-sm font-semibold px-5 py-2.5 whitespace-nowrap transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-navy-400"
             >
               {t('nav.bookDemo')} <ArrowRight size={15} />
             </Link>
