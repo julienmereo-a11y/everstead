@@ -358,7 +358,7 @@
         "items": [
           {
             "title": "Send it into a vault they own",
-            "body": "The document lands in their own secure place rather than an attachment. They keep it when they leave you, which is also why they bother to keep it at all."
+            "body": "The document lands in their own secure place rather than an attachment. Because the vault is theirs and not their work account, they still have it after their last day, which is also why they bother to keep it at all."
           },
           {
             "title": "Ask for one item, for a while",
@@ -384,7 +384,7 @@
           },
           {
             "title": "People accept once",
-            "body": "The first document you send is accepted by the person, and that is what connects you. Everything you send after that files itself."
+            "body": "The first document you send is accepted by the person, and that is what connects you. Everything after that files itself. You carry on writing to the work address you hold, and their vault sits on a personal address they keep."
           },
           {
             "title": "You see delivery, never content",
@@ -420,6 +420,10 @@
           {
             "q": "Do we become responsible for the data?",
             "a": "No. The relationship over the data is between the employee and Everstead. Your organisation is neither a controller nor a processor of anything in the vault."
+          },
+          {
+            "q": "Which email address do we use?",
+            "a": "The work address you already hold. Your people sign up with whatever address they want, usually a personal one, then confirm that the work address is theirs. That is what lets a vault outlive the job: when the work account is closed, nothing of theirs closes with it. You carry on seeing the work address, and you never learn the personal one."
           },
           {
             "q": "What do we pay for?",

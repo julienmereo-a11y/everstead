@@ -358,7 +358,7 @@
         "items": [
           {
             "title": "Déposer dans un coffre qui lui appartient",
-            "body": "Le document arrive dans son propre espace sécurisé, pas en pièce jointe. La personne le garde en partant, et c'est aussi pour cela qu'elle prend la peine de le garder."
+            "body": "Le document arrive dans son propre espace sécurisé, pas en pièce jointe. Comme le coffre lui appartient et ne dépend pas de son compte professionnel, elle l'a encore après son dernier jour, et c'est aussi pour cela qu'elle prend la peine de le garder."
           },
           {
             "title": "Demander une seule pièce, pour un temps donné",
@@ -384,7 +384,7 @@
           },
           {
             "title": "On accepte une seule fois",
-            "body": "Le premier document que vous envoyez est accepté par la personne, et c'est ce qui vous relie. Tout ce que vous envoyez ensuite se dépose tout seul."
+            "body": "Le premier document que vous envoyez est accepté par la personne, et c'est ce qui vous relie. Tout ce qui suit se dépose tout seul. Vous continuez d'écrire à l'adresse professionnelle dont vous disposez, et son coffre repose sur une adresse personnelle qu'elle garde."
           },
           {
             "title": "Vous voyez la remise, jamais le contenu",
@@ -420,6 +420,10 @@
           {
             "q": "Devenons-nous responsables des données ?",
             "a": "Non. La relation sur les données se noue entre le salarié et Everstead. Votre organisation n'est ni responsable de traitement ni sous-traitant de ce qui se trouve dans le coffre."
+          },
+          {
+            "q": "Quelle adresse e-mail utilisons-nous ?",
+            "a": "L'adresse professionnelle dont vous disposez déjà. Vos collaborateurs s'inscrivent avec l'adresse de leur choix, le plus souvent personnelle, puis confirment que l'adresse professionnelle est bien la leur. C'est ce qui permet au coffre de survivre au poste : à la fermeture du compte professionnel, rien de ce qui leur appartient ne se ferme avec lui. Vous continuez de voir l'adresse professionnelle, et vous n'apprenez jamais l'adresse personnelle."
           },
           {
             "q": "Que paie-t-on ?",
