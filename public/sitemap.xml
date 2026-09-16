@@ -76,6 +76,11 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://www.everstead.care/business/pricing</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://www.everstead.care/what-to-do-when-someone-dies</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
@@ -552,6 +557,11 @@
   </url>
   <url>
     <loc>https://www.everstead.care/fr/entreprises/employeurs</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.everstead.care/fr/entreprises/tarifs</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
