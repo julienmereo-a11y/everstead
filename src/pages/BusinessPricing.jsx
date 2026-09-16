@@ -10,9 +10,9 @@
 // depends on the size of the organisation, and a published table would commit
 // us to a number before the first negotiation. The page says what you get, how
 // buying works, and asks for twenty minutes.
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Helmet } from 'react-helmet-async'
-import { Link, useLocation } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { ArrowRight, CheckCircle2, Gift } from 'lucide-react'
 import HreflangLinks from '../components/HreflangLinks'
@@ -29,7 +29,17 @@ export default function BusinessPricing() {
   const { t, i18n: inst } = useTranslation('business')
   const lang = inst.language === 'fr' ? 'fr' : 'en'
   const location = useLocation()
+  const navigate = useNavigate()
   useReveal()
+
+  // Each tree has its own slug, and the canonical tag names only one of them.
+  // Land on the other and we move you across, the way every sibling business
+  // page does. Without this a shared or legacy link sits on a URL the page
+  // itself disowns.
+  useEffect(() => {
+    if (lang === 'fr' && location.pathname === EN_PATH) navigate(FR_PATH, { replace: true })
+    if (lang === 'en' && location.pathname === FR_PATH) navigate(EN_PATH, { replace: true })
+  }, [lang, location.pathname, navigate])
 
   const isFr = lang === 'fr'
   const prefix = isFr ? '/fr' : ''
