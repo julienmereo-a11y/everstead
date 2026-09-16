@@ -2,7 +2,7 @@ import { randomInt } from 'node:crypto'
 import { createClient } from '@supabase/supabase-js'
 import { Resend } from 'resend'
 import { withSentry } from '../_lib/sentry.js'
-import { rateLimited } from '../_lib/rate-limit.js'
+import { rateLimited, emailKey } from '../_lib/rate-limit.js'
 import { translator, languageForUser } from '../_lib/email-i18n.js'
 import { sealToken, hashCode } from '../_lib/mfa-crypto.js'
 
@@ -15,13 +15,28 @@ async function handler(req, res) {
   const { email, password } = req.body
   if (!email || !password) return res.status(400).json({ error: 'Missing fields' })
 
-  // A separate, looser ceiling in FRONT of the password check. The tighter
-  // limit below deliberately sits after it so a wrong password does not eat
-  // the code-send budget, but that left the password check itself unthrottled
-  // here: an unlimited credential-stuffing surface, with only whatever GoTrue
-  // applies behind it. Thirty attempts an hour is far beyond anyone who has
-  // simply forgotten which password they used.
-  if (await rateLimited(req, 'mfa-password-attempt', { max: 30, windowMinutes: 60 })) {
+  // A ceiling in FRONT of the password check. The tighter limit below
+  // deliberately sits after it so a wrong password does not eat the code-send
+  // budget, but that left the password check itself unthrottled here: an
+  // unlimited credential-stuffing surface, with only whatever GoTrue applies
+  // behind it.
+  //
+  // Keyed on the ACCOUNT, not the IP. Every sign-in from the iOS and Android
+  // apps lands here, and phones reach us through carrier-grade NAT: thousands
+  // of subscribers on one carrier share a public address, so an IP limit tight
+  // enough to stop a brute-force would eventually refuse real people whose only
+  // mistake was using the same network as everyone else. Ten attempts on one
+  // account per quarter of an hour is far beyond anyone who has forgotten which
+  // password they used, and a NAT cannot inflate it.
+  if (await rateLimited(req, 'mfa-password-attempt', { key: emailKey(email), max: 10, windowMinutes: 15 })) {
+    return res.status(429).json({ error: 'Too many sign-in attempts. Please wait a few minutes and try again.' })
+  }
+
+  // The per-account limit above does nothing against one attacker spraying a
+  // single common password across many accounts, so an IP ceiling still earns
+  // its place. It is set well above anything a shared carrier address produces
+  // honestly, which is the whole difference between the two numbers.
+  if (await rateLimited(req, 'mfa-password-ip', { max: 200, windowMinutes: 60 })) {
     return res.status(429).json({ error: 'Too many sign-in attempts. Please wait a few minutes and try again.' })
   }
 
@@ -55,10 +70,14 @@ async function handler(req, res) {
     !!process.env.APP_REVIEW_CODE &&
     email.trim().toLowerCase() === process.env.APP_REVIEW_EMAIL.trim().toLowerCase()
 
-  // Throttle code sends per IP (password already verified above, so wrong-password
-  // attempts don't consume the budget) — stops MFA-email bombing of a target inbox.
+  // Throttle code sends (password already verified above, so wrong-password
+  // attempts don't consume the budget) — stops MFA-email bombing of a target
+  // inbox. Keyed on that inbox rather than the sender's IP: bombing one inbox
+  // is what this defends against, so the target is the right subject, and it
+  // stops a carrier NAT pooling every mobile sign-in into one shared budget
+  // where six per quarter-hour across all of them is genuinely reachable.
   // Skipped for the review account so repeated reviewer sign-ins never rate-limit.
-  if (!isReviewAccount && await rateLimited(req, 'mfa-send-code', { max: 6, windowMinutes: 15 })) {
+  if (!isReviewAccount && await rateLimited(req, 'mfa-send-code', { key: emailKey(email), max: 6, windowMinutes: 15 })) {
     return res.status(429).json({ error: 'Too many code requests. Please wait a few minutes and try again.' })
   }
 
