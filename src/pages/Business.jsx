@@ -76,7 +76,7 @@ export default function Business() {
             src="/hero-felt-handover.jpg"
             alt=""
             aria-hidden="true"
-            fetchPriority="high"
+            fetchpriority="high"
             className="hidden lg:block absolute inset-0 w-full h-full object-cover"
             style={{ objectPosition: '15% 42%' }}
           />
@@ -90,14 +90,15 @@ export default function Business() {
             sizes="100vw"
             alt=""
             aria-hidden="true"
-            fetchPriority="high"
+            fetchpriority="high"
             className="lg:hidden absolute bottom-0 left-0 w-full h-auto"
           />
           <div
             className="lg:hidden absolute inset-x-0 bottom-0 h-[70vw] pointer-events-none"
             style={{ background: 'linear-gradient(180deg, rgba(13,22,40,1) 0%, rgba(13,22,40,0.55) 30%, rgba(13,22,40,0) 70%)' }}
           />
-          <div className={`relative max-w-[1200px] mx-auto ${SECTION_X} pt-36 pb-[62vw] lg:pt-44 lg:pb-28`}>
+          <div className={`relative ${SECTION_X} pt-36 pb-[62vw] lg:pt-44 lg:pb-28`}>
+            <div className="max-w-[1200px] mx-auto">
             <div className="max-w-[760px]">
               <span className="section-label section-label-dark">{t('hub.hero.eyebrow')}</span>
               <h1 className="font-display font-light text-white text-balance m-0 leading-[1.06] text-[clamp(2.5rem,5vw,4.5rem)]">{t('hub.hero.title')}</h1>
@@ -111,6 +112,7 @@ export default function Business() {
                 </a>
               </div>
             </div>
+          </div>
           </div>
         </section>
 

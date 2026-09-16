@@ -65,7 +65,8 @@ export default function BusinessNav() {
         style={{ background: 'linear-gradient(90deg, transparent 0%, #4c7d47 30%, #4c7d47 70%, transparent 100%)' }}
       />
       <header ref={menuRef} className="fixed top-0 left-0 right-0 z-50 bg-stone-50/95 backdrop-blur-md border-b border-stone-200">
-        <nav className="max-w-7xl mx-auto px-6 lg:px-8 h-24 flex items-center justify-between" role="navigation" aria-label={t('nav.home')}>
+        <nav className="px-6 sm:px-8 lg:px-12" role="navigation" aria-label={t('nav.home')}>
+          <div className="max-w-[1200px] mx-auto h-24 flex items-center justify-between">
           <Link to={hub} className="flex items-center gap-2.5" aria-label={t('nav.home')}>
             <img src="/everstead-logo-dark.png" alt="Everstead" className="h-10 w-auto" />
             <span className="inline-block lg:hidden xl:inline-block text-[12px] sm:text-[13px] font-medium text-stone-500 border-l border-stone-300 pl-2 sm:pl-2.5 leading-none whitespace-nowrap">
@@ -111,6 +112,7 @@ export default function BusinessNav() {
           >
             {open ? <X size={20} /> : <Menu size={20} />}
           </button>
+          </div>
         </nav>
 
         <div
