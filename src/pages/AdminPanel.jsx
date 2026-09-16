@@ -7,7 +7,7 @@ import {
   LogOut, Filter, ExternalLink, Shield, Users, Copy, Check,
   Loader2, Trash2, LayoutDashboard, Folder, BookOpen, Heart,
   CreditCard, ChevronDown, ChevronUp, Search, Sparkles,
-  Building2, Plus, Upload, Pencil, PoundSterling, ArrowLeft,
+  Building2, Plus, Upload, Pencil, PoundSterling, ArrowLeft, Briefcase,
 } from 'lucide-react'
 import { getLiveReports, updateReportStatus, verifyReport, setOwnerStatus } from '../lib/demoData'
 import { supabase } from '../lib/supabase'
@@ -1729,7 +1729,8 @@ function AdvisersSection({ isDemo }) {
 
   const selected = advisers.find(a => a.id === selectedId) || null
   const totalFamilies = advisers.reduce((s, a) => s + (a.families_used || 0), 0)
-  const pilots = advisers.filter(a => a.status === 'pilot').length
+  const pilots = advisers.filter(a => a.status === 'pilot').length // eslint-disable-line no-unused-vars
+  const employers = advisers.filter(a => a.org_kind === 'employer').length
 
   return (
     <div className="space-y-6">
@@ -1746,12 +1747,12 @@ function AdvisersSection({ isDemo }) {
       ) : (
         <>
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-            <StatCard label="Firms"            value={advisers.length} Icon={Building2} color="bg-navy-100 text-navy-700" />
-            <StatCard label="Pilots"           value={pilots}          Icon={Sparkles}  color="bg-sage-100 text-sage-700" />
+            <StatCard label="Organisations"    value={advisers.length} Icon={Building2} color="bg-navy-100 text-navy-700" />
+            <StatCard label="Employers"        value={employers}       Icon={Briefcase} color="bg-sage-100 text-sage-700" />
             <StatCard label="Families managed" value={totalFamilies}   Icon={Users}     color="bg-emerald-100 text-emerald-700" />
             <div className="flex items-center justify-end">
               <button onClick={() => setFormFor('new')} className="inline-flex items-center gap-1.5 text-sm font-semibold px-4 py-2.5 rounded-xl text-white" style={{ backgroundColor: '#2d5082' }}>
-                <Plus size={15} /> New adviser
+                <Plus size={15} /> New organisation
               </button>
             </div>
           </div>
@@ -1778,6 +1779,10 @@ function AdvisersSection({ isDemo }) {
 }
 
 function AdviserCard({ adviser: a, onOpen }) {
+  // An employer has no client families: the family cap and its meter are an
+  // adviser idea, and showing them at nought reads as a broken account rather
+  // than a different kind of organisation.
+  const isEmployer = a.org_kind === 'employer'
   const atCap = a.max_families > 0 && (a.families_used || 0) >= a.max_families
   const pct = a.max_families > 0 ? Math.min(100, Math.round((a.families_used || 0) / a.max_families * 100)) : 0
   const inv = a.latest_invoice ? (INVOICE_STATUS[a.latest_invoice.status] ?? INVOICE_STATUS.unpaid) : null
@@ -1787,22 +1792,47 @@ function AdviserCard({ adviser: a, onOpen }) {
         <div className="flex items-center gap-3 min-w-0">
           {a.logo_url
             ? <img src={a.logo_url} alt="" className="w-10 h-10 rounded-lg object-contain bg-stone-50 border border-stone-200 shrink-0" />
-            : <div className="w-10 h-10 rounded-lg bg-navy-100 text-navy-700 flex items-center justify-center shrink-0"><Building2 size={18} /></div>}
+            : <div className={`w-10 h-10 rounded-lg flex items-center justify-center shrink-0 ${isEmployer ? 'bg-sage-100 text-sage-700' : 'bg-navy-100 text-navy-700'}`}><Building2 size={18} /></div>}
           <div className="min-w-0">
             <p className="font-semibold text-navy-900 truncate">{a.firm_name}</p>
             <p className="text-xs text-stone-500 truncate">{a.contact_name || a.contact_email || '—'}</p>
           </div>
         </div>
-        <AdviserStatusPill status={a.status} />
+        <span className="flex items-center gap-1.5 shrink-0">
+          <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full border ${isEmployer ? 'bg-sage-50 text-sage-700 border-sage-200' : 'bg-navy-50 text-navy-700 border-navy-200'}`}>
+            {isEmployer ? 'Employer' : 'Firm'}
+          </span>
+          <AdviserStatusPill status={a.status} />
+        </span>
       </div>
-      <div className="mt-4 flex items-center gap-2 text-xs">
-        <span className={atCap ? 'text-red-600 font-semibold' : 'text-stone-600'}>{a.families_used || 0} / {a.max_families} families{atCap ? ' · at cap' : ''}</span>
-      </div>
-      <div className="mt-1.5 h-1.5 rounded-full bg-stone-100 overflow-hidden">
-        <div className={`h-full rounded-full ${atCap ? 'bg-red-400' : 'bg-sage-500'}`} style={{ width: `${pct}%` }} />
-      </div>
+
+      {/* Sending is off until a domain has been checked, and an organisation
+          that cannot send is the single most likely reason for a confused
+          "it does not work" message. Say it on the card. */}
+      {!a.can_deliver && (
+        <p className="mt-3 inline-flex items-center gap-1.5 text-[11px] font-semibold text-amber-800 bg-amber-50 border border-amber-200 rounded-full px-2.5 py-1">
+          <AlertCircle size={11} /> Cannot send documents yet
+        </p>
+      )}
+
+      {isEmployer ? (
+        <div className="mt-4 grid grid-cols-3 gap-2 text-xs">
+          <span><span className="block font-semibold text-navy-900">{a.connections_active || 0}</span><span className="text-stone-500">connected</span></span>
+          <span><span className="block font-semibold text-navy-900">{a.deliveries_sent || 0}</span><span className="text-stone-500">sent</span></span>
+          <span><span className="block font-semibold text-navy-900">{(a.deliveries_waiting || 0) + (a.requests_open || 0)}</span><span className="text-stone-500">waiting</span></span>
+        </div>
+      ) : (
+        <>
+          <div className="mt-4 flex items-center gap-2 text-xs">
+            <span className={atCap ? 'text-red-600 font-semibold' : 'text-stone-600'}>{a.families_used || 0} / {a.max_families} families{atCap ? ' · at cap' : ''}</span>
+          </div>
+          <div className="mt-1.5 h-1.5 rounded-full bg-stone-100 overflow-hidden">
+            <div className={`h-full rounded-full ${atCap ? 'bg-red-400' : 'bg-sage-500'}`} style={{ width: `${pct}%` }} />
+          </div>
+        </>
+      )}
       <div className="mt-4 flex items-center justify-between text-xs">
-        <span className="text-stone-500 capitalize">{a.plan_type === 'pilot' ? 'Pilot · free' : `${gbp(a.platform_fee)}/mo + ${gbp(a.price_per_family)}/family`}</span>
+        <span className="text-stone-500 capitalize">{a.plan_type === 'pilot' ? 'Pilot · free' : isEmployer ? `${gbp(a.platform_fee)}/mo` : `${gbp(a.platform_fee)}/mo + ${gbp(a.price_per_family)}/family`}</span>
         {inv
           ? <span className={`px-2 py-0.5 rounded-full border ${inv.cls}`}>{inv.label}</span>
           : <span className="text-stone-400">No invoices</span>}
@@ -1813,6 +1843,9 @@ function AdviserCard({ adviser: a, onOpen }) {
 
 function AdviserForm({ isDemo, initial, onClose, onSaved }) {
   const [f, setF] = useState(() => ({
+    org_kind: initial?.org_kind || 'professional',
+    can_deliver: initial?.can_deliver === true,
+    verified_domain: initial?.verified_domain || '',
     firm_name: initial?.firm_name || '', firm_type: initial?.firm_type || '', contact_name: initial?.contact_name || '', contact_email: initial?.contact_email || '',
     status: initial?.status || 'pilot', plan_type: initial?.plan_type || 'pilot',
     platform_fee_gbp: penceToPounds(initial?.platform_fee || 0), price_per_family_gbp: penceToPounds(initial?.price_per_family || 0),
@@ -1826,11 +1859,14 @@ function AdviserForm({ isDemo, initial, onClose, onSaved }) {
   const set = (k, v) => setF(s => ({ ...s, [k]: v }))
 
   const save = async () => {
-    if (!f.firm_name.trim()) { setError('Firm name is required.'); return }
+    if (!f.firm_name.trim()) { setError('Organisation name is required.'); return }
+    if (f.can_deliver && !f.verified_domain.trim()) { setError('Record the domain you verified before switching sending on.'); return }
     if (isDemo) { onSaved(); return }
     setSaving(true); setError(null)
     const payload = {
-      firm_name: f.firm_name.trim(), firm_type: f.firm_type || null, contact_name: f.contact_name.trim(), contact_email: f.contact_email.trim(),
+      org_kind: f.org_kind, can_deliver: !!f.can_deliver, verified_domain: f.verified_domain.trim() || null,
+      firm_name: f.firm_name.trim(), firm_type: f.org_kind === 'employer' ? null : (f.firm_type || null),
+      contact_name: f.contact_name.trim(), contact_email: f.contact_email.trim(),
       status: f.status, plan_type: f.plan_type,
       platform_fee: poundsToPence(f.platform_fee_gbp), price_per_family: poundsToPence(f.price_per_family_gbp),
       max_families: Math.max(0, parseInt(f.max_families, 10) || 0),
@@ -1858,23 +1894,64 @@ function AdviserForm({ isDemo, initial, onClose, onSaved }) {
   }
 
   return (
-    <Modal title={initial ? 'Edit adviser firm' : 'New adviser firm'} onClose={onClose}>
+    <Modal title={initial ? 'Edit organisation' : 'New organisation'} onClose={onClose}>
       <div className="space-y-4">
         {error && <div className="text-sm text-red-600">{error}</div>}
-        <div className="grid grid-cols-[1fr_200px] gap-3">
-          <Field label="Firm name *"><input className={inputCls} value={f.firm_name} onChange={e => set('firm_name', e.target.value)} /></Field>
+        {/* Kind decides which portal they get and which fields below apply. */}
+        <Field label="What kind of organisation">
+          <div className="grid grid-cols-2 gap-2">
+            {[['professional', 'Professional firm', 'Advisers, solicitors, notaires, care providers. Gets the adviser portal, client families, consent-based access.'],
+              ['employer', 'Employer', 'Gets the employer portal: People, Documents, Settings. No client families, no per-employee detail.']].map(([id, label, hint]) => (
+              <button
+                key={id} type="button" onClick={() => set('org_kind', id)}
+                className={`text-left rounded-xl border px-3.5 py-3 transition-colors ${f.org_kind === id ? 'border-navy-400 bg-navy-50' : 'border-stone-200 hover:border-stone-300'}`}
+              >
+                <span className="block text-sm font-semibold text-navy-900">{label}</span>
+                <span className="block text-[11px] leading-snug text-stone-500 mt-1">{hint}</span>
+              </button>
+            ))}
+          </div>
+        </Field>
+
+        <div className={f.org_kind === 'employer' ? '' : 'grid grid-cols-[1fr_200px] gap-3'}>
+          <Field label="Organisation name *"><input className={inputCls} value={f.firm_name} onChange={e => set('firm_name', e.target.value)} /></Field>
           {/* Drives the label the client sees in their vault: "Your solicitor", "Votre notaire"... */}
-          <Field label="Firm type">
-            <select className={inputCls} value={f.firm_type} onChange={e => set('firm_type', e.target.value)}>
-              <option value="">Not set (shows "Your adviser")</option>
-              <option value="solicitor">Solicitor</option>
-              <option value="notaire">Notaire</option>
-              <option value="ifa">Financial adviser</option>
-              <option value="accountant">Accountant</option>
-              <option value="wealth">Wealth manager</option>
-              <option value="other">Other</option>
-            </select>
-          </Field>
+          {f.org_kind !== 'employer' && (
+            <Field label="Firm type">
+              <select className={inputCls} value={f.firm_type} onChange={e => set('firm_type', e.target.value)}>
+                <option value="">Not set (shows "Your adviser")</option>
+                <option value="solicitor">Solicitor</option>
+                <option value="notaire">Notaire</option>
+                <option value="ifa">Financial adviser</option>
+                <option value="accountant">Accountant</option>
+                <option value="wealth">Wealth manager</option>
+                <option value="other">Other</option>
+              </select>
+            </Field>
+          )}
+        </div>
+
+        {/* The switch that lets this organisation put a document into someone's
+            vault. Off by default on purpose: "we have sent you a document, click
+            here" is a phishing shape, so a human verifies a domain first. */}
+        <div className={`rounded-xl border px-4 py-3.5 ${f.can_deliver ? 'border-sage-300 bg-sage-50' : 'border-stone-200 bg-stone-50'}`}>
+          <label className="flex items-start gap-3 cursor-pointer">
+            <input type="checkbox" checked={f.can_deliver} onChange={e => set('can_deliver', e.target.checked)} className="mt-0.5 w-4 h-4 accent-navy-700 shrink-0" />
+            <span className="min-w-0">
+              <span className="block text-sm font-semibold text-navy-900">Verified to send documents</span>
+              <span className="block text-xs text-stone-500 mt-0.5">
+                Until this is on, /api/org/deliver refuses every send from this organisation. Turn it on only after checking
+                the domain belongs to them.
+              </span>
+            </span>
+          </label>
+          {f.can_deliver && (
+            <div className="mt-3 pl-7">
+              <Field label="Domain you verified *">
+                <input className={inputCls} placeholder="marlowfinch.com" value={f.verified_domain} onChange={e => set('verified_domain', e.target.value)} />
+              </Field>
+            </div>
+          )}
         </div>
         <div className="grid grid-cols-2 gap-3">
           <Field label="Contact name"><input className={inputCls} value={f.contact_name} onChange={e => set('contact_name', e.target.value)} /></Field>
@@ -1967,6 +2044,9 @@ function AdviserDetail({ isDemo, adviser: a, onBack, onEdit, onChanged }) {
 
   const used = families.length
   const atCap = a.max_families > 0 && used >= a.max_families
+  // Employers have no client families; the whole assign flow keys off
+  // profiles.adviser_id, which they never set.
+  const isEmployer = a.org_kind === 'employer'
 
   const unassign = async (userId) => {
     if (isDemo) { setFamilies(fs => fs.filter(x => x.id !== userId)); return }
@@ -1996,8 +2076,8 @@ function AdviserDetail({ isDemo, adviser: a, onBack, onEdit, onChanged }) {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between gap-3">
-        <button onClick={onBack} className="inline-flex items-center gap-1.5 text-sm text-stone-500 hover:text-navy-800"><ArrowLeft size={15} /> All advisers</button>
-        <button onClick={onEdit} className="inline-flex items-center gap-1.5 text-sm font-medium px-3 py-2 rounded-xl border border-stone-200 hover:bg-stone-50"><Pencil size={14} /> Edit firm</button>
+        <button onClick={onBack} className="inline-flex items-center gap-1.5 text-sm text-stone-500 hover:text-navy-800"><ArrowLeft size={15} /> All organisations</button>
+        <button onClick={onEdit} className="inline-flex items-center gap-1.5 text-sm font-medium px-3 py-2 rounded-xl border border-stone-200 hover:bg-stone-50"><Pencil size={14} /> Edit</button>
       </div>
 
       {error && <div className="flex items-start gap-2 bg-red-50 border border-red-200 rounded-xl px-4 py-3 text-sm text-red-700"><AlertCircle size={15} className="mt-0.5 shrink-0" /> {error}</div>}
@@ -2007,14 +2087,25 @@ function AdviserDetail({ isDemo, adviser: a, onBack, onEdit, onChanged }) {
           ? <img src={a.logo_url} alt="" className="w-12 h-12 rounded-lg object-contain bg-stone-50 border border-stone-200 shrink-0" />
           : <div className="w-12 h-12 rounded-lg bg-navy-100 text-navy-700 flex items-center justify-center shrink-0"><Building2 size={22} /></div>}
         <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2 flex-wrap"><h2 className="text-lg font-semibold text-navy-900">{a.firm_name}</h2><AdviserStatusPill status={a.status} /></div>
+          <div className="flex items-center gap-2 flex-wrap">
+            <h2 className="text-lg font-semibold text-navy-900">{a.firm_name}</h2>
+            <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full border ${isEmployer ? 'bg-sage-50 text-sage-700 border-sage-200' : 'bg-navy-50 text-navy-700 border-navy-200'}`}>
+              {isEmployer ? 'Employer' : 'Professional firm'}
+            </span>
+            <AdviserStatusPill status={a.status} />
+          </div>
           <p className="text-sm text-stone-500 mt-0.5">{[a.contact_name, a.contact_email].filter(Boolean).join(' · ') || '—'}</p>
+          <p className="text-xs mt-1.5">
+            {a.can_deliver
+              ? <span className="inline-flex items-center gap-1.5 text-sage-700"><Check size={12} /> Verified to send documents{a.verified_domain ? ` · ${a.verified_domain}` : ''}</span>
+              : <span className="inline-flex items-center gap-1.5 text-amber-800"><AlertCircle size={12} /> Cannot send documents. Verify a domain, then switch it on in Edit.</span>}
+          </p>
         </div>
       </div>
 
       <div className="bg-white border border-stone-200 rounded-2xl p-5">
-        <h3 className="text-sm font-semibold text-navy-900 mb-3">Advisers on this firm</h3>
-        {members.length === 0 ? <p className="text-sm text-stone-400 mb-3">No advisers yet — add the firm's owner to give them portal access.</p> : (
+        <h3 className="text-sm font-semibold text-navy-900 mb-3">{isEmployer ? 'People who can sign in for this employer' : 'Advisers on this firm'}</h3>
+        {members.length === 0 ? <p className="text-sm text-stone-400 mb-3">Nobody yet. Add the owner to give them portal access.</p> : (
           <div className="divide-y divide-stone-100 mb-3">
             {members.map(m => (
               <div key={m.id} className="flex items-center justify-between py-2.5 gap-3">
@@ -2060,13 +2151,28 @@ function AdviserDetail({ isDemo, adviser: a, onBack, onEdit, onChanged }) {
           <SummaryItem label="Plan" value={a.plan_type === 'pilot' ? 'Pilot (free)' : 'Paid'} />
           <SummaryItem label="Platform fee" value={`${gbp(a.platform_fee)}/mo`} />
           <SummaryItem label="Per family" value={gbp(a.price_per_family)} />
-          <SummaryItem label="Family cap" value={String(a.max_families)} />
+          {!isEmployer && <SummaryItem label="Family cap" value={String(a.max_families)} />}
           <SummaryItem label="Pilot ends" value={fmtDate(a.pilot_end_date)} />
           <SummaryItem label="Billing starts" value={fmtDate(a.billing_start_date)} />
         </div>
         {a.notes && <p className="mt-4 text-sm text-stone-500 border-t border-stone-100 pt-3">{a.notes}</p>}
       </div>
 
+      {isEmployer ? (
+        <div className="bg-white border border-stone-200 rounded-2xl p-5">
+          <h3 className="text-sm font-semibold text-navy-900 mb-3">Activity</h3>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+            <SummaryItem label="Connected people" value={String(a.connections_active ?? 0)} />
+            <SummaryItem label="Documents sent"   value={String(a.deliveries_sent ?? 0)} />
+            <SummaryItem label="Awaiting an answer" value={String(a.deliveries_waiting ?? 0)} />
+            <SummaryItem label="Open requests"    value={String(a.requests_open ?? 0)} />
+          </div>
+          <p className="mt-4 text-xs text-stone-500 border-t border-stone-100 pt-3">
+            An employer has no client families: their people connect by accepting a document, not by being assigned here.
+            Everstead never shows an employer who holds a vault, so neither does this.
+          </p>
+        </div>
+      ) : (
       <div className="bg-white border border-stone-200 rounded-2xl p-5">
         <div className="flex items-center justify-between mb-3">
           <h3 className="text-sm font-semibold text-navy-900">Families <span className={atCap ? 'text-red-600' : 'text-stone-400'}>({used}/{a.max_families}{atCap ? ' · at cap' : ''})</span></h3>
@@ -2090,6 +2196,8 @@ function AdviserDetail({ isDemo, adviser: a, onBack, onEdit, onChanged }) {
           </div>
         )}
       </div>
+
+      )}
 
       <div className="bg-white border border-stone-200 rounded-2xl p-5">
         <div className="flex items-center justify-between mb-3">
@@ -3064,7 +3172,7 @@ export default function AdminPanel() {
     { id: 'reports',  label: 'Reports',  Icon: Clock },
     { id: 'users',    label: 'Users',    Icon: UserRound },
     { id: 'email',    label: 'Email',    Icon: Mail },
-    { id: 'advisers', label: 'Advisers', Icon: Building2 },
+    { id: 'advisers', label: 'Organisations', Icon: Building2 },
     { id: 'team',     label: 'Team',     Icon: Users },
   ]
 
@@ -3248,7 +3356,7 @@ export default function AdminPanel() {
         {activeTab === 'advisers' && (
           <>
             <div>
-              <h1 className="text-2xl font-semibold text-navy-950">Advisers</h1>
+              <h1 className="text-2xl font-semibold text-navy-950">Organisations</h1>
               <p className="text-sm text-stone-500 mt-1">Adviser &amp; solicitor firms — subscriptions, family caps and invoices</p>
             </div>
             <AdvisersSection isDemo={isDemo} />

@@ -35,10 +35,32 @@ async function handler(req, res) {
           .in('adviser_id', ids).order('issue_date', { ascending: false })
         for (const r of inv || []) if (!latestInvoice[r.adviser_id]) latestInvoice[r.adviser_id] = r
       }
+      // families_used counts profiles.adviser_id, which an employer never sets.
+      // The exchange tables are what an employer actually shows up in, so the
+      // admin list carries both and the UI picks by org_kind.
+      const conns = {}, sent = {}, waiting = {}, asks = {}
+      if (ids.length) {
+        const [{ data: c }, { data: d }, { data: r }] = await Promise.all([
+          db.from('member_connections').select('org_id, status').in('org_id', ids),
+          db.from('inbound_deliveries').select('org_id, status').in('org_id', ids),
+          db.from('adviser_document_requests').select('adviser_id, status').in('adviser_id', ids),
+        ])
+        for (const x of c || []) if (x.status === 'active') conns[x.org_id] = (conns[x.org_id] || 0) + 1
+        for (const x of d || []) {
+          sent[x.org_id] = (sent[x.org_id] || 0) + 1
+          if (x.status === 'sent') waiting[x.org_id] = (waiting[x.org_id] || 0) + 1
+        }
+        for (const x of r || []) if (x.status === 'requested') asks[x.adviser_id] = (asks[x.adviser_id] || 0) + 1
+      }
+
       return res.status(200).json({
         advisers: advisers.map(a => ({
           ...a,
           families_used: used[a.id] || 0,
+          connections_active: conns[a.id] || 0,
+          deliveries_sent: sent[a.id] || 0,
+          deliveries_waiting: waiting[a.id] || 0,
+          requests_open: asks[a.id] || 0,
           latest_invoice: latestInvoice[a.id] || null,
         })),
       })
@@ -200,6 +222,11 @@ function cleanFirm(firm = {}) {
     'firm_name', 'firm_type', 'contact_name', 'contact_email', 'logo_url', 'status', 'plan_type',
     'platform_fee', 'price_per_family', 'max_families', 'pilot_end_date',
     'billing_start_date', 'notes',
+    // An organisation is a professional firm or an employer, and can_deliver is
+    // the switch that lets it put a document into somebody's vault. That one is
+    // deliberately admin-only: it is what stops "we have sent you a document,
+    // click here" being available to anyone who signs up.
+    'org_kind', 'can_deliver', 'verified_domain',
   ]
   const out = {}
   for (const k of allowed) if (firm[k] !== undefined) out[k] = firm[k]
@@ -210,6 +237,14 @@ function cleanFirm(firm = {}) {
   for (const k of ['pilot_end_date', 'billing_start_date']) if (out[k] === '') out[k] = null
   if (out.firm_type !== undefined) {
     out.firm_type = ['solicitor', 'notaire', 'ifa', 'accountant', 'wealth', 'other'].includes(out.firm_type) ? out.firm_type : null
+  }
+  if (out.org_kind !== undefined) {
+    out.org_kind = out.org_kind === 'employer' ? 'employer' : 'professional'
+  }
+  if (out.can_deliver !== undefined) out.can_deliver = out.can_deliver === true || out.can_deliver === 'true'
+  if (out.verified_domain !== undefined) {
+    const d = String(out.verified_domain || '').trim().toLowerCase().replace(/^https?:\/\//, '').replace(/\/.*$/, '')
+    out.verified_domain = d || null
   }
   return out
 }
