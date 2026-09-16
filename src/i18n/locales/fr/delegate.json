@@ -511,7 +511,9 @@
       }
     },
     "savePrefs": "Enregistrer les préférences",
-    "saved": "Enregistré"
+    "saved": "Enregistré",
+    "profileSaveFailed": "Impossible d'enregistrer vos informations. Veuillez réessayer.",
+    "notifSaveFailed": "Impossible d'enregistrer vos préférences de notification. Veuillez réessayer."
   },
   "report": {
     "reporterHeading": "Vos coordonnées (déclarant)",

@@ -316,6 +316,11 @@ export default function DelegateDashboard() {
   const accessibleCategories = useMemo(() => grantSummary(grants), [grants])
 
   const unreadAlerts = alerts.filter(item => !item.is_read)
+  // Not unreadAlerts.length - readAlertIds.size. readAlertIds collects every
+  // alert opened this session, including ones already read on the server, so
+  // subtracting its size counted those twice and walked the badge down past
+  // the real number and into negatives.
+  const unreadAlertCount = alerts.filter(item => !item.is_read && !readAlertIds.has(item.id)).length
   const criticalAlerts = unreadAlerts.filter(item => normalise(item.severity) === 'critical')
   const lastUpdated = [
     ...accessibleDocuments.map(item => item.updated_at || item.created_at),
@@ -643,10 +648,10 @@ export default function DelegateDashboard() {
                   id === 'documents'    ? accessibleDocuments.length    :
                   id === 'accounts'     ? accessibleAccounts.length      :
                   id === 'instructions' ? accessibleInstructions.length  :
-                  id === 'alerts'       ? (unreadAlerts.length - readAlertIds.size) || null :
+                  id === 'alerts'       ? unreadAlertCount || null :
                   id === 'messages'     ? (myMessages.length || null)    :
                   id === 'notify'       ? null : null
-                const alertBadge = id === 'alerts' && (unreadAlerts.length - readAlertIds.size) > 0
+                const alertBadge = id === 'alerts' && unreadAlertCount > 0
                 const msgBadge   = id === 'messages' && myMessages.length > 0
                 return (
                   <button
@@ -657,7 +662,7 @@ export default function DelegateDashboard() {
                   >
                     <Icon size={16} className="shrink-0" />
                     <span className="flex-1 text-left">{t(labelKey)}</span>
-                    {alertBadge && <span className="rounded-full bg-red-500 px-2 py-0.5 text-[11px] font-bold text-white">{unreadAlerts.length - readAlertIds.size}</span>}
+                    {alertBadge && <span className="rounded-full bg-red-500 px-2 py-0.5 text-[11px] font-bold text-white">{unreadAlertCount}</span>}
                     {msgBadge   && <span className="rounded-full bg-navy-700 px-2 py-0.5 text-[11px] font-bold text-white">{myMessages.length}</span>}
                     {!alertBadge && !msgBadge && tabCount > 0 && (
                       <span className="text-[11px] text-stone-400 font-medium">{tabCount}</span>
@@ -802,7 +807,7 @@ export default function DelegateDashboard() {
                   { label: t('overview.sharedDocuments'), value: accessibleDocuments.length, icon: FileText, tab: 'documents' },
                   { label: t('overview.sharedAccounts'), value: accessibleAccounts.length, icon: Wallet, tab: 'accounts' },
                   { label: t('overview.sharedInstructions'), value: accessibleInstructions.length, icon: BookOpen, tab: 'instructions' },
-                  { label: t('overview.unreadAlerts'), value: unreadAlerts.length - readAlertIds.size, icon: Bell, tab: 'alerts' },
+                  { label: t('overview.unreadAlerts'), value: unreadAlertCount, icon: Bell, tab: 'alerts' },
                 ].map(({ label, value, icon: Icon, tab }) => (
                   <button
                     key={label}
@@ -1179,10 +1184,10 @@ export default function DelegateDashboard() {
             <Panel
               title={t('alerts.title')}
               icon={Bell}
-              count={alerts.filter(a => !a.is_read && !readAlertIds.has(a.id)).length || null}
+              count={unreadAlertCount || null}
               countLabel={t('alerts.unreadLabel')}
               action={
-                alerts.some(a => !a.is_read && !readAlertIds.has(a.id)) ? (
+                unreadAlertCount > 0 ? (
                   <button
                     onClick={() => setReadAlertIds(new Set(alerts.map(a => a.id)))}
                     className="text-xs font-medium text-navy-600 hover:text-navy-900 transition-colors flex items-center gap-1"
@@ -1436,6 +1441,36 @@ function DelegateResourcesPanel() {
 // ─────────────────────────────────────────────────────────────
 // DELEGATE SETTINGS PANEL
 // ─────────────────────────────────────────────────────────────
+// Declared at module scope on purpose. Inside DelegateSettingsPanel it was a
+// new component type on every render, so React unmounted and remounted the
+// input after each keystroke and the field lost focus after one character.
+// Changing your password was effectively impossible.
+function PwInput({ id, label, field, pwForm, setPwForm, showPw, setShowPw, inputCls, t }) {
+  return (
+    <div className="space-y-1">
+      <label className="block text-xs font-semibold text-stone-600">{label}</label>
+      <div className="relative">
+        <input
+          type={showPw[field] ? 'text' : 'password'}
+          className={`${inputCls} pr-10`}
+          value={pwForm[field]}
+          onChange={e => setPwForm(p => ({ ...p, [field]: e.target.value }))}
+          autoComplete={field === 'current' ? 'current-password' : 'new-password'}
+          required
+        />
+        <button
+          type="button"
+          onClick={() => setShowPw(p => ({ ...p, [field]: !p[field] }))}
+          aria-label={showPw[field] ? t('settings.hidePassword') : t('settings.showPassword')}
+          className="absolute right-3 top-1/2 -translate-y-1/2 text-stone-400 hover:text-stone-700 transition-colors"
+        >
+          {showPw[field] ? <EyeOff size={15} /> : <Eye size={15} />}
+        </button>
+      </div>
+    </div>
+  )
+}
+
 function DelegateSettingsPanel({ invite, isDemo }) {
   const { t } = useTranslation('delegate')
   const inputCls = 'w-full border border-stone-200 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-navy-300 bg-white'
@@ -1453,6 +1488,7 @@ function DelegateSettingsPanel({ invite, isDemo }) {
   })
   const [profileSaving, setProfileSaving] = useState(false)
   const [profileSaved,  setProfileSaved]  = useState(false)
+  const [profileError,  setProfileError]  = useState('')
 
   // Password state
   const [pwForm, setPwForm]       = useState({ current: '', next: '', confirm: '' })
@@ -1470,13 +1506,18 @@ function DelegateSettingsPanel({ invite, isDemo }) {
     digest_weekly:   false,
   })
   const [notifSaved, setNotifSaved] = useState(false)
+  const [notifError, setNotifError] = useState('')
 
   const handleProfileSave = async (e) => {
     e.preventDefault()
     setProfileSaving(true)
+    setProfileError('')
     try {
       if (!isDemo) {
-        await supabase
+        // PostgREST reports failures in the result, not by throwing. Nobody
+        // read it, so a rejected update still showed "Saved" and the delegate
+        // walked away believing their address was on file.
+        const { error } = await supabase
           .from('trusted_people')
           .update({
             name:         profile.full_name,
@@ -1488,11 +1529,14 @@ function DelegateSettingsPanel({ invite, isDemo }) {
             country:      profile.country,
           })
           .eq('id', invite.id)
+        if (error) throw error
       } else {
         await new Promise(r => setTimeout(r, 700))
       }
       setProfileSaved(true)
       setTimeout(() => setProfileSaved(false), 3000)
+    } catch (err) {
+      setProfileError(err?.message || t('settings.profileSaveFailed'))
     } finally {
       setProfileSaving(false)
     }
@@ -1522,6 +1566,7 @@ function DelegateSettingsPanel({ invite, isDemo }) {
   }
 
   const handleNotifSave = async () => {
+    setNotifError('')
     try {
       if (!isDemo && invite?.id) {
         const { error } = await supabase
@@ -1531,35 +1576,15 @@ function DelegateSettingsPanel({ invite, isDemo }) {
         if (error) throw error
       }
     } catch (err) {
-      console.error('Notification prefs save error:', err)
+      // The catch used to log to the console and fall through to "Saved", so
+      // the one person who needed to know their alerts were off was told the
+      // opposite.
+      setNotifError(err?.message || t('settings.notifSaveFailed'))
+      return
     }
     setNotifSaved(true)
     setTimeout(() => setNotifSaved(false), 3000)
   }
-
-  const PwInput = ({ id, label, field }) => (
-    <div className="space-y-1">
-      <label className="block text-xs font-semibold text-stone-600">{label}</label>
-      <div className="relative">
-        <input
-          type={showPw[field] ? 'text' : 'password'}
-          className={`${inputCls} pr-10`}
-          value={pwForm[field]}
-          onChange={e => setPwForm(p => ({ ...p, [field]: e.target.value }))}
-          autoComplete={field === 'current' ? 'current-password' : 'new-password'}
-          required
-        />
-        <button
-          type="button"
-          onClick={() => setShowPw(p => ({ ...p, [field]: !p[field] }))}
-          aria-label={showPw[field] ? t('settings.hidePassword') : t('settings.showPassword')}
-          className="absolute right-3 top-1/2 -translate-y-1/2 text-stone-400 hover:text-stone-700 transition-colors"
-        >
-          {showPw[field] ? <EyeOff size={15} /> : <Eye size={15} />}
-        </button>
-      </div>
-    </div>
-  )
 
   const SavedBadge = () => (
     <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-full px-3 py-1">
@@ -1637,6 +1662,10 @@ function DelegateSettingsPanel({ invite, isDemo }) {
             </div>
           </div>
 
+          {profileError && (
+            <p className="text-xs text-red-700 bg-red-50 border border-red-200 rounded-xl px-3.5 py-2.5">{profileError}</p>
+          )}
+
           <div className="pt-2">
             <button
               type="submit"
@@ -1666,10 +1695,10 @@ function DelegateSettingsPanel({ invite, isDemo }) {
 
         <form onSubmit={handlePasswordSave} className="space-y-4">
           <div className="grid sm:grid-cols-2 gap-4">
-            <PwInput id="current" label={t('settings.currentPassword')} field="current" />
+            <PwInput id="current" label={t('settings.currentPassword')} field="current" pwForm={pwForm} setPwForm={setPwForm} showPw={showPw} setShowPw={setShowPw} inputCls={inputCls} t={t} />
             <div /> {/* spacer */}
-            <PwInput id="next" label={t('settings.newPassword')} field="next" />
-            <PwInput id="confirm" label={t('settings.confirmPassword')} field="confirm" />
+            <PwInput id="next" label={t('settings.newPassword')} field="next" pwForm={pwForm} setPwForm={setPwForm} showPw={showPw} setShowPw={setShowPw} inputCls={inputCls} t={t} />
+            <PwInput id="confirm" label={t('settings.confirmPassword')} field="confirm" pwForm={pwForm} setPwForm={setPwForm} showPw={showPw} setShowPw={setShowPw} inputCls={inputCls} t={t} />
           </div>
 
           {pwError && (
@@ -1723,6 +1752,10 @@ function DelegateSettingsPanel({ invite, isDemo }) {
             </label>
           ))}
         </div>
+
+        {notifError && (
+          <p className="mt-4 text-xs text-red-700 bg-red-50 border border-red-200 rounded-xl px-3.5 py-2.5">{notifError}</p>
+        )}
 
         <button
           type="button"

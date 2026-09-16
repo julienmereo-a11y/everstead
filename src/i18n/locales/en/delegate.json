@@ -511,7 +511,9 @@
       }
     },
     "savePrefs": "Save preferences",
-    "saved": "Saved"
+    "saved": "Saved",
+    "profileSaveFailed": "Could not save your details. Please try again.",
+    "notifSaveFailed": "Could not save your notification settings. Please try again."
   },
   "report": {
     "reporterHeading": "Your details (reporter)",
