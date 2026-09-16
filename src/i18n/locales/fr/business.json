@@ -12,7 +12,8 @@
       "solicitors": "Notaires",
       "care": "Établissements",
       "employers": "Employeurs"
-    }
+    },
+    "pricing": "Tarifs"
   },
   "hub": {
     "meta": {
@@ -459,6 +460,96 @@
       "finalSecondary": "Écrire à hello@everstead.care",
       "backToHub": "Tout Everstead pour les entreprises",
       "otherTitle": "Aussi dans Everstead pour les entreprises"
+    }
+  },
+  "pricing": {
+    "meta": {
+      "title": "Tarifs | Everstead pour les entreprises",
+      "description": "Deux offres pour les organisations, décidées lors d'un échange et facturées à l'année. Déposez des documents dans les coffres des personnes, demandez un justificatif à la fois, et ne conservez rien."
+    },
+    "hero": {
+      "eyebrow": "Tarifs",
+      "title": "Le tarif suit la taille de votre organisation, pas ce que vous envoyez.",
+      "sub": "Aucune des deux offres ne s'achète par carte. Nous définissons le palier avec vous lors d'un échange de vingt minutes, avec une facturation annuelle : aucun compteur à surveiller, aucune raison d'envoyer moins."
+    },
+    "exchange": {
+      "name": "Everstead pour les entreprises",
+      "who": "Employeurs, établissements, et tous ceux dont les documents doivent circuler dans les deux sens sans jamais être conservés.",
+      "features": [
+        "Déposer un document dans le coffre de la personne",
+        "Demander un seul justificatif, pour la durée que vous fixez",
+        "Une attestation horodatée pour chaque échange",
+        "Un historique unique de tout ce qui est envoyé et demandé, dans les deux sens",
+        "Voir ce que vous pouvez ouvrir à l'instant, et y mettre fin plus tôt",
+        "Un clic au départ d'une personne, avec une attestation que vous ne détenez rien"
+      ],
+      "note": "Échanges illimités, par palier selon la taille de votre organisation, facturés à l'année."
+    },
+    "pro": {
+      "name": "Everstead Pro",
+      "who": "Conseillers, notaires et avocats qui veulent la relation client, et pas seulement l'échange.",
+      "features": [
+        "Tout Everstead pour les entreprises",
+        "Espace multi-clients",
+        "Portail client à votre marque",
+        "Outils de collaboration",
+        "Support prioritaire"
+      ],
+      "note": "Tarif par famille cliente, comme une étude raisonne sur son portefeuille, en plus d'un abonnement."
+    },
+    "free": {
+      "title": "Diffuser l'offre famille est gratuit, et le restera.",
+      "body": "Chaque personne à qui vous envoyez un document reçoit son propre coffre sans frais, et le garde si elle vous quitte. Une organisation vérifiée peut envoyer quelques documents par mois sans rien payer, car quelqu'un qui ouvre un coffre vaut plus pour nous que la facturation de ce document."
+    },
+    "how": {
+      "eyebrow": "Comment cela se décide",
+      "title": "Trois étapes, sans parcours d'achat interminable.",
+      "steps": [
+        {
+          "title": "Vingt minutes",
+          "body": "Vous nous montrez ce qui circule aujourd'hui entre vous et vos publics. Nous vous disons quelle offre convient et à quel palier vous êtes."
+        },
+        {
+          "title": "Nous vérifions votre domaine",
+          "body": "Avant de pouvoir déposer quoi que ce soit dans le coffre de quelqu'un, nous vérifions que vous êtes bien qui vous dites. C'est toute la raison pour laquelle ce n'est pas un risque d'hameçonnage."
+        },
+        {
+          "title": "Une facture par an",
+          "body": "Pas de carte, pas de sièges à compter, pas de compteur. Si le palier ne convient plus, nous le changeons au renouvellement."
+        }
+      ]
+    },
+    "faq": {
+      "eyebrow": "Questions fréquentes",
+      "title": "Avant que vous ne posiez la question.",
+      "items": [
+        {
+          "q": "Pourquoi aucun tarif sur cette page ?",
+          "a": "Parce que nous préférons vous faire une proposition plutôt que de deviner. Nous accompagnons personnellement les premières organisations, et le palier dépend du nombre de personnes que vous touchez. Vous aurez un chiffre pendant l'échange, pas au terme d'un appel d'offres."
+        },
+        {
+          "q": "Facturez-vous au document ?",
+          "a": "Non, et nous ne le ferons pas. Un compteur vous pousse à envoyer moins, alors que chaque document accepté offre à quelqu'un un coffre qu'il garde. Nous vous facturerions ce qui nous rend service."
+        },
+        {
+          "q": "Facturez-vous au siège ?",
+          "a": "Non. Une équipe RH compte trois personnes que l'entreprise en emploie deux cents ou cinq mille : le siège ne mesure rien d'utile ici."
+        },
+        {
+          "q": "Que deviennent nos collaborateurs si nous arrêtons de payer ?",
+          "a": "Rien. Les documents n'ont jamais été ni les nôtres ni les vôtres, ils sont les leurs. Ils gardent leur coffre et tout ce qu'il contient. Vous perdez la possibilité d'envoyer et de demander."
+        },
+        {
+          "q": "Est-ce différent en France ?",
+          "a": "Les mêmes montants en euros. Nous ne sommes pas moins chers en France, et les coffres sont hébergés à Londres sous le UK GDPR dans les deux cas, ce que nous préférons dire d'emblée plutôt qu'à la fin d'un processus d'achat."
+        }
+      ]
+    },
+    "cta": {
+      "title": "Voyez-le avant d'en parler prix.",
+      "body": "Vingt minutes avec l'équipe fondatrice, sur vos propres documents.",
+      "button": "Réserver une démo",
+      "quiet": "Ou écrivez-nous"
     }
   }
 }

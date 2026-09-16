@@ -237,71 +237,24 @@ export default function Pricing() {
           })}
         </div>
 
-        {/* ── FOR ORGANISATIONS ──────────────────────────────────────────────
-            Two products, not one. Everstead for Business is the exchange, which
-            is what an employer or a care provider buys. Everstead Pro adds the
-            client workspace on top, which is what an adviser or a notaire buys.
-            No prices here on purpose: neither is bought with a card, both are
-            banded on a call, and a published table would commit us to a number
-            before the first negotiation. The cards say what you get and ask for
-            twenty minutes. */}
-        <div className="max-w-5xl mx-auto px-6 lg:px-8 mt-16">
-          <div className="reveal text-center mb-8">
-            <p className="text-xs font-semibold tracking-[.12em] uppercase text-stone-400 m-0">{t('business.eyebrow')}</p>
-            <h2 className="font-display text-2xl sm:text-3xl font-light text-navy-950 mt-2 mb-2">{t('business.title')}</h2>
-            <p className="text-stone-600 text-sm max-w-xl mx-auto m-0">{t('business.sub')}</p>
-          </div>
-
-          <div className="grid lg:grid-cols-2 gap-5 items-stretch">
-            {/* Everstead for Business: the exchange */}
-            <div className="reveal rounded-[2rem] border border-navy-200 bg-navy-950 text-white p-8 flex flex-col">
-              <p className="text-sm font-semibold text-sage-300 m-0">{t('business.exchange.name')}</p>
-              <p className="mt-2 text-stone-300 text-sm leading-relaxed m-0">{t('business.exchange.blurb')}</p>
-
-              <ul className="mt-6 space-y-2.5 list-none p-0 m-0">
-                {t('business.exchange.features', { returnObjects: true }).map((f, n) => (
-                  <li key={n} className="flex items-start gap-2.5 text-sm text-stone-200">
-                    <CheckCircle2 size={15} className="text-sage-400 mt-0.5 shrink-0" /> {f}
-                  </li>
-                ))}
-              </ul>
-
-              <p className="mt-6 text-xs text-stone-400 leading-relaxed m-0">{t('business.exchange.note')}</p>
-
-              <div className="mt-7 pt-1 flex flex-col sm:flex-row gap-3 mt-auto">
-                <Link to={`${urlPrefix}/business`} className="inline-flex items-center justify-center gap-2 rounded-full px-5 py-3 text-sm font-semibold border border-white/25 text-white hover:bg-white/10 transition-colors">
-                  {t('business.learnMore')}
-                </Link>
-                <Link to={`${urlPrefix}/book-demo`} className="btn-aurora inline-flex items-center justify-center gap-2 rounded-full px-5 py-3 text-sm font-semibold">
-                  {t('business.cta')} <ArrowRight size={15} />
-                </Link>
-              </div>
+        {/* ── NOT A FAMILY? ────────────────────────────────────────────────
+            Organisations used to get two full cards here, which made this page
+            longer and still answered neither audience properly. A family wants
+            a number and a free start; an organisation wants to know what it is
+            buying and who is liable for the data. So this is a doorway, and the
+            answers live on the business tree. */}
+        <div className="max-w-3xl mx-auto px-6 lg:px-8 mt-14">
+          <div className="reveal rounded-[2rem] border border-stone-200 bg-white p-7 sm:flex sm:items-center sm:justify-between gap-6">
+            <div>
+              <p className="flex items-center gap-2 text-sm font-semibold text-navy-900 m-0">
+                <Briefcase size={15} className="text-navy-600" /> {t('businessPointer.title')}
+              </p>
+              <p className="mt-1.5 text-stone-600 text-sm leading-relaxed m-0">{t('businessPointer.body')}</p>
             </div>
-
-            {/* Everstead Pro: the adviser and notaire workspace */}
-            <div className="reveal reveal-delay-1 rounded-[2rem] border border-stone-200 bg-white p-8 flex flex-col">
-              <p className="text-sm font-semibold text-navy-700 m-0">{t('plans.adviser.name')}</p>
-              <p className="mt-2 text-stone-600 text-sm leading-relaxed m-0">{t('business.pro.blurb')}</p>
-
-              <ul className="mt-6 space-y-2.5 list-none p-0 m-0">
-                {t('plans.adviser.features', { returnObjects: true }).map((f, n) => (
-                  <li key={n} className="flex items-start gap-2.5 text-sm text-stone-600">
-                    <CheckCircle2 size={15} className="text-sage-600 mt-0.5 shrink-0" /> {f}
-                  </li>
-                ))}
-              </ul>
-
-              <p className="mt-6 text-xs text-stone-400 leading-relaxed m-0">{t('business.pro.note')}</p>
-
-              <div className="mt-7 pt-1 flex flex-col sm:flex-row gap-3 mt-auto">
-                <Link to={`${urlPrefix}/business/advisers`} className="inline-flex items-center justify-center gap-2 rounded-full px-5 py-3 text-sm font-semibold border border-stone-200 text-navy-800 hover:bg-stone-50 transition-colors">
-                  {t('business.learnMore')}
-                </Link>
-                <Link to={`${urlPrefix}/book-demo`} className="inline-flex items-center justify-center gap-2 rounded-full px-5 py-3 text-sm font-semibold bg-navy-800 text-white hover:bg-navy-700 transition-colors">
-                  {t('business.cta')} <ArrowRight size={15} />
-                </Link>
-              </div>
-            </div>
+            <Link to={isFr ? '/entreprises/tarifs' : '/business/pricing'}
+              className="mt-4 sm:mt-0 inline-flex items-center justify-center gap-2 rounded-full px-5 py-3 text-sm font-semibold border border-stone-200 text-navy-800 hover:bg-stone-50 transition-colors whitespace-nowrap shrink-0">
+              {t('businessPointer.cta')} <ArrowRight size={15} />
+            </Link>
           </div>
         </div>
 

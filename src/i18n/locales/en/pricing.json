@@ -202,28 +202,9 @@
     "writeToUs": "Write to us",
     "replyTime": "and we'll reply within one business day."
   },
-  "business": {
-    "eyebrow": "For organisations",
-    "title": "Two products, depending on the relationship.",
-    "sub": "Neither is bought with a card. We band both to the size of your organisation on a twenty minute call, and invoice yearly.",
-    "learnMore": "Learn more",
-    "cta": "Book a demo",
-    "exchange": {
-      "name": "Everstead for Business",
-      "blurb": "For employers, care providers and anyone who needs documents to move in both directions without holding them.",
-      "features": [
-        "Send a document into someone's own vault",
-        "Ask for one item, for the number of days you choose",
-        "A timestamped attestation for every exchange",
-        "One history of everything sent and asked, both ways",
-        "See what you can open right now, and close any of it early",
-        "One click when someone leaves, with a statement that you hold nothing"
-      ],
-      "note": "Unlimited exchange, banded by the size of your organisation and invoiced yearly. A verified organisation can send a few documents a month at no cost, because every document accepted gives someone a free vault of their own."
-    },
-    "pro": {
-      "blurb": "For advisers, solicitors and notaires. Everything in Everstead for Business, plus the client workspace.",
-      "note": "Priced per client family, the way a firm thinks about its book, alongside a platform fee. We are working personally with the first firms, so both are set on the call."
-    }
+  "businessPointer": {
+    "title": "Are you a firm, an employer or a care provider?",
+    "body": "Everstead for Business is priced differently, because you are not buying a vault for yourself. You send documents into other people's, and hold none of it.",
+    "cta": "See business pricing"
   }
 }

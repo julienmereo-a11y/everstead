@@ -30,6 +30,7 @@ const EN_PAGES = [
   ['/business/solicitors', 'monthly', '0.8'],
   ['/business/care', 'monthly', '0.8'],
   ['/business/employers', 'monthly', '0.8'],
+  ['/business/pricing', 'monthly', '0.8'],
   ['/what-to-do-when-someone-dies', 'monthly', '0.8'],
   ['/book-demo', 'monthly', '0.7'],
   ['/resources', 'weekly', '0.7'],
@@ -128,6 +129,7 @@ const FR_ALIAS = {
   '/business/solicitors': '/entreprises/notaires',
   '/business/care': '/entreprises/etablissements',
   '/business/employers': '/entreprises/employeurs',
+  '/business/pricing': '/entreprises/tarifs',
 }
 for (const p of translatedPaths()) {
   if (FR_SKIP.has(p)) continue

@@ -49,7 +49,12 @@ export default function BusinessNav() {
     return () => { document.body.style.overflow = '' }
   }, [open])
 
-  const links = VERTICALS.map(v => ({ ...v, href: verticalPath(v, lang), label: t(`nav.verticals.${v.key}`) }))
+  // The four verticals, then pricing. Pricing is last because a visitor picks
+  // the page that describes them before the one that describes the invoice.
+  const links = [
+    ...VERTICALS.map(v => ({ ...v, href: verticalPath(v, lang), label: t(`nav.verticals.${v.key}`) })),
+    { key: 'pricing', href: lang === 'fr' ? '/entreprises/tarifs' : '/business/pricing', label: t('nav.pricing') },
+  ]
   const demo = () => trackEvent('cta_click', { location: 'business_nav', cta: 'book_demo' })
 
   return (

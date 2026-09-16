@@ -104,6 +104,7 @@ const PAGES = {
   '/business/solicitors': { ns: 'business', metaPath: 'verticals.solicitors.meta', frRoute: '/entreprises/notaires' },
   '/business/care': { ns: 'business', metaPath: 'verticals.care.meta', frRoute: '/entreprises/etablissements' },
   '/business/employers': { ns: 'business', metaPath: 'verticals.employers.meta', frRoute: '/entreprises/employeurs' },
+  '/business/pricing': { ns: 'business', metaPath: 'pricing.meta', frRoute: '/entreprises/tarifs' },
   '/will-generator': { ns: 'willGenerator', frRoute: '/preparer-mon-testament' },
 }
 let pagesWritten = 0

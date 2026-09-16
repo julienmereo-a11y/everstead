@@ -46,6 +46,7 @@ export const TRANSLATED_PATHS = new Set([
   '/emergency-pack', '/will-generator',
   // Everstead for Business. The French tree uses French slugs (FR_PATH_ALIASES).
   '/business', '/business/advisers', '/business/solicitors', '/business/care', '/business/employers',
+  '/business/pricing',
 ])
 
 /**
@@ -73,6 +74,7 @@ export const FR_PATH_ALIASES = {
   '/business/solicitors': '/entreprises/notaires',
   '/business/care': '/entreprises/etablissements',
   '/business/employers': '/entreprises/employeurs',
+  '/business/pricing': '/entreprises/tarifs',
 }
 const EN_PATH_ALIASES = Object.fromEntries(Object.entries(FR_PATH_ALIASES).map(([en, fr]) => [fr, en]))
 

@@ -202,28 +202,9 @@
     "writeToUs": "Écrivez-nous",
     "replyTime": "et nous vous répondrons sous un jour ouvré."
   },
-  "business": {
-    "eyebrow": "Pour les organisations",
-    "title": "Deux offres, selon la relation.",
-    "sub": "Ni l'une ni l'autre ne s'achète par carte. Nous les calibrons sur la taille de votre organisation lors d'un échange de vingt minutes, avec une facturation annuelle.",
-    "learnMore": "En savoir plus",
-    "cta": "Réserver une démo",
-    "exchange": {
-      "name": "Everstead pour les entreprises",
-      "blurb": "Pour les employeurs, les établissements et tous ceux dont les documents doivent circuler dans les deux sens sans jamais être conservés.",
-      "features": [
-        "Déposer un document dans le coffre de la personne",
-        "Demander un seul justificatif, pour la durée que vous fixez",
-        "Une attestation horodatée pour chaque échange",
-        "Un historique unique de tout ce qui est envoyé et demandé, dans les deux sens",
-        "Voir ce que vous pouvez ouvrir à l'instant, et y mettre fin plus tôt",
-        "Un clic au départ d'une personne, avec une attestation que vous ne détenez rien"
-      ],
-      "note": "Échanges illimités, par palier selon la taille de votre organisation, facturés à l'année. Une organisation vérifiée peut envoyer quelques documents par mois sans frais, car chaque document accepté offre à quelqu'un son propre coffre gratuit."
-    },
-    "pro": {
-      "blurb": "Pour les conseillers, les notaires et les avocats. Tout Everstead pour les entreprises, plus l'espace client.",
-      "note": "Tarif par famille cliente, comme une étude raisonne sur son portefeuille, en plus d'un abonnement. Nous accompagnons personnellement les premières études, les deux se fixent donc lors de l'échange."
-    }
+  "businessPointer": {
+    "title": "Vous êtes une étude, un employeur ou un établissement ?",
+    "body": "Everstead pour les entreprises se tarife autrement, car vous n'achetez pas un coffre pour vous. Vous déposez des documents dans celui des autres, sans rien conserver.",
+    "cta": "Voir les tarifs entreprises"
   }
 }

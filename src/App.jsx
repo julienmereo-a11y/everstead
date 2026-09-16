@@ -43,6 +43,7 @@ const DigitalEstateCalculator = lazy(() => import('./pages/DigitalEstateCalculat
 const EstateReadinessScore  = lazy(() => import('./pages/EstateReadinessScore'))
 const EmergencyPack         = lazy(() => import('./pages/EmergencyPack'))
 const Business              = lazy(() => import('./pages/Business'))
+const BusinessPricing       = lazy(() => import('./pages/BusinessPricing'))
 const BusinessVertical      = lazy(() => import('./pages/BusinessVertical'))
 const WillGenerator         = lazy(() => import('./pages/WillGenerator'))
 const NotFound              = lazy(() => import('./pages/NotFound'))
@@ -350,6 +351,9 @@ export default function App() {
               <Route path="/entreprises"   element={<BusinessLayout><Business /></BusinessLayout>} />
               <Route path="/business/advisers"            element={<BusinessLayout><ForAdvisors /></BusinessLayout>} />
               <Route path="/entreprises/conseillers"      element={<BusinessLayout><ForAdvisors /></BusinessLayout>} />
+              {/* Before the :slug catch-all, or the vertical page swallows it. */}
+              <Route path="/business/pricing"    element={<BusinessLayout><BusinessPricing /></BusinessLayout>} />
+              <Route path="/entreprises/tarifs"  element={<BusinessLayout><BusinessPricing /></BusinessLayout>} />
               <Route path="/business/:slug"      element={<BusinessLayout><BusinessVertical /></BusinessLayout>} />
               <Route path="/entreprises/:slug"   element={<BusinessLayout><BusinessVertical /></BusinessLayout>} />
               <Route path="/will-generator"         element={<Layout><WillGenerator /></Layout>} />

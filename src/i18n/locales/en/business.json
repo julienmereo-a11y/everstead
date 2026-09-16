@@ -12,7 +12,8 @@
       "solicitors": "Solicitors",
       "care": "Care providers",
       "employers": "Employers"
-    }
+    },
+    "pricing": "Pricing"
   },
   "hub": {
     "meta": {
@@ -459,6 +460,96 @@
       "finalSecondary": "Email hello@everstead.care",
       "backToHub": "All of Everstead for Business",
       "otherTitle": "Also in Everstead for Business"
+    }
+  },
+  "pricing": {
+    "meta": {
+      "title": "Pricing | Everstead for Business",
+      "description": "Two products for organisations, both sold on a call and invoiced yearly. Send documents into people's own vaults, ask for one item at a time, and hold none of it."
+    },
+    "hero": {
+      "eyebrow": "Pricing",
+      "title": "Priced on the size of your organisation, not on what you send.",
+      "sub": "Neither product is bought with a card. We work out the band with you on a twenty minute call and invoice yearly, so there is no meter to watch and no reason to send less."
+    },
+    "exchange": {
+      "name": "Everstead for Business",
+      "who": "Employers, care providers, and anyone who needs documents to move in both directions without holding them.",
+      "features": [
+        "Send a document into someone's own vault",
+        "Ask for one item, for the number of days you choose",
+        "A timestamped attestation for every exchange",
+        "One history of everything sent and asked, both ways",
+        "See what you can open right now, and close any of it early",
+        "One click when someone leaves, with a statement that you hold nothing"
+      ],
+      "note": "Unlimited exchange, banded by the size of your organisation, invoiced yearly."
+    },
+    "pro": {
+      "name": "Everstead Pro",
+      "who": "Advisers, solicitors and notaires who want the client relationship, not only the exchange.",
+      "features": [
+        "Everything in Everstead for Business",
+        "Multi-client workspace",
+        "Co-branded client portal",
+        "Adviser collaboration tools",
+        "Priority support"
+      ],
+      "note": "Priced per client family, the way a firm thinks about its book, alongside a platform fee."
+    },
+    "free": {
+      "title": "Handing out the family plan is free, and always will be.",
+      "body": "Every person you send a document to gets a vault of their own at no cost, and keeps it if they leave you. A verified organisation can send a few documents a month without paying anything, because someone starting a vault is worth more to us than the fee on that one document."
+    },
+    "how": {
+      "eyebrow": "How buying works",
+      "title": "Three steps, no procurement theatre.",
+      "steps": [
+        {
+          "title": "Twenty minutes",
+          "body": "You show us what moves between you and your people today. We tell you which product fits and what band you are in."
+        },
+        {
+          "title": "We verify your domain",
+          "body": "Before you can put anything in anyone's vault, we check you are who you say you are. That is the whole reason this is not a phishing risk."
+        },
+        {
+          "title": "One invoice a year",
+          "body": "No card, no seats to count, no meter. If the band stops fitting, we move it at renewal."
+        }
+      ]
+    },
+    "faq": {
+      "eyebrow": "Questions we get",
+      "title": "Before you ask.",
+      "items": [
+        {
+          "q": "Why is there no price on this page?",
+          "a": "Because we would rather quote you than guess. We are working personally with the first organisations, and the band depends on how many people you reach. You will have a number within the call, not after a procurement round."
+        },
+        {
+          "q": "Do you charge per document?",
+          "a": "No, and we will not. A meter makes you send fewer documents, and every document someone accepts gives them a vault they keep. We would be charging you to do the thing that helps us."
+        },
+        {
+          "q": "Do you charge per seat?",
+          "a": "No. An HR team is three people whether the company has two hundred staff or five thousand, so seats measure nothing useful here."
+        },
+        {
+          "q": "What happens to our people if we stop paying?",
+          "a": "Nothing. The documents were never ours or yours, they are theirs. They keep their vaults and everything in them. You lose the ability to send and to ask."
+        },
+        {
+          "q": "Is it different in France?",
+          "a": "The same figures in euros. We are not cheaper in France, and the vaults are in London under UK GDPR either way, which we would rather say up front than at the end of a procurement process."
+        }
+      ]
+    },
+    "cta": {
+      "title": "See it before you price it.",
+      "body": "Twenty minutes with the founding team, on your own documents.",
+      "button": "Book a demo",
+      "quiet": "Or write to us"
     }
   }
 }
