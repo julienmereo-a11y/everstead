@@ -402,6 +402,10 @@ export function useMessages() {
   const remove = async (id) => {
     const { supabase } = await import('../lib/supabase')
     const { data: { session } } = await supabase.auth.getSession()
+    // An expired session made session.user.id a TypeError, which surfaced as
+    // "could not delete, please try again" — advice that cannot work, for a
+    // problem that is actually "sign in again".
+    if (!session?.user?.id) throw new Error('Your session has expired. Please sign in again.')
     // user_id alongside the id, matching useTable: RLS already scopes this, but
     // an unscoped delete should not be one policy change away from working.
     const { error } = await supabase.from('messages').delete().eq('id', id).eq('user_id', session.user.id)

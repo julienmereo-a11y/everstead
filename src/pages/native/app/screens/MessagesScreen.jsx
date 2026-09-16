@@ -172,7 +172,11 @@ export default function MessagesScreen({ app }) {
   const timingOk = form.release_timing !== 'on_date' || !!form.release_at
   // An edit that leaves the type alone keeps the media already attached, so
   // only a new media message, or one changing type, has to carry a file.
-  const keepsMedia = !!editing && editing.type === msgType && !!(editing.media_url || editing.video_url)
+  // Demo rows carry no media_url, so without the app.demo arm a demo video
+  // message could never be edited at all: the sheet opened and the save button
+  // stayed dead. Live stays strict on purpose — a real media row with no URL is
+  // an upload that failed, and that one does need a file.
+  const keepsMedia = !!editing && editing.type === msgType && (app.demo || !!(editing.media_url || editing.video_url))
   const canSubmit = recipientOk && form.title.trim() && (!isMedia || mediaFile || keepsMedia) && timingOk && !busy
 
   const resetSheet = () => {
@@ -238,8 +242,11 @@ export default function MessagesScreen({ app }) {
     setBusy(true)
     try {
       // Demo can't store media — fail BEFORE creating the row, or every retry
-      // appends a phantom media-less message to the demo list.
-      if (isMedia && !uploadMedia) throw new Error('demo')
+      // appends a phantom media-less message to the demo list. But only when an
+      // upload is actually needed: editing the title of a photo message keeps
+      // the picture it already has, and used to be refused for wanting one.
+      const needsUpload = isMedia && (!!mediaFile || !keepsMedia)
+      if (needsUpload && !uploadMedia) throw new Error('demo')
       // Payload mirrors the web composer (Dashboard.jsx MessagesSection).
       const payload = {
         recipient_name:  isEmail ? (form.recipient_name.trim() || form.recipient_email.trim()) : form.recipient_name,

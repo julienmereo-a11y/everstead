@@ -598,7 +598,11 @@
     "exportSend": "Email me my data",
     "exportPreparing": "Preparing your archive…",
     "exportSent": "Sent to {{email}}. It can take a minute to arrive.",
-    "exportFailed": "Could not prepare your export. Please try again."
+    "exportFailed": "Could not prepare your export. Please try again.",
+    "addrLoadFailed": "We could not read your addresses just now.",
+    "addrRetry": "Try again",
+    "addrConfirmRemove": "Remove {{email}}? Anything sent to that address will stop reaching this account. You can confirm it again later.",
+    "addrConfirmRemoveYes": "Yes, remove it"
   },
   "aboutMe": {
     "title": "About Me",

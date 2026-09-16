@@ -70,6 +70,8 @@ export default function SettingsScreen({ app }) {
   const [addrBusy, setAddrBusy] = useState(false)
   const [addrError, setAddrError] = useState(null)
   const [exporting, setExporting] = useState(false)
+  const [addrLoadError, setAddrLoadError] = useState(false)
+  const [addrConfirmRemove, setAddrConfirmRemove] = useState(null)
   const [aiOn, setAiOn] = useState(true)
   const [lock, setLock] = useState({ hasPin: false, biometric: false })
   // Friends who joined through the referral link. Demo shows a canned number;
@@ -206,10 +208,15 @@ export default function SettingsScreen({ app }) {
 
   const loadAddrs = useCallback(async () => {
     if (app.demo) { setAddrs(DEMO_ADDRS); setAddrLoading(false); return }
+    // get_my_emails always returns at least the sign-in address, so an empty
+    // result is not "no addresses", it is a failed read. Showing it as an empty
+    // list told the member their account holds nothing, which is untrue and
+    // alarming on the one screen about who they are.
     try {
-      const { data } = await supabase.rpc('get_my_emails')
+      const { data, error } = await supabase.rpc('get_my_emails')
+      setAddrLoadError(!!error || !data?.length)
       setAddrs(data || [])
-    } catch { /* leave the list as it was; the card just shows what it has */ }
+    } catch { setAddrLoadError(true) }
     setAddrLoading(false)
   }, [app.demo, profile?.email])
   useEffect(() => { loadAddrs() }, [loadAddrs])
@@ -290,6 +297,13 @@ export default function SettingsScreen({ app }) {
         <p className="rdet" style={{ margin: '0 0 12px' }}>{t('settings.addressesIntro')}</p>
         {addrLoading ? (
           <Busy />
+        ) : addrLoadError ? (
+          <div className="fx jb ac">
+            <div className="f1"><div className="rdet">{t('settings.addrLoadFailed')}</div></div>
+            <button className="btn btn-sm" style={{ background: '#fff', color: 'var(--color-navy-800)', border: '1px solid var(--color-stone-200)', flex: 'none' }} onClick={() => { setAddrLoadError(false); setAddrLoading(true); loadAddrs() }}>
+              {t('settings.addrRetry')}
+            </button>
+          </div>
         ) : (
           addrs.map((r, i) => (
             <div key={r.email} className={`fx jb ac ${i ? 'bt' : ''}`} style={i ? { paddingTop: 12, marginTop: 12 } : undefined}>
@@ -301,7 +315,7 @@ export default function SettingsScreen({ app }) {
                 <button
                   className="btn btn-sm"
                   style={{ background: '#fff', color: '#b91c1c', border: '1px solid #fecaca', flex: 'none' }}
-                  onClick={() => removeAddr(r.email)}
+                  onClick={() => { haptic.warning(); setAddrConfirmRemove(r.email) }}
                 >
                   {t('settings.addrRemove')}
                 </button>
@@ -310,7 +324,21 @@ export default function SettingsScreen({ app }) {
           ))
         )}
 
-        {addrStage === 'idle' && (
+        {addrConfirmRemove && (
+          <div style={{ marginTop: 14, padding: 12, background: '#fffbeb', border: '1px solid #fde68a', borderRadius: 12 }}>
+            <p className="rdet" style={{ margin: 0, color: '#92400e' }}>{t('settings.addrConfirmRemove', { email: addrConfirmRemove })}</p>
+            <div className="fx" style={{ gap: 8, marginTop: 10 }}>
+              <button className="btn btn-sm f1" style={{ background: '#b91c1c' }} onClick={() => { const e = addrConfirmRemove; setAddrConfirmRemove(null); removeAddr(e) }}>
+                {t('settings.addrConfirmRemoveYes')}
+              </button>
+              <button className="btn btn-sm f1" style={{ background: '#fff', color: 'var(--color-navy-800)', border: '1px solid var(--color-stone-200)' }} onClick={() => setAddrConfirmRemove(null)}>
+                {t('common.cancel')}
+              </button>
+            </div>
+          </div>
+        )}
+
+        {addrStage === 'idle' && !addrConfirmRemove && (
           <button className="btn w100" style={{ marginTop: 14, background: '#fff', color: 'var(--color-navy-800)', border: '1px solid var(--color-stone-200)' }} onClick={() => { setAddrError(null); setAddrStage('typing') }}>
             {t('settings.addrAdd')}
           </button>

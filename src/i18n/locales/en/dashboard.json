@@ -1326,7 +1326,11 @@
       "confirm": "Confirm",
       "cancel": "Cancel",
       "added": "Address confirmed. Anything sent there now reaches this account.",
-      "alreadyYours": "That is already the address you sign in with."
+      "alreadyYours": "That is already the address you sign in with.",
+      "loadFailed": "We could not read your addresses just now.",
+      "retry": "Try again",
+      "confirmRemove": "Remove {{email}}? Anything an organisation sends to that address will stop reaching this account. You can confirm it again later.",
+      "confirmRemoveYes": "Yes, remove it"
     }
   },
   "modals": {

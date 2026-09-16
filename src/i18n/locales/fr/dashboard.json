@@ -1328,7 +1328,11 @@
       "confirm": "Confirmer",
       "cancel": "Annuler",
       "added": "Adresse confirmée. Ce qui y est envoyé parvient désormais à ce compte.",
-      "alreadyYours": "C'est déjà votre adresse de connexion."
+      "alreadyYours": "C'est déjà votre adresse de connexion.",
+      "loadFailed": "Nous n'avons pas pu lire vos adresses à l'instant.",
+      "retry": "Réessayer",
+      "confirmRemove": "Retirer {{email}} ? Ce qu'un organisme enverra à cette adresse n'arrivera plus sur ce compte. Vous pourrez la confirmer à nouveau plus tard.",
+      "confirmRemoveYes": "Oui, retirer"
     }
   },
   "modals": {

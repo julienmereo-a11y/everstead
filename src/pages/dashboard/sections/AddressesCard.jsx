@@ -24,6 +24,7 @@ export function AddressesCard({ isDemo }) {
   const { t } = useTranslation('dashboard')
   const [rows, setRows] = useState(isDemo ? DEMO : [])
   const [loading, setLoading] = useState(!isDemo)
+  const [loadError, setLoadError] = useState(false)
   const [adding, setAdding] = useState(false)
   const [email, setEmail] = useState('')
   const [code, setCode] = useState('')
@@ -31,10 +32,16 @@ export function AddressesCard({ isDemo }) {
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState(null)
   const [note, setNote] = useState(null)
+  const [confirmRemove, setConfirmRemove] = useState(null)
 
   const load = useCallback(async () => {
     if (isDemo) { setRows(DEMO); setLoading(false); return }
-    const { data } = await supabase.rpc('get_my_emails')
+    // get_my_emails always returns at least the sign-in address, so an empty
+    // result is not "no addresses", it is a failed read. Rendering it as an
+    // empty list told the member their account holds nothing, which is both
+    // untrue and alarming on the one screen about who they are.
+    const { data, error: readErr } = await supabase.rpc('get_my_emails')
+    setLoadError(!!readErr || !data?.length)
     setRows(data || [])
     setLoading(false)
   }, [isDemo])
@@ -82,6 +89,13 @@ export function AddressesCard({ isDemo }) {
 
       {loading ? (
         <Loader2 size={16} className="animate-spin text-stone-300" />
+      ) : loadError ? (
+        <div className="flex items-center justify-between gap-3 rounded-xl border border-stone-200 px-4 py-3">
+          <p className="text-sm text-stone-600 m-0">{t('settings.addresses.loadFailed')}</p>
+          <button onClick={load} className="text-sm font-semibold text-navy-800 hover:underline shrink-0">
+            {t('settings.addresses.retry')}
+          </button>
+        </div>
       ) : (
         <ul className="space-y-2 m-0 p-0 list-none">
           {rows.map(r => (
@@ -96,7 +110,7 @@ export function AddressesCard({ isDemo }) {
                 </span>
               </span>
               {!r.is_primary && (
-                <button onClick={() => remove(r.email)} disabled={isDemo}
+                <button onClick={() => setConfirmRemove(r.email)} disabled={isDemo}
                   className="text-stone-400 hover:text-red-600 transition-colors disabled:opacity-40"
                   aria-label={t('settings.addresses.remove')}>
                   <Trash2 size={14} />
@@ -105,6 +119,25 @@ export function AddressesCard({ isDemo }) {
             </li>
           ))}
         </ul>
+      )}
+
+      {confirmRemove && (
+        <div className="mt-4 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3">
+          <p className="text-sm text-amber-900 m-0">
+            {t('settings.addresses.confirmRemove', { email: confirmRemove })}
+          </p>
+          <div className="mt-3 flex gap-2">
+            <button
+              onClick={async () => { const e = confirmRemove; setConfirmRemove(null); await remove(e) }}
+              className="text-sm font-semibold text-white bg-red-600 px-3.5 py-1.5 rounded-full hover:bg-red-700 transition-colors"
+            >
+              {t('settings.addresses.confirmRemoveYes')}
+            </button>
+            <button onClick={() => setConfirmRemove(null)} className={secondaryBtn}>
+              {t('settings.addresses.cancel')}
+            </button>
+          </div>
+        </div>
       )}
 
       {note && <p className="text-sm text-sage-700 mt-4 m-0">{note}</p>}
