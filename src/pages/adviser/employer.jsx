@@ -47,7 +47,7 @@ export function EmployerOverview({ firm, advisor, go, isDemo }) {
   const stats = [
     { label: 'People reached', value: s.people, hint: 'employees who have been sent or asked for something' },
     { label: 'Documents sent', value: s.sent, hint: `${s.thisMonth} this month` },
-    { label: 'Landed', value: s.sent ? `${rate}%` : '—', hint: `${s.landed} kept or downloaded, ${s.waiting} still waiting` },
+    { label: 'Landed', value: s.sent ? `${rate}%` : '—', hint: `${s.landed} received, ${s.waiting} still waiting` },
     { label: 'Open requests', value: s.openAsks, hint: `${s.answered} of ${s.asked} answered` },
   ]
 
@@ -88,8 +88,8 @@ export function EmployerOverview({ firm, advisor, go, isDemo }) {
         <ShieldCheck size={18} className="text-sage-600 shrink-0 mt-0.5" />
         <p className="text-sm leading-relaxed text-stone-600 m-0">
           These are counts, and counts are all you get. {firm?.firm_name || 'Your organisation'} cannot see what is in anyone's
-          vault, or which individual did what. A document you sent belongs to the person who accepted it, including after
-          they leave you.
+          vault, and is never told who keeps one. You see your own correspondence: what you sent, what you asked for, and
+          whether it was answered. A document you sent belongs to the person who received it, including after they leave you.
         </p>
       </div>
     </div>

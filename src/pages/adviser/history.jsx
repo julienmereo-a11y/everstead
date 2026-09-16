@@ -14,14 +14,17 @@ import { ReceiptButton } from './receipt'
 
 const STATUS = {
   waiting:   { label: 'Waiting',   cls: 'bg-amber-50 text-amber-800 border-amber-200',   Icon: Clock },
-  accepted:  { label: 'In their vault', cls: 'bg-sage-50 text-sage-700 border-sage-200', Icon: CheckCircle2 },
-  downloaded:{ label: 'Downloaded', cls: 'bg-sage-50 text-sage-700 border-sage-200',     Icon: CheckCircle2 },
+  // Received, not HOW. Whether someone kept it in an Everstead vault or took a
+  // copy and left tells you whether they have an account, and the employers
+  // page promises an organisation learns how many people started and nothing
+  // else. Delivery is what a sender legitimately needs to know.
+  received:  { label: 'Received',  cls: 'bg-sage-50 text-sage-700 border-sage-200',      Icon: CheckCircle2 },
   shared:    { label: 'Shared with you', cls: 'bg-sage-50 text-sage-700 border-sage-200', Icon: CheckCircle2 },
   declined:  { label: 'Declined',  cls: 'bg-stone-100 text-stone-600 border-stone-200',  Icon: Ban },
   expired:   { label: 'Expired',   cls: 'bg-stone-100 text-stone-500 border-stone-200',  Icon: Clock },
 }
 
-const DELIVERY_STATUS = { sent: 'waiting', accepted: 'accepted', downloaded: 'downloaded', declined: 'declined', expired: 'expired' }
+const DELIVERY_STATUS = { sent: 'waiting', accepted: 'received', downloaded: 'received', declined: 'declined', expired: 'expired' }
 const REQUEST_STATUS  = { requested: 'waiting', uploaded: 'shared', reviewed: 'shared', stored: 'shared', cancelled: 'declined' }
 
 const fmt = (iso) => { try { return new Date(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) } catch { return '' } }
@@ -30,9 +33,9 @@ const fmt = (iso) => { try { return new Date(iso).toLocaleDateString('en-GB', { 
 // them reads as broken. These cover every status the table can show, including
 // the ones that are not wins.
 const DEMO_ROWS = [
-  { key: 'd1', kind: 'delivery', direction: 'out', person: 'aisha.mensah@marlowfinch.example', what: 'Employment contract, 2026 revision', at: '2026-09-15T08:15:00Z', answeredAt: '2026-09-15T09:41:00Z', status: 'accepted' },
+  { key: 'd1', kind: 'delivery', direction: 'out', person: 'aisha.mensah@marlowfinch.example', what: 'Employment contract, 2026 revision', at: '2026-09-15T08:15:00Z', answeredAt: '2026-09-15T09:41:00Z', status: 'received' },
   { key: 'r1', kind: 'share',    direction: 'in',  person: 'tom.baptiste@marlowfinch.example', what: 'Proof of address',                 at: '2026-09-14T10:00:00Z', answeredAt: '2026-09-14T16:22:00Z', status: 'shared' },
-  { key: 'd2', kind: 'delivery', direction: 'out', person: 'greg.oyelaran@marlowfinch.example', what: 'Pension scheme summary',          at: '2026-09-12T11:30:00Z', answeredAt: '2026-09-12T12:02:00Z', status: 'downloaded' },
+  { key: 'd2', kind: 'delivery', direction: 'out', person: 'greg.oyelaran@marlowfinch.example', what: 'Pension scheme summary',          at: '2026-09-12T11:30:00Z', answeredAt: '2026-09-12T12:02:00Z', status: 'received' },
   { key: 'r2', kind: 'share',    direction: 'in',  person: 'nina.kovacs@marlowfinch.example',  what: 'Right to work document',           at: '2026-09-11T09:05:00Z', answeredAt: null,                   status: 'waiting' },
   { key: 'd3', kind: 'delivery', direction: 'out', person: 'sam.devlin@marlowfinch.example',   what: 'Letter of engagement',             at: '2026-09-09T14:45:00Z', answeredAt: null,                   status: 'waiting' },
   { key: 'r3', kind: 'share',    direction: 'in',  person: 'priya.raman@marlowfinch.example',  what: 'Bank details',                     at: '2026-09-04T08:20:00Z', answeredAt: '2026-09-04T09:10:00Z', status: 'declined' },
@@ -155,7 +158,7 @@ export function HistoryPanel({ firm, isDemo }) {
         </div>
       )}
       <p className="mt-3 text-xs text-stone-400">
-        "In their vault" means they kept it. "Downloaded" means they took it without opening an account. Both are finished.
+"Received" means it reached them and they answered. Everstead does not tell you whether someone keeps a vault of their own; that is between them and us.
       </p>
     </div>
   )

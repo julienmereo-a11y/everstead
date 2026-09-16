@@ -18,6 +18,7 @@ import { AdviserAssistant, InviteFamilyModal, initialOf } from './adviser/shared
 import { AlertsScreen, ClientDetailScreen, ClientsScreen, GuidesScreen, OverviewScreen, SettingsScreen, deriveOverview } from './adviser/screens'
 import { ExchangeScreen } from './adviser/exchange'
 import { EmployerOverview } from './adviser/employer'
+import { PeopleScreen } from './adviser/people'
 import { MattersScreen, ReviewQueueScreen } from './adviser/solicitor'
 
 const roleFromType = (t) => (t === 'solicitor' || t === 'notaire') ? 'solicitor' : 'adviser'
@@ -134,12 +135,12 @@ export default function AdvisorPortal() {
   // than not showing them.
   const isEmployer = firm?.org_kind === 'employer'
   const nav = isEmployer
-    ? [['overview', 'Overview', LayoutDashboard], ['send', 'Documents', Send], ['settings', 'Settings', Settings]]
+    ? [['overview', 'Overview', LayoutDashboard], ['people', 'People', Users], ['send', 'Documents', Send], ['settings', 'Settings', Settings]]
     : role === 'solicitor'
     ? [['overview', 'Overview', LayoutDashboard], ['clients', 'Clients', Users], ['send', 'Documents', Send], ['review', 'Review queue', FileText, overview.awaiting, 'sage'], ['matters', 'Matters', Scale], ['alerts', 'Alerts', Bell, overview.unread.length, 'red'], ['guides', 'Guides', BookOpen], ['settings', 'Settings', Settings]]
     : [['overview', 'Overview', LayoutDashboard], ['clients', 'Clients', Users], ['send', 'Documents', Send], ['alerts', 'Alerts', Bell, overview.unread.length, 'red'], ['guides', 'Guides', BookOpen], ['settings', 'Settings', Settings]]
   useEffect(() => { if (role !== 'solicitor' && (tab === 'review' || tab === 'matters')) setTab('overview') }, [role, tab])
-  useEffect(() => { if (isEmployer && !['overview', 'send', 'settings'].includes(tab)) setTab('overview') }, [isEmployer, tab])
+  useEffect(() => { if (isEmployer && !['overview', 'people', 'send', 'settings'].includes(tab)) setTab('overview') }, [isEmployer, tab])
 
   // ── Writes ───────────────────────────────────────────────────
   const patchFamily = (id, patch) => (isDemo ? setDemoFamilies : setRealFamilies)(fs => fs.map(f => f.id === id ? { ...f, ...patch } : f))
@@ -273,6 +274,7 @@ export default function AdvisorPortal() {
         )}
         {tab === 'review'   && role === 'solicitor' && <ReviewQueueScreen families={families} workspace={workspace} requestOpen={requestOpen} setRequestOpen={setRequestOpen} requestBusy={requestBusy} requestError={requestError} onCreateRequest={createRequest} onRemind={remindRequest} onRequestStatus={setRequestStatus} onSetReview={setReview} openClient={openClient} isDemo={isDemo} />}
         {tab === 'matters'  && role === 'solicitor' && <MattersScreen families={families} workspace={workspace} onSaveMatter={saveMatter} onDeleteMatter={deleteMatter} busy={matterBusy} isDemo={isDemo} />}
+        {tab === 'people'   && isEmployer && <PeopleScreen firm={firm} isDemo={isDemo} go={go} />}
         {tab === 'send'     && <ExchangeScreen firm={firm} isDemo={isDemo} />}
         {tab === 'alerts'   && <AlertsScreen families={families} readIds={readIds} markRead={markRead} markAllRead={markAllRead} openClient={openClient} />}
         {tab === 'guides'   && <GuidesScreen role={role} />}

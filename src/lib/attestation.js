@@ -24,9 +24,12 @@ const stamp = (iso) => {
   return `${d.toISOString().slice(0, 10)} at ${d.toISOString().slice(11, 19)} UTC`
 }
 
+// "Received", never how. Distinguishing a vault from a download would tell the
+// sender whether the recipient holds an Everstead account, which is not theirs
+// to learn. Delivery is what an attestation needs to establish.
 const OUTCOME = {
-  accepted:   'Accepted into the recipient\'s own Everstead vault',
-  downloaded: 'Downloaded by the recipient, after confirming a one-time code',
+  accepted:   'Received by the recipient',
+  downloaded: 'Received by the recipient',
   declined:   'Declined by the recipient; the file was deleted',
   expired:    'Expired without an answer; the file was deleted',
   sent:       'Sent, not yet answered',
