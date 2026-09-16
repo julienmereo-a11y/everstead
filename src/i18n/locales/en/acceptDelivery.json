@@ -4,15 +4,31 @@
   "anOrganisation": "an organisation",
   "title": "A document is waiting for you.",
   "signedIn": "Accept it and it goes into your own vault. It stays yours, including if you later leave the organisation that sent it.",
-  "signedOut": "Open a free Everstead account with the address this was sent to, and it will be waiting for you. No card, and you can delete everything at any time.",
-  "createAccount": "Open a free account",
-  "logIn": "I already have an account",
   "accept": "Accept into my vault",
   "decline": "Decline",
   "expired": "This one has expired or has already been answered. Ask whoever sent it to send it again.",
-  "safety": "Everstead never attaches a file to an email, and this page never opens one. Nothing enters your vault until you accept it. If you were not expecting this, decline it and tell us at hello@everstead.care.",
+  "safety": "Everstead never attaches a file to an email, and this page never opens one until you have confirmed a code. If you were not expecting this, decline it and tell us at hello@everstead.care.",
   "footer": "Everstead, the place your family can find everything.",
   "error": "Something went wrong. Please try again.",
+  "code": {
+    "intro": "Before anything opens, we will send a six-digit code to {{hint}}, the address this was sent to. Having the link is not enough on its own.",
+    "send": "Email me a code",
+    "sent": "We have sent a code to {{hint}}. It expires in ten minutes.",
+    "label": "Six-digit code",
+    "verify": "Confirm",
+    "resend": "Send another"
+  },
+  "ready": {
+    "lead": "Confirmed. You can take the document now, or keep it somewhere it will still be there in ten years.",
+    "download": "Download it now",
+    "keep": "Keep it in a free vault",
+    "note": "Downloading is a perfectly good answer. A free vault just means you still have it when the laptop dies, and you can share it with whoever needs it next."
+  },
+  "downloaded": {
+    "title": "Downloaded.",
+    "body": "It is yours. Nothing was stored with Everstead, and the sender can see only that it arrived.",
+    "cta": "Keep the next one in a free vault"
+  },
   "accepted": {
     "title": "It is in your vault.",
     "body": "You own this document now. Taking you to your documents.",

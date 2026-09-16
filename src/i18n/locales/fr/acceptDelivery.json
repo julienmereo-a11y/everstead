@@ -6,15 +6,31 @@
   "anOrganisation": "une organisation",
   "title": "Un document vous attend.",
   "signedIn": "En l'acceptant, il rejoint votre propre coffre. Il reste le vôtre, y compris si vous quittez plus tard l'organisation qui vous l'a envoyé.",
-  "signedOut": "Ouvrez un compte Everstead gratuit avec l'adresse à laquelle cet envoi a été fait, et le document vous y attendra. Sans carte bancaire, et vous pouvez tout supprimer à tout moment.",
-  "createAccount": "Ouvrir un compte gratuit",
-  "logIn": "J'ai déjà un compte",
   "accept": "Accepter dans mon coffre",
   "decline": "Refuser",
   "expired": "Cet envoi a expiré ou a déjà reçu une réponse. Demandez à son expéditeur de le renvoyer.",
-  "safety": "Everstead ne joint jamais de fichier à un e-mail, et cette page n'en ouvre aucun. Rien n'entre dans votre coffre tant que vous ne l'avez pas accepté. Si vous n'attendiez pas cet envoi, refusez-le et écrivez-nous à hello@everstead.care.",
+  "safety": "Everstead ne joint jamais de fichier à un e-mail, et cette page n'en ouvre aucun tant que vous n'avez pas confirmé un code. Si vous n'attendiez pas cet envoi, refusez-le et écrivez-nous à hello@everstead.care.",
   "footer": "Everstead, l'endroit où votre famille retrouve tout.",
   "error": "Une erreur est survenue. Merci de réessayer.",
+  "code": {
+    "intro": "Avant toute ouverture, nous envoyons un code à six chiffres à {{hint}}, l'adresse à laquelle cet envoi a été fait. Le lien seul ne suffit pas.",
+    "send": "Recevoir un code par e-mail",
+    "sent": "Nous avons envoyé un code à {{hint}}. Il expire dans dix minutes.",
+    "label": "Code à six chiffres",
+    "verify": "Confirmer",
+    "resend": "En renvoyer un"
+  },
+  "ready": {
+    "lead": "Confirmé. Vous pouvez récupérer le document maintenant, ou le conserver là où il sera encore dans dix ans.",
+    "download": "Télécharger maintenant",
+    "keep": "Le garder dans un coffre gratuit",
+    "note": "Télécharger est une réponse parfaitement valable. Un coffre gratuit sert simplement à l'avoir encore le jour où l'ordinateur rend l'âme, et à le partager avec qui en aura besoin ensuite."
+  },
+  "downloaded": {
+    "title": "Téléchargé.",
+    "body": "Il est à vous. Rien n'a été conservé chez Everstead, et l'expéditeur voit seulement qu'il est bien arrivé.",
+    "cta": "Garder le prochain dans un coffre gratuit"
+  },
   "accepted": {
     "title": "Il est dans votre coffre.",
     "body": "Ce document vous appartient désormais. Redirection vers vos documents.",

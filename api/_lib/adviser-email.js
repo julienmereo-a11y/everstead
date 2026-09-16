@@ -414,3 +414,48 @@ export async function sendOrgRequestEmail({ to, lang = 'en', firmName, docType, 
     return false
   }
 }
+
+// ── One-time code for a delivery claim ──────────────────────────────────────
+// The link alone used to be the whole capability. This is the second factor,
+// and it only ever goes to the address the organisation addressed the delivery
+// to, so forwarding the link does not carry the code with it.
+const CLAIM_CODE_COPY = {
+  en: {
+    subject:  'Your Everstead code: {{code}}',
+    preheader:'It expires in ten minutes.',
+    title:    'Your one-time code',
+    lead:     'Enter this code on the Everstead page to open what {{firm}} sent you. It expires in ten minutes.',
+    safety:   'If you did not ask for this code, you can ignore this email. Nothing has been opened, and nobody can use the link without the code. Tell us at hello@everstead.care if it keeps arriving.',
+  },
+  fr: {
+    subject:  'Votre code Everstead : {{code}}',
+    preheader:'Il expire dans dix minutes.',
+    title:    'Votre code à usage unique',
+    lead:     "Saisissez ce code sur la page Everstead pour ouvrir ce que {{firm}} vous a envoyé. Il expire dans dix minutes.",
+    safety:   "Si vous n'avez pas demandé ce code, vous pouvez ignorer cet e-mail. Rien n'a été ouvert, et personne ne peut utiliser le lien sans le code. Écrivez-nous à hello@everstead.care s'il continue d'arriver.",
+  },
+}
+
+export async function sendClaimCodeEmail({ to, lang = 'en', firmName, code }) {
+  if (!to || !code) return false
+  const L = lang === 'fr' ? 'fr' : 'en'
+  const C = CLAIM_CODE_COPY[L]
+  const vars = { firm: esc(firmName || (L === 'fr' ? 'une organisation' : 'an organisation')) }
+  const inner = `
+    <h1 style="margin:0 0 16px;color:#0d1628;font-size:24px;font-weight:normal;">${C.title}</h1>
+    <p style="margin:0 0 20px;color:#4a5568;font-size:16px;line-height:1.6;">${fill(C.lead, vars)}</p>
+    <p style="margin:0 0 22px;padding:18px 24px;border-radius:12px;background:#f0f3f9;color:#0d1628;font-size:34px;font-weight:700;letter-spacing:.24em;text-align:center;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;">${esc(code)}</p>
+    <p style="margin:0;color:#9ca3af;font-size:13px;line-height:1.6;">${C.safety}</p>`
+  try {
+    await sendEmail(resend, {
+      from: FROM, to,
+      subject: fill(C.subject, { code }),
+      html: shell(inner),
+      preheader: C.preheader,
+    })
+    return true
+  } catch (err) {
+    console.error('[adviser-email] claim code failed:', err?.message)
+    return false
+  }
+}

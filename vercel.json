@@ -118,6 +118,10 @@
     {
       "path": "/api/cron/send-scheduled-broadcasts",
       "schedule": "*/10 * * * *"
+    },
+    {
+      "path": "/api/cron/delivery-cleanup",
+      "schedule": "30 3 * * *"
     }
   ]
 }
