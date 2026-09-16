@@ -21,11 +21,16 @@ if (!i18n.hasResourceBundle('en', 'business')) {
 
 export const HUB = { en: '/business', fr: '/entreprises' }
 
+// `image` is the basename in /public: <name>.jpg full width, <name>-mobile.jpg
+// the lighter copy phones get. One felt world across the set, a different
+// object per vertical, so the pages read as a family rather than four stock
+// pictures. The adviser page carries its own (bottom-weighted, because its
+// headline is centred) inside ForAdvisors.
 export const VERTICALS = [
-  { key: 'advisers',   en: '/business/advisers',   fr: '/entreprises/conseillers',    icon: Briefcase,     template: false },
-  { key: 'solicitors', en: '/business/solicitors', fr: '/entreprises/notaires',       icon: Scale,         template: true  },
-  { key: 'care',       en: '/business/care',       fr: '/entreprises/etablissements', icon: HeartHandshake, template: true },
-  { key: 'employers',  en: '/business/employers',  fr: '/entreprises/employeurs',     icon: Building2,     template: true  },
+  { key: 'advisers',   en: '/business/advisers',   fr: '/entreprises/conseillers',    icon: Briefcase,      template: false, image: 'hero-felt-advisers' },
+  { key: 'solicitors', en: '/business/solicitors', fr: '/entreprises/notaires',       icon: Scale,          template: true,  image: 'hero-felt-solicitors' },
+  { key: 'care',       en: '/business/care',       fr: '/entreprises/etablissements', icon: HeartHandshake, template: true,  image: 'hero-felt-care' },
+  { key: 'employers',  en: '/business/employers',  fr: '/entreprises/employeurs',     icon: Building2,      template: true,  image: 'hero-felt-employers' },
 ]
 
 export const hubPath = (lang) => (lang === 'fr' ? HUB.fr : HUB.en)

@@ -71,12 +71,44 @@ export default function BusinessVertical() {
       <HreflangLinks path={vertical.en} frPath={vertical.fr} />
 
       <div className="bg-stone-50">
-        {/* ── HERO ── */}
-        <section className="relative overflow-hidden grain">
+        {/* ── HERO ──
+            Same treatment as the business hub, and for the same reasons: the
+            picture lies ON TOP of the aurora so a missing file degrades to the
+            gradient, full bleed only from lg up, and phones get the whole
+            composition as a band along the bottom rather than a crop that would
+            cut the object the page is about. See Business.jsx. */}
+        <section className="relative overflow-hidden grain bg-navy-950">
           <div className="absolute inset-0 aurora-bg" />
-          <div className={`relative max-w-[1200px] mx-auto ${SECTION_X} pt-36 pb-20 lg:pt-44 lg:pb-28`}>
+          <img
+            src={`/${vertical.image}.jpg`}
+            alt=""
+            aria-hidden="true"
+            fetchPriority="high"
+            className="hidden lg:block absolute inset-0 w-full h-full object-cover"
+            style={{ objectPosition: '15% 42%' }}
+          />
+          <div
+            className="hidden lg:block absolute inset-0 pointer-events-none"
+            style={{ background: 'linear-gradient(90deg, rgba(13,22,40,0.95) 0%, rgba(13,22,40,0.88) 32%, rgba(13,22,40,0.42) 60%, rgba(13,22,40,0.05) 100%)' }}
+          />
+          <img
+            src={`/${vertical.image}-mobile.jpg`}
+            srcSet={`/${vertical.image}-mobile.jpg 820w, /${vertical.image}.jpg 1672w`}
+            sizes="100vw"
+            alt=""
+            aria-hidden="true"
+            fetchPriority="high"
+            className="lg:hidden absolute bottom-0 left-0 w-full h-auto"
+          />
+          <div
+            className="lg:hidden absolute inset-x-0 bottom-0 h-[70vw] pointer-events-none"
+            style={{ background: 'linear-gradient(180deg, rgba(13,22,40,1) 0%, rgba(13,22,40,0.55) 30%, rgba(13,22,40,0) 70%)' }}
+          />
+          <div className={`relative max-w-[1200px] mx-auto ${SECTION_X} pt-36 pb-[62vw] lg:pt-44 lg:pb-28`}>
             <div className="max-w-[760px]">
-              <Link to={hubPath(lang)} className="inline-flex items-center gap-1.5 text-[13px] font-medium text-stone-400 hover:text-white transition-colors mb-6">
+              {/* Its own line: the eyebrow below is inline, so an inline-flex
+                  link here ran straight into it. */}
+              <Link to={hubPath(lang)} className="flex w-fit items-center gap-1.5 text-[13px] font-medium text-stone-400 hover:text-white transition-colors mb-6">
                 {t('verticals.shared.backToHub')}
               </Link>
               <span className="section-label section-label-dark">{t(`${base}.hero.eyebrow`)}</span>
