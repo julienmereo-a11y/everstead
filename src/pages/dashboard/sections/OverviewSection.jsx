@@ -636,7 +636,7 @@ export function OverviewSection({ isDemo, adviser, access, profile, accounts, do
           ) : (
             <div className="space-y-2">
               {alerts.slice(0, 5).map(alert => {
-                const { icon: Icon, bar } = SEVERITY_STYLES[alert.severity]
+                const { icon: Icon, bar } = SEVERITY_STYLES[alert.severity] ?? SEVERITY_STYLES.info
                 return (
                   <div
                     key={alert.id}

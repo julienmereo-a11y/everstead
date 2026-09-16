@@ -26,7 +26,9 @@ export function AlertsSection({ alerts, markRead, markAllRead }) {
         {alerts.length === 0 ? (
           <EmptyState icon={Bell} label={t('alerts.empty')} action={t('alerts.emptyAction')} />
         ) : alerts.map(a => {
-          const { bar, badge, icon: Icon } = SEVERITY_STYLES[a.severity]
+          // A severity outside the map, or a null one, used to throw on the
+          // destructure and take the whole alerts list down with it.
+          const { bar, badge, icon: Icon } = SEVERITY_STYLES[a.severity] ?? SEVERITY_STYLES.info
           const isExpanded = expanded === a.id
           return (
             <div

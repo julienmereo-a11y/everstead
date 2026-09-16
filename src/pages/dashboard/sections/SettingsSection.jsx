@@ -5,8 +5,9 @@
 import React, { useState, useEffect } from 'react'
 import { COUNTRIES } from '../../../config/countries'
 import { PLAN_LABELS, PRICING, marketPricing, planLabel } from '../../../config/pricing'
-import i18n from '../../../i18n'
+import i18n, { pathInLanguage } from '../../../i18n'
 import { PLANS, redirectToCustomerPortal } from '../../../lib/stripe'
+import { isNative } from '../../../lib/platform'
 import { Field, SectionShell, input, primaryBtn, secondaryBtn } from '../../dashboard/ui'
 import { AdviserSharingCard } from './AdviserSection'
 import { AddressesCard } from './AddressesCard'
@@ -51,7 +52,11 @@ export function ReferralLinkBox({ referralCode }) {
   // Friends who joined through this link. Null (line hidden) until the RPC
   // answers; in demo mode there is no session so it stays hidden, which is fine.
   const [joined, setJoined] = useState(null)
-  const link = `${window.location.origin}/get-started?ref=${referralCode}`
+  // Two things the old one-liner got wrong. A French member's link sent their
+  // friend to the English signup, and in the native app window.location.origin
+  // is capacitor://localhost, which is not a link anyone can open.
+  const origin = isNative() ? 'https://www.everstead.care' : window.location.origin
+  const link = `${origin}${pathInLanguage('/get-started', i18n.language)}?ref=${referralCode}`
 
   useEffect(() => {
     let on = true
@@ -158,7 +163,27 @@ export function SettingsSection({ adviser, profile, isDemo, updateProfile, refre
 
   // Exporting the whole vault is sensitive, so re-verify the password first —
   // a hijacked open session can't silently download everything.
-  const requestExport = () => { setReauthError(null); setReauthPassword(''); setReauthOpen(true) }
+  //
+  // Google and magic-link members have no password, so the check could never
+  // pass and export was simply unavailable to them: a data-portability right
+  // withheld by an implementation detail. They are told so, and pointed at the
+  // password section on this same page, which does work for them
+  // (updateUser sets a password on an account that had none).
+  const [reauthNoPassword, setReauthNoPassword] = useState(false)
+  const requestExport = async () => {
+    setReauthError(null); setReauthPassword(''); setReauthNoPassword(false); setReauthOpen(true)
+    try {
+      const { supabase: sb } = await import('../../../lib/supabase')
+      const { data: { user } } = await sb.auth.getUser()
+      const identities = user?.identities
+      if (Array.isArray(identities) && !identities.some(i => i.provider === 'email')) {
+        setReauthNoPassword(true)
+      }
+    } catch {
+      // Leave the password field up. It is the path that works for most
+      // accounts, and a wrong password says so plainly.
+    }
+  }
   const confirmReauthAndExport = async () => {
     setReauthBusy(true); setReauthError(null)
     try {
@@ -891,20 +916,24 @@ export function SettingsSection({ adviser, profile, isDemo, updateProfile, refre
                 <div className="fixed inset-0 z-[60] flex items-center justify-center bg-navy-900/40 p-4" onClick={() => !reauthBusy && setReauthOpen(false)}>
                   <div className="bg-white rounded-2xl shadow-xl max-w-sm w-full p-6" onClick={e => e.stopPropagation()}>
                     <h3 className="text-lg font-semibold text-navy-900 mb-1">{t('settings.data.reauthTitle')}</h3>
-                    <p className="text-xs text-stone-500 mb-4">{t('settings.data.reauthBody')}</p>
-                    <input
-                      type="password" autoFocus value={reauthPassword}
-                      onChange={e => setReauthPassword(e.target.value)}
-                      onKeyDown={e => { if (e.key === 'Enter' && reauthPassword && !reauthBusy) confirmReauthAndExport() }}
-                      placeholder={t('settings.data.passwordPlaceholder')}
-                      className="w-full border border-stone-300 rounded-lg px-3 py-2 text-sm mb-3 focus:outline-none focus:ring-2 focus:ring-navy-200"
-                    />
+                    <p className="text-xs text-stone-500 mb-4">{reauthNoPassword ? t('settings.data.reauthNoPasswordBody') : t('settings.data.reauthBody')}</p>
+                    {!reauthNoPassword && (
+                      <input
+                        type="password" autoFocus value={reauthPassword}
+                        onChange={e => setReauthPassword(e.target.value)}
+                        onKeyDown={e => { if (e.key === 'Enter' && reauthPassword && !reauthBusy) confirmReauthAndExport() }}
+                        placeholder={t('settings.data.passwordPlaceholder')}
+                        className="w-full border border-stone-300 rounded-lg px-3 py-2 text-sm mb-3 focus:outline-none focus:ring-2 focus:ring-navy-200"
+                      />
+                    )}
                     {reauthError && <p className="text-xs text-red-600 mb-3">{reauthError}</p>}
                     <div className="flex gap-2 justify-end">
-                      <button onClick={() => setReauthOpen(false)} disabled={reauthBusy} className="text-sm px-4 py-2 rounded-full text-stone-600 hover:bg-stone-100 disabled:opacity-50">{t('settings.cancel')}</button>
-                      <button onClick={confirmReauthAndExport} disabled={reauthBusy || !reauthPassword} className="inline-flex items-center gap-2 btn-aurora text-white text-sm font-semibold px-4 py-2 rounded-full disabled:opacity-50">
-                        {reauthBusy ? <><Loader2 size={14} className="animate-spin" /> {t('settings.data.verifying')}</> : t('settings.data.confirmExport')}
-                      </button>
+                      <button onClick={() => setReauthOpen(false)} disabled={reauthBusy} className="text-sm px-4 py-2 rounded-full text-stone-600 hover:bg-stone-100 disabled:opacity-50">{reauthNoPassword ? t('settings.data.reauthNoPasswordClose') : t('settings.cancel')}</button>
+                      {!reauthNoPassword && (
+                        <button onClick={confirmReauthAndExport} disabled={reauthBusy || !reauthPassword} className="inline-flex items-center gap-2 btn-aurora text-white text-sm font-semibold px-4 py-2 rounded-full disabled:opacity-50">
+                          {reauthBusy ? <><Loader2 size={14} className="animate-spin" /> {t('settings.data.verifying')}</> : t('settings.data.confirmExport')}
+                        </button>
+                      )}
                     </div>
                   </div>
                 </div>

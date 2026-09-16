@@ -10,6 +10,15 @@ import { Checkbox, EmptyState, Field, LoadingSpinner, Modal, SectionShell, input
 import { BookOpen, CheckCircle2, Download, ExternalLink, Eye, FileText, Loader2, Pencil, Share2, Sparkles, Trash2, Upload, X } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { DocumentRequestsCard } from './AdviserSection'
+// <input type="date"> hands back 'YYYY-MM-DD', which Date parses as midnight
+// UTC while toLocaleDateString renders in local time. Anywhere west of
+// Greenwich that printed, and counted down to, the day before the one the
+// member actually picked.
+const parseLocalDate = (ymd) => {
+  const [y, m, d] = String(ymd).split('-').map(Number)
+  return (y && m && d) ? new Date(y, m - 1, d) : new Date(ymd)
+}
+
 export function OwnerDocViewerModal({ doc, onClose }) {
   const { t } = useTranslation('dashboard')
   // Uploaded files live in the private `documents` storage bucket, referenced by
@@ -338,6 +347,9 @@ export function DocumentsSection({ documents, loading, uploadFile, update, remov
         } catch {}
         setAiScanning(false)
       }
+      // Without this a file that will not read leaves onload unfired and the
+      // scanning spinner running for the rest of the session.
+      reader.onerror = () => setAiScanning(false)
       reader.readAsDataURL(file)
     } catch {
       setAiScanning(false)
@@ -431,7 +443,7 @@ export function DocumentsSection({ documents, loading, uploadFile, update, remov
       }
       // Feature 6: Smart expiry alert creation
       if (form.expires_at && addAlert) {
-        const expiryDate = new Date(form.expires_at)
+        const expiryDate = parseLocalDate(form.expires_at)
         const today = new Date()
         today.setHours(0, 0, 0, 0)
         const daysUntilExpiry = Math.ceil((expiryDate - today) / 86400000)
@@ -474,7 +486,7 @@ export function DocumentsSection({ documents, loading, uploadFile, update, remov
       // Feature 6: also create expiry alert when editing adds/changes an expiry date
       const prevExpiry = editingDocument.expires_at
       if (form.expires_at && form.expires_at !== prevExpiry && addAlert) {
-        const expiryDate = new Date(form.expires_at)
+        const expiryDate = parseLocalDate(form.expires_at)
         const today = new Date()
         today.setHours(0, 0, 0, 0)
         const daysUntilExpiry = Math.ceil((expiryDate - today) / 86400000)

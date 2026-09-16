@@ -1293,7 +1293,9 @@
       "exportFailedStatus": "Échec de l'export ({{status}})",
       "exportFailed": "Échec de l'export. Veuillez réessayer.",
       "exportDone": "Vos données ont été exportées. Conservez ce fichier en lieu sûr.",
-      "exportNote": "Comprend tous les comptes, les documents téléversés, les consignes, les volontés, les personnes de confiance et votre journal d'activité. Comptez quelques secondes de plus pour les coffres volumineux."
+      "exportNote": "Comprend tous les comptes, les documents téléversés, les consignes, les volontés, les personnes de confiance et votre journal d'activité. Comptez quelques secondes de plus pour les coffres volumineux.",
+      "reauthNoPasswordBody": "Vous vous connectez avec Google ou un lien par e-mail : il n'y a donc pas de mot de passe à vérifier. Définissez-en un dans la section Mot de passe plus bas sur cette page, puis revenez ici pour lancer l'export.",
+      "reauthNoPasswordClose": "Fermer"
     },
     "danger": {
       "heading": "Zone sensible",

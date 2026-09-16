@@ -1291,7 +1291,9 @@
       "exportFailedStatus": "Export failed ({{status}})",
       "exportFailed": "Export failed. Please try again.",
       "exportDone": "Your data has been exported. Keep this file somewhere safe.",
-      "exportNote": "Includes all accounts, uploaded documents, instructions, wishes, trusted contacts, and your activity log. May take a few seconds for larger vaults."
+      "exportNote": "Includes all accounts, uploaded documents, instructions, wishes, trusted contacts, and your activity log. May take a few seconds for larger vaults.",
+      "reauthNoPasswordBody": "You sign in with Google or an email link, so there is no password for us to check. Set one in the Password section further down this page, then come back and your export will be ready to run.",
+      "reauthNoPasswordClose": "Close"
     },
     "danger": {
       "heading": "Danger zone",
