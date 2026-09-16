@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useReveal } from '../components/useReveal'
 import { ArrowRight, Briefcase, CheckCircle2, ShieldCheck, ChevronDown } from 'lucide-react'
-import { PRICING, businessPricing } from '../config/pricing'
+import { PRICING } from '../config/pricing'
 
 function FaqAccordion({ faqs }) {
   const [open, setOpen] = useState(null)
@@ -39,7 +39,6 @@ export default function Pricing() {
   const urlPrefix = isFr ? '/fr' : ''
 
   const faqs = t('faq.items', { returnObjects: true })
-  const business = businessPricing(i18n.language)
 
   const faqSchema = {
     '@context': 'https://schema.org',
@@ -242,8 +241,10 @@ export default function Pricing() {
             Two products, not one. Everstead for Business is the exchange, which
             is what an employer or a care provider buys. Everstead Pro adds the
             client workspace on top, which is what an adviser or a notaire buys.
-            Both sit apart from the consumer table because the sales motion is a
-            demo and an invoice, not a card. */}
+            No prices here on purpose: neither is bought with a card, both are
+            banded on a call, and a published table would commit us to a number
+            before the first negotiation. The cards say what you get and ask for
+            twenty minutes. */}
         <div className="max-w-5xl mx-auto px-6 lg:px-8 mt-16">
           <div className="reveal text-center mb-8">
             <p className="text-xs font-semibold tracking-[.12em] uppercase text-stone-400 m-0">{t('business.eyebrow')}</p>
@@ -251,25 +252,23 @@ export default function Pricing() {
             <p className="text-stone-600 text-sm max-w-xl mx-auto m-0">{t('business.sub')}</p>
           </div>
 
-          <div className="grid lg:grid-cols-2 gap-5">
-            {/* Everstead for Business: the exchange, banded by size */}
+          <div className="grid lg:grid-cols-2 gap-5 items-stretch">
+            {/* Everstead for Business: the exchange */}
             <div className="reveal rounded-[2rem] border border-navy-200 bg-navy-950 text-white p-8 flex flex-col">
               <p className="text-sm font-semibold text-sage-300 m-0">{t('business.exchange.name')}</p>
               <p className="mt-2 text-stone-300 text-sm leading-relaxed m-0">{t('business.exchange.blurb')}</p>
 
               <ul className="mt-6 space-y-2.5 list-none p-0 m-0">
-                {business.bands.map(b => (
-                  <li key={b.key} className="flex items-baseline justify-between gap-4 border-b border-white/10 pb-2.5 last:border-0">
-                    <span className="text-sm text-stone-300">{t(`business.exchange.bands.${b.key}`)}</span>
-                    <span className="text-sm font-semibold whitespace-nowrap">
-                      {b.display ? `${b.display} ${t('business.exchange.perYear')}` : t('business.exchange.talk')}
-                    </span>
+                {t('business.exchange.features', { returnObjects: true }).map((f, n) => (
+                  <li key={n} className="flex items-start gap-2.5 text-sm text-stone-200">
+                    <CheckCircle2 size={15} className="text-sage-400 mt-0.5 shrink-0" /> {f}
                   </li>
                 ))}
               </ul>
-              <p className="mt-4 text-xs text-stone-400 leading-relaxed m-0">{t('business.exchange.note')}</p>
 
-              <div className="mt-7 flex flex-col sm:flex-row gap-3">
+              <p className="mt-6 text-xs text-stone-400 leading-relaxed m-0">{t('business.exchange.note')}</p>
+
+              <div className="mt-7 pt-1 flex flex-col sm:flex-row gap-3 mt-auto">
                 <Link to={`${urlPrefix}/business`} className="inline-flex items-center justify-center gap-2 rounded-full px-5 py-3 text-sm font-semibold border border-white/25 text-white hover:bg-white/10 transition-colors">
                   {t('business.learnMore')}
                 </Link>
@@ -279,26 +278,22 @@ export default function Pricing() {
               </div>
             </div>
 
-            {/* Everstead Pro: the adviser workspace, priced per client family */}
+            {/* Everstead Pro: the adviser and notaire workspace */}
             <div className="reveal reveal-delay-1 rounded-[2rem] border border-stone-200 bg-white p-8 flex flex-col">
               <p className="text-sm font-semibold text-navy-700 m-0">{t('plans.adviser.name')}</p>
               <p className="mt-2 text-stone-600 text-sm leading-relaxed m-0">{t('business.pro.blurb')}</p>
 
-              <p className="mt-6 font-display text-3xl font-light text-navy-950 m-0 leading-none">
-                {business.perFamily}
-              </p>
-              <p className="text-sm text-stone-500 mt-1.5 m-0">{t('business.pro.unit')}</p>
-
-              <ul className="mt-5 space-y-2 list-none p-0 m-0">
+              <ul className="mt-6 space-y-2.5 list-none p-0 m-0">
                 {t('plans.adviser.features', { returnObjects: true }).map((f, n) => (
-                  <li key={n} className="flex items-start gap-2 text-sm text-stone-600">
+                  <li key={n} className="flex items-start gap-2.5 text-sm text-stone-600">
                     <CheckCircle2 size={15} className="text-sage-600 mt-0.5 shrink-0" /> {f}
                   </li>
                 ))}
               </ul>
-              <p className="mt-4 text-xs text-stone-400 leading-relaxed m-0">{t('business.pro.note')}</p>
 
-              <div className="mt-7 flex flex-col sm:flex-row gap-3">
+              <p className="mt-6 text-xs text-stone-400 leading-relaxed m-0">{t('business.pro.note')}</p>
+
+              <div className="mt-7 pt-1 flex flex-col sm:flex-row gap-3 mt-auto">
                 <Link to={`${urlPrefix}/business/advisers`} className="inline-flex items-center justify-center gap-2 rounded-full px-5 py-3 text-sm font-semibold border border-stone-200 text-navy-800 hover:bg-stone-50 transition-colors">
                   {t('business.learnMore')}
                 </Link>

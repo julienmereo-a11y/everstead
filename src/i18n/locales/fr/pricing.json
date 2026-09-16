@@ -205,26 +205,25 @@
   "business": {
     "eyebrow": "Pour les organisations",
     "title": "Deux offres, selon la relation.",
-    "sub": "Deux façons de travailler avec des personnes qui ne sont pas encore vos clients. Les deux se décident lors d'un échange et se facturent à l'année, pas par carte bancaire.",
+    "sub": "Ni l'une ni l'autre ne s'achète par carte. Nous les calibrons sur la taille de votre organisation lors d'un échange de vingt minutes, avec une facturation annuelle.",
     "learnMore": "En savoir plus",
     "cta": "Réserver une démo",
     "exchange": {
       "name": "Everstead pour les entreprises",
-      "blurb": "Déposez un document dans le coffre de la personne. Demandez un seul justificatif et ne voyez que celui-là, le temps qu'il vous faut. Sans limite, au tarif de la taille de votre organisation et non de ce que vous envoyez.",
-      "perYear": "par an",
-      "talk": "Parlons-en",
-      "bands": {
-        "small": "Jusqu'à 50 personnes touchées",
-        "mid": "De 50 à 250",
-        "large": "De 250 à 1 000",
-        "above": "Plus de 1 000"
-      },
-      "note": "Facturation annuelle. Une organisation vérifiée peut envoyer quelques documents par mois sans frais, car chaque document accepté offre à quelqu'un son propre coffre gratuit."
+      "blurb": "Pour les employeurs, les établissements et tous ceux dont les documents doivent circuler dans les deux sens sans jamais être conservés.",
+      "features": [
+        "Déposer un document dans le coffre de la personne",
+        "Demander un seul justificatif, pour la durée que vous fixez",
+        "Une attestation horodatée pour chaque échange",
+        "Un historique unique de tout ce qui est envoyé et demandé, dans les deux sens",
+        "Voir ce que vous pouvez ouvrir à l'instant, et y mettre fin plus tôt",
+        "Un clic au départ d'une personne, avec une attestation que vous ne détenez rien"
+      ],
+      "note": "Échanges illimités, par palier selon la taille de votre organisation, facturés à l'année. Une organisation vérifiée peut envoyer quelques documents par mois sans frais, car chaque document accepté offre à quelqu'un son propre coffre gratuit."
     },
     "pro": {
-      "blurb": "Tout ce qui précède, plus l'espace client : le suivi, la file de relecture, les dossiers, et le nom de votre étude dans le coffre du client.",
-      "unit": "par famille cliente et par an, en plus d'un abonnement convenu avec vous",
-      "note": "Conseillers, notaires et avocats. Nous accompagnons personnellement les premières études, l'abonnement se fixe donc lors de l'échange plutôt qu'en ligne."
+      "blurb": "Pour les conseillers, les notaires et les avocats. Tout Everstead pour les entreprises, plus l'espace client.",
+      "note": "Tarif par famille cliente, comme une étude raisonne sur son portefeuille, en plus d'un abonnement. Nous accompagnons personnellement les premières études, les deux se fixent donc lors de l'échange."
     }
   }
 }

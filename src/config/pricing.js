@@ -125,55 +125,20 @@ export function marketPricing(language) {
 // these values exist only so the UI can show the right numbers and copy.
 // Change both together or the UI will offer what the database refuses.
 // ── Everstead for Business ──────────────────────────────────────────────────
-// A flat annual price banded by the size of the organisation, with unlimited
-// exchange, invoiced yearly up front.
+// Business prices are deliberately NOT in this file and NOT on the site. This
+// repository is public, so a band table committed here would be published in
+// every sense that matters, which defeats the point of taking it off the page.
 //
-// Banded rather than metered for two reasons. The database can invoice but
-// cannot meter, so this is the only model that can actually be billed. And a
-// meter would make an organisation send fewer documents, which is backwards:
-// every accepted delivery creates a free Everstead member, so low-volume
-// sending is acquisition rather than lost revenue.
+// Both business products are sold on a call and invoiced yearly: Everstead for
+// Business banded by the size of the organisation, Everstead Pro per client
+// family alongside a platform fee. The agreed numbers live outside the repo.
 //
-// The bands are sized against the UK procurement threshold rather than against
-// value. Above roughly five thousand a year most organisations trigger a
-// security questionnaire and legal review, and there is no SOC 2 or ISO 27001
-// to answer it with yet, so Small and Mid are deliberately signable by one
-// manager unaided. Expect to lose security reviews at Large until that changes.
-//
-// France pays the same numbers in euros rather than a discount. The hosting
-// question is a reason to lose a deal, not a reason to be cheap.
-export const BUSINESS_PRICING = {
-  // Sending into people's vaults, asking for one item with an expiry, the
-  // attestation, the ledger, more than one person on the team.
-  exchange: [
-    { key: 'small', maxPeople: 50,   gbp: 1200, eur: 1200 },
-    { key: 'mid',   maxPeople: 250,  gbp: 3600, eur: 3600 },
-    { key: 'large', maxPeople: 1000, gbp: 9000, eur: 9000 },
-    { key: 'above', maxPeople: null, gbp: null, eur: null },  // a conversation
-  ],
-  // Everstead Pro sits on top for advisers, solicitors and notaires: the client
-  // workspace, priced the way a firm thinks about its book. The platform fee
-  // beside it is agreed per firm and has never been set, so it is not published.
-  pro: { perFamily: { gbp: 100, eur: 100 } },
-}
-
-/** Business prices for the visitor's market, already formatted. */
-export function businessPricing(language) {
-  const fr = language === 'fr'
-  // Whole pounds and euros: no one quotes an annual contract to the penny.
-  const money = (n) => (fr
-    ? `${Number(n).toLocaleString('fr-FR')}\u00a0€`
-    : `£${Number(n).toLocaleString('en-GB')}`)
-  return {
-    money,
-    bands: BUSINESS_PRICING.exchange.map(b => ({
-      ...b,
-      amount: fr ? b.eur : b.gbp,
-      display: (fr ? b.eur : b.gbp) == null ? null : money(fr ? b.eur : b.gbp),
-    })),
-    perFamily: money(fr ? BUSINESS_PRICING.pro.perFamily.eur : BUSINESS_PRICING.pro.perFamily.gbp),
-  }
-}
+// Two things worth keeping written down, because they shape any number:
+//   • Banded, never metered. The database can invoice but cannot meter, and a
+//     meter would make an organisation send fewer documents, which is backwards
+//     when every accepted delivery creates a free member.
+//   • France pays the same figures in euros rather than a discount. The hosting
+//     question is a reason to lose a deal, not a reason to be cheap.
 
 export const FREE_LIMITS = {
   accounts:      5,
