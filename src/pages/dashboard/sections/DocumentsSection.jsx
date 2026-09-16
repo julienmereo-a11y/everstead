@@ -268,6 +268,13 @@ export function DocumentsSection({ documents, loading, uploadFile, update, remov
   const emptyForm = { name: '', doc_type: 'Legal', status: 'current', expires_at: '', notes: '', access_overrides: {}, release_timing: 'default' }
   const [showUpload, setShowUpload] = useState(false)
   const [editingDocument, setEditingDocument] = useState(null)
+  // Deleting a document is permanent and takes the file with it. The bin
+  // icon sat one stray click away from a scan of a will with nothing in
+  // between, and the call was neither awaited nor caught, so a failure
+  // looked exactly like a success until the next refresh.
+  const [confirmDeleteDoc, setConfirmDeleteDoc] = useState(null)
+  const [deletingDoc, setDeletingDoc] = useState(false)
+  const [deleteDocError, setDeleteDocError] = useState(null)
   const [viewingDoc, setViewingDoc] = useState(null)
   const [sharingDoc, setSharingDoc] = useState(null)
   const [file, setFile] = useState(null)
@@ -362,6 +369,20 @@ export function DocumentsSection({ documents, loading, uploadFile, update, remov
     setFile(null)
     setForm(emptyForm)
     setFormError(null)
+  }
+
+  const doDeleteDoc = async () => {
+    if (!confirmDeleteDoc) return
+    setDeletingDoc(true)
+    setDeleteDocError(null)
+    try {
+      await remove(confirmDeleteDoc.id)
+      setConfirmDeleteDoc(null)
+    } catch (err) {
+      setDeleteDocError(err?.message || t('documents.deleteModal.failed'))
+    } finally {
+      setDeletingDoc(false)
+    }
   }
 
   const openUpload = () => {
@@ -497,8 +518,13 @@ export function DocumentsSection({ documents, loading, uploadFile, update, remov
       {/* Storage usage bar */}
       {planLimits && (() => {
         const limitGB = planLimits.storageGb
-        // Demo: estimate ~0.5 MB per uploaded doc; real mode: sum storage_size fields
-        const usedMB = documents.filter(d => d.file_url || d.storage_path).length * 0.5
+        // The real number: file_size is written in bytes when the upload
+        // completes. Counting documents instead meant the bar tracked how many
+        // files you had rather than how large they were, so a vault of scans
+        // sat at 1% and the 80% warning could never fire.
+        const usedMB = documents
+          .filter(d => d.file_url || d.storage_path)
+          .reduce((sum, d) => sum + (d.file_size > 0 ? d.file_size / 1_048_576 : 0.5), 0)
         const usedGB = usedMB / 1024
         const pct    = Math.min(100, (usedGB / limitGB) * 100)
         const warn   = pct >= 80
@@ -694,7 +720,7 @@ export function DocumentsSection({ documents, loading, uploadFile, update, remov
                       <button onClick={() => openEdit(doc)} className="p-1.5 text-stone-300 hover:text-navy-600 transition-colors rounded hover:bg-navy-50" aria-label={t('documents.editAria', { name: doc.name })}>
                         <Pencil size={14} />
                       </button>
-                      <button onClick={() => remove(doc.id)} className="p-1.5 text-stone-300 hover:text-red-500 transition-colors rounded hover:bg-red-50" aria-label={t('documents.deleteAria', { name: doc.name })}>
+                      <button onClick={() => { setDeleteDocError(null); setConfirmDeleteDoc(doc) }} className="p-1.5 text-stone-300 hover:text-red-500 transition-colors rounded hover:bg-red-50" aria-label={t('documents.deleteAria', { name: doc.name })}>
                         <Trash2 size={14} />
                       </button>
                     </div>
@@ -708,6 +734,29 @@ export function DocumentsSection({ documents, loading, uploadFile, update, remov
 
       {viewingDoc && <OwnerDocViewerModal doc={viewingDoc} onClose={() => setViewingDoc(null)} />}
       {sharingDoc && <ShareDocModal doc={sharingDoc} access={access} onClose={() => setSharingDoc(null)} t={t} lang={i18n.language} />}
+
+      {confirmDeleteDoc && (
+        <Modal title={t('documents.deleteModal.title')} onClose={() => setConfirmDeleteDoc(null)}>
+          <div className="space-y-4">
+            <p className="text-sm text-stone-700 leading-relaxed">
+              {t('documents.deleteModal.body', { name: confirmDeleteDoc.name })}
+            </p>
+            {deleteDocError && (
+              <p className="text-xs text-red-700 bg-red-50 border border-red-200 rounded-xl px-4 py-3">{deleteDocError}</p>
+            )}
+            <div className="flex gap-3 pt-1">
+              <button
+                onClick={doDeleteDoc}
+                disabled={deletingDoc}
+                className="flex-1 inline-flex items-center justify-center gap-2 text-sm font-semibold text-white bg-red-600 px-4 py-2.5 rounded-full hover:bg-red-700 transition-colors disabled:opacity-50"
+              >
+                {deletingDoc ? t('documents.deleteModal.deleting') : t('documents.deleteModal.confirm')}
+              </button>
+              <button onClick={() => setConfirmDeleteDoc(null)} className={secondaryBtn}>{t('documents.cancel')}</button>
+            </div>
+          </div>
+        </Modal>
+      )}
 
       {showUpload && (
         <Modal title={t('documents.uploadDocument')} onClose={closeModal}>

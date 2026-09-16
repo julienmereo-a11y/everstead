@@ -472,6 +472,13 @@
       "aria": "Partager {{name}} avec une organisation",
       "buttonTitle": "Partager avec une organisation",
       "footnote": "Partager un document n'ouvre jamais le reste de votre coffre, et vous pouvez l'arrêter à tout moment depuis Qui a accès."
+    },
+    "deleteModal": {
+      "title": "Supprimer ce document ?",
+      "body": "Cette action supprime définitivement {{name}} ainsi que le fichier. Elle est irréversible, et les personnes à qui vous l'avez partagé en perdront l'accès.",
+      "confirm": "Oui, supprimer",
+      "deleting": "Suppression…",
+      "failed": "Impossible de supprimer le document. Veuillez réessayer."
     }
   },
   "aboutMe": {
@@ -653,16 +660,26 @@
       "uploadPhoto": "Téléverser une photo",
       "videoHint": "Filmez-vous ou téléversez un fichier mp4, mov ou webm.",
       "photoHint": "Téléversez un jpg ou un png : une lettre scannée, une photo qui compte.",
-      "submit": "Enregistrer le message"
+      "submit": "Enregistrer le message",
+      "editTitle": "Modifier le message",
+      "submitEdit": "Enregistrer les modifications"
     },
     "errors": {
       "mediaRequired": "Veuillez d'abord enregistrer ou téléverser la {{type}}.",
       "dateRequired": "Veuillez choisir la date de remise du message.",
-      "saveFailed": "Impossible d'enregistrer le message. Veuillez réessayer."
+      "saveFailed": "Impossible d'enregistrer le message. Veuillez réessayer.",
+      "deleteFailed": "Impossible de supprimer le message. Veuillez réessayer."
     },
     "saving": "Enregistrement…",
     "cancel": "Annuler",
-    "releaseFailed": "L'envoi n'a pas abouti. Réessayez, ou écrivez-nous si cela persiste."
+    "releaseFailed": "L'envoi n'a pas abouti. Réessayez, ou écrivez-nous si cela persiste.",
+    "deleteModal": {
+      "title": "Supprimer ce message ?",
+      "body": "Cette action supprime <b>{{title}}</b> et tout ce qui y est joint. Elle est définitive, et le destinataire ne le verra jamais.",
+      "untitled": "ce message",
+      "confirm": "Oui, supprimer",
+      "deleting": "Suppression…"
+    }
   },
   "people": {
     "title": "Personnes de confiance",

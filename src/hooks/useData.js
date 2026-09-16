@@ -112,7 +112,17 @@ export function useDocuments() {
     }
   }
 
-  return { ...base, uploadFile }
+  // The row is the only pointer to the object in the bucket. Deleting one
+  // without the other left the file behind: unreachable from the app, still
+  // counted against storage, and still holding the member's data. The upload
+  // path already cleans up after itself this way.
+  const remove = async (id) => {
+    const doc = base.data.find(d => d.id === id)
+    await base.remove(id)
+    await removeStorageFile(doc?.storage_path)
+  }
+
+  return { ...base, uploadFile, remove }
 }
 
 // ─────────────────────────────────────────────────────────────
@@ -385,6 +395,26 @@ export function useMessages() {
     return publicUrl
   }
 
+  // Deleting a message has to take its media with it. The row is the only
+  // pointer into the private bucket, so dropping one without the other leaves
+  // a file nobody can reach and nobody is counting. Every object for a message
+  // lives under <user>/<message>/, so the folder listing is the whole of it.
+  const remove = async (id) => {
+    const { supabase } = await import('../lib/supabase')
+    const { data: { session } } = await supabase.auth.getSession()
+    const { error } = await supabase.from('messages').delete().eq('id', id)
+    if (error) throw error
+    setData(prev => prev.filter(m => m.id !== id))
+    try {
+      const folder = `${session.user.id}/${id}`
+      const { data: files } = await supabase.storage.from('messages').list(folder)
+      if (files?.length) await supabase.storage.from('messages').remove(files.map(f => `${folder}/${f.name}`))
+    } catch {
+      // The message is gone, which is what was asked for. A leftover object is
+      // worth a cleanup job, not an error on the delete the user just made.
+    }
+  }
+
   // Release a message to an unregistered email recipient — mints a secure view
   // token and emails them a private link (server-side, no account needed).
   const releaseExternal = async (messageId) => {
@@ -396,7 +426,7 @@ export function useMessages() {
     return data
   }
 
-  return { data, loading, add, update, uploadVideo, uploadMedia, releaseExternal, refresh: load }
+  return { data, loading, add, update, remove, uploadVideo, uploadMedia, releaseExternal, refresh: load }
 }
 
 // ─────────────────────────────────────────────────────────────

@@ -470,6 +470,13 @@
       "aria": "Share {{name}} with an organisation",
       "buttonTitle": "Share with an organisation",
       "footnote": "Sharing one document never opens the rest of your vault, and you can stop it at any time from Who has access."
+    },
+    "deleteModal": {
+      "title": "Delete this document?",
+      "body": "This permanently deletes {{name}} and the file itself. It cannot be undone, and anyone you have shared it with will lose access.",
+      "confirm": "Yes, delete it",
+      "deleting": "Deleting…",
+      "failed": "Could not delete the document. Please try again."
     }
   },
   "aboutMe": {
@@ -651,16 +658,26 @@
       "uploadPhoto": "Upload a photo",
       "videoHint": "Record yourself, or upload mp4 / mov / webm.",
       "photoHint": "Upload a jpg or png, a scanned letter or a meaningful photo.",
-      "submit": "Save message"
+      "submit": "Save message",
+      "editTitle": "Edit message",
+      "submitEdit": "Save changes"
     },
     "errors": {
       "mediaRequired": "Please record or upload a {{type}} first.",
       "dateRequired": "Please choose the date it should be released.",
-      "saveFailed": "Could not save the message. Please try again."
+      "saveFailed": "Could not save the message. Please try again.",
+      "deleteFailed": "Could not delete the message. Please try again."
     },
     "saving": "Saving…",
     "cancel": "Cancel",
-    "releaseFailed": "That did not send. Please try again, or contact us if it keeps failing."
+    "releaseFailed": "That did not send. Please try again, or contact us if it keeps failing.",
+    "deleteModal": {
+      "title": "Delete this message?",
+      "body": "This deletes <b>{{title}}</b> and anything attached to it. It cannot be undone, and the recipient will never see it.",
+      "untitled": "this message",
+      "confirm": "Yes, delete it",
+      "deleting": "Deleting…"
+    }
   },
   "people": {
     "title": "Trusted People",

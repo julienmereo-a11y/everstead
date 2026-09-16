@@ -118,7 +118,7 @@ export function RecordVideo({ onCapture }) {
 // PERSONAL MESSAGES SECTION
 // ─────────────────────────────────────────────────────────────
 
-export function MessagesSection({ messages: initialMessages, loading, people, isDemo, planLimits, onUpgrade, addMessage, updateMessage, uploadVideo, uploadMedia, releaseExternal, aiEnabled }) {
+export function MessagesSection({ messages: initialMessages, loading, people, isDemo, planLimits, onUpgrade, addMessage, updateMessage, deleteMessage, uploadVideo, uploadMedia, releaseExternal, aiEnabled }) {
   const { t, i18n } = useTranslation('dashboard')
   const dateLocale = i18n.language?.startsWith('fr') ? 'fr-FR' : 'en-GB'
   // Stored DB values (type, release_timing) paired with the id used to look up
@@ -133,6 +133,13 @@ export function MessagesSection({ messages: initialMessages, loading, people, is
     { value: 'on_date',     id: 'onDate' },
   ]
   const [showCompose, setShowCompose]   = useState(false)
+  // The message being edited, or null for a new one. Held as the whole row,
+  // not just an id, so the save can tell whether the existing media still
+  // applies and the recipient fields can be restored exactly as stored.
+  const [editing, setEditing]           = useState(null)
+  const [confirmDelete, setConfirmDelete] = useState(null)
+  const [deleting, setDeleting]         = useState(false)
+  const [deleteError, setDeleteError]   = useState(null)
   const [expanded, setExpanded]         = useState(null)
   const [confirmRelease, setConfirmRelease] = useState(null)  // message id to confirm
   // Releasing can fail: releaseExternal and updateMessage both throw. Without
@@ -148,6 +155,7 @@ export function MessagesSection({ messages: initialMessages, loading, people, is
   const [mediaFile, setMediaFile] = useState(null)       // recorded Blob or selected File
   const [mediaPreview, setMediaPreview] = useState(null) // object URL for preview
   const [saving, setSaving] = useState(false)
+  const [saveError, setSaveError] = useState(null)
 
   const setMedia = (file) => {
     setMediaPreview(prev => { if (prev) URL.revokeObjectURL(prev); return file ? URL.createObjectURL(file) : null })
@@ -155,7 +163,32 @@ export function MessagesSection({ messages: initialMessages, loading, people, is
   }
   const resetForm = () => {
     setMedia(null)
+    setEditing(null)
+    setSaveError(null)
     setForm({ recipient_kind: 'person', recipient_name: '', recipient_role: '', recipient_email: '', title: '', type: 'note', content: '', release_timing: 'after_death', release_at: '' })
+  }
+
+  const openCompose = () => { resetForm(); setShowCompose(true) }
+
+  // A stored release_at is noon UTC on the chosen day. Read it back in UTC so
+  // the date input shows the day that was picked, not the day before it in
+  // anything west of Greenwich.
+  const openEdit = (msg) => {
+    setMedia(null)
+    setSaveError(null)
+    setEditing(msg)
+    setForm({
+      recipient_kind:  msg.recipient_email ? 'email' : 'person',
+      recipient_name:  msg.recipient_name || '',
+      recipient_role:  msg.recipient_role || '',
+      recipient_email: msg.recipient_email || '',
+      title:           msg.title || '',
+      type:            msg.type || 'note',
+      content:         msg.content || '',
+      release_timing:  msg.release_timing || 'after_death',
+      release_at:      msg.release_at ? new Date(msg.release_at).toISOString().slice(0, 10) : '',
+    })
+    setShowCompose(true)
   }
 
   // AI message writer (Feature 5)
@@ -258,12 +291,28 @@ export function MessagesSection({ messages: initialMessages, loading, people, is
     }
   }
 
-  const [saveError, setSaveError] = useState(null)
+  const doDelete = async () => {
+    if (!confirmDelete) return
+    setDeleting(true)
+    setDeleteError(null)
+    try {
+      if (!isDemo) await deleteMessage?.(confirmDelete.id)
+      setConfirmDelete(null)
+      setExpanded(null)
+    } catch (err) {
+      setDeleteError(err?.message || t('messages.errors.deleteFailed'))
+    } finally {
+      setDeleting(false)
+    }
+  }
 
   const handleSave = async (e) => {
     e.preventDefault()
     const isEmail = form.recipient_kind === 'email'
-    if ((form.type === 'video' || form.type === 'photo') && !mediaFile) {
+    // An edit that leaves the type alone keeps whatever media is already
+    // attached, so only a new media message, or one changing type, needs a file.
+    const keepsMedia = editing && editing.type === form.type && (editing.media_url || editing.video_url)
+    if ((form.type === 'video' || form.type === 'photo') && !mediaFile && !keepsMedia) {
       setSaveError(t('messages.errors.mediaRequired', { type: t(`media.type.${form.type}`) })); return
     }
     if (form.release_timing === 'on_date' && !form.release_at) {
@@ -273,7 +322,7 @@ export function MessagesSection({ messages: initialMessages, loading, people, is
     setSaving(true)
     try {
       if (!isDemo) {
-        const row = await addMessage({
+        const payload = {
           recipient_name:  isEmail ? (form.recipient_name.trim() || form.recipient_email.trim()) : form.recipient_name,
           recipient_role:  isEmail ? '' : form.recipient_role,
           recipient_email: isEmail ? form.recipient_email.trim() : null,
@@ -284,7 +333,8 @@ export function MessagesSection({ messages: initialMessages, loading, people, is
           // Noon UTC on the chosen day: the hourly cron delivers within the hour,
           // at a humane time in every nearby timezone (never 00:xx).
           release_at: form.release_timing === 'on_date' ? new Date(`${form.release_at}T12:00:00Z`).toISOString() : null,
-        })
+        }
+        const row = editing ? await updateMessage(editing.id, payload) : await addMessage(payload)
         if (row && mediaFile && form.type !== 'note') {
           await uploadMedia(row.id, mediaFile)
         }
@@ -333,7 +383,7 @@ export function MessagesSection({ messages: initialMessages, loading, people, is
               <Send size={13} /> {t('messages.releaseAll')}
             </button>
           )}
-          <button onClick={() => setShowCompose(true)} className={primaryBtn}><Plus size={15} />{t('messages.newMessage')}</button>
+          <button onClick={openCompose} className={primaryBtn}><Plus size={15} />{t('messages.newMessage')}</button>
         </div>
       ) : null}
     >
@@ -365,7 +415,7 @@ export function MessagesSection({ messages: initialMessages, loading, people, is
       )}
 
       {!messagesLocked && (loading ? <LoadingSpinner /> : messages.length === 0 ? (
-        <EmptyState icon={MessageSquare} label={t('messages.empty')} action={t('messages.emptyAction')} onAction={() => setShowCompose(true)} />
+        <EmptyState icon={MessageSquare} label={t('messages.empty')} action={t('messages.emptyAction')} onAction={openCompose} />
       ) : (
         <div className="space-y-3">
           {messages.map(msg => {
@@ -520,11 +570,11 @@ export function MessagesSection({ messages: initialMessages, loading, people, is
                     )}
                     {!isReleased && (
                       <div className="flex gap-3">
-                        <button onClick={() => {}} disabled={isDemo} className={`${secondaryBtn} disabled:opacity-40 disabled:cursor-not-allowed`} title={isDemo ? t('messages.notInDemo') : undefined}>
+                        <button onClick={() => openEdit(msg)} disabled={isDemo} className={`${secondaryBtn} disabled:opacity-40 disabled:cursor-not-allowed`} title={isDemo ? t('messages.notInDemo') : undefined}>
                           <Pencil size={13} /> {t('messages.edit')}
                         </button>
                         <button
-                          onClick={() => {}}
+                          onClick={() => { setDeleteError(null); setConfirmDelete(msg) }}
                           disabled={isDemo}
                           title={isDemo ? t('messages.notInDemo') : undefined}
                           className="inline-flex items-center gap-2 text-xs font-semibold text-red-600 border border-red-200 bg-red-50 px-3 py-2 rounded-full hover:bg-red-100 transition-colors"
@@ -628,9 +678,32 @@ export function MessagesSection({ messages: initialMessages, loading, people, is
         </Modal>
       )}
 
+      {confirmDelete && (
+        <Modal title={t('messages.deleteModal.title')} onClose={() => setConfirmDelete(null)}>
+          <div className="space-y-4">
+            <p className="text-sm text-stone-700 leading-relaxed">
+              <Trans t={t} i18nKey="messages.deleteModal.body" values={{ title: confirmDelete.title || t('messages.deleteModal.untitled') }} components={{ b: <strong /> }} />
+            </p>
+            {deleteError && (
+              <p className="text-xs text-red-700 bg-red-50 border border-red-200 rounded-xl px-4 py-3">{deleteError}</p>
+            )}
+            <div className="flex gap-3 pt-1">
+              <button
+                onClick={doDelete}
+                disabled={deleting}
+                className="flex-1 inline-flex items-center justify-center gap-2 text-sm font-semibold text-white bg-red-600 px-4 py-2.5 rounded-full hover:bg-red-700 transition-colors disabled:opacity-50"
+              >
+                {deleting ? t('messages.deleteModal.deleting') : t('messages.deleteModal.confirm')}
+              </button>
+              <button onClick={() => setConfirmDelete(null)} className={secondaryBtn}>{t('messages.cancel')}</button>
+            </div>
+          </div>
+        </Modal>
+      )}
+
       {/* Compose modal */}
       {showCompose && (
-        <Modal title={t('messages.compose.title')} onClose={() => setShowCompose(false)}>
+        <Modal title={editing ? t('messages.compose.editTitle') : t('messages.compose.title')} onClose={() => { setShowCompose(false); resetForm() }}>
           <form onSubmit={handleSave} className="space-y-4">
             <div>
               <label className="block text-xs font-semibold text-stone-600 mb-2">{t('messages.compose.typeLabel')}</label>
@@ -777,9 +850,9 @@ export function MessagesSection({ messages: initialMessages, loading, people, is
 
             <div className="flex gap-3 pt-2">
               <button type="submit" disabled={saving} className={`${primaryBtn} flex-1`}>
-                {saving ? t('messages.saving') : t('messages.compose.submit')}
+                {saving ? t('messages.saving') : editing ? t('messages.compose.submitEdit') : t('messages.compose.submit')}
               </button>
-              <button type="button" onClick={() => setShowCompose(false)} className={secondaryBtn}>{t('messages.cancel')}</button>
+              <button type="button" onClick={() => { setShowCompose(false); resetForm() }} className={secondaryBtn}>{t('messages.cancel')}</button>
             </div>
           </form>
         </Modal>
