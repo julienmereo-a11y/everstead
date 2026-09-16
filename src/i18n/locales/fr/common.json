@@ -135,5 +135,13 @@
     "copied": "Copié",
     "share": "Partager",
     "dismiss": "Pas maintenant"
+  },
+  "accountLoad": {
+    "loading": "Chargement de votre formule…",
+    "title": "Nous n'avons pas pu charger votre compte",
+    "body": "Vos informations sont en sécurité. Leur lecture a échoué à l'instant, le plus souvent à cause d'une connexion interrompue. Réessayez, et si cela persiste, écrivez-nous à hello@everstead.care.",
+    "retry": "Réessayer",
+    "retrying": "Nouvelle tentative…",
+    "signOut": "Se déconnecter"
   }
 }

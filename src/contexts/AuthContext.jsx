@@ -74,17 +74,27 @@ export function AuthProvider({ children }) {
   const [profile,         setProfile]         = useState(null)
   const [loading,         setLoading]         = useState(true)
   const [delegateInvites, setDelegateInvites] = useState([])
+  // ProtectedRoute blocks on a null profile. Without this the error from the
+  // fetch went nowhere and a member whose row would not load sat on
+  // "Loading your plan…" for as long as they were willing to wait.
+  const [profileError,    setProfileError]    = useState(null)
 
   // ── Fetch profile ────────────────────────────────────────────
   // Profile is created automatically by the handle_new_user DB trigger on signup.
   // Returns the row as well as storing it, so callers can poll for a change they're
   // waiting on (e.g. the plan flipping to 'family' once RevenueCat's webhook lands).
   const fetchProfile = useCallback(async (userId) => {
-    const { data } = await supabase
-      .from('profiles')
-      .select('*')
-      .eq('id', userId)
-      .single()
+    const read = () => supabase.from('profiles').select('*').eq('id', userId).single()
+    let { data, error } = await read()
+    // PGRST116 is "no row". Straight after signup that usually means the
+    // handle_new_user trigger has not committed yet, so it is worth one retry
+    // before calling it a failure.
+    if (error?.code === 'PGRST116') {
+      await new Promise(r => setTimeout(r, 1200))
+      ;({ data, error } = await read())
+    }
+    if (error) { setProfileError(error); return null }
+    setProfileError(null)
     if (data) setProfile(data)
     return data
   }, [])
@@ -151,7 +161,19 @@ export function AuthProvider({ children }) {
     })
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null)
+      // TOKEN_REFRESHED fires on tab focus and on a timer, and each one hands
+      // back a freshly deserialised user. Swapping the object for an identical
+      // one gave `user` a new identity, which remounted everything keyed on it
+      // and flashed every list in the adviser portal. Keep the old object when
+      // nothing about the person has actually changed.
+      setUser(prev => {
+        const next = session?.user ?? null
+        if (!prev || !next) return next
+        const same = prev.id === next.id
+          && prev.email === next.email
+          && prev.updated_at === next.updated_at
+        return same ? prev : next
+      })
       if (session?.user) {
         fetchProfile(session.user.id)
         fetchDelegateInvites(session.user.email)
@@ -250,7 +272,7 @@ export function AuthProvider({ children }) {
 
   return (
     <AuthContext.Provider value={{
-      user, profile, loading,
+      user, profile, loading, profileError,
       delegateInvites, fetchDelegateInvites,
       signUp, signIn, signInWithMagicLink, signOut,
       updateProfile, refreshProfile,

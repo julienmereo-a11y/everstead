@@ -1,18 +1,57 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Navigate, useLocation, useSearchParams } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { useAuth } from '../contexts/AuthContext'
 
-const Spinner = () => (
-  <div className="min-h-screen bg-stone-50 flex items-center justify-center">
-    <div className="flex flex-col items-center gap-4">
-      <div className="w-10 h-10 border-2 border-navy-200 border-t-navy-700 rounded-full animate-spin" />
-      <p className="text-sm text-stone-500">Loading your plan…</p>
+const Spinner = () => {
+  const { t } = useTranslation()
+  return (
+    <div className="min-h-screen bg-stone-50 flex items-center justify-center">
+      <div className="flex flex-col items-center gap-4">
+        <div className="w-10 h-10 border-2 border-navy-200 border-t-navy-700 rounded-full animate-spin" />
+        <p className="text-sm text-stone-500">{t('accountLoad.loading')}</p>
+      </div>
     </div>
-  </div>
-)
+  )
+}
+
+// The profile fetch failing used to leave the spinner up forever, because the
+// only thing downstream of it was `if (!profile) return <Spinner />`. A person
+// stuck here has no way back to a working screen except closing the tab.
+const ProfileProblem = ({ onRetry, onSignOut }) => {
+  const { t } = useTranslation()
+  const [retrying, setRetrying] = useState(false)
+  const retry = async () => {
+    setRetrying(true)
+    try { await onRetry?.() } finally { setRetrying(false) }
+  }
+  return (
+    <div className="min-h-screen bg-stone-50 flex items-center justify-center px-6">
+      <div className="max-w-md w-full bg-white border border-stone-200 rounded-2xl px-6 py-7 text-center">
+        <h1 className="text-lg font-semibold text-navy-900">{t('accountLoad.title')}</h1>
+        <p className="text-sm text-stone-600 mt-2 leading-relaxed">{t('accountLoad.body')}</p>
+        <div className="flex flex-col sm:flex-row gap-3 mt-6">
+          <button
+            onClick={retry}
+            disabled={retrying}
+            className="flex-1 text-sm font-semibold text-white bg-navy-800 px-4 py-2.5 rounded-full hover:bg-navy-900 transition-colors disabled:opacity-50"
+          >
+            {retrying ? t('accountLoad.retrying') : t('accountLoad.retry')}
+          </button>
+          <button
+            onClick={onSignOut}
+            className="flex-1 text-sm font-semibold text-navy-800 border border-stone-200 px-4 py-2.5 rounded-full hover:bg-stone-50 transition-colors"
+          >
+            {t('accountLoad.signOut')}
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+}
 
 export default function ProtectedRoute({ children }) {
-  const { user, profile, loading } = useAuth()
+  const { user, profile, loading, profileError, refreshProfile, signOut } = useAuth()
   const location = useLocation()
   const [searchParams] = useSearchParams()
   const isDemo     = searchParams.get('demo') === 'true'
@@ -21,7 +60,9 @@ export default function ProtectedRoute({ children }) {
   if (isDemo) return children
   if (loading) return <Spinner />
   if (!user) return <Navigate to="/login" state={{ from: location }} replace />
-  if (!profile) return <Spinner />
+  if (!profile) return profileError
+    ? <ProfileProblem onRetry={refreshProfile} onSignOut={signOut} />
+    : <Spinner />
 
   const isDelegateOnly   = profile.role === 'delegate'
   const isAdviser        = profile.plan === 'advisor'   // advisers use the adviser portal, not B2C checkout

@@ -135,5 +135,13 @@
     "copied": "Copied",
     "share": "Share",
     "dismiss": "Not now"
+  },
+  "accountLoad": {
+    "loading": "Loading your plan…",
+    "title": "We could not load your account",
+    "body": "Your details are safe. Something went wrong reading them just now, which is usually a connection that dropped. Try again, and if it keeps happening write to us at hello@everstead.care.",
+    "retry": "Try again",
+    "retrying": "Trying…",
+    "signOut": "Sign out"
   }
 }
