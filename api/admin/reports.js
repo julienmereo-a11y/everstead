@@ -1,5 +1,6 @@
 import { createClient } from '@supabase/supabase-js'
 import { withSentry } from '../_lib/sentry.js'
+import { requireAdmin } from '../_lib/admin-auth.js'
 import { notifyFirmOfActivation } from '../_lib/adviser-notify.js'
 
 const supabase = createClient(
@@ -8,16 +9,16 @@ const supabase = createClient(
 )
 
 // Admin-only: list and action death/incapacity reports from the reports table.
-// Gated by the caller's Supabase JWT + profiles.role === 'admin' (same model as
-// AdminProtectedRoute). reports has RLS with no policies, so all access is here.
-async function requireAdmin(req) {
-  const token = (req.headers.authorization || '').replace(/^Bearer\s+/i, '')
-  if (!token) return null
-  const { data: { user }, error } = await supabase.auth.getUser(token)
-  if (error || !user) return null
-  const { data: profile } = await supabase.from('profiles').select('role').eq('id', user.id).maybeSingle()
-  return profile?.role === 'admin' ? user : null
-}
+// reports has RLS with no policies, so all access is here.
+//
+// This file used to define its own requireAdmin that checked profiles.role and
+// nothing else. The shared helper additionally demands aal2, and its comment
+// says plainly that a stolen password alone must not reach the admin surface.
+// This is the endpoint where that matters most: it lists every death report
+// (name, date and place of death, certificate number, reporter contact) and
+// can stamp owner_status = 'deceased' on any profile, which opens that member's
+// vault to their delegates and releases their sealed messages. It now uses the
+// same guard as every other admin route.
 
 // Map a reports row to the shape the AdminPanel UI renders.
 function toUi(r) {

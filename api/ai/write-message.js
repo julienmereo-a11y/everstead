@@ -50,7 +50,7 @@ Write this as a warm, heartfelt personal letter from me to ${recipientName}.`
     res.status(200).json({ message: message.content[0].text })
   } catch (error) {
     console.error('write-message error:', error)
-    captureException(err, { endpoint: 'ai/write-message' })
+    captureException(error, { endpoint: 'ai/write-message' })
     res.status(500).json({ error: 'Failed to write message. Please try again.' })
   }
 }

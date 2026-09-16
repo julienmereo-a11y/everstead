@@ -1,5 +1,5 @@
 import { createClient } from '@supabase/supabase-js'
-import { sendAdviserInvite, sendAdviserAddedNotice } from '../_lib/adviser-email.js'
+import { sendAdviserInvite } from '../_lib/adviser-email.js'
 import { withSentry, captureException } from '../_lib/sentry.js'
 
 // Adviser-facing: a firm OWNER manages their team seats. Service-role client;
@@ -33,19 +33,23 @@ async function handler(req, res) {
     if (action === 'invite') {
       const email = String(req.body.email || '').trim().toLowerCase()
       if (!email) return res.status(400).json({ error: 'An email is required.' })
+      // An invitation is an offer, not a fact about someone else's account.
+      //
+      // This used to look the address up, mark the person an ACCEPTED member
+      // immediately and overwrite their plan. Nothing checked that the address
+      // belonged to the firm or that its owner had agreed, so any firm could
+      // name a paying member's email and both enrol them and take their plan
+      // away. Everyone now goes through the same pending invite, and the plan
+      // changes only when they accept it themselves.
       const { data: prof } = await db.from('profiles').select('id').ilike('email', email).maybeSingle()
-      const row = { adviser_id: ctx.adviserId, email, role: 'member' }
-      if (prof?.id) { row.user_id = prof.id; row.invite_status = 'accepted'; row.accepted_at = new Date().toISOString() }
+      const row = { adviser_id: ctx.adviserId, email, role: 'member', invite_status: 'pending' }
       const { data, error } = await db.from('adviser_members')
         .upsert(row, { onConflict: 'adviser_id,email' }).select().single()
       if (error) throw error
       const { data: firm } = await db.from('advisers').select('firm_name').eq('id', ctx.adviserId).single()
-      if (prof?.id) {
-        await db.from('profiles').update({ plan: 'advisor' }).eq('id', prof.id)
-        await sendAdviserAddedNotice({ email, firmName: firm?.firm_name })
-      } else {
-        await sendAdviserInvite({ email, firmName: firm?.firm_name, token: data.invite_token })
-      }
+      // Same email either way: the person decides, and claim_adviser_invites
+      // flips them to accepted when they act on it.
+      await sendAdviserInvite({ email, firmName: firm?.firm_name, token: data.invite_token })
       return res.status(200).json({ member: data, linked: !!prof?.id })
     }
 

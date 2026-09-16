@@ -219,7 +219,10 @@ export default function DelegateDashboard() {
       setOwner({
         full_name:    ownerInfo?.owner_name  ?? null,
         email:        ownerInfo?.owner_email ?? null,
-        owner_status: trustedPerson.owner_status ?? null,
+        // owner_status lives on profiles, not on the trusted_people row. Reading
+        // it off trustedPerson always gave undefined, so the after-death view
+        // never opened. get_invite_details now returns it.
+        owner_status: ownerInfo?.owner_status ?? null,
         plan:         null,
       })
 
@@ -1858,8 +1861,11 @@ function ReportDeathPanel({ owner, invite, isDemo, onSubmit }) {
     setError('')
     setSaving(true)
     try {
-      await new Promise(r => setTimeout(r, 900))
-      onSubmit?.({
+      // Await the submission itself, not a timer. The 900ms sleep was the only
+      // thing being awaited, so onSubmit's rejection escaped as an unhandled
+      // promise and setStep('submitted') ran regardless: a failed death report
+      // showed the green "Report received" screen and nothing was recorded.
+      await onSubmit?.({
         type: 'death',
         owner_name: owner?.full_name || 'Unknown',
         owner_email: owner?.email || '',
@@ -2142,8 +2148,8 @@ function ReportIncidentPanel({ owner, invite, isDemo, onSubmit }) {
     setError('')
     setSaving(true)
     try {
-      await new Promise(r => setTimeout(r, 900))
-      onSubmit?.({
+      // Same bug as the death form: the timer was awaited, the submission was not.
+      await onSubmit?.({
         type: 'incident',
         owner_name: owner?.full_name || 'Unknown',
         owner_email: owner?.email || '',

@@ -25,6 +25,22 @@ async function handler(req, res) {
     return res.status(400).json({ error: 'Payment not confirmed' })
   }
 
+  // What was PAID for is what the intent says, not what the body says.
+  //
+  // gift-payment-intent.js writes { plan, years } into the intent metadata at
+  // the moment the price is calculated. Without comparing them, a buyer could
+  // pay for the cheapest gift and then post that same paymentIntentId with a
+  // richer plan and more years, and receive a code for it. The metadata is the
+  // only record of what the customer actually agreed to pay.
+  const paidPlan  = intent.metadata?.plan
+  const paidYears = intent.metadata?.years
+  if (!paidPlan || !paidYears) {
+    return res.status(400).json({ error: 'That payment is not a gift purchase.' })
+  }
+  if (String(plan) !== String(paidPlan) || String(years) !== String(paidYears)) {
+    return res.status(409).json({ error: 'The gift does not match the payment. Please start again.' })
+  }
+
   // Prevent duplicate confirms
   const { data: existing } = await supabase.from('gift_codes').select('id').eq('stripe_payment_intent_id', paymentIntentId).single()
   if (existing) return res.status(200).json({ ok: true, message: 'Already confirmed' })
@@ -35,8 +51,8 @@ async function handler(req, res) {
   const sendNow = sendAt.getTime() <= Date.now() + 5 * 60 * 1000
 
   const { data: gift, error } = await supabase.from('gift_codes').insert({
-    plan,
-    years:                    Number(years),
+    plan:                     paidPlan,          // from the intent, never the body
+    years:                    Number(paidYears),
     gifter_name:              gifterName || null,
     gifter_email:             gifterEmail,
     recipient_name:           recipientName || null,

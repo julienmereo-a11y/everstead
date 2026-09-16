@@ -84,7 +84,7 @@ Give them personalised coaching and one specific next action.`
     res.status(200).json({ coaching })
   } catch (error) {
     console.error('readiness-coach error:', error)
-    captureException(err, { endpoint: 'ai/readiness-coach' })
+    captureException(error, { endpoint: 'ai/readiness-coach' })
     res.status(500).json({ error: 'Failed to generate coaching. Please try again.' })
   }
 }

@@ -3,6 +3,7 @@ import { createClient } from '@supabase/supabase-js'
 import { Resend } from 'resend'
 import { withSentry, captureException } from '../_lib/sentry.js'
 import { translator, emailDate } from '../_lib/email-i18n.js'
+import { requireAdmin } from '../_lib/admin-auth.js'
 
 const stripe   = new Stripe(process.env.STRIPE_SECRET_KEY)
 const supabase = createClient(
@@ -37,7 +38,10 @@ async function handler(req, res) {
   // Admin-only: suspend/unsuspend any account, extend any trial.
   const ADMIN_ONLY = ['suspend-user', 'unsuspend-user', 'extend-trial']
   if (ADMIN_ONLY.includes(action)) {
-    if (!isAdmin) return res.status(403).json({ error: 'Forbidden' })
+    // role alone is not enough here. These actions suspend any account and
+    // extend any trial, so they sit behind the same second factor as every
+    // other admin surface rather than behind a password that could be stolen.
+    if (!isAdmin || !(await requireAdmin(req))) return res.status(403).json({ error: 'Forbidden' })
   } else {
     // Self-service (cancel / reactivate): a non-admin may only act on their OWN
     // subscription. Admins may act on anyone's.

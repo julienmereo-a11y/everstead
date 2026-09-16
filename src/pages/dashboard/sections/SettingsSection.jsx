@@ -10,6 +10,10 @@ import { PLANS, redirectToCustomerPortal } from '../../../lib/stripe'
 import { Field, SectionShell, input, primaryBtn, secondaryBtn } from '../../dashboard/ui'
 import { AdviserSharingCard } from './AdviserSection'
 import { AddressesCard } from './AddressesCard'
+// Used at the bottom of this file. Its absence crashed the Settings tab for
+// every real user: the render guard is !isDemo, so the demo dashboard (which
+// is what gets clicked through in testing) never reached the missing binding.
+import SendToParentsCard from '../../../components/SendToParentsCard'
 import { AlertCircle, Bell, Check, Copy, CreditCard, Download, ExternalLink, Gift, Globe, Loader2, Lock, ShieldCheck, Sparkles, Users } from 'lucide-react'
 import { Trans, useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'

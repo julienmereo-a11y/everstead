@@ -675,6 +675,9 @@ export default function Dashboard() {
         documentCount={documents.filter(d => d.status !== 'missing').length}
         contactCount={people.length}
         instructionCount={instructions.length}
+        country={activeProfile.country}
+        assetCountries={activeProfile.asset_countries}
+        lang={activeProfile.language}
       />
     )}
     {showWelcome && !isDemo && (
@@ -712,7 +715,11 @@ export default function Dashboard() {
 // ─────────────────────────────────────────────────────────────
 // OWNER AI GUIDE — floating chat widget
 // ─────────────────────────────────────────────────────────────
-function OwnerAIGuide({ userName, plan, accountCount, documentCount, contactCount, instructionCount }) {
+// country, assetCountries and lang arrive as props. They used to be read off
+// activeProfile, which is declared inside Dashboard() and is not in scope in
+// this sibling function, so every send threw a ReferenceError into the catch
+// below and the coach answered with its error string every single time.
+function OwnerAIGuide({ userName, plan, accountCount, documentCount, contactCount, instructionCount, country, assetCountries, lang }) {
   const { t } = useTranslation('dashboard')
   const [open, setOpen] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -750,7 +757,7 @@ function OwnerAIGuide({ userName, plan, accountCount, documentCount, contactCoun
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${session?.access_token}` },
         body: JSON.stringify({
           type: 'owner-guide',
-          context: { userName, plan, accountCount, documentCount, contactCount, instructionCount, country: activeProfile?.country, assetCountries: activeProfile?.asset_countries, lang: activeProfile?.language },
+          context: { userName, plan, accountCount, documentCount, contactCount, instructionCount, country, assetCountries, lang },
           messages: next,
         }),
       })

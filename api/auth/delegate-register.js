@@ -75,11 +75,33 @@ async function logRateLimit(ip) {
   }
 }
 
+const KNOWN_MODES = new Set(['accept-invite', 'register', 'admin', 'adviser', 'delegate'])
+
 async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).end()
 
   let { email, password } = req.body
   const { name, mode, wantsTrial, token } = req.body
+
+  // The throttle has to sit here, above every branch, not inside two of them.
+  //
+  // This handler ends in a server-side password grant that uses the service
+  // role key specifically to bypass captcha. Previously the rate limit lived
+  // inside `mode === 'register'` and `mode === 'accept-invite'`, so a request
+  // with no mode at all skipped both and reached that grant: 200 with session
+  // tokens on a correct password, 401 on a wrong one, no captcha, no lockout.
+  // That is a credential-stuffing oracle against every account, and it is the
+  // reason this check is unconditional and runs before anything else.
+  const ip = (req.headers['x-forwarded-for'] || '').split(',')[0].trim() || 'unknown'
+  if (await checkRateLimit(ip)) {
+    return res.status(429).json({ error: 'Too many requests. Please try again in 15 minutes.' })
+  }
+  await logRateLimit(ip)
+
+  // An unrecognised mode must not fall through to the sign-in either.
+  if (mode !== undefined && !KNOWN_MODES.has(mode)) {
+    return res.status(400).json({ error: 'Unknown mode' })
+  }
 
   // One-tap acceptance of a trusted-person invitation. The invite token was
   // emailed to this address, which is the proof of ownership the password
@@ -88,9 +110,6 @@ async function handler(req, res) {
   // Falls through to the sign-in at the bottom with the generated credentials.
   if (mode === 'accept-invite') {
     if (!token) return res.status(400).json({ error: 'Missing token' })
-    const ip = (req.headers['x-forwarded-for'] || '').split(',')[0].trim() || 'unknown'
-    if (await checkRateLimit(ip)) return res.status(429).json({ error: 'Too many requests. Please try again in 15 minutes.' })
-    await logRateLimit(ip)
     const { data: rows } = await supabase.rpc('get_invite_details', { p_token: String(token) })
     const inv = rows?.[0]
     if (!inv || inv.invite_status !== 'pending') return res.status(410).json({ error: 'invite_unavailable' })
@@ -120,16 +139,6 @@ async function handler(req, res) {
   }
 
   if (!email || !password) return res.status(400).json({ error: 'Missing fields' })
-
-  // Rate limit — only applies to new account registration, not sign-in
-  if (mode === 'register') {
-    const ip        = (req.headers['x-forwarded-for'] || '').split(',')[0].trim() || 'unknown'
-    const throttled = await checkRateLimit(ip)
-    if (throttled) {
-      return res.status(429).json({ error: 'Too many requests. Please try again in 15 minutes.' })
-    }
-    await logRateLimit(ip)
-  }
 
   if (mode === 'admin') {
     // Validate the admin invite token before creating the user

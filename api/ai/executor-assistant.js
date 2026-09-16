@@ -78,7 +78,7 @@ Rules:
     res.status(200).json({ response: message.content[0].text })
   } catch (error) {
     console.error('executor-assistant error:', error)
-    captureException(err, { endpoint: 'ai/executor-assistant' })
+    captureException(error, { endpoint: 'ai/executor-assistant' })
     res.status(500).json({ error: 'Failed to get a response. Please try again.' })
   }
 }

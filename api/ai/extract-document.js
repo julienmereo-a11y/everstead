@@ -85,7 +85,7 @@ Return ONLY valid JSON with these exact field names. No explanation, no markdown
     res.status(200).json({ extracted })
   } catch (error) {
     console.error('extract-document error:', error)
-    captureException(err, { endpoint: 'ai/extract-document' })
+    captureException(error, { endpoint: 'ai/extract-document' })
     res.status(500).json({ error: 'Failed to scan document. Please fill in details manually.' })
   }
 }

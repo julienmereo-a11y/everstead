@@ -69,7 +69,7 @@ Extract structured vault entries from these answers.`
     res.status(200).json(result)
   } catch (error) {
     console.error('process-onboarding error:', error)
-    captureException(err, { endpoint: 'ai/process-onboarding' })
+    captureException(error, { endpoint: 'ai/process-onboarding' })
     res.status(500).json({ error: 'Failed to process onboarding. Please try again.' })
   }
 }

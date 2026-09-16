@@ -52,7 +52,7 @@ Write these as warm, practical instructions in my voice, addressed directly to m
     res.status(200).json({ instructions: message.content[0].text })
   } catch (error) {
     console.error('write-instructions error:', error)
-    captureException(err, { endpoint: 'ai/write-instructions' })
+    captureException(error, { endpoint: 'ai/write-instructions' })
     res.status(500).json({ error: 'Failed to write instructions. Please try again.' })
   }
 }
