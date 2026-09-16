@@ -297,8 +297,11 @@ const COPY = {
   },
 }
 
+// A full document with a <body>, like every other template here: withPreheader
+// injects the hidden preview line straight after the body tag, so a fragment
+// silently drops it and the inbox shows the first line of copy instead.
 function exportEmailHtml(t, filename) {
-  return `
+  return `<!DOCTYPE html><html><body style="margin:0;">
   <div style="background:#f5f4f0;padding:32px 0;font-family:Georgia,serif;">
     <div style="max-width:560px;margin:0 auto;background:#fff;border-radius:16px;padding:32px;">
       <p style="margin:0 0 24px;color:#0d1628;font-size:18px;letter-spacing:0.3px;">Everstead</p>
@@ -309,5 +312,5 @@ function exportEmailHtml(t, filename) {
       <p style="margin:0;color:#78716c;font-size:13px;line-height:1.6;">${t('didntAsk')}</p>
       <p style="margin:24px 0 0;color:#a8a29e;font-size:12px;">${filename}</p>
     </div>
-  </div>`
+  </div></body></html>`
 }
