@@ -102,7 +102,7 @@
         "L'accès d'urgence ne s'ouvre qu'après vérification humaine",
         "Web, iOS et Android",
         "Aucun profil publicitaire, aucune vente de données",
-        "Données hébergées à Londres chez AWS, sous le UK GDPR"
+        "Données hébergées à Londres, chez AWS"
       ]
     },
     "final": {
@@ -211,7 +211,7 @@
           },
           {
             "q": "Où les données sont-elles hébergées ?",
-            "a": "À Londres, chez Amazon Web Services, sous le UK GDPR. Everstead est une société immatriculée au Royaume-Uni et le contenu d'un coffre ne quitte pas le Royaume-Uni. Nous préférons le dire clairement plutôt que de le passer sous silence : si un hébergement en France est une exigence de votre organisation, dites-le nous lors de l'échange. Chaque sous-traitant que nous utilisons est nommé sur notre page dédiée."
+            "a": "À Londres, chez Amazon Web Services. Everstead est une société immatriculée au Royaume-Uni et le contenu d'un coffre ne quitte pas le Royaume-Uni. Nous préférons le dire clairement plutôt que de le passer sous silence : si un hébergement en France est une exigence de votre organisation, dites-le nous lors de l'échange. Chaque sous-traitant que nous utilisons est nommé sur notre page dédiée."
           }
         ]
       },
@@ -312,7 +312,7 @@
           },
           {
             "q": "Où les données sont-elles hébergées ?",
-            "a": "À Londres, chez Amazon Web Services, sous le UK GDPR. Everstead est une société immatriculée au Royaume-Uni et le contenu d'un coffre ne quitte pas le Royaume-Uni. Nous préférons le dire clairement plutôt que de le passer sous silence : si un hébergement en France est une exigence de votre organisation, dites-le nous lors de l'échange. Chaque sous-traitant que nous utilisons est nommé sur notre page dédiée."
+            "a": "À Londres, chez Amazon Web Services. Everstead est une société immatriculée au Royaume-Uni et le contenu d'un coffre ne quitte pas le Royaume-Uni. Nous préférons le dire clairement plutôt que de le passer sous silence : si un hébergement en France est une exigence de votre organisation, dites-le nous lors de l'échange. Chaque sous-traitant que nous utilisons est nommé sur notre page dédiée."
           }
         ]
       },
@@ -415,7 +415,7 @@
           },
           {
             "q": "Où les données sont-elles hébergées ?",
-            "a": "À Londres, chez Amazon Web Services, sous le UK GDPR. Everstead est une société immatriculée au Royaume-Uni et le contenu d'un coffre ne quitte pas le Royaume-Uni. Nous préférons le dire clairement plutôt que de le passer sous silence : si un hébergement en France est une exigence de votre organisation, dites-le nous lors de l'échange. Chaque sous-traitant que nous utilisons est nommé sur notre page dédiée."
+            "a": "À Londres, chez Amazon Web Services. Everstead est une société immatriculée au Royaume-Uni et le contenu d'un coffre ne quitte pas le Royaume-Uni. Nous préférons le dire clairement plutôt que de le passer sous silence : si un hébergement en France est une exigence de votre organisation, dites-le nous lors de l'échange. Chaque sous-traitant que nous utilisons est nommé sur notre page dédiée."
           }
         ]
       },
@@ -512,7 +512,7 @@
         },
         {
           "q": "Est-ce différent en France ?",
-          "a": "Les mêmes montants en euros. Nous ne sommes pas moins chers en France, et les coffres sont hébergés à Londres sous le UK GDPR dans les deux cas, ce que nous préférons dire d'emblée plutôt qu'à la fin d'un processus d'achat."
+          "a": "Les mêmes montants en euros. Nous ne sommes pas moins chers en France, et les coffres sont hébergés à Londres dans les deux cas, ce que nous préférons dire d'emblée plutôt qu'à la fin d'un processus d'achat."
         }
       ]
     },
