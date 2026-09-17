@@ -58,7 +58,7 @@
       ]
     },
     "why": {
-      "eyebrow": "Pourquoi les organisations nous font entrer",
+      "eyebrow": "Pourquoi les organisations nous choisissent",
       "title": "Trois raisons pour lesquelles cela fonctionne.",
       "items": [
         {
@@ -111,6 +111,11 @@
       "ctaPrimary": "Réserver une démo",
       "ctaSecondary": "Écrire à hello@everstead.care",
       "note": "Nous travaillons en direct avec nos premières organisations partenaires."
+    },
+    "product": {
+      "eyebrow": "Ce que vous obtenez",
+      "title": "Ce qu’il fait, concrètement.",
+      "pricingLink": "Voir la tarification"
     }
   },
   "verticals": {

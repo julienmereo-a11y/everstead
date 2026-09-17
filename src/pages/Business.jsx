@@ -34,6 +34,10 @@ export default function Business() {
   const why = t('hub.why.items', { returnObjects: true })
   const steps = t('hub.how.steps', { returnObjects: true })
   const points = t('hub.trust.points', { returnObjects: true })
+  // The six things the product does, from the pricing page's own keys.
+  const productFeatures = t('pricing.exchange.features', { returnObjects: true, defaultValue: [] })
+  // Basename-relative: the French router carries /fr, so a Link must not repeat it.
+  const pricingPath = lang === 'fr' ? '/entreprises/tarifs' : '/business/pricing'
   // Guarded the way the vertical pages guard theirs: when there is nothing
   // genuinely ahead, the section is absent rather than describing shipped work.
   const nextItems = t('hub.next.items', { returnObjects: true, defaultValue: [] })
@@ -144,6 +148,33 @@ export default function Business() {
                   </Link>
                 )
               })}
+            </div>
+          </div>
+        </section>
+
+        {/* ── WHAT YOU GET ──
+            The one thing the hub never said: what the product does. These six
+            lines already exist on the pricing page in both languages; the hub
+            reads the same keys so there is one place to keep them true. */}
+        <section className={`py-20 lg:py-28 ${SECTION_X}`}>
+          <div className="max-w-[1200px] mx-auto">
+            <div className="reveal max-w-[680px] mb-10 lg:mb-14">
+              <span className="section-label section-label-light">{t('hub.product.eyebrow')}</span>
+              <h2 className="font-display font-light text-navy-950 text-balance m-0 leading-[1.1] text-[clamp(2.125rem,3.4vw,3.125rem)]">{t('hub.product.title')}</h2>
+            </div>
+            <ol className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 m-0 p-0 list-none">
+              {productFeatures.map((line, i) => (
+                <li key={line} className={`reveal reveal-delay-${(i % 3) + 1} rounded-2xl border border-stone-200 bg-white p-7 flex gap-4`}>
+                  <span className="font-display text-[22px] leading-none text-navy-300 shrink-0 select-none" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+                  <p className="m-0 text-[17px] leading-[1.45] text-navy-950">{line}</p>
+                </li>
+              ))}
+            </ol>
+            <div className="reveal mt-8 flex flex-wrap items-center gap-x-6 gap-y-2">
+              <p className="m-0 text-[15px] text-stone-600">{t('pricing.exchange.note')}</p>
+              <Link to={pricingPath} onClick={() => cta('pricing_from_hub')} className="inline-flex items-center gap-1.5 text-[15px] font-semibold text-navy-800 hover:text-navy-950 transition-colors">
+                {t('hub.product.pricingLink')} <ArrowRight size={16} />
+              </Link>
             </div>
           </div>
         </section>

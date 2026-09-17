@@ -111,6 +111,11 @@
       "ctaPrimary": "Book a demo",
       "ctaSecondary": "Email hello@everstead.care",
       "note": "We are working personally with our first partner organisations."
+    },
+    "product": {
+      "eyebrow": "What you get",
+      "title": "What it actually does.",
+      "pricingLink": "See how it's priced"
     }
   },
   "verticals": {
