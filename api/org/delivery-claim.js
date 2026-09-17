@@ -16,7 +16,7 @@
 import crypto from 'node:crypto'
 import { createClient } from '@supabase/supabase-js'
 import { withSentry, captureException } from '../_lib/sentry.js'
-import { rateLimited } from '../_lib/rate-limit.js'
+import { rateLimited, emailKey } from '../_lib/rate-limit.js'
 import { hashCode, codeMatches } from '../_lib/mfa-crypto.js'
 import { sendClaimCodeEmail } from '../_lib/adviser-email.js'
 
@@ -43,13 +43,26 @@ async function handler(req, res) {
 
   // Public and unauthenticated: throttle hard, and separately per action so a
   // burst of guesses cannot also exhaust someone else's ability to send a code.
-  if (await rateLimited(req, `delivery-claim-${action}`, { max: action === 'verify' ? 12 : 6, windowMinutes: 15 })) {
+  //
+  // Keyed on the LINK, not the caller's IP. This is opened from an email on a
+  // phone, which reaches us through a carrier NAT shared by thousands, so an IP
+  // limit tight enough to matter would refuse people who had done nothing.
+  // One token asking for six codes in a quarter-hour is the real signal, and a
+  // token is 32 random bytes, so nobody is spraying across many of them.
+  // Guessing the code itself is already bounded per row by claim_attempts.
+  if (await rateLimited(req, `delivery-claim-${action}`, { key: emailKey(token), max: action === 'verify' ? 12 : 6, windowMinutes: 15 })) {
     return res.status(429).json({ error: 'Too many attempts. Please try again in a few minutes.' })
   }
 
   const { data: d } = await db.from('inbound_deliveries').select('*').eq('claim_token', token).maybeSingle()
   if (!d) return res.status(404).json({ error: 'This link is no longer valid.' })
-  if (d.status !== 'sent') return res.status(409).json({ error: 'This one has already been answered.', status: d.status })
+  // A downloaded delivery is still open for downloading again: the staged
+  // object is kept until expiry for exactly that, and a signed URL lasts five
+  // minutes on whatever connection a phone happens to have. It is closed to
+  // declining, which makes no sense once the file has been taken. Anything
+  // accepted, declined or expired is finished.
+  const open = d.status === 'sent' || (d.status === 'downloaded' && action !== 'decline')
+  if (!open) return res.status(409).json({ error: 'This one has already been answered.', status: d.status })
   if (expired(d)) {
     await db.from('inbound_deliveries').update({ status: 'expired' }).eq('id', d.id)
     await db.storage.from('deliveries').remove([d.storage_path]).catch(() => {})
