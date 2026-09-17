@@ -33,9 +33,9 @@
       "useCases": "Cas d'usage",
       "resources": "Ressources",
       "company": "Société",
-      "legal": "Informations légales",
-      "forFamilies": "Pour les familles",
-      "forBusiness": "Pour les entreprises"
+      "legal": "Légal",
+      "forFamilies": "Familles",
+      "forBusiness": "Entreprises"
     },
     "links": {
       "features": "Fonctionnalités",

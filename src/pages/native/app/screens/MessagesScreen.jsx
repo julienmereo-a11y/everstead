@@ -192,10 +192,20 @@ export default function MessagesScreen({ app }) {
     setMediaFile(null)
     setEditing(m)
     setMsgType(m.type || 'note')
+    // The select's options are people's full names. A stored recipient that
+    // no longer matches one exactly (a person renamed since, or a first name
+    // alone) left the select showing whoever came first in the list, so the
+    // sheet opened on a message for Sophie with Tom selected. Resolve to the
+    // person when one can be found; otherwise keep the stored name as is.
+    const stored = (m.recipient_name || '').trim()
+    const match = !m.recipient_email && stored
+      ? people.find(p => p.name === stored)
+        || people.find(p => p.name.toLowerCase().startsWith(stored.toLowerCase() + ' '))
+      : null
     setForm({
       recipient_kind:  m.recipient_email ? 'email' : 'person',
-      recipient_name:  m.recipient_name || '',
-      recipient_role:  m.recipient_role || '',
+      recipient_name:  match ? match.name : stored,
+      recipient_role:  match ? (match.role || '') : (m.recipient_role || ''),
       recipient_email: m.recipient_email || '',
       title:           m.title || '',
       content:         m.content || '',
@@ -345,7 +355,8 @@ export default function MessagesScreen({ app }) {
 
                 {m.content && <p className="rdet" style={{ marginTop: 8, lineHeight: 1.5, color: 'var(--color-stone-600)' }}>{m.content}</p>}
                 {!m.released && confirmId !== m.id && deleteId !== m.id && (
-                  <div className="fx" style={{ gap: 8, marginTop: 12, flexWrap: 'wrap' }}>
+                  <div className="fx col" style={{ gap: 8, marginTop: 12 }}>
+                  <div className="fx" style={{ gap: 8 }}>
                     <button className="btn btn-sm" onClick={() => { haptic.warning(); setConfirmId(m.id); setEditTiming(null); setDeleteId(null) }}>{t('messages.releaseNow')}</button>
                     <button
                       className="btn btn-sm"
@@ -358,6 +369,11 @@ export default function MessagesScreen({ app }) {
                     >
                       {m.release_timing === 'on_date' && m.release_at ? t('messages.changeDate') : t('messages.schedule')}
                     </button>
+                  </div>
+                  {/* Second row on purpose. One wrapping row left Delete orphaned
+                      on a line of its own, a destructive button alone in
+                      whitespace, which reads as a layout accident. */}
+                  <div className="fx" style={{ gap: 8 }}>
                     <button className="btn btn-sm" style={{ background: '#fff', color: 'var(--color-navy-800)', border: '1px solid var(--color-stone-200)' }} onClick={() => openEdit(m)}>{t('messages.edit')}</button>
                     <button
                       className="btn btn-sm"
@@ -366,6 +382,7 @@ export default function MessagesScreen({ app }) {
                     >
                       {t('messages.delete')}
                     </button>
+                  </div>
                   </div>
                 )}
                 {!m.released && deleteId === m.id && (
@@ -486,6 +503,15 @@ export default function MessagesScreen({ app }) {
                   }}
                 >
                   <option value="" disabled>{t('messages.selectPerson')}</option>
+                  {/* A recipient who is no longer among the trusted people (removed
+                      since the message was written, or never a full match) still
+                      has to be the option shown. Without this the browser fell
+                      back to the first person in the list, so a message for
+                      Sophie opened with Tom selected, and anyone who then
+                      "confirmed" the dropdown changed who the message was for. */}
+                  {form.recipient_name && !people.some(p => p.name === form.recipient_name) && (
+                    <option value={form.recipient_name}>{form.recipient_name}{form.recipient_role ? `, ${t('roles.' + form.recipient_role, { defaultValue: form.recipient_role })}` : ''}</option>
+                  )}
                   {people.length > 0
                     ? people.map(p => <option key={p.id} value={p.name}>{p.name}{p.role ? `, ${t('roles.' + p.role, { defaultValue: p.role })}` : ''}</option>)
                     : <option disabled>{t('messages.noPeopleYet')}</option>}

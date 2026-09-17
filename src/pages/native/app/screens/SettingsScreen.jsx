@@ -525,6 +525,22 @@ export default function SettingsScreen({ app }) {
         </div>
       </Card>
 
+      {/* Ahead of signing out and deleting, so the page ends on the two ways of
+          leaving and "take a copy first" comes before both. It had sat below
+          Sign out, where a section after a terminal action reads as an
+          afterthought. */}
+      <Card title={t('settings.yourData')}>
+        <p className="rdet" style={{ margin: '0 0 12px' }}>{t('settings.exportBody')}</p>
+        <button
+          className={`btn w100 ${exporting ? 'dis' : ''}`}
+          style={{ background: '#fff', color: 'var(--color-navy-800)', border: '1px solid var(--color-stone-200)' }}
+          onClick={exportData}
+          disabled={exporting}
+        >
+          {exporting ? t('settings.exportPreparing') : t('settings.exportSend')}
+        </button>
+      </Card>
+
       <button
         className="btn w100"
         style={{ background: confirmAction === 'signout' ? '#b91c1c' : '#fff', color: confirmAction === 'signout' ? '#fff' : '#b91c1c', border: '1px solid var(--color-stone-200)', marginTop: 6 }}
@@ -537,20 +553,6 @@ export default function SettingsScreen({ app }) {
         {confirmAction === 'signout' ? t('settings.confirmSignOut') : t('settings.signOut')}
       </button>
 
-      {/* Sits directly above deleting the account on purpose: the two belong to
-          the same conversation, and nobody should reach "delete everything"
-          without having passed "take a copy first". */}
-      <Card title={t('settings.yourData')}>
-        <p className="rdet" style={{ margin: '0 0 12px' }}>{t('settings.exportBody')}</p>
-        <button
-          className={`btn w100 ${exporting ? 'dis' : ''}`}
-          style={{ background: '#fff', color: 'var(--color-navy-800)', border: '1px solid var(--color-stone-200)' }}
-          onClick={exportData}
-          disabled={exporting}
-        >
-          {exporting ? t('settings.exportPreparing') : t('settings.exportSend')}
-        </button>
-      </Card>
 
       {!delOpen ? (
         <button
