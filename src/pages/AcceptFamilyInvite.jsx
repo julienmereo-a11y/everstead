@@ -7,6 +7,7 @@ import { useAuth } from '../contexts/AuthContext'
 import i18n from '../i18n'
 import enAcceptFamilyInvite from '../i18n/locales/en/acceptFamilyInvite.json'
 import frAcceptFamilyInvite from '../i18n/locales/fr/acceptFamilyInvite.json'
+import { passwordOk } from '../lib/passwordPolicy'
 
 // Self-registered namespace (keeps src/i18n/index.js untouched). Safe to move
 // into the central resources map later: re-adding the same bundle is a no-op.
@@ -313,11 +314,12 @@ export default function AcceptFamilyInvite() {
                             {showPw ? <EyeOff size={15} /> : <Eye size={15} />}
                           </button>
                         </div>
+                        <p className="text-xs text-stone-500 mt-1.5">{tc('passwordPolicy.rule')}</p>
                       </div>
 
                       <button
                         type="submit"
-                        disabled={loading || !form.fullName.trim() || form.password.length < 8}
+                        disabled={loading || !form.fullName.trim() || !passwordOk(form.password)}
                         className="btn-aurora w-full text-white font-semibold text-sm py-3.5 rounded-full transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                       >
                         {loading ? (

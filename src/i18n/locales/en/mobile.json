@@ -602,7 +602,9 @@
     "addrLoadFailed": "We could not read your addresses just now.",
     "addrRetry": "Try again",
     "addrConfirmRemove": "Remove {{email}}? Anything sent to that address will stop reaching this account. You can confirm it again later.",
-    "addrConfirmRemoveYes": "Yes, remove it"
+    "addrConfirmRemoveYes": "Yes, remove it",
+    "pwRule": "Use at least 8 characters, with an uppercase letter, a lowercase letter, a number and a symbol.",
+    "pwTooWeak": "That password will be refused. Use at least 8 characters, with an uppercase letter, a lowercase letter, a number and a symbol."
   },
   "aboutMe": {
     "title": "About Me",

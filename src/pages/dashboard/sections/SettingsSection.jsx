@@ -17,6 +17,7 @@ import SendToParentsCard from '../../../components/SendToParentsCard'
 import { AlertCircle, Bell, Check, Copy, CreditCard, Download, ExternalLink, Gift, Globe, Loader2, Lock, ShieldCheck, Sparkles, Users } from 'lucide-react'
 import { Trans, useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
+import { passwordOk } from '../../../lib/passwordPolicy'
 export function ManageBillingButton() {
   const { t } = useTranslation('dashboard')
   const [loading, setLoading] = useState(false)
@@ -406,6 +407,7 @@ export function SettingsSection({ adviser, profile, isDemo, updateProfile, refre
   const handlePasswordSave = async (e) => {
     e.preventDefault()
     if (pwForm.next !== pwForm.confirm) { setPwMsg({ type: 'error', text: t('settings.password.mismatch') }); return }
+    if (!passwordOk(pwForm.next)) { setPwMsg({ type: 'error', text: tc('passwordPolicy.tooWeak') }); return }
     if (isDemo) { setPwMsg({ type: 'ok', text: t('settings.password.demo') }); return }
     setPwSaving(true)
     try {

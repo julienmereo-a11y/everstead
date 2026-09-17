@@ -143,5 +143,10 @@
     "retry": "Try again",
     "retrying": "Trying…",
     "signOut": "Sign out"
+  },
+  "passwordPolicy": {
+    "rule": "Use at least 8 characters, with an uppercase letter, a lowercase letter, a number and a symbol.",
+    "tooWeak": "That password will be refused. Use at least 8 characters, with an uppercase letter, a lowercase letter, a number and a symbol.",
+    "leaked": "That password has appeared in a known data breach, so it cannot be used. Please choose another."
   }
 }

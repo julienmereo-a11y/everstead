@@ -4,9 +4,11 @@ import { Shield, CheckCircle2, Loader2, Eye, EyeOff, AlertCircle } from 'lucide-
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../contexts/AuthContext'
 import { Trans, useTranslation } from 'react-i18next'
+import { passwordOk } from '../lib/passwordPolicy'
 
 export default function DelegateRegister() {
   const { t } = useTranslation('delegateRegister')
+  const { t: tc } = useTranslation()
   const [searchParams] = useSearchParams()
   const navigate       = useNavigate()
   const token          = searchParams.get('token')
@@ -230,6 +232,7 @@ export default function DelegateRegister() {
                 {showPw ? <EyeOff size={15} /> : <Eye size={15} />}
               </button>
             </div>
+            {mode === 'register' && <p className="text-xs text-stone-500 mt-1.5">{tc('passwordPolicy.rule')}</p>}
           </div>
 
           {/* Trial upsell — only shown on register mode */}
@@ -256,7 +259,7 @@ export default function DelegateRegister() {
 
           <button
             type="submit"
-            disabled={submitting || !password}
+            disabled={submitting || !passwordOk(password)}
             className="btn-aurora w-full text-white font-semibold text-sm py-3.5 rounded-full transition-colors disabled:opacity-50 flex items-center justify-center gap-2 mt-2"
           >
             {submitting

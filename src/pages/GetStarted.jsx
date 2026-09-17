@@ -18,6 +18,7 @@ import { PLANS, getStripe } from '../lib/stripe'
 import { PRICING, marketPricing } from '../config/pricing'
 import { trackEvent } from '../lib/analytics'
 import { supabase } from '../lib/supabase'
+import { passwordOk, passwordProblems } from '../lib/passwordPolicy'
 
 // Self-registered namespace (page-scoped strings stay in this lazy chunk;
 // central src/i18n/index.js keeps only the shared always-loaded namespaces).
@@ -93,17 +94,18 @@ const GEO_CONFIG = {
 }
 
 // Password strength checker — `label` is an i18n key under passwordStrength.*
+// The meter scores the SAME five rules the server enforces, so "strong" and
+// "the button is enabled" mean the same thing. It previously gave a point for
+// length >= 12 and none for a symbol, which let it read "strong" on a password
+// the server would refuse — a meter that contradicts the button is worse than
+// no meter.
 function getPasswordStrength(pw) {
   if (!pw) return { score: 0, label: '', color: '' }
-  let score = 0
-  if (pw.length >= 8)  score++
-  if (pw.length >= 12) score++
-  if (/[A-Z]/.test(pw)) score++
-  if (/[0-9]/.test(pw)) score++
-  if (/[^A-Za-z0-9]/.test(pw)) score++
-  if (score <= 1) return { score, label: 'weak',   color: 'bg-red-400'   }
-  if (score <= 3) return { score, label: 'fair',   color: 'bg-amber-400' }
-  return              { score, label: 'strong', color: 'bg-emerald-500' }
+  const failed = passwordProblems(pw)
+  const score = Object.values(failed).filter(f => !f).length
+  if (score <= 2) return { score, label: 'weak',   color: 'bg-red-400'   }
+  if (score <= 4) return { score, label: 'fair',   color: 'bg-amber-400' }
+  return               { score, label: 'strong', color: 'bg-emerald-500' }
 }
 
 // ─────────────────────────────────────────────────────────────
@@ -400,7 +402,7 @@ export default function GetStarted() {
   const basicFieldsValid =
     form.fullName.trim().length > 1 &&
     /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email) &&
-    form.password.length >= 8
+    passwordOk(form.password)
 
   // ── GOOGLE SIGNUP ─────────────────────────────────────────────
   const handleGoogleSignup = async () => {

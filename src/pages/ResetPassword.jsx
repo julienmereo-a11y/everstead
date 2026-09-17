@@ -4,6 +4,7 @@ import { useNavigate, Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { Loader2, Eye, EyeOff, CheckCircle2, Shield } from 'lucide-react'
 import { supabase } from '../lib/supabase'
+import { passwordOk } from '../lib/passwordPolicy'
 
 // `label` is an i18n key suffix under login:reset.strength.*
 function getPasswordStrength(pw) {
@@ -21,6 +22,8 @@ function getPasswordStrength(pw) {
 
 export default function ResetPassword() {
   const { t } = useTranslation('login')
+  // The password rule lives in `common` so every form states it identically.
+  const { t: tc } = useTranslation()
   const navigate = useNavigate()
   const [password, setPassword]     = useState('')
   const [confirm, setConfirm]       = useState('')
@@ -49,7 +52,7 @@ export default function ResetPassword() {
   const handleSubmit = async (e) => {
     e.preventDefault()
     if (password !== confirm) { setError(t('reset.errors.mismatch')); return }
-    if (password.length < 8)  { setError(t('reset.errors.tooShort')); return }
+    if (!passwordOk(password)) { setError(tc('passwordPolicy.tooWeak')); return }
     setError(null)
     setSubmitting(true)
     try {

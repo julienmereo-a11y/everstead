@@ -143,5 +143,10 @@
     "retry": "Réessayer",
     "retrying": "Nouvelle tentative…",
     "signOut": "Se déconnecter"
+  },
+  "passwordPolicy": {
+    "rule": "Utilisez au moins 8 caractères, dont une majuscule, une minuscule, un chiffre et un symbole.",
+    "tooWeak": "Ce mot de passe sera refusé. Utilisez au moins 8 caractères, dont une majuscule, une minuscule, un chiffre et un symbole.",
+    "leaked": "Ce mot de passe figure dans une fuite de données connue, il ne peut donc pas être utilisé. Veuillez en choisir un autre."
   }
 }

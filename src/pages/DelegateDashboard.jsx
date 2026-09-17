@@ -60,6 +60,7 @@ import { useTranslation, Trans } from 'react-i18next'
 import i18n from '../i18n'
 import enDelegate from '../i18n/locales/en/delegate.json'
 import frDelegate from '../i18n/locales/fr/delegate.json'
+import { passwordOk } from '../lib/passwordPolicy'
 
 // Self-registered namespace (keeps src/i18n/index.js untouched). Safe to move
 // into the central resources map later: re-adding the same bundle is a no-op.
@@ -1473,6 +1474,8 @@ function PwInput({ id, label, field, pwForm, setPwForm, showPw, setShowPw, input
 
 function DelegateSettingsPanel({ invite, isDemo }) {
   const { t } = useTranslation('delegate')
+  // The password rule lives in `common` so every form states it identically.
+  const { t: tc } = useTranslation()
   const inputCls = 'w-full border border-stone-200 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-navy-300 bg-white'
 
   // Profile state — pre-filled from invite
@@ -1546,7 +1549,7 @@ function DelegateSettingsPanel({ invite, isDemo }) {
     e.preventDefault()
     setPwError('')
     if (pwForm.next !== pwForm.confirm) { setPwError(t('settings.pwMismatch')); return }
-    if (pwForm.next.length < 8) { setPwError(t('settings.pwTooShort')); return }
+    if (!passwordOk(pwForm.next)) { setPwError(tc('passwordPolicy.tooWeak')); return }
     setPwSaving(true)
     try {
       if (!isDemo) {

@@ -8,6 +8,7 @@ import { detectDeviceLanguage, detectDeviceCountry } from '../../../lib/deviceLa
 import { countryByCode } from '../../../config/countries'
 import { AccountsIcon, DocIcon, HeartIcon } from './icons'
 import { Lockup, TrustLine, artwork } from './components/Brand'
+import { passwordOk } from '../../../lib/passwordPolicy'
 
 // Google ships on BOTH platforms now that iOS pairs it with Sign in with Apple
 // (guideline 4.8 — offering third-party login on iOS requires Apple's too).
@@ -74,7 +75,11 @@ export default function MobileAuthFlow() {
   const goAuth = (m) => { setAuthMode(m); setAuthStep('form'); setError(null); setInfo(null); setMode('auth') }
 
   const canFinishOnboarding = name.trim().length > 0
-  const canForm = email.trim().length > 0 && pw.length > 0 && (authMode === 'signin' || name.trim().length > 0)
+  // Signing IN only needs a password typed — the rule applies to choosing a
+  // new one. Gating sign-in on it would lock out anyone whose existing
+  // password predates the rule, which is everybody.
+  const canForm = email.trim().length > 0
+    && (authMode === 'signin' ? pw.length > 0 : passwordOk(pw) && name.trim().length > 0)
 
   const applySession = async ({ access_token, refresh_token }) => {
     const { error: sErr } = await supabase.auth.setSession({ access_token, refresh_token })

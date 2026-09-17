@@ -602,7 +602,9 @@
     "addrLoadFailed": "Nous n'avons pas pu lire vos adresses à l'instant.",
     "addrRetry": "Réessayer",
     "addrConfirmRemove": "Retirer {{email}} ? Ce qui sera envoyé à cette adresse n'arrivera plus sur ce compte. Vous pourrez la confirmer à nouveau plus tard.",
-    "addrConfirmRemoveYes": "Oui, retirer"
+    "addrConfirmRemoveYes": "Oui, retirer",
+    "pwRule": "Utilisez au moins 8 caractères, dont une majuscule, une minuscule, un chiffre et un symbole.",
+    "pwTooWeak": "Ce mot de passe sera refusé. Utilisez au moins 8 caractères, dont une majuscule, une minuscule, un chiffre et un symbole."
   },
   "aboutMe": {
     "title": "À propos de moi",

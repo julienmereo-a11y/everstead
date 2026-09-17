@@ -10,6 +10,7 @@ import { useTranslation } from 'react-i18next'
 import SecScreen, { Busy } from '../components/SecScreen'
 import i18n from '../../../../i18n'
 import { COUNTRIES, countryDisplayName } from '../../../../config/countries'
+import { passwordOk } from '../../../../lib/passwordPolicy'
 
 // Stamped by vite at build time (date + git sha, see vite.config.js), so what
 // you read on the device is always the bundle actually running. Never edit by
@@ -172,7 +173,7 @@ export default function SettingsScreen({ app }) {
   }
   const savePassword = async () => {
     setPwMsg(null)
-    if (pw.next.length < 8) { setPwMsg({ ok: false, text: t('settings.pwTooShort') }); return }
+    if (!passwordOk(pw.next)) { setPwMsg({ ok: false, text: t('settings.pwTooWeak') }); return }
     if (pw.next !== pw.confirm) { setPwMsg({ ok: false, text: t('settings.pwNoMatch') }); return }
     if (app.demo) { setPwMsg({ ok: true, text: t('settings.pwUpdated') }); setPw({ next: '', confirm: '' }); return }
     setSavingPw(true)
