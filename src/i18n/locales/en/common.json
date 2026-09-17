@@ -33,7 +33,9 @@
       "useCases": "Use Cases",
       "resources": "Resources",
       "company": "Company",
-      "legal": "Legal"
+      "legal": "Legal",
+      "forFamilies": "For families",
+      "forBusiness": "For business"
     },
     "links": {
       "features": "Features",
@@ -57,7 +59,7 @@
       "contact": "Contact",
       "press": "Press",
       "bookDemo": "Book a Demo",
-      "gift": "🎁 Give as a gift",
+      "gift": "Give as a gift",
       "privacyPolicy": "Privacy Policy",
       "terms": "Terms of Service",
       "dataPromise": "Data Promise",
@@ -65,7 +67,17 @@
       "subprocessors": "Subprocessors",
       "cookiePolicy": "Cookie Policy",
       "accessibility": "Accessibility",
-      "mentionsLegales": "Legal notice"
+      "mentionsLegales": "Legal notice",
+      "families": "Families",
+      "parents": "Parents",
+      "executors": "Executors",
+      "agingAdults": "Ageing adults",
+      "bizOverview": "Overview",
+      "bizAdvisers": "Advisers",
+      "bizSolicitors": "Solicitors",
+      "bizCare": "Care providers",
+      "bizEmployers": "Employers",
+      "bizPricing": "Pricing"
     },
     "copyright": "© {{year}} Everstead Digital Ltd. All rights reserved.",
     "bottom": {

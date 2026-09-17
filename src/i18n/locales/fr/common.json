@@ -32,8 +32,10 @@
       "product": "Produit",
       "useCases": "Cas d'usage",
       "resources": "Ressources",
-      "company": "Entreprise",
-      "legal": "Informations légales"
+      "company": "Société",
+      "legal": "Informations légales",
+      "forFamilies": "Pour les familles",
+      "forBusiness": "Pour les entreprises"
     },
     "links": {
       "features": "Fonctionnalités",
@@ -57,7 +59,7 @@
       "contact": "Contact",
       "press": "Presse",
       "bookDemo": "Réserver une démo",
-      "gift": "🎁 Offrir Everstead",
+      "gift": "Offrir Everstead",
       "privacyPolicy": "Politique de confidentialité",
       "terms": "Conditions d'utilisation",
       "dataPromise": "Engagement sur vos données",
@@ -65,7 +67,17 @@
       "subprocessors": "Sous-traitants",
       "cookiePolicy": "Politique relative aux cookies",
       "accessibility": "Accessibilité",
-      "mentionsLegales": "Mentions légales"
+      "mentionsLegales": "Mentions légales",
+      "families": "Familles",
+      "parents": "Parents",
+      "executors": "Exécuteurs testamentaires",
+      "agingAdults": "Aînés",
+      "bizOverview": "Présentation",
+      "bizAdvisers": "Conseillers",
+      "bizSolicitors": "Notaires",
+      "bizCare": "Établissements",
+      "bizEmployers": "Employeurs",
+      "bizPricing": "Tarifs"
     },
     "copyright": "© {{year}} Everstead Digital Ltd. Tous droits réservés.",
     "bottom": {

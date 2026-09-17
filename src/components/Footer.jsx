@@ -59,14 +59,31 @@ const cols = [
       { key: 'changelog', href: '/changelog' },
     ],
   },
+  // Two audiences, two columns. The site is two trees now and the footer was
+  // still one: "For advisers" sat among the family use cases and "For business"
+  // and "Book a demo" were filed under Company, so a solicitor scanning the
+  // footer found the B2B world scattered across three columns.
   {
-    headingKey: 'useCases',
+    headingKey: 'forFamilies',
     links: [
-      { key: 'forFamilies', href: '/use-cases/families' },
-      { key: 'forParents', href: '/use-cases/parents' },
-      { key: 'forExecutors', href: '/use-cases/executors' },
-      { key: 'forAdvisers', href: '/business/advisers' },
+      { key: 'families', href: '/use-cases/families' },
+      { key: 'parents', href: '/use-cases/parents' },
+      { key: 'executors', href: '/use-cases/executors' },
+      { key: 'agingAdults', href: '/use-cases/aging-adults' },
       { key: 'familyVault', href: '/family-vault' },
+      { key: 'gift', href: '/gift' },
+    ],
+  },
+  {
+    headingKey: 'forBusiness',
+    links: [
+      { key: 'bizOverview', href: '/business' },
+      { key: 'bizAdvisers', href: '/business/advisers' },
+      { key: 'bizSolicitors', href: '/business/solicitors' },
+      { key: 'bizCare', href: '/business/care' },
+      { key: 'bizEmployers', href: '/business/employers' },
+      { key: 'bizPricing', href: '/business/pricing' },
+      { key: 'bookDemo', href: '/book-demo' },
     ],
   },
   {
@@ -84,11 +101,8 @@ const cols = [
     headingKey: 'company',
     links: [
       { key: 'about', href: '/about' },
-      { key: 'forBusiness', href: '/business' },
-      { key: 'contact', href: '/contact' },
       { key: 'press', href: '/press' },
-      { key: 'bookDemo', href: '/book-demo' },
-      { key: 'gift', href: '/gift' },
+      { key: 'contact', href: '/contact' },
     ],
   },
   {
@@ -148,7 +162,7 @@ function LanguageLink() {
 // a shorter footer in one language reads as finished, a full footer that dumps
 // the reader onto an English page reads as abandoned.
 const FR_EXTRA = new Set([
-  '/use-cases/families', '/use-cases/parents', '/use-cases/executors',
+  '/use-cases/families', '/use-cases/parents', '/use-cases/executors', '/use-cases/aging-adults',
   '/resources/blog', '/resources/guides', '/resources/checklists',
   '/resources/faqs', '/resources#tools',
 ])
@@ -160,25 +174,27 @@ export default function Footer() {
   return (
     <footer className="aurora-field aurora-dim text-stone-400">
       <div className="max-w-7xl mx-auto px-6 lg:px-8 py-16 lg:py-20">
-        <div className="grid grid-cols-2 lg:grid-cols-6 gap-10">
-          {/* Brand */}
-          <div className="col-span-2 lg:col-span-1 space-y-4">
+        {/* Brand: a band across the top rather than a seventh column, which is
+            what lets six link columns sit on one row at desktop. */}
+        <div className="lg:flex lg:items-start lg:justify-between lg:gap-10 mb-12 lg:mb-14">
+          <div className="space-y-4">
             <Link to="/">
               <img src="/logo-v2-white.png" alt="Everstead" className="h-10 w-auto" />
             </Link>
-            <p className="text-sm leading-relaxed text-stone-500 max-w-[220px]">
+            <p className="text-sm leading-relaxed text-stone-500 max-w-[300px]">
               {t('footer.tagline')}
             </p>
-            <p className="text-xs leading-relaxed text-stone-600 max-w-[240px]">
+            <p className="text-xs leading-relaxed text-stone-600 max-w-[340px]">
               {t('footer.legalNote')}
             </p>
-            <div className="pt-1">
-              <TrustpilotBadge />
-            </div>
-            <StoreBadges className="pt-2" />
           </div>
+          <div className="mt-6 lg:mt-0 flex flex-col items-start lg:items-end gap-3">
+            <TrustpilotBadge />
+            <StoreBadges />
+          </div>
+        </div>
 
-          {/* Columns */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-x-6 gap-y-10">
           {cols.map(col => (
             <div key={col.headingKey}>
               <h4 className="text-xs font-semibold uppercase tracking-widest text-stone-500 mb-4">{t(`footer.cols.${col.headingKey}`)}</h4>
