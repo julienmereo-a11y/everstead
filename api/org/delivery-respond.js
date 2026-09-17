@@ -17,7 +17,7 @@
 // purpose.
 import { createClient } from '@supabase/supabase-js'
 import { withSentry, captureException } from '../_lib/sentry.js'
-import { rateLimited } from '../_lib/rate-limit.js'
+import { rateLimited, emailKey } from '../_lib/rate-limit.js'
 import { ensureConnection, fileDeliveryIntoVault } from '../_lib/deliveries.js'
 
 const db = createClient(
@@ -36,7 +36,9 @@ async function handler(req, res) {
   const { data: { user }, error: authError } = await db.auth.getUser(bearer)
   if (authError || !user) return res.status(401).json({ error: 'Unauthorized' })
 
-  if (await rateLimited(req, 'delivery-respond', { max: 30, windowMinutes: 10 })) {
+  // Reached from the email link on a phone, i.e. through a carrier NAT, so the
+  // subject is the account and not the address the carrier shares.
+  if (await rateLimited(req, 'delivery-respond', { key: emailKey(user.email || user.id), max: 30, windowMinutes: 10 })) {
     return res.status(429).json({ error: 'Too many requests. Please try again in a few minutes.' })
   }
 
@@ -53,12 +55,21 @@ async function handler(req, res) {
   if (!delivery) return res.status(404).json({ error: 'That delivery no longer exists.' })
 
   // Three ways this delivery can be yours: it is already bound to you, it was
-  // sent to your address, or you hold the claim token from the email.
+  // sent to an address you have proved is yours, or you hold the claim token.
+  //
+  // The address test asks resolve_member_by_email, never auth.email(). A
+  // delivery sent to a work address before that address was linked carries no
+  // member_id. Once the address is linked, the dashboard lists it (its RLS goes
+  // through my_emails()), so comparing against the sign-in address alone
+  // refused the very person it was being shown to, with "sent to someone else".
   const email = (user.email || '').toLowerCase()
-  const mine =
+  let mine =
     delivery.member_id === user.id ||
-    (delivery.recipient_email || '').toLowerCase() === email ||
     (!!claimToken && claimToken === delivery.claim_token)
+  if (!mine && delivery.recipient_email) {
+    const { data: resolved } = await db.rpc('resolve_member_by_email', { p_email: delivery.recipient_email })
+    mine = resolved === user.id
+  }
   if (!mine) return res.status(403).json({ error: 'That delivery was sent to someone else.' })
 
   if (delivery.status !== 'sent') return res.status(409).json({ error: 'You have already answered this one.', status: delivery.status })

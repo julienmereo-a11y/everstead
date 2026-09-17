@@ -63,11 +63,20 @@ async function handler(req, res) {
     .eq('member_id', user.id).eq('org_id', conn.org_id).is('revoked_at', null)
 
   // Anything the organisation had already sent and the member had not answered
-  // is withdrawn with the link.
-  const { data: pending } = await db.from('inbound_deliveries')
-    .select('id, storage_path')
-    .eq('org_id', conn.org_id).eq('member_id', user.id).eq('status', 'sent')
-  if (pending?.length) {
+  // is withdrawn with the link. A delivery is theirs if it is bound to them OR
+  // was sent to an address they have since proved is theirs: one that arrived
+  // before the address was linked carries no member_id, and leaving it behind
+  // would let a later Accept quietly reopen the connection just ended.
+  const { data: extra } = await db.from('member_emails').select('email').eq('user_id', user.id)
+  const myEmails = [user.email, ...(extra || []).map(e => e.email)].filter(Boolean).map(e => String(e).toLowerCase())
+  const base = () => db.from('inbound_deliveries').select('id, storage_path').eq('org_id', conn.org_id).eq('status', 'sent')
+  const [{ data: bound }, { data: addressed }] = await Promise.all([
+    base().eq('member_id', user.id),
+    myEmails.length ? base().is('member_id', null).in('recipient_email', myEmails) : Promise.resolve({ data: [] }),
+  ])
+  const seen = new Set()
+  const pending = [...(bound || []), ...(addressed || [])].filter(p => !seen.has(p.id) && seen.add(p.id))
+  if (pending.length) {
     await db.from('inbound_deliveries')
       .update({ status: 'expired', responded_at: new Date().toISOString() })
       .in('id', pending.map(p => p.id))
