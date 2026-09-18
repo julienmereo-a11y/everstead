@@ -10,22 +10,11 @@
     "poweredBy": "· propulsé par Everstead",
     "eyebrow": "Premiers pas",
     "title": "Quelques minutes suffisent pour tout mettre en place.",
-    "subtitleFoundingLead": "Everstead+ vous est offert à vie.",
-    "subtitleFoundingBody": "Ajoutez votre carte pour réserver votre place de membre fondateur : elle ne sera jamais débitée et vous restez libre de résilier quand vous le voulez.",
     "subtitleReferralLead": "Vous avez été parrainé : 21 jours d'essai gratuit vous attendent.",
     "subtitleReferralBody": "Renseignez votre carte bancaire, aucun débit ne sera effectué avant le 21e jour.",
     "subtitleFreeLead": "Lancez-vous gratuitement, aucune carte bancaire n'est demandée.",
     "subtitleFreeBody": "Mettez l'essentiel en place avec votre assistant IA, puis passez à Everstead+ quand vous le souhaiterez.",
     "subtitleDefault": "{{days}} jours d'essai gratuit. Renseignez votre carte bancaire : aucun débit ne sera effectué avant la fin de l'essai."
-  },
-  "promo": {
-    "applied": "Offre fondateur appliquée : {{label}}.",
-    "code": "Code {{code}}",
-    "invalid": "Le code {{code}} n'a pas pu être appliqué ({{reason}}). Vous pouvez tout de même démarrer votre essai gratuit.",
-    "checking": "Vérification du code…",
-    "appliedAtCheckout": "· appliqué au paiement",
-    "fallbackInvalid": "Code non valide",
-    "fallbackError": "Impossible de vérifier le code"
   },
   "geo": {
     "loading": "Un instant…",
@@ -38,7 +27,6 @@
     "dismiss": "Fermer"
   },
   "billing": {
-    "billedAnnuallyLocked": "Facturation annuelle",
     "monthly": "Mensuel",
     "yearly": "Annuel",
     "savingActive": "✓ 2 mois offerts",
@@ -84,14 +72,10 @@
     "billedMonthly": "facturation mensuelle"
   },
   "step1": {
-    "titleFounding": "Votre offre fondateur",
     "title": "Choisissez votre forfait",
-    "foundingNotePrefix": "L'offre fondateur porte sur le forfait",
-    "foundingNoteSuffix": "offert à vie aux membres fondateurs. Nous l'avons déjà sélectionné pour vous ci-dessous.",
     "backToPayment": "Revenir au paiement avec {{plan}}",
     "continueWith": "Continuer avec {{plan}}",
     "microFree": "Gratuit à vie · Aucune carte bancaire demandée",
-    "microFounding": "Everstead+ offert à vie · Sans engagement",
     "microTrial": "{{days}} jours d'essai gratuit · Résiliez avant la fin, vous ne payez rien",
     "pro": {
       "desc": "Un espace de travail multi-clients aux couleurs de votre cabinet, pour les notaires, les conseillers en gestion de patrimoine et les assureurs. Tarif sur demande.",
@@ -101,7 +85,6 @@
   },
   "oauth": {
     "title": "Une dernière étape",
-    "subtitleFounding": "Encore quelques informations et votre place de membre fondateur sera réservée.",
     "subtitleTrial": "Encore quelques informations et votre essai pourra commencer.",
     "termsPrefix": "En continuant, vous acceptez nos",
     "settingUp": "Mise en place…",
@@ -135,10 +118,8 @@
     "termsPrefix": "En créant un compte, vous acceptez nos",
     "creating": "Création de votre compte…",
     "createFree": "Créer mon compte gratuit",
-    "claimFounding": "Réserver ma place de membre fondateur",
     "startTrial": "Démarrer mon essai Everstead",
     "trustFree": "Aucune carte bancaire n'est demandée : Everstead est gratuit pour démarrer. Vous pourrez passer à Everstead+ quand vous le souhaiterez, et vos données vous suivront.",
-    "trustFounding": "Votre carte est conservée en sécurité par Stripe et ne sera jamais débitée : en tant que membre fondateur, Everstead+ vous est offert à vie. Vous restez libre de résilier quand vous le voulez.",
     "trustTrial": "Votre carte est conservée en sécurité par Stripe et ne sera pas débitée avant la fin de vos {{days}} jours d'essai. Résiliez avant cette date et vous ne payez rien.",
     "haveAccount": "Vous avez déjà un compte ?",
     "signIn": "Se connecter",
@@ -152,7 +133,6 @@
   },
   "step3": {
     "title": "Ajoutez votre carte",
-    "subtitleFounding": "Everstead+ vous est offert à vie. Ajoutez votre carte pour réserver votre place de membre fondateur : elle ne sera jamais débitée et vous restez libre de résilier quand vous le voulez.",
     "subtitleTrial": "Aucun débit pendant {{days}} jours. Résiliez avant la fin de l'essai et vous ne payez rien.",
     "billedAnnually": "facturation annuelle",
     "billedMonthly": "facturation mensuelle",
@@ -164,14 +144,11 @@
   },
   "checkout": {
     "processing": "Traitement en cours…",
-    "claimFreeYear": "Réserver ma place de membre fondateur",
     "startTrial": "Démarrer mes {{days}} jours d'essai gratuit",
-    "finePrintFounding": "Everstead+ est offert à vie aux membres fondateurs, sans engagement.",
     "finePrintTrial": "Aucun débit avant le {{days}}e jour. Vous pouvez résilier à tout moment d'ici là."
   },
   "trustFooter": {
     "encryption": "Chiffrement AES-256",
-    "firstYearFree": "Offert à vie",
     "trial": "{{days}} jours d'essai gratuit",
     "trustedBy": "La confiance des familles et des conseillers"
   },

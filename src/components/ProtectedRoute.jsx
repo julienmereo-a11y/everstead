@@ -97,7 +97,7 @@ export default function ProtectedRoute({ children }) {
   //
   // Require a real, card-confirmed checkout to access. What counts as proof:
   //   - stripe_subscription_id — written synchronously by create-subscription.js
-  //     (Stripe trial or paid) AND by gift redemption, so paying/gifted/founding
+  //     (Stripe trial or paid) AND by gift redemption, so paying/gifted
   //     users are never bounced. This is the primary signal.
   //   - an active-ish subscription_status (active/cancelling/past_due) — post-payment
   //     states, also set by family invite-accept.
@@ -109,7 +109,7 @@ export default function ProtectedRoute({ children }) {
   // NOT accepted:
   //   - Bare stripe_customer_id. setup-intent.js creates the Stripe customer and
   //     writes stripe_customer_id the moment a user REACHES the card step — before
-  //     they enter any card. The founding-offer resume flow reaches that step
+  //     they enter any card. The resume flow reaches that step
   //     automatically. Treating a customer id as access let anyone who opened (or was
   //     auto-advanced to) the payment step walk straight into /dashboard without paying.
   //   - Bare 'trialing' status. The profile trigger stamps every new account

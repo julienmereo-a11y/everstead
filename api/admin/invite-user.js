@@ -2,19 +2,16 @@ import { Resend } from 'resend'
 import { requireAdmin } from '../_lib/admin-auth.js'
 import { withSentry, captureException } from '../_lib/sentry.js'
 
-// Admin-only: invite a new person to sign up on Everstead. The admin picks whether
-// they should get the FOUNDING50 offer (Everstead+ free for life, Family Yearly) or
-// a normal signup. We email them the matching signup link.
+// Admin-only: invite a new person to sign up on Everstead. We email them the
+// signup link; they land on the free plan like anyone else.
 const resend = new Resend(process.env.RESEND_API_KEY)
 const APP = process.env.VITE_APP_URL || 'https://www.everstead.care'
 
 const button = (href, label) =>
   `<a href="${href}" style="display:inline-block;background:#2d5082;color:#fff;text-decoration:none;padding:14px 28px;border-radius:9999px;font-size:15px;">${label}</a>`
 
-function inviteHtml({ url, founding }) {
-  const line = founding
-    ? `You've been invited as a <strong>founding member</strong> of Everstead, <strong>Everstead+ is yours for life, free</strong>. Set up your family's secure vault for accounts, documents, trusted people and final wishes.`
-    : `You've been invited to <strong>Everstead</strong>, a secure place to gather your family's accounts, documents, trusted people and final wishes, so loved ones aren't left searching.`
+function inviteHtml({ url }) {
+  const line = `You've been invited to <strong>Everstead</strong>, a secure place to gather your family's accounts, documents, trusted people and final wishes, so loved ones aren't left searching.`
   return `<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
 <body style="margin:0;padding:0;background:#f5f4f0;font-family:Georgia,serif;">
   <table width="100%" cellpadding="0" cellspacing="0" style="background:#f5f4f0;padding:40px 0;"><tr><td align="center">
@@ -25,7 +22,7 @@ function inviteHtml({ url, founding }) {
       <tr><td style="padding:40px;">
         <h1 style="margin:0 0 16px;color:#0d1628;font-size:24px;font-weight:normal;">You're invited to Everstead</h1>
         <p style="margin:0 0 28px;color:#4a5568;font-size:16px;line-height:1.6;">${line}</p>
-        ${button(url, founding ? 'Claim your founding place →' : 'Get started →')}
+        ${button(url, 'Get started →')}
         <p style="margin:28px 0 0;color:#9ca3af;font-size:13px;line-height:1.5;">If you weren't expecting this, you can ignore this email.</p>
       </td></tr>
       <tr><td style="padding:24px 40px;border-top:1px solid #e8e5e0;"><p style="margin:0;color:#9ca3af;font-size:13px;">Questions? <a href="mailto:support@everstead.care" style="color:#4c7d47;">support@everstead.care</a></p></td></tr>
@@ -41,18 +38,17 @@ async function handler(req, res) {
   if (!admin) return res.status(403).json({ error: 'Forbidden' })
 
   const email = String(req.body?.email || '').trim().toLowerCase()
-  const founding = req.body?.plan === 'founding'
   if (!email || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
     return res.status(400).json({ error: 'A valid email is required.' })
   }
 
-  const url = founding ? `${APP}/get-started?promo=FOUNDING50` : `${APP}/get-started`
+  const url = `${APP}/get-started`
   try {
     await resend.emails.send({
       from:    'Everstead <hello@everstead.care>',
       to:      email,
-      subject: founding ? "You're invited to Everstead: Everstead+ free for life" : "You're invited to Everstead",
-      html:    inviteHtml({ url, founding }),
+      subject: "You're invited to Everstead",
+      html:    inviteHtml({ url }),
     })
     return res.status(200).json({ ok: true })
   } catch (err) {

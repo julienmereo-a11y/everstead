@@ -102,16 +102,29 @@ async function handler(req, res) {
     // Only accounts with no firm and that aren't a secondary family member.
     if (action === 'search-unassigned') {
       const { q } = req.body
+      // Strip PostgREST filter metacharacters before interpolating into .or().
+      const safe = String(q || '').replace(/[,()*%\\]/g, ' ').trim()
+      // A firm knows a member by the address it holds, which is often a work
+      // address proved later from Settings or a claim link (member_emails),
+      // not the one they signed up with. The search covers every verified
+      // address, and a row found that way says which one matched.
+      const viaAddress = {}
+      if (safe) {
+        const { data: extra } = await db.from('member_emails')
+          .select('user_id, email').ilike('email', `%${safe}%`).limit(20)
+        for (const e of extra || []) (viaAddress[e.user_id] ||= []).push(String(e.email))
+      }
       let query = db.from('profiles')
         .select('id, full_name, email, plan, subscription_status')
         .is('adviser_id', null).is('family_id', null)
         .limit(10)
-      // Strip PostgREST filter metacharacters before interpolating into .or().
-      const safe = String(q || '').replace(/[,()*%\\]/g, ' ').trim()
-      if (safe) query = query.or(`full_name.ilike.%${safe}%,email.ilike.%${safe}%`)
+      if (safe) {
+        const ids = Object.keys(viaAddress)
+        query = query.or(`full_name.ilike.%${safe}%,email.ilike.%${safe}%${ids.length ? `,id.in.(${ids.join(',')})` : ''}`)
+      }
       const { data, error } = await query
       if (error) throw error
-      return res.status(200).json({ candidates: data })
+      return res.status(200).json({ candidates: (data || []).map(p => ({ ...p, matched_addresses: viaAddress[p.id] || [] })) })
     }
 
     // ── Assign a family to a firm — SERVER-SIDE CAP ENFORCEMENT ──────────────
@@ -170,7 +183,11 @@ async function handler(req, res) {
       const { adviserId, email, role } = req.body
       const cleanEmail = String(email || '').trim().toLowerCase()
       if (!adviserId || !cleanEmail) return res.status(400).json({ error: 'Firm and email are required.' })
-      const { data: prof } = await db.from('profiles').select('id').ilike('email', cleanEmail).maybeSingle()
+      // Any address the person has proved, not only the sign-in one: the seat
+      // is usually given as a work address, which is exactly the kind that
+      // gets linked to an account later.
+      const { data: resolvedId } = await db.rpc('resolve_member_by_email', { p_email: cleanEmail })
+      const prof = resolvedId ? { id: resolvedId } : null
       const row = { adviser_id: adviserId, email: cleanEmail, role: role === 'owner' ? 'owner' : 'member' }
       if (prof?.id) { row.user_id = prof.id; row.invite_status = 'accepted'; row.accepted_at = new Date().toISOString() }
       const { data, error } = await db.from('adviser_members')

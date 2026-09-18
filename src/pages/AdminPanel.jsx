@@ -803,40 +803,7 @@ function AdminActions({ u, onTrialExtended }) {
   const [extendDays, setExtendDays]     = useState(7)
   const [showEmail, setShowEmail]       = useState(false)
   const [isSuspended, setIsSuspended]   = useState(u.is_suspended ?? false)
-  const [foundingState, setFoundingState] = useState('idle')
   const viaStore = storeBilled(u)
-
-  const applyFounding = async () => {
-    if (!window.confirm(`Put ${u.full_name ?? u.email} on the founding deal?\n\nThis switches them to Family Yearly and applies the FOUNDING50 coupon — £0 for the first year, then it renews yearly at the normal price.`)) return
-    setFoundingState('sending')
-    try {
-      const { data: { session } } = await supabase.auth.getSession()
-      const res = await fetch('/api/admin/apply-founding', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${session?.access_token}` },
-        body: JSON.stringify({ userId: u.id }),
-      })
-      const data = await res.json().catch(() => ({}))
-      if (!res.ok) { window.alert(data.error || 'Could not apply the founding deal.'); setFoundingState('idle'); return }
-      setFoundingState('sent')
-      setTimeout(() => window.location.reload(), 1200)
-    } catch { setFoundingState('idle'); window.alert('Network error. Please try again.') }
-  }
-
-  const [linkState, setLinkState] = useState('idle')
-  const sendFoundingLink = async () => {
-    setLinkState('sending')
-    try {
-      const { data: { session } } = await supabase.auth.getSession()
-      const res = await fetch('/api/admin/invite-user', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${session?.access_token}` },
-        body: JSON.stringify({ email: u.email, plan: 'founding' }),
-      })
-      if (!res.ok) throw new Error()
-      setLinkState('sent'); setTimeout(() => setLinkState('idle'), 3000)
-    } catch { setLinkState('error'); setTimeout(() => setLinkState('idle'), 3000) }
-  }
 
   const [deleteState, setDeleteState] = useState('idle')
   const deleteUser = async () => {
@@ -1008,34 +975,6 @@ function AdminActions({ u, onTrialExtended }) {
           >
             {cancelState === 'sending' ? <Loader2 size={12} className="animate-spin" /> : <XCircle size={12} />}
             {cancelState === 'sent' ? 'Cancelled ✓' : cancelState === 'error' ? 'Failed — retry' : 'Cancel subscription'}
-          </button>
-        )}
-
-        {/* Apply founding deal — case-by-case. Works if they have a subscription or a
-            card on file; otherwise it tells you to send the FOUNDING50 link. */}
-        {u.plan !== 'advisor' && !viaStore && (
-          <button
-            onClick={applyFounding}
-            disabled={foundingState === 'sending'}
-            className="w-full flex items-center gap-2 text-xs font-semibold px-3 py-2 rounded-xl text-white transition-opacity disabled:opacity-50"
-            style={{ background: '#2d5082' }}
-            title="Switch to Family Yearly + FOUNDING50 (first year free, then renews)"
-          >
-            {foundingState === 'sending' ? <Loader2 size={12} className="animate-spin" /> : <Sparkles size={12} />}
-            {foundingState === 'sent' ? 'Applied ✓' : 'Apply founding deal'}
-          </button>
-        )}
-
-        {/* Send founding link — email them the FOUNDING50 signup link (for no-card cases) */}
-        {u.plan !== 'advisor' && !viaStore && (
-          <button
-            onClick={sendFoundingLink}
-            disabled={linkState === 'sending'}
-            className="w-full flex items-center gap-2 text-xs font-medium px-3 py-2 rounded-xl border border-navy-200 text-navy-700 hover:bg-navy-50 transition-colors disabled:opacity-50"
-            title="Email them the FOUNDING50 signup link"
-          >
-            {linkState === 'sending' ? <Loader2 size={12} className="animate-spin" /> : <Sparkles size={12} />}
-            {linkState === 'sent' ? 'Founding link sent ✓' : linkState === 'error' ? 'Failed — retry' : 'Send founding link'}
           </button>
         )}
 
@@ -1332,7 +1271,6 @@ function OverviewSection({ isDemo }) {
   const [users, setUsers]     = useState(isDemo ? DEMO_USERS : [])
   const [loading, setLoading] = useState(!isDemo)
 
-  const [linkSent, setLinkSent] = useState(null)
 
   useEffect(() => {
     if (isDemo) return
@@ -1341,21 +1279,6 @@ function OverviewSection({ isDemo }) {
       setLoading(false)
     })
   }, [isDemo])
-
-  const sendFoundingLink = async (email) => {
-    setLinkSent(email)
-    if (!isDemo) {
-      try {
-        const { data: { session } } = await supabase.auth.getSession()
-        await fetch('/api/admin/invite-user', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${session?.access_token}` },
-          body: JSON.stringify({ email, plan: 'founding' }),
-        })
-      } catch { /* ignore */ }
-    }
-    setTimeout(() => setLinkSent(null), 3000)
-  }
 
   // ── Groups ──────────────────────────────────────────────────────────────
   // "Paying" = a live billed subscription; cancelling users stay billed until
@@ -1651,14 +1574,6 @@ function OverviewSection({ isDemo }) {
                         <p className="text-sm font-medium text-navy-900 truncate">{u.full_name ?? u.email}</p>
                         <p className="text-xs text-stone-400 truncate">{u.email}</p>
                       </div>
-                      <button
-                        onClick={() => sendFoundingLink(u.email)}
-                        disabled={linkSent === u.email}
-                        title="Email them the founding offer (Everstead+ free for life)"
-                        className="text-xs font-medium text-navy-700 hover:text-navy-900 disabled:opacity-50 shrink-0"
-                      >
-                        {linkSent === u.email ? 'Sent ✓' : 'Founding link'}
-                      </button>
                       <span className={`text-xs font-semibold px-2 py-0.5 rounded-full border shrink-0 ${d <= 2 ? 'bg-red-50 text-red-700 border-red-200' : 'bg-amber-50 text-amber-700 border-amber-200'}`}>
                         {d === 0 ? 'Today' : `${d}d left`}
                       </span>
@@ -2403,20 +2318,24 @@ function AssignFamilyModal({ isDemo, adviser, onClose, onAssigned }) {
         {error && <div className="text-sm text-red-600">{error}</div>}
         <div className="relative">
           <Search size={13} className="absolute left-3 top-1/2 -translate-y-1/2 text-stone-400" />
-          <input autoFocus className={`${inputCls} pl-8`} placeholder="Search by name or email…" value={q} onChange={e => setQ(e.target.value)} />
+          <input autoFocus className={`${inputCls} pl-8`} placeholder="Search by name or any verified address…" value={q} onChange={e => setQ(e.target.value)} />
         </div>
         {searching ? <div className="py-6 text-center"><Loader2 size={18} className="animate-spin text-stone-400 mx-auto" /></div> : (
           <div className="divide-y divide-stone-100 max-h-72 overflow-y-auto">
             {results.length === 0 ? <p className="text-sm text-stone-400 py-4 text-center">No unlinked accounts found.</p> :
               results.map(u => (
                 <div key={u.id} className="flex items-center justify-between py-2.5 gap-3">
-                  <div className="min-w-0"><p className="text-sm font-medium text-navy-900 truncate">{u.full_name || '—'}</p><p className="text-xs text-stone-500 truncate">{u.email}</p></div>
+                  <div className="min-w-0">
+                    <p className="text-sm font-medium text-navy-900 truncate">{u.full_name || '—'}</p>
+                    <p className="text-xs text-stone-500 truncate">{u.email}</p>
+                    {u.matched_addresses?.length > 0 && <p className="text-xs text-sage-700 truncate">also {u.matched_addresses.join(', ')}</p>}
+                  </div>
                   <button onClick={() => assign(u)} disabled={busyId === u.id} className="text-sm font-medium text-sage-700 hover:text-sage-900 disabled:opacity-50 shrink-0">{busyId === u.id ? <Loader2 size={14} className="animate-spin" /> : 'Assign'}</button>
                 </div>
               ))}
           </div>
         )}
-        <p className="text-xs text-stone-400">Only accounts not already linked to a firm are shown. The family cap is enforced server-side when you assign.</p>
+        <p className="text-xs text-stone-400">Only accounts not already linked to a firm are shown, matched on their name or any address they have verified, including a work one. The family cap is enforced server-side when you assign.</p>
       </div>
     </Modal>
   )
@@ -2993,10 +2912,9 @@ function UsersSection({ isDemo }) {
   )
 }
 
-// Admin invites a new person to sign up — normal or on the FOUNDING50 offer.
+// Admin invites a new person to sign up.
 function InviteUserModal({ isDemo, onClose }) {
   const [email, setEmail] = useState('')
-  const [plan, setPlan]   = useState('normal') // 'normal' | 'founding'
   const [state, setState] = useState('idle')   // idle | sending | sent | error
   const [error, setError] = useState(null)
 
@@ -3005,7 +2923,7 @@ function InviteUserModal({ isDemo, onClose }) {
     if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(e)) { setError('Enter a valid email.'); return }
     if (isDemo) { setState('sent'); setTimeout(onClose, 1200); return } // demo: no real email
     setState('sending'); setError(null)
-    const r = await adminPost('/api/admin/invite-user', { email: e, plan })
+    const r = await adminPost('/api/admin/invite-user', { email: e })
     if (r.ok) { setState('sent'); setTimeout(onClose, 1200) }
     else { setState('error'); setError(r.error || 'Could not send the invite.') }
   }
@@ -3016,19 +2934,8 @@ function InviteUserModal({ isDemo, onClose }) {
         <Field label="Email">
           <input type="email" autoFocus value={email} onChange={e => setEmail(e.target.value)} placeholder="person@example.com" className={inputCls} />
         </Field>
-        <Field label="Offer">
-          <div className="grid grid-cols-2 gap-2">
-            {[['normal', 'Normal signup', 'Free plan, no card'], ['founding', 'Founding (FOUNDING50)', 'First year free']].map(([v, title, sub]) => (
-              <button key={v} type="button" onClick={() => setPlan(v)}
-                className={`text-left rounded-xl border px-3 py-2.5 transition-colors ${plan === v ? 'border-navy-500 bg-navy-50' : 'border-stone-200 hover:bg-stone-50'}`}>
-                <p className="text-sm font-semibold text-navy-900">{title}</p>
-                <p className="text-xs text-stone-500">{sub}</p>
-              </button>
-            ))}
-          </div>
-        </Field>
         {error && <p className="text-xs text-red-600">{error}</p>}
-        <p className="text-xs text-stone-400">They'll get an email with a link to {plan === 'founding' ? 'claim the founding offer (Family Yearly, first year free)' : 'sign up'}.</p>
+        <p className="text-xs text-stone-400">They'll get an email with a link to sign up. They start on the free plan like anyone else.</p>
         <div className="flex justify-end gap-2 pt-1">
           <button onClick={onClose} className="text-sm px-4 py-2 rounded-xl border border-stone-200 hover:bg-stone-50">Cancel</button>
           <button onClick={submit} disabled={state === 'sending' || state === 'sent'}

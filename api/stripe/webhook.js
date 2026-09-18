@@ -130,7 +130,7 @@ async function handler(req, res) {
       }
 
       // ── Owner notification ────────────────────────────────
-      const isFounding = String(subscription.metadata?.promo_code || '').toUpperCase() === 'FOUNDING50' || !!p.is_founding_member
+      const isFounding = !!p.is_founding_member
       await resend.emails.send({
         from:    'Everstead <hello@everstead.care>',
         to:      FOUNDER_TO,
@@ -229,7 +229,7 @@ async function handler(req, res) {
     // always has a fully-formed subscription object and no race conditions.
     // Gated on metaUserId (inline flow) for the same de-dup reason as above.
     if (metaUserId && updatedProfile) {
-      const isFounding = String(subscription.metadata?.promo_code || '').toUpperCase() === 'FOUNDING50' || !!updatedProfile.is_founding_member
+      const isFounding = !!updatedProfile.is_founding_member
       await resend.emails.send({
         from:    'Everstead <hello@everstead.care>',
         to:      FOUNDER_TO,
@@ -828,7 +828,7 @@ function ownerNewSignupHtml({ name, email, plan, billingCycle, isTrialing, trial
             ${row('Email', `<a href="mailto:${email}" style="color:#4c7d47;">${email}</a>`)}
             ${row('Plan', plan ? plan.charAt(0).toUpperCase() + plan.slice(1) : '—')}
             ${row('Billing', billingCycle ? billingCycle.charAt(0).toUpperCase() + billingCycle.slice(1) : '—')}
-            ${isFounding ? row('Founding member', 'Yes: FOUNDING50 (first year free)') : ''}
+            ${isFounding ? row('Founding member', 'Yes') : ''}
             ${row('Type', isTrialing ? '14-day trial' : 'Paid immediately')}
             ${trialEndDate ? row('Trial ends', trialEndDate) : ''}
             ${referredBy ? row('Referred by', referredBy) : ''}

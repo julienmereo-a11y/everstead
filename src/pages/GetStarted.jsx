@@ -162,49 +162,8 @@ export default function GetStarted() {
   const referralCode = searchParams.get('ref') || null
   const trialDays    = referralCode ? 21 : 14
 
-  // Promo code from ?promo= URL param (e.g. FOUNDING50 — Everstead+ free for life).
-  // Validated against Stripe on mount; threaded into create-subscription.
-  // Persisted in sessionStorage so it survives OAuth and ?resume= round-trips
-  // that bring the user back to /get-started WITHOUT the query param — otherwise
-  // the founding discount would be silently dropped at checkout.
-  const urlPromo = (searchParams.get('promo') || '').trim().toUpperCase() || null
-  const [promoCode, setPromoCode] = useState(() => {
-    if (urlPromo) return urlPromo
-    try { return sessionStorage.getItem('everstead_promo') || null } catch { return null }
-  })
-  useEffect(() => {
-    if (!urlPromo) return
-    setPromoCode(urlPromo)
-    try { sessionStorage.setItem('everstead_promo', urlPromo) } catch {}
-  }, [urlPromo])
-  const [promoState, setPromoState] = useState({ status: 'idle', label: null, reason: null })
-  // The founding offer is a Family-plan offer, so an active promo locks the plan to Family.
-  const planLocked = !!promoCode
-  // Once the discount is confirmed valid, lead the copy with the lifetime deal
-  // (the 14-day trial stays only as a quiet cancel-anytime safety).
-  const foundingActive = planLocked && promoState.status === 'valid'
-
-  useEffect(() => {
-    if (!promoCode) return
-    let cancelled = false
-    setPromoState({ status: 'checking', label: null, reason: null })
-    fetch('/api/stripe/validate-promo', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ code: promoCode }),
-    })
-      .then(r => r.json())
-      .then(data => {
-        if (cancelled) return
-        if (data?.valid) setPromoState({ status: 'valid', label: data.label, reason: null })
-        else             setPromoState({ status: 'invalid', label: null, reason: data?.reason || t('promo.fallbackInvalid') })
-      })
-      .catch(() => { if (!cancelled) setPromoState({ status: 'invalid', label: null, reason: t('promo.fallbackError') }) })
-    return () => { cancelled = true }
-  }, [promoCode])
-
   // Adviser invite branding: ?adviser=<firmId> shows the firm's logo + name at signup.
-  // Persisted in sessionStorage (like the promo code) so it survives the OAuth round-trip.
+  // Persisted in sessionStorage so it survives the OAuth round-trip.
   const urlAdviser = searchParams.get('adviser') || null
   const [adviserId, setAdviserId] = useState(() => {
     if (urlAdviser) return urlAdviser
@@ -312,11 +271,9 @@ export default function GetStarted() {
       // URL param plan always wins over profile default (prevents race condition
       // where async resume effect overwrites plan set by the URL param effect)
       const urlPlan    = searchParams.get('plan')
-      const resumePlan = planLocked
-        ? 'family'                                              // founding offer is Family-only
-        : (urlPlan && PLAN_OPTIONS.find(p => p.id === urlPlan))
-          ? urlPlan
-          : (oauthPlan?.plan || profile.plan || 'free')
+      const resumePlan = (urlPlan && PLAN_OPTIONS.find(p => p.id === urlPlan))
+        ? urlPlan
+        : (oauthPlan?.plan || profile.plan || 'free')
       const resumeBilling = profile.billing_cycle
         ? profile.billing_cycle === 'yearly'
         : (oauthPlan?.billing ?? true)
@@ -362,8 +319,8 @@ export default function GetStarted() {
   }, [])
 
   // Anchor the flow to the top on every step change. The resume effect can
-  // auto-advance step 1 → 3 while the founding promo + geo checks are still
-  // resolving (each of which reflows the page); without this the user is left
+  // auto-advance step 1 → 3 while the geo check is still resolving (which
+  // reflows the page); without this the user is left
   // stranded mid-page and the layout appears to "jump" under them. A wizard
   // should always start each step at the top anyway.
   useEffect(() => {
@@ -371,15 +328,10 @@ export default function GetStarted() {
   }, [step])
 
   // Pre-select plan from URL params (e.g. from Pricing page CTA).
-  // A founding-offer promo link locks the plan to Family, overriding ?plan=.
   useEffect(() => {
     const plan    = searchParams.get('plan')
     const billing = searchParams.get('billing')
-    if (planLocked) {
-      // Founding offer is Family YEARLY only — lock both, ignore any ?plan/?billing.
-      setSelectedPlan('family')
-      setAnnualBilling(true)
-    } else if (plan && PLAN_OPTIONS.find(p => p.id === plan)) {
+    if (plan && PLAN_OPTIONS.find(p => p.id === plan)) {
       setSelectedPlan(plan)
       setStep(2)
     } else if (!plan) {
@@ -391,9 +343,9 @@ export default function GetStarted() {
       setSelectedPlan('free')
       setStep(2)
     }
-    if (!planLocked && billing === 'monthly') setAnnualBilling(false)
-    if (!planLocked && billing === 'yearly')  setAnnualBilling(true)
-  }, [searchParams, planLocked])
+    if (billing === 'monthly') setAnnualBilling(false)
+    if (billing === 'yearly')  setAnnualBilling(true)
+  }, [searchParams])
 
   const handleChange = e => setForm(v => ({ ...v, [e.target.name]: e.target.value }))
 
@@ -606,9 +558,7 @@ export default function GetStarted() {
             {t('hero.title')}
           </h1>
           <p className="mt-4 text-stone-300 text-base leading-relaxed max-w-md mx-auto">
-            {foundingActive
-              ? <><span className="text-sage-300 font-semibold">{t('hero.subtitleFoundingLead')}</span>{' '}{t('hero.subtitleFoundingBody')}</>
-              : referralCode
+            {referralCode
               ? <><span className="text-sage-300 font-semibold">{t('hero.subtitleReferralLead')}</span>{' '}{t('hero.subtitleReferralBody')}</>
               : selectedPlan === 'free'
               ? <><span className="text-sage-300 font-semibold">{t('hero.subtitleFreeLead')}</span>{' '}{t('hero.subtitleFreeBody')}</>
@@ -616,30 +566,6 @@ export default function GetStarted() {
             }
           </p>
 
-          {/* Promo banner — only when ?promo= is present. The slot reserves a fixed
-              height so the checking → valid/invalid transition doesn't change the
-              hero's height and shove the plan grid below it (the founding "jump"). */}
-          {promoCode && (
-            <div className="mt-6 min-h-[44px] flex items-center justify-center">
-              {promoState.status === 'valid' && (
-                <div className="inline-flex items-center gap-2 rounded-full bg-sage-500/15 border border-sage-400/30 px-5 py-2.5 text-sm">
-                  <span aria-hidden="true">🎉</span>
-                  <span className="text-sage-200 font-semibold">{t('promo.applied', { label: promoState.label.toLowerCase() })}</span>
-                  <span className="text-stone-400 hidden sm:inline">{t('promo.code', { code: promoCode })}</span>
-                </div>
-              )}
-              {promoState.status === 'invalid' && (
-                <div className="inline-flex items-center gap-2 rounded-full bg-amber-500/10 border border-amber-400/30 px-5 py-2.5 text-sm">
-                  <span className="text-amber-200">{t('promo.invalid', { code: promoCode, reason: promoState.reason.toLowerCase() })}</span>
-                </div>
-              )}
-              {promoState.status === 'checking' && (
-                <div className="inline-flex items-center gap-2 rounded-full bg-white/5 border border-white/10 px-5 py-2.5 text-sm">
-                  <span className="text-stone-400">{t('promo.checking')}</span>
-                </div>
-              )}
-            </div>
-          )}
         </div>
       </section>
 
@@ -706,35 +632,27 @@ export default function GetStarted() {
           {/* Form — hidden while loading or hard-blocked */}
           {(geoStatus === 'allowed' || geoStatus === 'soft-warn') && (<>
 
-          {/* Billing toggle — visible only on step 1. Founding offer is Family Yearly only,
-              so it's locked (no monthly option). */}
+          {/* Billing toggle — visible only on step 1. */}
           {step === 1 && (
             <div className="flex justify-center mb-8">
-              {planLocked ? (
-                <div className="inline-flex items-center gap-2 bg-white border border-stone-200 rounded-full px-5 py-2 shadow-sm text-sm">
-                  <Lock size={13} className="text-stone-400" />
-                  <span className="font-medium text-navy-800">{t('billing.billedAnnuallyLocked')}</span>
-                </div>
-              ) : (
-                <div className="inline-flex items-center gap-1 bg-white border border-stone-200 rounded-full p-1 shadow-sm">
-                  <button
-                    onClick={() => setAnnualBilling(false)}
-                    className={`px-5 py-1.5 text-sm font-medium rounded-full transition-colors ${!annualBilling ? 'bg-navy-800 text-white' : 'text-stone-500 hover:text-navy-800'}`}
-                  >
-                    {t('billing.monthly')}
-                  </button>
-                  <button
-                    onClick={() => setAnnualBilling(true)}
-                    className={`px-5 py-1.5 text-sm font-medium rounded-full transition-colors ${annualBilling ? 'bg-navy-800 text-white' : 'text-stone-500 hover:text-navy-800'}`}
-                  >
-                    {t('billing.yearly')}{' '}
-                    {annualBilling
-                      ? <span className="text-sage-300 font-semibold ml-1">{t('billing.savingActive')}</span>
-                      : <span className="text-sage-500 font-semibold ml-1">{t('billing.save')}</span>
-                    }
-                  </button>
-                </div>
-              )}
+              <div className="inline-flex items-center gap-1 bg-white border border-stone-200 rounded-full p-1 shadow-sm">
+                <button
+                  onClick={() => setAnnualBilling(false)}
+                  className={`px-5 py-1.5 text-sm font-medium rounded-full transition-colors ${!annualBilling ? 'bg-navy-800 text-white' : 'text-stone-500 hover:text-navy-800'}`}
+                >
+                  {t('billing.monthly')}
+                </button>
+                <button
+                  onClick={() => setAnnualBilling(true)}
+                  className={`px-5 py-1.5 text-sm font-medium rounded-full transition-colors ${annualBilling ? 'bg-navy-800 text-white' : 'text-stone-500 hover:text-navy-800'}`}
+                >
+                  {t('billing.yearly')}{' '}
+                  {annualBilling
+                    ? <span className="text-sage-300 font-semibold ml-1">{t('billing.savingActive')}</span>
+                    : <span className="text-sage-500 font-semibold ml-1">{t('billing.save')}</span>
+                  }
+                </button>
+              </div>
             </div>
           )}
 
@@ -770,21 +688,14 @@ export default function GetStarted() {
           {step === 1 && (
             <div>
               <h2 className="font-display text-3xl font-light text-navy-950 text-center mb-4">
-                {planLocked ? t('step1.titleFounding') : t('step1.title')}
+                {t('step1.title')}
               </h2>
-              {planLocked && (
-                <p className="text-center text-stone-500 text-sm mb-8 max-w-md mx-auto">
-                  {t('step1.foundingNotePrefix')} <span className="font-semibold text-navy-800">Everstead+</span> {t('step1.foundingNoteSuffix')}
-                </p>
-              )}
               <div className="grid md:grid-cols-2 gap-5 mb-8 max-w-2xl mx-auto">
                 {planOptions.map(plan => {
-                  const locked = planLocked && plan.id !== 'family'
                   return (
                   <button
                     key={plan.id}
-                    disabled={locked}
-                    onClick={() => { if (locked) return; setSelectedPlan(plan.id) }}
+                    onClick={() => setSelectedPlan(plan.id)}
                     className={`relative text-left rounded-[2rem] border p-7 flex flex-col transition-all ${
                       plan.highlight
                         ? 'border-navy-300 bg-navy-950 text-white shadow-xl shadow-navy-950/10'
@@ -793,7 +704,7 @@ export default function GetStarted() {
                       selectedPlan === plan.id
                         ? (plan.highlight ? 'ring-2 ring-sage-400' : 'ring-2 ring-navy-300')
                         : ''
-                    } ${locked ? 'opacity-40 cursor-not-allowed pointer-events-none' : ''}`}
+                    }`}
                   >
                     {/* selection indicator */}
                     <div className={`absolute top-6 right-6 w-5 h-5 rounded-full border-2 flex-shrink-0 flex items-center justify-center transition-all ${
@@ -877,8 +788,6 @@ export default function GetStarted() {
                 <p className="mt-3 text-xs text-stone-400">
                   {selectedPlan === 'free'
                     ? t('step1.microFree')
-                    : foundingActive
-                    ? t('step1.microFounding')
                     : t('step1.microTrial', { days: trialDays })}
                 </p>
               </div>
@@ -912,7 +821,7 @@ export default function GetStarted() {
             <div className="max-w-md mx-auto">
               <h2 className="font-display text-3xl font-light text-navy-950 text-center mb-2">{t('oauth.title')}</h2>
               <p className="text-center text-stone-500 text-sm mb-10">
-                {foundingActive ? t('oauth.subtitleFounding') : t('oauth.subtitleTrial')}
+                {t('oauth.subtitleTrial')}
               </p>
 
               {error && (
@@ -1094,7 +1003,7 @@ export default function GetStarted() {
                   ) : selectedPlan === 'free' ? (
                     <><CheckCircle2 size={15} />{t('step2.createFree')}</>
                   ) : (
-                    <><CreditCard size={15} />{foundingActive ? t('step2.claimFounding') : t('step2.startTrial')}</>
+                    <><CreditCard size={15} />{t('step2.startTrial')}</>
                   )}
                 </button>
               </form>
@@ -1105,8 +1014,6 @@ export default function GetStarted() {
                 <p className="text-xs text-stone-500 leading-relaxed">
                   {selectedPlan === 'free'
                     ? t('step2.trustFree')
-                    : foundingActive
-                    ? t('step2.trustFounding')
                     : t('step2.trustTrial', { days: trialDays })}
                 </p>
               </div>
@@ -1127,11 +1034,9 @@ export default function GetStarted() {
             <div className="max-w-md mx-auto">
               <h2 className="font-display text-3xl font-light text-navy-950 text-center mb-2">{t('step3.title')}</h2>
               <p className="text-center text-stone-500 text-sm mb-3">
-                {foundingActive
-                  ? t('step3.subtitleFounding')
-                  : t('step3.subtitleTrial', { days: trialDays })}
+                {t('step3.subtitleTrial', { days: trialDays })}
               </p>
-              <p className={`text-center text-sm text-stone-600 ${promoCode && promoState.status === 'valid' ? 'mb-3' : 'mb-8'}`}>
+              <p className="text-center text-sm text-stone-600 mb-8">
                 {t('plans.planWithName', { plan: planOptions.find(p => p.id === selectedPlan)?.name })} · {annualBilling ? t('step3.billedAnnually') : t('step3.billedMonthly')}
                 {' · '}
                 <button
@@ -1141,14 +1046,6 @@ export default function GetStarted() {
                   {t('step3.changePlan')}
                 </button>
               </p>
-              {promoCode && promoState.status === 'valid' && (
-                <div className="mb-8 mx-auto max-w-sm flex items-center justify-center gap-2 rounded-xl bg-sage-50 border border-sage-200 px-4 py-2.5 text-sm">
-                  <span aria-hidden="true">🎉</span>
-                  <span className="text-sage-700 font-semibold">{promoState.label}</span>
-                  <span className="text-stone-400">{t('promo.appliedAtCheckout')}</span>
-                </div>
-              )}
-
               {!annualBilling && (() => {
                 const plan = PLAN_OPTIONS.find(p => p.id === selectedPlan)
                 // France advertises two months free rather than a percentage, so the
@@ -1203,7 +1100,6 @@ export default function GetStarted() {
                   billingCycle={annualBilling ? 'yearly' : 'monthly'}
                   customerId={stripeCustomerId}
                   referredBy={referralCode}
-                  promoCode={promoState.status === 'valid' ? promoCode : null}
                 />
               </Elements>
 
@@ -1227,7 +1123,7 @@ export default function GetStarted() {
           <div className="flex flex-wrap justify-center gap-8">
             {[
               { icon: Lock,   label: t('trustFooter.encryption') },
-              { icon: Shield, label: foundingActive ? t('trustFooter.firstYearFree') : t('trustFooter.trial', { days: trialDays }) },
+              { icon: Shield, label: t('trustFooter.trial', { days: trialDays }) },
               { icon: Users,  label: t('trustFooter.trustedBy') },
             ].map(({ icon: Icon, label }) => (
               <div key={label} className="flex items-center gap-2 text-stone-500">
@@ -1246,7 +1142,7 @@ export default function GetStarted() {
 // ─────────────────────────────────────────────────────────────
 // INLINE CHECKOUT FORM (step 3)
 // ─────────────────────────────────────────────────────────────
-function CheckoutForm({ trialDays, plan, billingCycle, customerId, referredBy, promoCode }) {
+function CheckoutForm({ trialDays, plan, billingCycle, customerId, referredBy }) {
   const { t } = useTranslation('getStarted')
   const stripe   = useStripe()
   const elements = useElements()
@@ -1292,7 +1188,6 @@ function CheckoutForm({ trialDays, plan, billingCycle, customerId, referredBy, p
           userId:          user?.id,
           trialPeriodDays: trialDays,
           referredBy,
-          promoCode,
         }),
       })
 
@@ -1301,7 +1196,6 @@ function CheckoutForm({ trialDays, plan, billingCycle, customerId, referredBy, p
         throw new Error(error || t('errors.subscriptionActivate'))
       }
 
-      try { sessionStorage.removeItem('everstead_promo') } catch {}
       window.location.href = '/dashboard?checkout=success'
     } catch (err) {
       setError(err.message)
@@ -1328,14 +1222,12 @@ function CheckoutForm({ trialDays, plan, billingCycle, customerId, referredBy, p
         {loading ? (
           <><Loader2 size={15} className="animate-spin" />{t('checkout.processing')}</>
         ) : (
-          <><CreditCard size={15} />{promoCode ? t('checkout.claimFreeYear') : t('checkout.startTrial', { days: trialDays })}</>
+          <><CreditCard size={15} />{t('checkout.startTrial', { days: trialDays })}</>
         )}
       </button>
 
       <p className="text-center text-xs text-stone-400">
-        {promoCode
-          ? t('checkout.finePrintFounding')
-          : t('checkout.finePrintTrial', { days: trialDays })}
+        {t('checkout.finePrintTrial', { days: trialDays })}
       </p>
     </form>
   )
