@@ -9,6 +9,7 @@
 // ever touches: what they sent, what they asked for, and whether it landed.
 import React, { useCallback, useEffect, useState } from 'react'
 import { ArrowRight, Loader2, ShieldCheck } from 'lucide-react'
+import { greeting } from './shared'
 
 const startOfMonth = () => { const d = new Date(); d.setDate(1); d.setHours(0, 0, 0, 0); return d }
 
@@ -44,11 +45,12 @@ export function EmployerOverview({ firm, advisor, go, isDemo }) {
   if (!s) return <div className="flex justify-center py-16"><Loader2 size={20} className="animate-spin text-stone-300" /></div>
 
   const rate = s.sent ? Math.round((s.landed / s.sent) * 100) : 0
+  // Each card opens the screen that explains its number.
   const stats = [
-    { label: 'People reached', value: s.people, hint: 'employees who have been sent or asked for something' },
-    { label: 'Documents sent', value: s.sent, hint: `${s.thisMonth} this month` },
-    { label: 'Landed', value: s.sent ? `${rate}%` : '—', hint: `${s.landed} received, ${s.waiting} still waiting` },
-    { label: 'Open requests', value: s.openAsks, hint: `${s.answered} of ${s.asked} answered` },
+    { label: 'People reached', value: s.people, hint: 'employees who have been sent or asked for something', go: () => go('people') },
+    { label: 'Documents sent', value: s.sent, hint: `${s.thisMonth} this month`, go: () => go('send', 'history') },
+    { label: 'Landed', value: s.sent ? `${rate}%` : '—', hint: `${s.landed} received, ${s.waiting} still waiting`, go: () => go('send', 'history') },
+    { label: 'Open requests', value: s.openAsks, hint: `${s.answered} of ${s.asked} answered`, go: () => go('send', 'history') },
   ]
 
   return (
@@ -57,7 +59,7 @@ export function EmployerOverview({ firm, advisor, go, isDemo }) {
         {new Date().toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' })}
       </p>
       <h1 className="mt-2 font-display text-3xl font-light text-navy-950 m-0">
-        {advisor?.full_name ? `Good morning, ${String(advisor.full_name).split(' ')[0]}.` : 'Good morning.'}
+        {advisor?.full_name ? `${greeting()}, ${String(advisor.full_name).split(' ')[0]}.` : `${greeting()}.`}
       </h1>
       <p className="mt-1.5 text-sm text-stone-500">
         {s.waiting > 0 || s.openAsks > 0
@@ -67,11 +69,11 @@ export function EmployerOverview({ firm, advisor, go, isDemo }) {
 
       <div className="mt-7 grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {stats.map(x => (
-          <div key={x.label} className="rounded-2xl border border-stone-200 bg-white p-5">
+          <button key={x.label} type="button" onClick={x.go} className="text-left rounded-2xl border border-stone-200 bg-white p-5 hover:bg-stone-50 transition-colors">
             <p className="text-[11px] font-semibold uppercase tracking-wide text-stone-400 m-0">{x.label}</p>
             <p className="mt-1.5 font-display text-3xl font-light text-navy-950 m-0">{x.value}</p>
             <p className="mt-1 text-xs text-stone-500 m-0">{x.hint}</p>
-          </div>
+          </button>
         ))}
       </div>
 
@@ -79,7 +81,7 @@ export function EmployerOverview({ firm, advisor, go, isDemo }) {
         <button onClick={() => go('send')} className="inline-flex items-center gap-2 rounded-full bg-navy-800 hover:bg-navy-700 text-white text-sm font-semibold px-5 py-2.5 transition-colors">
           Send a document <ArrowRight size={15} />
         </button>
-        <button onClick={() => go('send')} className="inline-flex items-center gap-2 rounded-full border border-stone-200 bg-white text-stone-700 text-sm font-medium px-5 py-2.5 hover:bg-stone-50 transition-colors">
+        <button onClick={() => go('send', 'ask')} className="inline-flex items-center gap-2 rounded-full border border-stone-200 bg-white text-stone-700 text-sm font-medium px-5 py-2.5 hover:bg-stone-50 transition-colors">
           Ask for a document
         </button>
       </div>

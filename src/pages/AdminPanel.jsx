@@ -3,7 +3,7 @@ import { useSearchParams, Link, useNavigate } from 'react-router-dom'
 import {
   HeartCrack, ShieldAlert, Clock, CheckCircle2, XCircle,
   AlertCircle, ChevronRight, X, Send, RotateCcw, UserRound,
-  FileText, Phone, Mail, Calendar, MapPin, Hash, MessageSquare,
+  FileText, Phone, Mail, Calendar, MapPin, MessageSquare,
   LogOut, Filter, ExternalLink, Shield, Users, Copy, Check,
   Loader2, Trash2, LayoutDashboard, Folder, BookOpen, Heart,
   CreditCard, ChevronDown, ChevronUp, Search, Sparkles,
@@ -70,6 +70,10 @@ function StatCard({ label, value, Icon, color }) {
 // ─────────────────────────────────────────────────────────────
 // BADGES
 // ─────────────────────────────────────────────────────────────
+// The server action for each status the report buttons can set. Anything not
+// listed is refused rather than sent as "reject", which is what used to happen.
+const REPORT_ACTION = { verified: 'verify', rejected: 'reject', actioned: 'actioned', pending: 'reopen', info_requested: 'info-requested' }
+
 function StatusBadge({ status }) {
   const meta = STATUS_META[status] ?? STATUS_META.pending
   return (
@@ -205,12 +209,9 @@ function ReportDetail({ report, onClose, onAction }) {
             <p className="text-xs font-semibold text-stone-500 uppercase tracking-widest mb-3">Owner</p>
             <div className="bg-stone-50 rounded-2xl p-4 space-y-2">
               {[
-                [UserRound, 'Full name',    report.owner_name],
-                [Mail,      'Email',        report.owner_email],
-                [Phone,     'Phone',        report.owner_phone],
-                [MapPin,    'Address',      report.owner_address],
-                [Calendar,  'Date of birth',fmtDate(report.owner_dob)],
-                [Hash,      'National Insurance', report.owner_nin],
+                [UserRound,  'Full name', report.owner_name],
+                [Mail,       'Email',     report.owner_email],
+                [CreditCard, 'Plan',      report.owner_plan ? planLabel(report.owner_plan) : null],
               ].filter(([,,v]) => v).map(([Icon, label, value]) => (
                 <div key={label} className="flex items-start gap-3 text-sm">
                   <Icon size={14} className="text-stone-400 mt-0.5 shrink-0" />
@@ -230,6 +231,7 @@ function ReportDetail({ report, onClose, onAction }) {
                 [Mail,      'Email',    report.reporter_email],
                 [Phone,     'Phone',    report.reporter_phone],
                 [Shield,    'Role',     report.reporter_role],
+                [Users,     'Relationship', report.relationship],
                 [Calendar,  'Submitted',fmtDateTime(report.submitted_at)],
               ].filter(([,,v]) => v).map(([Icon, label, value]) => (
                 <div key={label} className="flex items-start gap-3 text-sm">
@@ -250,7 +252,6 @@ function ReportDetail({ report, onClose, onAction }) {
                   [Calendar, 'Date of death',    fmtDate(report.death_date)],
                   [MapPin,   'Place of death',   report.death_place],
                   [FileText, 'Death cert ref',   report.death_cert_ref],
-                  [FileText, 'Solicitor / firm', report.solicitor],
                 ].filter(([,,v]) => v).map(([Icon, label, value]) => (
                   <div key={label} className="flex items-start gap-3 text-sm">
                     <Icon size={14} className="text-stone-400 mt-0.5 shrink-0" />
@@ -274,7 +275,7 @@ function ReportDetail({ report, onClose, onAction }) {
                 {[
                   [Calendar,  'Date of incident', fmtDate(report.incident_date)],
                   [Shield,    'Incident type',    report.incident_type],
-                  [FileText,  'Medical provider', report.medical_provider],
+                  [MapPin,    'Location',         report.location],
                 ].filter(([,,v]) => v).map(([Icon, label, value]) => (
                   <div key={label} className="flex items-start gap-3 text-sm">
                     <Icon size={14} className="text-stone-400 mt-0.5 shrink-0" />
@@ -321,7 +322,7 @@ function ReportDetail({ report, onClose, onAction }) {
               <p className="text-xs font-semibold text-stone-500 uppercase tracking-widest mb-3">Activity timeline</p>
               <div className="bg-stone-50 rounded-2xl p-4">
                 {report.timeline.map((item, i) => (
-                  <TimelineItem key={i} event={item.event} at={item.at} isLast={i === report.timeline.length - 1} />
+                  <TimelineItem key={i} event={item.by ? `${item.event} · ${item.by}` : item.event} at={item.at} isLast={i === report.timeline.length - 1} />
                 ))}
               </div>
             </section>
@@ -404,9 +405,29 @@ function TeamSection({ isDemo, currentUserEmail }) {
   const [copied, setCopied]     = useState(null) // invite id that was just copied
   const [removing, setRemoving] = useState(null) // invite id being removed
 
-  // In demo mode, use static data. In production, these would be fetched from Supabase.
   const [invites, setInvites] = useState(isDemo ? DEMO_INVITES : [])
-  const team                  = isDemo ? DEMO_TEAM : []
+  const [team, setTeam]       = useState(isDemo ? DEMO_TEAM : [])
+  const [loading, setLoading] = useState(!isDemo)
+
+  // The roster used to be an empty array outside demo mode, under a footnote
+  // saying it read profiles.role = 'admin'. It now does, through a function
+  // that also says whether each admin has an authenticator enrolled, since
+  // that is the one thing the panel requires of an admin session. Invites are
+  // read on arrival too, so one sent last week can be copied or revoked today.
+  useEffect(() => {
+    if (isDemo) return
+    let active = true
+    Promise.all([
+      supabase.rpc('get_admin_roster'),
+      supabase.from('admin_invites').select('*').order('invited_at', { ascending: false }),
+    ]).then(([roster, inv]) => {
+      if (!active) return
+      setTeam((roster.data || []).map(m => ({ ...m, role: 'admin' })))
+      setInvites(inv.data || [])
+      setLoading(false)
+    }, () => { if (active) setLoading(false) })
+    return () => { active = false }
+  }, [isDemo])
 
   const handleInvite = async (e) => {
     e.preventDefault()
@@ -491,6 +512,13 @@ function TeamSection({ isDemo, currentUserEmail }) {
 
   const pendingInvites  = invites.filter(i => i.status === 'pending')
   const acceptedInvites = invites.filter(i => i.status === 'accepted')
+  // An accepted invite is already on the roster once the person has signed in;
+  // it stays listed only while their profile has not caught up.
+  const onRoster = new Set(team.map(m => (m.email || '').toLowerCase()))
+  const roster = [
+    ...team,
+    ...acceptedInvites.filter(i => !onRoster.has((i.email || '').toLowerCase())).map(i => ({ id: i.id, email: i.email, full_name: i.email, role: 'admin' })),
+  ]
 
   return (
     <div className="space-y-8">
@@ -579,19 +607,27 @@ function TeamSection({ isDemo, currentUserEmail }) {
       {/* Current team */}
       <div className="bg-white border border-stone-200 rounded-2xl p-6">
         <h3 className="font-semibold text-navy-950 mb-4">Admin team</h3>
-        {[...team, ...acceptedInvites.map(i => ({ id: i.id, email: i.email, full_name: i.email, role: 'admin' }))].length === 0 ? (
+        {loading ? (
+          <div className="flex justify-center py-6"><Loader2 size={18} className="animate-spin text-stone-400" /></div>
+        ) : roster.length === 0 ? (
           <p className="text-sm text-stone-400">No team members yet — invite someone above.</p>
         ) : (
           <div className="space-y-2">
-            {[...team, ...acceptedInvites.map(i => ({ id: i.id, email: i.email, full_name: i.email, role: 'admin' }))].map(member => (
+            {roster.map(member => (
               <div key={member.id} className="flex items-center gap-3 bg-stone-50 rounded-xl px-4 py-3">
                 <div className="w-8 h-8 rounded-full bg-navy-100 text-navy-700 flex items-center justify-center text-sm font-semibold shrink-0">
                   {member.full_name?.[0]?.toUpperCase() ?? '?'}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-navy-900">{member.full_name}</p>
+                  <p className="text-sm font-medium text-navy-900">{member.full_name || member.email}{member.email === currentUserEmail ? <span className="text-stone-400 font-normal"> · you</span> : null}</p>
                   <p className="text-xs text-stone-400">{member.email}</p>
                 </div>
+                {member.mfa_enrolled === true && (
+                  <span className="inline-flex items-center gap-1 text-xs font-medium text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full" title="Has an authenticator app, as the panel requires"><Shield size={10} /> Authenticator</span>
+                )}
+                {member.mfa_enrolled === false && (
+                  <span className="inline-flex items-center gap-1 text-xs font-medium text-amber-700 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded-full" title="No authenticator yet: they cannot open this panel until they set one up"><ShieldAlert size={10} /> No authenticator</span>
+                )}
                 <span className="text-xs font-medium text-navy-700 bg-navy-50 border border-navy-200 px-2 py-0.5 rounded-full capitalize">{member.role}</span>
               </div>
             ))}
@@ -768,6 +804,7 @@ function AdminActions({ u, onTrialExtended }) {
   const [showEmail, setShowEmail]       = useState(false)
   const [isSuspended, setIsSuspended]   = useState(u.is_suspended ?? false)
   const [foundingState, setFoundingState] = useState('idle')
+  const viaStore = storeBilled(u)
 
   const applyFounding = async () => {
     if (!window.confirm(`Put ${u.full_name ?? u.email} on the founding deal?\n\nThis switches them to Family Yearly and applies the FOUNDING50 coupon — £0 for the first year, then it renews yearly at the normal price.`)) return
@@ -809,6 +846,7 @@ function AdminActions({ u, onTrialExtended }) {
       `This instantly and irreversibly erases their account, all their vault data ` +
       `(accounts, documents, messages, contacts, wishes), their uploaded files, and ` +
       `cancels & deletes their Stripe customer. This CANNOT be undone.\n\n` +
+      (viaStore ? `Their ${SOURCE_LABEL[u.entitlement_source]} subscription is NOT cancelled by this. Only they can cancel it on their device, and it keeps billing until they do.\n\n` : '') +
       `Type their email to confirm:\n${u.email}`
     )
     if (typed == null) return
@@ -922,8 +960,14 @@ function AdminActions({ u, onTrialExtended }) {
           {pwState === 'sent' ? 'Reset sent ✓' : pwState === 'error' ? 'Failed — retry' : 'Send password reset'}
         </button>
 
-        {/* Extend trial — always visible for trialing or no-sub users */}
-        <div className="flex gap-1">
+        {viaStore && (
+          <p className="text-[11px] leading-snug text-stone-500 bg-stone-50 border border-stone-200 rounded-xl px-3 py-2 m-0">
+            Billed through {SOURCE_LABEL[u.entitlement_source]}. Trials, cancellations and refunds live there, not in Stripe, and nothing here can change them.
+          </p>
+        )}
+
+        {/* Extend trial: Stripe only. A store subscription has its own trial rules. */}
+        {!viaStore && <div className="flex gap-1">
           <select
             value={extendDays}
             onChange={e => setExtendDays(Number(e.target.value))}
@@ -939,7 +983,7 @@ function AdminActions({ u, onTrialExtended }) {
             {trialState === 'sending' ? <Loader2 size={12} className="animate-spin" /> : <Clock size={12} />}
             {trialState === 'sent' ? 'Extended ✓' : trialState === 'error' ? 'Failed' : 'Extend trial'}
           </button>
-        </div>
+        </div>}
 
         {/* Suspend / unsuspend */}
         <button
@@ -969,7 +1013,7 @@ function AdminActions({ u, onTrialExtended }) {
 
         {/* Apply founding deal — case-by-case. Works if they have a subscription or a
             card on file; otherwise it tells you to send the FOUNDING50 link. */}
-        {u.plan !== 'advisor' && (
+        {u.plan !== 'advisor' && !viaStore && (
           <button
             onClick={applyFounding}
             disabled={foundingState === 'sending'}
@@ -983,7 +1027,7 @@ function AdminActions({ u, onTrialExtended }) {
         )}
 
         {/* Send founding link — email them the FOUNDING50 signup link (for no-card cases) */}
-        {u.plan !== 'advisor' && (
+        {u.plan !== 'advisor' && !viaStore && (
           <button
             onClick={sendFoundingLink}
             disabled={linkState === 'sending'}
@@ -1048,6 +1092,11 @@ function UserRow({ u }) {
           <div className="flex items-center gap-2 flex-wrap">
             <p className="text-sm font-semibold text-navy-900 truncate">{u.full_name ?? '—'}</p>
             <span className={`text-xs font-medium px-2 py-0.5 rounded-full border ${planCls}`}>{planLabel(u.plan)}</span>
+            {storeBilled(u) && (
+              <span className="text-xs font-medium px-2 py-0.5 rounded-full border bg-stone-100 text-stone-600 border-stone-200" title="Subscription bought in the app and managed by the store">
+                {SOURCE_LABEL[u.entitlement_source]}
+              </span>
+            )}
             {currencyOf(u) === 'eur' && (
               <span
                 className="text-xs font-medium px-2 py-0.5 rounded-full border bg-blue-50 text-blue-700 border-blue-200"
@@ -1097,6 +1146,7 @@ function UserRow({ u }) {
             <p className="text-xs font-semibold text-stone-400 uppercase tracking-widest mb-2">Contact</p>
             {[
               [Mail,     'Email',       u.email,       false],
+              [Mail,     'Also',        (u.emails || []).join(', '), false],
               [Phone,    'Phone',       u.phone,       true],
               [MapPin,   'Country',     u.country,     true],
               [MapPin,   'Nationality', u.nationality, true],
@@ -1154,8 +1204,8 @@ function UserRow({ u }) {
             ) : (
               <div className="flex items-start gap-2">
                 <ExternalLink size={13} className="text-stone-400 mt-0.5 shrink-0" />
-                <span className="text-stone-500 w-16 shrink-0 text-xs">Stripe</span>
-                <span className="text-xs text-stone-400">No Stripe record</span>
+                <span className="text-stone-500 w-16 shrink-0 text-xs">{storeBilled(u) ? 'Billed via' : 'Stripe'}</span>
+                <span className={`text-xs ${storeBilled(u) ? 'text-navy-900 font-medium' : 'text-stone-400'}`}>{storeBilled(u) ? SOURCE_LABEL[u.entitlement_source] : 'No Stripe record'}</span>
               </div>
             )}
             {/* Stripe subscription link */}
@@ -1260,6 +1310,9 @@ const PLAN_ORDER = [
 ]
 
 const SOURCE_LABEL = { stripe: 'Stripe', apple_iap: 'App Store', google_play: 'Google Play' }
+// A subscription bought in an app is managed by that store. Stripe cannot see
+// it, so every Stripe action here would either fail or create a second one.
+const storeBilled = (u) => ['apple_iap', 'google_play'].includes(u.entitlement_source)
 
 const fmtGbp = (n) => '£' + Math.round(n).toLocaleString('en-GB')
 
@@ -1355,10 +1408,12 @@ function OverviewSection({ isDemo }) {
     const iss  = members.filter(u => ['past_due', 'trial_expired'].includes(u.subscription_status)).length
     const chu  = members.filter(u => ['cancelled', 'canceled'].includes(u.subscription_status)).length
     const other = members.length - act - canc - tri - iss - chu
-    const planMrr = members
-      .filter(u => ['active', 'cancelling'].includes(u.subscription_status) && !u.is_founding_member)
-      .reduce((s, u) => s + mrrOf(u), 0)
-    return { key, note, members, act, canc, tri, iss, chu, other, planMrr }
+    // Split by currency, like the MRR card above: a euro payer added into a
+    // sterling total is a number that is wrong in both currencies.
+    const payers = members.filter(u => ['active', 'cancelling'].includes(u.subscription_status) && !u.is_founding_member)
+    const planMrr    = payers.filter(u => currencyOf(u) === 'gbp').reduce((s, u) => s + mrrOf(u), 0)
+    const planMrrEur = payers.filter(u => currencyOf(u) === 'eur').reduce((s, u) => s + mrrOf(u), 0)
+    return { key, note, members, act, canc, tri, iss, chu, other, planMrr, planMrrEur }
   })
 
   // People worth acting on, most urgent first. Statuses are mutually exclusive.
@@ -1462,13 +1517,13 @@ function OverviewSection({ isDemo }) {
         </div>
         <p className="text-xs text-stone-400 mb-5">Every member, whatever their status — each bar shows how that plan's members break down</p>
         <div className="space-y-5">
-          {planRows.map(({ key, note, members, act, canc, tri, iss, chu, other, planMrr }) => (
+          {planRows.map(({ key, note, members, act, canc, tri, iss, chu, other, planMrr, planMrrEur }) => (
             <div key={key}>
               <div className="flex items-center gap-2 mb-1.5 flex-wrap">
                 <span className={`text-xs font-medium px-2 py-0.5 rounded-full border ${PLAN_BADGE[key] ?? PLAN_BADGE.free}`}>{planLabel(key)}</span>
                 <span className="text-xs text-stone-400">{note}</span>
                 <span className="ml-auto text-sm font-semibold text-navy-900">{members.length}</span>
-                <span className="text-xs text-stone-400 w-20 text-right">{fmtGbp(planMrr)} MRR</span>
+                <span className="text-xs text-stone-400 text-right whitespace-nowrap">{fmtGbp(planMrr)}{planMrrEur ? ` + ${fmtEur(planMrrEur)}` : ''} MRR</span>
               </div>
               <div className="flex bg-stone-100 rounded-full h-2 overflow-hidden">
                 {seg(act, members.length, 'bg-emerald-500')}
@@ -1653,8 +1708,9 @@ const INVOICE_STATUS = {
 }
 
 const DEMO_ADVISERS = [
-  { id: 'adv1', firm_name: 'Thornton & Vale Solicitors', contact_name: 'Rachel Vale', contact_email: 'rachel@thorntonvale.co.uk', logo_url: null, status: 'pilot', plan_type: 'pilot', platform_fee: 0, price_per_family: 0, max_families: 25, pilot_end_date: '2027-06-01', billing_start_date: '2027-06-01', notes: 'First pilot firm — free first year.', created_at: '2026-06-20T10:00:00Z', families_used: 8, latest_invoice: { status: 'waived', amount: 0, issue_date: '2026-06-20' } },
-  { id: 'adv2', firm_name: 'Hartwell Financial Planning', contact_name: 'James Hartwell', contact_email: 'james@hartwellfp.co.uk', logo_url: null, status: 'active', plan_type: 'paid', platform_fee: 25000, price_per_family: 1200, max_families: 50, pilot_end_date: null, billing_start_date: '2026-05-01', notes: '', created_at: '2026-04-10T10:00:00Z', families_used: 42, latest_invoice: { status: 'paid', amount: 75400, issue_date: '2026-06-01' } },
+  { id: 'adv1', org_kind: 'professional', firm_type: 'solicitor', can_deliver: true, verified_domain: 'thorntonvale.co.uk', firm_name: 'Thornton & Vale Solicitors', contact_name: 'Rachel Vale', contact_email: 'rachel@thorntonvale.co.uk', logo_url: null, status: 'pilot', plan_type: 'pilot', platform_fee: 0, price_per_family: 0, max_families: 25, pilot_end_date: '2027-06-01', billing_start_date: '2027-06-01', notes: 'First pilot firm — free first year.', created_at: '2026-06-20T10:00:00Z', families_used: 8, connections_active: 3, deliveries_sent: 5, deliveries_waiting: 1, requests_open: 2, latest_invoice: { status: 'waived', amount: 0, issue_date: '2026-06-20' } },
+  { id: 'adv2', org_kind: 'professional', firm_type: 'ifa', can_deliver: false, verified_domain: null, firm_name: 'Hartwell Financial Planning', contact_name: 'James Hartwell', contact_email: 'james@hartwellfp.co.uk', logo_url: null, status: 'active', plan_type: 'paid', platform_fee: 25000, price_per_family: 1200, max_families: 50, pilot_end_date: null, billing_start_date: '2026-05-01', notes: '', created_at: '2026-04-10T10:00:00Z', families_used: 42, connections_active: 0, deliveries_sent: 0, deliveries_waiting: 0, requests_open: 0, latest_invoice: { status: 'paid', amount: 75400, issue_date: '2026-06-01' } },
+  { id: 'adv3', org_kind: 'employer', firm_type: null, can_deliver: true, verified_domain: 'marlowfinch.example', firm_name: 'Marlow & Finch', contact_name: 'Sophie Carter', contact_email: 'sophie@marlowfinch.example', logo_url: null, status: 'pilot', plan_type: 'pilot', platform_fee: 0, price_per_family: 0, max_families: 0, pilot_end_date: '2027-06-01', billing_start_date: '2027-06-01', notes: 'HR pilot, 96 people reached so far.', created_at: '2026-07-01T10:00:00Z', families_used: 0, connections_active: 96, deliveries_sent: 128, deliveries_waiting: 12, requests_open: 7, latest_invoice: { status: 'waived', amount: 0, issue_date: '2026-07-01' } },
 ]
 const DEMO_ADVISER_FAMILIES = {
   adv1: [
@@ -1672,10 +1728,13 @@ const DEMO_ADVISER_INVOICES = {
 const DEMO_ADVISER_MEMBERS = {
   adv1: [
     { id: 'm1', email: 'rachel@thorntonvale.co.uk', role: 'owner',  invite_status: 'accepted', user_id: 'u-r', full_name: 'Rachel Vale' },
-    { id: 'm2', email: 'tom@thorntonvale.co.uk',    role: 'member', invite_status: 'pending',  user_id: null,  full_name: null },
+    { id: 'm2', email: 'tom@thorntonvale.co.uk',    role: 'member', invite_status: 'pending',  user_id: null,  full_name: null, invite_token: 'demo-invite-m2' },
   ],
   adv2: [
     { id: 'm3', email: 'james@hartwellfp.co.uk', role: 'owner', invite_status: 'accepted', user_id: 'u-j', full_name: 'James Hartwell' },
+  ],
+  adv3: [
+    { id: 'm4', email: 'sophie@marlowfinch.example', role: 'owner', invite_status: 'accepted', user_id: 'u-s', full_name: 'Sophie Carter' },
   ],
 }
 
@@ -1760,7 +1819,7 @@ function AdvisersSection({ isDemo }) {
           {advisers.length === 0 ? (
             <div className="bg-white border border-stone-200 rounded-2xl p-12 text-center">
               <Building2 size={28} className="mx-auto text-stone-300 mb-3" />
-              <p className="text-stone-500 text-sm">No adviser firms yet. Create your first one to start the pilot.</p>
+              <p className="text-stone-500 text-sm">No organisations yet. Create the first one to start a pilot.</p>
             </div>
           ) : (
             <div className="grid gap-4 sm:grid-cols-2">
@@ -1829,6 +1888,11 @@ function AdviserCard({ adviser: a, onOpen }) {
           <div className="mt-1.5 h-1.5 rounded-full bg-stone-100 overflow-hidden">
             <div className={`h-full rounded-full ${atCap ? 'bg-red-400' : 'bg-sage-500'}`} style={{ width: `${pct}%` }} />
           </div>
+          {/* A firm that sends and asks shows up in the exchange tables like an
+              employer does; the endpoint counts it for every organisation. */}
+          {(a.connections_active || a.deliveries_sent || a.requests_open) ? (
+            <p className="mt-2 text-[11px] text-stone-500 m-0">{a.connections_active || 0} connected · {a.deliveries_sent || 0} sent · {(a.deliveries_waiting || 0) + (a.requests_open || 0)} waiting</p>
+          ) : null}
         </>
       )}
       <div className="mt-4 flex items-center justify-between text-xs">
@@ -1992,7 +2056,7 @@ function AdviserForm({ isDemo, initial, onClose, onSaved }) {
         <div className="flex justify-end gap-2 pt-2">
           <button onClick={onClose} className="px-4 py-2 text-sm text-stone-600 hover:text-stone-900">Cancel</button>
           <button onClick={save} disabled={saving} className="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-semibold text-white rounded-xl disabled:opacity-50" style={{ backgroundColor: '#4c7d47' }}>
-            {saving ? <Loader2 size={14} className="animate-spin" /> : <Check size={14} />} {initial ? 'Save changes' : 'Create firm'}
+            {saving ? <Loader2 size={14} className="animate-spin" /> : <Check size={14} />} {initial ? 'Save changes' : f.org_kind === 'employer' ? 'Create employer' : 'Create firm'}
           </button>
         </div>
       </div>
@@ -2150,7 +2214,7 @@ function AdviserDetail({ isDemo, adviser: a, onBack, onEdit, onChanged }) {
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 text-sm">
           <SummaryItem label="Plan" value={a.plan_type === 'pilot' ? 'Pilot (free)' : 'Paid'} />
           <SummaryItem label="Platform fee" value={`${gbp(a.platform_fee)}/mo`} />
-          <SummaryItem label="Per family" value={gbp(a.price_per_family)} />
+          {!isEmployer && <SummaryItem label="Per family" value={gbp(a.price_per_family)} />}
           {!isEmployer && <SummaryItem label="Family cap" value={String(a.max_families)} />}
           <SummaryItem label="Pilot ends" value={fmtDate(a.pilot_end_date)} />
           <SummaryItem label="Billing starts" value={fmtDate(a.billing_start_date)} />
@@ -2158,7 +2222,7 @@ function AdviserDetail({ isDemo, adviser: a, onBack, onEdit, onChanged }) {
         {a.notes && <p className="mt-4 text-sm text-stone-500 border-t border-stone-100 pt-3">{a.notes}</p>}
       </div>
 
-      {isEmployer ? (
+      {(isEmployer || a.connections_active || a.deliveries_sent || a.requests_open) ? (
         <div className="bg-white border border-stone-200 rounded-2xl p-5">
           <h3 className="text-sm font-semibold text-navy-900 mb-3">Activity</h3>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
@@ -2168,11 +2232,14 @@ function AdviserDetail({ isDemo, adviser: a, onBack, onEdit, onChanged }) {
             <SummaryItem label="Open requests"    value={String(a.requests_open ?? 0)} />
           </div>
           <p className="mt-4 text-xs text-stone-500 border-t border-stone-100 pt-3">
-            An employer has no client families: their people connect by accepting a document, not by being assigned here.
-            Everstead never shows an employer who holds a vault, so neither does this.
+            {isEmployer
+              ? 'An employer has no client families: their people connect by accepting a document, not by being assigned here. Everstead never shows an employer who holds a vault, so neither does this.'
+              : 'People who connected by accepting a delivery are counted here and not under Families, which lists only the accounts assigned to the firm from this panel.'}
           </p>
         </div>
-      ) : (
+      ) : null}
+
+      {!isEmployer && (
       <div className="bg-white border border-stone-200 rounded-2xl p-5">
         <div className="flex items-center justify-between mb-3">
           <h3 className="text-sm font-semibold text-navy-900">Families <span className={atCap ? 'text-red-600' : 'text-stone-400'}>({used}/{a.max_families}{atCap ? ' · at cap' : ''})</span></h3>
@@ -2359,16 +2426,20 @@ function AssignFamilyModal({ isDemo, adviser, onClose, onAssigned }) {
 // CSV EXPORT
 // ─────────────────────────────────────────────────────────────
 function exportCsv(users) {
-  const headers = ['Name','Email','Phone','Country','Nationality','Plan','Billing','Status','Readiness %','Joined','Trial ends','Stripe customer','Founding member','Referrals']
+  const headers = ['Name','Email','Other addresses','Phone','Country','Nationality','Language','Plan','Billing','Status','Billed via','Suspended','Readiness %','Joined','Trial ends','Stripe customer','Founding member','Referrals']
   const rows = users.map(u => [
     u.full_name ?? '',
     u.email ?? '',
+    (u.emails || []).join(' '),
     u.phone ?? '',
     u.country ?? '',
     u.nationality ?? '',
+    u.language ?? '',
     u.plan ?? '',
     u.billing_cycle ?? '',
     u.subscription_status ?? '',
+    SOURCE_LABEL[u.entitlement_source] ?? (u.stripe_subscription_id ? 'Stripe' : ''),
+    u.is_suspended ? 'Yes' : '',
     u.readiness_score ?? '',
     u.created_at ? new Date(u.created_at).toLocaleDateString('en-GB') : '',
     u.trial_ends_at ? new Date(u.trial_ends_at).toLocaleDateString('en-GB') : '',
@@ -2790,16 +2861,16 @@ function UsersSection({ isDemo }) {
     if (statusFilter === 'cancelling') return u.subscription_status === 'cancelling'
     if (statusFilter === 'payment')  return ['trial_expired', 'past_due'].includes(u.subscription_status)
     if (statusFilter === 'churned')  return ['cancelled', 'canceled'].includes(u.subscription_status)
-    if (statusFilter === 'nosub')    return u.plan !== 'advisor' && !u.stripe_subscription_id
-    if (search) {
-      const q = search.toLowerCase()
-      return (u.full_name ?? '').toLowerCase().includes(q) || (u.email ?? '').toLowerCase().includes(q)
-    }
+    if (statusFilter === 'nosub')    return u.plan !== 'advisor' && !u.stripe_subscription_id && !(storeBilled(u) && ['active', 'trialing', 'cancelling'].includes(u.subscription_status))
     return true
   }).filter(u => {
     if (!search) return true
     const q = search.toLowerCase()
-    return (u.full_name ?? '').toLowerCase().includes(q) || (u.email ?? '').toLowerCase().includes(q)
+    // Every address the account has proved, not only the sign-in one: a firm
+    // looks a member up by the work address it holds.
+    return (u.full_name ?? '').toLowerCase().includes(q)
+      || (u.email ?? '').toLowerCase().includes(q)
+      || (u.emails || []).some(e => String(e).toLowerCase().includes(q))
   })
 
   const sorted = [...visible].sort((a, b) => {
@@ -2837,7 +2908,7 @@ function UsersSection({ isDemo }) {
           <Search size={13} className="absolute left-3 top-1/2 -translate-y-1/2 text-stone-400" />
           <input
             type="text"
-            placeholder="Search by name or email…"
+            placeholder="Search by name or any verified address…"
             value={search}
             onChange={e => setSearch(e.target.value)}
             className="w-full pl-8 pr-3 py-2 text-sm border border-stone-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-navy-300"
@@ -2857,7 +2928,7 @@ function UsersSection({ isDemo }) {
             ['cancelling', 'Cancelling'],
             ['payment',    'Payment issue'],
             ['churned',    'Churned'],
-            ['nosub',      'No card yet'],
+            ['nosub',      'Not subscribed'],
           ].map(([v,l]) => (
             <button key={v} onClick={() => setStatus(v)}
               className={`px-3 py-2 transition-colors ${statusFilter === v ? 'bg-navy-900 text-white' : 'text-stone-500 hover:bg-stone-50'}`}
@@ -2947,7 +3018,7 @@ function InviteUserModal({ isDemo, onClose }) {
         </Field>
         <Field label="Offer">
           <div className="grid grid-cols-2 gap-2">
-            {[['normal', 'Normal signup', '14-day trial'], ['founding', 'Founding (FOUNDING50)', 'First year free']].map(([v, title, sub]) => (
+            {[['normal', 'Normal signup', 'Free plan, no card'], ['founding', 'Founding (FOUNDING50)', 'First year free']].map(([v, title, sub]) => (
               <button key={v} type="button" onClick={() => setPlan(v)}
                 className={`text-left rounded-xl border px-3 py-2.5 transition-colors ${plan === v ? 'border-navy-500 bg-navy-50' : 'border-stone-200 hover:bg-stone-50'}`}>
                 <p className="text-sm font-semibold text-navy-900">{title}</p>
@@ -3143,7 +3214,9 @@ export default function AdminPanel() {
       if (ur) setSelected(ur)
       return
     }
-    const { report } = await adminReportsCall({ action: newStatus === 'verified' ? 'verify' : 'reject', id })
+    const action = REPORT_ACTION[newStatus]
+    if (!action) return
+    const { report } = await adminReportsCall({ action, id, event: timelineEvent })
     if (report) {
       setReports(prev => prev.map(r => (r.id === id ? report : r)))
       setSelected(report)
@@ -3357,7 +3430,7 @@ export default function AdminPanel() {
           <>
             <div>
               <h1 className="text-2xl font-semibold text-navy-950">Organisations</h1>
-              <p className="text-sm text-stone-500 mt-1">Adviser &amp; solicitor firms — subscriptions, family caps and invoices</p>
+              <p className="text-sm text-stone-500 mt-1">Professional firms and employers: subscriptions, exchange activity, family caps and invoices</p>
             </div>
             <AdvisersSection isDemo={isDemo} />
           </>

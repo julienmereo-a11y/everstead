@@ -523,32 +523,37 @@ export function SettingsScreen({ advisor, firm, role, canSetRole, onSetRole, rol
       setProfileState('saved'); setTimeout(() => setProfileState('idle'), 2500)
     } catch { setProfileState('error') }
   }
+  // An employer has no client families and no role to pick: the org kind is
+  // set by Everstead when the organisation is created. What HR wants to know
+  // here is whether sending is switched on, because the Send screen refuses
+  // until the domain has been verified.
+  const isEmployer = firm?.org_kind === 'employer'
   const planLine = [
     firm?.plan_type === 'paid' ? 'Paid plan' : 'Pilot plan',
-    `up to ${advisor?.families_limit ?? 5} families`,
+    isEmployer ? (firm?.can_deliver ? 'sending switched on' : 'sending not switched on yet') : `up to ${advisor?.families_limit ?? 5} families`,
     firm?.pilot_end_date ? `renews ${fmtDate(firm.pilot_end_date)}` : null,
   ].filter(Boolean).join(' · ')
   const seg = (on) => `px-4 py-2 rounded-[9px] text-[13px] font-semibold transition-colors ${on ? 'bg-white text-navy-950 shadow-sm' : 'text-stone-500 hover:text-stone-700'}`
 
   return (
     <div className="es-in flex flex-col gap-6 max-w-[760px]">
-      <ScreenHeader eyebrow="Settings" title="Your firm" />
+      <ScreenHeader eyebrow="Settings" title={isEmployer ? 'Your organisation' : 'Your firm'} />
       <Card className="p-6 flex flex-col gap-[18px]">
-        <div>
+        {!isEmployer && <div>
           <div className={`${eyebrowCls} mb-2`}>Your role</div>
           <div className="inline-flex bg-stone-100 rounded-xl p-1 gap-1">
             <button type="button" disabled={!canSetRole || roleBusy} onClick={() => onSetRole('ifa')} className={seg(role !== 'solicitor')}>Financial adviser</button>
             <button type="button" disabled={!canSetRole || roleBusy} onClick={() => onSetRole('solicitor')} className={seg(role === 'solicitor')}>Solicitor</button>
           </div>
           <p className="mt-2.5 text-[13px] text-stone-600 leading-[1.5] m-0">Solicitors get a review queue for wills and LPAs, document requests, and matter tracking for estate and probate work.{!canSetRole && !isDemo ? ' Only the firm owner can change this.' : ''}</p>
-        </div>
-        <div className="border-t border-stone-100 pt-[18px]">
-          <div className={`${eyebrowCls} mb-2`}>Firm</div>
+        </div>}
+        <div className={isEmployer ? '' : 'border-t border-stone-100 pt-[18px]'}>
+          <div className={`${eyebrowCls} mb-2`}>{isEmployer ? 'Organisation' : 'Firm'}</div>
           <div className="flex items-center gap-4">
             {advisor?.logo_url ? <img src={advisor.logo_url} alt="" className="h-12 w-auto max-w-[120px] rounded-lg object-contain border border-stone-200 bg-stone-50 p-1" /> : null}
             <div className="min-w-0 flex-1">
-              <div className="text-[14.5px] font-semibold text-stone-900">{advisor?.firm || firm?.firm_name || 'Your firm'}</div>
-              <div className="text-[13px] text-stone-500">{planLine}{families ? ` · ${families.length} linked` : ''}</div>
+              <div className="text-[14.5px] font-semibold text-stone-900">{advisor?.firm || firm?.firm_name || (isEmployer ? 'Your organisation' : 'Your firm')}</div>
+              <div className="text-[13px] text-stone-500">{planLine}{!isEmployer && families ? ` · ${families.length} linked` : ''}</div>
             </div>
             {isOwner && (
               <label className={`${pillBtn} cursor-pointer ${logoUploading ? 'opacity-50 pointer-events-none' : ''}`}>

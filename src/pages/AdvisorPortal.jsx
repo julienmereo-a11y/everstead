@@ -118,7 +118,7 @@ export default function AdvisorPortal() {
   const firm      = isDemo ? { id: 'demo-firm', firm_name: demoEmployer ? 'Marlow & Finch' : demoRole === 'solicitor' ? 'Carter & Vale Solicitors' : DEMO_ADVISOR.firm, firm_type: demoEmployer ? 'other' : demoRole === 'solicitor' ? 'solicitor' : 'ifa', plan_type: 'pilot', max_families: 5, role: 'owner', pilot_end_date: '2027-06-01', org_kind: demoEmployer ? 'employer' : 'professional', can_deliver: true } : realFirm
   const role      = isDemo ? demoRole : roleFromType(realFirm?.firm_type)
   const team      = isDemo
-    ? [{ id: 't1', email: DEMO_ADVISOR.email, role: 'owner', invite_status: 'accepted', full_name: DEMO_ADVISOR.full_name }, { id: 't2', email: 'james@carterwealth.example', role: 'member', invite_status: 'accepted', full_name: 'James Reid' }]
+    ? [{ id: 't1', email: DEMO_ADVISOR.email, role: 'owner', invite_status: 'accepted', full_name: DEMO_ADVISOR.full_name }, { id: 't2', email: demoEmployer ? 'james@marlowfinch.example' : 'james@carterwealth.example', role: 'member', invite_status: 'accepted', full_name: 'James Reid' }]
     : realTeam
   const advisor = isDemo ? { ...DEMO_ADVISOR, firm: firm.firm_name, isOwner: true } : profile ? {
     id: user.id, full_name: profile.full_name, email: profile.email ?? user.email, phone: profile.phone || '',
@@ -139,7 +139,11 @@ export default function AdvisorPortal() {
   const [matterBusy, setMatterBusy]   = useState(false)
   const [roleBusy, setRoleBusy]       = useState(false)
 
-  const go = (next) => { setTab(next); setRequestOpen(false); window.scrollTo({ top: 0 }) }
+  // Documents has its own tabs (send, ask, history, visible). A screen that
+  // sends someone there says which one, and the choice survives until they
+  // pick another: the nav button alone always opens Send.
+  const [exchangeTab, setExchangeTab] = useState('send')
+  const go = (next, sub) => { setTab(next); if (next === 'send') setExchangeTab(sub || 'send'); setRequestOpen(false); window.scrollTo({ top: 0 }) }
   const openClient = (id, dtab = 'overview') => { setSelectedId(id); setDetailTab(dtab); setTab('client'); window.scrollTo({ top: 0 }) }
   const selected = families.find(f => f.id === selectedId) || null
   useEffect(() => { if (tab === 'client' && !selected) setTab('clients') }, [tab, selected])
@@ -263,7 +267,7 @@ export default function AdvisorPortal() {
   return (
     <div className="min-h-screen bg-stone-50 text-stone-900 flex flex-col lg:flex-row">
       {isDemo && (
-        <div className="lg:hidden bg-amber-500 text-white text-xs font-semibold text-center py-2 px-4">Demo mode, showing {DEMO_ADVISOR.full_name}'s adviser portal. Data is fictional. <Link to="/get-started" className="underline">Create your own plan →</Link></div>
+        <div className="lg:hidden bg-amber-500 text-white text-xs font-semibold text-center py-2 px-4">Demo mode, showing {DEMO_ADVISOR.full_name}'s {isEmployer ? 'employer' : 'adviser'} portal. Data is fictional. <Link to="/get-started" className="underline">Create your own plan →</Link></div>
       )}
 
       {/* ── Sidebar (a horizontal bar below lg) ── */}
@@ -307,14 +311,18 @@ export default function AdvisorPortal() {
         {tab === 'review'   && role === 'solicitor' && <ReviewQueueScreen families={families} workspace={workspace} requestOpen={requestOpen} setRequestOpen={setRequestOpen} requestBusy={requestBusy} requestError={requestError} onCreateRequest={createRequest} onRemind={remindRequest} onRequestStatus={setRequestStatus} onSetReview={setReview} openClient={openClient} isDemo={isDemo} />}
         {tab === 'matters'  && role === 'solicitor' && <MattersScreen families={families} workspace={workspace} onSaveMatter={saveMatter} onDeleteMatter={deleteMatter} busy={matterBusy} isDemo={isDemo} />}
         {tab === 'people'   && isEmployer && <PeopleScreen firm={firm} isDemo={isDemo} go={go} />}
-        {tab === 'send'     && <ExchangeScreen firm={firm} isDemo={isDemo} />}
+        {tab === 'send'     && <ExchangeScreen firm={firm} isDemo={isDemo} tab={exchangeTab} onTab={setExchangeTab} />}
         {tab === 'alerts'   && <AlertsScreen families={families} readIds={readIds} markRead={markRead} markAllRead={markAllRead} openClient={openClient} />}
         {tab === 'guides'   && <GuidesScreen role={role} />}
         {tab === 'settings' && <SettingsScreen advisor={advisor} firm={firm} role={role} canSetRole={isDemo || !!advisor?.isOwner} onSetRole={setRole} roleBusy={roleBusy} team={team} isDemo={isDemo} onReload={isDemo ? undefined : loadPortal} firmId={realFirm?.id} families={families} />}
       </main>
 
       {showInvite && <InviteFamilyModal onClose={() => setShowInvite(false)} isDemo={isDemo} familiesCount={families.length} familiesLimit={familiesLimit} onInvited={isDemo ? undefined : loadPortal} />}
-      <AdviserAssistant isDemo={isDemo} />
+      {/* The assistant is built on the adviser's client portfolio (its prompt
+          and its data both come from get_adviser_clients). An employer has no
+          clients, so it would greet HR with "ask me who has the lowest
+          readiness" and then have nothing to say. Off until it knows the job. */}
+      {!isEmployer && <AdviserAssistant isDemo={isDemo} />}
     </div>
   )
 }

@@ -20,8 +20,36 @@ const supabase = createClient(
 // vault to their delegates and releases their sealed messages. It now uses the
 // same guard as every other admin route.
 
+// Every status the panel's buttons can set, by the action name they send.
+// This used to know verify and reject only, and the panel sent "reject" for
+// anything else, so "Mark as actioned", "Re-open" and "Request info" all
+// quietly rejected the report.
+const STATUS_FOR_ACTION = {
+  verify: 'verified',
+  reject: 'rejected',
+  actioned: 'actioned',
+  reopen: 'pending',
+  'info-requested': 'info_requested',
+}
+const DEFAULT_EVENT = {
+  verified: 'Verified by an Everstead admin',
+  rejected: 'Rejected by an Everstead admin',
+  actioned: 'Marked as actioned by an Everstead admin',
+  pending: 'Re-opened by an Everstead admin',
+  info_requested: 'More information requested from the reporter',
+}
+
 // Map a reports row to the shape the AdminPanel UI renders.
+//
+// The timeline lives in details.timeline, appended to on every status change
+// with who did it. Rows from before that existed have no entries, so for them
+// the current status is turned into the one event it implies.
 function toUi(r) {
+  const stored = Array.isArray(r.details?.timeline) ? r.details.timeline : []
+  const legacy = [
+    ...(r.status === 'verified' ? [{ at: r.updated_at, event: 'Verified by an Everstead admin' }] : []),
+    ...(r.status === 'rejected' ? [{ at: r.updated_at, event: 'Rejected by an Everstead admin' }] : []),
+  ]
   return {
     ...r,
     death_date:           r.date_of_death,
@@ -32,8 +60,7 @@ function toUi(r) {
     documents:            [],
     timeline: [
       { at: r.created_at, event: `Report submitted by ${r.reporter_name || 'a delegate'}` },
-      ...(r.status === 'verified' ? [{ at: r.updated_at, event: 'Verified by an Everstead admin' }] : []),
-      ...(r.status === 'rejected' ? [{ at: r.updated_at, event: 'Rejected by an Everstead admin' }] : []),
+      ...(stored.length ? stored : legacy),
     ],
   }
 }
@@ -53,12 +80,21 @@ async function handler(req, res) {
     return res.status(200).json({ reports: (data || []).map(toUi) })
   }
 
-  if (action === 'verify' || action === 'reject') {
+  const status = STATUS_FOR_ACTION[action]
+  if (status) {
     if (!id) return res.status(400).json({ error: 'Missing report id' })
-    const status = action === 'verify' ? 'verified' : 'rejected'
+    const { data: before } = await supabase.from('reports').select('details').eq('id', id).maybeSingle()
+    if (!before) return res.status(404).json({ error: 'Report not found' })
+    const now = new Date().toISOString()
+    const prev = before.details && typeof before.details === 'object' && !Array.isArray(before.details) ? before.details : {}
+    const sent = typeof req.body?.event === 'string' ? req.body.event.trim().slice(0, 500) : ''
+    const timeline = [
+      ...(Array.isArray(prev.timeline) ? prev.timeline : []),
+      { at: now, event: sent || DEFAULT_EVENT[status], by: admin.email || admin.id },
+    ]
     const { data: report, error } = await supabase
       .from('reports')
-      .update({ status, updated_at: new Date().toISOString() })
+      .update({ status, updated_at: now, details: { ...prev, timeline } })
       .eq('id', id)
       .select('*')
       .single()

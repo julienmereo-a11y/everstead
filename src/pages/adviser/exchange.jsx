@@ -16,8 +16,14 @@ const TABS = [
   { id: 'visible', label: 'What you can see', Icon: Eye },
 ]
 
-export function ExchangeScreen({ firm, isDemo, initialTab = 'send' }) {
-  const [tab, setTab] = useState(initialTab)
+// The tab can be owned by the caller. The employer overview has an "Ask for a
+// document" button and stat cards that point at History, and each of them
+// used to land on "Send a document" because this screen only ever read its
+// initial tab once.
+export function ExchangeScreen({ firm, isDemo, initialTab = 'send', tab: tabProp, onTab }) {
+  const [inner, setInner] = useState(initialTab)
+  const tab = tabProp ?? inner
+  const setTab = onTab ?? setInner
   return (
     <div className="max-w-4xl">
       <h1 className="font-display text-2xl font-light text-navy-950 m-0 mb-5">Documents</h1>
