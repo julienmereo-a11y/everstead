@@ -24,8 +24,12 @@ export function Checkbox({ checked }) {
 // The invite / edit form — shared by both invite modal and edit modal
 
 export function SectionShell({ title, subtitle, action, children }) {
+  // w-full matters: the shell sits in a column flexbox, and an auto-margined
+  // flex item without a width shrinks to its widest child. On a phone that
+  // was the 640px documents table, so every section rendered a thousand
+  // pixels wide and the right third of each card fell off the screen.
   return (
-    <div className="p-4 lg:p-8 max-w-5xl mx-auto">
+    <div className="w-full p-4 lg:p-8 max-w-5xl mx-auto">
       <div className="flex items-start justify-between mb-6">
         <div>
           <h1 className="font-display text-2xl font-light text-navy-950">{title}</h1>

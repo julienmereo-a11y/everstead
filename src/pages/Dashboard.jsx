@@ -83,6 +83,16 @@ export default function Dashboard() {
   const { user, profile, signOut, updateProfile, refreshProfile } = useAuth()
   const [searchParams, setSearchParams] = useSearchParams()
   const isDemo          = searchParams.get('demo') === 'true'
+  // A document accepted from an organisation's email lands here with its id
+  // and the sender's name, so Documents opens on it and says who can see it,
+  // rather than on a table with one more row in it.
+  const deliveredId   = searchParams.get('delivered') || null
+  const deliveredFrom = searchParams.get('from') || null
+  const dismissDelivered = () => {
+    const next = new URLSearchParams(searchParams)
+    next.delete('delivered'); next.delete('from')
+    setSearchParams(next, { replace: true })
+  }
 
   // One tiny idempotent write per day: the accurate "they came back" signal.
   // last_sign_in_at misses everyone who stays signed in; this does not.
@@ -348,6 +358,10 @@ export default function Dashboard() {
     if (isDemo || !activeProfile?.id) return
     if (activeProfile.role === 'delegate') return
     if (activeProfile.onboarding_completed) return
+    // Someone who has just accepted a document from their employer did not
+    // come for a three-step welcome about their life story. The document
+    // card is their first minute; the welcome waits for the next visit.
+    if (deliveredId) return
     try { if (localStorage.getItem(`everstead_welcome_done_${activeProfile.id}`) === '1') return } catch { /* ignore */ }
     // Small delay so the dashboard renders first
     const t = setTimeout(() => setShowWelcome(true), 700)
@@ -628,7 +642,7 @@ export default function Dashboard() {
         )}
         {activeSection === 'overview'      && <OverviewSection  isDemo={isDemo} adviser={adviserLink} access={access} profile={activeProfile} accounts={accounts} documents={documents} people={people} instructions={instructions} messages={messages} alerts={alerts} markRead={markRead} onNavigate={setActiveSection} planLimits={planLimits} loading={loadingAccounts || loadingDocs} daysSinceLogin={daysSinceLogin} onCelebrate={celebrate} onExecutorPreview={() => setShowExecutorPreview(true)} aboutMe={aboutMe} onUpgrade={() => handleUpgrade('family', 'yearly')} persistScore={isDemo ? undefined : updateProfile} scoreInputsLoaded={!loadingAccounts && !loadingDocs && !loadingPeople && !loadingInstructions} invite={isDemo ? undefined : invite} />}
         {activeSection === 'accounts'      && <AccountsSection  accounts={accounts} loading={loadingAccounts} add={addAccount} update={updateAccount} remove={removeAccount} profile={activeProfile} onUpgrade={() => handleUpgrade('family', 'yearly')} onLifeEvent={isDemo ? undefined : setLifeEventPrompt} />}
-        {activeSection === 'documents'     && <DocumentsSection isDemo={isDemo} adviser={adviserLink} access={access} documents={documents} loading={loadingDocs} uploadFile={uploadFile} update={updateDocument} remove={removeDocument} planLimits={planLimits} profile={activeProfile} onUpgrade={() => handleUpgrade('family', 'yearly')} updateProfile={isDemo ? undefined : updateProfile} addAlert={isDemo ? undefined : realAlerts.add} onLifeEvent={isDemo ? undefined : setLifeEventPrompt} people={people} />}
+        {activeSection === 'documents'     && <DocumentsSection isDemo={isDemo} adviser={adviserLink} access={access} delivered={deliveredId ? { id: deliveredId, from: deliveredFrom } : null} onDismissDelivered={dismissDelivered} onNavigate={setActiveSection} documents={documents} loading={loadingDocs} uploadFile={uploadFile} update={updateDocument} remove={removeDocument} planLimits={planLimits} profile={activeProfile} onUpgrade={() => handleUpgrade('family', 'yearly')} updateProfile={isDemo ? undefined : updateProfile} addAlert={isDemo ? undefined : realAlerts.add} onLifeEvent={isDemo ? undefined : setLifeEventPrompt} people={people} />}
         {activeSection === 'people'        && <PeopleSection    people={people} loading={loadingPeople} invite={invite} resendInvite={resendInvite} updatePerson={updatePerson} removePerson={removePerson} planLimits={planLimits} profile={activeProfile} onUpgrade={() => handleUpgrade('family', 'yearly')} />}
         {activeSection === 'aboutme'       && <AboutMeSection   aboutMe={aboutMe} loading={isDemo ? false : aboutMeHook.loading} save={aboutMeHook.save} uploadAvatar={aboutMeHook.uploadAvatar} profile={activeProfile} people={people} isDemo={isDemo} onCelebrate={celebrate} />}
         {activeSection === 'assistant' && aiEnabled && <AIAssistantSection profile={activeProfile} isDemo={isDemo} addAccount={addAccount} addPerson={addPersonRow} addDocument={addDocumentRow} addWish={addWish} uploadFile={uploadFile} saveAboutMe={aboutMeHook.save} aboutMe={aboutMe} />}

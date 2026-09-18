@@ -162,6 +162,22 @@ export default function GetStarted() {
   const referralCode = searchParams.get('ref') || null
   const trialDays    = referralCode ? 21 : 14
 
+  // ?next=<path>: where to go once the account exists. The accept-delivery
+  // page sends people here with its own path, so the document they have just
+  // confirmed is waiting in the new vault rather than lost to whichever
+  // address they sign up with. Same-origin paths only, kept in sessionStorage
+  // across the OAuth round-trip like everything else on this page.
+  const urlNext = searchParams.get('next') || null
+  useEffect(() => {
+    if (!urlNext || !/^\/(?!\/)\S*$/.test(urlNext)) return
+    try { sessionStorage.setItem('everstead_next', urlNext) } catch { /* ignore */ }
+  }, [urlNext])
+  const afterSignup = () => {
+    let next = null
+    try { next = sessionStorage.getItem('everstead_next'); if (next) sessionStorage.removeItem('everstead_next') } catch { /* ignore */ }
+    return next && /^\/(?!\/)\S*$/.test(next) ? next : '/dashboard'
+  }
+
   // Adviser invite branding: ?adviser=<firmId> shows the firm's logo + name at signup.
   // Persisted in sessionStorage so it survives the OAuth round-trip.
   const urlAdviser = searchParams.get('adviser') || null
@@ -259,7 +275,7 @@ export default function GetStarted() {
         profile.legacy_trial_access === true ||
         ['active', 'cancelling', 'past_due'].includes(profile.subscription_status)
       ) {
-        navigate('/dashboard')
+        navigate(afterSignup())
         return
       }
 
@@ -282,7 +298,7 @@ export default function GetStarted() {
 
       // Free tier has no checkout — a free user resumed here belongs on the dashboard,
       // never at the card step (this path must not create a Stripe customer for them).
-      if (resumePlan === 'free') { navigate('/dashboard'); return }
+      if (resumePlan === 'free') { navigate(afterSignup()); return }
 
       // Google OAuth users skip step 2 — collect missing profile fields first
       if (isOAuth && !profile.country) {
@@ -485,7 +501,10 @@ export default function GetStarted() {
       // plan='free' (delegate-register sets it); go straight into the product. A full
       // reload lets AuthContext pick up the new session + free profile before the gate runs.
       if (selectedPlan === 'free') {
-        window.location.href = '/dashboard'
+        const next = afterSignup()
+        // A full reload lets AuthContext pick up the session; the basename has
+        // to be put back by hand because this is not a router navigation.
+        window.location.href = next === '/dashboard' ? '/dashboard' : `${i18n.language === 'fr' ? '/fr' : ''}${next}`
         return
       }
 

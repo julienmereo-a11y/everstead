@@ -482,6 +482,25 @@
       "confirm": "Oui, supprimer",
       "deleting": "Suppression…",
       "failed": "Impossible de supprimer le document. Veuillez réessayer."
+    },
+    "delivered": {
+      "eyebrow": "Déposé pour vous",
+      "title": "{{name}} est dans votre coffre.",
+      "body": "{{sender}} voit qu'il est arrivé, et rien d'autre. Il reste le vôtre, y compris si vous partez un jour, et personne d'autre que vous ne l'ouvre.",
+      "anOrganisation": "L'expéditeur",
+      "open": {
+        "title": "L'ouvrir",
+        "body": "Lisez-le ici, ou téléchargez une copie à garder ailleurs."
+      },
+      "access": {
+        "title": "Qui peut le voir",
+        "body": "Ce que {{sender}} peut et ne peut pas voir, et comment mettre fin à la connexion quand vous le souhaitez."
+      },
+      "share": {
+        "title": "Le partager avec une personne de confiance",
+        "body": "Un conjoint ou un proche qui doit pouvoir le retrouver si un jour vous ne le pouvez pas."
+      },
+      "dismiss": "Compris"
     }
   },
   "aboutMe": {

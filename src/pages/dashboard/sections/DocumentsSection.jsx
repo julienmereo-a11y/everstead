@@ -7,7 +7,7 @@ import { baseDocumentAccess } from '../../../lib/documentAccess'
 import { getLimit, isAtLimit } from '../../../lib/planLimits'
 import { PlanLimitNotice, STATUS_STYLES, friendlyLimitError } from '../../dashboard/shared'
 import { Checkbox, EmptyState, Field, LoadingSpinner, Modal, SectionShell, input, primaryBtn, secondaryBtn } from '../../dashboard/ui'
-import { BookOpen, CheckCircle2, Download, ExternalLink, Eye, FileText, Loader2, Pencil, Share2, Sparkles, Trash2, Upload, X } from 'lucide-react'
+import { BookOpen, CheckCircle2, Download, ExternalLink, Eye, FileText, Loader2, Pencil, Share2, ShieldCheck, Sparkles, Trash2, Upload, Users, X } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { DocumentRequestsCard } from './AdviserSection'
 // <input type="date"> hands back 'YYYY-MM-DD', which Date parses as midnight
@@ -271,7 +271,7 @@ function ShareDocModal({ doc, access, onClose, t, lang }) {
   )
 }
 
-export function DocumentsSection({ documents, loading, uploadFile, update, remove, planLimits, profile, onUpgrade, updateProfile, addAlert, onLifeEvent, people, isDemo, adviser, access }) {
+export function DocumentsSection({ documents, loading, uploadFile, update, remove, planLimits, profile, onUpgrade, updateProfile, addAlert, onLifeEvent, people, isDemo, adviser, access, delivered, onDismissDelivered, onNavigate }) {
   const { t, i18n } = useTranslation('dashboard')
   const dateLocale = i18n.language?.startsWith('fr') ? 'fr-FR' : 'en-GB'
   const emptyForm = { name: '', doc_type: 'Legal', status: 'current', expires_at: '', notes: '', access_overrides: {}, release_timing: 'default' }
@@ -524,6 +524,22 @@ export function DocumentsSection({ documents, loading, uploadFile, update, remov
         </button>
       }
     >
+      {/* The first minute after accepting a document from an organisation.
+          The row alone says nothing about who sent it or who can see it, and
+          those are the two questions the person arrived with. */}
+      {delivered?.id && !loading && (() => {
+        const doc = documents.find(d => String(d.id) === String(delivered.id))
+        if (!doc) return null
+        return (
+          <FirstDeliveryCard
+            doc={doc} from={delivered.from} t={t}
+            onOpen={() => setViewingDoc(doc)}
+            onNavigate={onNavigate}
+            onDismiss={onDismissDelivered}
+          />
+        )
+      })()}
+
       {/* What the member's firm has asked them to upload */}
       <DocumentRequestsCard profile={profile} documents={documents} isDemo={isDemo} />
 
@@ -678,7 +694,7 @@ export function DocumentsSection({ documents, loading, uploadFile, update, remov
             </thead>
             <tbody className="divide-y divide-stone-50">
               {documents.map(doc => (
-                <tr key={doc.id} className="hover:bg-stone-50 transition-colors">
+                <tr key={doc.id} className={`hover:bg-stone-50 transition-colors ${delivered?.id && String(doc.id) === String(delivered.id) ? 'bg-sage-50/70' : ''}`}>
                   <td className="px-5 py-3.5">
                     <div className="flex items-center gap-2.5">
                       <FileText size={15} className="text-stone-400 shrink-0" />
@@ -906,3 +922,37 @@ export const normaliseDocType = (raw) => {
 }
 
 // ── First-run tour: a short, warm walk through the real dashboard ─────────────
+
+// Shown once, above everything, to someone who has just accepted a document
+// from an organisation. It answers the two questions they arrived with (who can
+// see this, and is it really mine) and offers the three things worth doing
+// next. Dismissing it only clears the URL; the row keeps its place below.
+function FirstDeliveryCard({ doc, from, t, onOpen, onNavigate, onDismiss }) {
+  const sender = from || t('documents.delivered.anOrganisation')
+  const tiles = [
+    { Icon: Eye,         key: 'open',   go: onOpen },
+    { Icon: ShieldCheck, key: 'access', go: () => onNavigate?.('access') },
+    { Icon: Users,       key: 'share',  go: () => onNavigate?.('people') },
+  ]
+  return (
+    <div className="mb-6 rounded-2xl border border-stone-200 bg-white overflow-hidden es-in">
+      <div className="aurora-field px-6 py-6 sm:px-7 text-stone-100">
+        <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-sage-300 m-0">{t('documents.delivered.eyebrow')}</p>
+        <h2 className="mt-2 font-display text-2xl font-light text-white m-0 leading-tight text-balance">{t('documents.delivered.title', { name: doc.name })}</h2>
+        <p className="mt-2 text-sm leading-relaxed text-stone-300 m-0 max-w-2xl">{t('documents.delivered.body', { sender })}</p>
+      </div>
+      <div className="grid sm:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x divide-stone-100">
+        {tiles.map(({ Icon, key, go }) => (
+          <button key={key} type="button" onClick={go} className="text-left px-6 py-5 hover:bg-stone-50 transition-colors">
+            <Icon size={16} className="text-navy-700" />
+            <span className="block mt-2.5 text-sm font-semibold text-navy-950">{t(`documents.delivered.${key}.title`)}</span>
+            <span className="block mt-1 text-xs leading-relaxed text-stone-500">{t(`documents.delivered.${key}.body`, { sender })}</span>
+          </button>
+        ))}
+      </div>
+      <div className="px-6 py-3 border-t border-stone-100 flex justify-end">
+        <button type="button" onClick={onDismiss} className="text-xs font-semibold text-stone-500 hover:text-navy-800 transition-colors">{t('documents.delivered.dismiss')}</button>
+      </div>
+    </div>
+  )
+}

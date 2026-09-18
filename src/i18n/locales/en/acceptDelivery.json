@@ -1,43 +1,94 @@
 {
-  "meta": { "title": "A document is waiting for you | Everstead" },
+  "meta": {
+    "title": "A document is waiting for you | Everstead"
+  },
   "from": "Sent by {{name}}",
+  "sentOn": "on {{date}}",
   "anOrganisation": "an organisation",
-  "title": "A document is waiting for you.",
-  "signedIn": "Accept it and it goes into your own vault. It stays yours, including if you later leave the organisation that sent it.",
-  "accept": "Accept into my vault",
-  "decline": "Decline",
-  "expired": "This one has expired or has already been answered. Ask whoever sent it to send it again.",
-  "safety": "Everstead never attaches a file to an email, and this page never opens one until you have confirmed a code. If you were not expecting this, decline it and tell us at hello@everstead.care.",
-  "footer": "Everstead, the place your family can find everything.",
-  "error": "Something went wrong. Please try again.",
+  "title": "{{name}} sent you a document.",
+  "titleNoSender": "A document is waiting for you.",
+  "waitingUntil": "Waiting for you until {{date}}",
+  "signedInAs": "Signed in as {{email}}",
+  "steps": [
+    "Confirm it is you",
+    "Choose what to do",
+    "Done"
+  ],
+  "stepsAria": "Progress",
+  "start": {
+    "intro": "Before anything opens, we send a six-digit code to {{hint}}, the address this was sent to. The link alone opens nothing, so a forwarded email cannot.",
+    "send": "Email me the code",
+    "signIn": "Sign in",
+    "signInHint": "If you already keep an Everstead vault, sign in and it can go straight in."
+  },
   "code": {
-    "intro": "Before anything opens, we will send a six-digit code to {{hint}}, the address this was sent to. Having the link is not enough on its own.",
-    "send": "Email me a code",
-    "sent": "We have sent a code to {{hint}}. It expires in ten minutes.",
+    "sent": "Sent to {{hint}}. It expires in ten minutes. Check the spam folder if it is not there within a minute.",
     "label": "Six-digit code",
     "verify": "Confirm",
     "resend": "Send another"
   },
+  "signedIn": {
+    "lead": "You are signed in as {{email}}. Accept it and it goes into this vault. It stays yours, including if you later leave the organisation that sent it.",
+    "needsCode": "This was sent to {{hint}}, which is not yet an address on your account. Confirm you can read that inbox and we add it to this account, so the next one from them arrives without a code."
+  },
+  "accept": "Accept into my vault",
+  "decline": "Decline it",
   "ready": {
-    "lead": "Confirmed. You can take the document now, or keep it somewhere it will still be there in ten years.",
-    "download": "Download it now",
-    "keep": "Keep it in a free vault",
-    "note": "Downloading is a perfectly good answer. A free vault just means you still have it when the laptop dies, and you can share it with whoever needs it next."
+    "lead": "Confirmed. Two honest ways to take it.",
+    "keep": {
+      "title": "Keep it in a free vault",
+      "points": [
+        "Yours to keep, including after you leave them",
+        "They can see that it arrived, and nothing you keep",
+        "No card, and you can delete everything at any time"
+      ],
+      "cta": "Keep it"
+    },
+    "download": {
+      "title": "Just download it",
+      "points": [
+        "Nothing is stored with Everstead",
+        "The sender sees only that it arrived"
+      ],
+      "cta": "Download it"
+    },
+    "haveAccount": "Already have a vault?"
+  },
+  "accepted": {
+    "title": "It is in your vault.",
+    "body": "You own this document now. {{sender}} can see that it arrived, and nothing else.",
+    "cta": "Open my vault",
+    "auto": "Taking you there in a moment."
   },
   "downloaded": {
     "title": "Downloaded.",
     "body": "It is yours. Nothing was stored with Everstead, and the sender can see only that it arrived.",
     "cta": "Keep the next one in a free vault"
   },
-  "accepted": {
-    "title": "It is in your vault.",
-    "body": "You own this document now. Taking you to your documents.",
-    "cta": "Go to my documents"
-  },
   "declined": {
     "title": "Declined.",
-    "body": "Nothing was added to your vault, and the file has been deleted."
+    "body": "Nothing was added anywhere, and the file has been deleted.",
+    "cta": "Go to Everstead"
   },
+  "expired": "This one has expired or has already been answered. Ask whoever sent it to send it again.",
+  "trust": {
+    "eyebrow": "How this works",
+    "sees": {
+      "title": "What {{sender}} can see",
+      "body": "That it arrived, and when. Not what else is in your vault, not who else you share with, and never the contents of anything you did not choose to show them."
+    },
+    "keep": {
+      "title": "What you keep",
+      "body": "The document, for as long as you want it. If you leave the organisation it stays yours, and you can end their connection from your vault at any time."
+    },
+    "never": {
+      "title": "What we never do",
+      "body": "Attach a file to an email, or open anything before you have confirmed a code. If you were not expecting this, decline it and write to hello@everstead.care."
+    }
+  },
+  "safety": "Everstead never attaches a file to an email, and this page never opens one until you have confirmed a code. If you were not expecting this, decline it and tell us at hello@everstead.care.",
+  "footer": "Everstead, the place your family can find everything.",
+  "error": "Something went wrong. Please try again.",
   "missing": {
     "title": "This link is no longer valid.",
     "body": "It may have already been used, or the organisation may have withdrawn it. Ask them to send it again.",

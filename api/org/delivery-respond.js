@@ -26,6 +26,7 @@ const db = createClient(
 )
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+const VERIFIED_TTL_MIN = 15 // the same window delivery-claim opens after a code
 const clearStaging = (path) => db.storage.from('deliveries').remove([path]).catch(() => {})
 
 async function handler(req, res) {
@@ -55,20 +56,32 @@ async function handler(req, res) {
   if (!delivery) return res.status(404).json({ error: 'That delivery no longer exists.' })
 
   // Three ways this delivery can be yours: it is already bound to you, it was
-  // sent to an address you have proved is yours, or you hold the claim token.
+  // sent to an address you have proved is yours, or you hold the claim token
+  // AND have just answered the code sent to that address.
   //
   // The address test asks resolve_member_by_email, never auth.email(). A
   // delivery sent to a work address before that address was linked carries no
   // member_id. Once the address is linked, the dashboard lists it (its RLS goes
   // through my_emails()), so comparing against the sign-in address alone
   // refused the very person it was being shown to, with "sent to someone else".
+  //
+  // The token on its own used to be enough for any signed-in account. A
+  // forwarded email carries the token, so that let a stranger with a vault
+  // file someone else's contract into it. The page promises the link alone
+  // opens nothing; now the server keeps that promise: with the token, either
+  // the address is already on this account or the code was confirmed in the
+  // last few minutes. Otherwise the page is told to run the code step.
   const email = (user.email || '').toLowerCase()
-  let mine =
-    delivery.member_id === user.id ||
-    (!!claimToken && claimToken === delivery.claim_token)
+  const holdsToken = !!claimToken && claimToken === delivery.claim_token
+  let mine = delivery.member_id === user.id
   if (!mine && delivery.recipient_email) {
     const { data: resolved } = await db.rpc('resolve_member_by_email', { p_email: delivery.recipient_email })
     mine = resolved === user.id
+  }
+  if (!mine && holdsToken) {
+    const verifiedAt = delivery.claim_verified_at ? new Date(delivery.claim_verified_at).getTime() : 0
+    if (verifiedAt && Date.now() - verifiedAt < VERIFIED_TTL_MIN * 60_000) mine = true
+    else return res.status(403).json({ error: 'Confirm the code sent to that address first.', needsCode: true })
   }
   if (!mine) return res.status(403).json({ error: 'That delivery was sent to someone else.' })
 
@@ -123,7 +136,7 @@ async function handler(req, res) {
       metadata: { org_id: delivery.org_id, delivery_id: delivery.id },
     })
 
-    return res.status(200).json({ delivery: { id: delivery.id, status: 'accepted', document_id: documentId }, documentId })
+    return res.status(200).json({ delivery: { id: delivery.id, status: 'accepted', document_id: documentId, sender_name: delivery.sender_name, title: delivery.title }, documentId })
   } catch (err) {
     console.error('[org/delivery-respond] accept failed:', err)
     captureException(err, { endpoint: 'org/delivery-respond', stage: 'accept' })

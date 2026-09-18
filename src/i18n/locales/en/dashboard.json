@@ -480,6 +480,25 @@
       "confirm": "Yes, delete it",
       "deleting": "Deleting…",
       "failed": "Could not delete the document. Please try again."
+    },
+    "delivered": {
+      "eyebrow": "Delivered to you",
+      "title": "{{name}} is in your vault.",
+      "body": "{{sender}} can see that it arrived, and nothing else. It is yours to keep, including if you leave them, and nobody opens it but you.",
+      "anOrganisation": "The sender",
+      "open": {
+        "title": "Open it",
+        "body": "Read it here, or download a copy to keep somewhere else."
+      },
+      "access": {
+        "title": "Who can see it",
+        "body": "Exactly what {{sender}} can and cannot see, and how to end the connection whenever you like."
+      },
+      "share": {
+        "title": "Share it with someone you trust",
+        "body": "A partner or a family member who should be able to find it if one day you cannot."
+      },
+      "dismiss": "Got it"
     }
   },
   "aboutMe": {

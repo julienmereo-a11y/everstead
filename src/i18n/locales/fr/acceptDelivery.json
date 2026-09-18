@@ -3,43 +3,92 @@
     "title": "Un document vous attend | Everstead"
   },
   "from": "Envoyé par {{name}}",
+  "sentOn": "le {{date}}",
   "anOrganisation": "une organisation",
-  "title": "Un document vous attend.",
-  "signedIn": "En l'acceptant, il rejoint votre propre coffre. Il reste le vôtre, y compris si vous quittez plus tard l'organisation qui vous l'a envoyé.",
-  "accept": "Accepter dans mon coffre",
-  "decline": "Refuser",
-  "expired": "Cet envoi a expiré ou a déjà reçu une réponse. Demandez à son expéditeur de le renvoyer.",
-  "safety": "Everstead ne joint jamais de fichier à un e-mail, et cette page n'en ouvre aucun tant que vous n'avez pas confirmé un code. Si vous n'attendiez pas cet envoi, refusez-le et écrivez-nous à hello@everstead.care.",
-  "footer": "Everstead, l'endroit où votre famille retrouve tout.",
-  "error": "Une erreur est survenue. Merci de réessayer.",
+  "title": "{{name}} vous a envoyé un document.",
+  "titleNoSender": "Un document vous attend.",
+  "waitingUntil": "Disponible jusqu'au {{date}}",
+  "signedInAs": "Connecté avec {{email}}",
+  "steps": [
+    "Confirmez votre identité",
+    "Choisissez",
+    "Terminé"
+  ],
+  "stepsAria": "Progression",
+  "start": {
+    "intro": "Avant toute ouverture, nous envoyons un code à six chiffres à {{hint}}, l'adresse à laquelle cet envoi a été fait. Le lien seul n'ouvre rien : un e-mail transféré ne suffit donc pas.",
+    "send": "Recevoir le code par e-mail",
+    "signIn": "Se connecter",
+    "signInHint": "Si vous avez déjà un coffre Everstead, connectez-vous et il peut y entrer directement."
+  },
   "code": {
-    "intro": "Avant toute ouverture, nous envoyons un code à six chiffres à {{hint}}, l'adresse à laquelle cet envoi a été fait. Le lien seul ne suffit pas.",
-    "send": "Recevoir un code par e-mail",
-    "sent": "Nous avons envoyé un code à {{hint}}. Il expire dans dix minutes.",
+    "sent": "Envoyé à {{hint}}. Il expire dans dix minutes. Pensez aux courriers indésirables s'il n'arrive pas d'ici une minute.",
     "label": "Code à six chiffres",
     "verify": "Confirmer",
     "resend": "En renvoyer un"
   },
+  "signedIn": {
+    "lead": "Vous êtes connecté avec {{email}}. En l'acceptant, il rejoint ce coffre. Il reste le vôtre, y compris si vous quittez plus tard l'organisation qui vous l'a envoyé.",
+    "needsCode": "Cet envoi était destiné à {{hint}}, une adresse qui n'est pas encore rattachée à votre compte. Confirmez que vous lisez cette boîte et nous l'ajoutons à votre compte : le prochain envoi arrivera sans code."
+  },
+  "accept": "Accepter dans mon coffre",
+  "decline": "Refuser",
   "ready": {
-    "lead": "Confirmé. Vous pouvez récupérer le document maintenant, ou le conserver là où il sera encore dans dix ans.",
-    "download": "Télécharger maintenant",
-    "keep": "Le garder dans un coffre gratuit",
-    "note": "Télécharger est une réponse parfaitement valable. Un coffre gratuit sert simplement à l'avoir encore le jour où l'ordinateur rend l'âme, et à le partager avec qui en aura besoin ensuite."
+    "lead": "Confirmé. Deux façons honnêtes de le récupérer.",
+    "keep": {
+      "title": "Le garder dans un coffre gratuit",
+      "points": [
+        "Il reste le vôtre, y compris après votre départ",
+        "L'expéditeur voit qu'il est arrivé, et rien de ce que vous conservez",
+        "Sans carte bancaire, et vous pouvez tout supprimer à tout moment"
+      ],
+      "cta": "Le garder"
+    },
+    "download": {
+      "title": "Simplement le télécharger",
+      "points": [
+        "Rien n'est conservé chez Everstead",
+        "L'expéditeur voit seulement qu'il est arrivé"
+      ],
+      "cta": "Télécharger"
+    },
+    "haveAccount": "Vous avez déjà un coffre ?"
+  },
+  "accepted": {
+    "title": "Il est dans votre coffre.",
+    "body": "Ce document vous appartient désormais. {{sender}} voit qu'il est arrivé, et rien d'autre.",
+    "cta": "Ouvrir mon coffre",
+    "auto": "Vous y serez dans un instant."
   },
   "downloaded": {
     "title": "Téléchargé.",
     "body": "Il est à vous. Rien n'a été conservé chez Everstead, et l'expéditeur voit seulement qu'il est bien arrivé.",
     "cta": "Garder le prochain dans un coffre gratuit"
   },
-  "accepted": {
-    "title": "Il est dans votre coffre.",
-    "body": "Ce document vous appartient désormais. Redirection vers vos documents.",
-    "cta": "Voir mes documents"
-  },
   "declined": {
     "title": "Refusé.",
-    "body": "Rien n'a été ajouté à votre coffre, et le fichier a été supprimé."
+    "body": "Rien n'a été ajouté nulle part, et le fichier a été supprimé.",
+    "cta": "Aller sur Everstead"
   },
+  "expired": "Cet envoi a expiré ou a déjà reçu une réponse. Demandez à son expéditeur de le renvoyer.",
+  "trust": {
+    "eyebrow": "Comment ça marche",
+    "sees": {
+      "title": "Ce que {{sender}} peut voir",
+      "body": "Qu'il est arrivé, et quand. Ni le reste de votre coffre, ni les personnes avec qui vous partagez, ni jamais le contenu de ce que vous n'avez pas choisi de montrer."
+    },
+    "keep": {
+      "title": "Ce que vous gardez",
+      "body": "Le document, aussi longtemps que vous le souhaitez. Si vous quittez l'organisation, il reste le vôtre, et vous pouvez mettre fin à la connexion depuis votre coffre à tout moment."
+    },
+    "never": {
+      "title": "Ce que nous ne faisons jamais",
+      "body": "Joindre un fichier à un e-mail, ou ouvrir quoi que ce soit avant que vous ayez confirmé un code. Si vous n'attendiez pas cet envoi, refusez-le et écrivez à hello@everstead.care."
+    }
+  },
+  "safety": "Everstead ne joint jamais de fichier à un e-mail, et cette page n'en ouvre aucun tant que vous n'avez pas confirmé un code. Si vous n'attendiez pas cet envoi, refusez-le et écrivez-nous à hello@everstead.care.",
+  "footer": "Everstead, l'endroit où votre famille retrouve tout.",
+  "error": "Une erreur est survenue. Merci de réessayer.",
   "missing": {
     "title": "Ce lien n'est plus valable.",
     "body": "Il a peut-être déjà été utilisé, ou l'organisation l'a retiré. Demandez-lui de le renvoyer.",
