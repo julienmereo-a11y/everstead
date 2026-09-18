@@ -1,210 +1,227 @@
 {
   "meta": {
     "title": "Pricing | Everstead",
-    "description": "Start free, no card required. Upgrade to Everstead+ for two private vaults, unlimited accounts and documents, and 25 GB of secure storage."
+    "description": "Start free, no card required. Everstead+ adds a second private vault, unlimited accounts and documents, personal messages and 25 GB of secure storage."
   },
   "header": {
     "eyebrow": "Pricing",
-    "title": "Start free. Upgrade when you're ready.",
-    "subtitle": "Begin organising today at no cost, your family will thank you later."
+    "title": "Start free. Pay only when you want more room.",
+    "subtitle": "The free plan needs no card and never expires. Everstead+ is {{perMonthYearly}} a month billed yearly, or {{monthly}} month to month, and covers two people."
   },
   "toggle": {
+    "aria": "Billing period",
     "monthly": "Monthly",
     "yearly": "Yearly",
-    "savingActive": "✓ Saving {{percent}}%",
     "save": "Save {{percent}}%",
-    "billingNoteAnnual": "Billed annually. You're saving £{{saving}}/yr on Everstead+ compared to monthly. ✓",
-    "billingNoteMonthly": "Billed monthly. Switch to annual and save £{{saving}} on Everstead+."
+    "noteYearly": "Billed yearly: {{perYear}} a year, which saves {{saving}} against paying monthly.",
+    "noteMonthly": "Billed monthly: {{monthly}} a month, cancel any time."
   },
   "plans": {
     "free": {
       "name": "Everstead",
-      "promo": "",
-      "description": "Get started and organise the essentials, at no cost. No card required, ever.",
-      "features": [
-        "Full guided setup with Your AI Assistant",
-        "Your complete About Me profile",
-        "5 accounts or assets",
-        "5 documents",
-        "3 trusted people",
-        "Readiness score"
-      ],
-      "cta": "Get started free",
+      "tagline": "One person, the essentials, for as long as you like.",
       "priceLabel": "Free",
-      "priceSub": "forever"
+      "priceSub": "No card, ever. Not a trial.",
+      "features": [
+        "5 accounts, 5 documents, 3 trusted people",
+        "1 GB of secure storage",
+        "Your AI Assistant and About Me, in full",
+        "Instructions and final wishes",
+        "Readiness score and reminders",
+        "The iPhone and Android apps",
+        "Export everything, any time"
+      ],
+      "cta": "Start free",
+      "micro": "Upgrade whenever you like. Everything you add comes with you."
     },
     "family": {
       "name": "Everstead+",
       "badge": "Most popular",
-      "description": "For couples and households, two private vaults, one subscription, shared protection.",
+      "tagline": "Two people, two private vaults, one subscription. No limits on what you keep.",
       "features": [
-        "Two private vaults, one subscription",
-        "Unlimited accounts & documents",
-        "Up to 10 trusted contacts",
-        "Unlimited instructions & wishes",
-        "Personal messages & final wishes",
-        "25 GB secure storage",
-        "Your AI Assistant"
+        "A second private vault for a partner or parent",
+        "Unlimited accounts and documents",
+        "25 GB of secure storage",
+        "Up to 10 trusted people",
+        "Personal messages: letters, video and photos, released when the time comes",
+        "Everything in the free plan"
       ],
-      "cta": "Start Your Everstead"
-    },
-    "essential": {
-      "name": "Essential",
-      "description": "For individuals getting their accounts, documents, and wishes in order.",
-      "features": [
-        "Up to 10 accounts & documents",
-        "1 trusted contact",
-        "1 instruction set",
-        "1 GB secure storage",
-        "Readiness score",
-        "Your AI Assistant"
-      ],
-      "cta": "Start Your Everstead",
-      "upsellNote": "Need more? Everstead+ includes two private vaults.",
-      "retired": true
-    },
-    "adviser": {
-      "name": "Everstead Pro",
-      "description": "For professionals managing client estate organisation. Pricing on application.",
-      "features": [
-        "Everything in Everstead+",
-        "Multi-client workspace",
-        "Co-branded client portal",
-        "Adviser collaboration tools",
-        "Priority support"
-      ],
-      "cta": "Book a demo",
-      "priceNote": "Pricing on application, we're working personally with our first adviser cohort.",
-      "blurb": "For solicitors, will-writers, and financial advisers, a co-branded, multi-client workspace.",
-      "learnMore": "Learn more"
+      "cta": "Start 14 days free",
+      "microYearly": "Free for 14 days, then {{perYear}} a year. Cancel in one click and keep everything you added.",
+      "microMonthly": "Free for 14 days, then {{monthly}} a month. Cancel in one click and keep everything you added."
     }
   },
   "prices": {
-    "essential": {
-      "monthly": "£{{value}}",
-      "yearly": "£{{value}}"
-    },
-    "family": {
-      "monthly": "£{{value}}",
-      "yearly": "£{{value}}"
-    },
-    "suffixMonthly": "/ month",
-    "suffixYearly": "/ month",
-    "billedAnnually": "billed annually (£{{total}}/year) · Save 20%",
-    "gbpNote": ""
+    "perMonth": "/ month",
+    "billedYearly": "Billed {{perYear}} a year",
+    "billedMonthly": "Billed monthly, cancel any time"
   },
   "dataPromise": {
-    "text": "Your data belongs to you. Export everything anytime. 90-day wind-down commitment.",
-    "link": "Learn more →"
+    "text": "Your data belongs to you. Export everything at any time, and if Everstead ever closed you would have 90 days' notice to take it with you.",
+    "link": "Our data promise"
   },
-  "gift": {
-    "prompt": "Looking for a gift for someone you care about?",
-    "cta": "🎁 Give an Everstead plan as a gift →"
-  },
-  "comparison": {
-    "title": "Less than the alternatives. More than any of them.",
-    "solicitor": {
-      "name": "Solicitor (probate)",
-      "price": "£3,000-5,000",
-      "description": "One estate settled, after you're gone. No ongoing access, no instructions, no peace of mind while you're alive."
-    },
-    "willWriting": {
-      "name": "Will writing service",
-      "price": "£150-500",
-      "description": "A document. No instructions, no organised accounts, no access grants, no way for your family to find anything."
-    },
-    "everstead": {
-      "name": "Everstead+",
-      "price": "£{{total}} / yr",
-      "description": "Everything organised, updated, and shared, for as long as you need it. Two private vaults included."
-    }
-  },
-  "security": {
-    "eyebrow": "Security baseline",
-    "title": "Every plan is built on the same protection model.",
-    "body": "Everstead does not reserve basic protection for premium tiers. Plan differences are about collaboration, rollout support, and service experience, not weaker privacy or weaker access control.",
-    "items": [
-      "Encryption in transit and at rest",
-      "Granular trusted-person permissions",
-      "Audit trail for key activity",
-      "Private document storage and controlled retrieval"
+  "compare": {
+    "eyebrow": "Line by line",
+    "title": "What changes when you upgrade.",
+    "body": "Room, and a second person. Nothing about privacy or protection is held back on the free plan.",
+    "what": "What you get",
+    "free": "Free",
+    "plus": "Everstead+",
+    "included": "Included",
+    "notIncluded": "Not included",
+    "rows": [
+      {
+        "label": "People with their own private vault",
+        "free": "1",
+        "plus": "2"
+      },
+      {
+        "label": "Accounts and assets",
+        "free": "5",
+        "plus": "Unlimited"
+      },
+      {
+        "label": "Documents",
+        "free": "5",
+        "plus": "Unlimited"
+      },
+      {
+        "label": "Secure storage",
+        "free": "1 GB",
+        "plus": "25 GB"
+      },
+      {
+        "label": "Trusted people",
+        "free": "3",
+        "plus": "10"
+      },
+      {
+        "label": "Instructions and final wishes",
+        "free": true,
+        "plus": true
+      },
+      {
+        "label": "Personal messages, released when the time comes",
+        "free": false,
+        "plus": true
+      },
+      {
+        "label": "Your AI Assistant and About Me",
+        "free": true,
+        "plus": true
+      },
+      {
+        "label": "Readiness score and reminders",
+        "free": true,
+        "plus": true
+      },
+      {
+        "label": "iPhone and Android apps",
+        "free": true,
+        "plus": true
+      },
+      {
+        "label": "Export everything, any time",
+        "free": true,
+        "plus": true
+      },
+      {
+        "label": "Encryption, access control and audit trail",
+        "free": true,
+        "plus": true
+      }
     ]
   },
-  "table": {
-    "capability": "Capability",
-    "essential": "Free",
-    "family": "Everstead+",
-    "adviser": "Everstead Pro",
-    "rows": [
-      "Accounts and document vault",
-      "Readiness score and review prompts",
-      "Trusted people and delegate access",
-      "Household collaboration",
-      "Adviser rollout support",
-      "Pilot partner onboarding"
-    ],
-    "included": "Included",
-    "notIncluded": "Not included"
+  "same": {
+    "eyebrow": "On every plan",
+    "title": "Protection is not a paid feature.",
+    "body": "What you pay for is room and a second person. The way your information is kept, who can see it, and how you leave are the same whether you pay or not.",
+    "items": [
+      {
+        "title": "Encrypted in transit and at rest",
+        "body": "Files and data are encrypted on the way to us and while they are stored."
+      },
+      {
+        "title": "You decide who sees what",
+        "body": "Access is granted person by person and item by item, and it can be taken back at any time."
+      },
+      {
+        "title": "A record of what happened",
+        "body": "Key activity in your vault is logged, so you can see who did what and when."
+      },
+      {
+        "title": "Nothing is locked in",
+        "body": "Export a complete copy, files included, from Settings on any plan. Cancel from the same screen."
+      }
+    ]
+  },
+  "businessPointer": {
+    "title": "Are you a firm, an employer or a care provider?",
+    "body": "Everstead for Business is priced differently, because you are not buying a vault for yourself. You send documents into other people's, and hold none of it.",
+    "cta": "See business pricing"
+  },
+  "gift": {
+    "title": "Giving Everstead to someone?",
+    "body": "A year of Everstead+ for a parent or a partner, delivered by email on the day you choose.",
+    "cta": "Give it as a gift"
   },
   "disclaimer": {
-    "eyebrow": "Important disclaimer",
+    "eyebrow": "Worth knowing",
     "title": "Everstead is not a legal service.",
-    "body": "Plans and pricing cover organisation, collaboration, storage, delegate access, and review workflows. They do not include will drafting, legal advice, or regulated professional services.",
-    "readTerms": "Read terms",
-    "discussRollout": "Discuss adviser rollout"
+    "body": "Plans cover organisation, storage, access for the people you choose and reminders. They do not include will drafting, legal advice or any regulated professional service. Everstead is built to sit alongside your solicitor and adviser, not to replace them.",
+    "readTerms": "Read the terms"
   },
   "faq": {
     "eyebrow": "Common questions",
     "title": "Everything you might want to know.",
     "items": [
       {
-        "q": "How does the free trial work?",
-        "a": "The free plan needs no card and never expires. Everstead+ and Everstead Pro include a 14-day free trial: a card is required to start the trial, you are not charged until it ends, and you can cancel before then and pay nothing. During the trial you have full access to the plan you chose."
+        "q": "How does the free plan work?",
+        "a": "It needs no card and it never expires. You get 5 accounts, 5 documents and 3 trusted people, with 1 GB of storage, and everything else is open: Your AI Assistant, About Me, instructions and final wishes, the apps and the export. It is a plan, not a trial."
       },
       {
-        "q": "What happens if I cancel during the trial?",
-        "a": "Nothing is charged. When the trial ends your vault moves to the free plan: everything you added stays, and you can upgrade again whenever you like."
+        "q": "How does the Everstead+ trial work?",
+        "a": "Everstead+ starts with 14 days free. A card is needed to begin, nothing is charged until the 14 days end, and if you cancel before then you pay nothing. During the trial you have the whole plan."
       },
       {
         "q": "What happens when I cancel Everstead+?",
         "a": "You keep Everstead+ until the end of the period you have paid for. Then your vault moves to the free plan: nothing is deleted, everything you added stays, and the free plan's limits apply only to new additions. You can export a complete copy of your vault, files included, at any time from Settings."
       },
       {
-        "q": "Can I switch plans after signing up?",
-        "a": "Yes. You can upgrade or downgrade at any time from your account settings. Upgrades take effect immediately. Downgrades take effect at the end of your current billing period. You will never be charged more than the plan you are on."
+        "q": "What does \"two private vaults\" mean?",
+        "a": "One subscription covers two people, each with a vault of their own. A couple can each organise their own affairs, see only what the other chooses to share, and never have to pour two lives into one account."
       },
       {
-        "q": "Is there a discount for annual billing?",
-        "a": "Yes, billing Everstead+ annually saves 20% compared to monthly (about £24/year). The discounted rate is applied immediately and locked in for the year."
+        "q": "Is there a discount for yearly billing?",
+        "a": "Yes. Billed yearly, Everstead+ costs {{perYear}} a year instead of {{monthlyTotal}}, which saves {{saving}}. The yearly rate applies from the first day and stays the same for the year."
       },
       {
-        "q": "What does Everstead+ include that the free plan does not?",
-        "a": "Everstead+ gives two people their own private vaults under one subscription, each keeps their own private data, but you can organise and plan together. It lifts the free plan's limits to unlimited accounts, documents and instructions, up to 10 trusted contacts, personal messages and final wishes, and 25 GB of secure storage."
+        "q": "Can I switch plans later?",
+        "a": "Yes, at any time from Settings. An upgrade takes effect immediately. A downgrade takes effect at the end of the period you have already paid for, and you are never charged for more than the plan you are on."
       },
       {
-        "q": "What is Everstead Pro for?",
-        "a": "Everstead Pro is designed for financial advisers, solicitors, and other professionals who want to offer estate organisation as a service to clients. It includes a multi-client workspace, a co-branded client portal, collaboration tools, and priority support. Contact us to discuss a pilot rollout."
+        "q": "Is there an app?",
+        "a": "Yes, for iPhone and Android, on the same plan as the web. In the iPhone app you can also subscribe through the App Store, which shows its own price and handles its own cancellation."
       },
       {
         "q": "Is Everstead a legal service?",
-        "a": "No. Everstead is an organisation and planning tool, it does not provide will drafting, legal advice, or any regulated professional service. It is designed to work alongside your solicitor, financial adviser, and other professionals. For legal estate planning, please use a qualified solicitor."
+        "a": "No. Everstead is an organisation and planning tool. It does not draft wills, give legal advice or provide any regulated professional service. It is designed to sit alongside your solicitor, financial adviser and other professionals. For the legal side of your estate, use a qualified solicitor."
       },
       {
         "q": "How is my data protected?",
-        "a": "All data is encrypted in transit and at rest using AES-256 encryption. Everstead operates under UK GDPR and is registered with the ICO. Everstead staff cannot access the content of your estate plan. Access to your plan is controlled entirely by you."
+        "a": "All data is encrypted in transit and at rest with AES-256. Everstead operates under UK GDPR and is registered with the ICO. Everstead staff cannot read the content of your plan, and access to it is controlled entirely by you."
       },
       {
-        "q": "Is Everstead worth it if I only use it once to set up my plan?",
-        "a": "Most members use Everstead regularly, as a single place to track accounts, store documents, and keep everything important in order. It's useful today, not just someday. That said, even if you only set it up once, the value is real: the people you love won't spend months piecing your life together if something unexpected happens. For less than a coffee a week, that's one of the better things you can do for yourself and for them."
+        "q": "What about firms, employers and care providers?",
+        "a": "They buy something different: the ability to send documents into people's own vaults and ask for one item at a time, without holding any of it. That is Everstead for Business, priced by the size of the organisation and sold on a call."
+      },
+      {
+        "q": "Is it worth it if I only set it up once?",
+        "a": "Setting it up once is already the point: the people you love will not spend months piecing your life together if something happens. But most of what you add changes over time. Accounts open and close, people move, a document gets replaced. Everstead is where those changes go, so the plan stays true, and on the free plan that costs nothing."
       }
     ],
     "stillQuestion": "Still have a question?",
     "writeToUs": "Write to us",
-    "replyTime": "and we'll reply within one business day."
-  },
-  "businessPointer": {
-    "title": "Are you a firm, an employer or a care provider?",
-    "body": "Everstead for Business is priced differently, because you are not buying a vault for yourself. You send documents into other people's, and hold none of it.",
-    "cta": "See business pricing"
+    "replyTime": "and we will reply within one business day."
   }
 }

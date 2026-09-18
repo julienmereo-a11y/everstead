@@ -1,210 +1,227 @@
 {
   "meta": {
     "title": "Tarifs | Everstead",
-    "description": "Commencez gratuitement, sans carte bancaire. Everstead+ ajoute deux espaces privés, des comptes et des documents sans limite et 25 Go de stockage sécurisé."
+    "description": "Commencez gratuitement, sans carte bancaire. Everstead+ ajoute un second espace privé, des comptes et des documents sans limite, les messages personnels et 25 Go de stockage sécurisé."
   },
   "header": {
     "eyebrow": "Tarifs",
-    "title": "Commencez gratuitement. Vous déciderez de la suite quand vous serez prêt.",
-    "subtitle": "Mettez de l'ordre dès aujourd'hui : votre famille vous en remerciera."
+    "title": "Commencez gratuitement. Ne payez que lorsqu'il vous faut plus de place.",
+    "subtitle": "Le forfait gratuit ne demande aucune carte et n'expire jamais. Everstead+ revient à {{perMonthYearly}} par mois en facturation annuelle, ou {{monthly}} par mois sans engagement, pour deux personnes."
   },
   "toggle": {
+    "aria": "Période de facturation",
     "monthly": "Mensuel",
     "yearly": "Annuel",
-    "savingActive": "✓ 2 mois offerts",
     "save": "2 mois offerts",
-    "billingNoteAnnual": "Facturation annuelle : 2 mois offerts par rapport au paiement mensuel, soit près de {{saving}} € d'économie. ✓",
-    "billingNoteMonthly": "Facturation mensuelle. Passez à l'année et profitez de 2 mois offerts."
+    "noteYearly": "Facturation annuelle : {{perYear}} par an TTC, soit 2 mois offerts par rapport au paiement mensuel.",
+    "noteMonthly": "Facturation mensuelle : {{monthly}} par mois TTC, résiliable à tout moment."
   },
   "plans": {
     "free": {
       "name": "Everstead",
-      "promo": "",
-      "description": "De quoi organiser l'essentiel sans rien débourser. Aucune carte bancaire n'est demandée, à aucun moment.",
-      "features": [
-        "Configuration guidée complète avec votre assistant IA",
-        "Votre profil « À propos de moi » au complet",
-        "5 comptes ou actifs",
-        "5 documents",
-        "3 personnes de confiance",
-        "Score de préparation"
-      ],
-      "cta": "Créer un compte gratuit",
+      "tagline": "Une personne, l'essentiel, aussi longtemps que vous le souhaitez.",
       "priceLabel": "Gratuit",
-      "priceSub": "à vie"
-    },
-    "essential": {
-      "name": "Essential",
-      "description": "Pour les particuliers qui veulent mettre de l'ordre dans leurs comptes, documents et dernières volontés.",
+      "priceSub": "Sans carte bancaire, jamais. Ce n'est pas un essai.",
       "features": [
-        "Jusqu'à 10 comptes et documents",
-        "1 personne de confiance",
-        "1 série d'instructions",
+        "5 comptes, 5 documents, 3 personnes de confiance",
         "1 Go de stockage sécurisé",
-        "Score de préparation",
-        "Votre assistant IA"
+        "Votre assistant IA et « À propos de moi », au complet",
+        "Instructions et dernières volontés",
+        "Score de préparation et rappels",
+        "Les applications iPhone et Android",
+        "Export de l'ensemble, à tout moment"
       ],
-      "cta": "Choisir ce forfait",
-      "upsellNote": "Il vous en faut plus ? Everstead+ ouvre deux espaces privés sous un seul abonnement, pour deux personnes.",
-      "retired": true
+      "cta": "Commencer gratuitement",
+      "micro": "Passez à Everstead+ quand vous le souhaitez. Tout ce que vous avez ajouté vous suit."
     },
     "family": {
       "name": "Everstead+",
-      "badge": "Le plus populaire",
-      "description": "Pour les couples et les familles : deux espaces privés, un seul abonnement, une protection commune.",
+      "badge": "Le plus choisi",
+      "tagline": "Deux personnes, deux espaces privés, un seul abonnement. Aucune limite sur ce que vous conservez.",
       "features": [
-        "Deux espaces privés, un seul abonnement",
-        "Comptes et documents illimités",
-        "Jusqu'à 10 personnes de confiance",
-        "Instructions et dernières volontés sans limite",
-        "Messages personnels et dernières volontés",
+        "Un second espace privé pour un conjoint ou un parent",
+        "Comptes et documents sans limite",
         "25 Go de stockage sécurisé",
-        "Votre assistant IA"
+        "Jusqu'à 10 personnes de confiance",
+        "Messages personnels : lettres, vidéos et photos, remis le moment venu",
+        "Tout ce qu'inclut le forfait gratuit"
       ],
-      "cta": "Passer à Everstead+"
-    },
-    "adviser": {
-      "name": "Everstead Pro",
-      "description": "Pour les professionnels qui accompagnent leurs clients dans l'organisation de leur patrimoine. Tarif sur demande.",
-      "features": [
-        "Tout ce qu'inclut Everstead+",
-        "Espace de travail multi-clients",
-        "Portail client à vos couleurs",
-        "Outils de collaboration pour conseillers",
-        "Assistance prioritaire"
-      ],
-      "cta": "Réserver une démo",
-      "priceNote": "Tarif sur demande : nous accompagnons personnellement notre premier groupe de conseillers.",
-      "blurb": "Pour les notaires, avocats et conseillers en gestion de patrimoine : un espace multi-clients à vos couleurs.",
-      "learnMore": "En savoir plus"
+      "cta": "Essayer 14 jours gratuitement",
+      "microYearly": "14 jours gratuits, puis {{perYear}} par an. Résiliation en un clic, et vous gardez tout ce que vous avez ajouté.",
+      "microMonthly": "14 jours gratuits, puis {{monthly}} par mois. Résiliation en un clic, et vous gardez tout ce que vous avez ajouté."
     }
   },
   "prices": {
-    "essential": {
-      "monthly": "4,99 €",
-      "yearly": "47,88 €"
-    },
-    "family": {
-      "monthly": "9,99 €",
-      "yearly": "99,99 €"
-    },
-    "suffixMonthly": "/mois",
-    "suffixYearly": "/an",
-    "billedAnnually": "Prix TTC · 2 mois offerts",
-    "gbpNote": "Tous les prix sont en euros, toutes taxes comprises (TTC)."
+    "perMonth": "/ mois",
+    "billedYearly": "Facturé {{perYear}} par an, TTC",
+    "billedMonthly": "Facturé chaque mois, TTC, sans engagement"
   },
   "dataPromise": {
-    "text": "Vos données vous appartiennent : vous pouvez tout exporter quand vous le souhaitez. En cas d'arrêt du service, nous nous engageons sur un préavis de 90 jours.",
-    "link": "En savoir plus →"
+    "text": "Vos données vous appartiennent. Exportez l'ensemble quand vous le souhaitez, et si Everstead devait un jour fermer, vous auriez 90 jours pour tout récupérer.",
+    "link": "Notre engagement sur vos données"
   },
-  "gift": {
-    "prompt": "Vous cherchez un cadeau pour une personne qui vous est chère ?",
-    "cta": "🎁 Offrir un abonnement Everstead →"
-  },
-  "comparison": {
-    "title": "Moins cher que les alternatives. Plus complet que chacune d'elles.",
-    "solicitor": {
-      "name": "Notaire ou avocat (succession)",
-      "price": "Plusieurs milliers d'euros",
-      "description": "Une succession réglée, mais seulement après votre départ. De votre vivant, aucun accès, aucune instruction, aucune tranquillité d'esprit."
-    },
-    "willWriting": {
-      "name": "Service de rédaction de testament",
-      "price": "Jusqu'à plusieurs centaines d'euros",
-      "description": "Un document, et rien d'autre : ni instructions, ni comptes organisés, ni accès accordés, et aucun moyen pour votre famille de retrouver quoi que ce soit."
-    },
-    "everstead": {
-      "name": "Everstead+",
-      "price": "99,99 €/an",
-      "description": "Tout reste organisé, à jour et partagé, aussi longtemps que vous en avez besoin. Deux espaces privés compris."
-    }
-  },
-  "security": {
-    "eyebrow": "Socle de sécurité",
-    "title": "Chaque forfait repose sur le même modèle de protection.",
-    "body": "Everstead ne réserve pas la protection de base aux forfaits supérieurs. Ce qui change d'un forfait à l'autre, c'est la collaboration, l'accompagnement au déploiement et l'expérience de service, jamais le niveau de confidentialité ni le contrôle des accès.",
-    "items": [
-      "Chiffrement au repos comme en transit",
-      "Droits d'accès détaillés pour vos personnes de confiance",
-      "Journal d'audit des activités clés",
-      "Documents stockés en privé, avec une récupération encadrée"
+  "compare": {
+    "eyebrow": "Ligne par ligne",
+    "title": "Ce qui change quand vous passez à Everstead+.",
+    "body": "De la place, et une seconde personne. Rien de ce qui touche à la confidentialité ou à la protection n'est retenu sur le forfait gratuit.",
+    "what": "Ce que vous obtenez",
+    "free": "Gratuit",
+    "plus": "Everstead+",
+    "included": "Inclus",
+    "notIncluded": "Non inclus",
+    "rows": [
+      {
+        "label": "Personnes disposant de leur propre espace privé",
+        "free": "1",
+        "plus": "2"
+      },
+      {
+        "label": "Comptes et actifs",
+        "free": "5",
+        "plus": "Illimités"
+      },
+      {
+        "label": "Documents",
+        "free": "5",
+        "plus": "Illimités"
+      },
+      {
+        "label": "Stockage sécurisé",
+        "free": "1 Go",
+        "plus": "25 Go"
+      },
+      {
+        "label": "Personnes de confiance",
+        "free": "3",
+        "plus": "10"
+      },
+      {
+        "label": "Instructions et dernières volontés",
+        "free": true,
+        "plus": true
+      },
+      {
+        "label": "Messages personnels, remis le moment venu",
+        "free": false,
+        "plus": true
+      },
+      {
+        "label": "Votre assistant IA et « À propos de moi »",
+        "free": true,
+        "plus": true
+      },
+      {
+        "label": "Score de préparation et rappels",
+        "free": true,
+        "plus": true
+      },
+      {
+        "label": "Applications iPhone et Android",
+        "free": true,
+        "plus": true
+      },
+      {
+        "label": "Export de l'ensemble, à tout moment",
+        "free": true,
+        "plus": true
+      },
+      {
+        "label": "Chiffrement, contrôle des accès et journal d'activité",
+        "free": true,
+        "plus": true
+      }
     ]
   },
-  "table": {
-    "capability": "Fonctionnalité",
-    "essential": "Gratuit",
-    "family": "Everstead+",
-    "adviser": "Everstead Pro",
-    "rows": [
-      "Comptes, actifs et coffre à documents",
-      "Score de préparation et rappels de révision",
-      "Personnes de confiance et accès délégué",
-      "Collaboration en famille",
-      "Accompagnement au déploiement pour conseillers",
-      "Accueil des partenaires pilotes"
-    ],
-    "included": "Inclus",
-    "notIncluded": "Non inclus"
+  "same": {
+    "eyebrow": "Sur chaque forfait",
+    "title": "La protection n'est pas une option payante.",
+    "body": "Ce que vous payez, c'est de la place et une seconde personne. La manière dont vos informations sont conservées, qui peut les voir et comment vous partez sont les mêmes, que vous payiez ou non.",
+    "items": [
+      {
+        "title": "Chiffré en transit comme au repos",
+        "body": "Vos fichiers et vos données sont chiffrés sur le chemin vers nos serveurs et pendant leur conservation."
+      },
+      {
+        "title": "Vous décidez qui voit quoi",
+        "body": "Les accès se donnent personne par personne et élément par élément, et se retirent à tout moment."
+      },
+      {
+        "title": "Une trace de ce qui s'est passé",
+        "body": "Les actions importantes dans votre espace sont consignées : vous voyez qui a fait quoi, et quand."
+      },
+      {
+        "title": "Rien ne vous retient",
+        "body": "Exportez une copie complète, fichiers compris, depuis les réglages, sur tous les forfaits. La résiliation se fait au même endroit."
+      }
+    ]
+  },
+  "businessPointer": {
+    "title": "Vous êtes une étude, un employeur ou un établissement ?",
+    "body": "Everstead pour les entreprises se tarife autrement, car vous n'achetez pas un coffre pour vous. Vous déposez des documents dans celui des autres, sans rien conserver.",
+    "cta": "Voir les tarifs entreprises"
+  },
+  "gift": {
+    "title": "Vous voulez offrir Everstead ?",
+    "body": "Une année d'Everstead+ pour un parent ou un conjoint, envoyée par e-mail le jour que vous choisissez.",
+    "cta": "L'offrir"
   },
   "disclaimer": {
-    "eyebrow": "Avertissement important",
+    "eyebrow": "Bon à savoir",
     "title": "Everstead n'est pas un service juridique.",
-    "body": "Les forfaits et les tarifs couvrent l'organisation, la collaboration, le stockage, l'accès délégué et les processus de révision. Ils n'incluent ni rédaction de testament, ni conseil juridique, ni aucun service professionnel réglementé.",
-    "readTerms": "Lire les conditions",
-    "discussRollout": "Parler d'un déploiement pour conseillers"
+    "body": "Les forfaits couvrent l'organisation, le stockage, l'accès pour les personnes que vous choisissez et les rappels. Ils n'incluent ni rédaction de testament, ni conseil juridique, ni aucun service professionnel réglementé. Everstead est conçu pour travailler aux côtés de votre notaire et de votre conseiller, pas pour les remplacer.",
+    "readTerms": "Lire les conditions"
   },
   "faq": {
     "eyebrow": "Questions fréquentes",
     "title": "Tout ce que vous pourriez vouloir savoir.",
     "items": [
       {
-        "q": "Comment fonctionne l'essai gratuit ?",
-        "a": "Le forfait gratuit ne demande aucune carte et n'expire jamais. Everstead+ et Everstead Pro comprennent 14 jours d'essai gratuit : une carte est demandée pour démarrer l'essai, rien n'est prélevé avant sa fin, et vous pouvez annuler avant sans rien payer. Pendant l'essai, vous disposez de toutes les fonctionnalités du forfait choisi."
+        "q": "Comment fonctionne le forfait gratuit ?",
+        "a": "Il ne demande aucune carte et n'expire jamais. Vous disposez de 5 comptes, 5 documents et 3 personnes de confiance, avec 1 Go de stockage, et tout le reste est ouvert : votre assistant IA, « À propos de moi », les instructions et dernières volontés, les applications et l'export. C'est un forfait, pas un essai."
       },
       {
-        "q": "Que se passe-t-il si j'annule pendant l'essai ?",
-        "a": "Rien ne vous est facturé. À la fin de l'essai, votre coffre repasse au forfait gratuit : tout ce que vous avez ajouté reste, et vous pouvez repasser à Everstead+ quand vous le souhaitez."
+        "q": "Comment fonctionne l'essai d'Everstead+ ?",
+        "a": "Everstead+ commence par 14 jours gratuits. Une carte est demandée pour démarrer, rien n'est prélevé avant la fin des 14 jours, et si vous résiliez avant, vous ne payez rien. Pendant l'essai, vous disposez de tout le forfait."
       },
       {
         "q": "Que se passe-t-il si je résilie Everstead+ ?",
-        "a": "Vous conservez Everstead+ jusqu'à la fin de la période déjà réglée. Ensuite, votre coffre repasse au forfait gratuit : rien n'est supprimé, tout ce que vous avez ajouté reste, et les limites du forfait gratuit ne s'appliquent qu'aux nouveaux ajouts. Vous pouvez exporter une copie complète de votre coffre, fichiers compris, à tout moment depuis les réglages."
+        "a": "Vous conservez Everstead+ jusqu'à la fin de la période déjà réglée. Ensuite, votre espace repasse au forfait gratuit : rien n'est supprimé, tout ce que vous avez ajouté reste, et les limites du forfait gratuit ne s'appliquent qu'aux nouveaux ajouts. Vous pouvez exporter une copie complète de votre espace, fichiers compris, à tout moment depuis les réglages."
       },
       {
-        "q": "Puis-je changer de forfait après l'inscription ?",
-        "a": "Oui, à tout moment, depuis les paramètres de votre compte. Un passage à un forfait supérieur prend effet immédiatement ; un passage à un forfait inférieur s'applique à la fin de la période de facturation en cours. Vous ne serez jamais facturé au-delà du forfait auquel vous êtes abonné."
+        "q": "Que signifie « deux espaces privés » ?",
+        "a": "Un seul abonnement couvre deux personnes, chacune avec son propre espace. Un couple peut organiser ses affaires chacun de son côté, ne voir que ce que l'autre choisit de partager, et n'a jamais à verser deux vies dans un seul compte."
       },
       {
         "q": "Y a-t-il une réduction pour la facturation annuelle ?",
-        "a": "Oui. La facturation annuelle revient à 99,99 € au lieu de 119,88 € : 2 mois vous sont offerts par rapport au paiement mensuel. Le tarif s'applique dès le premier jour et reste garanti pendant toute l'année."
+        "a": "Oui. En facturation annuelle, Everstead+ revient à {{perYear}} par an au lieu de {{monthlyTotal}}, soit 2 mois offerts. Le tarif annuel s'applique dès le premier jour et reste le même toute l'année."
       },
       {
-        "q": "Qu'apporte le forfait Everstead+ que l'offre gratuite n'a pas ?",
-        "a": "Everstead+ donne à deux personnes leur propre espace privé sous un seul abonnement : chacun garde ses données pour lui, mais vous préparez et organisez tout ensemble. Il lève aussi les limites de l'offre gratuite, avec des comptes, des documents et des instructions sans limite, jusqu'à 10 personnes de confiance, les messages personnels et les dernières volontés, et 25 Go de stockage sécurisé."
+        "q": "Puis-je changer de forfait plus tard ?",
+        "a": "Oui, à tout moment, depuis les réglages. Un passage à Everstead+ prend effet immédiatement. Un retour au forfait gratuit prend effet à la fin de la période déjà réglée, et vous n'êtes jamais facturé au-delà du forfait auquel vous êtes abonné."
       },
       {
-        "q": "À quoi sert le forfait Everstead Pro ?",
-        "a": "Everstead Pro s'adresse aux conseillers en gestion de patrimoine, aux notaires et aux autres professionnels qui souhaitent proposer l'organisation successorale comme un service à leurs clients. Il comprend un espace de travail multi-clients, un portail client à vos couleurs, des outils de collaboration et une assistance prioritaire. Écrivez-nous pour envisager un déploiement pilote."
+        "q": "Existe-t-il une application ?",
+        "a": "Oui, pour iPhone et Android, sur le même forfait que le site. Dans l'application iPhone, vous pouvez aussi vous abonner via l'App Store, qui affiche son propre prix et gère lui-même la résiliation."
       },
       {
         "q": "Everstead est-il un service juridique ?",
-        "a": "Non. Everstead est un outil d'organisation et de préparation : il ne propose ni rédaction de testament, ni conseil juridique, ni aucun service professionnel réglementé. Il est conçu pour fonctionner aux côtés de votre notaire, de votre conseiller financier et de vos autres professionnels. Pour la préparation juridique de votre succession, adressez-vous à un professionnel du droit qualifié."
+        "a": "Non. Everstead est un outil d'organisation et de préparation. Il ne rédige pas de testament, ne donne pas de conseil juridique et ne fournit aucun service professionnel réglementé. Il est conçu pour travailler aux côtés de votre notaire, de votre conseiller financier et de vos autres professionnels. Pour le volet juridique de votre succession, adressez-vous à un professionnel du droit."
       },
       {
         "q": "Comment mes données sont-elles protégées ?",
-        "a": "Toutes les données sont chiffrées au repos comme en transit, en AES-256. Everstead opère en conformité avec le RGPD et est édité par une société britannique enregistrée auprès de l'ICO, l'autorité britannique de protection des données. Les équipes d'Everstead n'ont pas accès au contenu de votre plan : vous êtes le seul à en contrôler l'accès."
+        "a": "Toutes les données sont chiffrées au repos comme en transit, en AES-256. Everstead est édité par une société britannique enregistrée auprès de l'ICO, l'autorité britannique de protection des données. Les équipes d'Everstead ne peuvent pas lire le contenu de votre espace, et vous seul en contrôlez l'accès."
       },
       {
-        "q": "Everstead vaut-il le coup si je ne l'utilise qu'une seule fois, pour mettre en place mon plan ?",
-        "a": "La plupart de nos membres s'en servent régulièrement, comme d'un seul et même endroit pour suivre leurs comptes, conserver leurs documents et garder en ordre tout ce qui compte. C'est utile dès aujourd'hui, pas seulement un jour. Cela dit, même si vous ne le configurez qu'une fois, la valeur est bien réelle : ceux que vous aimez ne passeront pas des mois à reconstituer votre vie si l'imprévu survient. Pour moins qu'un café par semaine, c'est l'une des meilleures choses que vous puissiez faire pour vous comme pour eux."
+        "q": "Et pour les études, les employeurs et les établissements ?",
+        "a": "Ils achètent autre chose : la possibilité de déposer des documents dans l'espace des personnes et de demander une pièce à la fois, sans rien conserver. C'est Everstead pour les entreprises, tarifé selon la taille de l'organisation et proposé sur rendez-vous."
+      },
+      {
+        "q": "Est-ce que cela vaut la peine si je ne le configure qu'une fois ?",
+        "a": "Le configurer une fois est déjà l'essentiel : ceux que vous aimez ne passeront pas des mois à reconstituer votre vie si quelque chose arrive. Mais la plupart de ce que vous ajoutez change avec le temps. Des comptes s'ouvrent et se ferment, des personnes déménagent, un document en remplace un autre. Everstead est l'endroit où ces changements se font, pour que le plan reste juste, et sur le forfait gratuit cela ne coûte rien."
       }
     ],
     "stillQuestion": "Encore une question ?",
     "writeToUs": "Écrivez-nous",
     "replyTime": "et nous vous répondrons sous un jour ouvré."
-  },
-  "businessPointer": {
-    "title": "Vous êtes une étude, un employeur ou un établissement ?",
-    "body": "Everstead pour les entreprises se tarife autrement, car vous n'achetez pas un coffre pour vous. Vous déposez des documents dans celui des autres, sans rien conserver.",
-    "cta": "Voir les tarifs entreprises"
   }
 }
