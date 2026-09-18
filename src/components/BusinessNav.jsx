@@ -12,7 +12,7 @@ import LanguageSwitcher from './LanguageSwitcher'
 import { trackEvent } from '../lib/analytics'
 import { VERTICALS, hubPath, verticalPath } from '../pages/businessShared'
 
-export default function BusinessNav() {
+export default function BusinessNav({ topOffset = 0 }) {
   const { t, i18n: inst } = useTranslation('business')
   const lang = inst.language === 'fr' ? 'fr' : 'en'
   const location = useLocation()
@@ -61,10 +61,10 @@ export default function BusinessNav() {
     <>
       <div
         aria-hidden="true"
-        className="fixed top-0 left-0 w-full h-[2px] z-[1000] pointer-events-none"
-        style={{ background: 'linear-gradient(90deg, transparent 0%, #4c7d47 30%, #4c7d47 70%, transparent 100%)' }}
+        className="fixed left-0 w-full h-[2px] z-[1000] pointer-events-none"
+        style={{ top: topOffset, background: 'linear-gradient(90deg, transparent 0%, #4c7d47 30%, #4c7d47 70%, transparent 100%)' }}
       />
-      <header ref={menuRef} className="fixed top-0 left-0 right-0 z-50 bg-stone-50/95 backdrop-blur-md border-b border-stone-200">
+      <header ref={menuRef} style={{ top: topOffset }} className="fixed left-0 right-0 z-50 bg-stone-50/95 backdrop-blur-md border-b border-stone-200">
         <nav className="px-6 sm:px-8 lg:px-12" role="navigation" aria-label={t('nav.home')}>
           <div className="max-w-[1200px] mx-auto h-24 flex items-center justify-between">
           <Link to={hub} className="flex items-center gap-2.5" aria-label={t('nav.home')}>

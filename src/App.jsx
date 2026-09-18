@@ -7,6 +7,7 @@ import { SEO_DEFAULTS, SEO_IMAGE } from './seo/defaults'
 import { preferredAppLanguage } from './lib/deviceLanguage'
 import { AuthProvider, useAuth } from './contexts/AuthContext'
 import { isNative } from './lib/platform'
+import WebSummitBanner, { WEB_SUMMIT_BANNER_HEIGHT, isWebSummitBannerDismissed } from './components/WebSummitBanner'
 import ProtectedRoute from './components/ProtectedRoute'
 import AdvisorProtectedRoute from './components/AdvisorProtectedRoute'
 import AdminProtectedRoute from './components/AdminProtectedRoute'
@@ -137,12 +138,23 @@ function ScrollToTop() {
 // TRANSLATED_PATHS.
 
 function Layout({ children }) {
-  // The site-wide app-store banner that used to sit above the nav was retired on
-  // 2026-09-10; the hero badges and the footer carry the store links now.
+  // Web Summit 2026 bar. Marketing site only, never inside the native app, and
+  // hidden once dismissed. While it shows, the fixed Nav is pushed down and
+  // <main> padded by the same height, so pt-24 pages and full-bleed heroes stay
+  // aligned without any per-page change. (The app-store bar that sat here
+  // until 2026-09-10 used the same contract.)
+  const [bannerVisible, setBannerVisible] = React.useState(false)
+  useEffect(() => {
+    if (!isNative() && !isWebSummitBannerDismissed()) setBannerVisible(true)
+  }, [])
+  const topOffset = bannerVisible ? WEB_SUMMIT_BANNER_HEIGHT : 0
   return (
     <>
-      <Nav />
-      <main>{children}</main>
+      {bannerVisible && <WebSummitBanner onDismiss={() => setBannerVisible(false)} />}
+      <Nav topOffset={topOffset} />
+      {/* --app-banner-h lets a 100svh hero subtract the banner instead of
+          hanging that many pixels below the fold. */}
+      <main style={topOffset ? { paddingTop: topOffset, '--app-banner-h': `${topOffset}px` } : undefined}>{children}</main>
       <Footer />
       <Suspense fallback={null}><ChatWidget /></Suspense>
     </>

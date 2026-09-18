@@ -160,5 +160,14 @@
     "rule": "Use at least 8 characters, with an uppercase letter, a lowercase letter, a number and a symbol.",
     "tooWeak": "That password will be refused. Use at least 8 characters, with an uppercase letter, a lowercase letter, a number and a symbol.",
     "leaked": "That password has appeared in a known data breach, so it cannot be used. Please choose another."
+  },
+  "announcement": {
+    "webSummit": {
+      "aria": "Announcement",
+      "text": "Everstead has been selected for the Web Summit 2026 startup programme in Lisbon.",
+      "textShort": "Selected for Web Summit 2026 in Lisbon.",
+      "cta": "Read the announcement",
+      "dismiss": "Dismiss"
+    }
   }
 }
