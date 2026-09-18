@@ -75,7 +75,10 @@ export const PLANS = {
     limits: {
       trustedPeople: 10,
       storageGb: 25,
-      householdMembers: 5,
+      // One primary and one partner: the Family screen manages a single
+      // membership row, and every page says "two private vaults". Nothing reads
+      // this value; it is here so the config stops contradicting the product.
+      householdMembers: 2,
       maxAccounts: null,
       maxDocuments: null,
       instructionSets: null,
@@ -93,7 +96,7 @@ export const PLANS = {
     limits: {
       trustedPeople: 999,
       storageGb: 100,
-      householdMembers: 999,
+      householdMembers: 2,
       maxAccounts: null,
       maxDocuments: null,
       instructionSets: null,

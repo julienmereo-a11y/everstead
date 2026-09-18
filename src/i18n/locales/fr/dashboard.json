@@ -27,7 +27,7 @@
       "cancelledUnnamed": "Votre conseiller a annulé son forfait Everstead.",
       "graceEnded": "Le délai de grâce de 30 jours est arrivé à son terme. Ajoutez un moyen de paiement pour reprendre là où vous en étiez : vos comptes, documents et consignes sont bien enregistrés.",
       "plusPrice": "{{monthly}}/mois",
-      "plusNote": "ou {{annualPerMonth}}/mois en paiement annuel ({{annual}}/an, soit 2 mois offerts), tous les membres du foyer",
+      "plusNote": "ou {{annualPerMonth}}/mois en paiement annuel ({{annual}}/an, soit 2 mois offerts), deux coffres privés",
       "questions": "Des questions ? Écrivez-nous à"
     },
     "demo": {

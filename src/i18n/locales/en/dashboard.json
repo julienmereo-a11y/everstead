@@ -27,7 +27,7 @@
       "cancelledUnnamed": "Your adviser has cancelled their Everstead plan.",
       "graceEnded": "The 30-day grace period has ended. Add a payment method to continue, all your accounts, documents, and instructions are saved and waiting for you.",
       "plusPrice": "{{monthly}}/mo",
-      "plusNote": "or {{annualPerMonth}}/mo billed annually ({{annual}}/yr · save 20%), all household members",
+      "plusNote": "or {{annualPerMonth}}/mo billed annually ({{annual}}/yr · save 20%), two private vaults",
       "questions": "Questions? Email us at"
     },
     "demo": {
