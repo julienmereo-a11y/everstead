@@ -1,6 +1,7 @@
 import { createClient } from '@supabase/supabase-js'
 import { Resend } from 'resend'
 import { withSentry } from '../_lib/sentry.js'
+import { rateLimited, emailKey } from '../_lib/rate-limit.js'
 import { translator, languageForUser } from '../_lib/email-i18n.js'
 
 // Service role bypasses Supabase captcha protection
@@ -10,7 +11,7 @@ const resend   = new Resend(process.env.RESEND_API_KEY)
 async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).end()
 
-  const { email } = req.body
+  const email = typeof req.body?.email === 'string' ? req.body.email.trim() : ''
   if (!email) return res.status(400).json({ error: 'Missing email' })
 
   // Recipient language, resolved before the branch below so an unknown address
@@ -19,6 +20,20 @@ async function handler(req, res) {
   // response is still an unconditional { sent: true }.
   const lang = await languageForUser(supabase, { email })
   const t    = translator(COPY, lang)
+
+  // Public, unauthenticated, and it sends a branded email to whatever address
+  // it is given, so it carries the same throttle as every other code or link
+  // sender here. Keyed on the address first: three resets in a quarter-hour is
+  // more than anyone who forgot a password needs, and the same address asked
+  // for fifty is the only pattern worth stopping, whoever is asking. The 429
+  // reveals nothing about whether the address has an account, because the
+  // count runs the same either way. The apps reach this through a carrier
+  // NAT, so the IP ceiling stays loose; it is there to stop one machine
+  // spraying resets across many addresses, not to meter honest phones.
+  if (await rateLimited(req, 'forgot-password', { key: emailKey(email), max: 3, windowMinutes: 15 })
+   || await rateLimited(req, 'forgot-password-ip', { max: 60, windowMinutes: 60 })) {
+    return res.status(429).json({ error: t('tooMany') })
+  }
 
   // Always return success — don't reveal whether the email exists
   const { data, error } = await supabase.auth.admin.generateLink({
@@ -50,6 +65,7 @@ const COPY = {
     cta:       'Reset my password →',
     expiry:    "This link expires in 1 hour. If you didn't request a password reset, you can safely ignore this email.",
     questions: 'Questions?',
+    tooMany:   'Too many reset requests. Please wait a few minutes, and check your inbox for the email we already sent.',
   },
   fr: {
     subject:   'Réinitialisez votre mot de passe Everstead',
@@ -58,6 +74,7 @@ const COPY = {
     cta:       'Réinitialiser mon mot de passe →',
     expiry:    "Ce lien expire dans 1 heure. Si vous n'avez pas demandé cette réinitialisation, vous pouvez ignorer cet e-mail en toute sécurité.",
     questions: 'Une question ?',
+    tooMany:   'Trop de demandes de réinitialisation. Patientez quelques minutes, et vérifiez votre boîte de réception pour l\'e-mail déjà envoyé.',
   },
 }
 
